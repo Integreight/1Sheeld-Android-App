@@ -18,8 +18,8 @@ import com.integreight.onesheeld.R;
 
 public class OneSheeldService extends Service {
 
-    private static final String TAG = "OneSheeldService";
-    private static final boolean D = true;
+//    private static final String TAG = "OneSheeldService";
+//    private static final boolean D = true;
     
 	private ArduinoFirmata arduinoFirmata;
 	private final IBinder mBinder = new OneSheeldBinder();

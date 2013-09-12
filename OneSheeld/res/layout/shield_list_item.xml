@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" 
+      android:id="@+id/container"
+      android:background="@drawable/shields_activity_cyan_strip">
+
+            <ToggleButton
+            android:id="@+id/shield_list_item_selection_toggle_button"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/shields_activity_check_mark"
+            android:clickable="false"
+            android:focusable="false" 
+            android:textOn=""
+            android:textOff=""
+            android:checked="false"
+            android:visibility="invisible"/>
+                    <ImageView
+            android:id="@+id/shield_list_item_selection_circle_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignLeft="@+id/shield_list_item_symbol_imageview"
+            android:layout_marginLeft="-6dp"
+            android:src="@drawable/shields_activity_check_circle"
+            android:visibility="invisible" />
+    
+        <ImageView
+            android:id="@+id/shield_list_item_symbol_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@drawable/shields_activity_bluetooth_symbol"
+            />
+
+
+
+        <TextView
+            android:id="@+id/shield_list_item_name_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="35dp"
+            android:layout_toRightOf="@+id/shield_list_item_symbol_imageview"
+            android:text="Bluetooth"
+            android:textColor="#fffad7"
+            android:textSize="@dimen/shield_name_size" />
+
+
+    </RelativeLayout>
+
