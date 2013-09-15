@@ -79,13 +79,13 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		if (mContent == null)
+		if (mContent == null){
 			mContent =  mFrag.getShieldFragment(0);
 		setTitle(mFrag.getUIShield(0).getName());
 		// set the Above View
 				setContentView(R.layout.content_frame);
 				getSupportFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, mContent).commit();
+						.replace(R.id.content_frame, mContent).commit();}
 				
 	}
 	@Override
