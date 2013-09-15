@@ -5,7 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="search_for_bluetooth">Search for bluetooth devices</string>
-    
 
     <!-- MainActivity -->
     <string name="send">Send</string>
@@ -23,5 +22,6 @@
     <string name="title_paired_devices">Paired Devices</string>
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
+    <string name="title_activity_shields_operation">Shields</string>
 
 </resources>

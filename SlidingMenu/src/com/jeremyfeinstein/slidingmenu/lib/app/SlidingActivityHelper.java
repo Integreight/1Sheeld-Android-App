@@ -25,7 +25,7 @@ public class SlidingActivityHelper {
 
 	private boolean mOnPostCreateCalled = false;
 
-	private boolean mEnableSlide = true;
+	private boolean mEnableSlide = false;
 
 	/**
 	 * Instantiates a new SlidingActivityHelper.

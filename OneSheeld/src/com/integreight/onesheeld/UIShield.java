@@ -4,63 +4,63 @@ package com.integreight.onesheeld;
 
 public enum UIShield {
 	
-	LED_SHIELD(1, "LED",R.drawable.shields_activity_yellow_strip,R.drawable.shields_activity_led_symbol, false),
-	VIBRATION_SHIELD(2, "Vibration",R.drawable.shields_activity_orange_strip,R.drawable.shields_activity_vibration_symbol, false),
-	SEVENSEGMENT_SHIELD(3, "Seven Segments",R.drawable.shields_activity_red_strip,R.drawable.shields_activity_seven_segment_symbol, false),
-	SPEAKER_SHIELD(4, "Speaker",R.drawable.shields_activity_rose_strip,R.drawable.shields_activity_speaker_symbol, false),
-	MIC_SHIELD(5, "Mic",R.drawable.shields_activity_dark_blue_strip,R.drawable.shields_activity_mic_symbol ,false),
-	KEYPAD_SHIELD(6, "Keypad",R.drawable.shields_activity_light_blue_strip,R.drawable.shields_activity_keypad_symbol ,false),
-	SLIDER_SHIELD(7, "Sliders",R.drawable.shields_activity_blue_strip,R.drawable.shields_activity_sliders_symbol ,false),
-	LCD_SHIELD(8, "LCD",R.drawable.shields_activity_cyan_strip,R.drawable.shields_activity_lcd_symbol ,false),
-	MAGNETOMETER_SHIELD(9, "Magnetometer",R.drawable.shields_activity_light_sea_green_strip,R.drawable.shields_activity_magnetometer_symbol ,false),
-	PUSHBUTTON_SHIELD(10, "Push Button",R.drawable.shields_activity_green_strip,R.drawable.shields_activity_push_button_symbol ,false),
-	TOGGLEBUTTON_SHIELD(11, "Toggle Button",R.drawable.shields_activity_dark_sea_green_strip,R.drawable.shields_activity_push_button_symbol ,false),
-	ACCELEROMETER_SHIELD(12, "Accelerometer",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
-	FACEBOOK_SHIELD(13, "Facebook",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
-	TWITTER_SHIELD(14, "Twitter",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_accelerometer_symbol ,false);
+	LED_SHIELD(1, "LED Shield",R.drawable.shields_activity_yellow_strip,R.drawable.shields_activity_yellow_small_strip,R.drawable.shields_activity_led_symbol, false),
+	VIBRATION_SHIELD(2, "Vibration Shield",R.drawable.shields_activity_orange_strip,R.drawable.shields_activity_orange_small_strip,R.drawable.shields_activity_vibration_symbol, false),
+	SEVENSEGMENT_SHIELD(3, "Seven Segment Shield",R.drawable.shields_activity_red_strip,R.drawable.shields_activity_red_small_strip,R.drawable.shields_activity_seven_segment_symbol, false),
+	SPEAKER_SHIELD(4, "Speaker Shield",R.drawable.shields_activity_rose_strip,R.drawable.shields_activity_rose_small_strip,R.drawable.shields_activity_speaker_symbol, false),
+	MIC_SHIELD(5, "Mic Shield",R.drawable.shields_activity_dark_blue_strip,R.drawable.shields_activity_dark_blue_small_strip,R.drawable.shields_activity_mic_symbol ,false),
+	KEYPAD_SHIELD(6, "Keypad Shield",R.drawable.shields_activity_light_blue_strip,R.drawable.shields_activity_light_blue_small_strip,R.drawable.shields_activity_keypad_symbol ,false),
+	SLIDER_SHIELD(7, "Sliders Shield",R.drawable.shields_activity_blue_strip,R.drawable.shields_activity_blue_small_strip,R.drawable.shields_activity_sliders_symbol ,false),
+	LCD_SHIELD(8, "LCD Shield",R.drawable.shields_activity_cyan_strip,R.drawable.shields_activity_cyan_small_strip,R.drawable.shields_activity_lcd_symbol ,false),
+	MAGNETOMETER_SHIELD(9, "Magnetometer Shield",R.drawable.shields_activity_light_sea_green_strip,R.drawable.shields_activity_light_sea_green_small_strip,R.drawable.shields_activity_magnetometer_symbol ,false),
+	PUSHBUTTON_SHIELD(10, "Push Button Shield",R.drawable.shields_activity_green_strip,R.drawable.shields_activity_green_small_strip,R.drawable.shields_activity_push_button_symbol ,false),
+	TOGGLEBUTTON_SHIELD(11, "Toggle Button Shield",R.drawable.shields_activity_dark_sea_green_strip,R.drawable.shields_activity_dark_sea_green_small_strip,R.drawable.shields_activity_push_button_symbol ,false),
+	ACCELEROMETER_SHIELD(12, "Accelerometer Shield",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	FACEBOOK_SHIELD(13, "Facebook Shield",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	TWITTER_SHIELD(14, "Twitter Shield",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false);
 	
 	private int id;
 	private String name;
-	private int imageId;
-	private int iconId;
-	private boolean toggleStatus;
+	private int mainImageStripId;
+	private int smallImageStripId;
+	private int symbolId;
+	private boolean mainActivitySelection;
+	private static UIShield shieldsActivitySelection;
 	
-	public int getIconId() {
-		return iconId;
+	public int getSymbolId() {
+		return symbolId;
 	}
-	public void setIconId(int iconId) {
-		this.iconId = iconId;
+	public Boolean isMainActivitySelection() {
+		return mainActivitySelection;
 	}
-	public Boolean getToggleStatus() {
-		return toggleStatus;
+	public static UIShield getShieldsActivitySelection() {
+		return shieldsActivitySelection;
 	}
-	public void setToggleStatus(boolean toggleStatus) {
-		this.toggleStatus = toggleStatus;
+	public static void setShieldsActivitySelection(UIShield selection) {
+		shieldsActivitySelection = selection;
 	}
-	public int getImageId() {
-		return imageId;
+	public void setMainActivitySelection(boolean toggleStatus) {
+		this.mainActivitySelection = toggleStatus;
 	}
-	public void setImageId(int imageId) {
-		this.imageId = imageId;
+	public int getMainImageStripId() {
+		return mainImageStripId;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public int getSmallImageStripId() {
+		return smallImageStripId;
 	}
 	public String getName() {
 		return name;
 	}
-	private UIShield(int id, String name ,int imageId ,int iconId ,boolean toggleStatus) {
+	private UIShield(int id, String name ,int mainImageStripId,int smallImageStripId ,int symbolId ,boolean mainActivitySelection) {
 		this.id = id;
 		this.name = name;
-		this.imageId = imageId;
-		this.toggleStatus = toggleStatus;
-		this.iconId = iconId;
+		this.mainImageStripId = mainImageStripId;
+		this.mainActivitySelection = mainActivitySelection;
+		this.symbolId = symbolId;
+		this.smallImageStripId=smallImageStripId;
 	
 	
-	}
-	public void setId(int id) {
-		this.id = id;
 	}
 	public int getId() {
 		return id;

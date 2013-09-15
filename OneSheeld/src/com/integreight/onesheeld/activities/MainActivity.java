@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.activities;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.UIShield;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -54,8 +56,8 @@ public class MainActivity extends SherlockActivity {
             }
             else if(action.equals(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED)){
             	Log.e(TAG, "- ARDUINO CONNECTED -");
-//            	Intent buttonsActivityIntent=new Intent(MainActivity.this,ButtonsActivity.class);
-//            	startActivity(buttonsActivityIntent);
+            	Intent shieldsActivity=new Intent(MainActivity.this,ShieldsOperationActivity.class);
+            	startActivity(shieldsActivity);
             }
             else if(action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)){
             	
@@ -70,7 +72,7 @@ public class MainActivity extends SherlockActivity {
 
 		shieldsUIList = Arrays.asList(UIShield.values());
 		shieldsListView = (ListView) findViewById(R.id.main_activity_shields_listview);
-		adapter = new ShieldsListAdapter(this, shieldsUIList);
+		adapter = new ShieldsListAdapter(this);
 		shieldsListView.setAdapter(adapter);
 		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
 		shieldsListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
@@ -88,12 +90,12 @@ public class MainActivity extends SherlockActivity {
 					selectionMark.setChecked(false);
 					selectionMark.setVisibility(View.INVISIBLE);
 					selectionCircle.setVisibility(View.INVISIBLE);
-					UIShield.getItem(position + 1).setToggleStatus(false);
+					UIShield.getItem(position + 1).setMainActivitySelection(false);
 				} else {
 					selectionMark.setChecked(true);
 					selectionMark.setVisibility(View.VISIBLE);
 					selectionCircle.setVisibility(View.VISIBLE);
-					UIShield.getItem(position + 1).setToggleStatus(true);
+					UIShield.getItem(position + 1).setMainActivitySelection(true);
 
 				}
 			}
@@ -164,6 +166,16 @@ public class MainActivity extends SherlockActivity {
 		return true;
 	}
 	
+	public void addMoreShields(View v){
+		List<UIShield> tempShieldsList = new ArrayList<UIShield>();
+		for(UIShield shield:Arrays.asList(UIShield.values())){
+			if(shield.isMainActivitySelection())tempShieldsList.add(shield);
+		}
+    	if(tempShieldsList.isEmpty())return;
+		Intent buttonsActivityIntent=new Intent(MainActivity.this,ShieldsOperationActivity.class);
+    	startActivity(buttonsActivityIntent);
+		
+	}
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -171,6 +183,7 @@ public class MainActivity extends SherlockActivity {
         switch (item.getItemId()) {
         case R.id.main_activity_action_search:
             // Launch the DeviceListActivity to see devices and do scan
+    		
             serverIntent = new Intent(this, DeviceListActivity.class);
             startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
             return true;
