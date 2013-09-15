@@ -116,7 +116,7 @@ public class OneSheeldService extends Service {
 	}
 
 	 public class OneSheeldBinder extends Binder {
-		 OneSheeldService getService() {
+		 public OneSheeldService getService() {
 	            // Return this instance of LocalService so clients can call public methods
 	            return OneSheeldService.this;
 	        }
