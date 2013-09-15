@@ -16,5 +16,15 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+
+    <style name="one_sheeld_action_bar_colored" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/action_bar_colored</item>
+    </style>
+
+    <style name="action_bar_colored" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">#fffad7</item>
+    </style>
+
 
 </resources>

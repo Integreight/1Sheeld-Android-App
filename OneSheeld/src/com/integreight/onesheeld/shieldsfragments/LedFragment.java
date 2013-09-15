@@ -24,15 +24,15 @@ public class LedFragment extends Fragment {
 
 	}
 	
-	public void toggleLed(View v){
-		if(isOn){
-			ledImage.setImageResource(R.drawable.led_shield_led_off);
-			isOn=false;
-		} else{
-			ledImage.setImageResource(R.drawable.led_shield_led_on);
-			isOn=true;
-		}
-	}
+//	public void toggleLed(View v){
+//		if(isOn){
+//			ledImage.setImageResource(R.drawable.led_shield_led_off);
+//			isOn=false;
+//		} else{
+//			ledImage.setImageResource(R.drawable.led_shield_led_on);
+//			isOn=true;
+//		}
+//	}
 	
 	
 }

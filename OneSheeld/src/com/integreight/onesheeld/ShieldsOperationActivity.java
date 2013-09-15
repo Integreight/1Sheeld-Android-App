@@ -136,8 +136,8 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	    }, 500);
 	}
 	
-	public void toggleLed(View v){
-//		((LedFragment)mContent).toggleLed(v);
-	}
+//	public void toggleLed(View v){
+////		((LedFragment)mContent).toggleLed(v);
+//	}
 
 }
