@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -55,20 +54,32 @@ public class ShieldsListAdapter extends BaseAdapter {
 			holder.name = (TextView) row.findViewById(R.id.shield_list_item_name_textview);
 			holder.icon = (ImageView) row.findViewById(R.id.shield_list_item_symbol_imageview);
 			holder.selectionButton=(ToggleButton)row.findViewById(R.id.shield_list_item_selection_toggle_button);
+			holder.selectionCircle=(ImageView) row.findViewById(R.id.shield_list_item_selection_circle_imageview);
 			row.setTag(holder);
 		} else {
 			holder = (Holder) row.getTag();
 		}
 
-		String name = shieldList.get(position).getName();
-		Integer iconId = shieldList.get(position).getIconId();
-		Integer imageId = shieldList.get(position).getImageId();
+		UIShield shield=shieldList.get(position);
+		String name = shield.getName();
+		Integer iconId = shield.getIconId();
+		Integer imageId = shield.getImageId();
 
 		holder.name.setText(name);
 		holder.icon.setBackgroundResource(iconId);
 
 		row.setBackgroundResource(imageId);
 		
+		if(shield.getToggleStatus()){
+			holder.selectionButton.setChecked(true);
+			holder.selectionButton.setVisibility(View.VISIBLE);
+			holder.selectionCircle.setVisibility(View.VISIBLE);
+		}
+		else{
+			holder.selectionButton.setChecked(false);
+			holder.selectionButton.setVisibility(View.INVISIBLE);
+			holder.selectionCircle.setVisibility(View.INVISIBLE);
+		}
 //		RelativeLayout.LayoutParams head_params = (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
 //		head_params.setMargins(0, -20, 0, 0); //substitute parameters for left, top, right, bottom
 //		row.setLayoutParams(head_params);
@@ -91,6 +102,7 @@ public class ShieldsListAdapter extends BaseAdapter {
 		TextView name;
 		ImageView icon;
 		ToggleButton selectionButton;
+		ImageView selectionCircle;
 	}
 	
 
