@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffad7" >
+
+    <ImageView
+        android:id="@+id/slider_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <Button
+        android:id="@+id/slider_fragment_connect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/slider_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="Connect" />
+
+    <com.integreight.onesheeld.VerticalSeekBar
+        android:id="@+id/slider_fragment_seekbar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/slider_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:enabled="false"
+        android:layout_marginBottom="100dp" />
+
+</RelativeLayout>

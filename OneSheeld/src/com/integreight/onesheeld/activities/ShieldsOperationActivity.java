@@ -18,11 +18,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.SelectedShieldsListFragment;
-import com.integreight.onesheeld.R.dimen;
-import com.integreight.onesheeld.R.drawable;
-import com.integreight.onesheeld.R.id;
-import com.integreight.onesheeld.R.layout;
-import com.integreight.onesheeld.R.menu;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.services.OneSheeldService.OneSheeldBinder;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
@@ -44,7 +39,8 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 
 	public void addServiceEventHandler(
 			OneSheeldServiceHandler serviceEventHandler) {
-		if(!this.serviceEventHandlers.contains(serviceEventHandler))this.serviceEventHandlers.add(serviceEventHandler);
+		if (!this.serviceEventHandlers.contains(serviceEventHandler))
+			this.serviceEventHandlers.add(serviceEventHandler);
 	}
 
 	@Override
@@ -63,7 +59,9 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		sm.setFadeDegree(0.35f);
 		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		getSupportActionBar().setHomeButtonEnabled(true);
 
 		// set the Behind View
 		setBehindContentView(R.layout.menu_frame);
@@ -103,7 +101,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		super.onStart();
 		if (mContent == null) {
 			mContent = mFrag.getShieldFragment(0);
-			setTitle(mFrag.getUIShield(0).getName()+" Shield");
+			setTitle(mFrag.getUIShield(0).getName() + " Shield");
 			// set the Above View
 			setContentView(R.layout.content_frame);
 			getSupportFragmentManager().beginTransaction()
