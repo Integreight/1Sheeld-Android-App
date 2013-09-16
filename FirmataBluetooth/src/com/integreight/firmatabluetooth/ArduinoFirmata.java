@@ -110,6 +110,9 @@ public class ArduinoFirmata{
 
     public boolean close(){
         	if(bluetoothService!=null)bluetoothService.stop();
+        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+        		eventHandler.onClose();
+    		}
             this.bluetoothService = null;
             return true;
     }

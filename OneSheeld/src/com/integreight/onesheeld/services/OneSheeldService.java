@@ -3,6 +3,7 @@ package com.integreight.onesheeld.services;
 
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -83,6 +84,7 @@ public class OneSheeldService extends Service {
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
+		while(!arduinoFirmata.close());
 		hideNotifcation();
 		
 		super.onDestroy();
@@ -93,10 +95,16 @@ public class OneSheeldService extends Service {
 		build.setSmallIcon(R.drawable.ic_launcher);
 		build.setContentText("The service is running!");
 		build.setContentTitle("1Sheeld is connected");
+		build.setTicker("1Sheeld is connected!");
 //		build.setContentInfo("");
 		build.setWhen(System.currentTimeMillis());
+//		PendingIntent pendingIntent = PendingIntent.getService(this, 0, new Intent(this, OneSheeldService.class), 0);
 		
-		//PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, new Intent(this, ExampleActivity.class), 0);
+//		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
+//		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
+//		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
+
+		
 		//build.setContentIntent(pendingIntent);
 		Notification notification=build.build();
 		startForeground(1, notification);

@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -26,6 +28,7 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.actionbarsherlock.view.Window;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.UIShield;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
@@ -36,37 +39,39 @@ public class MainActivity extends SherlockActivity {
 	List<UIShield> shieldsUIList;
 	ShieldsListAdapter adapter;
 	ListView shieldsListView;
-	
-	private static final String TAG = "MainActivity";
-    private static final boolean D = true;
-	
-    private static final int REQUEST_CONNECT_DEVICE = 1;
-    private static final int REQUEST_ENABLE_BT = 3;
-    
-    private BluetoothAdapter mBluetoothAdapter = null;
-    
-    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
 
-            if(action.equals(OneSheeldService.COMMUNICAITON_ERROR)){
-            	
-            }
-            else if(action.equals(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED)){
-            	Log.e(TAG, "- ARDUINO CONNECTED -");
-            	Intent shieldsActivity=new Intent(MainActivity.this,ShieldsOperationActivity.class);
-            	startActivity(shieldsActivity);
-            }
-            else if(action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)){
-            	
-            }
-        }
-    };
+	private static final String TAG = "MainActivity";
+	private static final boolean D = true;
+
+	private static final int REQUEST_CONNECT_DEVICE = 1;
+	private static final int REQUEST_ENABLE_BT = 3;
+
+	private BluetoothAdapter mBluetoothAdapter = null;
+
+	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String action = intent.getAction();
+
+			if (action.equals(OneSheeldService.COMMUNICAITON_ERROR)) {
+
+			} else if (action
+					.equals(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED)) {
+				Log.e(TAG, "- ARDUINO CONNECTED -");
+				Intent shieldsActivity = new Intent(MainActivity.this,
+						ShieldsOperationActivity.class);
+				startActivity(shieldsActivity);
+				setSupportProgressBarIndeterminateVisibility(false);
+			} else if (action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)) {
+
+			}
+		}
+	};
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_main);
 
 		shieldsUIList = Arrays.asList(UIShield.values());
@@ -89,106 +94,136 @@ public class MainActivity extends SherlockActivity {
 					selectionMark.setChecked(false);
 					selectionMark.setVisibility(View.INVISIBLE);
 					selectionCircle.setVisibility(View.INVISIBLE);
-					UIShield.getItem(position + 1).setMainActivitySelection(false);
+					UIShield.getItem(position + 1).setMainActivitySelection(
+							false);
 				} else {
 					selectionMark.setChecked(true);
 					selectionMark.setVisibility(View.VISIBLE);
 					selectionCircle.setVisibility(View.VISIBLE);
-					UIShield.getItem(position + 1).setMainActivitySelection(true);
+					UIShield.getItem(position + 1).setMainActivitySelection(
+							true);
 
 				}
 			}
 
 		});
-		
-        // Get local Bluetooth adapter
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        // If the adapter is null, then Bluetooth is not supported
-        if (mBluetoothAdapter == null) {
-            Toast.makeText(this, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-        
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter(OneSheeldService.COMMUNICAITON_ERROR));
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED));
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter(OneSheeldService.SHEELD_CLOSE_CONNECTION));
+		// Get local Bluetooth adapter
+		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+		// If the adapter is null, then Bluetooth is not supported
+		if (mBluetoothAdapter == null) {
+			Toast.makeText(this, "Bluetooth is not available",
+					Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
+
+		LocalBroadcastManager.getInstance(this).registerReceiver(
+				mMessageReceiver,
+				new IntentFilter(OneSheeldService.COMMUNICAITON_ERROR));
+		LocalBroadcastManager.getInstance(this).registerReceiver(
+				mMessageReceiver,
+				new IntentFilter(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED));
+		LocalBroadcastManager.getInstance(this).registerReceiver(
+				mMessageReceiver,
+				new IntentFilter(OneSheeldService.SHEELD_CLOSE_CONNECTION));
 	}
 
 	@Override
 	protected void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		
-		if (!mBluetoothAdapter.isEnabled()) {
-            Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 
-        }
+		if (!mBluetoothAdapter.isEnabled()) {
+			Intent enableIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+
+		}
 	}
 
-	   public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	        if(D) Log.d(TAG, "onActivityResult " + resultCode);
-	        switch (requestCode) {
-	        case REQUEST_CONNECT_DEVICE:
-	            // When DeviceListActivity returns with a device to connect
-	            if (resultCode == Activity.RESULT_OK) {
-	                connectDevice(data, true);
-	            }
-	            break;
-	        case REQUEST_ENABLE_BT:
-	            // When the request to enable Bluetooth returns
-	            if (resultCode != Activity.RESULT_OK) {
-	                Log.d(TAG, "BT not enabled");
-	                Toast.makeText(this, R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT).show();
-	                finish();
-	            }
-	        }
-	    }
-	   
-	    private void connectDevice(Intent data, boolean secure) {
-	        String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-	        Intent intent = new Intent(this, OneSheeldService.class);
-	        intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
-	        startService(intent);
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (D)
+			Log.d(TAG, "onActivityResult " + resultCode);
+		switch (requestCode) {
+		case REQUEST_CONNECT_DEVICE:
+			// When DeviceListActivity returns with a device to connect
+			if (resultCode == Activity.RESULT_OK) {
+				setSupportProgressBarIndeterminateVisibility(true);
+				connectDevice(data);
+			}
+			break;
+		case REQUEST_ENABLE_BT:
+			// When the request to enable Bluetooth returns
+			if (resultCode != Activity.RESULT_OK) {
+				Log.d(TAG, "BT not enabled");
+				Toast.makeText(this, R.string.bt_not_enabled_leaving,
+						Toast.LENGTH_SHORT).show();
+				finish();
+			}
+		}
+	}
 
-	    }
+	private void connectDevice(Intent data) {
+		if (isOneSheeldServiceRunning()) {
+			stopService(new Intent(this, OneSheeldService.class));
+			return;
+		}
 	
+		String address = data.getExtras().getString(
+				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+		Intent intent = new Intent(this, OneSheeldService.class);
+		intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
+		startService(intent);
+
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.main, menu);
 		return true;
 	}
-	
-	public void addMoreShields(View v){
-		List<UIShield> tempShieldsList = new ArrayList<UIShield>();
-		for(UIShield shield:Arrays.asList(UIShield.values())){
-			if(shield.isMainActivitySelection())tempShieldsList.add(shield);
-		}
-    	if(tempShieldsList.isEmpty())return;
-		Intent buttonsActivityIntent=new Intent(MainActivity.this,ShieldsOperationActivity.class);
-    	startActivity(buttonsActivityIntent);
-		
-	}
-	
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        Intent serverIntent = null;
-        switch (item.getItemId()) {
-        case R.id.main_activity_action_search:
-            // Launch the DeviceListActivity to see devices and do scan
-    		
-            serverIntent = new Intent(this, DeviceListActivity.class);
-            startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-            return true;
-        }
-        return false;
-    }
 
+	public void addMoreShields(View v) {
+		List<UIShield> tempShieldsList = new ArrayList<UIShield>();
+		for (UIShield shield : Arrays.asList(UIShield.values())) {
+			if (shield.isMainActivitySelection())
+				tempShieldsList.add(shield);
+		}
+		if (tempShieldsList.isEmpty())
+			return;
+		Intent buttonsActivityIntent = new Intent(MainActivity.this,
+				ShieldsOperationActivity.class);
+		startActivity(buttonsActivityIntent);
+
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		Intent serverIntent = null;
+		switch (item.getItemId()) {
+		case R.id.main_activity_action_search:
+			// Launch the DeviceListActivity to see devices and do scan
+
+			serverIntent = new Intent(this, DeviceListActivity.class);
+			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean isOneSheeldServiceRunning() {
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager
+				.getRunningServices(Integer.MAX_VALUE)) {
+			if (OneSheeldService.class.getName().equals(
+					service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 }
