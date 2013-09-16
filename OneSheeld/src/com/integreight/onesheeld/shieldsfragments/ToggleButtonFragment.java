@@ -27,9 +27,24 @@ public class ToggleButtonFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
-				container, false);
-		toggleButtonButton = (ToggleButton) v.findViewById(R.id.toggle_button_shield_button_toggle_button);
+		View v = inflater
+				.inflate(R.layout.toggle_button_shield_fragment_layout,
+						container, false);
+		toggleButtonButton = (ToggleButton) v
+				.findViewById(R.id.toggle_button_shield_button_toggle_button);
+		toggleButtonButton
+				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						// TODO Auto-generated method stub
+						toggleButtonShield.setButtonOn(isChecked);
+
+					}
+				});
+		if (toggleButtonShield != null)
+			toggleButtonButton.setEnabled(true);
 
 		return v;
 
@@ -58,8 +73,9 @@ public class ToggleButtonFragment extends Fragment {
 		connectButton = (Button) getView().findViewById(
 				R.id.toggle_button_fragment_connect_button);
 
-		final CharSequence[] items = { "0","1", "2", "3", "4", "5", "6", "7", "8",
-				"9", "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
+		final CharSequence[] items = { "0", "1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4",
+				"A5" };
 
 		connectButton.setOnClickListener(new View.OnClickListener() {
 
@@ -109,23 +125,12 @@ public class ToggleButtonFragment extends Fragment {
 		}
 	};
 
-
 	private void initializeFirmata(ArduinoFirmata firmata) {
 
-		if(toggleButtonShield!=null) return;
+		if (toggleButtonShield != null)
+			return;
 		toggleButtonShield = new ToggleButtonShield(firmata);
-		toggleButtonButton.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				// TODO Auto-generated method stub
-				toggleButtonShield.setButtonOn(isChecked);
-				
-			}
-		});
-		
 
 	}
 
 }
-
