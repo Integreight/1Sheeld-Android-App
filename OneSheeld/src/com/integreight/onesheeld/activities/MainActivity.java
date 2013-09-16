@@ -27,7 +27,6 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.UIShield;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.services.OneSheeldService;

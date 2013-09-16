@@ -48,10 +48,10 @@ public class ArduinoFirmata{
     private List<ArduinoFirmataEventHandler> eventHandlers;
     private List<ArduinoFirmataDataHandler> dataHandlers;
     public void addEventHandler(ArduinoFirmataEventHandler handler){
-        eventHandlers.add(handler);
+        if(!eventHandlers.contains(handler))eventHandlers.add(handler);
     }
     public void addDataHandler(ArduinoFirmataDataHandler handler){
-        dataHandlers.add(handler);
+        if(!dataHandlers.contains(handler))dataHandlers.add(handler);
     }
 
     private int waitForData = 0;

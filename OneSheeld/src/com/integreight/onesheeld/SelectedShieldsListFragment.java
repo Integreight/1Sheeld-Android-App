@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.integreight.onesheeld.activities.ShieldsOperationActivity;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.shieldsfragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shieldsfragments.LedFragment;
@@ -40,7 +41,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		Fragment newContent = null;
 		newContent=getShieldFragment(position);
-		getActivity().setTitle(UIShieldAdapter.getItem(position).getName());
+		getActivity().setTitle(UIShieldAdapter.getItem(position).getName()+" Shield");
 		if (newContent != null)
 			switchFragment(newContent);
 	}

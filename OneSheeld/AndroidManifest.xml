@@ -37,7 +37,7 @@
             android:exported="false" />
 
         <activity
-            android:name="com.integreight.onesheeld.ShieldsOperationActivity"
+            android:name="com.integreight.onesheeld.activities.ShieldsOperationActivity"
             android:label="@string/title_activity_shields_operation"
             android:theme="@style/one_sheeld_action_bar_colored"
             android:parentActivityName="com.integreight.onesheeld.activities.MainActivity" >
