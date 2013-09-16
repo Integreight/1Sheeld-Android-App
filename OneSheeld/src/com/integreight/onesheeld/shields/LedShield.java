@@ -3,7 +3,7 @@ package com.integreight.onesheeld.shields;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 
-public class Led {
+public class LedShield {
 	private int connectedPin;
 	private ArduinoFirmata firmata;
 	private LedEventHandler eventHandler;
@@ -17,13 +17,19 @@ public class Led {
 //		isLedOn = firmata.digitalRead(connectedPin);
 //	}
 	
-	public Led(ArduinoFirmata firmata){
+	public LedShield(ArduinoFirmata firmata){
 		this.firmata = firmata;
 	}
 
 	public boolean isLedOn() {
 		return isLedOn;
 	}
+	
+	public boolean refreshLed(){
+		isLedOn = firmata.digitalRead(connectedPin);
+		return isLedOn;
+	}
+	
 
 	private void setFirmataEventHandler() {
 		firmata.addDataHandler(new ArduinoFirmataDataHandler() {
@@ -37,8 +43,8 @@ public class Led {
 			@Override
 			public void onDigital(int portNumber, int portData) {
 				// TODO Auto-generated method stub
+				isLedOn = firmata.digitalRead(connectedPin);
 				if (eventHandler != null) {
-					isLedOn = firmata.digitalRead(connectedPin);
 					eventHandler.onLedChange(isLedOn);
 				}
 

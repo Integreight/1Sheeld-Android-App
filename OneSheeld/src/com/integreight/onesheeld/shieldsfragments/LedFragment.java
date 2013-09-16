@@ -2,7 +2,6 @@ package com.integreight.onesheeld.shieldsfragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,19 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.activities.ShieldsOperationActivity;
 import com.integreight.onesheeld.activities.ShieldsOperationActivity.OneSheeldServiceHandler;
-import com.integreight.onesheeld.shields.Led;
-import com.integreight.onesheeld.shields.Led.LedEventHandler;
+import com.integreight.onesheeld.shields.LedShield;
+import com.integreight.onesheeld.shields.LedShield.LedEventHandler;
 
 public class LedFragment extends Fragment {
 
 	ImageView ledImage;
-	Led led;
+	LedShield led;
 	Button connectButton;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,7 +29,6 @@ public class LedFragment extends Fragment {
 		View v = inflater.inflate(R.layout.led_shield_fragment_layout,
 				container, false);
 		ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
-
 		return v;
 
 	}
@@ -48,6 +45,7 @@ public class LedFragment extends Fragment {
 			initializeFirmata(((ShieldsOperationActivity) getActivity())
 					.getFirmata());
 		}
+		if(led!=null)toggleLed(led.refreshLed());
 
 	}
 
@@ -71,7 +69,7 @@ public class LedFragment extends Fragment {
 
 				AlertDialog.Builder builder3 = new AlertDialog.Builder(
 						getActivity());
-				builder3.setTitle("Pick your choice").setItems(items,
+				builder3.setTitle("Connect With").setItems(items,
 						new DialogInterface.OnClickListener() {
 
 							@Override
@@ -80,7 +78,7 @@ public class LedFragment extends Fragment {
 
 								// TODO Auto-generated method stub
 								led.setLedEventHandler(ledEventHandler, which);
-								toggleLed(led.isLedOn());
+								toggleLed(led.refreshLed());
 
 							}
 
@@ -136,8 +134,7 @@ public class LedFragment extends Fragment {
 	// }
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-
-		led = new Led(firmata);
+		if(led==null)led = new LedShield(firmata);
 
 	}
 
