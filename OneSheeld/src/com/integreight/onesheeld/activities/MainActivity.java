@@ -168,6 +168,7 @@ public class MainActivity extends SherlockActivity {
 	private void connectDevice(Intent data) {
 		if (isOneSheeldServiceRunning()) {
 			stopService(new Intent(this, OneSheeldService.class));
+			setSupportProgressBarIndeterminateVisibility(false);
 			return;
 		}
 	
