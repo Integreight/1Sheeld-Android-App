@@ -65,15 +65,11 @@ public class MainActivity extends SherlockActivity {
 				Log.e(TAG, "- ARDUINO CONNECTED -");
 
 				setColoredStrips();
-				bluetoothSearchActionButton.setVisible(false);
-				bluetoothDisconnectActionButton.setVisible(true);
-				goToShieldsOperationActionButton.setVisible(true);
+				
 				setSupportProgressBarIndeterminateVisibility(false);
 			} else if (action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)) {
 				setBWStrips();
-				bluetoothSearchActionButton.setVisible(true);
-				bluetoothDisconnectActionButton.setVisible(false);
-				goToShieldsOperationActionButton.setVisible(false);
+			
 			}
 		}
 	};
@@ -152,6 +148,14 @@ public class MainActivity extends SherlockActivity {
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 
 		}
+		
+		if(!isOneSheeldServiceRunning()){
+			setBWStrips();
+			
+		}
+		else{
+			setColoredStrips();
+		}
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -190,13 +194,16 @@ public class MainActivity extends SherlockActivity {
 	private void disconnectService(){
 		if (isOneSheeldServiceRunning()) {
 			stopService(new Intent(this, OneSheeldService.class));
-			bluetoothSearchActionButton.setVisible(true);
-			bluetoothDisconnectActionButton.setVisible(false);
-			goToShieldsOperationActionButton.setVisible(false);
+			setBWStrips();
 		}
 	}
 	
 	private void launchShieldsOperationActivity(){
+		if(!isAnyShieldsSelected()){
+			Toast.makeText(this, "Select at least 1 shield",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
 		Intent shieldsActivity = new Intent(MainActivity.this,
 				ShieldsOperationActivity.class);
 		startActivity(shieldsActivity);
@@ -209,20 +216,30 @@ public class MainActivity extends SherlockActivity {
 		bluetoothSearchActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_search);
 		bluetoothDisconnectActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_disconnect);
 		goToShieldsOperationActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_forward);
+		if(!isOneSheeldServiceRunning()){
+			setBWStrips();
+			
+		}
+		else{
+			setColoredStrips();
+		}
 		return true;
 	}
 
 	public void addMoreShields(View v) {
-		List<UIShield> tempShieldsList = new ArrayList<UIShield>();
-		for (UIShield shield : Arrays.asList(UIShield.values())) {
-			if (shield.isMainActivitySelection())
-				tempShieldsList.add(shield);
-		}
-		if (tempShieldsList.isEmpty())
-			return;
-		Intent buttonsActivityIntent = new Intent(MainActivity.this,
-				ShieldsOperationActivity.class);
-		startActivity(buttonsActivityIntent);
+//		List<UIShield> tempShieldsList = new ArrayList<UIShield>();
+//		for (UIShield shield : Arrays.asList(UIShield.values())) {
+//			if (shield.isMainActivitySelection())
+//				tempShieldsList.add(shield);
+//		}
+//		if (tempShieldsList.isEmpty())
+//			return;
+//		Intent buttonsActivityIntent = new Intent(MainActivity.this,
+//				ShieldsOperationActivity.class);
+//		startActivity(buttonsActivityIntent);
+		
+		Toast.makeText(this, "Coming very soon!",
+				Toast.LENGTH_LONG).show();
 
 	}
 
@@ -263,14 +280,26 @@ public class MainActivity extends SherlockActivity {
 		UIShield.setConnected(true);
 		adapter.notifyDataSetChanged();
 		shieldsListView.setEnabled(true);
+		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(false);
+		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(true);
+		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(true);
 	}
 	
 	private void setBWStrips(){
 		UIShield.setConnected(false);
 		adapter.notifyDataSetChanged();
 		shieldsListView.setEnabled(false);
+		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(true);
+		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(false);
+		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(false);
 	}
 	
+	private boolean isAnyShieldsSelected(){
+		for(UIShield shield:shieldsUIList){
+			if(shield.isMainActivitySelection())return true;
+		}
+		return false;
+	}
 	
 
 }
