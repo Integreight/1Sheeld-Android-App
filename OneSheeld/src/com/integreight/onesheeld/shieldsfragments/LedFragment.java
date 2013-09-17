@@ -22,6 +22,7 @@ public class LedFragment extends Fragment {
 	ImageView ledImage;
 	LedShield led;
 	Button connectButton;
+	ShieldsOperationActivity activity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -38,12 +39,10 @@ public class LedFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (((ShieldsOperationActivity) getActivity()).getFirmata() == null) {
-			((ShieldsOperationActivity) getActivity())
-					.addServiceEventHandler(serviceHandler);
+		if (activity.getFirmata() == null) {
+			activity.addServiceEventHandler(serviceHandler);
 		} else {
-			initializeFirmata(((ShieldsOperationActivity) getActivity())
-					.getFirmata());
+			initializeFirmata(activity.getFirmata());
 		}
 		if(led!=null)toggleLed(led.refreshLed());
 
@@ -89,6 +88,7 @@ public class LedFragment extends Fragment {
 			}
 
 		});
+		activity=(ShieldsOperationActivity)getActivity();
 	}
 
 	private LedEventHandler ledEventHandler = new LedEventHandler() {

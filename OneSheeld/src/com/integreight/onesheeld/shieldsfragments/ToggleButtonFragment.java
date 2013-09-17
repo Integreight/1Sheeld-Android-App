@@ -23,6 +23,7 @@ public class ToggleButtonFragment extends Fragment {
 	ToggleButton toggleButtonButton;
 	ToggleButtonShield toggleButtonShield;
 	Button connectButton;
+	ShieldsOperationActivity activity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -55,12 +56,10 @@ public class ToggleButtonFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (((ShieldsOperationActivity) getActivity()).getFirmata() == null) {
-			((ShieldsOperationActivity) getActivity())
-					.addServiceEventHandler(serviceHandler);
+		if (activity.getFirmata() == null) {
+			activity.addServiceEventHandler(serviceHandler);
 		} else {
-			initializeFirmata(((ShieldsOperationActivity) getActivity())
-					.getFirmata());
+			initializeFirmata(activity.getFirmata());
 		}
 
 	}
@@ -106,6 +105,7 @@ public class ToggleButtonFragment extends Fragment {
 			}
 
 		});
+		activity=(ShieldsOperationActivity)getActivity();
 	}
 
 	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {

@@ -20,6 +20,7 @@ public class SpeakerFragment extends Fragment {
 
 	SpeakerShield speaker;
 	Button connectButton;
+	ShieldsOperationActivity activity;
 	
 	
 	private static final int soundResourceId=R.raw.door_chime_sound;
@@ -38,12 +39,10 @@ public class SpeakerFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (((ShieldsOperationActivity) getActivity()).getFirmata() == null) {
-			((ShieldsOperationActivity) getActivity())
-					.addServiceEventHandler(serviceHandler);
+		if (activity.getFirmata() == null) {
+			activity.addServiceEventHandler(serviceHandler);
 		} else {
-			initializeFirmata(((ShieldsOperationActivity) getActivity())
-					.getFirmata());
+			initializeFirmata(activity.getFirmata());
 		}
 
 	}
@@ -90,7 +89,7 @@ public class SpeakerFragment extends Fragment {
 
 		});
 
-		
+		activity=(ShieldsOperationActivity)getActivity();
 	}
 
 	private SpeakerEventHandler speakerEventHandler = new SpeakerEventHandler() {
@@ -99,7 +98,7 @@ public class SpeakerFragment extends Fragment {
 		public void onSpeakerPinChange(boolean isOn) {
 			// TODO Auto-generated method stub
 			if (isOn) {
-			((ShieldsOperationActivity)getActivity()).playSound(soundResourceId);
+				activity.playSound(soundResourceId);
 			}
 
 		}

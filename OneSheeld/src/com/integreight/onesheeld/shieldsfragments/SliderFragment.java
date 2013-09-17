@@ -23,6 +23,7 @@ public class SliderFragment extends Fragment {
 	SeekBar seekBar;
 	SliderShield sliderShield;
 	Button connectButton;
+	ShieldsOperationActivity activity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -71,12 +72,10 @@ public class SliderFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (((ShieldsOperationActivity) getActivity()).getFirmata() == null) {
-			((ShieldsOperationActivity) getActivity())
-					.addServiceEventHandler(serviceHandler);
+		if (activity.getFirmata() == null) {
+			activity.addServiceEventHandler(serviceHandler);
 		} else {
-			initializeFirmata(((ShieldsOperationActivity) getActivity())
-					.getFirmata());
+			initializeFirmata(activity.getFirmata());
 		}
 
 	}
@@ -121,6 +120,7 @@ public class SliderFragment extends Fragment {
 			}
 
 		});
+		activity=(ShieldsOperationActivity)getActivity();
 	}
 
 	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
