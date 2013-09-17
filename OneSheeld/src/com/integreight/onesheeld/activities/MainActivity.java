@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -39,6 +40,9 @@ public class MainActivity extends SherlockActivity {
 	List<UIShield> shieldsUIList;
 	ShieldsListAdapter adapter;
 	ListView shieldsListView;
+	MenuItem bluetoothSearchActionButton;
+	MenuItem bluetoothDisconnectActionButton;
+	MenuItem goToShieldsOperationActionButton;
 
 	private static final String TAG = "MainActivity";
 	private static final boolean D = true;
@@ -54,16 +58,22 @@ public class MainActivity extends SherlockActivity {
 			String action = intent.getAction();
 
 			if (action.equals(OneSheeldService.COMMUNICAITON_ERROR)) {
-
+				UIShield.setConnected(false);
+				adapter.notifyDataSetChanged();
 			} else if (action
 					.equals(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED)) {
 				Log.e(TAG, "- ARDUINO CONNECTED -");
-				Intent shieldsActivity = new Intent(MainActivity.this,
-						ShieldsOperationActivity.class);
-				startActivity(shieldsActivity);
+
+				setColoredStrips();
+				bluetoothSearchActionButton.setVisible(false);
+				bluetoothDisconnectActionButton.setVisible(true);
+				goToShieldsOperationActionButton.setVisible(true);
 				setSupportProgressBarIndeterminateVisibility(false);
 			} else if (action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)) {
-
+				setBWStrips();
+				bluetoothSearchActionButton.setVisible(true);
+				bluetoothDisconnectActionButton.setVisible(false);
+				goToShieldsOperationActionButton.setVisible(false);
 			}
 		}
 	};
@@ -76,6 +86,7 @@ public class MainActivity extends SherlockActivity {
 
 		shieldsUIList = Arrays.asList(UIShield.values());
 		shieldsListView = (ListView) findViewById(R.id.main_activity_shields_listview);
+		shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(this);
 		shieldsListView.setAdapter(adapter);
 		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
@@ -166,11 +177,7 @@ public class MainActivity extends SherlockActivity {
 	}
 
 	private void connectDevice(Intent data) {
-		if (isOneSheeldServiceRunning()) {
-			stopService(new Intent(this, OneSheeldService.class));
-			setSupportProgressBarIndeterminateVisibility(false);
-			return;
-		}
+		
 	
 		String address = data.getExtras().getString(
 				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
@@ -179,11 +186,29 @@ public class MainActivity extends SherlockActivity {
 		startService(intent);
 
 	}
+	
+	private void disconnectService(){
+		if (isOneSheeldServiceRunning()) {
+			stopService(new Intent(this, OneSheeldService.class));
+			bluetoothSearchActionButton.setVisible(true);
+			bluetoothDisconnectActionButton.setVisible(false);
+			goToShieldsOperationActionButton.setVisible(false);
+		}
+	}
+	
+	private void launchShieldsOperationActivity(){
+		Intent shieldsActivity = new Intent(MainActivity.this,
+				ShieldsOperationActivity.class);
+		startActivity(shieldsActivity);
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.main, menu);
+		bluetoothSearchActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_search);
+		bluetoothDisconnectActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_disconnect);
+		goToShieldsOperationActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_forward);
 		return true;
 	}
 
@@ -211,7 +236,14 @@ public class MainActivity extends SherlockActivity {
 			serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
 			return true;
+		case R.id.main_activity_action_disconnect:
+			disconnectService();
+			return true;
+		case R.id.main_activity_action_forward:
+			launchShieldsOperationActivity();
+			return true;
 		}
+		
 		return false;
 	}
 
@@ -226,5 +258,19 @@ public class MainActivity extends SherlockActivity {
 		}
 		return false;
 	}
+	
+	private void setColoredStrips(){
+		UIShield.setConnected(true);
+		adapter.notifyDataSetChanged();
+		shieldsListView.setEnabled(true);
+	}
+	
+	private void setBWStrips(){
+		UIShield.setConnected(false);
+		adapter.notifyDataSetChanged();
+		shieldsListView.setEnabled(false);
+	}
+	
+	
 
 }

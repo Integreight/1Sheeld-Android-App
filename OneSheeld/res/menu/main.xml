@@ -12,5 +12,21 @@
         android:showAsAction="always"
         android:icon="@drawable/action_search"
         android:title="@string/search_for_bluetooth"/>
+    
+        <item
+        android:id="@+id/main_activity_action_disconnect"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:icon="@drawable/action_cancel"
+        android:visible="false"
+        android:title="@string/disconnect_device"/>
+        
+          <item
+        android:id="@+id/main_activity_action_forward"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+        android:icon="@drawable/action_forward"
+        android:visible="false"
+        android:title="@string/go_to_shields_operation"/>
 
 </menu>

@@ -15,16 +15,17 @@ import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.UIShield;
+import com.integreight.onesheeld.activities.MainActivity;
 
 public class ShieldsListAdapter extends BaseAdapter {
-	Activity activity;
+	MainActivity activity;
 	List<UIShield> shieldList;
 	LayoutInflater inflater;
 	
 	
 
 	public ShieldsListAdapter(Activity a) {
-		this.activity = a;
+		this.activity = (MainActivity)a;
 		this.shieldList = Arrays.asList(UIShield.values());
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

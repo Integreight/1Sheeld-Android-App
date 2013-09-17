@@ -3,7 +3,6 @@ package com.integreight.onesheeld.services;
 
 
 import android.app.Notification;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

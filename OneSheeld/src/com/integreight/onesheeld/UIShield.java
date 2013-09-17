@@ -27,14 +27,15 @@ public enum UIShield {
 	private int symbolId;
 	private boolean mainActivitySelection;
 	private static UIShield shieldsActivitySelection;
+	private static boolean isConnected=false;
 	
 	public int getSymbolId() {
 		return symbolId;
 	}
 	
-	public int getMainBWImageStripId() {
-		return mainBWImageStripId;
-	}
+//	public int getMainBWImageStripId() {
+//		return mainBWImageStripId;
+//	}
 	public Boolean isMainActivitySelection() {
 		return mainActivitySelection;
 	}
@@ -48,7 +49,8 @@ public enum UIShield {
 		this.mainActivitySelection = toggleStatus;
 	}
 	public int getMainImageStripId() {
-		return mainImageStripId;
+		if(isConnected)return mainImageStripId;
+		else return mainBWImageStripId;
 	}
 	
 	public int getSmallImageStripId() {
@@ -90,6 +92,14 @@ public enum UIShield {
 		case 14:    return TWITTER_SHIELD;  
 		}
 		return null;
+	}
+
+	public static boolean isConnected() {
+		return isConnected;
+	}
+
+	public static void setConnected(boolean isConnected) {
+		UIShield.isConnected = isConnected;
 	}
 
 	
