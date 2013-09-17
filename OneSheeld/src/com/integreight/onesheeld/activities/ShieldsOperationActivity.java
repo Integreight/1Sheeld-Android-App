@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.activities;
 
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +9,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -29,6 +34,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	private Fragment mContent;
 	private ArduinoFirmata firmata;
 	private List<OneSheeldServiceHandler> serviceEventHandlers;
+	MediaPlayer mp;
 
 	OneSheeldService _1SheeldService;
 	boolean mBound = false;
@@ -214,6 +220,33 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		void onServiceConnected(ArduinoFirmata firmata);
 
 		void onServiceDisconnected();
+	}
+	
+	public void playSound(int soundResourceId){
+		if(mp==null)mp = MediaPlayer.create(this, soundResourceId);
+		if(mp.isPlaying()){
+			Resources res = getResources();
+			AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
+			FileDescriptor fd = afd.getFileDescriptor();
+			mp.reset();
+			try {
+				mp.setDataSource(fd);
+				mp.prepare();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			mp.start();
+		}
+		else
+			mp.start();
 	}
 
 }

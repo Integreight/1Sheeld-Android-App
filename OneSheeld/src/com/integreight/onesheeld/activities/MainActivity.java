@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.activities;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +18,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -135,6 +133,8 @@ public class MainActivity extends SherlockActivity {
 		LocalBroadcastManager.getInstance(this).registerReceiver(
 				mMessageReceiver,
 				new IntentFilter(OneSheeldService.SHEELD_CLOSE_CONNECTION));
+		
+
 	}
 
 	@Override
@@ -240,6 +240,7 @@ public class MainActivity extends SherlockActivity {
 		
 		Toast.makeText(this, "Coming very soon!",
 				Toast.LENGTH_LONG).show();
+	
 
 	}
 
