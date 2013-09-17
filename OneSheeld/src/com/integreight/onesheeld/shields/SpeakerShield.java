@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields;
 
-import android.util.Log;
-
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 
