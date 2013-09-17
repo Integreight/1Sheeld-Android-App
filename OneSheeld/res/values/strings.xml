@@ -25,5 +25,10 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
     <string name="title_activity_shields_operation">Shields</string>
+    
+    <!-- Name of the plug-in that appears in Locale -->
+    <string name="plugin_name">1Sheeld</string>
+    <!-- Hint text in the toast edit text -->
+    <string name="message_hint">Scheduled Output</string>
 
 </resources>

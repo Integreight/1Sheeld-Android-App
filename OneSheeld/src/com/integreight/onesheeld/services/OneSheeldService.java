@@ -6,10 +6,15 @@ import android.app.Notification;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -53,11 +58,14 @@ public class OneSheeldService extends Service {
 	public static final String SHEELD_BLUETOOTH_CONNECTED = "com.integreight.SHEELD_BLUETOOTH_CONNECTED";
     public static final String COMMUNICAITON_ERROR = "com.integreight.COMMUNICAITON_ERROR";
     public static final String SHEELD_CLOSE_CONNECTION = "com.integreight.SHEELD_CLOES_CONNECTION";
+    public static final String PLUGIN_MESSAGE = "com.integreight.PLUGIN_MESSAGE";
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		arduinoFirmata = new ArduinoFirmata(this);
+		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
+				  new IntentFilter(OneSheeldService.PLUGIN_MESSAGE));
 		super.onCreate();
 	}
 	
@@ -129,5 +137,26 @@ public class OneSheeldService extends Service {
 	        }
 		
 	    }
+	 
+	 private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+		 @Override
+		 public void onReceive(Context context, Intent intent) {
+		    // Extract data included in the Intent
+			  Log.d("plugin","Recive");
+		      
+			 String action = intent.getAction();
+			 if (action.equals(OneSheeldService.PLUGIN_MESSAGE)) {
+				 if(arduinoFirmata!=null&&arduinoFirmata.isOpen()){
+				 int pin = intent.getIntExtra("pin", -1);
+				 boolean output=intent.getBooleanExtra("output", false);
+				 arduinoFirmata.pinMode(pin, ArduinoFirmata.OUTPUT);
+				 arduinoFirmata.digitalWrite(pin, output);
+				 Toast.makeText(context, "Pin "+pin+" set to "+(output?"High":"Low"), Toast.LENGTH_LONG).show();
+				 }
+				 
+			 }
+		    
+		   }
+		 };
 	
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
     android:versionCode="1"
     android:versionName="1.0" >
@@ -18,7 +19,9 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.integreight.onesheeld.activities.MainActivity"
+            android:configChanges="orientation"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/one_sheeld_action_bar_colored" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +33,7 @@
             android:name="com.integreight.onesheeld.activities.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
+            android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Light.Dialog" />
 
         <service
@@ -38,13 +42,50 @@
 
         <activity
             android:name="com.integreight.onesheeld.activities.ShieldsOperationActivity"
+            android:configChanges="orientation"
             android:label="@string/title_activity_shields_operation"
-            android:theme="@style/one_sheeld_action_bar_colored"
-            android:parentActivityName="com.integreight.onesheeld.activities.MainActivity" >
+            android:parentActivityName="com.integreight.onesheeld.activities.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/one_sheeld_action_bar_colored" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.integreight.onesheeld.activities.MainActivity" />
         </activity>
+        <activity
+            android:name="com.integreight.onesheeld.plugin.EditActivity"
+            android:configChanges="orientation"
+            android:exported="true"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/plugin_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.Locale.Dark"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="ExportedActivity" >
+
+            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
+            </intent-filter>
+        </activity>
+        <!--
+             This is the "fire" BroadcastReceiver. Note that Locale will reject plug-in BroadcastReceivers for the following reasons:
+                - The BroadcastReceiver isn't exported (e.g. android:exported="false")
+                - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
+                - The BroadcastReceiver requires permissions not available to Locale
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+        -->
+        <receiver
+            android:name="com.integreight.onesheeld.plugin.FireReceiver"
+            android:exported="true"
+            android:process=":background"
+            tools:ignore="ExportedReceiver" >
+
+            <!-- this Intent filter allows the plug-in to discovered by Locale -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
