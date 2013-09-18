@@ -12,14 +12,14 @@
 
 package com.integreight.onesheeld.plugin;
 
-import com.integreight.onesheeld.services.OneSheeldService;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
+
+import com.integreight.onesheeld.services.OneSheeldService;
 
 
 /**
@@ -69,7 +69,8 @@ public final class FireReceiver extends BroadcastReceiver
             oneSheeldServiceIntent.putExtra("pin",pin);
             oneSheeldServiceIntent.putExtra("output",output);
             oneSheeldServiceIntent.setAction(OneSheeldService.PLUGIN_MESSAGE);
-            context.sendBroadcast(oneSheeldServiceIntent);
+//            context.sendBroadcast(oneSheeldServiceIntent);
+            LocalBroadcastManager.getInstance(context).sendBroadcast(oneSheeldServiceIntent);
             Log.d("plugin","Intent Fired!");
       
         }

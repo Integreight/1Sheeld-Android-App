@@ -93,7 +93,7 @@ public class OneSheeldService extends Service {
 		// TODO Auto-generated method stub
 		while(!arduinoFirmata.close());
 		hideNotifcation();
-		
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mMessageReceiver);
 		super.onDestroy();
 	}
 
@@ -142,7 +142,7 @@ public class OneSheeldService extends Service {
 		 @Override
 		 public void onReceive(Context context, Intent intent) {
 		    // Extract data included in the Intent
-			  Log.d("plugin","Recive");
+			  Log.d("plugin","Receive");
 		      
 			 String action = intent.getAction();
 			 if (action.equals(OneSheeldService.PLUGIN_MESSAGE)) {
