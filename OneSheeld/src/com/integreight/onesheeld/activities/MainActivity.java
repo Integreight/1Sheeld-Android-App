@@ -48,7 +48,7 @@ public class MainActivity extends SherlockActivity {
 
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 3;
-	private boolean arduinoConnected;
+	private static boolean arduinoConnected;
 
 	private BluetoothAdapter mBluetoothAdapter = null;
 	
@@ -231,7 +231,7 @@ public class MainActivity extends SherlockActivity {
 		bluetoothDisconnectActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_disconnect);
 		goToShieldsOperationActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_forward);
 		
-		if(!arduinoConnected)changeActionIconsToDisconnected();
+		if(!arduinoConnected||!isOneSheeldServiceRunning())changeActionIconsToDisconnected();
 		else changeActionIconsToConnected();
 		
 		return true;
