@@ -105,14 +105,14 @@ public class ArduinoFirmata{
     }
 
     public boolean isOpen(){
-        return bluetoothService.getState()==BluetoothService.STATE_CONNECTED;
+        return bluetoothService!=null&&bluetoothService.getState()==BluetoothService.STATE_CONNECTED;
     }
 
     public boolean close(){
-        	if(bluetoothService!=null)bluetoothService.stop();
-        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-        		eventHandler.onClose();
-    		}
+        	if(bluetoothService!=null)bluetoothService.stopConnection();
+//        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+//        		eventHandler.onClose();
+//    		}
             this.bluetoothService = null;
             return true;
     }
@@ -285,7 +285,7 @@ public class ArduinoFirmata{
                     break;
                 case BluetoothService.STATE_NONE:
                 	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-                		eventHandler.onClose();
+                		eventHandler.onClose(msg.arg2==1);
             		}
                 	
                     break;

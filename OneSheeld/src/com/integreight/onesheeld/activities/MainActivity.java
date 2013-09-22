@@ -11,6 +11,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
@@ -47,8 +48,11 @@ public class MainActivity extends SherlockActivity {
 
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 3;
+	private boolean arduinoConnected;
 
 	private BluetoothAdapter mBluetoothAdapter = null;
+	
+	SharedPreferences sharedPrefs;
 
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
@@ -58,14 +62,18 @@ public class MainActivity extends SherlockActivity {
 			if (action.equals(OneSheeldService.COMMUNICAITON_ERROR)) {
 				UIShield.setConnected(false);
 				adapter.notifyDataSetChanged();
+				arduinoConnected=false;
 			} else if (action
 					.equals(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED)) {
 				Log.e(TAG, "- ARDUINO CONNECTED -");
-
-				setColoredStrips();
+				if(isOneSheeldServiceRunning()){
+					arduinoConnected=true;
+					setColoredStrips();
+				}
 				
 				setSupportProgressBarIndeterminateVisibility(false);
 			} else if (action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)) {
+				arduinoConnected=false;
 				setBWStrips();
 			
 			}
@@ -134,7 +142,7 @@ public class MainActivity extends SherlockActivity {
 				mMessageReceiver,
 				new IntentFilter(OneSheeldService.SHEELD_CLOSE_CONNECTION));
 		
-
+		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld", Context.MODE_PRIVATE);
 	}
 
 	@Override
@@ -151,6 +159,12 @@ public class MainActivity extends SherlockActivity {
 		
 		if(!isOneSheeldServiceRunning()){
 			setBWStrips();
+			if(sharedPrefs.contains(OneSheeldService.DEVICE_ADDRESS_KEY)){
+				setSupportProgressBarIndeterminateVisibility(true);
+				Intent intent=new Intent();
+				intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, sharedPrefs.getString(OneSheeldService.DEVICE_ADDRESS_KEY, null));
+				connectDevice(intent);
+			}
 			
 		}
 		else{
@@ -192,10 +206,10 @@ public class MainActivity extends SherlockActivity {
 	}
 	
 	private void disconnectService(){
-		if (isOneSheeldServiceRunning()) {
+		//if (isOneSheeldServiceRunning()) {
 			stopService(new Intent(this, OneSheeldService.class));
 			setBWStrips();
-		}
+	//	}
 	}
 	
 	private void launchShieldsOperationActivity(){
@@ -216,13 +230,10 @@ public class MainActivity extends SherlockActivity {
 		bluetoothSearchActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_search);
 		bluetoothDisconnectActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_disconnect);
 		goToShieldsOperationActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_forward);
-		if(!isOneSheeldServiceRunning()){
-			setBWStrips();
-			
-		}
-		else{
-			setColoredStrips();
-		}
+		
+		if(!arduinoConnected)changeActionIconsToDisconnected();
+		else changeActionIconsToConnected();
+		
 		return true;
 	}
 
@@ -281,18 +292,14 @@ public class MainActivity extends SherlockActivity {
 		UIShield.setConnected(true);
 		adapter.notifyDataSetChanged();
 		shieldsListView.setEnabled(true);
-		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(false);
-		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(true);
-		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(true);
+		changeActionIconsToConnected();
 	}
 	
 	private void setBWStrips(){
 		UIShield.setConnected(false);
 		adapter.notifyDataSetChanged();
 		shieldsListView.setEnabled(false);
-		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(true);
-		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(false);
-		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(false);
+		changeActionIconsToDisconnected();
 	}
 	
 	private boolean isAnyShieldsSelected(){
@@ -302,5 +309,16 @@ public class MainActivity extends SherlockActivity {
 		return false;
 	}
 	
+	private void changeActionIconsToConnected(){
+		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(false);
+		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(true);
+		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(true);
+	}
+	
+	private void changeActionIconsToDisconnected(){
+		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(true);
+		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(false);
+		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(false);
+	}
 
 }

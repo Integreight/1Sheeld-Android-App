@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
@@ -25,10 +26,11 @@ public class OneSheeldService extends Service {
 
 //    private static final String TAG = "OneSheeldService";
 //    private static final boolean D = true;
-    
+	SharedPreferences sharedPrefs;
 	private ArduinoFirmata arduinoFirmata;
 	private final IBinder mBinder = new OneSheeldBinder();
 	private BluetoothAdapter mBluetoothAdapter = null;
+	private String deviceAddress;
 	private ArduinoFirmataEventHandler arduinoEventHandler= new ArduinoFirmataEventHandler() {
 		
 		@Override
@@ -42,14 +44,17 @@ public class OneSheeldService extends Service {
 		public void onConnect() {
 			// TODO Auto-generated method stub
 			sheeldConnectedMessageToActivity(SHEELD_BLUETOOTH_CONNECTED);
+			sharedPrefs.edit().putString(DEVICE_ADDRESS_KEY, deviceAddress).commit();
+			
 			showNotification();
 
 		}
 		
 		@Override
-		public void onClose() {
+		public void onClose(boolean closedManually) {
 			// TODO Auto-generated method stub
 			sheeldConnectedMessageToActivity(SHEELD_CLOSE_CONNECTION);
+			if(!closedManually)sharedPrefs.edit().remove(DEVICE_ADDRESS_KEY).commit();
 			stopSelf();
 			
 		}
@@ -59,6 +64,7 @@ public class OneSheeldService extends Service {
     public static final String COMMUNICAITON_ERROR = "com.integreight.COMMUNICAITON_ERROR";
     public static final String SHEELD_CLOSE_CONNECTION = "com.integreight.SHEELD_CLOES_CONNECTION";
     public static final String PLUGIN_MESSAGE = "com.integreight.PLUGIN_MESSAGE";
+    public static final String DEVICE_ADDRESS_KEY = "com.integreight.DEVICE_ADDRESS_KEY";
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
@@ -66,6 +72,7 @@ public class OneSheeldService extends Service {
 		arduinoFirmata = new ArduinoFirmata(this);
 		LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
 				  new IntentFilter(OneSheeldService.PLUGIN_MESSAGE));
+		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld", Context.MODE_PRIVATE);
 		super.onCreate();
 	}
 	
@@ -73,8 +80,8 @@ public class OneSheeldService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
 		
-		String address = intent.getExtras().getString(BluetoothService.EXTRA_DEVICE_ADDRESS);
-		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+		deviceAddress = intent.getExtras().getString(BluetoothService.EXTRA_DEVICE_ADDRESS);
+		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(deviceAddress);
         // Attempt to connect to the device
         
         arduinoFirmata.addEventHandler(arduinoEventHandler);

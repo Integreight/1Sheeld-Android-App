@@ -96,7 +96,7 @@ public class BluetoothService {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(BluetoothService.MESSAGE_STATE_CHANGE, state, -1).sendToTarget();
+        mHandler.obtainMessage(BluetoothService.MESSAGE_STATE_CHANGE, state, closedManually?1:0).sendToTarget();
     }
 
     /**
@@ -160,9 +160,8 @@ public class BluetoothService {
     /**
      * Stop all threads
      */
-    public synchronized void stop() {
+    private synchronized void stop() {
         if (D) Log.d(TAG, "stop");
-        closedManually=true;
         if (mConnectThread != null) {
             mConnectThread.cancel();
             mConnectThread = null;
@@ -174,6 +173,11 @@ public class BluetoothService {
         }
         
         setState(STATE_NONE);
+    }
+    
+    public synchronized void stopConnection(){
+        closedManually=true;
+    	stop();
     }
 
     /**
@@ -204,7 +208,6 @@ public class BluetoothService {
         msg.setData(bundle);
         mHandler.sendMessage(msg);
         stop();
-        closedManually=false;
     }
 
     /**
@@ -218,7 +221,6 @@ public class BluetoothService {
         msg.setData(bundle);
         mHandler.sendMessage(msg);
         stop();
-        closedManually=false;
     }
 
 
