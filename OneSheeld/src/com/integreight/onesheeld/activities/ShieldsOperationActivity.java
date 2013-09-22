@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.SelectedShieldsListFragment;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -35,6 +36,29 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	private ArduinoFirmata firmata;
 	private List<OneSheeldServiceHandler> serviceEventHandlers;
 	MediaPlayer mp;
+	
+	private ArduinoFirmataEventHandler arduinoEventHandler= new ArduinoFirmataEventHandler() {
+		
+		@Override
+		public void onError(String errorMessage) {
+
+			finish();
+		}
+		
+		@Override
+		public void onConnect() {
+			// TODO Auto-generated method stub
+
+		}
+		
+		@Override
+		public void onClose(boolean closedManually) {
+			// TODO Auto-generated method stub
+			finish();
+
+			
+		}
+	};
 
 	OneSheeldService _1SheeldService;
 	boolean mBound = false;
@@ -197,6 +221,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 
 			mBound = true;
 			firmata = _1SheeldService.getFirmata();
+			firmata.addEventHandler(arduinoEventHandler);
 			for (OneSheeldServiceHandler serviceHandler : serviceEventHandlers) {
 				serviceHandler.onServiceConnected(firmata);
 			}

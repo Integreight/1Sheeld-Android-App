@@ -283,7 +283,8 @@ public class BluetoothService {
                 } catch (IOException e2) {
                     Log.e(TAG, "unable to close() socket during connection failure", e2);
                 }
-                if(!closedManually)connectionFailed();
+                //if(!closedManually)
+                	connectionFailed();
                 return;
             }
 
@@ -348,7 +349,8 @@ public class BluetoothService {
                             .sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
-                    if(!closedManually)connectionLost();
+                    //if(!closedManually)
+                    	connectionLost();
                     break;
                 }
             }

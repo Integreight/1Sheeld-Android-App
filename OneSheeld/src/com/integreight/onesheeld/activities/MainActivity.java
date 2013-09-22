@@ -75,6 +75,7 @@ public class MainActivity extends SherlockActivity {
 			} else if (action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)) {
 				arduinoConnected=false;
 				setBWStrips();
+				setSupportProgressBarIndeterminateVisibility(false);
 			
 			}
 		}
