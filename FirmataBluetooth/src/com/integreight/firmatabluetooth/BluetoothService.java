@@ -22,9 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.UUID;
 
-import android.app.NotificationManager;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -57,8 +55,8 @@ public class BluetoothService {
     public static final String TOAST = "toast";
 
     // Unique UUID for this application
-    private static final UUID MY_UUID =
-        UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
+//    private static final UUID MY_UUID =
+//        UUID.fromString("fa87c0d0-afac-11de-8a39-0800200c9a66");
 
     // Member fields
     private final BluetoothAdapter mAdapter;
