@@ -54,7 +54,11 @@ public class ArduinoFirmata{
     boolean isUartInit=false;
     
 
-    public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
+    public boolean isUartInit() {
+		return isUartInit;
+	}
+
+	public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
     private List<ArduinoFirmataEventHandler> eventHandlers;
     private List<ArduinoFirmataDataHandler> dataHandlers;
     public void addEventHandler(ArduinoFirmataEventHandler handler){
