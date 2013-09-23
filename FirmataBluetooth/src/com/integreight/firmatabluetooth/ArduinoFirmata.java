@@ -43,10 +43,10 @@ public class ArduinoFirmata{
     private final byte SYSTEM_RESET    = (byte)0xFF;
     private final byte START_SYSEX     = (byte)0xF0;
     private final byte END_SYSEX       = (byte)0xF7;
-    private final byte UART_COMMAND    = (byte)0x80;
-    private final byte UART_DATA       = (byte)0x82;
-    private final byte PULSE_IN_INIT    = (byte)0x84;
-    private final byte PULSE_IN_DATA       = (byte)0x86;
+    private final byte UART_COMMAND    = (byte)0x65;
+    private final byte UART_DATA       = (byte)0x66;
+    private final byte PULSE_IN_INIT    = (byte)0x67;
+    private final byte PULSE_IN_DATA       = (byte)0x68;
 
     private final byte UART_BEGIN       = (byte)0x01;
     private final byte UART_END       = (byte)0x00;
