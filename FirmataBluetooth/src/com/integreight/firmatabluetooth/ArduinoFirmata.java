@@ -43,7 +43,17 @@ public class ArduinoFirmata{
     private final byte SYSTEM_RESET    = (byte)0xFF;
     private final byte START_SYSEX     = (byte)0xF0;
     private final byte END_SYSEX       = (byte)0xF7;
+    private final byte UART_COMMAND    = (byte)0x80;
+    private final byte UART_DATA       = (byte)0x82;
+    private final byte PULSE_IN_INIT    = (byte)0x84;
+    private final byte PULSE_IN_DATA       = (byte)0x86;
+
+    private final byte UART_BEGIN       = (byte)0x01;
+    private final byte UART_END       = (byte)0x00;
     
+    boolean isUartInit=false;
+    
+
     public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
     private List<ArduinoFirmataEventHandler> eventHandlers;
     private List<ArduinoFirmataDataHandler> dataHandlers;
@@ -144,6 +154,27 @@ public class ArduinoFirmata{
         writeData[writeData.length-1] = END_SYSEX;
         write(writeData);
     }
+    
+    public void sendUart(byte[] data){
+    	if(!isUartInit)return;
+    	sysex(UART_DATA, data);
+    }
+    
+    public void initUart(BaudRate baud){
+    	//sysex(UART_COMMAND, new byte[]{UART_BEGIN,baud.getValue()});
+    	sysex(UART_COMMAND, new byte[]{baud.getValue()});
+    	isUartInit=true;
+    }
+    
+    public void initUart(){
+    	initUart(BaudRate._57600);
+    }
+    
+    public void disableUart(){
+    	sysex(UART_COMMAND, new byte[]{UART_END});
+    	isUartInit=false;
+    	
+    }
 
     public boolean digitalRead(int pin) {
         return ((digitalInputData[pin >> 3] >> (pin & 0x07)) & 0x01) > 0;
@@ -220,8 +251,10 @@ public class ArduinoFirmata{
                 byte sysexCommand = storedInputData[0];
                 byte[] sysexData = new byte[sysexBytesRead-1];
                 System.arraycopy(storedInputData, 1, sysexData, 0, sysexBytesRead-1);
+                
                 for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
                 	dataHandler.onSysex(sysexCommand, sysexData);
+                	if(sysexCommand==UART_DATA) dataHandler.onUartReceive(sysexData);
         		}
             }
             else{
@@ -331,5 +364,28 @@ public class ArduinoFirmata{
             }
         }
     };
+    
+    public static enum BaudRate{
+        _1200((byte)0x00),
+        _2400((byte)0x01),
+        _4800((byte)0x02),
+        _9600((byte)0x03),
+        _14400((byte)0x04),
+        _19200((byte)0x05),
+        _28800((byte)0x06),
+        _38400((byte)0x07),
+        _57600((byte)0x08),
+        _115200((byte)0x09);
+        
+        byte value;
+        BaudRate(byte value){
+        	this.value=value;
+        }
+        
+        public byte getValue(){
+        	return value;
+        }
+        
+    }
 
 }
