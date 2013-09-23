@@ -55,6 +55,12 @@ public class LedShield {
 				// TODO Auto-generated method stub
 
 			}
+
+			@Override
+			public void onUartReceive(byte[] data) {
+				// TODO Auto-generated method stub
+				
+			}
 		});
 	}
 
