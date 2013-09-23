@@ -165,8 +165,8 @@ public class ArduinoFirmata{
     }
     
     public void initUart(BaudRate baud){
-    	//sysex(UART_COMMAND, new byte[]{UART_BEGIN,baud.getValue()});
-    	sysex(UART_COMMAND, new byte[]{baud.getValue()});
+    	sysex(UART_COMMAND, new byte[]{UART_BEGIN,baud.getValue()});
+    	//sysex(UART_COMMAND, new byte[]{baud.getValue()});
     	isUartInit=true;
     }
     
