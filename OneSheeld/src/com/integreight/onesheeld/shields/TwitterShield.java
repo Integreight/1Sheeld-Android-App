@@ -27,6 +27,7 @@ public class TwitterShield {
 	private String lastTweet;
 	Activity activity;
 	private static final byte TWITTER_COMMAND = (byte) 0x30;
+	private static final byte UPDATE_STATUS_METHOD_ID= (byte) 0x01;
 	
 
 	public String getUsername() {
@@ -96,15 +97,18 @@ public class TwitterShield {
 			@Override
 			public void onUartReceive(byte[] data) {
 				// TODO Auto-generated method stub
+				if(data.length<2)return;
 				byte command = data[0];
-				int n = data.length - 1;
+				byte methodId=data[1];
+				int n = data.length - 2;
 				byte[] newArray = new byte[n];
-				System.arraycopy(data, 1, newArray, 0, n);
+				System.arraycopy(data, 2, newArray, 0, n);
 				if (command == TWITTER_COMMAND) {
 					String tweet = new String(newArray);
 					lastTweet = tweet;
 					if (isTwitterLoggedInAlready())
-						new updateTwitterStatus().execute(tweet);
+						if(methodId==UPDATE_STATUS_METHOD_ID)
+							new updateTwitterStatus().execute(tweet);
 
 				}
 

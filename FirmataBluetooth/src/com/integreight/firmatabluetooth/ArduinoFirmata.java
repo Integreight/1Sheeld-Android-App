@@ -33,7 +33,7 @@ public class ArduinoFirmata{
     public static final int A4=17;
     public static final int A5=18;
     
-    private final byte MAX_DATA_BYTES  = 32;
+    private final char MAX_DATA_BYTES  = 256;
     private final byte DIGITAL_MESSAGE = (byte)0x90;
     private final byte ANALOG_MESSAGE  = (byte)0xE0;
     private final byte REPORT_ANALOG   = (byte)0xC0;
@@ -254,11 +254,19 @@ public class ArduinoFirmata{
                 parsingSysex = false;
                 byte sysexCommand = storedInputData[0];
                 byte[] sysexData = new byte[sysexBytesRead-1];
+                
                 System.arraycopy(storedInputData, 1, sysexData, 0, sysexBytesRead-1);
                 
+                byte[] fixedSysexData = null;
+                if(sysexData.length%2==0){
+                	fixedSysexData=new byte[sysexData.length/2];
+                	for(int i=0;i<sysexData.length;i+=2){
+                		fixedSysexData[i/2]=(byte) (sysexData[i]|(sysexData[i+1]<<7));
+                	}
+                }
                 for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
                 	dataHandler.onSysex(sysexCommand, sysexData);
-                	if(sysexCommand==UART_DATA) dataHandler.onUartReceive(sysexData);
+                	if(sysexCommand==UART_DATA&&fixedSysexData!=null) dataHandler.onUartReceive(fixedSysexData);
         		}
             }
             else{
