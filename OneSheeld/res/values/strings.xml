@@ -30,5 +30,8 @@
     <string name="plugin_name">1Sheeld</string>
     <!-- Hint text in the toast edit text -->
     <string name="message_hint">Scheduled Output</string>
+    
+    <string name="login_to_twitter">Login to Twitter</string>
+    <string name="logout_from_out">Logout from Twitter</string>
 
 </resources>

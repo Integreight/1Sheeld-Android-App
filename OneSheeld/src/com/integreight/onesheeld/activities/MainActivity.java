@@ -32,6 +32,7 @@ import com.actionbarsherlock.view.Window;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.UIShield;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
+import com.integreight.onesheeld.helpers.ConnectionDetector;
 import com.integreight.onesheeld.services.OneSheeldService;
 
 public class MainActivity extends SherlockActivity {
@@ -53,6 +54,9 @@ public class MainActivity extends SherlockActivity {
 	private BluetoothAdapter mBluetoothAdapter = null;
 	
 	SharedPreferences sharedPrefs;
+	
+	// Internet Connection detector
+    private ConnectionDetector cd;
 
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
@@ -144,6 +148,15 @@ public class MainActivity extends SherlockActivity {
 				new IntentFilter(OneSheeldService.SHEELD_CLOSE_CONNECTION));
 		
 		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld", Context.MODE_PRIVATE);
+		
+        // Check if Internet present
+		cd = new ConnectionDetector(getApplicationContext());
+        if (!cd.isConnectingToInternet()) {
+            Toast.makeText(this, "Please connect to working Internet connection",
+					Toast.LENGTH_SHORT).show();
+            // stop executing code by return
+            return;
+        }
 	}
 
 	@Override

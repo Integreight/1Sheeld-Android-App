@@ -14,7 +14,6 @@
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
 
-
     <ImageView
         android:id="@+id/twitter_shield_led_imageview"
         android:layout_width="wrap_content"
@@ -35,5 +34,16 @@
         android:layout_marginTop="30dp"
         android:text="Your last tweet will be here!"
         android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/twitter_shield_username_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/twitter_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="128dp"
+        android:text="Logged in as: @iSsO"
+        android:textColor="@color/white"
+        android:visibility="invisible" />
 
 </RelativeLayout>
