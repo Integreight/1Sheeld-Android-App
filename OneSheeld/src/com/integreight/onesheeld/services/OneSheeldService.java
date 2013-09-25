@@ -3,6 +3,7 @@ package com.integreight.onesheeld.services;
 
 
 import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -21,6 +22,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.activities.MainActivity;
 
 public class OneSheeldService extends Service {
 
@@ -117,9 +119,14 @@ public class OneSheeldService extends Service {
 //		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
 //		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
 //		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+	            | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
+	    PendingIntent intent = PendingIntent.getActivity(this, 0,
+	            notificationIntent, 0);
 		
-		//build.setContentIntent(pendingIntent);
+		build.setContentIntent(intent);
 		Notification notification=build.build();
 		startForeground(1, notification);
 	}
