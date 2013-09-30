@@ -33,5 +33,6 @@
     
     <string name="login_to_twitter">Login to Twitter</string>
     <string name="logout_from_out">Logout from Twitter</string>
+    <string name="app_id">1423548367865538</string>
 
 </resources>
