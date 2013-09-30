@@ -170,9 +170,8 @@ public class FacebookShield {
 			if (session.isOpened()) {
 
 				if (!pendingPublishReauthorization) {
-					List<String> permissions = session
-							.getPermissions();
-					if (!isSubsetOf(PERMISSIONS, permissions)) {
+					if (!isSubsetOf(PERMISSIONS, session
+							.getPermissions())) {
 						pendingPublishReauthorization = true;
 						Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
 								fragment, PERMISSIONS);
@@ -181,7 +180,8 @@ public class FacebookShield {
 					}
 				}
 				
-				if(pendingPublishReauthorization&&state.equals(SessionState.OPENED_TOKEN_UPDATED)){
+				if((pendingPublishReauthorization&&state.equals(SessionState.OPENED_TOKEN_UPDATED))||isSubsetOf(PERMISSIONS, session
+						.getPermissions())){
 					pendingPublishReauthorization = false;
 					Request.newMeRequest(session, new Request.GraphUserCallback() {
 
@@ -241,20 +241,22 @@ public class FacebookShield {
 
 			Request.Callback callback = new Request.Callback() {
 				public void onCompleted(Response response) {
-					JSONObject graphResponse = response.getGraphObject()
-							.getInnerJSONObject();
+					FacebookRequestError error = response.getError();
+					if (error != null) {
+						if(eventHandler!=null)eventHandler.onFacebookError(error.getErrorMessage());
+						return;
+					}
 					String postId = null;
 					try {
+						JSONObject graphResponse = response.getGraphObject()
+								.getInnerJSONObject();
 						postId = graphResponse.getString("id");
 						if(eventHandler!=null)eventHandler.onRecievePost(message);
 					} catch (JSONException e) {
 						//Log.i("", "JSON error " + e.getMessage());
 						if(eventHandler!=null)eventHandler.onFacebookError(e.getMessage());
 					}
-					FacebookRequestError error = response.getError();
-					if (error != null) {
-						if(eventHandler!=null)eventHandler.onFacebookError(error.getErrorMessage());
-					}
+					
 				}
 			};
 
