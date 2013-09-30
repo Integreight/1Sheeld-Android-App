@@ -32,7 +32,9 @@
     <string name="message_hint">Scheduled Output</string>
     
     <string name="login_to_twitter">Login to Twitter</string>
-    <string name="logout_from_out">Logout from Twitter</string>
+    <string name="logout_from_twitter">Logout from Twitter</string>
+    <string name="login_to_facebook">Login to Facebook</string>
+    <string name="logout_from_facebook">Logout from Facebook</string>
     <string name="app_id">1423548367865538</string>
 
 </resources>
