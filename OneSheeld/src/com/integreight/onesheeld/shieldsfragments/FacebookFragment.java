@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shieldsfragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.facebook.Session;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.activities.ShieldsOperationActivity;
@@ -26,13 +28,15 @@ public class FacebookFragment extends SherlockFragment {
 	TextView userNameTextView;
 	MenuItem facebookLogin;
 	MenuItem facebookLogout;
-
+	Bundle savedInstanceState;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 		View v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
+
+		this.savedInstanceState=savedInstanceState;
 		return v;
 
 	}
@@ -48,8 +52,23 @@ public class FacebookFragment extends SherlockFragment {
 			initializeFirmata(activity.getFirmata());
 		}
 
+		
 		checkLogin();
+	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
+				resultCode, data);
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		Session session = Session.getActiveSession();
+		Session.saveSession(session, outState);
 	}
 
 	@Override
@@ -83,6 +102,7 @@ public class FacebookFragment extends SherlockFragment {
 				@Override
 				public void run() {
 					buttonToLoggedIn();
+					activity.setSupportProgressBarIndeterminateVisibility(false);
 				}
 			});
 		}
@@ -97,7 +117,7 @@ public class FacebookFragment extends SherlockFragment {
 					// TODO Auto-generated method stub
 					Toast.makeText(activity, error, Toast.LENGTH_SHORT).show();
 					buttonToLoggedIn();
-
+					activity.setSupportProgressBarIndeterminateVisibility(false);
 				}
 			});
 
@@ -126,28 +146,25 @@ public class FacebookFragment extends SherlockFragment {
 		if (facebookShield != null)
 			return;
 
-		facebookShield = new FacebookShield(firmata, activity);
+		facebookShield = new FacebookShield(firmata, activity,this,savedInstanceState);
 		facebookShield.setFacebookEventHandler(facebookEventHandler);
 		checkLogin();
 	}
 
 	private void checkLogin() {
-		if (facebookShield != null && facebookShield.isFacebookLoggedInAlready()) {
+		if (facebookShield!=null&&facebookShield.isFacebookLoggedInAlready()) {
 			buttonToLoggedIn();
-		}
-
-		else if (facebookShield != null
-				&& !facebookShield.isFacebookLoggedInAlready()) {
+		} else {
 			buttonToLoggedOut();
 		}
 	}
-
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
 		inflater.inflate(R.menu.facebook_shield_menu, menu);
-		facebookLogin = (MenuItem) menu.findItem(R.id.login_to_facebook_menuitem);
+		facebookLogin = (MenuItem) menu
+				.findItem(R.id.login_to_facebook_menuitem);
 		facebookLogout = (MenuItem) menu
 				.findItem(R.id.logout_from_facebook_menuitem);
 		super.onCreateOptionsMenu(menu, inflater);
@@ -156,22 +173,27 @@ public class FacebookFragment extends SherlockFragment {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// TODO Auto-generated method stub
+
 		switch (item.getItemId()) {
 		case R.id.logout_from_facebook_menuitem:
 			logoutFromFacebook();
 			return true;
 		case R.id.login_to_facebook_menuitem:
-			facebookShield.loginToFacebook();
+			loginToFacebook();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-
 	private void logoutFromFacebook() {
-		// Clear the shared preferences
 		facebookShield.logoutFromFacebook();
 		buttonToLoggedOut();
+	}
+
+	private void loginToFacebook() {
+
+		facebookShield.loginToFacebook();
+		activity.setSupportProgressBarIndeterminateVisibility(true);
 	}
 
 	private void buttonToLoggedOut() {
@@ -184,7 +206,8 @@ public class FacebookFragment extends SherlockFragment {
 		facebookLogin.setVisible(false);
 		facebookLogout.setVisible(true);
 		userNameTextView.setVisibility(View.VISIBLE);
-		userNameTextView.setText("Logged in as: @"+facebookShield.getUsername());
+		userNameTextView.setText("Logged in as: "
+				+ facebookShield.getUsername());
 	}
 
 }
