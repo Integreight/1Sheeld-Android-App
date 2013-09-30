@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffad7" >
+
+    <ImageView
+        android:id="@+id/facebook_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <ImageView
+        android:id="@+id/facebook_shield_logo_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/facebook_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="150dp"
+        android:src="@drawable/facebook_shield_facebook_logo" />
+
+    <TextView
+        android:id="@+id/facebook_shield_last_post_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/facebook_shield_logo_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Your last post will be here!"
+        android:textColor="@color/white" />
+
+    <TextView
+        android:id="@+id/facebook_shield_username_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/facebook_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="128dp"
+        android:text="Logged in as: Islam Mustafa"
+        android:textColor="@color/white"
+        android:visibility="invisible" />
+
+</RelativeLayout>
