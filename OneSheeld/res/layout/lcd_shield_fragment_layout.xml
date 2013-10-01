@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffad7" >
+
+    <ImageView
+        android:id="@+id/lcd_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <!-- <ImageView -->
+    <!-- android:id="@+id/twitter_shield_led_imageview" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:layout_alignTop="@+id/twitter_fragment_background_imageview" -->
+    <!-- android:layout_centerHorizontal="true" -->
+    <!-- android:layout_marginTop="150dp" -->
+    <!-- android:src="@drawable/twitter_shield_twitter_logo" /> -->
+
+    <com.integreight.onesheeld.VerticalTextView
+        android:id="@+id/lcd_shield_text_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="SAMPLE LCD TEXT"
+        android:textColor="@color/white" />
+
+</RelativeLayout>
