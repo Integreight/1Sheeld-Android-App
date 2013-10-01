@@ -12,6 +12,6 @@ public class SevenSegmentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.no_shield, container, false);
+            return inflater.inflate(R.layout.sevensegment_shield_fragment_layout, container, false);
         }
 }

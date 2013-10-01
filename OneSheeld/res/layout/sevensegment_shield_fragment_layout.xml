@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffad7" >
+
+    <ImageView
+        android:id="@+id/sevensegment_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <Button
+        android:id="@+id/sevensegment_fragment_connect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/sevensegment_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="Connect" />
+
+    <RelativeLayout
+        android:layout_width="250dp"
+        android:layout_height="330dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:padding="10dp"
+        android:background="@color/black" >
+
+        <ImageView
+            android:id="@+id/sevensegment_shield_a_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="60dp"
+            android:src="@drawable/seventsegment_off_horizontal_image" />
+
+        <ImageView
+            android:id="@+id/sevensegment_shield_b_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sevensegment_shield_a_segment_imageview"
+            android:layout_alignRight="@id/sevensegment_shield_a_segment_imageview"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="-32dp"
+            android:src="@drawable/seventsegment_off_vertical_image" />
+
+        <ImageView
+            android:id="@+id/sevensegment_shield_f_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sevensegment_shield_a_segment_imageview"
+            android:layout_alignLeft="@id/sevensegment_shield_a_segment_imageview"
+            android:layout_marginTop="32dp"
+            android:layout_marginLeft="-45dp"
+            android:src="@drawable/seventsegment_off_vertical_image" />
+
+        <ImageView
+            android:id="@+id/sevensegment_shield_g_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sevensegment_shield_a_segment_imageview"
+            android:layout_marginTop="130dp"
+            android:layout_marginLeft="45dp"
+            android:src="@drawable/seventsegment_off_horizontal_image" />
+        <ImageView
+            android:id="@+id/sevensegment_shield_c_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sevensegment_shield_g_segment_imageview"
+            android:layout_alignRight="@id/sevensegment_shield_g_segment_imageview"
+            android:layout_marginTop="32dp"
+            android:layout_marginRight="-32dp"
+            android:src="@drawable/seventsegment_off_vertical_image" />
+
+        <ImageView
+            android:id="@+id/sevensegment_shield_e_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sevensegment_shield_g_segment_imageview"
+            android:layout_alignLeft="@id/sevensegment_shield_g_segment_imageview"
+            android:layout_marginTop="32dp"
+            android:layout_marginLeft="-45dp"
+            android:src="@drawable/seventsegment_off_vertical_image" />
+        <ImageView
+            android:id="@+id/sevensegment_shield_d_segment_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/sevensegment_shield_g_segment_imageview"
+            android:layout_marginTop="130dp"
+            android:layout_marginLeft="30dp"
+            android:src="@drawable/seventsegment_off_horizontal_image" />
+    </RelativeLayout>
+
+</RelativeLayout>
