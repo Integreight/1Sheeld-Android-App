@@ -246,16 +246,16 @@ public class FacebookShield {
 						if(eventHandler!=null)eventHandler.onFacebookError(error.getErrorMessage());
 						return;
 					}
-					String postId = null;
-					try {
-						JSONObject graphResponse = response.getGraphObject()
-								.getInnerJSONObject();
-						postId = graphResponse.getString("id");
+					//String postId = null;
+//					try {
+//						JSONObject graphResponse = response.getGraphObject()
+//								.getInnerJSONObject();
+						//postId = graphResponse.getString("id");
 						if(eventHandler!=null)eventHandler.onRecievePost(message);
-					} catch (JSONException e) {
-						//Log.i("", "JSON error " + e.getMessage());
-						if(eventHandler!=null)eventHandler.onFacebookError(e.getMessage());
-					}
+//					} catch (Exception e) {
+//						//Log.i("", "JSON error " + e.getMessage());
+//						if(eventHandler!=null)eventHandler.onFacebookError(e.getMessage());
+//					}
 					
 				}
 			};
