@@ -9,8 +9,17 @@ public class LcdShield {
 	private ArduinoFirmata firmata;
 	private static LcdEventHandler eventHandler;
 	private Activity activity;
-	private String lcdText = "";
-	private static final byte LCD_COMMAND = (byte) 0x31;
+	private static short ROWS = 2;
+	private static short COLUMNS = 16;
+	
+	private static final byte LCD_COMMAND = (byte) 0x32;
+
+
+	private short cursorXLocation = 0;
+	private short cursorYLocation = 0;
+	
+	private String[] lcdText;
+	private char[][] rawText;
 
 	// Method ids
 	private static final byte PRINT = (byte) 0x01;
@@ -33,13 +42,23 @@ public class LcdShield {
 	private static final byte NO_AUTO_SCROLL = (byte) 0x12;
 	private static final byte AUTO_SCROLL = (byte) 0x13;
 
-	public String getLcdText() {
+	public String[] getLcdText() {
 		return lcdText;
 	}
 
 	public LcdShield(ArduinoFirmata firmata, Activity activity) {
 		this.firmata = firmata;
 		this.activity = activity;
+		rawText = new char[ROWS][COLUMNS];
+		lcdText = new String[ROWS];
+		for(int i=0;i<lcdText.length;i++){
+			lcdText[i]="";
+		}
+		for(int i=0;i<rawText.length;i++){
+			for(int j=0;j<rawText[i].length;j++){
+				rawText[i][j]=' ';
+			}
+		}
 	}
 
 	private void setFirmataEventHandler() {
@@ -72,7 +91,8 @@ public class LcdShield {
 				int n = data.length - 2;
 				byte[] newArray = new byte[n];
 				System.arraycopy(data, 2, newArray, 0, n);
-				if(command==LCD_COMMAND)processInput(methodId, newArray);
+				if (command == LCD_COMMAND)
+					processInput(methodId, newArray);
 
 			}
 		});
@@ -85,7 +105,7 @@ public class LcdShield {
 	}
 
 	public static interface LcdEventHandler {
-		void onTextChange(String text);
+		void onTextChange(String[] text);
 
 		void onLcdError(String error);
 	}
@@ -121,13 +141,13 @@ public class LcdShield {
 
 			break;
 		case SET_CURSOR:
-
+			_setCursor(data);
 			break;
 		case WRITE:
 
 			break;
 		case PRINT:
-
+			_print(data);
 			break;
 
 		case NO_AUTO_SCROLL:
@@ -141,6 +161,45 @@ public class LcdShield {
 		default:
 			break;
 		}
+	}
+
+	private void _print(byte[] data) {
+		String temp=new String(data);
+		convertStringToRawText(temp);
+		for(int i=0;i<lcdText.length;i++){
+			lcdText[i]=new String(rawText[i],0,16);
+		}
+		if(eventHandler!=null)eventHandler.onTextChange(lcdText);
+	}
+	
+	private void _setCursor(byte[] data) {
+		if(data.length<2)return;
+		cursorYLocation=(short) (data[0]-1);
+		cursorXLocation=(short) (data[1]-1);
+	}
+
+	private void convertStringToRawText(String text) {
+		int charPosition = 0;
+		for (short i = cursorXLocation; charPosition < text.length()
+				&& i < COLUMNS; i++, charPosition++) {
+			rawText[cursorYLocation][i] = text.charAt(charPosition);
+			cursorXLocation =  (short) (i+1);
+
+		}
+		
+		
+
+		// if (charPosition < text.length()) {
+		// cursorYLocation = 1;
+		// cursorXLocation = 0;
+		// for (int i = cursorXLocation; charPosition < text.length() && i <
+		// COLUMNS; i++,charPosition++) {
+		// tempRawText[1][i] = text.charAt(charPosition);
+		// cursorXLocation = (short) i;
+		// }
+		//
+		// }
+
 	}
 
 }

@@ -14,22 +14,33 @@
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
 
-    <!-- <ImageView -->
-    <!-- android:id="@+id/twitter_shield_led_imageview" -->
-    <!-- android:layout_width="wrap_content" -->
-    <!-- android:layout_height="wrap_content" -->
-    <!-- android:layout_alignTop="@+id/twitter_fragment_background_imageview" -->
-    <!-- android:layout_centerHorizontal="true" -->
-    <!-- android:layout_marginTop="150dp" -->
-    <!-- android:src="@drawable/twitter_shield_twitter_logo" /> -->
-
-    <com.integreight.onesheeld.VerticalTextView
-        android:id="@+id/lcd_shield_text_textview"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="SAMPLE LCD TEXT"
-        android:textColor="@color/white" />
+        android:layout_marginTop="150dp" >
+
+        <ImageView
+            android:id="@+id/lcd_shield_lcd_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/lcd_background" />
+
+        <com.integreight.onesheeld.VerticalTextView
+            android:id="@+id/lcd_shield_text_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignTop="@+id/lcd_shield_lcd_imageview"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="150dp"
+            android:layout_marginRight="150dp"
+            android:layout_marginTop="50dp"
+            android:text="0123456789ABCDEF\n0123456789ABCDEF"
+            android:textSize="32sp" />
+    </RelativeLayout>
 
 </RelativeLayout>

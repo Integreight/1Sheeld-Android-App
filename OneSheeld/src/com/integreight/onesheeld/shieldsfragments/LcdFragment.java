@@ -61,9 +61,10 @@ public class LcdFragment extends SherlockFragment {
 	private LcdEventHandler lcdEventHandler = new LcdEventHandler() {
 		
 		@Override
-		public void onTextChange(String text) {
+		public void onTextChange(String[] text) {
 			// TODO Auto-generated method stub
-			Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
+			lcdTextView.setText(text[0]+"\n"+text[1]);
+			//Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
 		}
 		
 		@Override
