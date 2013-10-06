@@ -81,7 +81,7 @@ public class SevenSegmentFragment extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 
 		connectButton = (Button) getView().findViewById(
-				R.id.led_fragment_connect_button);
+				R.id.sevensegment_fragment_connect_button);
 
 		final CharSequence[] arduinoPins = { "0", "1", "2", "3", "4", "5", "6",
 				"7", "8", "9", "10", "11", "12", "13", "A0", "A1", "A2", "A3",
@@ -94,7 +94,7 @@ public class SevenSegmentFragment extends Fragment {
 
 				// TODO Auto-generated method stub
 
-				AlertDialog.Builder builder3 = new AlertDialog.Builder(
+				final AlertDialog.Builder builder3 = new AlertDialog.Builder(
 						getActivity());
 				builder3.setTitle("Choose pin to connect").setItems(
 						Segment.getSegmentsNames(),
@@ -118,6 +118,7 @@ public class SevenSegmentFragment extends Fragment {
 												sevenSegment.connectSegmentWithPin(
 														Segment.getSegment(whichSegment),
 														whichArduinoPin);
+												builder3.show();
 											}
 
 										});
@@ -223,7 +224,7 @@ public class SevenSegmentFragment extends Fragment {
 	}
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-		if (sevenSegment == null)
+		if (sevenSegment != null)return;
 			sevenSegment = new SevenSegmentShield(firmata);
 
 	}

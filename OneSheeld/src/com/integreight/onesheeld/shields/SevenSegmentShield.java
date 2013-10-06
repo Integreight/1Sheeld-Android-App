@@ -72,8 +72,8 @@ public class SevenSegmentShield {
 	public void setSevenSegmentsEventHandler(
 			SevenSegmentsEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		for (int connectedPin : this.segmentsConnectedPins.values()) {
-			firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
+		for (Integer connectedPin : this.segmentsConnectedPins.values()) {
+			if(connectedPin!=null)firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
 		}
 		updateSegmentsStatusFromFirmata();
 		setFirmataEventHandler();
