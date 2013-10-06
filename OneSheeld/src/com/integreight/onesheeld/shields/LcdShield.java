@@ -8,7 +8,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 public class LcdShield {
 	private ArduinoFirmata firmata;
 	private static LcdEventHandler eventHandler;
-	private Activity activity;
+	//private Activity activity;
 	private static short ROWS = 2;
 	private static short COLUMNS = 16;
 	
@@ -48,7 +48,7 @@ public class LcdShield {
 
 	public LcdShield(ArduinoFirmata firmata, Activity activity) {
 		this.firmata = firmata;
-		this.activity = activity;
+	//	this.activity = activity;
 		rawText = new char[ROWS][COLUMNS];
 		lcdText = new String[ROWS];
 		for(int i=0;i<lcdText.length;i++){
