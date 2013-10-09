@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.helpers.AlertDialogManager;
 
 public class TwitterShield {
@@ -34,9 +35,6 @@ public class TwitterShield {
 		return  mSharedPreferences.getString(
 				PREF_KEY_TWITTER_USERNAME, "");
 	}
-
-	static String TWITTER_CONSUMER_KEY = "Vx8p2DeuRnb650lh8K9n1w";
-	static String TWITTER_CONSUMER_SECRET = "snSNAgKQ0z4EvGwhPNza0dys4iZipfpwRKr8FNydU";
 
 	// Preference Constants
 	// static String PREFERENCE_NAME = "twitter_oauth";
@@ -139,8 +137,8 @@ public class TwitterShield {
 				// TODO Auto-generated method stub
 				if (!isTwitterLoggedInAlready()) {
 					ConfigurationBuilder builder = new ConfigurationBuilder();
-					builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
-					builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+					builder.setOAuthConsumerKey(activity.getResources().getString(R.string.twitter_consumer_key));
+					builder.setOAuthConsumerSecret(activity.getResources().getString(R.string.twitter_consumer_secret));
 					Configuration configuration = builder.build();
 
 					TwitterFactory factory = new TwitterFactory(configuration);
@@ -213,8 +211,8 @@ public class TwitterShield {
 			String status = args[0];
 			try {
 				ConfigurationBuilder builder = new ConfigurationBuilder();
-				builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
-				builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+				builder.setOAuthConsumerKey(activity.getResources().getString(R.string.twitter_consumer_key));
+				builder.setOAuthConsumerSecret(activity.getResources().getString(R.string.twitter_consumer_secret));
 
 				// Access Token
 				String access_token = mSharedPreferences.getString(
