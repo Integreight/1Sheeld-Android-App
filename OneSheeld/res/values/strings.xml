@@ -35,6 +35,11 @@
     <string name="logout_from_twitter">Logout from Twitter</string>
     <string name="login_to_facebook">Login to Facebook</string>
     <string name="logout_from_facebook">Logout from Facebook</string>
+    <string name="enable_serial">Enable Serial</string>
+    <string name="disable_serial">Disable Serial</string>
+    <string name="clear_lcd">Clear LCD</string>
+    
+    
     
      <!-- Social providers id -->
     <string name="facebook_app_id">1423548367865538</string>

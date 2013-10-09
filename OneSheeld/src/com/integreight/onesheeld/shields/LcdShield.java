@@ -8,16 +8,14 @@ import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 public class LcdShield {
 	private ArduinoFirmata firmata;
 	private static LcdEventHandler eventHandler;
-	//private Activity activity;
-	private static short ROWS = 2;
-	private static short COLUMNS = 16;
-	
+	// private Activity activity;
+	private static short rows = 2;
+	private static short columns = 16;
 	private static final byte LCD_COMMAND = (byte) 0x32;
-
 
 	private short cursorXLocation = 0;
 	private short cursorYLocation = 0;
-	
+
 	private String[] lcdText;
 	private char[][] rawText;
 
@@ -48,17 +46,10 @@ public class LcdShield {
 
 	public LcdShield(ArduinoFirmata firmata, Activity activity) {
 		this.firmata = firmata;
-	//	this.activity = activity;
-		rawText = new char[ROWS][COLUMNS];
-		lcdText = new String[ROWS];
-		for(int i=0;i<lcdText.length;i++){
-			lcdText[i]="";
-		}
-		for(int i=0;i<rawText.length;i++){
-			for(int j=0;j<rawText[i].length;j++){
-				rawText[i][j]=' ';
-			}
-		}
+		// this.activity = activity;
+		rawText = new char[rows][columns];
+		lcdText = new String[rows];
+		reset();
 	}
 
 	private void setFirmataEventHandler() {
@@ -164,30 +155,30 @@ public class LcdShield {
 	}
 
 	private void _print(byte[] data) {
-		String temp=new String(data);
+		String temp = new String(data);
 		convertStringToRawText(temp);
-		for(int i=0;i<lcdText.length;i++){
-			lcdText[i]=new String(rawText[i],0,16);
+		for (int i = 0; i < lcdText.length; i++) {
+			lcdText[i] = new String(rawText[i], 0, 16);
 		}
-		if(eventHandler!=null)eventHandler.onTextChange(lcdText);
+		if (eventHandler != null)
+			eventHandler.onTextChange(lcdText);
 	}
-	
+
 	private void _setCursor(byte[] data) {
-		if(data.length<2)return;
-		cursorYLocation=(short) (data[0]-1);
-		cursorXLocation=(short) (data[1]-1);
+		if (data.length < 2)
+			return;
+		cursorYLocation = (short) (data[0] - 1);
+		cursorXLocation = (short) (data[1] - 1);
 	}
 
 	private void convertStringToRawText(String text) {
 		int charPosition = 0;
 		for (short i = cursorXLocation; charPosition < text.length()
-				&& i < COLUMNS; i++, charPosition++) {
+				&& i < columns; i++, charPosition++) {
 			rawText[cursorYLocation][i] = text.charAt(charPosition);
-			cursorXLocation =  (short) (i+1);
+			cursorXLocation = (short) (i + 1);
 
 		}
-		
-		
 
 		// if (charPosition < text.length()) {
 		// cursorYLocation = 1;
@@ -200,6 +191,22 @@ public class LcdShield {
 		//
 		// }
 
+	}
+
+	public void reset() {
+		cursorYLocation = 0;
+		cursorXLocation = 0;
+		for (int i = 0; i < rawText.length; i++) {
+			for (int j = 0; j < rawText[i].length; j++) {
+				rawText[i][j] = ' ';
+			}
+		}
+
+		for (int i = 0; i < lcdText.length; i++) {
+			lcdText[i] = new String(rawText[i], 0, 16);
+		}
+//		if (eventHandler != null)
+//			eventHandler.onTextChange(lcdText);
 	}
 
 }
