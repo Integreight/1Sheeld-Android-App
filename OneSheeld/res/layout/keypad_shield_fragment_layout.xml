@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffad7" >
+
+    <ImageView
+        android:id="@+id/keypad_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <LinearLayout style="@style/Keypad"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp" 
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <LinearLayout style="@style/KeypadRow" >
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="1" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="2" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="3" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="A" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/KeypadRow" >
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="4" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="5" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="6" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="B" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/KeypadRow" >
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="7" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="8" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="9" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="C" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/KeypadRow" >
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="*" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="0" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="#" />
+
+            <com.integreight.onesheeld.Key
+                style="@style/Key.Numeric"
+                android:text="D" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/keypad_fragment_connect_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/keypad_fragment_background_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:text="Connect" />
+
+</RelativeLayout>

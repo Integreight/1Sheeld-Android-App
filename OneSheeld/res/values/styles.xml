@@ -26,5 +26,38 @@
         <item name="android:background">#fffad7</item>
     </style>
 
+    <style name="Keypad">
+		<item name="android:orientation">vertical</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">fill_parent</item>
+		<item name="android:layout_weight">0</item>
+		<item name="android:gravity">center</item>
+		<item name="android:padding">4dp</item>
+	</style>
+	<style name="KeypadRow">
+		<item name="android:orientation">horizontal</item>
+		<item name="android:layout_width">fill_parent</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_gravity">center</item>
+	</style>
+	<style name="Key" parent="@android:style/Widget.Button">
+		<item name="android:layout_width">wrap_content</item>
+		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_weight">1</item>
+		<item name="android:layout_margin">4dp</item>
+		<item name="android:background">@drawable/keypad_key</item>
+		<item name="android:textColor">@color/normal_control</item>
+		<item name="android:textSize">@dimen/key_label</item>
+	</style>
+	<style name="Key.Numeric">
+		
+	</style>
+	<style name="Key.Function">
+		<item name="android:visibility">invisible</item>
+	</style>
+	<style name="Key.Disabled">
+		<item name="android:clickable">false</item>
+		<item name="android:visibility">invisible</item>
+	</style>
 
 </resources>
