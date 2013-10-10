@@ -17,7 +17,15 @@ public enum UIShield {
 	TOGGLEBUTTON_SHIELD(11, "Toggle Button",R.drawable.shields_activity_dark_sea_green_strip,R.drawable.shields_activity_dark_sea_green_strip_bw,R.drawable.shields_activity_dark_sea_green_small_strip,R.drawable.shields_activity_push_button_symbol ,false),
 	ACCELEROMETER_SHIELD(12, "Accelerometer",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
 	FACEBOOK_SHIELD(13, "Facebook",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
-	TWITTER_SHIELD(14, "Twitter",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false);
+	TWITTER_SHIELD(14, "Twitter",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	GAMEDPAD_SHIELD(15, "Game Pad",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	INTERNET_SHIELD(16, "Internet",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	FOURSQUARE_SHIELD(17, "Foursquare",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	GPS_SHIELD(18, "GPS",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	SMS_SHIELD(19, "SMS",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	MUSICPLAYER_SHIELD(20, "Music Player",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	GYROSCOPE_SHIELD(21, "Gyroscope",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false),
+	FLASHLIGHT_SHIELD(22, "Flashlight",R.drawable.shields_activity_gray_strip,R.drawable.shields_activity_gray_strip_bw,R.drawable.shields_activity_gray_small_strip,R.drawable.shields_activity_accelerometer_symbol ,false);
 	
 	private int id;
 	private String name;
