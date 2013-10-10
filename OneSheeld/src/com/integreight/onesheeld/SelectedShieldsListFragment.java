@@ -29,7 +29,7 @@ import com.integreight.onesheeld.shieldsfragments.SliderFragment;
 import com.integreight.onesheeld.shieldsfragments.SpeakerFragment;
 import com.integreight.onesheeld.shieldsfragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shieldsfragments.TwitterFragment;
-import com.integreight.onesheeld.shieldsfragments.VibrationFragment;
+import com.integreight.onesheeld.shieldsfragments.NotificationFragment;
 
 public class SelectedShieldsListFragment extends ListFragment {
 	SelectedShieldsListAdapter UIShieldAdapter;
@@ -56,7 +56,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case SPEAKER_SHIELD:return addToCreatedListAndReturn(UIShield.SPEAKER_SHIELD,new SpeakerFragment());
 		case TOGGLEBUTTON_SHIELD:return addToCreatedListAndReturn(UIShield.TOGGLEBUTTON_SHIELD,new ToggleButtonFragment());
 		case TWITTER_SHIELD:return addToCreatedListAndReturn(UIShield.TWITTER_SHIELD,new TwitterFragment());
-		case VIBRATION_SHIELD:return addToCreatedListAndReturn(UIShield.VIBRATION_SHIELD,new VibrationFragment());
+		case NOTIFICATION_SHIELD:return addToCreatedListAndReturn(UIShield.NOTIFICATION_SHIELD,new NotificationFragment());
 		case MIC_SHIELD:return addToCreatedListAndReturn(UIShield.MIC_SHIELD,new MicFragment());
 		default:return new EmptyShieldFragment();
 		}

@@ -5,7 +5,7 @@ package com.integreight.onesheeld;
 public enum UIShield {
 	
 	LED_SHIELD(1, "LED",R.drawable.shields_activity_yellow_strip,R.drawable.shields_activity_yellow_strip_bw,R.drawable.shields_activity_yellow_small_strip,R.drawable.shields_activity_led_symbol, false),
-	VIBRATION_SHIELD(2, "Vibration",R.drawable.shields_activity_orange_strip,R.drawable.shields_activity_orange_strip_bw,R.drawable.shields_activity_orange_small_strip,R.drawable.shields_activity_vibration_symbol, false),
+	NOTIFICATION_SHIELD(2, "Notification",R.drawable.shields_activity_orange_strip,R.drawable.shields_activity_orange_strip_bw,R.drawable.shields_activity_orange_small_strip,R.drawable.shields_activity_vibration_symbol, false),
 	SEVENSEGMENT_SHIELD(3, "Seven Segment",R.drawable.shields_activity_red_strip,R.drawable.shields_activity_red_strip_bw,R.drawable.shields_activity_red_small_strip,R.drawable.shields_activity_seven_segment_symbol, false),
 	SPEAKER_SHIELD(4, "Speaker",R.drawable.shields_activity_rose_strip,R.drawable.shields_activity_rose_strip_bw,R.drawable.shields_activity_rose_small_strip,R.drawable.shields_activity_speaker_symbol, false),
 	MIC_SHIELD(5, "Mic",R.drawable.shields_activity_dark_blue_strip,R.drawable.shields_activity_dark_blue_strip_bw,R.drawable.shields_activity_dark_blue_small_strip,R.drawable.shields_activity_mic_symbol ,false),
@@ -77,7 +77,7 @@ public enum UIShield {
 	public static UIShield getItem(int id){
 		switch (id) {
 		case 1:    return LED_SHIELD;
-		case 2:    return VIBRATION_SHIELD;
+		case 2:    return NOTIFICATION_SHIELD;
 		case 3:    return SEVENSEGMENT_SHIELD;
 		case 4:    return SPEAKER_SHIELD;
 		case 5:    return MIC_SHIELD;
