@@ -16,7 +16,7 @@ import com.integreight.onesheeld.activities.ShieldsOperationActivity.OneSheeldSe
 import com.integreight.onesheeld.shields.SpeakerShield;
 import com.integreight.onesheeld.shields.SpeakerShield.SpeakerEventHandler;
 
-public class SpeakerFragment extends Fragment {
+public class BuzzerFragment extends Fragment {
 
 	SpeakerShield speaker;
 	Button connectButton;
@@ -28,7 +28,7 @@ public class SpeakerFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.speaker_shield_fragment_layout,
+		View v = inflater.inflate(R.layout.buzzer_shield_fragment_layout,
 				container, false);
 		return v;
 

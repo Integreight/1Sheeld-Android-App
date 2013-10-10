@@ -34,7 +34,7 @@ import com.integreight.onesheeld.shieldsfragments.PushButtonFragment;
 import com.integreight.onesheeld.shieldsfragments.SevenSegmentFragment;
 import com.integreight.onesheeld.shieldsfragments.SliderFragment;
 import com.integreight.onesheeld.shieldsfragments.SmsFragment;
-import com.integreight.onesheeld.shieldsfragments.SpeakerFragment;
+import com.integreight.onesheeld.shieldsfragments.BuzzerFragment;
 import com.integreight.onesheeld.shieldsfragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shieldsfragments.TwitterFragment;
 import com.integreight.onesheeld.shieldsfragments.NotificationFragment;
@@ -61,7 +61,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case PUSHBUTTON_SHIELD:return addToCreatedListAndReturn(UIShield.PUSHBUTTON_SHIELD,new PushButtonFragment());
 		case SEVENSEGMENT_SHIELD:return addToCreatedListAndReturn(UIShield.SEVENSEGMENT_SHIELD,new SevenSegmentFragment());
 		case SLIDER_SHIELD:return addToCreatedListAndReturn(UIShield.SLIDER_SHIELD,new SliderFragment());
-		case SPEAKER_SHIELD:return addToCreatedListAndReturn(UIShield.SPEAKER_SHIELD,new SpeakerFragment());
+		case BUZZER_SHIELD:return addToCreatedListAndReturn(UIShield.BUZZER_SHIELD,new BuzzerFragment());
 		case TOGGLEBUTTON_SHIELD:return addToCreatedListAndReturn(UIShield.TOGGLEBUTTON_SHIELD,new ToggleButtonFragment());
 		case TWITTER_SHIELD:return addToCreatedListAndReturn(UIShield.TWITTER_SHIELD,new TwitterFragment());
 		case NOTIFICATION_SHIELD:return addToCreatedListAndReturn(UIShield.NOTIFICATION_SHIELD,new NotificationFragment());
