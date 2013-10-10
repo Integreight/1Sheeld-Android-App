@@ -42,7 +42,7 @@ public class FacebookShield {
 	private static SharedPreferences mSharedPreferences;
 	private Session.StatusCallback statusCallback = new SessionStatusCallback();
 
-	public String getLastTweet() {
+	public String getLastPost() {
 		return lastPost;
 	}
 
