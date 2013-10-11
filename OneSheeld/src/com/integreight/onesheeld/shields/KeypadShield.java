@@ -15,10 +15,7 @@ public class KeypadShield {
 
 	public KeypadShield(ArduinoFirmata firmata) {
 		this.firmata = firmata;
-		for (Integer connectedPin : this.connectedPins.values()) {
-			if (connectedPin != null)
-				firmata.pinMode(connectedPin, ArduinoFirmata.OUTPUT);
-		}
+		
 		firmata.initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
@@ -26,6 +23,14 @@ public class KeypadShield {
 		}
 	}
 
+	public void initPins(){
+		if(connectedPins==null)return;
+		for (Integer connectedPin : this.connectedPins.values()) {
+			if (connectedPin != null)
+				firmata.pinMode(connectedPin, ArduinoFirmata.OUTPUT);
+		}
+	}
+	
 	public void connectKeypadPinWithArduinoPin(Pin segment, int pin) {
 		connectedPins.put(segment, pin);
 	}

@@ -129,6 +129,7 @@ public class KeypadFragment extends SherlockFragment {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
+						keypad.initPins();
 
 					}
 				});
