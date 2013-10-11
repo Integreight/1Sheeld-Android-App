@@ -2,7 +2,6 @@ package com.integreight.onesheeld.shieldsfragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,47 +58,5 @@ public class KeypadFragment extends Fragment {
 		}
 	}
 
-	public void onKeypadKeyPress(View v) {
-		Key pressedKey = (Key) v;
-		pressedKey.getRow();
-		// switch (v.getId()) {
-		// case R.id.keypad_key_1:
-		// break;
-		// case R.id.keypad_key_2:
-		// break;
-		// case R.id.keypad_key_3:
-		// break;
-		// case R.id.keypad_key_A:
-		// break;
-		// case R.id.keypad_key_4:
-		// break;
-		// case R.id.keypad_key_5:
-		// break;
-		// case R.id.keypad_key_6:
-		// break;
-		// case R.id.keypad_key_B:
-		// break;
-		// case R.id.keypad_key_7:
-		// break;
-		// case R.id.keypad_key_8:
-		// break;
-		// case R.id.keypad_key_9:
-		// break;
-		// case R.id.keypad_key_C:
-		// break;
-		// case R.id.keypad_key_Star:
-		// break;
-		// case R.id.keypad_key_0:
-		// break;
-		// case R.id.keypad_key_Hash:
-		// break;
-		// case R.id.keypad_key_D:
-		// break;
-		//
-		// default:
-		// Log.d("Keypad", "Def");
-		// break;
-		// }
-	}
 
 }
