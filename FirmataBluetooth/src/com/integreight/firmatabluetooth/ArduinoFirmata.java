@@ -51,8 +51,8 @@ public class ArduinoFirmata{
     private final byte UART_BEGIN       = (byte)0x01;
     private final byte UART_END       = (byte)0x00;
     
-    public final char STX       = (byte)0x00;
-    public final char ETX       = (byte)0x00;
+    public final char STX       = (byte)0x02;
+    public final char ETX       = (byte)0x03;
     
     
     
