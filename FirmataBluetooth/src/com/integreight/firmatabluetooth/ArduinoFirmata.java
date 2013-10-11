@@ -147,7 +147,7 @@ public class ArduinoFirmata{
     }
 
     public void sysex(byte command, byte[] data){
-        // http://firmata.org/wiki/V2.1ProtocolDetails#Sysex_Message_Format
+     	 // http://firmata.org/wiki/V2.1ProtocolDetails#Sysex_Message_Format
         if(data.length > 32) return;
         byte[] writeData = new byte[data.length+3];
         writeData[0] = START_SYSEX;
@@ -159,9 +159,14 @@ public class ArduinoFirmata{
         write(writeData);
     }
     
-    public void sendUart(byte[] data){
+    public void sendUart(char[] data){
     	if(!isUartInit)return;
-    	sysex(UART_DATA, data);
+    	byte[] byteArray=new byte[data.length*2];
+    	for (int i = 0; i < byteArray.length; i+=2) {
+    		byteArray[i]=(byte) (data[i/2] & 0x127);
+    		byteArray[i+1]=(byte) (data[i/2]>> 7 & 0x127);
+		}
+    	sysex(UART_DATA, byteArray);
     }
     
     public void initUart(BaudRate baud){
