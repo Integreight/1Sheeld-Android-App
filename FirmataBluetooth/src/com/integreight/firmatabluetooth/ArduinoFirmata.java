@@ -164,14 +164,16 @@ public class ArduinoFirmata{
         write(writeData);
     }
     
-    public void sendUart(char shieldCommand, char[] data){
+    public void sendUart(char shieldCommand, char methodId, char[] data){
     	if(!isUartInit)return;
-    	byte[] byteArray=new byte[data.length*2+6];
+    	byte[] byteArray=new byte[data.length*2+8];
     	byteArray[0]=getCharAs2SevenBitsBytes(STX)[0];
     	byteArray[1]=getCharAs2SevenBitsBytes(STX)[1];
     	byteArray[2]=getCharAs2SevenBitsBytes(shieldCommand)[0];
     	byteArray[3]=getCharAs2SevenBitsBytes(shieldCommand)[1];
-    	for (int i = 4; i < data.length; i+=2) {
+    	byteArray[4]=getCharAs2SevenBitsBytes(methodId)[0];
+    	byteArray[5]=getCharAs2SevenBitsBytes(methodId)[1];
+    	for (int i = 6; i < data.length; i+=2) {
     		byteArray[i]=getCharAs2SevenBitsBytes(data[i/2])[0];
     		byteArray[i+1]=getCharAs2SevenBitsBytes(data[i/2])[1];
 		}
@@ -182,8 +184,8 @@ public class ArduinoFirmata{
     
     private byte[] getCharAs2SevenBitsBytes(char data){
     	byte[] temp=new byte[2];
-    	temp[0]=(byte) (data & 0x127);
-    	temp[1]=(byte) (data>> 7 & 0x127);
+    	temp[0]=(byte) (data & 127);
+    	temp[1]=(byte) (data>> 7 & 127);
     	return temp;
     }
     
