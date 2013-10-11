@@ -51,6 +51,11 @@ public class ArduinoFirmata{
     private final byte UART_BEGIN       = (byte)0x01;
     private final byte UART_END       = (byte)0x00;
     
+    public final char STX       = (byte)0x00;
+    public final char ETX       = (byte)0x00;
+    
+    
+    
     boolean isUartInit=false;
     
 
@@ -159,14 +164,27 @@ public class ArduinoFirmata{
         write(writeData);
     }
     
-    public void sendUart(char[] data){
+    public void sendUart(char shieldCommand, char[] data){
     	if(!isUartInit)return;
-    	byte[] byteArray=new byte[data.length*2];
-    	for (int i = 0; i < byteArray.length; i+=2) {
-    		byteArray[i]=(byte) (data[i/2] & 0x127);
-    		byteArray[i+1]=(byte) (data[i/2]>> 7 & 0x127);
+    	byte[] byteArray=new byte[data.length*2+6];
+    	byteArray[0]=getCharAs2SevenBitsBytes(STX)[0];
+    	byteArray[1]=getCharAs2SevenBitsBytes(STX)[1];
+    	byteArray[2]=getCharAs2SevenBitsBytes(shieldCommand)[0];
+    	byteArray[3]=getCharAs2SevenBitsBytes(shieldCommand)[1];
+    	for (int i = 4; i < data.length; i+=2) {
+    		byteArray[i]=getCharAs2SevenBitsBytes(data[i/2])[0];
+    		byteArray[i+1]=getCharAs2SevenBitsBytes(data[i/2])[1];
 		}
+    	byteArray[byteArray.length-2]=getCharAs2SevenBitsBytes(ETX)[0];
+    	byteArray[byteArray.length-1]=getCharAs2SevenBitsBytes(ETX)[1];
     	sysex(UART_DATA, byteArray);
+    }
+    
+    private byte[] getCharAs2SevenBitsBytes(char data){
+    	byte[] temp=new byte[2];
+    	temp[0]=(byte) (data & 0x127);
+    	temp[1]=(byte) (data>> 7 & 0x127);
+    	return temp;
     }
     
     public void initUart(BaudRate baud){
