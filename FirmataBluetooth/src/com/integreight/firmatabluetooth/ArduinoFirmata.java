@@ -173,9 +173,9 @@ public class ArduinoFirmata{
     	byteArray[3]=getCharAs2SevenBitsBytes(shieldCommand)[1];
     	byteArray[4]=getCharAs2SevenBitsBytes(methodId)[0];
     	byteArray[5]=getCharAs2SevenBitsBytes(methodId)[1];
-    	for (int i = 6; i < data.length; i+=2) {
-    		byteArray[i]=getCharAs2SevenBitsBytes(data[i/2])[0];
-    		byteArray[i+1]=getCharAs2SevenBitsBytes(data[i/2])[1];
+    	for (int i = 0; i < data.length*2; i+=2) {
+    		byteArray[i+6]=getCharAs2SevenBitsBytes(data[i/2])[0];
+    		byteArray[i+1+6]=getCharAs2SevenBitsBytes(data[i/2])[1];
 		}
     	byteArray[byteArray.length-2]=getCharAs2SevenBitsBytes(ETX)[0];
     	byteArray[byteArray.length-1]=getCharAs2SevenBitsBytes(ETX)[1];

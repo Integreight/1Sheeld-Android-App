@@ -37,14 +37,14 @@ public class KeypadFragment extends SherlockFragment {
 		@Override
 		public void onReleased(Key k) {
 			// TODO Auto-generated method stub
-			keypad.setRowAndColumn((char)k.getRow(), (char)k.getColumn());
+			keypad.resetRowAndColumn((char)k.getRow(), (char)k.getColumn());
 
 		}
 
 		@Override
 		public void onPressed(Key k) {
 			// TODO Auto-generated method stub
-			keypad.resetRowAndColumn((char)k.getRow(), (char)k.getColumn());
+			keypad.setRowAndColumn((char)k.getRow(), (char)k.getColumn());
 
 		}
 	};

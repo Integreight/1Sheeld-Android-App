@@ -36,8 +36,8 @@ public class KeypadShield {
 	}
 
 	public void setRowAndColumn(char row, char column) {
-		if (!connectedPins.containsKey(Pin.getRow(row))
-				|| !connectedPins.containsKey(Pin.getColumn(column))) {
+		if (connectedPins!=null&&connectedPins.containsKey(Pin.getRow(row))&&connectedPins.get(Pin.getRow(row))!=null
+				&& connectedPins.containsKey(Pin.getColumn(column)) &&connectedPins.get(Pin.getColumn(column))!=null) {
 			firmata.digitalWrite(connectedPins.get(Pin.getRow(row)),
 					ArduinoFirmata.HIGH);
 			firmata.digitalWrite(connectedPins.get(Pin.getColumn(column)),
@@ -47,8 +47,8 @@ public class KeypadShield {
 	}
 
 	public void resetRowAndColumn(int row, int column) {
-		if (!connectedPins.containsKey(Pin.getRow(row))
-				|| !connectedPins.containsKey(Pin.getColumn(column))) {
+		if (connectedPins!=null&&connectedPins.containsKey(Pin.getRow(row))&&connectedPins.get(Pin.getRow(row))!=null
+				&& connectedPins.containsKey(Pin.getColumn(column)) &&connectedPins.get(Pin.getColumn(column))!=null) {
 			firmata.digitalWrite(connectedPins.get(Pin.getRow(row)),
 					ArduinoFirmata.LOW);
 			firmata.digitalWrite(connectedPins.get(Pin.getColumn(column)),
