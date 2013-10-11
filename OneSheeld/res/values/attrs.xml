@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="Key">
+        <attr name="column" format="integer"/>
+        <attr name="row" format="integer"/>
+    </declare-styleable>
+</resources>

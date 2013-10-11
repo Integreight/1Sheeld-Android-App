@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -28,6 +29,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.SelectedShieldsListFragment;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.services.OneSheeldService.OneSheeldBinder;
+import com.integreight.onesheeld.shieldsfragments.KeypadFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
@@ -279,4 +281,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 			mp.start();
 	}
 
+	public void onKeypadKeyPress(View v){
+		((KeypadFragment)mContent).onKeypadKeyPress(v);
+	}
 }
