@@ -102,7 +102,7 @@ public class NotificationShield {
 		notificationManager.notify(2, notification);
 	}
 
-	public void setFacebookEventHandler(NotificationEventHandler eventHandler) {
+	public void setNotificationEventHandler(NotificationEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		firmata.initUart();
 		setFirmataEventHandler();

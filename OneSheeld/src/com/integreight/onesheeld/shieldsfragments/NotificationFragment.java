@@ -92,7 +92,7 @@ public class NotificationFragment extends SherlockFragment {
 			return;
 		this.firmata = firmata;
 		notificationShield = new NotificationShield(firmata, activity);
-		notificationShield.setFacebookEventHandler(notificationEventHandler);
+		notificationShield.setNotificationEventHandler(notificationEventHandler);
 		toggleMenuButtons();
 	}
 
