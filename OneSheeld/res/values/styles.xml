@@ -43,7 +43,7 @@
 	</style>
 	<style name="Key" parent="@android:style/Widget.Button">
 		<item name="android:layout_width">wrap_content</item>
-		<item name="android:layout_height">wrap_content</item>
+		<item name="android:layout_height">60dp</item>
 		<item name="android:layout_weight">1</item>
 		<item name="android:layout_margin">4dp</item>
 		<item name="android:textColor">#fffed7</item>
@@ -51,11 +51,13 @@
 	</style>
 	<style name="Key.Numeric">
 	    <item name="android:background">@drawable/keypad_blue_key_up</item>
-	    <item name="keycolor">blue</item>
+	    <item name="normalbackground">@drawable/keypad_blue_key_up</item>
+	    <item name="pressedbackground">@drawable/keypad_blue_key_down</item>
 	</style>
 	<style name="Key.Function">
-		<item name="android:background">@drawable/keypad_red_key_up</item>
-		<item name="keycolor">red</item>
+	    <item name="android:background">@drawable/keypad_red_key_up</item>
+		<item name="normalbackground">@drawable/keypad_red_key_up</item>
+	    <item name="pressedbackground">@drawable/keypad_red_key_down</item>
 	</style>
 	<style name="Key.Disabled">
 		<item name="android:clickable">false</item>

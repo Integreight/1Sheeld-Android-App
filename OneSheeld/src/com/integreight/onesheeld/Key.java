@@ -15,11 +15,8 @@ public class Key extends Button {
 
 	private boolean dragging = false;
 	private boolean outOfBounds = false;
-	static public Drawable normalBlueBackground;
-	static public Drawable pressedBlueBackground;
-	public String keycolor;
-	public static Drawable normalRedBackground;
-	public static Drawable pressedRedBackground;
+	private Drawable normalBackground;
+	private Drawable pressedBackground;
 	private int row;
 	private int column;
 	KeyTouchEventListener eventListener;
@@ -54,8 +51,11 @@ public class Key extends Button {
 			case R.styleable.Key_row:
 				row = a.getInteger(attr, -1);
 				break;
-			case R.styleable.Key_keycolor:
-				keycolor = a.getString(attr);
+			case R.styleable.Key_normalbackground:
+				normalBackground = a.getDrawable(attr);
+				break;
+			case R.styleable.Key_pressedbackground:
+				pressedBackground = a.getDrawable(attr);
 				break;
 			}
 		}
@@ -74,7 +74,7 @@ public class Key extends Button {
 	private void init() {
 //		row = -1;
 //		column = -1;
-		setKeyColor(this, (keycolor.toLowerCase().equals("blue"))?normalBlueBackground:normalRedBackground);
+		setKeyColor(this, normalBackground);
 	}
 
 	public void setCounterpart(int id) {
@@ -92,7 +92,7 @@ public class Key extends Button {
 	}
 
 	private void beginDrag() {
-		setKeyColor(this, (keycolor.toLowerCase().equals("blue"))?pressedBlueBackground:pressedRedBackground);
+		setKeyColor(this, pressedBackground);
 	}
 
 	private void updateDrag(float x, float y) {
@@ -103,9 +103,9 @@ public class Key extends Button {
 			Drawable color;
 
 			if (inside) {
-				color = (keycolor.toLowerCase().equals("blue"))?pressedBlueBackground:pressedRedBackground;
+				color = pressedBackground;
 			} else {
-				color = (keycolor.toLowerCase().equals("blue"))?normalBlueBackground:normalRedBackground;;
+				color = normalBackground;
 			}
 
 			setKeyColor(this, color);
@@ -116,7 +116,7 @@ public class Key extends Button {
 
 	private void endDrag() {
 		if (!outOfBounds) {
-			setKeyColor(this, (keycolor.toLowerCase().equals("blue"))?normalBlueBackground:normalRedBackground);
+			setKeyColor(this, normalBackground);
 
 			performClick();
 
