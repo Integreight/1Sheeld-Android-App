@@ -39,7 +39,6 @@
             android:layout_marginLeft="150dp"
             android:layout_marginRight="150dp"
             android:layout_marginTop="50dp"
-            android:text="0123456789ABCDEF\n0123456789ABCDEF"
             android:textSize="32sp" />
     </RelativeLayout>
 
