@@ -98,6 +98,14 @@ public enum UIShield {
 		case 12:    return ACCELEROMETER_SHIELD;  
 		case 13:    return FACEBOOK_SHIELD;
 		case 14:    return TWITTER_SHIELD;  
+		case 15:    return GAMEDPAD_SHIELD;  
+		case 16:    return INTERNET_SHIELD;  
+		case 17:    return FOURSQUARE_SHIELD;  
+		case 18:    return GPS_SHIELD;  
+		case 19:    return SMS_SHIELD;  
+		case 20:    return MUSICPLAYER_SHIELD;  
+		case 21:    return GYROSCOPE_SHIELD;  
+		case 22:    return FLASHLIGHT_SHIELD;  
 		}
 		return null;
 	}
