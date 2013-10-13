@@ -14,6 +14,7 @@ public class SmsShield {
 	private Activity activity;
 	private static final byte SMS_COMMAND = (byte) 0x36;
 	private static final byte SEND_SMS_METHOD_ID = (byte) 0x01;
+	private static final String separator="##";
 
 	public String getLastSmsText() {
 		return lastSmsText;
@@ -59,10 +60,12 @@ public class SmsShield {
 				byte[] newArray = new byte[n];
 				System.arraycopy(data, 2, newArray, 0, n);
 				if (command == SMS_COMMAND) {
-					String smsText = new String(newArray);
-					lastSmsText = smsText;
+					String smsRaw = new String(newArray);
+					String smsNumber=smsRaw.substring(0, smsRaw.indexOf(separator));
+					String smsText=smsRaw.substring(smsRaw.indexOf(separator)+separator.length());
+					lastSmsText = smsRaw;
 					if (methodId == SEND_SMS_METHOD_ID) {
-						sendSms(smsText, smsText);
+						sendSms(smsNumber, smsText);
 
 					}
 
