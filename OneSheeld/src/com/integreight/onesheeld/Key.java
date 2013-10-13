@@ -3,8 +3,7 @@ package com.integreight.onesheeld;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.LightingColorFilter;
-import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -16,8 +15,11 @@ public class Key extends Button {
 
 	private boolean dragging = false;
 	private boolean outOfBounds = false;
-	static public int normalColor;
-	static public int pressedColor;
+	static public Drawable normalBlueBackground;
+	static public Drawable pressedBlueBackground;
+	public String keycolor;
+	public static Drawable normalRedBackground;
+	public static Drawable pressedRedBackground;
 	private int row;
 	private int column;
 	KeyTouchEventListener eventListener;
@@ -28,14 +30,15 @@ public class Key extends Button {
 
 	public Key(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
-		init();
 		setAttributesFromXml(context, attrs);
+		init();
 	}
 
 	public Key(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
 		setAttributesFromXml(context, attrs);
+		init();
+		
 	}
 
 	private void setAttributesFromXml(Context context, AttributeSet attrs) {
@@ -50,6 +53,9 @@ public class Key extends Button {
 				break;
 			case R.styleable.Key_row:
 				row = a.getInteger(attr, -1);
+				break;
+			case R.styleable.Key_keycolor:
+				keycolor = a.getString(attr);
 				break;
 			}
 		}
@@ -66,9 +72,9 @@ public class Key extends Button {
 	}
 
 	private void init() {
-		row = -1;
-		column = -1;
-		setKeyColor(this, normalColor);
+//		row = -1;
+//		column = -1;
+		setKeyColor(this, (keycolor.toLowerCase().equals("blue"))?normalBlueBackground:normalRedBackground);
 	}
 
 	public void setCounterpart(int id) {
@@ -86,7 +92,7 @@ public class Key extends Button {
 	}
 
 	private void beginDrag() {
-		setKeyColor(this, pressedColor);
+		setKeyColor(this, (keycolor.toLowerCase().equals("blue"))?pressedBlueBackground:pressedRedBackground);
 	}
 
 	private void updateDrag(float x, float y) {
@@ -94,12 +100,12 @@ public class Key extends Button {
 				(int) y);
 
 		if (inside == outOfBounds) {
-			int color;
+			Drawable color;
 
 			if (inside) {
-				color = pressedColor;
+				color = (keycolor.toLowerCase().equals("blue"))?pressedBlueBackground:pressedRedBackground;
 			} else {
-				color = normalColor;
+				color = (keycolor.toLowerCase().equals("blue"))?normalBlueBackground:normalRedBackground;;
 			}
 
 			setKeyColor(this, color);
@@ -110,7 +116,7 @@ public class Key extends Button {
 
 	private void endDrag() {
 		if (!outOfBounds) {
-			setKeyColor(this, normalColor);
+			setKeyColor(this, (keycolor.toLowerCase().equals("blue"))?normalBlueBackground:normalRedBackground);
 
 			performClick();
 
@@ -180,12 +186,12 @@ public class Key extends Button {
 		v.startAnimation(anim);
 	}
 
-	public static void setKeyColor(Button key, int color) {
-		GradientDrawable background = (GradientDrawable) key.getBackground();
-
-		background.setColorFilter(new LightingColorFilter(color, 0));
-
-		key.setTextColor(color);
+	public static void setKeyColor(Button key, Drawable bg) {
+//		GradientDrawable background = (GradientDrawable) key.getBackground();
+//
+//		background.setColorFilter(new LightingColorFilter(color, 0));
+		key.setBackground(bg);
+		//key.setTextColor(bg);
 	}
 	
 	public static interface KeyTouchEventListener{

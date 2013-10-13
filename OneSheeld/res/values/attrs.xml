@@ -3,5 +3,6 @@
     <declare-styleable name="Key">
         <attr name="column" format="integer"/>
         <attr name="row" format="integer"/>
+        <attr name="keycolor" format="string"/>
     </declare-styleable>
 </resources>

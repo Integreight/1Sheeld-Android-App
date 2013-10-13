@@ -16,8 +16,8 @@
         android:src="@drawable/shield_fragment_background" />
 
     <LinearLayout style="@style/Keypad"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" 
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp" 
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
@@ -45,7 +45,7 @@
                 android:text="3" />
 
             <com.integreight.onesheeld.Key
-                style="@style/Key.Numeric"
+                style="@style/Key.Function"
                 android:id="@+id/keypad_key_A"
                 keypadkey:row="0"
                 keypadkey:column="3"
@@ -76,7 +76,7 @@
                 android:text="6" />
 
             <com.integreight.onesheeld.Key
-                style="@style/Key.Numeric"
+                style="@style/Key.Function"
                 android:id="@+id/keypad_key_B"
                 keypadkey:row="1"
                 keypadkey:column="3"
@@ -107,7 +107,7 @@
                 android:text="9" />
 
             <com.integreight.onesheeld.Key
-                style="@style/Key.Numeric"
+                style="@style/Key.Function"
                 android:id="@+id/keypad_key_C"
                 keypadkey:row="2"
                 keypadkey:column="3"
@@ -117,7 +117,7 @@
         <LinearLayout style="@style/KeypadRow" >
 
             <com.integreight.onesheeld.Key
-                style="@style/Key.Numeric"
+                style="@style/Key.Function"
                 android:id="@+id/keypad_key_Star"
                 keypadkey:row="3"
                 keypadkey:column="0"
@@ -131,14 +131,14 @@
                 android:text="0" />
 
             <com.integreight.onesheeld.Key
-                style="@style/Key.Numeric"
+                style="@style/Key.Function"
                 android:id="@+id/keypad_key_Hash"
                 keypadkey:row="3"
                 keypadkey:column="2"
                 android:text="#" />
 
             <com.integreight.onesheeld.Key
-                style="@style/Key.Numeric"
+                style="@style/Key.Function"
                 android:id="@+id/keypad_key_D"
                 keypadkey:row="3"
                 keypadkey:column="3"

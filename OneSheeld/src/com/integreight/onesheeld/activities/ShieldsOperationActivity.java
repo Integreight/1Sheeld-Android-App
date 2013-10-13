@@ -126,8 +126,10 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		// mFrag = (ListFragment) this.getSupportFragmentManager()
 		// .findFragmentById(R.id.menu_frame);
 		// }
-    	Key.normalColor  = getResources().getInteger( R.color.normal_control  );
-		Key.pressedColor = getResources().getInteger( R.color.pressed_control );
+		Key.normalBlueBackground  = getResources().getDrawable( R.drawable.keypad_blue_key_up  );
+		Key.pressedBlueBackground = getResources().getDrawable( R.drawable.keypad_blue_key_down );
+		Key.normalRedBackground  = getResources().getDrawable( R.drawable.keypad_red_key_up  );
+		Key.pressedRedBackground = getResources().getDrawable( R.drawable.keypad_red_key_down );
 	}
 
 	@Override
