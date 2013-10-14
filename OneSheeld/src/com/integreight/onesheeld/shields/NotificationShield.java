@@ -75,7 +75,7 @@ public class NotificationShield {
 	protected void showNotification(String notificationText) {
 		// TODO Auto-generated method stub
 		Notification.Builder build=new Notification.Builder(activity);
-		build.setSmallIcon(R.drawable.ic_launcher);
+		build.setSmallIcon(R.drawable.white_ee_icon);
 		build.setContentTitle(notificationText);
 		build.setContentText("Notification received from 1Sheeld!");
 		build.setTicker(notificationText);

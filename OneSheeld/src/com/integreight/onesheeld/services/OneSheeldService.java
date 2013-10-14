@@ -108,7 +108,7 @@ public class OneSheeldService extends Service {
 
 	private void showNotification(){
 		Notification.Builder build=new Notification.Builder(this);
-		build.setSmallIcon(R.drawable.ic_launcher);
+		build.setSmallIcon(R.drawable.white_ee_icon);
 		build.setContentText("The service is running!");
 		build.setContentTitle("1Sheeld is connected");
 		build.setTicker("1Sheeld is connected!");
