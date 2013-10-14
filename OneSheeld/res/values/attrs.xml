@@ -4,7 +4,6 @@
     <declare-styleable name="Key">
         <attr name="column" format="integer" />
         <attr name="row" format="integer" />
-        <attr name="id" format="integer" />
         <attr name="normalbackground" format="reference" />
         <attr name="pressedbackground" format="reference" />
     </declare-styleable>
