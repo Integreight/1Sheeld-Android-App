@@ -19,6 +19,7 @@ public class Key extends Button {
 	private Drawable pressedBackground;
 	private int row;
 	private int column;
+	private int id;
 	KeyTouchEventListener eventListener;
 
 	public void setEventListener(KeyTouchEventListener eventListener) {
@@ -51,6 +52,9 @@ public class Key extends Button {
 			case R.styleable.Key_row:
 				row = a.getInteger(attr, -1);
 				break;
+			case R.styleable.Key_id:
+				row = a.getInteger(attr, -1);
+				break;
 			case R.styleable.Key_normalbackground:
 				normalBackground = a.getDrawable(attr);
 				break;
@@ -71,10 +75,15 @@ public class Key extends Button {
 		return column;
 	}
 
+	public int getId() {
+		return id;
+	}
+
 	private void init() {
 //		row = -1;
 //		column = -1;
 		setKeyColor(this, normalBackground);
+		
 	}
 
 	public void setCounterpart(int id) {

@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <declare-styleable name="Key">
-        <attr name="column" format="integer"/>
-        <attr name="row" format="integer"/>
-        <attr name="normalbackground" format="reference"/>
-        <attr name="pressedbackground" format="reference"/>
+        <attr name="column" format="integer" />
+        <attr name="row" format="integer" />
+        <attr name="id" format="integer" />
+        <attr name="normalbackground" format="reference" />
+        <attr name="pressedbackground" format="reference" />
     </declare-styleable>
+
 </resources>
