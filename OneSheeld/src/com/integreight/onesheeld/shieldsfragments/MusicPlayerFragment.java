@@ -13,6 +13,6 @@ public class MusicPlayerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
             // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.no_shield, container, false);
+            return inflater.inflate(R.layout.musicplayer_shield_fragment_layout, container, false);
         }
 }
