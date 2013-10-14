@@ -20,7 +20,7 @@ import com.integreight.onesheeld.shieldsfragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shieldsfragments.FacebookFragment;
 import com.integreight.onesheeld.shieldsfragments.FlashlightFragment;
 import com.integreight.onesheeld.shieldsfragments.FoursquareFragment;
-import com.integreight.onesheeld.shieldsfragments.GamePadFragment;
+import com.integreight.onesheeld.shieldsfragments.GamepadFragment;
 import com.integreight.onesheeld.shieldsfragments.GpsFragment;
 import com.integreight.onesheeld.shieldsfragments.GyroscopeFragment;
 import com.integreight.onesheeld.shieldsfragments.InternetFragment;
@@ -65,7 +65,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case TOGGLEBUTTON_SHIELD:return addToCreatedListAndReturn(UIShield.TOGGLEBUTTON_SHIELD,new ToggleButtonFragment());
 		case TWITTER_SHIELD:return addToCreatedListAndReturn(UIShield.TWITTER_SHIELD,new TwitterFragment());
 		case NOTIFICATION_SHIELD:return addToCreatedListAndReturn(UIShield.NOTIFICATION_SHIELD,new NotificationFragment());
-		case GAMEDPAD_SHIELD:return addToCreatedListAndReturn(UIShield.GAMEDPAD_SHIELD,new GamePadFragment());
+		case GAMEDPAD_SHIELD:return addToCreatedListAndReturn(UIShield.GAMEDPAD_SHIELD,new GamepadFragment());
 		case INTERNET_SHIELD:return addToCreatedListAndReturn(UIShield.INTERNET_SHIELD,new InternetFragment());
 		case FOURSQUARE_SHIELD:return addToCreatedListAndReturn(UIShield.FOURSQUARE_SHIELD,new FoursquareFragment());
 		case GPS_SHIELD:return addToCreatedListAndReturn(UIShield.GPS_SHIELD,new GpsFragment());
