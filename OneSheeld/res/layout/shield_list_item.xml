@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content" 
       android:id="@+id/container"
-      android:background="@drawable/shields_activity_cyan_strip">
+      android:background="@drawable/shields_activity_strip_1">
 
             <ToggleButton
             android:id="@+id/shield_list_item_selection_toggle_button"

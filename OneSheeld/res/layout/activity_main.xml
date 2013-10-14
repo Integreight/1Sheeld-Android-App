@@ -16,8 +16,6 @@
         android:cacheColorHint="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="-6dp"
-              android:layout_marginLeft="-3dp"
-              android:layout_marginRight="-3dp"
         tools:context=".MainActivity" >
 
     </com.integreight.onesheeld.ListViewReversed>

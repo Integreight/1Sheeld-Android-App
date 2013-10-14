@@ -1,5 +1,6 @@
 package com.integreight.onesheeld;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -187,6 +188,7 @@ public class Key extends Button {
 		v.startAnimation(anim);
 	}
 
+	@SuppressLint("NewApi")
 	public static void setKeyColor(Button key, Drawable bg) {
 //		GradientDrawable background = (GradientDrawable) key.getBackground();
 //

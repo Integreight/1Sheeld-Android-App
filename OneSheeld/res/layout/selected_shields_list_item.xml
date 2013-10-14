@@ -3,7 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content" 
       android:id="@+id/container"
-      android:background="@drawable/shields_activity_cyan_small_strip">
+      android:background="@drawable/shields_activity_strip_1">
 
 
                     <ImageView
