@@ -117,9 +117,9 @@ public class ArduinoFirmata{
         }
     }
     
-    private void setAllPinsAsOutput(){
+    private void setAllPinsAsInput(){
     	for(int i=0;i<20;i++){
-    		pinMode(i, OUTPUT);
+    		pinMode(i, INPUT);
     	}
     }
 
@@ -377,7 +377,7 @@ public class ArduinoFirmata{
             case BluetoothService.MESSAGE_DEVICE_NAME:
                 // save the connected device's name
             	enableReporting();
-            	setAllPinsAsOutput();
+            	setAllPinsAsInput();
             	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
             		eventHandler.onConnect();
         		}
