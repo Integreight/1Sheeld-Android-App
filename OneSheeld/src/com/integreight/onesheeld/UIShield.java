@@ -14,7 +14,7 @@ public enum UIShield {
 	LCD_SHIELD(8, "LCD",R.drawable.shields_activity_strip_8,R.drawable.shields_activity_strip_8_bw,R.drawable.shields_activity_small_strip_8,R.drawable.shields_activity_lcd_symbol ,false),
 	MAGNETOMETER_SHIELD(9, "Magnetometer",R.drawable.shields_activity_strip_9,R.drawable.shields_activity_strip_9_bw,R.drawable.shields_activity_small_strip_9,R.drawable.shields_activity_magnetometer_symbol ,false),
 	PUSHBUTTON_SHIELD(10, "Push Button",R.drawable.shields_activity_strip_10,R.drawable.shields_activity_strip_10_bw,R.drawable.shields_activity_small_strip_10,R.drawable.shields_activity_push_button_symbol ,false),
-	TOGGLEBUTTON_SHIELD(11, "Toggle Button",R.drawable.shields_activity_strip_11,R.drawable.shields_activity_strip_11_bw,R.drawable.shields_activity_small_strip_11,R.drawable.shields_activity_push_button_symbol ,false),
+	TOGGLEBUTTON_SHIELD(11, "On/Off Button",R.drawable.shields_activity_strip_11,R.drawable.shields_activity_strip_11_bw,R.drawable.shields_activity_small_strip_11,R.drawable.shields_activity_push_button_symbol ,false),
 	ACCELEROMETER_SHIELD(12, "Accelerometer",R.drawable.shields_activity_strip_12,R.drawable.shields_activity_strip_12_bw,R.drawable.shields_activity_small_strip_12,R.drawable.shields_activity_accelerometer_symbol ,false),
 	FACEBOOK_SHIELD(13, "Facebook",R.drawable.shields_activity_strip_13,R.drawable.shields_activity_strip_13_bw,R.drawable.shields_activity_small_strip_13,R.drawable.shields_activity_facebook_symbol ,false),
 	TWITTER_SHIELD(14, "Twitter",R.drawable.shields_activity_strip_14,R.drawable.shields_activity_strip_14_bw,R.drawable.shields_activity_small_strip_14,R.drawable.shields_activity_twitter_symbol ,false),
