@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#fffad7" >
+
+    <ImageView
+        android:id="@+id/lcd_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="150dp" >
+
+        <ImageView
+            android:id="@+id/lcd_shield_lcd_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/lcd_background" />
+
+        <com.integreight.onesheeld.VerticalTextView
+            android:id="@+id/lcd_shield_text_textview"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignTop="@+id/lcd_shield_lcd_imageview"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="150dp"
+            android:layout_marginRight="150dp"
+            android:layout_marginTop="50dp"
+            android:textSize="22sp" />
+    </RelativeLayout>
+
+</RelativeLayout>
