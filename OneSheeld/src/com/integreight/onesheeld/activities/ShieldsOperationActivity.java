@@ -23,7 +23,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.actionbarsherlock.view.Window;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.Key;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.SelectedShieldsListFragment;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -142,6 +141,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		}
 
 		bindFirmataService();
+		//DisplayMetrics metr=getResources().getDisplayMetrics();
 
 	}
 
