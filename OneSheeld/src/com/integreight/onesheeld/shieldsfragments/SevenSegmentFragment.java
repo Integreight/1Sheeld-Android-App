@@ -209,7 +209,13 @@ public class SevenSegmentFragment extends Fragment {
 			fSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 		
-		if (segmentsStatus.get(Segment.G)) {
+		if ((segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.E)&&segmentsStatus.get(Segment.D))||
+				(segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D))||
+				(segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.C))||
+				(segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D))||
+				(segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D)&&segmentsStatus.get(Segment.E)&&segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.A))||
+				(segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D))
+				) {
 			gSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			gSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);

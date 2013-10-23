@@ -194,15 +194,15 @@ public class TwitterFragment extends SherlockFragment {
 	}
 
 	private void buttonToLoggedOut() {
-		twitterLogout.setVisible(false);
-		twitterLogin.setVisible(true);
-		userNameTextView.setVisibility(View.INVISIBLE);
+		if(twitterLogout!=null)twitterLogout.setVisible(false);
+		if(twitterLogin!=null)twitterLogin.setVisible(true);
+		if(userNameTextView!=null)userNameTextView.setVisibility(View.INVISIBLE);
 	}
 
 	private void buttonToLoggedIn() {
-		twitterLogin.setVisible(false);
-		twitterLogout.setVisible(true);
-		userNameTextView.setVisibility(View.VISIBLE);
+		if(twitterLogin!=null)twitterLogin.setVisible(false);
+		if(twitterLogout!=null)twitterLogout.setVisible(true);
+		if(userNameTextView!=null)userNameTextView.setVisibility(View.VISIBLE);
 		userNameTextView.setText("Logged in as: @"+twitterShield.getUsername());
 	}
 

@@ -159,11 +159,11 @@ public class LcdFragment extends SherlockFragment {
 	private void toggleMenuButtons(){
 		if(firmata==null)return;
 		if (firmata.isUartInit()) {
-			disableSerialMenuItem.setVisible(true);
-			enableSerialMenuItem.setVisible(false);
+			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(true);
+			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(false);
 		} else {
-			disableSerialMenuItem.setVisible(false);
-			enableSerialMenuItem.setVisible(true);
+			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(false);
+			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(true);
 		}
 	}
 

@@ -197,15 +197,15 @@ public class FacebookFragment extends SherlockFragment {
 	}
 
 	private void buttonToLoggedOut() {
-		facebookLogout.setVisible(false);
-		facebookLogin.setVisible(true);
-		userNameTextView.setVisibility(View.INVISIBLE);
+		if(facebookLogout!=null)facebookLogout.setVisible(false);
+		if(facebookLogin!=null)facebookLogin.setVisible(true);
+		if(userNameTextView!=null)userNameTextView.setVisibility(View.INVISIBLE);
 	}
 
 	private void buttonToLoggedIn() {
-		facebookLogin.setVisible(false);
-		facebookLogout.setVisible(true);
-		userNameTextView.setVisibility(View.VISIBLE);
+		if(facebookLogin!=null)facebookLogin.setVisible(false);
+		if(facebookLogout!=null)facebookLogout.setVisible(true);
+		if(userNameTextView!=null)userNameTextView.setVisibility(View.VISIBLE);
 		userNameTextView.setText("Logged in as: "
 				+ facebookShield.getUsername());
 	}
