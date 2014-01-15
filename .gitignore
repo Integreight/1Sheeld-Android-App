@@ -27,3 +27,7 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+project.properties
+.DS_Store
+Thumbs.db
