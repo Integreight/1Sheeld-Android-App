@@ -13,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.UIShield;
-import com.integreight.onesheeld.activities.MainActivity;
+import com.integreight.onesheeld.enums.UIShield;
 
 public class ShieldsListAdapter extends BaseAdapter {
 	MainActivity activity;

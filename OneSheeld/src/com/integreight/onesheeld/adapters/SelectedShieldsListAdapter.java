@@ -13,7 +13,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.UIShield;
+import com.integreight.onesheeld.enums.UIShield;
 
 public class SelectedShieldsListAdapter extends BaseAdapter {
 	Activity activity;

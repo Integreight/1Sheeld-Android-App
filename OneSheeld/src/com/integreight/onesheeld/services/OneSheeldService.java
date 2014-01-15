@@ -21,8 +21,8 @@ import android.widget.Toast;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.firmatabluetooth.BluetoothService;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.activities.MainActivity;
 
 public class OneSheeldService extends Service {
 

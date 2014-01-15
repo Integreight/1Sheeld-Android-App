@@ -23,28 +23,28 @@
 
         <LinearLayout style="@style/KeypadRow" >
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_1"
                 key:row="0"
                 key:column="0"
                 android:text="1" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_2"
                 key:row="0"
                 key:column="1"
                 android:text="2" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_3"
                 key:row="0"
                 key:column="2"
                 android:text="3" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Function"
                 android:id="@+id/keypad_key_A"
                 key:row="0"
@@ -54,28 +54,28 @@
 
         <LinearLayout style="@style/KeypadRow" >
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_4"
                 key:row="1"
                 key:column="0"
                 android:text="4" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_5"
                 key:row="1"
                 key:column="1"
                 android:text="5" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_6"
                 key:row="1"
                 key:column="2"
                 android:text="6" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Function"
                 android:id="@+id/keypad_key_B"
                 key:row="1"
@@ -85,28 +85,28 @@
 
         <LinearLayout style="@style/KeypadRow" >
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_7"
                 key:row="2"
                 key:column="0"
                 android:text="7" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_8"
                 key:row="2"
                 key:column="1"
                 android:text="8" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_9"
                 key:row="2"
                 key:column="2"
                 android:text="9" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Function"
                 android:id="@+id/keypad_key_C"
                 key:row="2"
@@ -116,28 +116,28 @@
 
         <LinearLayout style="@style/KeypadRow" >
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Function"
                 android:id="@+id/keypad_key_Star"
                 key:row="3"
                 key:column="0"
                 android:text="*" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Numeric"
                 android:id="@+id/keypad_key_0"
                 key:row="3"
                 key:column="1"
                 android:text="0" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Function"
                 android:id="@+id/keypad_key_Hash"
                 key:row="3"
                 key:column="2"
                 android:text="#" />
 
-            <com.integreight.onesheeld.Key
+            <com.integreight.onesheeld.model.Key
                 style="@style/Key.Function"
                 android:id="@+id/keypad_key_D"
                 key:row="3"
