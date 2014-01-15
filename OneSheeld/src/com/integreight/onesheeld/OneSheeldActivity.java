@@ -45,7 +45,7 @@ public class OneSheeldActivity extends SherlockActivity {
 	MenuItem bluetoothDisconnectActionButton;
 	MenuItem goToShieldsOperationActionButton;
 
-	private static final String TAG = "MainActivity";
+	private static final String TAG = "OneSheeldActivity";
 	private static final boolean D = true;
 
 	private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -53,11 +53,11 @@ public class OneSheeldActivity extends SherlockActivity {
 	private static boolean arduinoConnected;
 
 	private BluetoothAdapter mBluetoothAdapter = null;
-	
+
 	SharedPreferences sharedPrefs;
-	
+
 	// Internet Connection detector
-    private ConnectionDetector cd;
+	private ConnectionDetector cd;
 
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
@@ -67,21 +67,21 @@ public class OneSheeldActivity extends SherlockActivity {
 			if (action.equals(OneSheeldService.COMMUNICAITON_ERROR)) {
 				UIShield.setConnected(false);
 				adapter.notifyDataSetChanged();
-				arduinoConnected=false;
+				arduinoConnected = false;
 			} else if (action
 					.equals(OneSheeldService.SHEELD_BLUETOOTH_CONNECTED)) {
 				Log.e(TAG, "- ARDUINO CONNECTED -");
-				if(isOneSheeldServiceRunning()){
-					arduinoConnected=true;
+				if (isOneSheeldServiceRunning()) {
+					arduinoConnected = true;
 					setColoredStrips();
 				}
-				
+
 				setSupportProgressBarIndeterminateVisibility(false);
 			} else if (action.equals(OneSheeldService.SHEELD_CLOSE_CONNECTION)) {
-				arduinoConnected=false;
+				arduinoConnected = false;
 				setBWStrips();
 				setSupportProgressBarIndeterminateVisibility(false);
-			
+
 			}
 		}
 	};
@@ -147,17 +147,19 @@ public class OneSheeldActivity extends SherlockActivity {
 		LocalBroadcastManager.getInstance(this).registerReceiver(
 				mMessageReceiver,
 				new IntentFilter(OneSheeldService.SHEELD_CLOSE_CONNECTION));
-		
-		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld", Context.MODE_PRIVATE);
-		
-        // Check if Internet present
+
+		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld",
+				Context.MODE_PRIVATE);
+
+		// Check if Internet present
 		cd = new ConnectionDetector(getApplicationContext());
-        if (!cd.isConnectingToInternet()) {
-            Toast.makeText(this, "Please connect to working Internet connection",
+		if (!cd.isConnectingToInternet()) {
+			Toast.makeText(this,
+					"Please connect to working Internet connection",
 					Toast.LENGTH_SHORT).show();
-            // stop executing code by return
-            return;
-        }
+			// stop executing code by return
+			return;
+		}
 	}
 
 	@Override
@@ -171,18 +173,19 @@ public class OneSheeldActivity extends SherlockActivity {
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 
 		}
-		
-		if(!isOneSheeldServiceRunning()){
+
+		if (!isOneSheeldServiceRunning()) {
 			setBWStrips();
-			if(sharedPrefs.contains(OneSheeldService.DEVICE_ADDRESS_KEY)){
+			if (sharedPrefs.contains(OneSheeldService.DEVICE_ADDRESS_KEY)) {
 				setSupportProgressBarIndeterminateVisibility(true);
-				Intent intent=new Intent();
-				intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, sharedPrefs.getString(OneSheeldService.DEVICE_ADDRESS_KEY, null));
+				Intent intent = new Intent();
+				intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS,
+						sharedPrefs.getString(
+								OneSheeldService.DEVICE_ADDRESS_KEY, null));
 				connectDevice(intent);
 			}
-			
-		}
-		else{
+
+		} else {
 			setColoredStrips();
 		}
 	}
@@ -210,8 +213,7 @@ public class OneSheeldActivity extends SherlockActivity {
 	}
 
 	private void connectDevice(Intent data) {
-		
-	
+
 		String address = data.getExtras().getString(
 				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 		Intent intent = new Intent(this, OneSheeldService.class);
@@ -219,18 +221,18 @@ public class OneSheeldActivity extends SherlockActivity {
 		startService(intent);
 
 	}
-	
-	private void disconnectService(){
-		//if (isOneSheeldServiceRunning()) {
-			stopService(new Intent(this, OneSheeldService.class));
-			setBWStrips();
-	//	}
+
+	private void disconnectService() {
+		// if (isOneSheeldServiceRunning()) {
+		stopService(new Intent(this, OneSheeldService.class));
+		setBWStrips();
+		// }
 	}
-	
-	private void launchShieldsOperationActivity(){
-		if(!isAnyShieldsSelected()){
-			Toast.makeText(this, "Select at least 1 shield",
-					Toast.LENGTH_LONG).show();
+
+	private void launchShieldsOperationActivity() {
+		if (!isAnyShieldsSelected()) {
+			Toast.makeText(this, "Select at least 1 shield", Toast.LENGTH_LONG)
+					.show();
 			return;
 		}
 		Intent shieldsActivity = new Intent(OneSheeldActivity.this,
@@ -242,31 +244,34 @@ public class OneSheeldActivity extends SherlockActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getSupportMenuInflater().inflate(R.menu.main, menu);
-		bluetoothSearchActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_search);
-		bluetoothDisconnectActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_disconnect);
-		goToShieldsOperationActionButton=(MenuItem)menu.findItem(R.id.main_activity_action_forward);
-		
-		if(!arduinoConnected||!isOneSheeldServiceRunning())changeActionIconsToDisconnected();
-		else changeActionIconsToConnected();
-		
+		bluetoothSearchActionButton = (MenuItem) menu
+				.findItem(R.id.main_activity_action_search);
+		bluetoothDisconnectActionButton = (MenuItem) menu
+				.findItem(R.id.main_activity_action_disconnect);
+		goToShieldsOperationActionButton = (MenuItem) menu
+				.findItem(R.id.main_activity_action_forward);
+
+		if (!arduinoConnected || !isOneSheeldServiceRunning())
+			changeActionIconsToDisconnected();
+		else
+			changeActionIconsToConnected();
+
 		return true;
 	}
 
 	public void addMoreShields(View v) {
-//		List<UIShield> tempShieldsList = new ArrayList<UIShield>();
-//		for (UIShield shield : Arrays.asList(UIShield.values())) {
-//			if (shield.isMainActivitySelection())
-//				tempShieldsList.add(shield);
-//		}
-//		if (tempShieldsList.isEmpty())
-//			return;
-//		Intent buttonsActivityIntent = new Intent(MainActivity.this,
-//				ShieldsOperationActivity.class);
-//		startActivity(buttonsActivityIntent);
-		
-		Toast.makeText(this, "Coming very soon!",
-				Toast.LENGTH_LONG).show();
-	
+		// List<UIShield> tempShieldsList = new ArrayList<UIShield>();
+		// for (UIShield shield : Arrays.asList(UIShield.values())) {
+		// if (shield.isMainActivitySelection())
+		// tempShieldsList.add(shield);
+		// }
+		// if (tempShieldsList.isEmpty())
+		// return;
+		// Intent buttonsActivityIntent = new Intent(MainActivity.this,
+		// ShieldsOperationActivity.class);
+		// startActivity(buttonsActivityIntent);
+
+		Toast.makeText(this, "Coming very soon!", Toast.LENGTH_LONG).show();
 
 	}
 
@@ -287,7 +292,7 @@ public class OneSheeldActivity extends SherlockActivity {
 			launchShieldsOperationActivity();
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -302,38 +307,45 @@ public class OneSheeldActivity extends SherlockActivity {
 		}
 		return false;
 	}
-	
-	private void setColoredStrips(){
+
+	private void setColoredStrips() {
 		UIShield.setConnected(true);
 		adapter.notifyDataSetChanged();
 		shieldsListView.setEnabled(true);
 		changeActionIconsToConnected();
 	}
-	
-	private void setBWStrips(){
+
+	private void setBWStrips() {
 		UIShield.setConnected(false);
 		adapter.notifyDataSetChanged();
 		shieldsListView.setEnabled(false);
 		changeActionIconsToDisconnected();
 	}
-	
-	private boolean isAnyShieldsSelected(){
-		for(UIShield shield:shieldsUIList){
-			if(shield.isMainActivitySelection())return true;
+
+	private boolean isAnyShieldsSelected() {
+		for (UIShield shield : shieldsUIList) {
+			if (shield.isMainActivitySelection())
+				return true;
 		}
 		return false;
 	}
-	
-	private void changeActionIconsToConnected(){
-		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(false);
-		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(true);
-		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(true);
+
+	private void changeActionIconsToConnected() {
+		if (bluetoothSearchActionButton != null)
+			bluetoothSearchActionButton.setVisible(false);
+		if (bluetoothDisconnectActionButton != null)
+			bluetoothDisconnectActionButton.setVisible(true);
+		if (goToShieldsOperationActionButton != null)
+			goToShieldsOperationActionButton.setVisible(true);
 	}
-	
-	private void changeActionIconsToDisconnected(){
-		if(bluetoothSearchActionButton!=null)bluetoothSearchActionButton.setVisible(true);
-		if(bluetoothDisconnectActionButton!=null)bluetoothDisconnectActionButton.setVisible(false);
-		if(goToShieldsOperationActionButton!=null)goToShieldsOperationActionButton.setVisible(false);
+
+	private void changeActionIconsToDisconnected() {
+		if (bluetoothSearchActionButton != null)
+			bluetoothSearchActionButton.setVisible(true);
+		if (bluetoothDisconnectActionButton != null)
+			bluetoothDisconnectActionButton.setVisible(false);
+		if (goToShieldsOperationActionButton != null)
+			goToShieldsOperationActionButton.setVisible(false);
 	}
 
 }
