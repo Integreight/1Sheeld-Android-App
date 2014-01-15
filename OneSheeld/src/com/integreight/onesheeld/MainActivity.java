@@ -6,6 +6,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 
 public class MainActivity extends FragmentActivity {
+	private final String TAG = "MainActivity";
+
 	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);

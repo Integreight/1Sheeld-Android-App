@@ -13,7 +13,9 @@
         android:layout_height="match_parent"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@android:color/transparent"
-        android:dividerHeight="0dp" >
+        android:dividerHeight="0dp"
+        android:drawingCacheQuality="high"
+        android:scrollbarStyle="outsideOverlay" >
     </ListView>
 
 </RelativeLayout>

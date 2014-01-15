@@ -1,6 +1,10 @@
 package com.integreight.onesheeld.appFragments;
 
+import java.util.List;
+
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.adapters.ShieldsListAdapter;
+import com.integreight.onesheeld.enums.UIShield;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +16,7 @@ import android.widget.ListView;
 public class SheeldsList extends Fragment {
 	View v;
 	boolean isInflated = false;
-	private ListView shieldsList;
+	private ListView shieldsListView;
 	private static SheeldsList thisInstance;
 
 	public static SheeldsList getInstance() {
@@ -43,6 +47,9 @@ public class SheeldsList extends Fragment {
 	}
 
 	private void initView() {
-		shieldsList = (ListView) getView().findViewById(R.id.sheeldsList);
+		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
+		final List<UIShield> shieldsUIList;
+		ShieldsListAdapter adapter;
+		ListView shieldsListView;
 	}
 }

@@ -58,7 +58,7 @@ public class OneSheeldActivity extends SherlockActivity {
 
 	// Internet Connection detector
 	private ConnectionDetector cd;
-
+// 
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
