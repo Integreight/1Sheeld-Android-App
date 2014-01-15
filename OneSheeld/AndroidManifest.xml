@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
@@ -78,7 +78,7 @@
             android:icon="@drawable/ic_launcher"
             android:label="@string/plugin_name"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.Locale.Dark"
+            android:theme="@android:style/Theme.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="ExportedActivity" >
@@ -93,7 +93,7 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
-                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"
