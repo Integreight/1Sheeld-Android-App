@@ -39,7 +39,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Light.Dialog" />
+            android:theme="@style/Theme.Sherlock.Light" />
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
