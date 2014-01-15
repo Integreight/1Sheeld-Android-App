@@ -36,7 +36,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 
-public class MainActivity extends SherlockActivity {
+public class OneSheeldActivity extends SherlockActivity {
 
 	List<UIShield> shieldsUIList;
 	ShieldsListAdapter adapter;
@@ -233,7 +233,7 @@ public class MainActivity extends SherlockActivity {
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-		Intent shieldsActivity = new Intent(MainActivity.this,
+		Intent shieldsActivity = new Intent(OneSheeldActivity.this,
 				ShieldsOperationActivity.class);
 		startActivity(shieldsActivity);
 	}

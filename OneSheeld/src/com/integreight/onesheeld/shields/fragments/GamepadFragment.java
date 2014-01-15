@@ -16,10 +16,10 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
-import com.integreight.onesheeld.model.Key;
-import com.integreight.onesheeld.model.Key.KeyTouchEventListener;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield.Pin;
+import com.integreight.onesheeld.utils.Key;
+import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
 
 public class GamepadFragment extends SherlockFragment {
 

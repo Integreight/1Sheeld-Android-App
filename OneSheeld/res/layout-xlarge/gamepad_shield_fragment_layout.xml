@@ -35,7 +35,7 @@
                 android:layout_marginLeft="230dp"
                 android:layout_marginTop="75dp" >
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                     android:id="@+id/gamepad_up_arrow_key"
                     android:layout_width="140dp"
                     android:layout_height="70dp"
@@ -44,7 +44,7 @@
                     key:normalbackground="@drawable/gamepad_shield_normal_up_button"
                     key:pressedbackground="@drawable/gamepad_shield_pressed_up_button" />
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                      android:id="@+id/gamepad_down_arrow_key"
                     android:layout_width="140dp"
                     android:layout_height="70dp"
@@ -53,7 +53,7 @@
                     key:normalbackground="@drawable/gamepad_shield_normal_down_button"
                     key:pressedbackground="@drawable/gamepad_shield_pressed_down_button" />
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                      android:id="@+id/gamepad_left_arrow_key"
                     android:layout_width="70dp"
                     android:layout_height="140dp"
@@ -62,7 +62,7 @@
                     key:normalbackground="@drawable/gamepad_shield_normal_left_button"
                     key:pressedbackground="@drawable/gamepad_shield_pressed_left_button" />
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                      android:id="@+id/gamepad_right_arrow_key"
                     android:layout_width="70dp"
                     android:layout_height="140dp"
@@ -80,7 +80,7 @@
                 android:layout_marginLeft="230dp"
                 android:layout_marginBottom="50dp" >
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                     android:id="@+id/gamepad_yellow_key"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -89,7 +89,7 @@
                     key:normalbackground="@drawable/gamepad_shield_normal_yellow_button"
                     key:pressedbackground="@drawable/gamepad_shield_pressed_yellow_button" />
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                     android:id="@+id/gamepad_green_key"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -98,7 +98,7 @@
                     key:normalbackground="@drawable/gamepad_shield_normal_green_button"
                     key:pressedbackground="@drawable/gamepad_shield_pressed_green_button" />
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                     android:id="@+id/gamepad_blue_key"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
@@ -107,7 +107,7 @@
                     key:normalbackground="@drawable/gamepad_shield_normal_blue_button"
                     key:pressedbackground="@drawable/gamepad_shield_pressed_blue_button" />
 
-                <com.integreight.onesheeld.model.Key
+                <com.integreight.onesheeld.utils.Key
                     android:id="@+id/gamepad_red_key"
                     android:layout_width="120dp"
                     android:layout_height="120dp"

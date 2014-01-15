@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.firmatabluetooth.BluetoothService;
-import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldActivity;
 import com.integreight.onesheeld.R;
 
 public class OneSheeldService extends Service {
@@ -119,7 +119,7 @@ public class OneSheeldService extends Service {
 //		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
 //		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
 //		build.addAction(R.drawable.action_cancel, "Close Service",pendingIntent );
-		Intent notificationIntent = new Intent(this, MainActivity.class);
+		Intent notificationIntent = new Intent(this, OneSheeldActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 	            | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 

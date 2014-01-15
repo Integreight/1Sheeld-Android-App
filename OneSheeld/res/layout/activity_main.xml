@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#fffad7"
-    tools:context=".MainActivity" >
+    tools:context=".OneSheeldActivity" >
 
     <com.integreight.onesheeld.utils.ListViewReversed
         android:id="@+id/main_activity_shields_listview"
@@ -16,7 +16,7 @@
         android:cacheColorHint="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="-6dp"
-        tools:context=".MainActivity" >
+        tools:context=".OneSheeldActivity" >
     </com.integreight.onesheeld.utils.ListViewReversed>
 
     <RelativeLayout

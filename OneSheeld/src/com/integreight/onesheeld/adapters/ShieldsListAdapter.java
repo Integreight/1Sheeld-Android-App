@@ -13,19 +13,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 
 public class ShieldsListAdapter extends BaseAdapter {
-	MainActivity activity;
+	OneSheeldActivity activity;
 	List<UIShield> shieldList;
 	LayoutInflater inflater;
 	
 	
 
 	public ShieldsListAdapter(Activity a) {
-		this.activity = (MainActivity)a;
+		this.activity = (OneSheeldActivity)a;
 		this.shieldList = Arrays.asList(UIShield.values());
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
