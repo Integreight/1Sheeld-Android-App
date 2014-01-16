@@ -9,42 +9,36 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-
-public class KeypadFragment extends SherlockFragment {
+public class KeypadFragment extends ShieldFragmentParent {
 
 	KeypadShield keypad;
-	ShieldsOperationActivity activity;
 	Button connectButton;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
-	ArduinoFirmata firmata;
-	
+
 	KeyTouchEventListener touchEventListener = new KeyTouchEventListener() {
 
 		@Override
 		public void onReleased(Key k) {
 			// TODO Auto-generated method stub
-			keypad.resetRowAndColumn((char)k.getRow(), (char)k.getColumn());
+			keypad.resetRowAndColumn((char) k.getRow(), (char) k.getColumn());
 
 		}
 
 		@Override
 		public void onPressed(Key k) {
 			// TODO Auto-generated method stub
-			keypad.setRowAndColumn((char)k.getRow(), (char)k.getColumn());
+			keypad.setRowAndColumn((char) k.getRow(), (char) k.getColumn());
 
 		}
 	};
@@ -63,21 +57,14 @@ public class KeypadFragment extends SherlockFragment {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		initializeKeysEventHandler((ViewGroup) getView());
-		
+
 		connectButton = (Button) getView().findViewById(
 				R.id.keypad_fragment_connect_button);
 
@@ -113,7 +100,9 @@ public class KeypadFragment extends SherlockFragment {
 											public void onClick(
 													DialogInterface dialog,
 													int whichArduinoPin) {
-												keypad.connectKeypadPinWithArduinoPin(Pin.getPin(whichSegment), whichArduinoPin);
+												keypad.connectKeypadPinWithArduinoPin(
+														Pin.getPin(whichSegment),
+														whichArduinoPin);
 												builder3.show();
 											}
 
@@ -138,9 +127,7 @@ public class KeypadFragment extends SherlockFragment {
 			}
 
 		});
-		
-		activity = (ShieldsOperationActivity) getActivity();
-		
+
 	}
 
 	private void initializeKeysEventHandler(ViewGroup viewGroup) {
@@ -158,32 +145,14 @@ public class KeypadFragment extends SherlockFragment {
 
 		}
 	}
-	
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
 
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
-	
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 		if (keypad != null)
 			return;
-		this.firmata = firmata;
-		keypad = new KeypadShield(firmata);
+		keypad = new KeypadShield(getApplication().getAppFirmata());
 		toggleMenuButtons();
 	}
-	
+
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		enableSerialMenuItem = (MenuItem) menu
@@ -199,26 +168,36 @@ public class KeypadFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.enable_serial_menuitem:
-			firmata.initUart();
+			getApplication().getAppFirmata().initUart();
 			toggleMenuButtons();
 			return true;
 		case R.id.disable_serial_menuitem:
-			firmata.disableUart();
+			getApplication().getAppFirmata().disableUart();
 			toggleMenuButtons();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void toggleMenuButtons(){
-		if(firmata==null)return;
-		if (firmata.isUartInit()) {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(true);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(false);
+	private void toggleMenuButtons() {
+		if (getApplication().getAppFirmata() == null)
+			return;
+		if (getApplication().getAppFirmata().isUartInit()) {
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(true);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(false);
 		} else {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(false);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(true);
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(false);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(true);
 		}
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata();
 	}
 
 }

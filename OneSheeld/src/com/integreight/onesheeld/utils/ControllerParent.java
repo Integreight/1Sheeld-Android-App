@@ -7,7 +7,7 @@ import com.integreight.onesheeld.OneSheeldActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 
-public abstract class ControllerParent {
+public abstract class ControllerParent<T extends ControllerParent> {
 	private OneSheeldActivity activity;
 	private boolean hasForgroundView = false;
 
@@ -67,22 +67,23 @@ public abstract class ControllerParent {
 
 					@Override
 					public void onSysex(byte command, byte[] data) {
-						ControllerParent.this.onSysex(command, data);
+						((T) ControllerParent.this).onSysex(command, data);
 					}
 
 					@Override
 					public void onDigital(int portNumber, int portData) {
-						ControllerParent.this.onDigital(portNumber, portData);
+						((T) ControllerParent.this).onDigital(portNumber,
+								portData);
 					}
 
 					@Override
 					public void onAnalog(int pin, int value) {
-						ControllerParent.this.onAnalog(pin, value);
+						((T) ControllerParent.this).onAnalog(pin, value);
 					}
 
 					@Override
 					public void onUartReceive(byte[] data) {
-						ControllerParent.this.onUartReceive(data);
+						((T) ControllerParent.this).onUartReceive(data);
 					}
 				});
 	}

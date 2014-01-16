@@ -8,27 +8,24 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class FacebookFragment extends SherlockFragment {
+public class FacebookFragment extends ShieldFragmentParent {
 
 	FacebookShield facebookShield;
-	ShieldsOperationActivity activity;
 	TextView lastPostTextView;
 	TextView userNameTextView;
 	MenuItem facebookLogin;
 	MenuItem facebookLogout;
 	Bundle savedInstanceState;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
@@ -36,7 +33,7 @@ public class FacebookFragment extends SherlockFragment {
 				container, false);
 		setHasOptionsMenu(true);
 
-		this.savedInstanceState=savedInstanceState;
+		this.savedInstanceState = savedInstanceState;
 		return v;
 
 	}
@@ -46,13 +43,6 @@ public class FacebookFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-
-		
 		checkLogin();
 	}
 
@@ -79,7 +69,6 @@ public class FacebookFragment extends SherlockFragment {
 				R.id.facebook_shield_last_post_textview);
 		userNameTextView = (TextView) getView().findViewById(
 				R.id.facebook_shield_username_textview);
-		activity = (ShieldsOperationActivity) getActivity();
 
 	}
 
@@ -89,20 +78,21 @@ public class FacebookFragment extends SherlockFragment {
 		public void onRecievePost(String post) {
 			// TODO Auto-generated method stub
 			lastPostTextView.setText(post);
-			Toast.makeText(activity, "Posted on your wall!", Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(getActivity(), "Posted on your wall!",
+					Toast.LENGTH_SHORT).show();
 
 		}
 
 		@Override
 		public void onFacebookLoggedIn() {
 			// TODO Auto-generated method stub
-			activity.runOnUiThread(new Runnable() {
+			getActivity().runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
 					buttonToLoggedIn();
-					activity.setSupportProgressBarIndeterminateVisibility(false);
+					getAppActivity()
+							.setSupportProgressBarIndeterminateVisibility(false);
 				}
 			});
 		}
@@ -110,14 +100,16 @@ public class FacebookFragment extends SherlockFragment {
 		@Override
 		public void onFacebookError(final String error) {
 			// TODO Auto-generated method stub
-			activity.runOnUiThread(new Runnable() {
+			getActivity().runOnUiThread(new Runnable() {
 
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
-					Toast.makeText(activity, error, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
+							.show();
 					buttonToLoggedIn();
-					activity.setSupportProgressBarIndeterminateVisibility(false);
+					getAppActivity()
+							.setSupportProgressBarIndeterminateVisibility(false);
 				}
 			});
 
@@ -125,34 +117,19 @@ public class FacebookFragment extends SherlockFragment {
 
 	};
 
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 		if (facebookShield != null)
 			return;
 
-		facebookShield = new FacebookShield(firmata, activity,this,savedInstanceState);
+		facebookShield = new FacebookShield(getApplication().getAppFirmata(),
+				getActivity(), this, savedInstanceState);
 		facebookShield.setFacebookEventHandler(facebookEventHandler);
 		checkLogin();
 	}
 
 	private void checkLogin() {
-		if (facebookShield!=null&&facebookShield.isFacebookLoggedInAlready()) {
+		if (facebookShield != null
+				&& facebookShield.isFacebookLoggedInAlready()) {
 			buttonToLoggedIn();
 		} else {
 			buttonToLoggedOut();
@@ -193,21 +170,32 @@ public class FacebookFragment extends SherlockFragment {
 	private void loginToFacebook() {
 
 		facebookShield.loginToFacebook();
-		activity.setSupportProgressBarIndeterminateVisibility(true);
+		getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
 	}
 
 	private void buttonToLoggedOut() {
-		if(facebookLogout!=null)facebookLogout.setVisible(false);
-		if(facebookLogin!=null)facebookLogin.setVisible(true);
-		if(userNameTextView!=null)userNameTextView.setVisibility(View.INVISIBLE);
+		if (facebookLogout != null)
+			facebookLogout.setVisible(false);
+		if (facebookLogin != null)
+			facebookLogin.setVisible(true);
+		if (userNameTextView != null)
+			userNameTextView.setVisibility(View.INVISIBLE);
 	}
 
 	private void buttonToLoggedIn() {
-		if(facebookLogin!=null)facebookLogin.setVisible(false);
-		if(facebookLogout!=null)facebookLogout.setVisible(true);
-		if(userNameTextView!=null)userNameTextView.setVisibility(View.VISIBLE);
+		if (facebookLogin != null)
+			facebookLogin.setVisible(false);
+		if (facebookLogout != null)
+			facebookLogout.setVisible(true);
+		if (userNameTextView != null)
+			userNameTextView.setVisibility(View.VISIBLE);
 		userNameTextView.setText("Logged in as: "
 				+ facebookShield.getUsername());
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata();
 	}
 
 }

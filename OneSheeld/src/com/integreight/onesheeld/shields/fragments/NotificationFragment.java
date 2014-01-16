@@ -6,25 +6,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield.NotificationEventHandler;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class NotificationFragment extends SherlockFragment {
+public class NotificationFragment extends ShieldFragmentParent {
 
 	NotificationShield notificationShield;
-	ShieldsOperationActivity activity;
 	TextView notificationTextTextView;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
-	ArduinoFirmata firmata;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -41,12 +36,6 @@ public class NotificationFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-
 	}
 
 	@Override
@@ -56,43 +45,25 @@ public class NotificationFragment extends SherlockFragment {
 		notificationTextTextView = (TextView) getView().findViewById(
 				R.id.notification_shield_text_textview);
 
-		activity = (ShieldsOperationActivity) getActivity();
-
 	}
 
 	private NotificationEventHandler notificationEventHandler = new NotificationEventHandler() {
-		
+
 		@Override
 		public void onNotificationReceive(String notificationText) {
 			// TODO Auto-generated method stub
 			notificationTextTextView.setText(notificationText);
-			
-		}
-	};
-
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
 
 		}
 	};
 
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 		if (notificationShield != null)
 			return;
-		this.firmata = firmata;
-		notificationShield = new NotificationShield(firmata, activity);
-		notificationShield.setNotificationEventHandler(notificationEventHandler);
+		notificationShield = new NotificationShield(getApplication()
+				.getAppFirmata(), getActivity());
+		notificationShield
+				.setNotificationEventHandler(notificationEventHandler);
 		toggleMenuButtons();
 	}
 
@@ -111,26 +82,36 @@ public class NotificationFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.enable_serial_menuitem:
-			firmata.initUart();
+			getApplication().getAppFirmata().initUart();
 			toggleMenuButtons();
 			return true;
 		case R.id.disable_serial_menuitem:
-			firmata.disableUart();
+			getApplication().getAppFirmata().disableUart();
 			toggleMenuButtons();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
-	private void toggleMenuButtons(){
-		if(firmata==null)return;
-		if (firmata.isUartInit()) {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(true);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(false);
+
+	private void toggleMenuButtons() {
+		if (getApplication().getAppFirmata() == null)
+			return;
+		if (getApplication().getAppFirmata().isUartInit()) {
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(true);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(false);
 		} else {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(false);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(true);
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(false);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(true);
 		}
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata();
 	}
 
 }

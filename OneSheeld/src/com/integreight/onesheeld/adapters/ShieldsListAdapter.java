@@ -12,20 +12,17 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-
-import com.integreight.onesheeld.OneSheeldActivity;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 
 public class ShieldsListAdapter extends BaseAdapter {
-	OneSheeldActivity activity;
+	MainActivity activity;
 	List<UIShield> shieldList;
 	LayoutInflater inflater;
-	
-	
 
 	public ShieldsListAdapter(Activity a) {
-		this.activity = (OneSheeldActivity)a;
+		this.activity = (MainActivity) a;
 		this.shieldList = Arrays.asList(UIShield.values());
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -53,16 +50,20 @@ public class ShieldsListAdapter extends BaseAdapter {
 			row = inflater.inflate(R.layout.shield_list_item, parent, false);
 
 			holder = new Holder();
-			holder.name = (TextView) row.findViewById(R.id.shield_list_item_name_textview);
-			holder.icon = (ImageView) row.findViewById(R.id.shield_list_item_symbol_imageview);
-			holder.selectionButton=(ToggleButton)row.findViewById(R.id.shield_list_item_selection_toggle_button);
-			holder.selectionCircle=(ImageView) row.findViewById(R.id.shield_list_item_selection_circle_imageview);
+			holder.name = (TextView) row
+					.findViewById(R.id.shield_list_item_name_textview);
+			holder.icon = (ImageView) row
+					.findViewById(R.id.shield_list_item_symbol_imageview);
+			holder.selectionButton = (ToggleButton) row
+					.findViewById(R.id.shield_list_item_selection_toggle_button);
+			holder.selectionCircle = (ImageView) row
+					.findViewById(R.id.shield_list_item_selection_circle_imageview);
 			row.setTag(holder);
 		} else {
 			holder = (Holder) row.getTag();
 		}
 
-		UIShield shield=shieldList.get(position);
+		UIShield shield = shieldList.get(position);
 		String name = shield.getName();
 		Integer iconId = shield.getSymbolId();
 		Integer imageId = shield.getMainImageStripId();
@@ -71,20 +72,21 @@ public class ShieldsListAdapter extends BaseAdapter {
 		holder.icon.setBackgroundResource(iconId);
 
 		row.setBackgroundResource(imageId);
-		
-		if(shield.isMainActivitySelection()){
+
+		if (shield.isMainActivitySelection()) {
 			holder.selectionButton.setChecked(true);
 			holder.selectionButton.setVisibility(View.VISIBLE);
 			holder.selectionCircle.setVisibility(View.VISIBLE);
-		}
-		else{
+		} else {
 			holder.selectionButton.setChecked(false);
 			holder.selectionButton.setVisibility(View.INVISIBLE);
 			holder.selectionCircle.setVisibility(View.INVISIBLE);
 		}
-//		RelativeLayout.LayoutParams head_params = (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
-//		head_params.setMargins(0, -20, 0, 0); //substitute parameters for left, top, right, bottom
-//		row.setLayoutParams(head_params);
+		// RelativeLayout.LayoutParams head_params =
+		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
+		// head_params.setMargins(0, -20, 0, 0); //substitute parameters for
+		// left, top, right, bottom
+		// row.setLayoutParams(head_params);
 
 		// row.setOnClickListener(new OnClickListener() {
 		//
@@ -106,7 +108,5 @@ public class ShieldsListAdapter extends BaseAdapter {
 		ToggleButton selectionButton;
 		ImageView selectionCircle;
 	}
-	
-
 
 }

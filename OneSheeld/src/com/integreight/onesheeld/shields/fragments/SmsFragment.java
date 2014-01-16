@@ -7,25 +7,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class SmsFragment extends SherlockFragment {
+public class SmsFragment extends ShieldFragmentParent {
 
 	SmsShield smsShield;
-	ShieldsOperationActivity activity;
 	TextView smsTextTextView;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
-	ArduinoFirmata firmata;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -41,13 +36,6 @@ public class SmsFragment extends SherlockFragment {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-
 	}
 
 	@Override
@@ -57,8 +45,6 @@ public class SmsFragment extends SherlockFragment {
 		smsTextTextView = (TextView) getView().findViewById(
 				R.id.sms_shield_text_textview);
 
-		activity = (ShieldsOperationActivity) getActivity();
-
 	}
 
 	private SmsEventHandler smsEventHandler = new SmsEventHandler() {
@@ -67,42 +53,24 @@ public class SmsFragment extends SherlockFragment {
 		public void onSmsSent(String smsNumber, String smsText) {
 			// TODO Auto-generated method stub
 			smsTextTextView.setText(smsText);
-			Toast.makeText(activity, "SMS Sent!", Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), "SMS Sent!", Toast.LENGTH_LONG)
+					.show();
 
 		}
 
 		@Override
 		public void onSmsFail(String error) {
 			// TODO Auto-generated method stub
-			 Toast.makeText(activity,
-					 error,
-			 Toast.LENGTH_LONG).show();
+			Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
 
 		}
 	};
 
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 		if (smsShield != null)
 			return;
-		this.firmata = firmata;
-		smsShield = new SmsShield(firmata, activity);
+		smsShield = new SmsShield(getApplication().getAppFirmata(),
+				getActivity());
 		smsShield.setSmsEventHandler(smsEventHandler);
 		toggleMenuButtons();
 	}
@@ -122,25 +90,35 @@ public class SmsFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		switch (item.getItemId()) {
 		case R.id.enable_serial_menuitem:
-			firmata.initUart();
+			getApplication().getAppFirmata().initUart();
 			toggleMenuButtons();
 			return true;
 		case R.id.disable_serial_menuitem:
-			firmata.disableUart();
+			getApplication().getAppFirmata().disableUart();
 			toggleMenuButtons();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void toggleMenuButtons(){
-		if(firmata==null)return;
-		if (firmata.isUartInit()) {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(true);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(false);
+	private void toggleMenuButtons() {
+		if (getApplication().getAppFirmata() == null)
+			return;
+		if (getApplication().getAppFirmata().isUartInit()) {
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(true);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(false);
 		} else {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(false);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(true);
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(false);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(true);
 		}
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata();
 	}
 }

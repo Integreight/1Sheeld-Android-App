@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,53 +12,47 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.SliderShield;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-
-public class SliderFragment extends Fragment {
+public class SliderFragment extends ShieldFragmentParent {
 
 	SeekBar seekBar;
 	SliderShield sliderShield;
 	Button connectButton;
-	ShieldsOperationActivity activity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater
-				.inflate(R.layout.slider_shield_fragment_layout,
-						container, false);
-		seekBar = (SeekBar) v
-				.findViewById(R.id.slider_fragment_seekbar);
+		View v = inflater.inflate(R.layout.slider_shield_fragment_layout,
+				container, false);
+		seekBar = (SeekBar) v.findViewById(R.id.slider_fragment_seekbar);
 		seekBar.setEnabled(false);
 		seekBar.setMax(255);
 		seekBar.setProgress(0);
 		seekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
-			
+
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// TODO Auto-generated method stub
 				sliderShield.setSliderValue(progress);
-				
-				
+
 			}
 		});
-		
+
 		if (sliderShield != null)
 			seekBar.setEnabled(true);
 
@@ -72,12 +65,6 @@ public class SliderFragment extends Fragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-
 	}
 
 	@Override
@@ -88,7 +75,7 @@ public class SliderFragment extends Fragment {
 		connectButton = (Button) getView().findViewById(
 				R.id.slider_fragment_connect_button);
 
-		final CharSequence[] items = { "3", "5", "6", "9", "10","11" };
+		final CharSequence[] items = { "3", "5", "6", "9", "10", "11" };
 
 		connectButton.setOnClickListener(new View.OnClickListener() {
 
@@ -107,7 +94,8 @@ public class SliderFragment extends Fragment {
 									int which) {
 
 								// TODO Auto-generated method stub
-								int pin=Integer.parseInt(items[which].toString());
+								int pin = Integer.parseInt(items[which]
+										.toString());
 								sliderShield.setConnectedPin(pin);
 								seekBar.setEnabled(true);
 
@@ -120,25 +108,7 @@ public class SliderFragment extends Fragment {
 			}
 
 		});
-		activity=(ShieldsOperationActivity)getActivity();
 	}
-
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
 
@@ -148,5 +118,9 @@ public class SliderFragment extends Fragment {
 
 	}
 
-}
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata(getApplication().getAppFirmata());
+	}
 
+}

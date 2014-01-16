@@ -19,11 +19,12 @@
     <application
         android:name="com.integreight.onesheeld.OneSheeldApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.integreight.onesheeld.OneSheeldActivity"
+            android:name="com.integreight.onesheeld.MainActivity"
             android:configChanges="orientation"
             android:label="@string/app_name"
             android:launchMode="singleTop"
@@ -94,7 +95,7 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
-                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"

@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +14,15 @@ import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.Segment;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class SevenSegmentFragment extends Fragment {
+public class SevenSegmentFragment extends ShieldFragmentParent {
 
 	SevenSegmentShield sevenSegment;
 	Button connectButton;
-	ShieldsOperationActivity activity;
 	ImageView aSegment;
 	ImageView bSegment;
 	ImageView cSegment;
@@ -64,12 +61,6 @@ public class SevenSegmentFragment extends Fragment {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
 		if (sevenSegment != null)
 			refreshSegments(sevenSegment.refreshSegments());
 
@@ -143,7 +134,6 @@ public class SevenSegmentFragment extends Fragment {
 			}
 
 		});
-		activity = (ShieldsOperationActivity) getActivity();
 	}
 
 	private SevenSegmentsEventHandler sevenSegmentsEventHandler = new SevenSegmentsEventHandler() {
@@ -155,22 +145,6 @@ public class SevenSegmentFragment extends Fragment {
 
 		}
 	};
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
 
 	private void refreshSegments(Map<Segment, Boolean> segmentsStatus) {
 		if (segmentsStatus.get(Segment.A)) {
@@ -178,49 +152,66 @@ public class SevenSegmentFragment extends Fragment {
 		} else {
 			aSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
-		
+
 		if (segmentsStatus.get(Segment.B)) {
 			bSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			bSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
-		
+
 		if (segmentsStatus.get(Segment.C)) {
 			cSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			cSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
-		
+
 		if (segmentsStatus.get(Segment.D)) {
 			dSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			dSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
-		
+
 		if (segmentsStatus.get(Segment.E)) {
 			eSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			eSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
-		
+
 		if (segmentsStatus.get(Segment.F)) {
 			fSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			fSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
-		
-		if ((segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.E)&&segmentsStatus.get(Segment.D))||
-				(segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D))||
-				(segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.C))||
-				(segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D))||
-				(segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D)&&segmentsStatus.get(Segment.E)&&segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.A))||
-				(segmentsStatus.get(Segment.F)&&segmentsStatus.get(Segment.A)&&segmentsStatus.get(Segment.B)&&segmentsStatus.get(Segment.C)&&segmentsStatus.get(Segment.D))
-				) {
+
+		if ((segmentsStatus.get(Segment.A) && segmentsStatus.get(Segment.B)
+				&& segmentsStatus.get(Segment.E) && segmentsStatus
+					.get(Segment.D))
+				|| (segmentsStatus.get(Segment.A)
+						&& segmentsStatus.get(Segment.B)
+						&& segmentsStatus.get(Segment.C) && segmentsStatus
+							.get(Segment.D))
+				|| (segmentsStatus.get(Segment.F)
+						&& segmentsStatus.get(Segment.B) && segmentsStatus
+							.get(Segment.C))
+				|| (segmentsStatus.get(Segment.A)
+						&& segmentsStatus.get(Segment.F)
+						&& segmentsStatus.get(Segment.C) && segmentsStatus
+							.get(Segment.D))
+				|| (segmentsStatus.get(Segment.C)
+						&& segmentsStatus.get(Segment.D)
+						&& segmentsStatus.get(Segment.E)
+						&& segmentsStatus.get(Segment.F) && segmentsStatus
+							.get(Segment.A))
+				|| (segmentsStatus.get(Segment.F)
+						&& segmentsStatus.get(Segment.A)
+						&& segmentsStatus.get(Segment.B)
+						&& segmentsStatus.get(Segment.C) && segmentsStatus
+							.get(Segment.D))) {
 			gSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			gSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
-		
+
 		if (segmentsStatus.get(Segment.DOT)) {
 			dotSegment.setImageResource(R.drawable.seventsegment_on_dot_image);
 		} else {
@@ -230,9 +221,15 @@ public class SevenSegmentFragment extends Fragment {
 	}
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-		if (sevenSegment != null)return;
-			sevenSegment = new SevenSegmentShield(firmata);
+		if (sevenSegment != null)
+			return;
+		sevenSegment = new SevenSegmentShield(firmata);
 
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata(getApplication().getAppFirmata());
 	}
 
 }

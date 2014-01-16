@@ -1,11 +1,14 @@
 package com.integreight.onesheeld;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class OneSheeldApplication extends Application {
@@ -13,13 +16,13 @@ public class OneSheeldApplication extends Application {
 	private final String APP_PREF_NAME = "oneSheeldPreference";
 	private final String LAST_DEVICE = "lastConnectedDevice";
 	private final Hashtable<String, ControllerParent> runningSheelds = new Hashtable<String, ControllerParent>();
+	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
 	private boolean isBoundService = false;
 
 	@Override
 	public void onCreate() {
 		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
-		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
 		super.onCreate();
 	}
 
@@ -38,14 +41,6 @@ public class OneSheeldApplication extends Application {
 	public void setLastConnectedDevice(String lastConnectedDevice) {
 		appPreferences.edit().putString(LAST_DEVICE, lastConnectedDevice)
 				.commit();
-	}
-
-	public String getAPP_PREF_NAME() {
-		return APP_PREF_NAME;
-	}
-
-	public String getLAST_DEVICE() {
-		return LAST_DEVICE;
 	}
 
 	public Hashtable<String, ControllerParent> getRunningSheelds() {
@@ -67,6 +62,21 @@ public class OneSheeldApplication extends Application {
 
 	public void setBoundService(boolean isBoundService) {
 		this.isBoundService = isBoundService;
+	}
+
+	public void addServiceEventHandler(
+			OneSheeldServiceHandler serviceEventHandler) {
+		if (!this.serviceEventHandlers.contains(serviceEventHandler))
+			this.serviceEventHandlers.add(serviceEventHandler);
+	}
+
+	public List<OneSheeldServiceHandler> getServiceEventHandlers() {
+		return serviceEventHandlers;
+	}
+
+	public void clearServiceEventHandlers(
+			List<OneSheeldServiceHandler> serviceEventHandlers) {
+		this.serviceEventHandlers.clear();
 	}
 
 }

@@ -8,27 +8,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class GamepadFragment extends SherlockFragment {
+public class GamepadFragment extends ShieldFragmentParent {
 
 	GamepadShield gamepad;
-	ShieldsOperationActivity activity;
 	MenuItem connectButton;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
-	ArduinoFirmata firmata;
 
 	private Key upArrowKey;
 	private Key downArrowKey;
@@ -118,15 +113,15 @@ public class GamepadFragment extends SherlockFragment {
 
 		View v = inflater.inflate(R.layout.gamepad_shield_fragment_layout,
 				container, false);
-		upArrowKey=(Key)v.findViewById(R.id.gamepad_up_arrow_key);
-		downArrowKey=(Key)v.findViewById(R.id.gamepad_down_arrow_key);
-		leftArrowKey=(Key)v.findViewById(R.id.gamepad_left_arrow_key);
-		rightArrowKey=(Key)v.findViewById(R.id.gamepad_right_arrow_key);
-		yellowArrowKey=(Key)v.findViewById(R.id.gamepad_yellow_key);
-		redArrowKey=(Key)v.findViewById(R.id.gamepad_red_key);
-		greenArrowKey=(Key)v.findViewById(R.id.gamepad_green_key);
-		blueArrowKey=(Key)v.findViewById(R.id.gamepad_blue_key);
-		
+		upArrowKey = (Key) v.findViewById(R.id.gamepad_up_arrow_key);
+		downArrowKey = (Key) v.findViewById(R.id.gamepad_down_arrow_key);
+		leftArrowKey = (Key) v.findViewById(R.id.gamepad_left_arrow_key);
+		rightArrowKey = (Key) v.findViewById(R.id.gamepad_right_arrow_key);
+		yellowArrowKey = (Key) v.findViewById(R.id.gamepad_yellow_key);
+		redArrowKey = (Key) v.findViewById(R.id.gamepad_red_key);
+		greenArrowKey = (Key) v.findViewById(R.id.gamepad_green_key);
+		blueArrowKey = (Key) v.findViewById(R.id.gamepad_blue_key);
+
 		upArrowKey.setEventListener(touchEventListener);
 		downArrowKey.setEventListener(touchEventListener);
 		leftArrowKey.setEventListener(touchEventListener);
@@ -144,12 +139,6 @@ public class GamepadFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		super.onStart();
 
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-
 	}
 
 	@Override
@@ -157,8 +146,6 @@ public class GamepadFragment extends SherlockFragment {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		initializeKeysEventHandler((ViewGroup) getView());
-
-		activity = (ShieldsOperationActivity) getActivity();
 
 	}
 
@@ -178,28 +165,10 @@ public class GamepadFragment extends SherlockFragment {
 		}
 	}
 
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 		if (gamepad != null)
 			return;
-		this.firmata = firmata;
-		gamepad = new GamepadShield(firmata);
+		gamepad = new GamepadShield(getApplication().getAppFirmata());
 		toggleMenuButtons();
 	}
 
@@ -224,11 +193,11 @@ public class GamepadFragment extends SherlockFragment {
 			showPinsSelectionMenus();
 			return true;
 		case R.id.enable_serial_menuitem:
-			firmata.initUart();
+			getApplication().getAppFirmata().initUart();
 			toggleMenuButtons();
 			return true;
 		case R.id.disable_serial_menuitem:
-			firmata.disableUart();
+			getApplication().getAppFirmata().disableUart();
 			toggleMenuButtons();
 			return true;
 		}
@@ -285,15 +254,25 @@ public class GamepadFragment extends SherlockFragment {
 
 	}
 
-	private void toggleMenuButtons(){
-		if(firmata==null)return;
-		if (firmata.isUartInit()) {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(true);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(false);
+	private void toggleMenuButtons() {
+		if (getApplication().getAppFirmata() == null)
+			return;
+		if (getApplication().getAppFirmata().isUartInit()) {
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(true);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(false);
 		} else {
-			if(disableSerialMenuItem!=null)disableSerialMenuItem.setVisible(false);
-			if(enableSerialMenuItem!=null)enableSerialMenuItem.setVisible(true);
+			if (disableSerialMenuItem != null)
+				disableSerialMenuItem.setVisible(false);
+			if (enableSerialMenuItem != null)
+				enableSerialMenuItem.setVisible(true);
 		}
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata();
 	}
 
 }

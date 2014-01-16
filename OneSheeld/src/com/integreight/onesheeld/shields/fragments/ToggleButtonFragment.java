@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,14 @@ import android.widget.ToggleButton;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class ToggleButtonFragment extends Fragment {
+public class ToggleButtonFragment extends ShieldFragmentParent {
 
 	ToggleButton toggleButtonButton;
 	ToggleButtonShield toggleButtonShield;
 	Button connectButton;
-	ShieldsOperationActivity activity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -55,12 +52,6 @@ public class ToggleButtonFragment extends Fragment {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
 
 	}
 
@@ -105,25 +96,7 @@ public class ToggleButtonFragment extends Fragment {
 			}
 
 		});
-		activity=(ShieldsOperationActivity)getActivity();
 	}
-
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
-
-		}
-	};
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
 
@@ -131,6 +104,11 @@ public class ToggleButtonFragment extends Fragment {
 			return;
 		toggleButtonShield = new ToggleButtonShield(firmata);
 
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata(getApplication().getAppFirmata());
 	}
 
 }

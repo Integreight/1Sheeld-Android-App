@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,17 +11,15 @@ import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
-import com.integreight.onesheeld.ShieldsOperationActivity.OneSheeldServiceHandler;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class LedFragment extends Fragment {
+public class LedFragment extends ShieldFragmentParent {
 
 	ImageView ledImage;
 	LedShield led;
 	Button connectButton;
-	ShieldsOperationActivity activity;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -38,13 +35,8 @@ public class LedFragment extends Fragment {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-
-		if (activity.getFirmata() == null) {
-			activity.addServiceEventHandler(serviceHandler);
-		} else {
-			initializeFirmata(activity.getFirmata());
-		}
-		if(led!=null)toggleLed(led.refreshLed());
+		if (led != null)
+			toggleLed(led.refreshLed());
 
 	}
 
@@ -56,8 +48,9 @@ public class LedFragment extends Fragment {
 		connectButton = (Button) getView().findViewById(
 				R.id.led_fragment_connect_button);
 
-		final CharSequence[] items = { "0","1", "2", "3", "4", "5", "6", "7", "8",
-				"9", "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
+		final CharSequence[] items = { "0", "1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4",
+				"A5" };
 
 		connectButton.setOnClickListener(new View.OnClickListener() {
 
@@ -88,7 +81,6 @@ public class LedFragment extends Fragment {
 			}
 
 		});
-		activity=(ShieldsOperationActivity)getActivity();
 	}
 
 	private LedEventHandler ledEventHandler = new LedEventHandler() {
@@ -97,23 +89,6 @@ public class LedFragment extends Fragment {
 		public void onLedChange(boolean isLedOn) {
 			// TODO Auto-generated method stub
 			toggleLed(isLedOn);
-
-		}
-	};
-
-	private OneSheeldServiceHandler serviceHandler = new OneSheeldServiceHandler() {
-
-		@Override
-		public void onServiceConnected(ArduinoFirmata firmata) {
-			// TODO Auto-generated method stub
-
-			initializeFirmata(firmata);
-
-		}
-
-		@Override
-		public void onServiceDisconnected() {
-			// TODO Auto-generated method stub
 
 		}
 	};
@@ -134,7 +109,14 @@ public class LedFragment extends Fragment {
 	// }
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-		if(led==null)led = new LedShield(firmata);
+		if (led == null)
+			led = new LedShield(firmata);
+
+	}
+
+	@Override
+	public void doOnServiceConnected() {
+		initializeFirmata(getApplication().getAppFirmata());
 
 	}
 

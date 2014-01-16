@@ -27,6 +27,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.SelectedShieldsListFragment;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.services.OneSheeldService.OneSheeldBinder;
+import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
@@ -34,45 +35,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 
 	protected SelectedShieldsListFragment mFrag;
 	private Fragment mContent;
-	private ArduinoFirmata firmata;
-	private List<OneSheeldServiceHandler> serviceEventHandlers;
 	MediaPlayer mp;
-	
-	private ArduinoFirmataEventHandler arduinoEventHandler= new ArduinoFirmataEventHandler() {
-		
-		@Override
-		public void onError(String errorMessage) {
-
-			finish();
-		}
-		
-		@Override
-		public void onConnect() {
-			// TODO Auto-generated method stub
-
-		}
-		
-		@Override
-		public void onClose(boolean closedManually) {
-			// TODO Auto-generated method stub
-			finish();
-
-			
-		}
-	};
-
-	OneSheeldService _1SheeldService;
-	boolean mBound = false;
-
-	public ArduinoFirmata getFirmata() {
-		return firmata;
-	}
-
-	public void addServiceEventHandler(
-			OneSheeldServiceHandler serviceEventHandler) {
-		if (!this.serviceEventHandlers.contains(serviceEventHandler))
-			this.serviceEventHandlers.add(serviceEventHandler);
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -82,7 +45,6 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		// Show the Up button in the action bar.
 
 		// setTitle(mTitleRes);
-		serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 		// customize the SlidingMenu
 		SlidingMenu sm = getSlidingMenu();
 		sm.setShadowWidthRes(R.dimen.shadow_width);
@@ -140,8 +102,8 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 					.replace(R.id.content_frame, mContent).commit();
 		}
 
-		bindFirmataService();
-		//DisplayMetrics metr=getResources().getDisplayMetrics();
+		// bindFirmataService();
+		// DisplayMetrics metr=getResources().getDisplayMetrics();
 
 	}
 
@@ -149,14 +111,6 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
 		super.onDestroy();
-		unBindFirmataService();
-	}
-
-	private void unBindFirmataService() {
-		// TODO Auto-generated method stub
-		if (mBound)
-			this.unbindService(mConnection);
-
 	}
 
 	@Override
@@ -206,53 +160,20 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		}, 500);
 	}
 
-	private void bindFirmataService() {
-		if (!mBound) {
-			Intent intent = new Intent(this, OneSheeldService.class);
-			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-		}
-	}
-
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			OneSheeldBinder binder = (OneSheeldBinder) service;
-			_1SheeldService = binder.getService();
-
-			mBound = true;
-			firmata = _1SheeldService.getFirmata();
-			firmata.addEventHandler(arduinoEventHandler);
-			for (OneSheeldServiceHandler serviceHandler : serviceEventHandlers) {
-				serviceHandler.onServiceConnected(firmata);
-			}
-
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			mBound = false;
-			for (OneSheeldServiceHandler serviceHandler : serviceEventHandlers) {
-				serviceHandler.onServiceDisconnected();
-			}
-		}
-	};
-
 	// public void toggleLed(View v){
 	// // ((LedFragment)mContent).toggleLed(v);
 	// }
 
-	public static interface OneSheeldServiceHandler {
-		void onServiceConnected(ArduinoFirmata firmata);
+	// public static interface OneSheeldServiceHandler {
+	// void onServiceConnected(ArduinoFirmata firmata);
+	//
+	// void onServiceDisconnected();
+	// }
 
-		void onServiceDisconnected();
-	}
-	
-	public void playSound(int soundResourceId){
-		if(mp==null)mp = MediaPlayer.create(this, soundResourceId);
-		if(mp.isPlaying()){
+	public void playSound(int soundResourceId) {
+		if (mp == null)
+			mp = MediaPlayer.create(this, soundResourceId);
+		if (mp.isPlaying()) {
 			Resources res = getResources();
 			AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
 			FileDescriptor fd = afd.getFileDescriptor();
@@ -270,12 +191,10 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			mp.start();
-		}
-		else
+		} else
 			mp.start();
 	}
-
 
 }
