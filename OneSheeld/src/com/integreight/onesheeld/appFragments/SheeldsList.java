@@ -190,7 +190,7 @@ public class SheeldsList extends SherlockFragment {
 		// ShieldsOperationActivity.class);
 		// startActivity(shieldsActivity);
 		((MainActivity) getActivity()).replaceCurrentFragment(ShieldsOperations
-				.getInstance(),"operations");
+				.getInstance(),"operations",true);
 	}
 
 	@Override

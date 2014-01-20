@@ -87,24 +87,24 @@ public class MainActivity extends SlidingFragmentActivity {
 		setContentView(R.layout.one_sheeld_main);
 		// set the Behind View
 		setBehindContentView(R.layout.menu_frame);
-		replaceCurrentFragment(SheeldsList.getInstance(), "base");
+		replaceCurrentFragment(SheeldsList.getInstance(), "base",true);
 	}
 
 	@Override
 	public void onBackPressed() {
 
-		if (getSupportFragmentManager().getBackStackEntryCount() > 0){
-			getSupportFragmentManager().popBackStack();//("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		if (getSupportFragmentManager().getBackStackEntryCount() > 1){
+			getSupportFragmentManager().popBackStackImmediate();//("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 			getSupportFragmentManager().executePendingTransactions();
 		}
 		else
 			finish();
-		super.onBackPressed();
 	}
 
-	public void replaceCurrentFragment(Fragment targetFragment, String tag) {
+	public void replaceCurrentFragment(Fragment targetFragment, String tag,boolean addToBackStack) {
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
+		if(addToBackStack)
 		transaction.addToBackStack(tag);
 		transaction.replace(R.id.appTransitionsContainer, targetFragment, tag);
 		transaction.commit();
