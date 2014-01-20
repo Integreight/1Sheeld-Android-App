@@ -1,13 +1,5 @@
 package com.integreight.onesheeld;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Window;
-import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.appFragments.SheeldsList;
-import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.services.OneSheeldService.OneSheeldBinder;
-import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
-
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -17,14 +9,20 @@ import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-public class MainActivity extends SherlockFragmentActivity {
+import com.actionbarsherlock.view.Window;
+import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.services.OneSheeldService.OneSheeldBinder;
+import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
+import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
+
+public class MainActivity extends SlidingFragmentActivity {
 	private final String TAG = "MainActivity";
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
 	}
-
-	private OneSheeldService _1SheeldService;
 
 	private ArduinoFirmataEventHandler arduinoEventHandler = new ArduinoFirmataEventHandler() {
 
@@ -59,10 +57,10 @@ public class MainActivity extends SherlockFragmentActivity {
 			// We've bound to LocalService, cast the IBinder and get
 			// LocalService instance
 			OneSheeldBinder binder = (OneSheeldBinder) service;
-			_1SheeldService = binder.getService();
 
 			getThisApplication().setBoundService(true);
-			getThisApplication().setAppFirmata(_1SheeldService.getFirmata());
+			getThisApplication()
+					.setAppFirmata(binder.getService().getFirmata());
 			getThisApplication().getAppFirmata().addEventHandler(
 					arduinoEventHandler);
 			for (OneSheeldServiceHandler serviceHandler : ((OneSheeldApplication) getApplication())
@@ -83,26 +81,32 @@ public class MainActivity extends SherlockFragmentActivity {
 	};
 
 	@Override
-	protected void onCreate(Bundle arg0) {
+	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.one_sheeld_main);
-		replaceCurrentFragment(SheeldsList.getInstance());
+		// set the Behind View
+		setBehindContentView(R.layout.menu_frame);
+		replaceCurrentFragment(SheeldsList.getInstance(), "base");
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
-			getSupportFragmentManager().popBackStack();
-		} else
+
+		if (getSupportFragmentManager().getBackStackEntryCount() > 0){
+			getSupportFragmentManager().popBackStack();//("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+			getSupportFragmentManager().executePendingTransactions();
+		}
+		else
 			finish();
 		super.onBackPressed();
 	}
 
-	public void replaceCurrentFragment(Fragment targetFragment) {
+	public void replaceCurrentFragment(Fragment targetFragment, String tag) {
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		transaction.replace(R.id.appTransitionsContainer, targetFragment);
+		transaction.addToBackStack(tag);
+		transaction.replace(R.id.appTransitionsContainer, targetFragment, tag);
 		transaction.commit();
 	}
 
@@ -118,11 +122,6 @@ public class MainActivity extends SherlockFragmentActivity {
 		if (getThisApplication().isBoundService())
 			this.unbindService(mConnection);
 
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
 	}
 
 	@Override

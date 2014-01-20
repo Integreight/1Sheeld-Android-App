@@ -14,6 +14,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
@@ -107,7 +108,7 @@ public class OneSheeldService extends Service {
 	}
 
 	private void showNotification(){
-		Notification.Builder build=new Notification.Builder(this);
+		NotificationCompat.Builder build=new NotificationCompat.Builder(this);
 		build.setSmallIcon(R.drawable.white_ee_icon);
 		build.setContentText("The service is running!");
 		build.setContentTitle("1Sheeld is connected");

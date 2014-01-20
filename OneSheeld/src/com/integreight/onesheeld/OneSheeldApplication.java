@@ -9,8 +9,13 @@ import android.content.SharedPreferences;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 
+/**
+ * @author SaadRoid
+ * 
+ */
 public class OneSheeldApplication extends Application {
 	private SharedPreferences appPreferences;
 	private final String APP_PREF_NAME = "oneSheeldPreference";
@@ -19,10 +24,12 @@ public class OneSheeldApplication extends Application {
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
 	private boolean isBoundService = false;
+	private ConnectionDetector connectionHandler;
 
 	@Override
 	public void onCreate() {
 		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
+		setConnectionHandler(new ConnectionDetector(getApplicationContext()));
 		super.onCreate();
 	}
 
@@ -77,6 +84,14 @@ public class OneSheeldApplication extends Application {
 	public void clearServiceEventHandlers(
 			List<OneSheeldServiceHandler> serviceEventHandlers) {
 		this.serviceEventHandlers.clear();
+	}
+
+	public ConnectionDetector getConnectionHandler() {
+		return connectionHandler;
+	}
+
+	public void setConnectionHandler(ConnectionDetector connectionHandler) {
+		this.connectionHandler = connectionHandler;
 	}
 
 }

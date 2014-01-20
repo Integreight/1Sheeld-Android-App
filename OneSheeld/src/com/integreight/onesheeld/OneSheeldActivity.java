@@ -171,7 +171,6 @@ public class OneSheeldActivity extends SherlockActivity {
 			Intent enableIntent = new Intent(
 					BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-
 		}
 
 		if (!isOneSheeldServiceRunning()) {

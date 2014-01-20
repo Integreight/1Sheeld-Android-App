@@ -31,11 +31,11 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class SheeldsList extends SherlockFragment {
 	View v;
@@ -48,7 +48,7 @@ public class SheeldsList extends SherlockFragment {
 	private MenuItem bluetoothDisconnectActionButton;
 	private MenuItem goToShieldsOperationActionButton;
 
-	private static final String TAG = "SheeldsList";
+	private static final String TAG = "ShieldsList";
 	private static final boolean D = true;
 
 	private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -67,20 +67,27 @@ public class SheeldsList extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		isInflated = false;
-		if (v == null) {
-			v = inflater.inflate(R.layout.app_sheelds_list, container, false);
-			isInflated = true;
-		}
+		v = inflater.inflate(R.layout.app_sheelds_list, container, false);
 		return v;
+	}
+
+	@Override
+	public void onResume() {
+		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
+				SlidingMenu.TOUCHMODE_NONE);
+		super.onResume();
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		setHasOptionsMenu(true);
+		super.onCreate(savedInstanceState);
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		setRetainInstance(true);
-		if (isInflated) {
-			initView();
-		}
+		initView();
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -179,9 +186,11 @@ public class SheeldsList extends SherlockFragment {
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-		Intent shieldsActivity = new Intent(getActivity(),
-				ShieldsOperationActivity.class);
-		startActivity(shieldsActivity);
+		// Intent shieldsActivity = new Intent(getActivity(),
+		// ShieldsOperationActivity.class);
+		// startActivity(shieldsActivity);
+		((MainActivity) getActivity()).replaceCurrentFragment(ShieldsOperations
+				.getInstance(),"operations");
 	}
 
 	@Override
@@ -212,8 +221,9 @@ public class SheeldsList extends SherlockFragment {
 					public void onClose(boolean closedManually) {
 						arduinoConnected = false;
 						setBWStrips();
-						((MainActivity) getActivity())
-								.setSupportProgressBarIndeterminateVisibility(false);
+						if (getActivity() != null)
+							((MainActivity) getActivity())
+									.setSupportProgressBarIndeterminateVisibility(false);
 					}
 				});
 

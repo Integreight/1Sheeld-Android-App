@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
@@ -18,7 +19,7 @@ public class BuzzerFragment extends ShieldFragmentParent {
 
 	SpeakerShield speaker;
 	Button connectButton;
-	ShieldsOperationActivity activity;
+	MainActivity activity;
 
 	private static final int soundResourceId = R.raw.door_chime_sound;
 
@@ -80,7 +81,7 @@ public class BuzzerFragment extends ShieldFragmentParent {
 
 		});
 
-		activity = (ShieldsOperationActivity) getActivity();
+		activity = (MainActivity) getActivity();
 	}
 
 	private SpeakerEventHandler speakerEventHandler = new SpeakerEventHandler() {
@@ -88,9 +89,9 @@ public class BuzzerFragment extends ShieldFragmentParent {
 		@Override
 		public void onSpeakerPinChange(boolean isOn) {
 			// TODO Auto-generated method stub
-			if (isOn) {
-				activity.playSound(soundResourceId);
-			}
+//			if (isOn) {
+//				activity.playSound(soundResourceId);
+//			}
 
 		}
 	};

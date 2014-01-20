@@ -1,4 +1,4 @@
-package com.integreight.onesheeld;
+package com.integreight.onesheeld.appFragments;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -7,59 +7,75 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.Window;
+import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.SelectedShieldsListFragment;
+import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
-public class ShieldsOperationActivity extends SlidingFragmentActivity {
-
+public class ShieldsOperations extends BaseContainerFragment {
+	private View v;
+	private static ShieldsOperations thisInstance;
 	protected SelectedShieldsListFragment mFrag;
 	private Fragment mContent;
-	MediaPlayer mp;
+	private MediaPlayer mp;
+
+	public static ShieldsOperations getInstance() {
+		if (thisInstance == null) {
+			thisInstance = new ShieldsOperations();
+		}
+		return thisInstance;
+	}
 
 	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setContentView(R.layout.activity_shields_operation);
-		// Show the Up button in the action bar.
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		v = inflater.inflate(R.layout.activity_shields_operation, container,
+				false);
+		return v;
+	}
 
-		// setTitle(mTitleRes);
-		// customize the SlidingMenu
-		SlidingMenu sm = getSlidingMenu();
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		initView(savedInstanceState);
+		super.onActivityCreated(savedInstanceState);
+	}
+
+	private void initView(Bundle savedInstanceState) {
+		SlidingMenu sm = ((MainActivity) getActivity()).getSlidingMenu();
 		sm.setShadowWidthRes(R.dimen.shadow_width);
 		sm.setShadowDrawable(R.drawable.shadow);
 		sm.setBehindWidth(150);
 		sm.setFadeDegree(0.35f);
 		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-
+		MainActivity myActivity = (MainActivity) getActivity();
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		getSupportActionBar().setHomeButtonEnabled(true);
+		myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		myActivity.getSupportActionBar().setHomeButtonEnabled(true);
 
-		// set the Behind View
-		setBehindContentView(R.layout.menu_frame);
 		if (savedInstanceState == null) {
-			FragmentTransaction t = this.getSupportFragmentManager()
+			FragmentTransaction t = myActivity.getSupportFragmentManager()
 					.beginTransaction();
-			mFrag = new SelectedShieldsListFragment();
+			mFrag = SelectedShieldsListFragment.newInstance(myActivity);
 			t.replace(R.id.menu_frame, mFrag);
 			t.commit();
 		} else {
-			mFrag = (SelectedShieldsListFragment) this
+			mFrag = (SelectedShieldsListFragment) myActivity
 					.getSupportFragmentManager().findFragmentById(
 							R.id.menu_frame);
 		}
 
 		if (savedInstanceState != null)
-			mContent = getSupportFragmentManager().getFragment(
+			mContent = myActivity.getSupportFragmentManager().getFragment(
 					savedInstanceState, "mContent");
 
 		// // set the Behind View
@@ -77,16 +93,18 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	}
 
 	@Override
-	protected void onStart() {
+	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
 		if (mContent == null) {
 			mContent = mFrag.getShieldFragment(0);
-			setTitle(mFrag.getUIShield(0).getName() + " Shield");
+			((MainActivity) getActivity()).setTitle(mFrag.getUIShield(0)
+					.getName() + " Shield");
 			// set the Above View
-			setContentView(R.layout.content_frame);
-			getSupportFragmentManager().beginTransaction()
-					.replace(R.id.content_frame, mContent).commit();
+			// setContentView(R.layout.content_frame);
+			((MainActivity) getActivity()).getSupportFragmentManager()
+					.beginTransaction().replace(R.id.appTransitionsContainer, mContent)
+					.commit();
 		}
 
 		// bindFirmataService();
@@ -95,16 +113,9 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 	}
 
 	@Override
-	protected void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.shields_operation, menu);
-		return true;
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.shields_operation, menu);
+		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
@@ -119,7 +130,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			// NavUtils.navigateUpFromSameTask(this);
-			toggle();
+			((MainActivity) getActivity()).toggle();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -127,24 +138,16 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		getSupportFragmentManager().putFragment(outState, "mContent", mContent);
+		((MainActivity) getActivity()).getSupportFragmentManager().putFragment(
+				outState, "mContent", mContent);
 	}
 
 	public void switchContent(Fragment fragment) {
 		mContent = fragment;
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, fragment).commit();
-		getSlidingMenu().showContent();
-	}
-
-	public void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				toggle();
-			}
-		}, 500);
+		((MainActivity) getActivity()).getSupportFragmentManager()
+				.beginTransaction().replace(R.id.appTransitionsContainer, fragment)
+				.commit();
+		((MainActivity) getActivity()).getSlidingMenu().showContent();
 	}
 
 	// public void toggleLed(View v){
@@ -159,7 +162,7 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 
 	public void playSound(int soundResourceId) {
 		if (mp == null)
-			mp = MediaPlayer.create(this, soundResourceId);
+			mp = MediaPlayer.create(getActivity(), soundResourceId);
 		if (mp.isPlaying()) {
 			Resources res = getResources();
 			AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
@@ -183,5 +186,4 @@ public class ShieldsOperationActivity extends SlidingFragmentActivity {
 		} else
 			mp.start();
 	}
-
 }
