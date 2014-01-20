@@ -3,21 +3,24 @@ package com.integreight.onesheeld.utils;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 
 public abstract class ControllerParent<T extends ControllerParent> {
-	private OneSheeldActivity activity;
+	public MainActivity activity;
 	private boolean hasForgroundView = false;
 
-	public ControllerParent(OneSheeldActivity activity) {
-		setActivity(activity);
+	public ControllerParent(Activity activity) {
+		setActivity((MainActivity)activity);
 		setFirmataEventHandler();
 	}
 
 	public void setConnected(ArduinoConnectedPin... pins) {
-
+		for (int i = 0; i < pins.length; i++) {
+			activity.getThisApplication().getAppFirmata().pinMode(pins[i].getPinID(),pins[i].getPinMode());
+		}
 	}
 
 	public void setShieldHandler(EventHandler handler) {
@@ -36,7 +39,7 @@ public abstract class ControllerParent<T extends ControllerParent> {
 		return activity;
 	}
 
-	public void setActivity(OneSheeldActivity activity) {
+	public void setActivity(MainActivity activity) {
 		this.activity = activity;
 	}
 

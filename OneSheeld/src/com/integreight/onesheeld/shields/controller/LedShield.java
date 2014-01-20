@@ -1,82 +1,68 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.app.Activity;
+
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.utils.ControllerParent;
 
-public class LedShield {
+public class LedShield extends ControllerParent<LedShield> {
 	private int connectedPin;
-	private ArduinoFirmata firmata;
 	private LedEventHandler eventHandler;
 	private boolean isLedOn;
 
-//	public Led(ArduinoFirmata firmata, int connectedPin) {
-//		this.connectedPin = connectedPin;
-//		this.firmata = firmata;
-//		setFirmataEventHandler();
-//		firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
-//		isLedOn = firmata.digitalRead(connectedPin);
-//	}
-	
-	public LedShield(ArduinoFirmata firmata){
-		this.firmata = firmata;
+	// public Led(ArduinoFirmata firmata, int connectedPin) {
+	// this.connectedPin = connectedPin;
+	// this.firmata = firmata;
+	// setFirmataEventHandler();
+	// firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
+	// isLedOn = firmata.digitalRead(connectedPin);
+	// }
+
+	public LedShield(Activity activity) {
+		super(activity);
 	}
 
 	public boolean isLedOn() {
 		return isLedOn;
 	}
-	
-	public boolean refreshLed(){
-		isLedOn = firmata.digitalRead(connectedPin);
+
+	public boolean refreshLed() {
+		isLedOn = activity.getThisApplication().getAppFirmata()
+				.digitalRead(connectedPin);
 		return isLedOn;
 	}
-	
 
-	private void setFirmataEventHandler() {
-		firmata.addDataHandler(new ArduinoFirmataDataHandler() {
-
-			@Override
-			public void onSysex(byte command, byte[] data) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onDigital(int portNumber, int portData) {
-				// TODO Auto-generated method stub
-				isLedOn = firmata.digitalRead(connectedPin);
-				if (eventHandler != null) {
-					eventHandler.onLedChange(isLedOn);
-				}
-
-			}
-
-			@Override
-			public void onAnalog(int pin, int value) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onUartReceive(byte[] data) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
+	@Override
+	public void onDigital(int portNumber, int portData) {
+		isLedOn = activity.getThisApplication().getAppFirmata()
+				.digitalRead(connectedPin);
+		if (eventHandler != null) {
+			eventHandler.onLedChange(isLedOn);
+		}
+		super.onDigital(portNumber, portData);
 	}
 
-//	public void setLedEventHandler(LedEventHandler eventHandler) {
-//		this.eventHandler = eventHandler;
-//	}
-	
-	public void setLedEventHandler(LedEventHandler eventHandler, int connectedPin) {
+	public void setLedEventHandler(LedEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		this.connectedPin = connectedPin;
-		firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
-		isLedOn = firmata.digitalRead(connectedPin);
-		setFirmataEventHandler();
+		isLedOn = activity.getThisApplication().getAppFirmata()
+				.digitalRead(connectedPin);
+	}
+
+	@Override
+	public void setConnected(ArduinoConnectedPin... pins) {
+		this.connectedPin = pins[0].getPinID();
+		super.setConnected(pins);
 	}
 
 	public static interface LedEventHandler {
 		void onLedChange(boolean isLedOn);
+	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+
 	}
 }

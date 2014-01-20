@@ -1,19 +1,21 @@
 package com.integreight.onesheeld.shields.controller;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
+import android.app.Activity;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.utils.ControllerParent;
 
-public class ToggleButtonShield {
+public class ToggleButtonShield extends ControllerParent<ToggleButtonShield>{
 	private int connectedPin;
-	private ArduinoFirmata firmata;
 	private boolean isButtonOn;
 	
-	public ToggleButtonShield(ArduinoFirmata firmata){
-		this.firmata = firmata;
+	public ToggleButtonShield(Activity activity){
+		super(activity);
 	}
 
-	public void setConnectedPin(int connectedPin) {
-		this.connectedPin = connectedPin;
-		firmata.pinMode(connectedPin, ArduinoFirmata.OUTPUT);
+	@Override
+	public void setConnected(ArduinoConnectedPin... pins) {
+		connectedPin=pins[0].getPinID();
+		super.setConnected(pins);
 	}
 
 	public boolean isButtonOn() {
@@ -22,7 +24,13 @@ public class ToggleButtonShield {
 	
 	public void setButtonOn(boolean isButtonOn) {
 		this.isButtonOn = isButtonOn;
-		firmata.digitalWrite(connectedPin, isButtonOn);
+		activity.getThisApplication().getAppFirmata().digitalWrite(connectedPin, isButtonOn);
+	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

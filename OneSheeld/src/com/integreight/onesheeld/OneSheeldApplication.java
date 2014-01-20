@@ -20,7 +20,7 @@ public class OneSheeldApplication extends Application {
 	private SharedPreferences appPreferences;
 	private final String APP_PREF_NAME = "oneSheeldPreference";
 	private final String LAST_DEVICE = "lastConnectedDevice";
-	private final Hashtable<String, ControllerParent> runningSheelds = new Hashtable<String, ControllerParent>();
+	private Hashtable<String, ControllerParent> runningSheelds = new Hashtable<String, ControllerParent>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
 	private boolean isBoundService = false;
@@ -52,6 +52,10 @@ public class OneSheeldApplication extends Application {
 
 	public Hashtable<String, ControllerParent> getRunningSheelds() {
 		return runningSheelds;
+	}
+
+	public void setRunningSheelds(Hashtable<String, ControllerParent> runningSheelds) {
+		this.runningSheelds = runningSheelds;
 	}
 
 	public ArduinoFirmata getAppFirmata() {

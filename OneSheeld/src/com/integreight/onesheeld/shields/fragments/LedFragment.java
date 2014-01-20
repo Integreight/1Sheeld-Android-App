@@ -11,6 +11,7 @@ import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
@@ -35,8 +36,8 @@ public class LedFragment extends ShieldFragmentParent {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		if (led != null)
-			toggleLed(led.refreshLed());
+		if (((LedShield) getApplication().getRunningSheelds().get("LED")) != null)
+			toggleLed(((LedShield) getApplication().getRunningSheelds().get("LED")).refreshLed());
 
 	}
 
@@ -69,7 +70,13 @@ public class LedFragment extends ShieldFragmentParent {
 									int which) {
 
 								// TODO Auto-generated method stub
-								led.setLedEventHandler(ledEventHandler, which);
+								((LedShield) getApplication()
+										.getRunningSheelds().get("LED"))
+										.setLedEventHandler(ledEventHandler);
+								((LedShield) getApplication()
+										.getRunningSheelds().get("LED"))
+										.setConnected(new ArduinoConnectedPin(
+												which, ArduinoFirmata.INPUT));
 								toggleLed(led.refreshLed());
 
 							}
@@ -109,9 +116,16 @@ public class LedFragment extends ShieldFragmentParent {
 	// }
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-		if (led == null)
-			led = new LedShield(firmata);
+		led = (LedShield) getApplication().getRunningSheelds().get("LED");
+		if (led == null) {
+			led = new LedShield(getActivity());
+			getApplication().getRunningSheelds().put("LED", led);
+		}
 
+	}
+	@Override
+	public void onPause() {
+		super.onPause();
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import android.widget.ToggleButton;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
@@ -30,6 +31,13 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 						container, false);
 		toggleButtonButton = (ToggleButton) v
 				.findViewById(R.id.toggle_button_shield_button_toggle_button);
+		toggleButtonShield = (ToggleButtonShield) getApplication()
+				.getRunningSheelds().get("On/Off Button");
+		if (toggleButtonShield == null) {
+			toggleButtonShield = new ToggleButtonShield(getActivity());
+			getApplication().getRunningSheelds().put("On/Off Button",
+					toggleButtonShield);
+		}
 		toggleButtonButton
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
@@ -49,10 +57,17 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 	}
 
 	@Override
-	public void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
+	public void onResume() {
+		toggleButtonShield.setHasForgroundView(true);
+		super.onResume();
 
+	}
+
+	@Override
+	public void onPause() {
+		((ToggleButtonShield) getApplication().getRunningSheelds().get(
+				"On/Off Button")).setHasForgroundView(false);
+		super.onPause();
 	}
 
 	@Override
@@ -84,7 +99,11 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 									int which) {
 
 								// TODO Auto-generated method stub
-								toggleButtonShield.setConnectedPin(which);
+								((ToggleButtonShield) getApplication()
+										.getRunningSheelds().get(
+												"On/Off Button"))
+										.setConnected(new ArduinoConnectedPin(
+												which, ArduinoFirmata.OUTPUT));
 								toggleButtonButton.setEnabled(true);
 
 							}
@@ -99,10 +118,10 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 	}
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-
-		if (toggleButtonShield != null)
-			return;
-		toggleButtonShield = new ToggleButtonShield(firmata);
+		//
+		// if (toggleButtonShield != null)
+		// return;
+		// toggleButtonShield = new ToggleButtonShield(getActivity());
 
 	}
 

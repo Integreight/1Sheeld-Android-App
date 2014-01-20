@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.appFragments;
 
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Activity;
@@ -35,6 +36,9 @@ import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.shields.controller.LedShield;
+import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
+import com.integreight.onesheeld.utils.ControllerParent;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class SheeldsList extends SherlockFragment {
@@ -189,8 +193,8 @@ public class SheeldsList extends SherlockFragment {
 		// Intent shieldsActivity = new Intent(getActivity(),
 		// ShieldsOperationActivity.class);
 		// startActivity(shieldsActivity);
-		((MainActivity) getActivity()).replaceCurrentFragment(ShieldsOperations
-				.getInstance(),"operations",true);
+		((MainActivity) getActivity()).replaceCurrentFragment(
+				ShieldsOperations.getInstance(), "operations", true);
 	}
 
 	@Override
@@ -320,10 +324,19 @@ public class SheeldsList extends SherlockFragment {
 	}
 
 	private boolean isAnyShieldsSelected() {
+		int i = 0;
+		OneSheeldApplication app = (OneSheeldApplication) getActivity()
+				.getApplication();
+		app.setRunningSheelds(new Hashtable<String, ControllerParent>());
 		for (UIShield shield : shieldsUIList) {
-			if (shield.isMainActivitySelection())
-				return true;
+			if (shield.isMainActivitySelection()) {
+				app.getRunningSheelds().put(shield.getName(),
+						new LedShield(getActivity()));
+				i++;
+			}
 		}
+		if (i > 0)
+			return true;
 		return false;
 	}
 
