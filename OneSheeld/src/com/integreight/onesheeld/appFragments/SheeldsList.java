@@ -327,11 +327,21 @@ public class SheeldsList extends SherlockFragment {
 		int i = 0;
 		OneSheeldApplication app = (OneSheeldApplication) getActivity()
 				.getApplication();
-		app.setRunningSheelds(new Hashtable<String, ControllerParent>());
+		app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
 		for (UIShield shield : shieldsUIList) {
 			if (shield.isMainActivitySelection()) {
+				ControllerParent<?> type = null;
+				try {
+					type = shield.getShieldType().newInstance();
+				} catch (java.lang.InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				app.getRunningSheelds().put(shield.getName(),
-						new LedShield(getActivity()));
+						type.setActivity((MainActivity) getActivity()));
 				i++;
 			}
 		}

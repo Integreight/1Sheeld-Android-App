@@ -8,18 +8,22 @@ import com.integreight.onesheeld.OneSheeldActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 
-public abstract class ControllerParent<T extends ControllerParent> {
+public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public MainActivity activity;
 	private boolean hasForgroundView = false;
 
+	public ControllerParent() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public ControllerParent(Activity activity) {
-		setActivity((MainActivity)activity);
-		setFirmataEventHandler();
+		setActivity((MainActivity) activity);
 	}
 
 	public void setConnected(ArduinoConnectedPin... pins) {
 		for (int i = 0; i < pins.length; i++) {
-			activity.getThisApplication().getAppFirmata().pinMode(pins[i].getPinID(),pins[i].getPinMode());
+			activity.getThisApplication().getAppFirmata()
+					.pinMode(pins[i].getPinID(), pins[i].getPinMode());
 		}
 	}
 
@@ -39,8 +43,10 @@ public abstract class ControllerParent<T extends ControllerParent> {
 		return activity;
 	}
 
-	public void setActivity(MainActivity activity) {
+	public ControllerParent<T> setActivity(MainActivity activity) {
 		this.activity = activity;
+		setFirmataEventHandler();
+		return this;
 	}
 
 	public abstract void refresh();

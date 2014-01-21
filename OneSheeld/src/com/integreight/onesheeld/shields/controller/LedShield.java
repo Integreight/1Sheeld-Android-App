@@ -19,6 +19,9 @@ public class LedShield extends ControllerParent<LedShield> {
 	// firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
 	// isLedOn = firmata.digitalRead(connectedPin);
 	// }
+	public LedShield() {
+		super();
+	}
 
 	public LedShield(Activity activity) {
 		super(activity);
