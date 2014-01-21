@@ -23,8 +23,8 @@ public class LedShield extends ControllerParent<LedShield> {
 		super();
 	}
 
-	public LedShield(Activity activity) {
-		super(activity);
+	public LedShield(Activity activity, String tag) {
+		super(activity, tag);
 	}
 
 	public boolean isLedOn() {

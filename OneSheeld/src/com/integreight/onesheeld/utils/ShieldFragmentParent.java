@@ -8,7 +8,9 @@ import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 
 import android.os.Bundle;
 
-public abstract class ShieldFragmentParent extends SherlockFragment {
+public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
+		extends SherlockFragment {
+	private String controllerTag = "";
 
 	public MainActivity getAppActivity() {
 		return (MainActivity) super.getActivity();
@@ -32,7 +34,8 @@ public abstract class ShieldFragmentParent extends SherlockFragment {
 
 						@Override
 						public void onSuccess(ArduinoFirmata firmate) {
-							doOnServiceConnected();
+							((T) ShieldFragmentParent.this)
+									.doOnServiceConnected();
 						}
 
 						@Override
@@ -42,9 +45,19 @@ public abstract class ShieldFragmentParent extends SherlockFragment {
 						}
 					});
 		} else
-			doOnServiceConnected();
+			((T) ShieldFragmentParent.this).doOnServiceConnected();
 		super.onStart();
 	}
 
-	public abstract void doOnServiceConnected();
+	public void doOnServiceConnected() {
+
+	}
+
+	public String getControllerTag() {
+		return controllerTag;
+	}
+
+	public void setControllerTag(String controllerTag) {
+		this.controllerTag = controllerTag;
+	};
 }

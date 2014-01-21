@@ -17,10 +17,10 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class ToggleButtonFragment extends ShieldFragmentParent {
+public class ToggleButtonFragment extends
+		ShieldFragmentParent<ToggleButtonFragment> {
 
 	ToggleButton toggleButtonButton;
-	ToggleButtonShield toggleButtonShield;
 	Button connectButton;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,12 +31,10 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 						container, false);
 		toggleButtonButton = (ToggleButton) v
 				.findViewById(R.id.toggle_button_shield_button_toggle_button);
-		toggleButtonShield = (ToggleButtonShield) getApplication()
-				.getRunningSheelds().get("On/Off Button");
-		if (toggleButtonShield == null) {
-			toggleButtonShield = new ToggleButtonShield(getActivity());
-			getApplication().getRunningSheelds().put("On/Off Button",
-					toggleButtonShield);
+		if ((ToggleButtonShield) getApplication().getRunningSheelds().get(
+				getControllerTag()) == null) {
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new ToggleButtonShield(getActivity(), getControllerTag()));
 		}
 		toggleButtonButton
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -45,11 +43,14 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
 						// TODO Auto-generated method stub
-						toggleButtonShield.setButtonOn(isChecked);
+						((ToggleButtonShield) getApplication()
+								.getRunningSheelds().get(getControllerTag()))
+								.setButtonOn(isChecked);
 
 					}
 				});
-		if (toggleButtonShield != null)
+		if ((ToggleButtonShield) getApplication().getRunningSheelds().get(
+				getControllerTag()) != null)
 			toggleButtonButton.setEnabled(true);
 
 		return v;
@@ -58,7 +59,8 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 
 	@Override
 	public void onResume() {
-		toggleButtonShield.setHasForgroundView(true);
+		((ToggleButtonShield) getApplication().getRunningSheelds().get(
+				getControllerTag())).setHasForgroundView(true);
 		super.onResume();
 
 	}
@@ -66,7 +68,7 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 	@Override
 	public void onPause() {
 		((ToggleButtonShield) getApplication().getRunningSheelds().get(
-				"On/Off Button")).setHasForgroundView(false);
+				getControllerTag())).setHasForgroundView(false);
 		super.onPause();
 	}
 
@@ -101,7 +103,7 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 								// TODO Auto-generated method stub
 								((ToggleButtonShield) getApplication()
 										.getRunningSheelds().get(
-												"On/Off Button"))
+												getControllerTag()))
 										.setConnected(new ArduinoConnectedPin(
 												which, ArduinoFirmata.OUTPUT));
 								toggleButtonButton.setEnabled(true);
@@ -127,7 +129,6 @@ public class ToggleButtonFragment extends ShieldFragmentParent {
 
 	@Override
 	public void doOnServiceConnected() {
-		initializeFirmata(getApplication().getAppFirmata());
 	}
 
 }

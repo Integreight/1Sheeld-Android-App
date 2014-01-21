@@ -15,7 +15,7 @@ import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class BuzzerFragment extends ShieldFragmentParent {
+public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 	SpeakerShield speaker;
 	Button connectButton;
@@ -89,9 +89,9 @@ public class BuzzerFragment extends ShieldFragmentParent {
 		@Override
 		public void onSpeakerPinChange(boolean isOn) {
 			// TODO Auto-generated method stub
-//			if (isOn) {
-//				activity.playSound(soundResourceId);
-//			}
+			// if (isOn) {
+			// activity.playSound(soundResourceId);
+			// }
 
 		}
 	};

@@ -18,7 +18,7 @@ import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class GamepadFragment extends ShieldFragmentParent {
+public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
 	GamepadShield gamepad;
 	MenuItem connectButton;

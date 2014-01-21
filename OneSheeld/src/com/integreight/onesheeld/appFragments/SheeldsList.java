@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.appFragments;
 
-import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -37,8 +36,6 @@ import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.controller.LedShield;
-import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -341,8 +338,8 @@ public class SheeldsList extends SherlockFragment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				app.getRunningSheelds().put(shield.getName(),
-						type.setActivity((MainActivity) getActivity()));
+				type.setActivity((MainActivity) getActivity()).setTag(
+						shield.getName());
 				i++;
 			}
 		}

@@ -15,7 +15,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class SliderFragment extends ShieldFragmentParent {
+public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	SeekBar seekBar;
 	SliderShield sliderShield;

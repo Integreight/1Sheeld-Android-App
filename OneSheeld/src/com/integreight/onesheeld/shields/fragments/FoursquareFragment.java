@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class FoursquareFragment extends Fragment {
+public class FoursquareFragment extends
+		ShieldFragmentParent<FoursquareFragment> {
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.no_shield, container, false);
-        }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// Inflate the layout for this fragment
+		return inflater.inflate(R.layout.no_shield, container, false);
+	}
 }

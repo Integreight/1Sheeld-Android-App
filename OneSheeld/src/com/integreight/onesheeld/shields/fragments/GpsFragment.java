@@ -7,12 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class GpsFragment extends Fragment {
+public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-            // Inflate the layout for this fragment
-            return inflater.inflate(R.layout.no_shield, container, false);
-        }
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// Inflate the layout for this fragment
+		return inflater.inflate(R.layout.no_shield, container, false);
+	}
 }

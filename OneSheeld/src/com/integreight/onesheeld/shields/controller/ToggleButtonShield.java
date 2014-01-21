@@ -12,8 +12,8 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		super();
 	}
 
-	public ToggleButtonShield(Activity activity) {
-		super(activity);
+	public ToggleButtonShield(Activity activity,String tag) {
+		super(activity,tag);
 	}
 
 	@Override

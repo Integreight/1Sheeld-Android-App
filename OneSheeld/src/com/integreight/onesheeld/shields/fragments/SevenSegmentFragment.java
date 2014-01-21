@@ -19,7 +19,8 @@ import com.integreight.onesheeld.shields.controller.SevenSegmentShield.Segment;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class SevenSegmentFragment extends ShieldFragmentParent {
+public class SevenSegmentFragment extends
+		ShieldFragmentParent<SevenSegmentFragment> {
 
 	SevenSegmentShield sevenSegment;
 	Button connectButton;

@@ -39,22 +39,24 @@ import com.integreight.onesheeld.shields.fragments.SliderFragment;
 import com.integreight.onesheeld.shields.fragments.SmsFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SelectedShieldsListFragment extends ListFragment {
 	private static SelectedShieldsListAdapter UIShieldAdapter;
-	Map<UIShield, Fragment> creadtedShields = new HashMap<UIShield, Fragment>();
-	public static SelectedShieldsListFragment newInstance(Activity activity)
-	{
+	Map<UIShield, ShieldFragmentParent<?>> creadtedShields = new HashMap<UIShield, ShieldFragmentParent<?>>();
+
+	public static SelectedShieldsListFragment newInstance(Activity activity) {
 		UIShieldAdapter = new SelectedShieldsListAdapter(activity);
 		return new SelectedShieldsListFragment();
 	}
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		return inflater.inflate(R.layout.selected_shields_list, null);
 	}
 
-	public Fragment getShieldFragment(int position) {
+	public ShieldFragmentParent<?> getShieldFragment(int position) {
 		UIShield uiShield = UIShieldAdapter.getItem(position);
 		if (creadtedShields.containsKey(uiShield))
 			return creadtedShields.get(uiShield);
@@ -131,8 +133,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		}
 	}
 
-	private Fragment addToCreatedListAndReturn(UIShield uiShield,
-			Fragment fragment) {
+	private ShieldFragmentParent<?> addToCreatedListAndReturn(
+			UIShield uiShield, ShieldFragmentParent<?> fragment) {
+		fragment.setControllerTag(uiShield.getName());
 		creadtedShields.put(uiShield, fragment);
 		return fragment;
 	}
@@ -157,8 +160,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 	private void switchFragment(Fragment fragment) {
 		((MainActivity) getActivity()).getSupportFragmentManager()
-				.beginTransaction().replace(R.id.appTransitionsContainer, fragment)
-				.commit();
+				.beginTransaction()
+				.replace(R.id.appTransitionsContainer, fragment).commit();
 		((MainActivity) getActivity()).getSlidingMenu().showContent();
 	}
 }

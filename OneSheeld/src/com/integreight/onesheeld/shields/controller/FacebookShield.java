@@ -23,8 +23,10 @@ import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.EventHandler;
 
-public class FacebookShield {
+public class FacebookShield extends ControllerParent<FacebookShield>{
 	private ArduinoFirmata firmata;
 	private static FacebookEventHandler eventHandler;
 	private String lastPost;
@@ -120,7 +122,7 @@ public class FacebookShield {
 		setFirmataEventHandler();
 	}
 
-	public static interface FacebookEventHandler {
+	public static interface FacebookEventHandler extends EventHandler{
 		void onRecievePost(String post);
 
 		void onFacebookLoggedIn();

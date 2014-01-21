@@ -17,7 +17,7 @@ import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class FacebookFragment extends ShieldFragmentParent {
+public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 	FacebookShield facebookShield;
 	TextView lastPostTextView;

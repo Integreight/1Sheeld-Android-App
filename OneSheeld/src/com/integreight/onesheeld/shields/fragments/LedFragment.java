@@ -16,7 +16,7 @@ import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class LedFragment extends ShieldFragmentParent {
+public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	ImageView ledImage;
 	LedShield led;
@@ -34,10 +34,11 @@ public class LedFragment extends ShieldFragmentParent {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
+		if (((LedShield) getApplication().getRunningSheelds().get(
+				getControllerTag())) != null)
+			toggleLed(((LedShield) getApplication().getRunningSheelds().get(
+					getControllerTag())).refreshLed());
 		super.onStart();
-		if (((LedShield) getApplication().getRunningSheelds().get("LED")) != null)
-			toggleLed(((LedShield) getApplication().getRunningSheelds().get("LED")).refreshLed());
 
 	}
 
@@ -115,14 +116,16 @@ public class LedFragment extends ShieldFragmentParent {
 	// toggleLed(led.isLedOn());
 	// }
 
-	private void initializeFirmata(ArduinoFirmata firmata) {
-		led = (LedShield) getApplication().getRunningSheelds().get("LED");
+	private void initializeFirmata() {
+		led = (LedShield) getApplication().getRunningSheelds().get(
+				getControllerTag());
 		if (led == null) {
-			led = new LedShield(getActivity());
-			getApplication().getRunningSheelds().put("LED", led);
+			led = new LedShield(getActivity(), getControllerTag());
+			getApplication().getRunningSheelds().put(getControllerTag(), led);
 		}
 
 	}
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -130,7 +133,7 @@ public class LedFragment extends ShieldFragmentParent {
 
 	@Override
 	public void doOnServiceConnected() {
-		initializeFirmata(getApplication().getAppFirmata());
+		initializeFirmata();
 
 	}
 

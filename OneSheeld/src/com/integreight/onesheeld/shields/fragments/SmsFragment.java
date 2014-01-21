@@ -15,7 +15,7 @@ import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class SmsFragment extends ShieldFragmentParent {
+public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 	SmsShield smsShield;
 	TextView smsTextTextView;

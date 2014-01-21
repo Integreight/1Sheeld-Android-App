@@ -19,7 +19,7 @@ import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class KeypadFragment extends ShieldFragmentParent {
+public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
 	KeypadShield keypad;
 	Button connectButton;

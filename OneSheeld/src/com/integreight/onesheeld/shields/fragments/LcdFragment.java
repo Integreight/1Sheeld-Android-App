@@ -16,7 +16,7 @@ import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LcdShield.LcdEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class LcdFragment extends ShieldFragmentParent {
+public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 
 	LcdShield lcdShield;
 	TextView lcdTextView;
