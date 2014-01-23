@@ -95,6 +95,20 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+
+
+
+
+
+
+
+
+
+
+
+
+
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"
@@ -110,11 +124,6 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
-
-        <activity
-            android:name="com.integreight.onesheeld.activities.Bootloader"
-            android:label="@string/title_activity_bootloader" >
-        </activity>
     </application>
 
 </manifest>
