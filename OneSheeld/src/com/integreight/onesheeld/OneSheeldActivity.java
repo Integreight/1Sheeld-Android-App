@@ -278,6 +278,11 @@ public class OneSheeldActivity extends SherlockActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent serverIntent = null;
 		switch (item.getItemId()) {
+		case R.id.flash_bootloader_menuitem:
+			Intent intent = new Intent(MainActivity.this,
+			Bootloader.class);
+			startActivity(intent);
+			return true;
 		case R.id.main_activity_action_search:
 			// Launch the DeviceListActivity to see devices and do scan
 

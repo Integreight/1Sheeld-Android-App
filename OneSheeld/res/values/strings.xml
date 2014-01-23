@@ -25,12 +25,11 @@
     <string name="title_other_devices">Other Available Devices</string>
     <string name="button_scan">Scan for devices</string>
     <string name="title_activity_shields_operation">Shields</string>
-    
+
     <!-- Name of the plug-in that appears in Locale -->
     <string name="plugin_name">1Sheeld</string>
     <!-- Hint text in the toast edit text -->
     <string name="message_hint">Scheduled Output</string>
-    
     <string name="login_to_twitter">Login to Twitter</string>
     <string name="logout_from_twitter">Logout from Twitter</string>
     <string name="login_to_facebook">Login to Facebook</string>
@@ -38,14 +37,12 @@
     <string name="enable_serial">Enable Serial</string>
     <string name="disable_serial">Disable Serial</string>
     <string name="clear_lcd">Clear LCD</string>
-    
-     <string name="connect">Connect</string>
-    
-    
-    
-     <!-- Social providers id -->
+    <string name="connect">Connect</string>
+
+    <!-- Social providers id -->
     <string name="facebook_app_id">1423548367865538</string>
-    <string name="twitter_consumer_key">Vx8p2DeuRnb650lh8K9n1w</string>
-    <string name="twitter_consumer_secret">snSNAgKQ0z4EvGwhPNza0dys4iZipfpwRKr8FNydU</string>
+    <string name="twitter_consumer_key">W89WcoS0fjGJ4pGgyBmA</string>
+    <string name="twitter_consumer_secret">izyhv5RIIaQgNsYX55hHVMj0BYm2p5bWQk8vqlasTo</string>
+    <string name="title_activity_bootloader">Bootloader</string>
 
 </resources>
