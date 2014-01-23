@@ -28,5 +28,12 @@
         android:icon="@drawable/action_forward"
         android:visible="false"
         android:title="@string/go_to_shields_operation"/>
+          
+              <item
+        android:id="@+id/flash_bootloader_menuitem"
+        android:orderInCategory="1"
+        android:showAsAction="never"
+        android:visible="true"
+        android:title="Flash bootloader"/>
 
 </menu>

@@ -15,6 +15,8 @@ import android.widget.Toast;
 public class ArduinoFirmata{
     public final static String VERSION = "0.2.0";
     public final static String TAG = "ArduinoFirmata";
+    
+    RawDataHandler rawDataHandler; 
 
     public static final byte INPUT  = 0;
     public static final byte OUTPUT = 1;
@@ -58,10 +60,17 @@ public class ArduinoFirmata{
     
     boolean isUartInit=false;
     
+    public static interface RawDataHandler{
+    	void dataReceived(byte b);
+    }
 
     public boolean isUartInit() {
 		return isUartInit;
 	}
+    
+    public void setRawDataHandler(RawDataHandler handler){
+    	rawDataHandler=handler;
+    }
 
 	public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
     private List<ArduinoFirmataEventHandler> eventHandlers;
@@ -274,6 +283,7 @@ public class ArduinoFirmata{
 
     private void processInput(byte inputData){
         byte command;
+        if(rawDataHandler!=null)rawDataHandler.dataReceived(inputData);
         if(parsingSysex){
             if(inputData == END_SYSEX){
                 parsingSysex = false;
