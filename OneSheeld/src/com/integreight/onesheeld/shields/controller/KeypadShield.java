@@ -3,58 +3,73 @@ package com.integreight.onesheeld.shields.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
+import android.app.Activity;
 
-public class KeypadShield {
-	private ArduinoFirmata firmata;
+import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.utils.ControllerParent;
+
+public class KeypadShield extends ControllerParent<KeypadShield> {
 	private Map<Pin, Integer> connectedPins;
 	private static final char KEYPAD_COMMAND = (byte) 0x33;
 	private static final char DATA_IN = (byte) 0x01;
-	
+
 	private static final char NOTHING_PRESSED = (char) 0xFF;
 
-	public KeypadShield(ArduinoFirmata firmata) {
-		this.firmata = firmata;
-		
-		firmata.initUart();
+	public KeypadShield(Activity activity, String tag) {
+		super(activity, tag);
+		getApplication().getAppFirmata().initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
 			connectedPins.put(pin, null);
 		}
 	}
 
-	public void initPins(){
-		if(connectedPins==null)return;
+	public KeypadShield() {
+		super();
+	}
+
+	public void initPins() {
+		if (connectedPins == null)
+			return;
 		for (Integer connectedPin : this.connectedPins.values()) {
 			if (connectedPin != null)
-				firmata.pinMode(connectedPin, ArduinoFirmata.OUTPUT);
+				getApplication().getAppFirmata().pinMode(connectedPin,
+						ArduinoFirmata.OUTPUT);
 		}
 	}
-	
+
 	public void connectKeypadPinWithArduinoPin(Pin segment, int pin) {
 		connectedPins.put(segment, pin);
 	}
 
 	public void setRowAndColumn(char row, char column) {
-		if (connectedPins!=null&&connectedPins.containsKey(Pin.getRow(row))&&connectedPins.get(Pin.getRow(row))!=null
-				&& connectedPins.containsKey(Pin.getColumn(column)) &&connectedPins.get(Pin.getColumn(column))!=null) {
-			firmata.digitalWrite(connectedPins.get(Pin.getRow(row)),
-					ArduinoFirmata.HIGH);
-			firmata.digitalWrite(connectedPins.get(Pin.getColumn(column)),
+		if (connectedPins != null && connectedPins.containsKey(Pin.getRow(row))
+				&& connectedPins.get(Pin.getRow(row)) != null
+				&& connectedPins.containsKey(Pin.getColumn(column))
+				&& connectedPins.get(Pin.getColumn(column)) != null) {
+			getApplication().getAppFirmata().digitalWrite(
+					connectedPins.get(Pin.getRow(row)), ArduinoFirmata.HIGH);
+			getApplication().getAppFirmata().digitalWrite(
+					connectedPins.get(Pin.getColumn(column)),
 					ArduinoFirmata.HIGH);
 		}
-		firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
+		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
+				new char[] { row, column });
 	}
 
 	public void resetRowAndColumn(int row, int column) {
-		if (connectedPins!=null&&connectedPins.containsKey(Pin.getRow(row))&&connectedPins.get(Pin.getRow(row))!=null
-				&& connectedPins.containsKey(Pin.getColumn(column)) &&connectedPins.get(Pin.getColumn(column))!=null) {
-			firmata.digitalWrite(connectedPins.get(Pin.getRow(row)),
-					ArduinoFirmata.LOW);
-			firmata.digitalWrite(connectedPins.get(Pin.getColumn(column)),
+		if (connectedPins != null && connectedPins.containsKey(Pin.getRow(row))
+				&& connectedPins.get(Pin.getRow(row)) != null
+				&& connectedPins.containsKey(Pin.getColumn(column))
+				&& connectedPins.get(Pin.getColumn(column)) != null) {
+			getApplication().getAppFirmata().digitalWrite(
+					connectedPins.get(Pin.getRow(row)), ArduinoFirmata.LOW);
+			getApplication().getAppFirmata().digitalWrite(
+					connectedPins.get(Pin.getColumn(column)),
 					ArduinoFirmata.LOW);
 		}
-		firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{NOTHING_PRESSED,NOTHING_PRESSED});
+		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
+				new char[] { NOTHING_PRESSED, NOTHING_PRESSED });
 	}
 
 	public static enum Pin {

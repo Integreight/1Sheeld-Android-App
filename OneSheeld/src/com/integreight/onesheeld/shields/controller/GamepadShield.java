@@ -3,73 +3,86 @@ package com.integreight.onesheeld.shields.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Activity;
+
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.utils.ControllerParent;
 
-public class GamepadShield {
-	private ArduinoFirmata firmata;
+public class GamepadShield extends ControllerParent<GamepadShield> {
 	private Map<Pin, Integer> connectedPins;
-	
-//	private static final char GAMEPAD_COMMAND = (byte) 0x37;
-//	private static final char DATA_IN = (byte) 0x01;
-	
-//	private static final char NOTHING_PRESSED = (char) 0xFF;
 
-	public GamepadShield(ArduinoFirmata firmata) {
-		this.firmata = firmata;
-		
-		firmata.initUart();
+	// private static final char GAMEPAD_COMMAND = (byte) 0x37;
+	// private static final char DATA_IN = (byte) 0x01;
+
+	// private static final char NOTHING_PRESSED = (char) 0xFF;
+
+	public GamepadShield(Activity activity, String tag) {
+		super(activity, tag);
+		getApplication().getAppFirmata().initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
 			connectedPins.put(pin, null);
 		}
 	}
 
-	public void initPins(){
-		if(connectedPins==null)return;
+	public GamepadShield() {
+		super();
+	}
+
+	public void initPins() {
+		if (connectedPins == null)
+			return;
 		for (Integer connectedPin : this.connectedPins.values()) {
 			if (connectedPin != null)
-				firmata.pinMode(connectedPin, ArduinoFirmata.OUTPUT);
+				getApplication().getAppFirmata().pinMode(connectedPin,
+						ArduinoFirmata.OUTPUT);
 		}
 	}
-	
+
 	public void connectGamepadPinWithArduinoPin(Pin gPin, int pin) {
 		connectedPins.put(gPin, pin);
 	}
 
 	public void setPinToHigh(int pinId) {
-		if (connectedPins!=null&&connectedPins.containsKey(Pin.getPin(pinId))&&connectedPins.get(Pin.getPin(pinId))!=null) {
-			firmata.digitalWrite(connectedPins.get(Pin.getPin(pinId)),
-					ArduinoFirmata.HIGH);
+		if (connectedPins != null
+				&& connectedPins.containsKey(Pin.getPin(pinId))
+				&& connectedPins.get(Pin.getPin(pinId)) != null) {
+			getApplication().getAppFirmata().digitalWrite(
+					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.HIGH);
 		}
-//		firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
+		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
 	}
 
 	public void setPinToLow(int pinId) {
-		if (connectedPins!=null&&connectedPins.containsKey(Pin.getPin(pinId))&&connectedPins.get(Pin.getPin(pinId))!=null) {
-			firmata.digitalWrite(connectedPins.get(Pin.getPin(pinId)),
-					ArduinoFirmata.LOW);
+		if (connectedPins != null
+				&& connectedPins.containsKey(Pin.getPin(pinId))
+				&& connectedPins.get(Pin.getPin(pinId)) != null) {
+			getApplication().getAppFirmata().digitalWrite(
+					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.LOW);
 		}
-//		firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{NOTHING_PRESSED,NOTHING_PRESSED});
+		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
+		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});
 	}
 
 	public static enum Pin {
-		UP_ARROW(0,"Up Arrow"), RIGHT_ARROW(1,"Right Arrow"), DOWN_ARROW(2,"Down Arrow"), LEFT_ARROW(3,"Left Arrow"), YELLOW_BUTTON(
-				4,"Yellow Button"), RED_BUTTON(5,"Red Button"), GREEN_BUTTON(6,"Green Button"), BLUE_BUTTON(
-				7,"Blue Button");
+		UP_ARROW(0, "Up Arrow"), RIGHT_ARROW(1, "Right Arrow"), DOWN_ARROW(2,
+				"Down Arrow"), LEFT_ARROW(3, "Left Arrow"), YELLOW_BUTTON(4,
+				"Yellow Button"), RED_BUTTON(5, "Red Button"), GREEN_BUTTON(6,
+				"Green Button"), BLUE_BUTTON(7, "Blue Button");
 
 		String name;
 		int id;
 
-		Pin(int id,String name) {
-			this.id=id;
+		Pin(int id, String name) {
+			this.id = id;
 			this.name = name;
 		}
 
 		String getName() {
 			return name;
 		}
-		
-		public int getId(){
+
+		public int getId() {
 			return id;
 		}
 

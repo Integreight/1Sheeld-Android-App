@@ -14,12 +14,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
+import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
-	FacebookShield facebookShield;
 	TextView lastPostTextView;
 	TextView userNameTextView;
 	MenuItem facebookLogin;
@@ -42,8 +42,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-
-		checkLogin();
+		initializeFirmata();
 	}
 
 	@Override
@@ -118,18 +117,22 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	};
 
 	private void initializeFirmata() {
-		if (facebookShield != null)
-			return;
+		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
+			getApplication().getRunningSheelds().put(
+					getControllerTag(),
+					new FacebookShield(getActivity(), getControllerTag(), this,
+							savedInstanceState));
 
-		facebookShield = new FacebookShield(getApplication().getAppFirmata(),
-				getActivity(), this, savedInstanceState);
-		facebookShield.setFacebookEventHandler(facebookEventHandler);
+		((FacebookShield) getApplication().getRunningSheelds().get(
+				getControllerTag()))
+				.setFacebookEventHandler(facebookEventHandler);
 		checkLogin();
 	}
 
 	private void checkLogin() {
-		if (facebookShield != null
-				&& facebookShield.isFacebookLoggedInAlready()) {
+		if ((getApplication().getRunningSheelds().get(getControllerTag())) != null
+				&& ((FacebookShield) getApplication().getRunningSheelds().get(
+						getControllerTag())).isFacebookLoggedInAlready()) {
 			buttonToLoggedIn();
 		} else {
 			buttonToLoggedOut();
@@ -163,13 +166,15 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	}
 
 	private void logoutFromFacebook() {
-		facebookShield.logoutFromFacebook();
+		((FacebookShield) getApplication().getRunningSheelds().get(
+				getControllerTag())).logoutFromFacebook();
 		buttonToLoggedOut();
 	}
 
 	private void loginToFacebook() {
 
-		facebookShield.loginToFacebook();
+		((FacebookShield) getApplication().getRunningSheelds().get(
+				getControllerTag())).loginToFacebook();
 		getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
 	}
 
@@ -190,7 +195,8 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		if (userNameTextView != null)
 			userNameTextView.setVisibility(View.VISIBLE);
 		userNameTextView.setText("Logged in as: "
-				+ facebookShield.getUsername());
+				+ ((FacebookShield) getApplication().getRunningSheelds().get(
+						getControllerTag())).getUsername());
 	}
 
 	@Override

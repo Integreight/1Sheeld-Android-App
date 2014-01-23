@@ -19,21 +19,19 @@ import android.util.Log;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.AlertDialogManager;
+import com.integreight.onesheeld.utils.ControllerParent;
 
-public class TwitterShield {
-	private ArduinoFirmata firmata;
+public class TwitterShield extends ControllerParent<TwitterShield> {
 	private static TwitterEventHandler eventHandler;
 	private String lastTweet;
-	Activity activity;
 	private static final byte TWITTER_COMMAND = (byte) 0x30;
-	private static final byte UPDATE_STATUS_METHOD_ID= (byte) 0x01;
-	
+	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
 
 	public String getUsername() {
-		return  mSharedPreferences.getString(
-				PREF_KEY_TWITTER_USERNAME, "");
+		return mSharedPreferences.getString(PREF_KEY_TWITTER_USERNAME, "");
 	}
 
 	// Preference Constants
@@ -64,60 +62,50 @@ public class TwitterShield {
 		return lastTweet;
 	}
 
-	public TwitterShield(ArduinoFirmata firmata, Activity activity) {
-		this.firmata = firmata;
-		this.activity = activity;
+	public TwitterShield() {
+		super();
+	}
+
+	@Override
+	public ControllerParent<TwitterShield> setTag(String tag) {
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
+		getApplication().getAppFirmata().initUart();
+		return super.setTag(tag);
 	}
 
-	private void setFirmataEventHandler() {
-		firmata.addDataHandler(new ArduinoFirmataDataHandler() {
+	public TwitterShield(Activity activity, String tag) {
+		super(activity, tag);
+		mSharedPreferences = activity.getApplicationContext()
+				.getSharedPreferences("com.integreight.onesheeld",
+						Context.MODE_PRIVATE);
+		getApplication().getAppFirmata().initUart();
+	}
 
-			@Override
-			public void onSysex(byte command, byte[] data) {
-				// TODO Auto-generated method stub
+	@Override
+	public void onUartReceive(byte[] data) {
+		if (data.length < 2)
+			return;
+		byte command = data[0];
+		byte methodId = data[1];
+		int n = data.length - 2;
+		byte[] newArray = new byte[n];
+		System.arraycopy(data, 2, newArray, 0, n);
+		if (command == TWITTER_COMMAND) {
+			String tweet = new String(newArray);
+			lastTweet = tweet;
+			if (isTwitterLoggedInAlready())
+				if (methodId == UPDATE_STATUS_METHOD_ID)
+					new updateTwitterStatus().execute(tweet);
 
-			}
-
-			@Override
-			public void onDigital(int portNumber, int portData) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onAnalog(int pin, int value) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onUartReceive(byte[] data) {
-				// TODO Auto-generated method stub
-				if(data.length<2)return;
-				byte command = data[0];
-				byte methodId=data[1];
-				int n = data.length - 2;
-				byte[] newArray = new byte[n];
-				System.arraycopy(data, 2, newArray, 0, n);
-				if (command == TWITTER_COMMAND) {
-					String tweet = new String(newArray);
-					lastTweet = tweet;
-					if (isTwitterLoggedInAlready())
-						if(methodId==UPDATE_STATUS_METHOD_ID)
-							new updateTwitterStatus().execute(tweet);
-
-				}
-
-			}
-		});
+		}
+		super.onUartReceive(data);
 	}
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		TwitterShield.eventHandler = eventHandler;
-		firmata.initUart();
-		setFirmataEventHandler();
+		getApplication().getAppFirmata().initUart();
 	}
 
 	public static interface TwitterEventHandler {
@@ -137,8 +125,10 @@ public class TwitterShield {
 				// TODO Auto-generated method stub
 				if (!isTwitterLoggedInAlready()) {
 					ConfigurationBuilder builder = new ConfigurationBuilder();
-					builder.setOAuthConsumerKey(activity.getResources().getString(R.string.twitter_consumer_key));
-					builder.setOAuthConsumerSecret(activity.getResources().getString(R.string.twitter_consumer_secret));
+					builder.setOAuthConsumerKey(activity.getResources()
+							.getString(R.string.twitter_consumer_key));
+					builder.setOAuthConsumerSecret(activity.getResources()
+							.getString(R.string.twitter_consumer_secret));
 					Configuration configuration = builder.build();
 
 					TwitterFactory factory = new TwitterFactory(configuration);
@@ -211,8 +201,10 @@ public class TwitterShield {
 			String status = args[0];
 			try {
 				ConfigurationBuilder builder = new ConfigurationBuilder();
-				builder.setOAuthConsumerKey(activity.getResources().getString(R.string.twitter_consumer_key));
-				builder.setOAuthConsumerSecret(activity.getResources().getString(R.string.twitter_consumer_secret));
+				builder.setOAuthConsumerKey(activity.getResources().getString(
+						R.string.twitter_consumer_key));
+				builder.setOAuthConsumerSecret(activity.getResources()
+						.getString(R.string.twitter_consumer_secret));
 
 				// Access Token
 				String access_token = mSharedPreferences.getString(
@@ -296,7 +288,7 @@ public class TwitterShield {
 					// For now i am getting his name only
 					long userID = accessToken.getUserId();
 					User user = twitter.showUser(userID);
-					
+
 					e.putString(PREF_KEY_TWITTER_USERNAME, user.getScreenName());
 					e.commit(); // save changes
 

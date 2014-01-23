@@ -21,16 +21,13 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.Settings;
 import com.facebook.model.GraphUser;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.EventHandler;
 
-public class FacebookShield extends ControllerParent<FacebookShield>{
-	private ArduinoFirmata firmata;
+public class FacebookShield extends ControllerParent<FacebookShield> {
 	private static FacebookEventHandler eventHandler;
 	private String lastPost;
-	private Activity activity;
 	private Fragment fragment;
 	private static final byte FACEBOOK_COMMAND = (byte) 0x31;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
@@ -48,10 +45,31 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 		return lastPost;
 	}
 
-	public FacebookShield(ArduinoFirmata firmata, Activity activity,
-			Fragment fragment, Bundle savedInstanceState) {
-		this.firmata = firmata;
-		this.activity = activity;
+	public FacebookShield() {
+		super();
+	}
+
+	@Override
+	public ControllerParent<FacebookShield> setActivity(MainActivity activity) {
+		mSharedPreferences = activity.getApplicationContext()
+				.getSharedPreferences("com.integreight.onesheeld",
+						Context.MODE_PRIVATE);
+		Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+		Session session = Session.getActiveSession();
+		if (session == null) {
+			if (session == null) {
+				session = new Session(activity);
+			}
+			Session.setActiveSession(session);
+		}
+
+		session.addCallback(statusCallback);
+		return super.setActivity(activity);
+	}
+
+	public FacebookShield(Activity activity, String tag, Fragment fragment,
+			Bundle savedInstanceState) {
+		super(activity, tag);
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
@@ -73,56 +91,12 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 		this.fragment = fragment;
 	}
 
-	private void setFirmataEventHandler() {
-		firmata.addDataHandler(new ArduinoFirmataDataHandler() {
-
-			@Override
-			public void onSysex(byte command, byte[] data) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onDigital(int portNumber, int portData) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onAnalog(int pin, int value) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onUartReceive(byte[] data) {
-				// TODO Auto-generated method stub
-				if (data.length < 2)
-					return;
-				byte command = data[0];
-				byte methodId = data[1];
-				int n = data.length - 2;
-				byte[] newArray = new byte[n];
-				System.arraycopy(data, 2, newArray, 0, n);
-				if (command == FACEBOOK_COMMAND) {
-					String post = new String(newArray);
-					lastPost = post;
-					 if (isFacebookLoggedInAlready())
-					 if(methodId==UPDATE_STATUS_METHOD_ID)
-						 publishStory(post);
-
-				}
-
-			}
-		});
-	}
-
 	public void setFacebookEventHandler(FacebookEventHandler eventHandler) {
 		FacebookShield.eventHandler = eventHandler;
-		firmata.initUart();
-		setFirmataEventHandler();
+		getApplication().getAppFirmata().initUart();
 	}
 
-	public static interface FacebookEventHandler extends EventHandler{
+	public static interface FacebookEventHandler extends EventHandler {
 		void onRecievePost(String post);
 
 		void onFacebookLoggedIn();
@@ -150,6 +124,27 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 		e.commit();
 	}
 
+	@Override
+	public void onUartReceive(byte[] data) {
+		// TODO Auto-generated method stub
+		if (data.length < 2)
+			return;
+		byte command = data[0];
+		byte methodId = data[1];
+		int n = data.length - 2;
+		byte[] newArray = new byte[n];
+		System.arraycopy(data, 2, newArray, 0, n);
+		if (command == FACEBOOK_COMMAND) {
+			String post = new String(newArray);
+			lastPost = post;
+			if (isFacebookLoggedInAlready())
+				if (methodId == UPDATE_STATUS_METHOD_ID)
+					publishStory(post);
+
+		}
+		super.onUartReceive(data);
+	}
+
 	public String getUsername() {
 		// TODO Auto-generated method stub
 		return mSharedPreferences.getString(PREF_KEY_FACEBOOK_USERNAME, "");
@@ -157,7 +152,10 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 
 	public boolean isFacebookLoggedInAlready() {
 		// TODO Auto-generated method stub
-		return Session.getActiveSession().isOpened();
+		if (Session.getActiveSession() != null)
+			return Session.getActiveSession().isOpened();
+		else
+			return false;
 	}
 
 	private class SessionStatusCallback implements Session.StatusCallback {
@@ -169,8 +167,7 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 			if (session.isOpened()) {
 
 				if (!pendingPublishReauthorization) {
-					if (!isSubsetOf(PERMISSIONS, session
-							.getPermissions())) {
+					if (!isSubsetOf(PERMISSIONS, session.getPermissions())) {
 						pendingPublishReauthorization = true;
 						Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
 								fragment, PERMISSIONS);
@@ -178,31 +175,33 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 
 					}
 				}
-				
-				if((pendingPublishReauthorization&&state.equals(SessionState.OPENED_TOKEN_UPDATED))||isSubsetOf(PERMISSIONS, session
-						.getPermissions())){
-					pendingPublishReauthorization = false;
-					Request.newMeRequest(session, new Request.GraphUserCallback() {
 
-						// callback after Graph API response with user object
-						@Override
-						public void onCompleted(GraphUser user, Response response) {
-							if (user != null) {
-									
-									Editor e = mSharedPreferences.edit();
-									e.putString(PREF_KEY_FACEBOOK_USERNAME,
-											user.getName());
-									e.commit();
-									if (eventHandler != null)
-										eventHandler.onFacebookLoggedIn();
+				if ((pendingPublishReauthorization && state
+						.equals(SessionState.OPENED_TOKEN_UPDATED))
+						|| isSubsetOf(PERMISSIONS, session.getPermissions())) {
+					pendingPublishReauthorization = false;
+					Request.newMeRequest(session,
+							new Request.GraphUserCallback() {
+
+								// callback after Graph API response with user
+								// object
+								@Override
+								public void onCompleted(GraphUser user,
+										Response response) {
+									if (user != null) {
+
+										Editor e = mSharedPreferences.edit();
+										e.putString(PREF_KEY_FACEBOOK_USERNAME,
+												user.getName());
+										e.commit();
+										if (eventHandler != null)
+											eventHandler.onFacebookLoggedIn();
+									}
+
 								}
-								
-							
-						}
-					}).executeAsync();
+							}).executeAsync();
 				}
 				// make request to the /me API
-				
 
 			}
 		}
@@ -225,37 +224,40 @@ public class FacebookShield extends ControllerParent<FacebookShield>{
 
 			Bundle postParams = new Bundle();
 			postParams.putString("message", message);
-//			postParams.putString("name", "Facebook SDK for Android");
-//			postParams.putString("caption",
-//					"Build great social apps and get more installs.");
-//			postParams
-//					.putString(
-//							"description",
-//							"The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-//			postParams.putString("link",
-//					"https://developers.facebook.com/android");
-//			postParams
-//					.putString("picture",
-//							"https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
+			// postParams.putString("name", "Facebook SDK for Android");
+			// postParams.putString("caption",
+			// "Build great social apps and get more installs.");
+			// postParams
+			// .putString(
+			// "description",
+			// "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
+			// postParams.putString("link",
+			// "https://developers.facebook.com/android");
+			// postParams
+			// .putString("picture",
+			// "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
 
 			Request.Callback callback = new Request.Callback() {
 				public void onCompleted(Response response) {
 					FacebookRequestError error = response.getError();
 					if (error != null) {
-						if(eventHandler!=null)eventHandler.onFacebookError(error.getErrorMessage());
+						if (eventHandler != null)
+							eventHandler.onFacebookError(error
+									.getErrorMessage());
 						return;
 					}
-					//String postId = null;
-//					try {
-//						JSONObject graphResponse = response.getGraphObject()
-//								.getInnerJSONObject();
-						//postId = graphResponse.getString("id");
-						if(eventHandler!=null)eventHandler.onRecievePost(message);
-//					} catch (Exception e) {
-//						//Log.i("", "JSON error " + e.getMessage());
-//						if(eventHandler!=null)eventHandler.onFacebookError(e.getMessage());
-//					}
-					
+					// String postId = null;
+					// try {
+					// JSONObject graphResponse = response.getGraphObject()
+					// .getInnerJSONObject();
+					// postId = graphResponse.getString("id");
+					if (eventHandler != null)
+						eventHandler.onRecievePost(message);
+					// } catch (Exception e) {
+					// //Log.i("", "JSON error " + e.getMessage());
+					// if(eventHandler!=null)eventHandler.onFacebookError(e.getMessage());
+					// }
+
 				}
 			};
 

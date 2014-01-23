@@ -1,28 +1,36 @@
 package com.integreight.onesheeld.shields.controller;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
+import android.app.Activity;
 
-public class SliderShield {
+import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.utils.ControllerParent;
+
+public class SliderShield extends ControllerParent<SliderShield> {
 	private int connectedPin;
-	private ArduinoFirmata firmata;
 	private int sliderValue;
-	
-	public SliderShield(ArduinoFirmata firmata){
-		this.firmata = firmata;
+
+	public SliderShield() {
+		super();
 	}
 
-	public void setConnectedPin(int connectedPin) {
-		this.connectedPin = connectedPin;
-		firmata.pinMode(connectedPin, ArduinoFirmata.PWM);
+	public SliderShield(Activity activity, String tag) {
+		super(activity, tag);
+	}
+
+	@Override
+	public void setConnected(ArduinoConnectedPin... pins) {
+		connectedPin = pins[0].getPinID();
+		super.setConnected(pins);
 	}
 
 	public int getSliderValue() {
 		return sliderValue;
 	}
-	
+
 	public void setSliderValue(int sliderValue) {
 		this.sliderValue = sliderValue;
-		firmata.analogWrite(connectedPin, sliderValue);
+		getApplication().getAppFirmata().analogWrite(connectedPin, sliderValue);
 	}
-	
+
 }

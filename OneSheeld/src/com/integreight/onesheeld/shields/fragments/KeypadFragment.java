@@ -13,6 +13,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
@@ -21,7 +22,6 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
-	KeypadShield keypad;
 	Button connectButton;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
@@ -31,14 +31,18 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		@Override
 		public void onReleased(Key k) {
 			// TODO Auto-generated method stub
-			keypad.resetRowAndColumn((char) k.getRow(), (char) k.getColumn());
+			((KeypadShield) getApplication().getRunningSheelds().get(
+					getControllerTag())).resetRowAndColumn((char) k.getRow(),
+					(char) k.getColumn());
 
 		}
 
 		@Override
 		public void onPressed(Key k) {
 			// TODO Auto-generated method stub
-			keypad.setRowAndColumn((char) k.getRow(), (char) k.getColumn());
+			((KeypadShield) getApplication().getRunningSheelds().get(
+					getControllerTag())).setRowAndColumn((char) k.getRow(),
+					(char) k.getColumn());
 
 		}
 	};
@@ -100,9 +104,12 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 											public void onClick(
 													DialogInterface dialog,
 													int whichArduinoPin) {
-												keypad.connectKeypadPinWithArduinoPin(
-														Pin.getPin(whichSegment),
-														whichArduinoPin);
+												((KeypadShield) getApplication()
+														.getRunningSheelds()
+														.get(getControllerTag()))
+														.connectKeypadPinWithArduinoPin(
+																Pin.getPin(whichSegment),
+																whichArduinoPin);
 												builder3.show();
 											}
 
@@ -118,7 +125,8 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						keypad.initPins();
+						((KeypadShield) getApplication().getRunningSheelds()
+								.get(getControllerTag())).initPins();
 
 					}
 				});
@@ -147,9 +155,9 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	}
 
 	private void initializeFirmata() {
-		if (keypad != null)
-			return;
-		keypad = new KeypadShield(getApplication().getAppFirmata());
+		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new KeypadShield(getActivity(), getControllerTag()));
 		toggleMenuButtons();
 	}
 

@@ -14,9 +14,9 @@ import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield.NotificationEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class NotificationFragment extends ShieldFragmentParent {
+public class NotificationFragment extends
+		ShieldFragmentParent<NotificationFragment> {
 
-	NotificationShield notificationShield;
 	TextView notificationTextTextView;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
@@ -58,11 +58,11 @@ public class NotificationFragment extends ShieldFragmentParent {
 	};
 
 	private void initializeFirmata() {
-		if (notificationShield != null)
-			return;
-		notificationShield = new NotificationShield(getApplication()
-				.getAppFirmata(), getActivity());
-		notificationShield
+		if (getApplication().getRunningSheelds().get(getControllerTag()) == null)
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new NotificationShield(getActivity(), getControllerTag()));
+		((NotificationShield) getApplication().getRunningSheelds().get(
+				getControllerTag()))
 				.setNotificationEventHandler(notificationEventHandler);
 		toggleMenuButtons();
 	}
