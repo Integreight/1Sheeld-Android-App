@@ -17,7 +17,6 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
-	SpeakerShield speaker;
 	Button connectButton;
 	MainActivity activity;
 
@@ -43,6 +42,9 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new SpeakerShield(getActivity(), getControllerTag()));
 
 		connectButton = (Button) getView().findViewById(
 				R.id.speaker_fragment_connect_button);
@@ -68,8 +70,11 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 									int which) {
 
 								// TODO Auto-generated method stub
-								speaker.setSpeakerEventHandler(
-										speakerEventHandler, which);
+								((SpeakerShield) getApplication()
+										.getRunningSheelds().get(
+												getControllerTag()))
+										.setSpeakerEventHandler(
+												speakerEventHandler, which);
 
 							}
 
@@ -95,16 +100,4 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 		}
 	};
-
-	private void initializeFirmata() {
-		if (speaker == null)
-			speaker = new SpeakerShield(getApplication().getAppFirmata());
-
-	}
-
-	@Override
-	public void doOnServiceConnected() {
-		initializeFirmata();
-	}
-
 }

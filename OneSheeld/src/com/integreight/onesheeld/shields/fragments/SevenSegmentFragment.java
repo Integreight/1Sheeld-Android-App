@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
+import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.Segment;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
@@ -22,7 +23,6 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 public class SevenSegmentFragment extends
 		ShieldFragmentParent<SevenSegmentFragment> {
 
-	SevenSegmentShield sevenSegment;
 	Button connectButton;
 	ImageView aSegment;
 	ImageView bSegment;
@@ -62,8 +62,10 @@ public class SevenSegmentFragment extends
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		if (sevenSegment != null)
-			refreshSegments(sevenSegment.refreshSegments());
+		if (getApplication().getRunningSheelds().get(getControllerTag()) != null)
+			refreshSegments(((SevenSegmentShield) getApplication()
+					.getRunningSheelds().get(getControllerTag()))
+					.refreshSegments());
 
 	}
 
@@ -107,7 +109,9 @@ public class SevenSegmentFragment extends
 											public void onClick(
 													DialogInterface dialog,
 													int whichArduinoPin) {
-												sevenSegment.connectSegmentWithPin(
+												((SevenSegmentShield) getApplication()
+														.getRunningSheelds()
+														.get(getControllerTag())).connectSegmentWithPin(
 														Segment.getSegment(whichSegment),
 														whichArduinoPin);
 												builder3.show();
@@ -125,9 +129,12 @@ public class SevenSegmentFragment extends
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						sevenSegment
+						((SevenSegmentShield) getApplication()
+								.getRunningSheelds().get(getControllerTag()))
 								.setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
-						refreshSegments(sevenSegment.refreshSegments());
+						refreshSegments(((SevenSegmentShield) getApplication()
+								.getRunningSheelds().get(getControllerTag()))
+								.refreshSegments());
 					}
 				});
 				builder3.show();
@@ -222,9 +229,9 @@ public class SevenSegmentFragment extends
 	}
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-		if (sevenSegment != null)
-			return;
-		sevenSegment = new SevenSegmentShield(firmata);
+		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new SevenSegmentShield(getActivity(), getControllerTag()));
 
 	}
 

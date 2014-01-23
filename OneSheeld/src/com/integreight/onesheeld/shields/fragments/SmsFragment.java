@@ -11,13 +11,13 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
-	SmsShield smsShield;
 	TextView smsTextTextView;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
@@ -67,11 +67,11 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	};
 
 	private void initializeFirmata() {
-		if (smsShield != null)
-			return;
-		smsShield = new SmsShield(getApplication().getAppFirmata(),
-				getActivity());
-		smsShield.setSmsEventHandler(smsEventHandler);
+		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new SmsShield(getActivity(), getControllerTag()));
+		((SmsShield) getApplication().getRunningSheelds().get(
+				getControllerTag())).setSmsEventHandler(smsEventHandler);
 		toggleMenuButtons();
 	}
 

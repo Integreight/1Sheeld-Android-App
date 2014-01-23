@@ -12,13 +12,14 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	SeekBar seekBar;
-	SliderShield sliderShield;
 	Button connectButton;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,12 +49,14 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// TODO Auto-generated method stub
-				sliderShield.setSliderValue(progress);
+				((SliderShield) getApplication().getRunningSheelds().get(
+						getControllerTag())).setSliderValue(progress);
 
 			}
 		});
 
-		if (sliderShield != null)
+		if (((SliderShield) getApplication().getRunningSheelds().get(
+				getControllerTag())) != null)
 			seekBar.setEnabled(true);
 
 		return v;
@@ -96,7 +99,11 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 								// TODO Auto-generated method stub
 								int pin = Integer.parseInt(items[which]
 										.toString());
-								sliderShield.setConnectedPin(pin);
+								((SliderShield) getApplication()
+										.getRunningSheelds().get(
+												getControllerTag()))
+										.setConnected(new ArduinoConnectedPin(
+												pin, ArduinoFirmata.OUTPUT));
 								seekBar.setEnabled(true);
 
 							}
@@ -112,9 +119,9 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
 
-		if (sliderShield != null)
-			return;
-		sliderShield = new SliderShield(firmata);
+		if (getApplication().getRunningSheelds().get(getControllerTag()) == null)
+			getApplication().getRunningSheelds().put(getControllerTag(),
+					new SliderShield(getActivity(), getControllerTag()));
 
 	}
 

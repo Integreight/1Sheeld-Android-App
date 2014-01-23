@@ -3,17 +3,23 @@ package com.integreight.onesheeld.shields.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.app.Activity;
+
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.utils.ControllerParent;
 
-public class SevenSegmentShield {
-	private ArduinoFirmata firmata;
+public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 	private SevenSegmentsEventHandler eventHandler;
 	private Map<Segment, Boolean> segmentsStatus;
 	private Map<Segment, Integer> segmentsConnectedPins;
 
-	public SevenSegmentShield(ArduinoFirmata firmata) {
-		this.firmata = firmata;
+	public SevenSegmentShield() {
+		super();
+	}
+
+	public SevenSegmentShield(Activity activity, String tag) {
+		super(activity, tag);
 		segmentsStatus = new HashMap<Segment, Boolean>();
 		segmentsConnectedPins = new HashMap<Segment, Integer>();
 		for (Segment segment : Segment.values()) {
@@ -21,8 +27,8 @@ public class SevenSegmentShield {
 			segmentsConnectedPins.put(segment, null);
 		}
 	}
-	
-	public void connectSegmentWithPin(Segment segment,int pin){
+
+	public void connectSegmentWithPin(Segment segment, int pin) {
 		segmentsConnectedPins.put(segment, pin);
 	}
 
@@ -36,47 +42,24 @@ public class SevenSegmentShield {
 		return segmentsStatus;
 	}
 
-	private void setFirmataEventHandler() {
-		firmata.addDataHandler(new ArduinoFirmataDataHandler() {
-
-			@Override
-			public void onSysex(byte command, byte[] data) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onDigital(int portNumber, int portData) {
-				// TODO Auto-generated method stub
-				updateSegmentsStatusFromFirmata();
-				if (eventHandler != null) {
-					eventHandler.onSegmentsChange(segmentsStatus);
-				}
-
-			}
-
-			@Override
-			public void onAnalog(int pin, int value) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onUartReceive(byte[] data) {
-				// TODO Auto-generated method stub
-
-			}
-		});
+	@Override
+	public void onDigital(int portNumber, int portData) {
+		updateSegmentsStatusFromFirmata();
+		if (eventHandler != null) {
+			eventHandler.onSegmentsChange(segmentsStatus);
+		}
+		super.onDigital(portNumber, portData);
 	}
 
 	public void setSevenSegmentsEventHandler(
 			SevenSegmentsEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		for (Integer connectedPin : this.segmentsConnectedPins.values()) {
-			if(connectedPin!=null)firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
+			if (connectedPin != null)
+				getApplication().getAppFirmata().pinMode(connectedPin,
+						ArduinoFirmata.INPUT);
 		}
 		updateSegmentsStatusFromFirmata();
-		setFirmataEventHandler();
 	}
 
 	public static interface SevenSegmentsEventHandler {
@@ -87,7 +70,8 @@ public class SevenSegmentShield {
 		for (Segment segment : Segment.values()) {
 			Integer connectedPin = segmentsConnectedPins.get(segment);
 			if (connectedPin != null)
-				segmentsStatus.put(segment, firmata.digitalRead(connectedPin));
+				segmentsStatus.put(segment, getApplication().getAppFirmata()
+						.digitalRead(connectedPin));
 		}
 	}
 
@@ -100,7 +84,7 @@ public class SevenSegmentShield {
 			this.name = name;
 		}
 
-		 String getName() {
+		String getName() {
 			return name;
 		}
 
@@ -111,20 +95,29 @@ public class SevenSegmentShield {
 			}
 			return temp;
 		}
-		
-		public static Segment getSegment(int position){
+
+		public static Segment getSegment(int position) {
 			switch (position) {
-			case 0:return A;
-			case 1:return B;
-			case 2:return C;
-			case 3:return D;
-			case 4:return E;
-			case 5:return F;
-			case 6:return G;
-			case 7:return DOT;
-			default:return null;
+			case 0:
+				return A;
+			case 1:
+				return B;
+			case 2:
+				return C;
+			case 3:
+				return D;
+			case 4:
+				return E;
+			case 5:
+				return F;
+			case 6:
+				return G;
+			case 7:
+				return DOT;
+			default:
+				return null;
 			}
-			
+
 		}
 	}
 }

@@ -4,9 +4,9 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.onesheeld.utils.ControllerParent;
 
-public class LcdShield {
-	private ArduinoFirmata firmata;
+public class LcdShield extends ControllerParent<LcdShield> {
 	private static LcdEventHandler eventHandler;
 	// private Activity activity;
 	private static short rows = 2;
@@ -44,55 +44,35 @@ public class LcdShield {
 		return lcdText;
 	}
 
-	public LcdShield(ArduinoFirmata firmata, Activity activity) {
-		this.firmata = firmata;
+	public LcdShield() {
+		super();
+	}
+
+	public LcdShield(Activity activity, String tag) {
+		super(activity, tag);
 		// this.activity = activity;
 		rawText = new char[rows][columns];
 		lcdText = new String[rows];
 		reset();
 	}
 
-	private void setFirmataEventHandler() {
-		firmata.addDataHandler(new ArduinoFirmataDataHandler() {
-
-			@Override
-			public void onSysex(byte command, byte[] data) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onDigital(int portNumber, int portData) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onAnalog(int pin, int value) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onUartReceive(byte[] data) {
-				// TODO Auto-generated method stub
-				if (data.length < 2)
-					return;
-				byte command = data[0];
-				byte methodId = data[1];
-				int n = data.length - 2;
-				byte[] newArray = new byte[n];
-				System.arraycopy(data, 2, newArray, 0, n);
-				if (command == LCD_COMMAND)
-					processInput(methodId, newArray);
-
-			}
-		});
+	@Override
+	public void onUartReceive(byte[] data) {
+		if (data.length < 2)
+			return;
+		byte command = data[0];
+		byte methodId = data[1];
+		int n = data.length - 2;
+		byte[] newArray = new byte[n];
+		System.arraycopy(data, 2, newArray, 0, n);
+		if (command == LCD_COMMAND)
+			processInput(methodId, newArray);
+		super.onUartReceive(data);
 	}
 
 	public void setLcdEventHandler(LcdEventHandler eventHandler) {
 		LcdShield.eventHandler = eventHandler;
-		firmata.initUart();
-		setFirmataEventHandler();
+		getApplication().getAppFirmata().initUart();
 	}
 
 	public static interface LcdEventHandler {
@@ -205,8 +185,8 @@ public class LcdShield {
 		for (int i = 0; i < lcdText.length; i++) {
 			lcdText[i] = new String(rawText[i], 0, 16);
 		}
-//		if (eventHandler != null)
-//			eventHandler.onTextChange(lcdText);
+		// if (eventHandler != null)
+		// eventHandler.onTextChange(lcdText);
 	}
 
 }
