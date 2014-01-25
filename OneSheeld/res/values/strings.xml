@@ -43,6 +43,5 @@
     <string name="facebook_app_id">1423548367865538</string>
     <string name="twitter_consumer_key">W89WcoS0fjGJ4pGgyBmA</string>
     <string name="twitter_consumer_secret">izyhv5RIIaQgNsYX55hHVMj0BYm2p5bWQk8vqlasTo</string>
-    <string name="title_activity_bootloader">Bootloader</string>
 
 </resources>
