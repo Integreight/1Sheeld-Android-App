@@ -34,6 +34,7 @@ public class LedShield extends ControllerParent<LedShield> {
 	public boolean refreshLed() {
 		isLedOn = activity.getThisApplication().getAppFirmata()
 				.digitalRead(connectedPin);
+		CommitInstanceTotable();
 		return isLedOn;
 	}
 
@@ -44,6 +45,7 @@ public class LedShield extends ControllerParent<LedShield> {
 		if (eventHandler != null) {
 			eventHandler.onLedChange(isLedOn);
 		}
+		CommitInstanceTotable();
 		super.onDigital(portNumber, portData);
 	}
 
@@ -51,6 +53,7 @@ public class LedShield extends ControllerParent<LedShield> {
 		this.eventHandler = eventHandler;
 		isLedOn = activity.getThisApplication().getAppFirmata()
 				.digitalRead(connectedPin);
+		CommitInstanceTotable();
 	}
 
 	@Override

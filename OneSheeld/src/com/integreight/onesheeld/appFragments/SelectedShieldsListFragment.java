@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.enums;
+package com.integreight.onesheeld.appFragments;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,8 +14,8 @@ import android.widget.ListView;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
@@ -159,9 +159,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 	}
 
 	private void switchFragment(Fragment fragment) {
-		((MainActivity) getActivity()).getSupportFragmentManager()
-				.beginTransaction()
-				.replace(R.id.appTransitionsContainer, fragment).commit();
+		((MainActivity) getActivity()).replaceCurrentFragment(fragment, "",
+				false);
 		((MainActivity) getActivity()).getSlidingMenu().showContent();
 	}
 }

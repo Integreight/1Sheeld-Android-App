@@ -27,9 +27,19 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 			segmentsConnectedPins.put(segment, null);
 		}
 	}
-
+	@Override
+	public ControllerParent<SevenSegmentShield> setTag(String tag) {
+		segmentsStatus = new HashMap<Segment, Boolean>();
+		segmentsConnectedPins = new HashMap<Segment, Integer>();
+		for (Segment segment : Segment.values()) {
+			segmentsStatus.put(segment, false);
+			segmentsConnectedPins.put(segment, null);
+		}
+		return super.setTag(tag);
+	}
 	public void connectSegmentWithPin(Segment segment, int pin) {
 		segmentsConnectedPins.put(segment, pin);
+		CommitInstanceTotable();
 	}
 
 	public Map<Segment, Boolean> getSegmentsStatus() {
@@ -48,6 +58,7 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 		if (eventHandler != null) {
 			eventHandler.onSegmentsChange(segmentsStatus);
 		}
+		CommitInstanceTotable();
 		super.onDigital(portNumber, portData);
 	}
 
@@ -73,6 +84,7 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 				segmentsStatus.put(segment, getApplication().getAppFirmata()
 						.digitalRead(connectedPin));
 		}
+		CommitInstanceTotable();
 	}
 
 	public static enum Segment {

@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.appFragments;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -12,6 +13,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +81,18 @@ public class SheeldsList extends SherlockFragment {
 	public void onResume() {
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
+		List<Fragment> frags = getActivity().getSupportFragmentManager()
+				.getFragments();
+		for (Fragment frag : frags) {
+			if (frag != null
+					&& !frag.getClass().getName()
+							.equals(SheeldsList.class.getName())) {
+				FragmentTransaction ft = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				ft.remove(frag);
+				ft.commit();
+			}
+		}
 		super.onResume();
 	}
 
@@ -214,9 +230,9 @@ public class SheeldsList extends SherlockFragment {
 							arduinoConnected = true;
 							setColoredStrips();
 						}
-
-						((MainActivity) getActivity())
-								.setSupportProgressBarIndeterminateVisibility(false);
+						if (getActivity() != null)
+							((MainActivity) getActivity())
+									.setSupportProgressBarIndeterminateVisibility(false);
 					}
 
 					@Override
@@ -295,13 +311,15 @@ public class SheeldsList extends SherlockFragment {
 	}
 
 	private boolean isOneSheeldServiceRunning() {
-		ActivityManager manager = (ActivityManager) getActivity()
-				.getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager
-				.getRunningServices(Integer.MAX_VALUE)) {
-			if (OneSheeldService.class.getName().equals(
-					service.service.getClassName())) {
-				return true;
+		if (getActivity() != null) {
+			ActivityManager manager = (ActivityManager) getActivity()
+					.getSystemService(Context.ACTIVITY_SERVICE);
+			for (RunningServiceInfo service : manager
+					.getRunningServices(Integer.MAX_VALUE)) {
+				if (OneSheeldService.class.getName().equals(
+						service.service.getClassName())) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -327,7 +345,8 @@ public class SheeldsList extends SherlockFragment {
 				.getApplication();
 		app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
 		for (UIShield shield : shieldsUIList) {
-			if (shield.isMainActivitySelection()) {
+			if (shield.isMainActivitySelection()
+					&& shield.getShieldType() != null) {
 				ControllerParent<?> type = null;
 				try {
 					type = shield.getShieldType().newInstance();

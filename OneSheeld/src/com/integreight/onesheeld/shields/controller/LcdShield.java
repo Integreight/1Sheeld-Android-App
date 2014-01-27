@@ -55,6 +55,13 @@ public class LcdShield extends ControllerParent<LcdShield> {
 		lcdText = new String[rows];
 		reset();
 	}
+	@Override
+	public ControllerParent<LcdShield> setTag(String tag) {
+		rawText = new char[rows][columns];
+		lcdText = new String[rows];
+		reset();
+		return super.setTag(tag);
+	}
 
 	@Override
 	public void onUartReceive(byte[] data) {
@@ -73,6 +80,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 	public void setLcdEventHandler(LcdEventHandler eventHandler) {
 		LcdShield.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();
+		CommitInstanceTotable();
 	}
 
 	public static interface LcdEventHandler {
@@ -159,7 +167,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 			cursorXLocation = (short) (i + 1);
 
 		}
-
+		CommitInstanceTotable();
 		// if (charPosition < text.length()) {
 		// cursorYLocation = 1;
 		// cursorXLocation = 0;
@@ -185,6 +193,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 		for (int i = 0; i < lcdText.length; i++) {
 			lcdText[i] = new String(rawText[i], 0, 16);
 		}
+		CommitInstanceTotable();
 		// if (eventHandler != null)
 		// eventHandler.onTextChange(lcdText);
 	}

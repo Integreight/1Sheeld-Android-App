@@ -89,6 +89,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 			NotificationEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();
+		CommitInstanceTotable();
 	}
 
 	public interface NotificationEventHandler {

@@ -23,7 +23,15 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 			connectedPins.put(pin, null);
 		}
 	}
-
+	@Override
+	public ControllerParent<KeypadShield> setTag(String tag) {
+		getApplication().getAppFirmata().initUart();
+		connectedPins = new HashMap<Pin, Integer>();
+		for (Pin pin : Pin.values()) {
+			connectedPins.put(pin, null);
+		}
+		return super.setTag(tag);
+	}
 	public KeypadShield() {
 		super();
 	}
@@ -36,10 +44,12 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 				getApplication().getAppFirmata().pinMode(connectedPin,
 						ArduinoFirmata.OUTPUT);
 		}
+		CommitInstanceTotable();
 	}
 
 	public void connectKeypadPinWithArduinoPin(Pin segment, int pin) {
 		connectedPins.put(segment, pin);
+		CommitInstanceTotable();
 	}
 
 	public void setRowAndColumn(char row, char column) {
@@ -55,6 +65,7 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		}
 		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
 				new char[] { row, column });
+		CommitInstanceTotable();
 	}
 
 	public void resetRowAndColumn(int row, int column) {
@@ -70,6 +81,7 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		}
 		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
 				new char[] { NOTHING_PRESSED, NOTHING_PRESSED });
+		CommitInstanceTotable();
 	}
 
 	public static enum Pin {

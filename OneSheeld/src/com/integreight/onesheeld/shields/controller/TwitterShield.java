@@ -17,9 +17,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.AlertDialogManager;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -106,6 +103,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		TwitterShield.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();
+		CommitInstanceTotable();
 	}
 
 	public static interface TwitterEventHandler {

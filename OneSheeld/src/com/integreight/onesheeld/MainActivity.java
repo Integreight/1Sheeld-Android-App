@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.view.Window;
@@ -67,6 +68,7 @@ public class MainActivity extends SlidingFragmentActivity {
 					.getServiceEventHandlers()) {
 				serviceHandler.onSuccess(getThisApplication().getAppFirmata());
 			}
+			getThisApplication().setBoundService(true);
 
 		}
 
@@ -77,6 +79,7 @@ public class MainActivity extends SlidingFragmentActivity {
 					.getServiceEventHandlers()) {
 				serviceHandler.onFailure();
 			}
+			getThisApplication().setBoundService(false);
 		}
 	};
 
@@ -87,26 +90,25 @@ public class MainActivity extends SlidingFragmentActivity {
 		setContentView(R.layout.one_sheeld_main);
 		// set the Behind View
 		setBehindContentView(R.layout.menu_frame);
-		replaceCurrentFragment(SheeldsList.getInstance(), "base",true);
+		replaceCurrentFragment(SheeldsList.getInstance(), "base", true);
 	}
 
 	@Override
 	public void onBackPressed() {
 
-		if (getSupportFragmentManager().getBackStackEntryCount() > 1){
-			getSupportFragmentManager().popBackStackImmediate();//("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+		if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+			getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 			getSupportFragmentManager().executePendingTransactions();
-		}
-		else
+		} else
 			finish();
 	}
 
-	public void replaceCurrentFragment(Fragment targetFragment, String tag,boolean addToBackStack) {
+	public void replaceCurrentFragment(Fragment targetFragment, String tag,
+			boolean addToBackStack) {
 		FragmentTransaction transaction = getSupportFragmentManager()
 				.beginTransaction();
-		if(addToBackStack)
-		transaction.addToBackStack(tag);
-		transaction.replace(R.id.appTransitionsContainer, targetFragment, tag);
+		transaction.replace(R.id.appTransitionsContainer, targetFragment, tag)
+				.addToBackStack(null);
 		transaction.commit();
 	}
 
@@ -126,7 +128,8 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	@Override
 	protected void onDestroy() {
-		unBindFirmataService();
+		if (getThisApplication().isBoundService())
+			unBindFirmataService();
 		super.onDestroy();
 	}
 

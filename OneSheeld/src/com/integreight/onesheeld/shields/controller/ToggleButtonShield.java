@@ -30,6 +30,7 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		this.isButtonOn = isButtonOn;
 		activity.getThisApplication().getAppFirmata()
 				.digitalWrite(connectedPin, isButtonOn);
+		CommitInstanceTotable();
 	}
 
 	@Override

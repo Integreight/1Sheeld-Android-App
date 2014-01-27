@@ -50,7 +50,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	}
 
 	@Override
-	public ControllerParent<FacebookShield> setActivity(MainActivity activity) {
+	public ControllerParent<FacebookShield> setTag(String tag) {
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
@@ -64,7 +64,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		}
 
 		session.addCallback(statusCallback);
-		return super.setActivity(activity);
+		return super.setTag(tag);
 	}
 
 	public FacebookShield(Activity activity, String tag, Fragment fragment,
@@ -94,6 +94,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	public void setFacebookEventHandler(FacebookEventHandler eventHandler) {
 		FacebookShield.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();
+		CommitInstanceTotable();
 	}
 
 	public static interface FacebookEventHandler extends EventHandler {
@@ -112,6 +113,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		} else {
 			Session.openActiveSession(activity, fragment, true, statusCallback);
 		}
+		CommitInstanceTotable();
 	}
 
 	public void logoutFromFacebook() {
@@ -122,6 +124,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_FACEBOOK_USERNAME);
 		e.commit();
+		CommitInstanceTotable();
 	}
 
 	@Override

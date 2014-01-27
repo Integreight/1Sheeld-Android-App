@@ -26,6 +26,11 @@ public class SmsShield extends ControllerParent<SmsShield> {
 	public SmsShield() {
 		super();
 	}
+	@Override
+	public ControllerParent<SmsShield> setTag(String tag) {
+		getApplication().getAppFirmata().initUart();
+		return super.setTag(tag);
+	}
 
 	public SmsShield(Activity activity, String tag) {
 		super(activity, tag);
@@ -66,12 +71,15 @@ public class SmsShield extends ControllerParent<SmsShield> {
 
 			e.printStackTrace();
 		}
+		CommitInstanceTotable();
 
 	}
+	
 
 	public void setSmsEventHandler(SmsEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();
+		CommitInstanceTotable();
 	}
 
 	public interface SmsEventHandler {

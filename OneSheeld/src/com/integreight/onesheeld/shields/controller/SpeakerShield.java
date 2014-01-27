@@ -43,7 +43,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		if (eventHandler != null) {
 			eventHandler.onSpeakerPinChange(isSpeakerPinOn);
 		}
-
+		CommitInstanceTotable();
 		super.onDigital(portNumber, portData);
 	}
 
@@ -59,6 +59,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 				ArduinoFirmata.INPUT);
 		isSpeakerPinOn = getApplication().getAppFirmata().digitalRead(
 				connectedPin);
+		CommitInstanceTotable();
 	}
 
 	public static interface SpeakerEventHandler {

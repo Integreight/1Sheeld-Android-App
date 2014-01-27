@@ -35,6 +35,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.integreight.onesheeld.activities.MainActivity" />
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="onesheeld"
+                    android:scheme="oauth" />
+            </intent-filter>
         </activity>
         <activity
             android:name="com.integreight.onesheeld.activities.DeviceListActivity"
@@ -62,16 +77,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.integreight.onesheeld.activities.MainActivity" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="onesheeld"
-                    android:scheme="oauth" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.integreight.onesheeld.plugin.EditActivity"
@@ -95,20 +100,7 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
-                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
-
-
-
-
-
-
-
-
-
-
-
-
-
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"

@@ -21,6 +21,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
 	@Override
 	public void setConnected(ArduinoConnectedPin... pins) {
 		connectedPin = pins[0].getPinID();
+		CommitInstanceTotable();
 		super.setConnected(pins);
 	}
 

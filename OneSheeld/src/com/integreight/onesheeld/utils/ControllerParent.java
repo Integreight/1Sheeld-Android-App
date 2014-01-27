@@ -121,7 +121,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		return this;
 	}
 
-	private void CommitInstanceTotable() {
+	public void CommitInstanceTotable() {
 		getApplication().getRunningSheelds().put(tag, this);
 	}
 

@@ -18,7 +18,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.enums.SelectedShieldsListFragment;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -185,5 +184,10 @@ public class ShieldsOperations extends BaseContainerFragment {
 			mp.start();
 		} else
 			mp.start();
+	}
+	@Override
+	public void onDestroy() {
+		mContent=null;
+		super.onDestroy();
 	}
 }

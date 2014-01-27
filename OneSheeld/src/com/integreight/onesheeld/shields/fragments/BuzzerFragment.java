@@ -10,7 +10,6 @@ import android.widget.Button;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.ShieldsOperationActivity;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;

@@ -24,6 +24,15 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 			connectedPins.put(pin, null);
 		}
 	}
+	@Override
+	public ControllerParent<GamepadShield> setTag(String tag) {
+		getApplication().getAppFirmata().initUart();
+		connectedPins = new HashMap<Pin, Integer>();
+		for (Pin pin : Pin.values()) {
+			connectedPins.put(pin, null);
+		}
+		return super.setTag(tag);
+	}
 
 	public GamepadShield() {
 		super();
@@ -37,10 +46,12 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 				getApplication().getAppFirmata().pinMode(connectedPin,
 						ArduinoFirmata.OUTPUT);
 		}
+		CommitInstanceTotable();
 	}
 
 	public void connectGamepadPinWithArduinoPin(Pin gPin, int pin) {
 		connectedPins.put(gPin, pin);
+		CommitInstanceTotable();
 	}
 
 	public void setPinToHigh(int pinId) {
@@ -50,6 +61,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 			getApplication().getAppFirmata().digitalWrite(
 					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.HIGH);
 		}
+		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
 	}
 
@@ -60,6 +72,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 			getApplication().getAppFirmata().digitalWrite(
 					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.LOW);
 		}
+		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
 		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});
 	}
