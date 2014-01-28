@@ -9,6 +9,7 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.view.Window;
@@ -104,11 +105,28 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	public void replaceCurrentFragment(Fragment targetFragment, String tag,
 			boolean addToBackStack) {
-		FragmentTransaction transaction = getSupportFragmentManager()
-				.beginTransaction();
-		transaction.replace(R.id.appTransitionsContainer, targetFragment, tag)
-				.addToBackStack(null);
-		transaction.commit();
+		String backStateName = targetFragment.getClass().getName();
+		String fragmentTag = backStateName;
+
+		FragmentManager manager = getSupportFragmentManager();
+		boolean fragmentPopped = manager
+				.popBackStackImmediate(backStateName, 0);
+
+		if (!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null) { // fragment
+			// not
+			// in
+			// back
+			// stack,
+			// create
+			// it.
+			FragmentTransaction ft = manager.beginTransaction();
+			ft.replace(R.id.appTransitionsContainer, targetFragment,
+					fragmentTag);
+			ft.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
+			if (addToBackStack)
+				ft.addToBackStack(backStateName);
+			ft.commit();
+		}
 	}
 
 	private void bindFirmataService() {

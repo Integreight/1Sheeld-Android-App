@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.appFragments;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -14,7 +13,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -81,18 +79,19 @@ public class SheeldsList extends SherlockFragment {
 	public void onResume() {
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
-		List<Fragment> frags = getActivity().getSupportFragmentManager()
-				.getFragments();
-		for (Fragment frag : frags) {
-			if (frag != null
-					&& !frag.getClass().getName()
-							.equals(SheeldsList.class.getName())) {
-				FragmentTransaction ft = getActivity()
-						.getSupportFragmentManager().beginTransaction();
-				ft.remove(frag);
-				ft.commit();
-			}
-		}
+		// List<Fragment> frags = getActivity().getSupportFragmentManager()
+		// .getFragments();
+		// for (Fragment frag : frags) {
+		// if (frag != null
+		// && !frag.getClass().getName()
+		// .equals(SheeldsList.class.getName())) {
+		// FragmentTransaction ft = getActivity()
+		// .getSupportFragmentManager().beginTransaction();
+		// ft.remove(frag);
+		// ft.commit();
+		// }
+		// }
+		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
 
