@@ -166,9 +166,18 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
 	@Override
 	public void onStart() {
+
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
 		// TODO Auto-generated method stub
 		super.onStart();
+	}
 
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override

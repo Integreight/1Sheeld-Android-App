@@ -58,18 +58,19 @@ public class ToggleButtonFragment extends
 	}
 
 	@Override
-	public void onResume() {
-		((ToggleButtonShield) getApplication().getRunningSheelds().get(
-				getControllerTag())).setHasForgroundView(true);
-		super.onResume();
+	public void onStart() {
+
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
+		super.onStart();
 
 	}
 
 	@Override
-	public void onPause() {
-		((ToggleButtonShield) getApplication().getRunningSheelds().get(
-				getControllerTag())).setHasForgroundView(false);
-		super.onPause();
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override

@@ -37,7 +37,16 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
 		super.onStart();
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -57,14 +66,16 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 		@Override
 		public void onTextChange(String[] text) {
 			// TODO Auto-generated method stub
-			lcdTextView.setText(extractTextFromLcdShield());
+			if (canChangeUI())
+				lcdTextView.setText(extractTextFromLcdShield());
 			// Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
 		public void onLcdError(String error) {
 			// TODO Auto-generated method stub
-			Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+			if (canChangeUI())
+				Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
 		}
 	};
 

@@ -60,13 +60,22 @@ public class SevenSegmentFragment extends
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
 		if (getApplication().getRunningSheelds().get(getControllerTag()) != null)
 			refreshSegments(((SevenSegmentShield) getApplication()
 					.getRunningSheelds().get(getControllerTag()))
 					.refreshSegments());
 
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
+		super.onStart();
+
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -149,7 +158,8 @@ public class SevenSegmentFragment extends
 		@Override
 		public void onSegmentsChange(Map<Segment, Boolean> segmentsStatus) {
 			// TODO Auto-generated method stub
-			refreshSegments(segmentsStatus);
+			if (canChangeUI())
+				refreshSegments(segmentsStatus);
 
 		}
 	};

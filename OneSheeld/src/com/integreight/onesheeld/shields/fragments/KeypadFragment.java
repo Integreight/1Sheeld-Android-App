@@ -60,7 +60,16 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
 		super.onStart();
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override

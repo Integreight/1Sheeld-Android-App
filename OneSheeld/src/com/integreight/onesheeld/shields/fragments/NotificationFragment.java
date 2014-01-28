@@ -33,9 +33,17 @@ public class NotificationFragment extends
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
 		super.onStart();
 
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -52,6 +60,7 @@ public class NotificationFragment extends
 		@Override
 		public void onNotificationReceive(String notificationText) {
 			// TODO Auto-generated method stub
+			if(canChangeUI())
 			notificationTextTextView.setText(notificationText);
 
 		}

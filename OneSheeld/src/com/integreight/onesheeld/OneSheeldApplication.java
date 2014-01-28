@@ -23,7 +23,6 @@ public class OneSheeldApplication extends Application {
 	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
-	private boolean isBoundService = false;
 	private ConnectionDetector connectionHandler;
 
 	@Override
@@ -67,13 +66,6 @@ public class OneSheeldApplication extends Application {
 		this.appFirmata = appFirmata;
 	}
 
-	public boolean isBoundService() {
-		return isBoundService;
-	}
-
-	public void setBoundService(boolean isBoundService) {
-		this.isBoundService = isBoundService;
-	}
 
 	public void addServiceEventHandler(
 			OneSheeldServiceHandler serviceEventHandler) {
@@ -97,5 +89,4 @@ public class OneSheeldApplication extends Application {
 	public void setConnectionHandler(ConnectionDetector connectionHandler) {
 		this.connectionHandler = connectionHandler;
 	}
-
 }

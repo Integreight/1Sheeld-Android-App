@@ -37,8 +37,17 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 				getControllerTag())) != null)
 			toggleLed(((LedShield) getApplication().getRunningSheelds().get(
 					getControllerTag())).refreshLed());
-		super.onStart();
 
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
+		super.onStart();
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -71,10 +80,12 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 								// TODO Auto-generated method stub
 								((LedShield) getApplication()
-										.getRunningSheelds().get("LED"))
+										.getRunningSheelds().get(
+												getControllerTag()))
 										.setLedEventHandler(ledEventHandler);
 								((LedShield) getApplication()
-										.getRunningSheelds().get("LED"))
+										.getRunningSheelds().get(
+												getControllerTag()))
 										.setConnected(new ArduinoConnectedPin(
 												which, ArduinoFirmata.INPUT));
 								toggleLed(((LedShield) getApplication()
@@ -98,7 +109,8 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 		@Override
 		public void onLedChange(boolean isLedOn) {
 			// TODO Auto-generated method stub
-			toggleLed(isLedOn);
+			if (canChangeUI())
+				toggleLed(isLedOn);
 
 		}
 	};

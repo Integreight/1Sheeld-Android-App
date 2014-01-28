@@ -60,4 +60,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public void setControllerTag(String controllerTag) {
 		this.controllerTag = controllerTag;
 	};
+
+	public boolean canChangeUI() {
+		return (getActivity() != null && getApplication().getRunningSheelds()
+				.get(getControllerTag()).isHasForgroundView());
+	}
 }

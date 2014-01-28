@@ -91,6 +91,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		this.fragment = fragment;
 	}
 
+	public void setShieldFragment(Fragment fragment) {
+		this.fragment = fragment;
+		CommitInstanceTotable();
+	}
+
 	public void setFacebookEventHandler(FacebookEventHandler eventHandler) {
 		FacebookShield.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();

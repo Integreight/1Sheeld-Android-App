@@ -1,5 +1,7 @@
 package com.integreight.onesheeld;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -7,7 +9,6 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.view.Window;
@@ -19,7 +20,8 @@ import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class MainActivity extends SlidingFragmentActivity {
-	private final String TAG = "MainActivity";
+	// private final String TAG = "MainActivity";
+	private boolean isBoundService = false;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -58,8 +60,6 @@ public class MainActivity extends SlidingFragmentActivity {
 			// We've bound to LocalService, cast the IBinder and get
 			// LocalService instance
 			OneSheeldBinder binder = (OneSheeldBinder) service;
-
-			getThisApplication().setBoundService(true);
 			getThisApplication()
 					.setAppFirmata(binder.getService().getFirmata());
 			getThisApplication().getAppFirmata().addEventHandler(
@@ -68,18 +68,17 @@ public class MainActivity extends SlidingFragmentActivity {
 					.getServiceEventHandlers()) {
 				serviceHandler.onSuccess(getThisApplication().getAppFirmata());
 			}
-			getThisApplication().setBoundService(true);
+			isBoundService = true;
 
 		}
 
 		@Override
 		public void onServiceDisconnected(ComponentName arg0) {
-			getThisApplication().setBoundService(false);
 			for (OneSheeldServiceHandler serviceHandler : ((OneSheeldApplication) getApplication())
 					.getServiceEventHandlers()) {
 				serviceHandler.onFailure();
 			}
-			getThisApplication().setBoundService(false);
+			isBoundService = false;
 		}
 	};
 
@@ -113,7 +112,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 
 	private void bindFirmataService() {
-		if (!getThisApplication().isBoundService()) {
+		if (!isBoundService) {
 			Intent intent = new Intent(this, OneSheeldService.class);
 			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		}
@@ -121,16 +120,27 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	private void unBindFirmataService() {
 		// TODO Auto-generated method stub
-		if (getThisApplication().isBoundService())
+		if (isBoundService && isMyServiceRunning())
 			this.unbindService(mConnection);
 
 	}
 
 	@Override
 	protected void onDestroy() {
-		if (getThisApplication().isBoundService())
+		if (isBoundService && isMyServiceRunning())
 			unBindFirmataService();
 		super.onDestroy();
 	}
 
+	private boolean isMyServiceRunning() {
+		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		for (RunningServiceInfo service : manager
+				.getRunningServices(Integer.MAX_VALUE)) {
+			if (OneSheeldApplication.class.getName().equals(
+					service.service.getClassName())) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

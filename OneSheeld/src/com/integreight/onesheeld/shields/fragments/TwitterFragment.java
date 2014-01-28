@@ -37,10 +37,19 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
 		checkLogin();
 
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
+		super.onStart();
+
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -59,38 +68,43 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 		@Override
 		public void onRecieveTweet(String tweet) {
 			// TODO Auto-generated method stub
-			lastTweetTextView.setText(tweet);
-			Toast.makeText(getActivity(), "Tweet posted!", Toast.LENGTH_SHORT)
-					.show();
-
+			if (canChangeUI()) {
+				lastTweetTextView.setText(tweet);
+				Toast.makeText(getActivity(), "Tweet posted!",
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		@Override
 		public void onTwitterLoggedIn() {
 			// TODO Auto-generated method stub
-			getActivity().runOnUiThread(new Runnable() {
+			if (canChangeUI()) {
+				getActivity().runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					buttonToLoggedIn();
-				}
-			});
+					@Override
+					public void run() {
+						buttonToLoggedIn();
+					}
+				});
+			}
 		}
 
 		@Override
 		public void onTwitterError(final String error) {
 			// TODO Auto-generated method stub
-			getActivity().runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
-							.show();
-					buttonToLoggedIn();
+			if (canChangeUI())
+				getActivity().runOnUiThread(new Runnable() {
 
-				}
-			});
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
+								.show();
+						buttonToLoggedIn();
+
+					}
+				});
 
 		}
 

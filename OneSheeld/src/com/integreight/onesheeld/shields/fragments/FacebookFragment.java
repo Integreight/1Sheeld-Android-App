@@ -14,7 +14,6 @@ import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
-import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
@@ -41,8 +40,17 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		super.onStart();
 		initializeFirmata();
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
+		super.onStart();
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -76,42 +84,48 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		@Override
 		public void onRecievePost(String post) {
 			// TODO Auto-generated method stub
-			lastPostTextView.setText(post);
-			Toast.makeText(getActivity(), "Posted on your wall!",
-					Toast.LENGTH_SHORT).show();
-
+			if (canChangeUI()) {
+				lastPostTextView.setText(post);
+				Toast.makeText(getActivity(), "Posted on your wall!",
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 
 		@Override
 		public void onFacebookLoggedIn() {
 			// TODO Auto-generated method stub
-			getActivity().runOnUiThread(new Runnable() {
+			if (canChangeUI()) {
+				getActivity().runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					buttonToLoggedIn();
-					getAppActivity()
-							.setSupportProgressBarIndeterminateVisibility(false);
-				}
-			});
+					@Override
+					public void run() {
+						buttonToLoggedIn();
+						getAppActivity()
+								.setSupportProgressBarIndeterminateVisibility(
+										false);
+					}
+				});
+			}
 		}
 
 		@Override
 		public void onFacebookError(final String error) {
 			// TODO Auto-generated method stub
-			getActivity().runOnUiThread(new Runnable() {
+			if (canChangeUI()) {
+				getActivity().runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
-							.show();
-					buttonToLoggedIn();
-					getAppActivity()
-							.setSupportProgressBarIndeterminateVisibility(false);
-				}
-			});
-
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
+								.show();
+						buttonToLoggedIn();
+						getAppActivity()
+								.setSupportProgressBarIndeterminateVisibility(
+										false);
+					}
+				});
+			}
 		}
 
 	};
@@ -122,7 +136,8 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 					getControllerTag(),
 					new FacebookShield(getActivity(), getControllerTag(), this,
 							savedInstanceState));
-
+		((FacebookShield) getApplication().getRunningSheelds().get(
+				getControllerTag())).setShieldFragment(this);
 		((FacebookShield) getApplication().getRunningSheelds().get(
 				getControllerTag()))
 				.setFacebookEventHandler(facebookEventHandler);

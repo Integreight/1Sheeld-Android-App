@@ -34,8 +34,18 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
+
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(true);
 		super.onStart();
+
+	}
+
+	@Override
+	public void onStop() {
+		getApplication().getRunningSheelds().get(getControllerTag())
+				.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	@Override
@@ -52,17 +62,20 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 		@Override
 		public void onSmsSent(String smsNumber, String smsText) {
 			// TODO Auto-generated method stub
-			smsTextTextView.setText(smsText);
-			Toast.makeText(getActivity(), "SMS Sent!", Toast.LENGTH_LONG)
-					.show();
+			if (canChangeUI()) {
+				smsTextTextView.setText(smsText);
+				Toast.makeText(getActivity(), "SMS Sent!", Toast.LENGTH_LONG)
+						.show();
+			}
 
 		}
 
 		@Override
 		public void onSmsFail(String error) {
 			// TODO Auto-generated method stub
-			Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
-
+			if (canChangeUI()) {
+				Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+			}
 		}
 	};
 
