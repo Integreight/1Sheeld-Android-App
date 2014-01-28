@@ -342,7 +342,7 @@ public class BluetoothService {
             while (true) {
                 try {
                     // Read from the InputStream
-                    bytes = mmInStream.read(buffer);
+                    bytes = mmInStream.read(buffer,0,buffer.length);
 
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(BluetoothService.MESSAGE_READ, bytes, -1, buffer)
