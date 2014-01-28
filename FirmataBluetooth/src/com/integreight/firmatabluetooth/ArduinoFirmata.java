@@ -4,6 +4,8 @@ package com.integreight.firmatabluetooth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -15,6 +17,9 @@ import android.widget.Toast;
 public class ArduinoFirmata{
     public final static String VERSION = "0.2.0";
     public final static String TAG = "ArduinoFirmata";
+    
+    BlockingQueue<Byte> buffer = new ArrayBlockingQueue<Byte>(256);
+    UartListeningThread uartListeningThread;
 
     public static final byte INPUT  = 0;
     public static final byte OUTPUT = 1;
@@ -66,11 +71,15 @@ public class ArduinoFirmata{
 	public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
     private List<ArduinoFirmataEventHandler> eventHandlers;
     private List<ArduinoFirmataDataHandler> dataHandlers;
+    private List<ArduinoFirmataShieldFrameHandler> frameHandlers;
     public void addEventHandler(ArduinoFirmataEventHandler handler){
         if(!eventHandlers.contains(handler))eventHandlers.add(handler);
     }
     public void addDataHandler(ArduinoFirmataDataHandler handler){
         if(!dataHandlers.contains(handler))dataHandlers.add(handler);
+    }
+    public void addShieldFrameHandler(ArduinoFirmataShieldFrameHandler handler){
+        if(!frameHandlers.contains(handler))frameHandlers.add(handler);
     }
 
     private int waitForData = 0;
@@ -98,6 +107,7 @@ public class ArduinoFirmata{
         bluetoothService=new BluetoothService(context, mHandler);
         eventHandlers=new ArrayList<ArduinoFirmataEventHandler>();
         dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
+        frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
         this.context=context;
     }
 
@@ -129,6 +139,10 @@ public class ArduinoFirmata{
 
     public boolean close(){
         	if(bluetoothService!=null)bluetoothService.stopConnection();
+        	if(uartListeningThread!=null&&uartListeningThread.isAlive()){
+        		uartListeningThread.stopRunning();
+        		uartListeningThread.interrupt();
+        	}
 //        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
 //        		eventHandler.onClose();
 //    		}
@@ -291,7 +305,18 @@ public class ArduinoFirmata{
                 }
                 for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
                 	dataHandler.onSysex(sysexCommand, sysexData);
-                	if(sysexCommand==UART_DATA&&fixedSysexData!=null) dataHandler.onUartReceive(fixedSysexData);
+                	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
+                		dataHandler.onUartReceive(fixedSysexData);
+                		
+                		try {
+            				for(byte b:fixedSysexData){
+            					buffer.put(b);
+            				}
+            			} catch (InterruptedException e) {
+            				// TODO Auto-generated catch block
+            				e.printStackTrace();
+            			}
+                	}
         		}
             }
             else{
@@ -378,6 +403,7 @@ public class ArduinoFirmata{
                 // save the connected device's name
             	enableReporting();
             	setAllPinsAsInput();
+            	uartListeningThread=new UartListeningThread();
             	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
             		eventHandler.onConnect();
         		}
@@ -401,6 +427,16 @@ public class ArduinoFirmata{
             }
         }
     };
+
+	private byte readByteFromUartBuffer() {
+		try {
+			return buffer.take().byteValue();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
+	}
     
     public static enum BaudRate{
         _1200((byte)0x00),
@@ -423,6 +459,46 @@ public class ArduinoFirmata{
         	return value;
         }
         
+    }
+    
+    private class UartListeningThread extends Thread{
+    	private boolean isRunning =false;
+    	public UartListeningThread() {
+			// TODO Auto-generated constructor stub
+    		isRunning=true;
+    		start();
+		}
+    	private void stopRunning(){
+    		isRunning=false;
+    	}
+    	
+    	@Override
+    	public void run() {
+    		// TODO Auto-generated method stub
+    		while(isRunning){
+    			while((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
+    			byte shieldId=readByteFromUartBuffer();
+    			byte instanceId=readByteFromUartBuffer();
+    			byte functionId=readByteFromUartBuffer();
+    			ShieldFrame frame=new ShieldFrame(shieldId, instanceId, functionId);
+    			byte argumentsNumber=readByteFromUartBuffer();
+    			for(byte i=0;i<argumentsNumber;i++){
+    				byte length=readByteFromUartBuffer();
+    				byte[] data=new byte[length];
+    				for(byte j=0;j<length;i++){
+    					data[j]=readByteFromUartBuffer();
+    				}
+    				frame.addArgument(data);
+    			}
+    			//while((readByteFromUartBuffer())!=ShieldFrame.END_OF_FRAME);
+    			
+    			for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
+    				frameHandler.onNewShieldFrameReceived(frame);
+    			}
+    			
+    			
+    		}
+    	}
     }
 
 }
