@@ -308,14 +308,14 @@ public class ArduinoFirmata{
                 	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
                 		dataHandler.onUartReceive(fixedSysexData);
                 		
-                		try {
+//                		try {
             				for(byte b:fixedSysexData){
-            					buffer.put(b);
+            					buffer.add(b);
             				}
-            			} catch (InterruptedException e) {
-            				// TODO Auto-generated catch block
-            				e.printStackTrace();
-            			}
+//            			} catch (InterruptedException e) {
+//            				// TODO Auto-generated catch block
+//            				e.printStackTrace();
+//            			}
                 	}
         		}
             }
@@ -485,7 +485,7 @@ public class ArduinoFirmata{
     			for(byte i=0;i<argumentsNumber;i++){
     				byte length=readByteFromUartBuffer();
     				byte[] data=new byte[length];
-    				for(byte j=0;j<length;i++){
+    				for(byte j=0;j<length;j++){
     					data[j]=readByteFromUartBuffer();
     				}
     				frame.addArgument(data);

@@ -34,6 +34,16 @@ public class ShieldFrame {
 	public ArrayList<byte[]> getArguments() {
 		return arguments;
 	}
+	
+	public byte[] getArgument(int n){
+		if(n>=arguments.size())return null;
+		return arguments.get(n);
+	}
+	
+	public String getArgumentAsString(int n){
+		if(n>=arguments.size())return null;
+		return new String(arguments.get(n));
+	}
 
 	public void addArgument(byte[] argument) {
 		arguments.add(argument);
