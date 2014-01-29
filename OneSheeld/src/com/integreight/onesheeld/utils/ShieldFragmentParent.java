@@ -40,8 +40,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 						@Override
 						public void onFailure() {
-							// TODO Auto-generated method stub
-
+							
 						}
 					});
 		} else

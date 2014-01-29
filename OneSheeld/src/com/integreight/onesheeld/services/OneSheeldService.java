@@ -27,6 +27,7 @@ public class OneSheeldService extends Service {
 
 	// private static final String TAG = "OneSheeldService";
 	// private static final boolean D = true;
+	public static boolean isBound = false;
 	SharedPreferences sharedPrefs;
 	private ArduinoFirmata arduinoFirmata;
 	private final IBinder mBinder = new OneSheeldBinder();
@@ -38,7 +39,7 @@ public class OneSheeldService extends Service {
 		public void onError(String errorMessage) {
 			// TODO Auto-generated method stub
 			sheeldConnectedMessageToActivity(COMMUNICAITON_ERROR);
-
+			stopSelf();
 		}
 
 		@Override
@@ -79,28 +80,37 @@ public class OneSheeldService extends Service {
 				new IntentFilter(OneSheeldService.PLUGIN_MESSAGE));
 		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld",
 				Context.MODE_PRIVATE);
+		isBound = false;
 		super.onCreate();
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// TODO Auto-generated method stub
+		if (intent.getExtras() != null) {
+			deviceAddress = intent.getExtras().getString(
+					BluetoothService.EXTRA_DEVICE_ADDRESS);
+			BluetoothDevice device = mBluetoothAdapter
+					.getRemoteDevice(deviceAddress);
+			// Attempt to connect to the device
 
-		deviceAddress = intent.getExtras().getString(
-				BluetoothService.EXTRA_DEVICE_ADDRESS);
-		BluetoothDevice device = mBluetoothAdapter
-				.getRemoteDevice(deviceAddress);
-		// Attempt to connect to the device
-
-		arduinoFirmata.addEventHandler(arduinoEventHandler);
-		arduinoFirmata.connect(device);
+			arduinoFirmata.addEventHandler(arduinoEventHandler);
+			arduinoFirmata.connect(device);
+		}
 		return START_REDELIVER_INTENT;
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
+		isBound = true;
 		return mBinder;
+	}
+
+	@Override
+	public boolean onUnbind(Intent intent) {
+		isBound = false;
+		return super.onUnbind(intent);
 	}
 
 	@Override
@@ -111,6 +121,7 @@ public class OneSheeldService extends Service {
 		hideNotifcation();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(
 				mMessageReceiver);
+		isBound = false;
 		super.onDestroy();
 	}
 

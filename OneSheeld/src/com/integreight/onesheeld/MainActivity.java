@@ -130,14 +130,17 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 
 	private void bindFirmataService() {
+		isBoundService = OneSheeldService.isBound;
 		if (!isBoundService) {
 			Intent intent = new Intent(this, OneSheeldService.class);
+			startService(intent);
 			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		}
 	}
 
 	private void unBindFirmataService() {
 		// TODO Auto-generated method stub
+		isBoundService = OneSheeldService.isBound;
 		if (isBoundService && isMyServiceRunning())
 			this.unbindService(mConnection);
 
@@ -145,8 +148,10 @@ public class MainActivity extends SlidingFragmentActivity {
 
 	@Override
 	protected void onDestroy() {
+		isBoundService = OneSheeldService.isBound;
 		if (isBoundService && isMyServiceRunning())
 			unBindFirmataService();
+		isBoundService = false;
 		super.onDestroy();
 	}
 

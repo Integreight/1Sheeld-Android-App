@@ -207,7 +207,8 @@ public class SheeldsList extends SherlockFragment {
 		// ShieldsOperationActivity.class);
 		// startActivity(shieldsActivity);
 		((MainActivity) getActivity()).replaceCurrentFragment(
-				ShieldsOperations.getInstance(), "operations", true);
+				ShieldsOperations.getInstance(),
+				ShieldsOperations.class.getName(), true);
 	}
 
 	@Override
@@ -250,8 +251,11 @@ public class SheeldsList extends SherlockFragment {
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
 
 		}
-
-		if (!isOneSheeldServiceRunning()) {
+		if (((OneSheeldApplication) getActivity().getApplication())
+				.getAppFirmata() == null
+				|| (((OneSheeldApplication) getActivity().getApplication())
+						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
+						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
 			if (((OneSheeldApplication) getActivity().getApplication())
 					.getAppPreferences().contains(
