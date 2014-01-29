@@ -79,18 +79,18 @@ public class SheeldsList extends SherlockFragment {
 	public void onResume() {
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
-		// List<Fragment> frags = getActivity().getSupportFragmentManager()
-		// .getFragments();
-		// for (Fragment frag : frags) {
-		// if (frag != null
-		// && !frag.getClass().getName()
-		// .equals(SheeldsList.class.getName())) {
-		// FragmentTransaction ft = getActivity()
-		// .getSupportFragmentManager().beginTransaction();
-		// ft.remove(frag);
-		// ft.commit();
-		// }
-		// }
+		List<Fragment> frags = getActivity().getSupportFragmentManager()
+				.getFragments();
+		for (Fragment frag : frags) {
+			if (frag != null
+					&& !frag.getClass().getName()
+							.equals(SheeldsList.class.getName())) {
+				FragmentTransaction ft = getActivity()
+						.getSupportFragmentManager().beginTransaction();
+				ft.remove(frag);
+				ft.commit();
+			}
+		}
 		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
