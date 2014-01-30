@@ -4,8 +4,9 @@ package com.integreight.firmatabluetooth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceCallback;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -18,8 +19,10 @@ public class ArduinoFirmata{
     public final static String VERSION = "0.2.0";
     public final static String TAG = "ArduinoFirmata";
     
-    BlockingQueue<Byte> buffer = new ArrayBlockingQueue<Byte>(256);
+    ConcurrentLinkedQueue<Byte> uartBuffer = new ConcurrentLinkedQueue<Byte>();
+    ConcurrentLinkedQueue<Byte> bluetoothBuffer = new ConcurrentLinkedQueue<Byte>();
     UartListeningThread uartListeningThread;
+    BluetoothBufferListeningThread bluetoothBufferListeningThread;
 
     public static final byte INPUT  = 0;
     public static final byte OUTPUT = 1;
@@ -38,7 +41,7 @@ public class ArduinoFirmata{
     public static final int A4=17;
     public static final int A5=18;
     
-    private final char MAX_DATA_BYTES  = 256;
+    private final char MAX_DATA_BYTES  = 4096;
     private final byte DIGITAL_MESSAGE = (byte)0x90;
     private final byte ANALOG_MESSAGE  = (byte)0xE0;
     private final byte REPORT_ANALOG   = (byte)0xC0;
@@ -109,6 +112,7 @@ public class ArduinoFirmata{
         dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
         frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
         this.context=context;
+        bluetoothService.setBluetoothServiceCallback(callback);
     }
 
     public void connect(BluetoothDevice device){
@@ -138,11 +142,16 @@ public class ArduinoFirmata{
     }
 
     public boolean close(){
+    	if(bluetoothBufferListeningThread!=null&&bluetoothBufferListeningThread.isAlive()){
+    		bluetoothBufferListeningThread.stopRunning();
+    		bluetoothBufferListeningThread.interrupt();
+    	}
+    	if(uartListeningThread!=null&&uartListeningThread.isAlive()){
+    		uartListeningThread.stopRunning();
+    		uartListeningThread.interrupt();
+    	}
         	if(bluetoothService!=null)bluetoothService.stopConnection();
-        	if(uartListeningThread!=null&&uartListeningThread.isAlive()){
-        		uartListeningThread.stopRunning();
-        		uartListeningThread.interrupt();
-        	}
+        	
 //        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
 //        		eventHandler.onClose();
 //    		}
@@ -302,7 +311,7 @@ public class ArduinoFirmata{
                 	for(int i=0;i<sysexData.length;i+=2){
                 		fixedSysexData[i/2]=(byte) (sysexData[i]|(sysexData[i+1]<<7));
                 	}
-                }
+                
                 for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
                 	dataHandler.onSysex(sysexCommand, sysexData);
                 	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
@@ -310,7 +319,7 @@ public class ArduinoFirmata{
                 		
 //                		try {
             				for(byte b:fixedSysexData){
-            					buffer.add(b);
+            					uartBuffer.add(b);
             				}
 //            			} catch (InterruptedException e) {
 //            				// TODO Auto-generated catch block
@@ -318,6 +327,7 @@ public class ArduinoFirmata{
 //            			}
                 	}
         		}
+                }
             }
             else{
                 if(sysexBytesRead < storedInputData.length){
@@ -394,15 +404,22 @@ public class ArduinoFirmata{
                 byte[] readBuf = (byte[]) msg.obj;
                 // construct a string from the valid bytes in the buffer;
                 if(msg.arg1 > 0){
-                    for(int i = 0; i < msg.arg1; i++){
-                        processInput(readBuf[i]);
-                    }
+//                	try {
+//                    for(int i = 0; i < msg.arg1; i++){
+//						//bluetoothBuffer.add(readBuf[i]);
+//                        processInput(readBuf[i]);
+//                    }
+//                    } catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
                 }
                 break;
             case BluetoothService.MESSAGE_DEVICE_NAME:
                 // save the connected device's name
             	enableReporting();
             	setAllPinsAsInput();
+            	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
             	uartListeningThread=new UartListeningThread();
             	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
             		eventHandler.onConnect();
@@ -427,15 +444,30 @@ public class ArduinoFirmata{
             }
         }
     };
+    
+    BluetoothServiceCallback callback=new BluetoothServiceCallback() {
+		
+		@Override
+		public void onDataReceived(byte[] bytes, int length) {
+			// TODO Auto-generated method stub
+			for(int i = 0; i < length; i++){
+				bluetoothBuffer.add(bytes[i]);
+                //processInput(bytes[i]);
+            }
+			
+		}
+	};
 
 	private byte readByteFromUartBuffer() {
-		try {
-			return buffer.take().byteValue();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return 0;
-		}
+		while(uartBuffer.peek()==null);
+		return uartBuffer.remove();
+	}
+	
+	private byte readByteFromBluetoothBuffer() {
+	
+			while(bluetoothBuffer.peek()==null);
+			return bluetoothBuffer.remove();
+		
 	}
     
     public static enum BaudRate{
@@ -496,6 +528,28 @@ public class ArduinoFirmata{
     				frameHandler.onNewShieldFrameReceived(frame);
     			}
     			
+    			
+    		}
+    	}
+    }
+    
+    private class BluetoothBufferListeningThread extends Thread{
+    	private boolean isRunning =false;
+    	public BluetoothBufferListeningThread() {
+			// TODO Auto-generated constructor stub
+    		isRunning=true;
+    		start();
+		}
+    	private void stopRunning(){
+    		isRunning=false;
+    	}
+    	
+    	@Override
+    	public void run() {
+    		// TODO Auto-generated method stub
+    		while(isRunning){
+    			
+    			processInput(readByteFromBluetoothBuffer());
     			
     		}
     	}

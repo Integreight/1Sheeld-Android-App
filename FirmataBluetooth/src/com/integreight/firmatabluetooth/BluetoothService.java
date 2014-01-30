@@ -20,8 +20,6 @@ package com.integreight.firmatabluetooth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
@@ -45,6 +43,10 @@ public class BluetoothService {
     private static final boolean D = true;
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
     
+    public static interface BluetoothServiceCallback{
+    	void onDataReceived(byte[] bytes, int length);
+    }
+    
     // Message types sent from the BluetoothChatService Handler
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
@@ -54,6 +56,12 @@ public class BluetoothService {
 
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
+    
+    private BluetoothServiceCallback callback;
+    
+    public void setBluetoothServiceCallback(BluetoothServiceCallback btCallBack){
+    	callback=btCallBack;
+    }
 
     // Unique UUID for this application
     private static final UUID MY_UUID =
@@ -345,8 +353,9 @@ public class BluetoothService {
                     bytes = mmInStream.read(buffer,0,buffer.length);
 
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BluetoothService.MESSAGE_READ, bytes, -1, buffer)
-                            .sendToTarget();
+                    //mHandler.obtainMessage(BluetoothService.MESSAGE_READ, bytes, -1, buffer)
+                      //      .sendToTarget();
+                    if(callback!=null)callback.onDataReceived(buffer, bytes);
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     //if(!closedManually)
