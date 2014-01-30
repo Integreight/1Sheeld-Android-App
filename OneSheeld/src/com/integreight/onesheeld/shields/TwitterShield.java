@@ -19,8 +19,6 @@ import android.util.Log;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
-import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
-import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.helpers.AlertDialogManager;
 
@@ -112,21 +110,6 @@ public class TwitterShield {
 
 				}
 
-			}
-		});
-		
-		firmata.addShieldFrameHandler(new ArduinoFirmataShieldFrameHandler() {
-			
-			@Override
-			public void onNewShieldFrameReceived(ShieldFrame frame) {
-				// TODO Auto-generated method stub
-				
-				if(frame.getShieldId()==TWITTER_COMMAND){
-					if (isTwitterLoggedInAlready())
-						if(frame.getFunctionId()==UPDATE_STATUS_METHOD_ID)
-							new updateTwitterStatus().execute(frame.getArgumentAsString(0));
-				}
-				
 			}
 		});
 	}
