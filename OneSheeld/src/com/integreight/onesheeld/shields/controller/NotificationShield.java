@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Vibrator;
 import android.widget.Toast;
 
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.ControllerParent;
 
@@ -94,6 +95,12 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 
 	public interface NotificationEventHandler {
 		void onNotificationReceive(String notificationText);
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

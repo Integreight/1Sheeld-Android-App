@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
@@ -70,5 +71,11 @@ public class LedShield extends ControllerParent<LedShield> {
 	public void refresh() {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }

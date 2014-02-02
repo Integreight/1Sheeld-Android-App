@@ -3,10 +3,13 @@ package com.integreight.onesheeld.utils;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 
+@SuppressWarnings("unchecked")
 public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public MainActivity activity;
 	private boolean hasConnectedPins = false;
@@ -79,6 +82,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		// TODO Auto-generated method stub
 		CommitInstanceTotable();
 	}
+	public abstract void onNewShieldFrameReceived(ShieldFrame frame);
 
 	private void setFirmataEventHandler() {
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
@@ -103,6 +107,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 					@Override
 					public void onUartReceive(byte[] data) {
 						((T) ControllerParent.this).onUartReceive(data);
+					}
+				});
+		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
+				.addShieldFrameHandler(new ArduinoFirmataShieldFrameHandler() {
+
+					@Override
+					public void onNewShieldFrameReceived(ShieldFrame frame) {
+						((T) ControllerParent.this).onNewShieldFrameReceived(frame);
+						CommitInstanceTotable();
 					}
 				});
 	}

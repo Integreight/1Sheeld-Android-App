@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
@@ -32,6 +33,12 @@ public class SliderShield extends ControllerParent<SliderShield> {
 	public void setSliderValue(int sliderValue) {
 		this.sliderValue = sliderValue;
 		getApplication().getAppFirmata().analogWrite(connectedPin, sliderValue);
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

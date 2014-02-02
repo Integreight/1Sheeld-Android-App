@@ -5,6 +5,7 @@ import android.telephony.SmsManager;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SmsShield extends ControllerParent<SmsShield> {
@@ -86,6 +87,12 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		void onSmsSent(String smsNumber, String smsText);
 
 		void onSmsFail(String error);
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -7,6 +7,7 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
@@ -131,5 +132,11 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 			}
 
 		}
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }

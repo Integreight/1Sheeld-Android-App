@@ -6,6 +6,7 @@ import java.util.Map;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class KeypadShield extends ControllerParent<KeypadShield> {
@@ -161,5 +162,11 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 			}
 		}
 
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }

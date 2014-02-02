@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LcdShield extends ControllerParent<LcdShield> {
@@ -196,6 +197,12 @@ public class LcdShield extends ControllerParent<LcdShield> {
 		CommitInstanceTotable();
 		// if (eventHandler != null)
 		// eventHandler.onTextChange(lcdText);
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

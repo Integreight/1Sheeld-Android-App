@@ -6,6 +6,7 @@ import java.util.Map;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GamepadShield extends ControllerParent<GamepadShield> {
@@ -131,5 +132,11 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 
 		}
 
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }

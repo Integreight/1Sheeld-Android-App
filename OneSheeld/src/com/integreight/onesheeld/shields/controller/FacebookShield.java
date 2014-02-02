@@ -21,6 +21,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.Settings;
 import com.facebook.model.GraphUser;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.EventHandler;
@@ -276,5 +277,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			task.execute();
 		}
 
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }

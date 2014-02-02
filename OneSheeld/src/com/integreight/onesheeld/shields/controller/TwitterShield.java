@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.AlertDialogManager;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -311,5 +312,11 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			return null;
 		}
 
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }

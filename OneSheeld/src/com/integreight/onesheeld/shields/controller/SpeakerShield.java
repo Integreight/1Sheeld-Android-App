@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
@@ -64,5 +65,11 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 
 	public static interface SpeakerEventHandler {
 		void onSpeakerPinChange(boolean isOn);
+	}
+
+	@Override
+	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
 	}
 }
