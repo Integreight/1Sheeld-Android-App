@@ -22,7 +22,6 @@ import com.facebook.SessionState;
 import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.EventHandler;
 
@@ -171,8 +170,10 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		@Override
 		public void call(final Session session, SessionState state,
 				Exception exception) {
-			if (exception != null && eventHandler != null)
+			if (exception != null && eventHandler != null){
+				exception.printStackTrace();
 				eventHandler.onFacebookError(exception.getMessage());
+			}
 			if (session.isOpened()) {
 
 				if (!pendingPublishReauthorization) {
@@ -251,8 +252,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					FacebookRequestError error = response.getError();
 					if (error != null) {
 						if (eventHandler != null)
+						{
+							System.err.println("$#$#$ "+error);
 							eventHandler.onFacebookError(error
 									.getErrorMessage());
+						}
 						return;
 					}
 					// String postId = null;
