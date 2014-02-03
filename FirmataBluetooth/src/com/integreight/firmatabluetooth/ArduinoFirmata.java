@@ -4,9 +4,7 @@ package com.integreight.firmatabluetooth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceCallback;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -14,13 +12,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceCallback;
+
 
 public class ArduinoFirmata{
     public final static String VERSION = "0.2.0";
     public final static String TAG = "ArduinoFirmata";
     
-    ConcurrentLinkedQueue<Byte> uartBuffer = new ConcurrentLinkedQueue<Byte>();
-    ConcurrentLinkedQueue<Byte> bluetoothBuffer = new ConcurrentLinkedQueue<Byte>();
+    LinkedBlockingQueue<Byte> uartBuffer = new LinkedBlockingQueue<Byte>();
+    LinkedBlockingQueue<Byte> bluetoothBuffer = new LinkedBlockingQueue<Byte>();
     UartListeningThread uartListeningThread;
     BluetoothBufferListeningThread bluetoothBufferListeningThread;
 
@@ -459,14 +459,27 @@ public class ArduinoFirmata{
 	};
 
 	private byte readByteFromUartBuffer() {
-		while(uartBuffer.peek()==null);
-		return uartBuffer.remove();
+		//while(uartBuffer.peek()==null);
+		
+		try {
+			return uartBuffer.take().byteValue();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	private byte readByteFromBluetoothBuffer() {
 	
-			while(bluetoothBuffer.peek()==null);
-			return bluetoothBuffer.remove();
+			//while(bluetoothBuffer.peek()==null);
+			try {
+				return bluetoothBuffer.take().byteValue();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			}
 		
 	}
     
