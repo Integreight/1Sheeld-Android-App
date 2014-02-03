@@ -1,8 +1,5 @@
 package com.integreight.onesheeld.utils;
 
-import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.R.styleable;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -14,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.Button;
+
+import com.integreight.onesheeld.R;
 
 public class Key extends Button {
 
@@ -191,6 +190,7 @@ public class Key extends Button {
 		v.startAnimation(anim);
 	}
 
+	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public static void setKeyColor(Button key, Drawable bg) {
 //		GradientDrawable background = (GradientDrawable) key.getBackground();

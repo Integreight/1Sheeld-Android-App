@@ -120,13 +120,6 @@ public class ToggleButtonFragment extends
 		});
 	}
 
-	private void initializeFirmata(ArduinoFirmata firmata) {
-		//
-		// if (toggleButtonShield != null)
-		// return;
-		// toggleButtonShield = new ToggleButtonShield(getActivity());
-
-	}
 
 	@Override
 	public void doOnServiceConnected() {

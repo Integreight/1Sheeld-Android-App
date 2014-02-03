@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
-import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.Segment;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;

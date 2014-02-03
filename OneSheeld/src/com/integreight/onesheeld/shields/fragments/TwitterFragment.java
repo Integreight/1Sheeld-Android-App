@@ -1,21 +1,19 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield.TwitterEventHandler;
-import com.integreight.onesheeld.shields.controller.TwitterShield.checkLogin;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
@@ -66,12 +64,18 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	private TwitterEventHandler twitterEventHandler = new TwitterEventHandler() {
 
 		@Override
-		public void onRecieveTweet(String tweet) {
+		public void onRecieveTweet(final String tweet) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				lastTweetTextView.setText(tweet);
-				Toast.makeText(getActivity(), "Tweet posted!",
-						Toast.LENGTH_SHORT).show();
+				lastTweetTextView.post(new Runnable() {
+					
+					@Override
+					public void run() {
+						lastTweetTextView.setText(tweet);
+						Toast.makeText(getActivity(), "Tweet posted!",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			}
 		}
 
@@ -133,8 +137,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				&& !((TwitterShield) getApplication().getRunningSheelds().get(
 						getControllerTag())).isTwitterLoggedInAlready()) {
 			buttonToLoggedOut();
-			Uri uri = getActivity().getIntent().getData();
-			new checkLogin().execute(uri);
+			((TwitterShield) getApplication().getRunningSheelds().get(
+					getControllerTag())).login();
 		}
 	}
 
@@ -166,7 +170,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			return true;
 		case R.id.login_to_twitter_menuitem:
 			((TwitterShield) getApplication().getRunningSheelds().get(
-					getControllerTag())).loginToTwitter();
+					getControllerTag())).login();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

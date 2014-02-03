@@ -16,12 +16,12 @@ public class SocialAuthorization {
 	// public static String ACCESS_TOKEN_URL =
 	// "https://api.twitter.com/oauth/access_token";
 
-	public static String FETCHED_ACCESS_TOKEN = null;
+	public static String FETCHED_ACCESS_TOKEN = "AccessToken";
 
-	public static String FETCHED_IMAGE_URL = null;
+	public static String FETCHED_IMAGE_URL = "FetchedImage";
 
-	public static String FETCHED_SECRET_TOKEN = null;
+	public static String FETCHED_SECRET_TOKEN = "secretToken";
 
-	public static String TWITTER_USER_NAME = null;
+	public static String TWITTER_USER_NAME = "twitterUserName";
 
 }

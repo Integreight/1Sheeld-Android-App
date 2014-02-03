@@ -11,7 +11,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;

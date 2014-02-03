@@ -8,6 +8,7 @@ import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 
 import android.os.Bundle;
 
+@SuppressWarnings("unchecked")
 public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		extends SherlockFragment {
 	private String controllerTag = "";

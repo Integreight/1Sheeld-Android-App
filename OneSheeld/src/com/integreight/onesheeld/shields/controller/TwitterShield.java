@@ -1,29 +1,27 @@
 package com.integreight.onesheeld.shields.controller;
 
+import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
+import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
+import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListner;
 import com.integreight.onesheeld.utils.AlertDialogManager;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class TwitterShield extends ControllerParent<TwitterShield> {
-	private static TwitterEventHandler eventHandler;
+	private TwitterEventHandler eventHandler;
 	private String lastTweet;
 	private static final byte TWITTER_COMMAND = (byte) 0x30;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
@@ -39,16 +37,12 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
 	static final String PREF_KEY_TWITTER_USERNAME = "TwitterUsername";
 
-	static final String TWITTER_CALLBACK_URL = "oauth://onesheeld";
-
-	// Twitter oauth urls
-	static final String URL_TWITTER_AUTH = "auth_url";
-	static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
-	static final String URL_TWITTER_OAUTH_TOKEN = "oauth_token";
-
-	// Twitter
-	private static Twitter twitter;
-	private static RequestToken requestToken;
+	final String PREFS_NAME = "pref";
+	TwitterFactory factory;
+	Twitter twitter;
+	RequestToken requestToken;
+	private final String CALLBACKURL = "oob";
+	String authUrl;
 
 	// Shared Preferences
 	private static SharedPreferences mSharedPreferences;
@@ -94,17 +88,112 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			String tweet = new String(newArray);
 			lastTweet = tweet;
 			if (isTwitterLoggedInAlready())
-				if (methodId == UPDATE_STATUS_METHOD_ID)
-					new updateTwitterStatus().execute(tweet);
+				if (methodId == UPDATE_STATUS_METHOD_ID) {
+					tweet(tweet);
+					eventHandler.onRecieveTweet(tweet);
+				}
 
 		}
 		super.onUartReceive(data);
 	}
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
-		TwitterShield.eventHandler = eventHandler;
+		this.eventHandler = eventHandler;
 		getApplication().getAppFirmata().initUart();
 		CommitInstanceTotable();
+	}
+
+	public void tweet(final String tweet) {
+		factory = new TwitterFactory();
+		twitter = new TwitterFactory().getInstance();
+		twitter.setOAuthConsumer(
+				mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null),
+				mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null));
+		AccessToken accestoken = new AccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+		twitter.setOAuthAccessToken(accestoken);
+		StatusUpdate st = new StatusUpdate(tweet);
+		try {
+			twitter.updateStatus(st);
+		} catch (TwitterException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void login() {
+		factory = new TwitterFactory();
+		twitter = new TwitterFactory().getInstance();
+		twitter.setOAuthConsumer(TwitterAuthorization.CONSUMER_KEY,
+				TwitterAuthorization.CONSUMER_SECRET);
+		if (mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null) != null
+				&& mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null) != null) {
+			AccessToken accestoken = new AccessToken(
+					mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null),
+					mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null));
+			twitter.setOAuthAccessToken(accestoken);
+		} else {
+			new AsyncTask<Void, Void, Void>() {
+
+				@Override
+				protected Void doInBackground(Void... params) {
+					try {
+						requestToken = twitter
+								.getOAuthRequestToken(CALLBACKURL);
+						authUrl = requestToken.getAuthenticationURL();
+					} catch (TwitterException e) {
+
+					}
+					return null;
+				}
+
+				@Override
+				protected void onPostExecute(Void result) {
+
+					final TwitterDialogListner listener = new TwitterDialogListner() {
+						@Override
+						public void onComplete() {
+							SharedPreferences.Editor editor = mSharedPreferences
+									.edit();
+							editor.putString(PREF_KEY_OAUTH_TOKEN,
+									TwitterAuthorization.FETCHED_ACCESS_TOKEN);
+							editor.putString(PREF_KEY_OAUTH_SECRET,
+									TwitterAuthorization.FETCHED_SECRET_TOKEN);
+							editor.putString(PREF_KEY_TWITTER_USERNAME,
+									TwitterAuthorization.TWITTER_USER_NAME);
+							editor.putBoolean(PREF_KEY_TWITTER_LOGIN, true);
+							// Commit the edits!
+							editor.commit();
+
+						}
+
+						@Override
+						public void onError(String error) {
+						}
+
+						@Override
+						public void onCancel() {
+
+						}
+					};
+					new Handler().post(new Runnable() {
+
+						@Override
+						public void run() {
+							TwitterDialog mDialog = new TwitterDialog(
+									getActivity(), authUrl, twitter,
+									requestToken, listener);
+							mDialog.show();
+						}
+					});
+
+					super.onPostExecute(result);
+				}
+
+			}.execute(null, null);
+
+		}
 	}
 
 	public static interface TwitterEventHandler {
@@ -113,54 +202,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		void onTwitterLoggedIn();
 
 		void onTwitterError(String error);
-	}
-
-	public void loginToTwitter() {
-		// Check if already logged in
-
-		new AsyncTask<Void, Void, Void>() {
-			@Override
-			protected Void doInBackground(Void... params) {
-				// TODO Auto-generated method stub
-				if (!isTwitterLoggedInAlready()) {
-					ConfigurationBuilder builder = new ConfigurationBuilder();
-					builder.setOAuthConsumerKey(activity.getResources()
-							.getString(R.string.twitter_consumer_key));
-					builder.setOAuthConsumerSecret(activity.getResources()
-							.getString(R.string.twitter_consumer_secret));
-					Configuration configuration = builder.build();
-
-					TwitterFactory factory = new TwitterFactory(configuration);
-					twitter = factory.getInstance();
-
-					try {
-						requestToken = twitter
-								.getOAuthRequestToken(TWITTER_CALLBACK_URL);
-						activity.startActivity(new Intent(Intent.ACTION_VIEW,
-								Uri.parse(requestToken.getAuthenticationURL())));
-					} catch (TwitterException e) {
-						e.printStackTrace();
-						eventHandler.onTwitterError("Login Error");
-					}
-				} else {
-					// activity.runOnUiThread(new Runnable() {
-					//
-					// @Override
-					// public void run() {
-					// // TODO Auto-generated method stub
-					// // user already logged into twitter
-					// Toast.makeText(activity.getApplicationContext(),
-					// "Already Logged into twitter", Toast.LENGTH_LONG)
-					// .show();
-					//
-					// }
-					// });
-					eventHandler.onTwitterError("Already Logged into twitter");
-				}
-				return null;
-			}
-		}.execute();
-
 	}
 
 	public boolean isTwitterLoggedInAlready() {
@@ -177,146 +218,9 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		e.commit();
 	}
 
-	class updateTwitterStatus extends AsyncTask<String, String, String> {
-
-		/**
-		 * Before starting background thread Show Progress Dialog
-		 * */
-		// @Override
-		// protected void onPreExecute() {
-		// super.onPreExecute();
-		// pDialog = new ProgressDialog(activity);
-		// pDialog.setMessage("Updating to twitter...");
-		// pDialog.setIndeterminate(false);
-		// pDialog.setCancelable(false);
-		// pDialog.show();
-		// }
-
-		/**
-		 * getting Places JSON
-		 * */
-		protected String doInBackground(String... args) {
-			Log.d("Tweet Text", "> " + args[0]);
-			String status = args[0];
-			try {
-				ConfigurationBuilder builder = new ConfigurationBuilder();
-				builder.setOAuthConsumerKey(activity.getResources().getString(
-						R.string.twitter_consumer_key));
-				builder.setOAuthConsumerSecret(activity.getResources()
-						.getString(R.string.twitter_consumer_secret));
-
-				// Access Token
-				String access_token = mSharedPreferences.getString(
-						PREF_KEY_OAUTH_TOKEN, "");
-				// Access Token Secret
-				String access_token_secret = mSharedPreferences.getString(
-						PREF_KEY_OAUTH_SECRET, "");
-
-				AccessToken accessToken = new AccessToken(access_token,
-						access_token_secret);
-				Twitter twitter = new TwitterFactory(builder.build())
-						.getInstance(accessToken);
-
-				// Update status
-				twitter4j.Status response = twitter.updateStatus(status);
-
-				Log.d("Status", "> " + response.getText());
-			} catch (TwitterException e) {
-				// Error in updating status
-				Log.d("Twitter Update Error", e.getMessage());
-				eventHandler.onTwitterError("Update status error");
-			}
-			return status;
-		}
-
-		/**
-		 * After completing background task Dismiss the progress dialog and show
-		 * the data in UI Always use runOnUiThread(new Runnable()) to update UI
-		 * from background thread, otherwise you will get error
-		 * **/
-		protected void onPostExecute(String tweet) {
-			// dismiss the dialog after getting all products
-			// pDialog.dismiss();
-			// updating UI from Background Thread
-			// activity.runOnUiThread(new Runnable() {
-			// @Override
-			// public void run() {
-			// // Toast.makeText(activity.getApplicationContext(),
-			// // "Status tweeted successfully", Toast.LENGTH_SHORT)
-			// // .show();
-			// eventHandler.onTwitterStatusMessage("Status tweeted successfully");
-			eventHandler.onRecieveTweet(tweet);
-			// // Clearing EditText field
-			// txtUpdate.setText("");
-			// }
-			// });
-		}
-
-	}
-
-	public static class checkLogin extends AsyncTask<Uri, Void, Void> {
-
-		@Override
-		protected Void doInBackground(Uri... params) {
-			// TODO Auto-generated method stub
-			Uri uri = params[0];
-			if (uri != null && uri.toString().startsWith(TWITTER_CALLBACK_URL)) {
-				// oAuth verifier
-				String verifier = uri
-						.getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
-
-				try {
-					// Get the access token
-					AccessToken accessToken = twitter.getOAuthAccessToken(
-							requestToken, verifier);
-
-					// Shared Preferences
-					Editor e = mSharedPreferences.edit();
-
-					// After getting access token, access token secret
-					// store them in application preferences
-					e.putString(PREF_KEY_OAUTH_TOKEN, accessToken.getToken());
-					e.putString(PREF_KEY_OAUTH_SECRET,
-							accessToken.getTokenSecret());
-					// Store login status - true
-					e.putBoolean(PREF_KEY_TWITTER_LOGIN, true);
-
-					Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
-
-					// Getting user details from twitter
-					// For now i am getting his name only
-					long userID = accessToken.getUserId();
-					User user = twitter.showUser(userID);
-
-					e.putString(PREF_KEY_TWITTER_USERNAME, user.getScreenName());
-					e.commit(); // save changes
-
-					// activity.runOnUiThread(new Runnable() {
-					// public void run() {
-					// // enableButtons();
-					// // Displaying in xml ui
-					// // lblUserName.setText(Html
-					// // .fromHtml("<b>Welcome " + username
-					// // + "</b>"));
-					// }
-					// });
-					eventHandler.onTwitterLoggedIn();
-
-				} catch (Exception e) {
-					// Check log for login errors
-					Log.e("Twitter Login Error", "> " + e.getMessage() + ":"
-							+ e.getClass());
-					eventHandler.onTwitterError("Login Error");
-				}
-			}
-			return null;
-		}
-
-	}
-
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
 		
 	}
+
 }

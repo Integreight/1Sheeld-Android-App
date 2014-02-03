@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.utils;
 
 import android.app.Activity;
+import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
@@ -82,40 +83,77 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		// TODO Auto-generated method stub
 		CommitInstanceTotable();
 	}
+
 	public abstract void onNewShieldFrameReceived(ShieldFrame frame);
+
+	public Handler actionHandler = new Handler();
 
 	private void setFirmataEventHandler() {
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
 				.addDataHandler(new ArduinoFirmataDataHandler() {
 
 					@Override
-					public void onSysex(byte command, byte[] data) {
-						((T) ControllerParent.this).onSysex(command, data);
+					public void onSysex(final byte command, final byte[] data) {
+						actionHandler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								((T) ControllerParent.this).onSysex(command,
+										data);
+							}
+						});
 					}
 
 					@Override
-					public void onDigital(int portNumber, int portData) {
-						((T) ControllerParent.this).onDigital(portNumber,
-								portData);
+					public void onDigital(final int portNumber,
+							final int portData) {
+						actionHandler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								((T) ControllerParent.this).onDigital(
+										portNumber, portData);
+							}
+						});
 					}
 
 					@Override
-					public void onAnalog(int pin, int value) {
-						((T) ControllerParent.this).onAnalog(pin, value);
+					public void onAnalog(final int pin, final int value) {
+						actionHandler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								((T) ControllerParent.this)
+										.onAnalog(pin, value);
+							}
+						});
 					}
 
 					@Override
-					public void onUartReceive(byte[] data) {
-						((T) ControllerParent.this).onUartReceive(data);
+					public void onUartReceive(final byte[] data) {
+						actionHandler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								((T) ControllerParent.this).onUartReceive(data);
+							}
+						});
 					}
 				});
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
 				.addShieldFrameHandler(new ArduinoFirmataShieldFrameHandler() {
 
 					@Override
-					public void onNewShieldFrameReceived(ShieldFrame frame) {
-						((T) ControllerParent.this).onNewShieldFrameReceived(frame);
-						CommitInstanceTotable();
+					public void onNewShieldFrameReceived(final ShieldFrame frame) {
+						actionHandler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								((T) ControllerParent.this)
+										.onNewShieldFrameReceived(frame);
+								CommitInstanceTotable();
+							}
+						});
 					}
 				});
 	}

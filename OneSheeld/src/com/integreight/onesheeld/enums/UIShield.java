@@ -13,7 +13,6 @@ import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
-import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public enum UIShield {

@@ -4,6 +4,7 @@ import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -11,11 +12,11 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.CookieManager;
@@ -27,21 +28,20 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.R;
-
 /**
  * Display Foursquare authentication dialog.
  * 
  * @author Lorensius W. L. T <lorenz@londatiga.net>
  * 
  */
+@SuppressLint("SetJavaScriptEnabled")
 public class TwitterDialog extends Dialog {
 
 	static final float[] DIMENSIONS_LANDSCAPE = { 460, 260 };
 	static final float[] DIMENSIONS_PORTRAIT = { 280, 420 };
 	static final FrameLayout.LayoutParams FILL = new FrameLayout.LayoutParams(
-			LayoutParams.MATCH_PARENT,
-			LayoutParams.MATCH_PARENT);
+			ViewGroup.LayoutParams.MATCH_PARENT,
+			ViewGroup.LayoutParams.MATCH_PARENT);
 	static final int MARGIN = 4;
 	static final int PADDING = 2;
 
@@ -67,6 +67,7 @@ public class TwitterDialog extends Dialog {
 		mListener = listener;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -106,7 +107,8 @@ public class TwitterDialog extends Dialog {
 	private void setUpTitle() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		// Drawable icon = getContext().getResources().getDrawable(R.drawable.);
+		// Drawable icon =
+		// getContext().getResources().getDrawable(R.drawable.t);
 
 		mTitle = new TextView(getContext());
 
@@ -132,9 +134,9 @@ public class TwitterDialog extends Dialog {
 				TwitterDialog.this.dismiss();
 			}
 		});
-		Drawable crossDrawable = getContext().getResources().getDrawable(
-				R.drawable.ic_launcher);
-		mCrossImage.setImageDrawable(crossDrawable);
+		// Drawable crossDrawable = getContext().getResources().getDrawable(
+		// R.drawable.add_contacts);
+		// mCrossImage.setImageDrawable(crossDrawable);
 		/*
 		 * 'x' should not be visible while webview is loading make it visible
 		 * only after webview has fully loaded
@@ -234,7 +236,7 @@ public class TwitterDialog extends Dialog {
 				extractedImage = html.substring(imageStartPosition,
 						imageEndPosition);
 				// System.out.println("IAMGE EXTRACTEDDDD "+extractedImage);
-				SocialAuthorization.FETCHED_IMAGE_URL = extractedImage
+				TwitterAuthorization.FETCHED_IMAGE_URL = extractedImage
 						.replace("mini", "normal");
 
 			}
@@ -260,7 +262,7 @@ public class TwitterDialog extends Dialog {
 
 			if (nameEndPosition != -1 && html.indexOf(nameTagStart) != -1) {
 				name = html.substring(nameStartPostion, nameEndPosition);
-				SocialAuthorization.TWITTER_USER_NAME = name;
+				TwitterAuthorization.TWITTER_USER_NAME = name;
 				// System.out.println("name view  "+name);
 			}
 
@@ -272,9 +274,9 @@ public class TwitterDialog extends Dialog {
 				String token = accessToken.getToken(), secret = accessToken
 						.getTokenSecret();
 
-				SocialAuthorization.FETCHED_ACCESS_TOKEN = accessToken
+				TwitterAuthorization.FETCHED_ACCESS_TOKEN = accessToken
 						.getToken();
-				SocialAuthorization.FETCHED_SECRET_TOKEN = accessToken
+				TwitterAuthorization.FETCHED_SECRET_TOKEN = accessToken
 						.getTokenSecret();
 				// System.out.println("token  "+token+" SECRET "+secret);
 

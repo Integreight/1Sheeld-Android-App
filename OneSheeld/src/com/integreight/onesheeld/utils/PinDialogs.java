@@ -1,9 +1,7 @@
 package com.integreight.onesheeld.utils;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.widget.ArrayAdapter;
 
 public class PinDialogs {
 	public static void showDigitalArduinoPins(Activity activity, DialogInterface.OnClickListener listener) {

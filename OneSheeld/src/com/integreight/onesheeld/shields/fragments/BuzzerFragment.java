@@ -19,7 +19,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	Button connectButton;
 	MainActivity activity;
 
-	private static final int soundResourceId = R.raw.door_chime_sound;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -13,7 +13,6 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
-import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
