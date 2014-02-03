@@ -4,9 +4,7 @@ package com.integreight.firmatabluetooth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceCallback;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
@@ -14,13 +12,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceCallback;
+
 
 public class ArduinoFirmata{
     public final static String VERSION = "0.2.0";
     public final static String TAG = "ArduinoFirmata";
     
-    ConcurrentLinkedQueue<Byte> uartBuffer = new ConcurrentLinkedQueue<Byte>();
-    ConcurrentLinkedQueue<Byte> bluetoothBuffer = new ConcurrentLinkedQueue<Byte>();
+    LinkedBlockingQueue<Byte> uartBuffer = new LinkedBlockingQueue<Byte>();
+    LinkedBlockingQueue<Byte> bluetoothBuffer = new LinkedBlockingQueue<Byte>();
     UartListeningThread uartListeningThread;
     BluetoothBufferListeningThread bluetoothBufferListeningThread;
 
@@ -229,7 +229,7 @@ public class ArduinoFirmata{
     }
 
     public boolean digitalRead(int pin) {
-        return ((digitalInputData[pin >> 3] >> (pin & (byte)0x07)) & (byte)0x01) > 0;
+        return ((digitalInputData[pin >> 3] >> (pin & 0x07)) & 0x01) > 0;
     }
 
     public int analogRead(int pin) {
@@ -242,13 +242,13 @@ public class ArduinoFirmata{
     }
 
     public void digitalWrite(int pin, boolean value) {
-        byte portNumber = (byte)((pin >> 3) & (byte)0x0F);
-        if (!value) digitalOutputData[portNumber] &= ~(1 << (pin & (byte)0x07));
-        else digitalOutputData[portNumber] |= (1 << (pin & (byte)0x07));
+        byte portNumber = (byte)((pin >> 3) & 0x0F);
+        if (!value) digitalOutputData[portNumber] &= ~(1 << (pin & 0x07));
+        else digitalOutputData[portNumber] |= (1 << (pin & 0x07));
         byte[] writeData = {
             SET_PIN_MODE, (byte)pin, OUTPUT,
             (byte)(DIGITAL_MESSAGE | portNumber),
-            (byte)(digitalOutputData[portNumber] & (byte)0x7F),
+            (byte)(digitalOutputData[portNumber] & 0x7F),
             (byte)(digitalOutputData[portNumber] >> 7)
         };
         write(writeData);
@@ -257,8 +257,8 @@ public class ArduinoFirmata{
     public void analogWrite(int pin, int value) {
         byte[] writeData = {
             SET_PIN_MODE, (byte)pin, PWM,
-            (byte)(ANALOG_MESSAGE | (pin & (byte)0x0F)),
-            (byte)(value & (byte)0x7F),
+            (byte)(ANALOG_MESSAGE | (pin & 0x0F)),
+            (byte)(value & 0x7F),
             (byte)(value >> 7)
         };
         write(writeData);
@@ -267,8 +267,8 @@ public class ArduinoFirmata{
     public void servoWrite(int pin, int angle){
         byte[] writeData = {
             SET_PIN_MODE, (byte)pin, SERVO,
-            (byte)(ANALOG_MESSAGE | (pin & (byte)0x0F)),
-            (byte)(angle & (byte)0x7F),
+            (byte)(ANALOG_MESSAGE | (pin & 0x0F)),
+            (byte)(angle & 0x7F),
             (byte)(angle >> 7)
         };
         write(writeData);
@@ -336,7 +336,7 @@ public class ArduinoFirmata{
                 }
             }
         }
-        else if(waitForData > 0 && inputData < (byte)128){
+        else if(waitForData > 0 && inputData < 128){
             waitForData--;
             storedInputData[waitForData] = inputData;
             if(executeMultiByteCommand != 0 && waitForData == 0){
@@ -354,9 +354,9 @@ public class ArduinoFirmata{
             }
         }
         else {
-            if(inputData < (byte)0xF0){
-                command = (byte)(inputData & (byte)0xF0);
-                multiByteChannel = (byte)(inputData & (byte)0x0F);
+            if(inputData < 0xF0){
+                command = (byte)(inputData & 0xF0);
+                multiByteChannel = (byte)(inputData & 0x0F);
             }
             else{
                 command = inputData;
@@ -459,14 +459,27 @@ public class ArduinoFirmata{
 	};
 
 	private byte readByteFromUartBuffer() {
-		while(uartBuffer.peek()==null);
-		return uartBuffer.remove();
+		//while(uartBuffer.peek()==null);
+		
+		try {
+			return uartBuffer.take().byteValue();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return 0;
+		}
 	}
 	
 	private byte readByteFromBluetoothBuffer() {
 	
-			while(bluetoothBuffer.peek()==null);
-			return bluetoothBuffer.remove();
+			//while(bluetoothBuffer.peek()==null);
+			try {
+				return bluetoothBuffer.take().byteValue();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return 0;
+			}
 		
 	}
     
