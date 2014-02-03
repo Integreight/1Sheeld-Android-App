@@ -6,13 +6,13 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
+import twitter4j.conf.ConfigurationBuilder;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
-
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
@@ -104,22 +104,35 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	}
 
 	public void tweet(final String tweet) {
-		factory = new TwitterFactory();
-		twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(
-				mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null),
-				mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null));
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(TwitterAuthorization.CONSUMER_KEY);
+		cb.setOAuthConsumerSecret(TwitterAuthorization.CONSUMER_SECRET);
+		cb.setOAuthAccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null));
+		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+		factory = new TwitterFactory(cb.build());
+		twitter = factory.getInstance();
+		// twitter.setOAuthConsumer(
+		// mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null),
+		// mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null));
 		AccessToken accestoken = new AccessToken(mSharedPreferences.getString(
 				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
 				PREF_KEY_OAUTH_SECRET, null));
 		twitter.setOAuthAccessToken(accestoken);
-		StatusUpdate st = new StatusUpdate(tweet);
-		try {
-			twitter.updateStatus(st);
-		} catch (TwitterException e) {
-			e.printStackTrace();
-		}
+		final StatusUpdate st = new StatusUpdate(tweet);
+		new Thread(new Runnable() {
 
+			@Override
+			public void run() {
+				try {
+					twitter.updateStatus(st);
+				} catch (TwitterException e) {
+					e.printStackTrace();
+				}
+
+			}
+		}).start();
 	}
 
 	public void login() {
@@ -220,7 +233,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		
+
 	}
 
 }
