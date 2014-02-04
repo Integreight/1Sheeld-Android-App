@@ -205,11 +205,24 @@ public class ArduinoFirmata{
     	sysex(UART_DATA, byteArray);
     }
     
-    private byte[] getCharAs2SevenBitsBytes(char data){
+    private byte[] getByteAs2SevenBitsBytes(byte data){
     	byte[] temp=new byte[2];
     	temp[0]=(byte) (data & 127);
     	temp[1]=(byte) (data>> 7 & 127);
     	return temp;
+    }
+    
+    private byte[] getByteArrayAs2SevenBitsBytesArray(byte[] data){
+    	byte[] temp=new byte[data.length*2];
+    	for (int i = 0; i < temp.length; i+=2) {
+    		temp[i]=getByteAs2SevenBitsBytes(temp[i])[0];
+    		temp[i+1]=getByteAs2SevenBitsBytes(temp[i])[1];
+		}
+    	return temp;
+    }
+    
+    private byte[] getCharAs2SevenBitsBytes(char data){
+    	return getByteAs2SevenBitsBytes((byte)data);
     }
     
     public void initUart(BaudRate baud){
@@ -377,15 +390,8 @@ public class ArduinoFirmata{
     }
     
     public void sendShieldFrame(ShieldFrame frame){
-    	write(ShieldFrame.START_OF_FRAME);
-    	write(frame.getShieldId());
-    	write(frame.getInstanceId());
-    	write(frame.getFunctionId());
-    	write((byte)frame.getArguments().size());
-    	for (byte[] argument : frame.getArguments()) {
-			write((byte)argument.length);
-			write(argument);
-		}
+    	if(!isUartInit)return;
+    	sysex(UART_DATA, getByteArrayAs2SevenBitsBytesArray(frame.getAllFrameAsBytes()));
     }
     
     private final Handler mHandler = new Handler() {
