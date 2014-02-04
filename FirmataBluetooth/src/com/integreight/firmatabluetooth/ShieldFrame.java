@@ -78,11 +78,12 @@ public class ShieldFrame {
 		data[3]=functionId;
 		data[4]=(byte)arguments.size();
 		
-		for (int i = 0,j=5; i < arguments.size(); i++,j+=arguments.get(i).length+1) {
+		for (int i = 0,j=5; i < arguments.size(); i++) {
 			data[j]=(byte)arguments.get(i).length;
 			for (int k = 0; k < data[j]; k++) {
 				data[j+k+1]=arguments.get(i)[k];
 			}
+			if(i+1<arguments.size())j+=arguments.get(i+1).length;
 		}
 		return data;
 	}
