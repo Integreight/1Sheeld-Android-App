@@ -1,5 +1,6 @@
 package com.integreight.firmatabluetooth;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class ShieldFrame {
@@ -46,6 +47,22 @@ public class ShieldFrame {
 
 	public void addArgument(byte[] argument) {
 		arguments.add(argument);
+	}
+	
+	public void addByteArgument(byte data){
+		arguments.add(new byte[]{data});
+	}
+	
+	public void addCharArgument(char data){
+		arguments.add(new byte[]{(byte)data});
+	}
+	
+	public void addIntegerArgument(int data){
+		arguments.add(new byte[]{(byte)data,(byte)(data>>8)});
+	}
+	
+	public void addStringArgument(String data){
+		arguments.add(data.getBytes(Charset.forName("UTF-8")));
 	}
 	
 	public byte[] getAllFrameAsBytes(){
