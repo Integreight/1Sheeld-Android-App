@@ -376,6 +376,18 @@ public class ArduinoFirmata{
         }
     }
     
+    public void sendShieldFrame(ShieldFrame frame){
+    	write(ShieldFrame.START_OF_FRAME);
+    	write(frame.getShieldId());
+    	write(frame.getInstanceId());
+    	write(frame.getFunctionId());
+    	write((byte)frame.getArguments().size());
+    	for (byte[] argument : frame.getArguments()) {
+			write((byte)argument.length);
+			write(argument);
+		}
+    }
+    
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
