@@ -324,11 +324,8 @@ public class ArduinoFirmata{
                 	for(int i=0;i<sysexData.length;i+=2){
                 		fixedSysexData[i/2]=(byte) (sysexData[i]|(sysexData[i+1]<<7));
                 	}
-                
-                for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
-                	dataHandler.onSysex(sysexCommand, sysexData);
+                	
                 	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
-                		dataHandler.onUartReceive(fixedSysexData);
                 		
 //                		try {
             				for(byte b:fixedSysexData){
@@ -339,6 +336,13 @@ public class ArduinoFirmata{
 //            				e.printStackTrace();
 //            			}
                 	}
+                
+                for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
+                	dataHandler.onSysex(sysexCommand, sysexData);
+                	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
+                		dataHandler.onUartReceive(fixedSysexData);
+                	}
+                	
         		}
                 }
             }
@@ -539,7 +543,7 @@ public class ArduinoFirmata{
     	public void run() {
     		// TODO Auto-generated method stub
     		while(isRunning){
-    			while((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
+    			if((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
     			byte shieldId=readByteFromUartBuffer();
     			byte instanceId=readByteFromUartBuffer();
     			byte functionId=readByteFromUartBuffer();
