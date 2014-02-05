@@ -111,6 +111,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 							@Override
 							public void run() {
+								if(hasConnectedPins)
 								((T) ControllerParent.this).onDigital(
 										portNumber, portData);
 							}
@@ -123,6 +124,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 							@Override
 							public void run() {
+								if(hasConnectedPins)
 								((T) ControllerParent.this)
 										.onAnalog(pin, value);
 							}
