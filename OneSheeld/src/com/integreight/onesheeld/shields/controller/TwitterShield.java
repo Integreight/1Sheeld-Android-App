@@ -23,7 +23,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class TwitterShield extends ControllerParent<TwitterShield> {
 	private TwitterEventHandler eventHandler;
 	private String lastTweet;
-	private static final byte TWITTER_COMMAND = (byte) 0x30;
+	private static final byte TWITTER_COMMAND = (byte) 0x1A;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
 
 	public String getUsername() {
