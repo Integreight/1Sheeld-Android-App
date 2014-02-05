@@ -1,10 +1,10 @@
 package com.integreight.firmatabluetooth;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class ShieldFrame {
 	public static final byte START_OF_FRAME=(byte) 0xFF;
-	public static final byte END_OF_FRAME=(byte) 0x00;
 	
 	private byte shieldId;
 	private byte instanceId;
@@ -47,6 +47,45 @@ public class ShieldFrame {
 
 	public void addArgument(byte[] argument) {
 		arguments.add(argument);
+	}
+	
+	public void addByteArgument(byte data){
+		arguments.add(new byte[]{data});
+	}
+	
+	public void addCharArgument(char data){
+		arguments.add(new byte[]{(byte)data});
+	}
+	
+	public void addIntegerArgument(int data){
+		arguments.add(new byte[]{(byte)data,(byte)(data>>8)});
+	}
+	
+	public void addStringArgument(String data){
+		arguments.add(data.getBytes(Charset.forName("UTF-8")));
+	}
+	
+	public byte[] getAllFrameAsBytes(){
+		int totalSizeOfArguments=0;
+		for (byte[] argument : arguments) {
+			totalSizeOfArguments+=argument.length;
+		}
+		int frameSize=5+arguments.size()+totalSizeOfArguments;
+		byte[] data=new byte[frameSize];
+		data[0]=START_OF_FRAME;
+		data[1]=shieldId;
+		data[2]=instanceId;
+		data[3]=functionId;
+		data[4]=(byte)arguments.size();
+		
+		for (int i = 0,j=5; i < arguments.size(); i++) {
+			data[j]=(byte)arguments.get(i).length;
+			for (int k = 0; k < data[j]; k++) {
+				data[j+k+1]=arguments.get(i)[k];
+			}
+			if(i+1<arguments.size())j+=arguments.get(i+1).length;
+		}
+		return data;
 	}
 
 }

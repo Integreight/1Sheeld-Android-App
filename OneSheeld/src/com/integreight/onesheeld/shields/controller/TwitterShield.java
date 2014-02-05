@@ -233,7 +233,14 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-
+		if (frame.getShieldId() == TWITTER_COMMAND) {
+			lastTweet = frame.getArgumentAsString(0);
+			if (isTwitterLoggedInAlready())
+				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
+					tweet(lastTweet);
+					eventHandler.onRecieveTweet(lastTweet);
+				}
+		}
 	}
 
 }
