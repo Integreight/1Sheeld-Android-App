@@ -14,6 +14,8 @@ public class FoursquareFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.no_shield, container, false);
+		View v = inflater.inflate(R.layout.skype_shield_fragment_layout,
+				container, false);
+		return v;
 	}
 }
