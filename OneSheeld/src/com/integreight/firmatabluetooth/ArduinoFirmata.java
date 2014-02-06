@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
@@ -495,7 +497,7 @@ public class ArduinoFirmata{
 		}
 
 		@Override
-		public void onConnected(BluetoothDevice device) {
+		public void onConnected(final BluetoothDevice device) {
 			// TODO Auto-generated method stub
 			enableReporting();
         	setAllPinsAsInput();
@@ -505,17 +507,29 @@ public class ArduinoFirmata{
         		eventHandler.onConnect();
     		}
         	
-            String mConnectedDeviceName = device.getName();
-            Toast.makeText(context, "Connected to "
-                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+        	new Handler(Looper.getMainLooper()).post(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+		            String mConnectedDeviceName = device.getName();
+		            Toast.makeText(context, "Connected to "
+		                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+				}
+			});
+
 			
 		}
 
 		@Override
-		public void onError(String error) {
+		public void onError(final String error) {
 			// TODO Auto-generated method stub
-			Toast.makeText(context, error,
+			new Handler(Looper.getMainLooper()).post(new Runnable() {
+				@Override
+				public void run() {
+					Toast.makeText(context, error,
                     Toast.LENGTH_SHORT).show();
+				}
+			});
 			
 		}
 	};
