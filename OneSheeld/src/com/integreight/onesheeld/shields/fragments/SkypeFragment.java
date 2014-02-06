@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import java.util.ResourceBundle.Control;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +12,7 @@ import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandler;
+import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
@@ -28,16 +31,15 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningSheelds().get(getControllerTag())
-				.setHasForgroundView(true);
+		getApplication().getRunningShields().get(getControllerTag()).setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
-				.setHasForgroundView(false);
+		getApplication().getRunningShields().get(getControllerTag()).setHasForgroundView(true);
+
 		super.onStop();
 	}
 
@@ -96,11 +98,11 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 	};
 
 	private void initializeFirmata() {
-		if (getApplication().getRunningSheelds().get(getControllerTag()) == null) {
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			getApplication().getRunningShields().put(getControllerTag(),
 					new SkypeShield(getActivity(), getControllerTag()));
 			((SkypeShield) getApplication()
-					.getRunningSheelds().get(
+					.getRunningShields().get(
 							getControllerTag()))
 					.setSkypeEventHandler(skypeEventHandler);
 		}
