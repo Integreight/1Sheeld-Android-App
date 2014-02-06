@@ -140,6 +140,7 @@ public class ArduinoFirmata{
     }
 
     public boolean close(){
+    	clearAllHandlers();
     	if(bluetoothBufferListeningThread!=null&&bluetoothBufferListeningThread.isAlive()){
     		bluetoothBufferListeningThread.stopRunning();
     		bluetoothBufferListeningThread.interrupt();
@@ -544,6 +545,24 @@ public class ArduinoFirmata{
 		
 	}
     
+	public void clearAllHandlers(){
+		eventHandlers.clear();
+		dataHandlers.clear();
+		frameHandlers.clear();
+	}
+	
+	public void clearArduinoFirmataEventHandlers(){
+		eventHandlers.clear();
+	}
+
+	public void clearArduinoFirmataShieldFrameHandlers(){
+		frameHandlers.clear();
+	}
+	
+	public void clearArduinoFirmataDataHandlers(){
+		dataHandlers.clear();
+	}
+	
     public static enum BaudRate{
         _1200((byte)0x00),
         _2400((byte)0x01),
