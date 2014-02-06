@@ -62,7 +62,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	};
 
 	public boolean canChangeUI() {
-		return (getActivity() != null && getApplication().getRunningSheelds()
+		return (getActivity() != null && getApplication().getRunningShields()
 				.get(getControllerTag()).isHasForgroundView());
 	}
 }

@@ -34,7 +34,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 
@@ -42,7 +42,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -79,10 +79,10 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	};
 
 	private void initializeFirmata() {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new SmsShield(getActivity(), getControllerTag()));
-		((SmsShield) getApplication().getRunningSheelds().get(
+		((SmsShield) getApplication().getRunningShields().get(
 				getControllerTag())).setSmsEventHandler(smsEventHandler);
 		toggleMenuButtons();
 	}

@@ -30,7 +30,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		@Override
 		public void onReleased(Key k) {
 			// TODO Auto-generated method stub
-			((KeypadShield) getApplication().getRunningSheelds().get(
+			((KeypadShield) getApplication().getRunningShields().get(
 					getControllerTag())).resetRowAndColumn((char) k.getRow(),
 					(char) k.getColumn());
 
@@ -39,7 +39,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		@Override
 		public void onPressed(Key k) {
 			// TODO Auto-generated method stub
-			((KeypadShield) getApplication().getRunningSheelds().get(
+			((KeypadShield) getApplication().getRunningShields().get(
 					getControllerTag())).setRowAndColumn((char) k.getRow(),
 					(char) k.getColumn());
 
@@ -59,14 +59,14 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -113,7 +113,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 													DialogInterface dialog,
 													int whichArduinoPin) {
 												((KeypadShield) getApplication()
-														.getRunningSheelds()
+														.getRunningShields()
 														.get(getControllerTag()))
 														.connectKeypadPinWithArduinoPin(
 																Pin.getPin(whichSegment),
@@ -133,7 +133,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
-						((KeypadShield) getApplication().getRunningSheelds()
+						((KeypadShield) getApplication().getRunningShields()
 								.get(getControllerTag())).initPins();
 
 					}
@@ -163,8 +163,8 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	}
 
 	private void initializeFirmata() {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new KeypadShield(getActivity(), getControllerTag()));
 		toggleMenuButtons();
 	}

@@ -26,9 +26,6 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 /**
@@ -43,25 +40,31 @@ public class BluetoothService {
     private static final boolean D = true;
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
     
-    public static interface BluetoothServiceCallback{
+    public static interface BluetoothServiceHandler{
     	void onDataReceived(byte[] bytes, int length);
+    	void onStateChanged(int state, boolean isManually);
+    	void onDataWritten(byte[] bytes);
+    	void onConnected(BluetoothDevice device);
+    	void onError(String error);
+    	
+    	
     }
     
     // Message types sent from the BluetoothChatService Handler
-    public static final int MESSAGE_STATE_CHANGE = 1;
-    public static final int MESSAGE_READ = 2;
-    public static final int MESSAGE_WRITE = 3;
-    public static final int MESSAGE_DEVICE_NAME = 4;
-    public static final int MESSAGE_TOAST = 5;
+    //public static final int MESSAGE_STATE_CHANGE = 1;
+    //public static final int MESSAGE_READ = 2;
+    //public static final int MESSAGE_WRITE = 3;
+    //public static final int MESSAGE_DEVICE_NAME = 4;
+    //public static final int MESSAGE_TOAST = 5;
 
-    public static final String DEVICE_NAME = "device_name";
-    public static final String TOAST = "toast";
+    //public static final String DEVICE_NAME = "device_name";
+    //public static final String TOAST = "toast";
     
-    private BluetoothServiceCallback callback;
+    private BluetoothServiceHandler handler;
     
-    public void setBluetoothServiceCallback(BluetoothServiceCallback btCallBack){
-    	callback=btCallBack;
-    }
+//    public void setBluetoothServiceCallback(BluetoothServiceHandler btCallBack){
+//    	handler=btCallBack;
+//    }
 
     // Unique UUID for this application
     private static final UUID MY_UUID =
@@ -69,7 +72,7 @@ public class BluetoothService {
 
     // Member fields
     private final BluetoothAdapter mAdapter;
-    private final Handler mHandler;
+//    private final Handler mHandler;
     private ConnectThread mConnectThread;
     private ConnectedThread mConnectedThread;
     private int mState;
@@ -89,10 +92,10 @@ public class BluetoothService {
      * @param context  The UI Activity Context
      * @param handler  A Handler to send messages back to the UI Activity
      */
-    public BluetoothService(Context context, Handler handler) {
+    public BluetoothService(Context context, BluetoothServiceHandler handler) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
-        mHandler = handler;
+        this.handler=handler;
         
     }
 
@@ -105,7 +108,8 @@ public class BluetoothService {
         mState = state;
 
         // Give the new state to the Handler so the UI Activity can update
-        mHandler.obtainMessage(BluetoothService.MESSAGE_STATE_CHANGE, state, closedManually?1:0).sendToTarget();
+        //mHandler.obtainMessage(BluetoothService.MESSAGE_STATE_CHANGE, state, closedManually?1:0).sendToTarget();
+        if(handler!=null)handler.onStateChanged(state,closedManually);
     }
 
     /**
@@ -157,11 +161,12 @@ public class BluetoothService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_DEVICE_NAME);
-        Bundle bundle = new Bundle();
-        bundle.putString(BluetoothService.DEVICE_NAME, device.getName());
-        msg.setData(bundle);
-        mHandler.sendMessage(msg);
+        //Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_DEVICE_NAME);
+        //Bundle bundle = new Bundle();
+        //bundle.putString(BluetoothService.DEVICE_NAME, device.getName());
+        //msg.setData(bundle);
+        //mHandler.sendMessage(msg);
+        if(handler!=null)handler.onConnected(device);
 
         setState(STATE_CONNECTED);
     }
@@ -211,11 +216,12 @@ public class BluetoothService {
      */
     private void connectionFailed() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
-        Bundle bundle = new Bundle();
-        bundle.putString(BluetoothService.TOAST, "Unable to connect device");
-        msg.setData(bundle);
-        mHandler.sendMessage(msg);
+        //Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
+        //Bundle bundle = new Bundle();
+        //bundle.putString(BluetoothService.TOAST, "Unable to connect device");
+        //msg.setData(bundle);
+        //mHandler.sendMessage(msg);
+        if(handler!=null)handler.onError("Unable to connect device");
         stop();
     }
 
@@ -224,11 +230,12 @@ public class BluetoothService {
      */
     private void connectionLost() {
         // Send a failure message back to the Activity
-        Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
-        Bundle bundle = new Bundle();
-        bundle.putString(BluetoothService.TOAST, "Device connection was lost");
-        msg.setData(bundle);
-        mHandler.sendMessage(msg);
+        //Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
+        //Bundle bundle = new Bundle();
+        //bundle.putString(BluetoothService.TOAST, "Device connection was lost");
+        //msg.setData(bundle);
+        //mHandler.sendMessage(msg);
+        //if(callback!=null)callback.onError("Device connection was lost");
         stop();
     }
 
@@ -355,7 +362,7 @@ public class BluetoothService {
                     // Send the obtained bytes to the UI Activity
                     //mHandler.obtainMessage(BluetoothService.MESSAGE_READ, bytes, -1, buffer)
                       //      .sendToTarget();
-                    if(callback!=null)callback.onDataReceived(buffer, bytes);
+                    if(handler!=null)handler.onDataReceived(buffer, bytes);
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     //if(!closedManually)
@@ -374,8 +381,9 @@ public class BluetoothService {
                 mmOutStream.write(buffer);
 
                 // Share the sent message back to the UI Activity
-                mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE, -1, -1, buffer)
-                        .sendToTarget();
+                //mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE, -1, -1, buffer)
+                //        .sendToTarget();
+                if(handler!=null)handler.onDataWritten(buffer);
             } catch (IOException e) {
                 Log.e(TAG, "Exception during write", e);
             }

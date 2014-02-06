@@ -110,14 +110,14 @@ public class OneSheeldService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 		isBound = false;
+		stopSelf();
 		return super.onUnbind(intent);
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		while (!arduinoFirmata.close())
-			;
+		while (!arduinoFirmata.close());
 		hideNotifcation();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(
 				mMessageReceiver);

@@ -32,13 +32,13 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		getApplication().getRunningSheelds().get(
+		getApplication().getRunningShields().get(
 				getControllerTag()).setHasForgroundView(true);
 		super.onStart();
 	}
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(
+		getApplication().getRunningShields().get(
 				getControllerTag()).setHasForgroundView(false);
 		super.onStop();
 	}
@@ -47,8 +47,8 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new SpeakerShield(getActivity(), getControllerTag()));
 
 		connectButton = (Button) getView().findViewById(
@@ -76,7 +76,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 								// TODO Auto-generated method stub
 								((SpeakerShield) getApplication()
-										.getRunningSheelds().get(
+										.getRunningShields().get(
 												getControllerTag()))
 										.setSpeakerEventHandler(
 												speakerEventHandler, which);

@@ -86,11 +86,15 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		System.arraycopy(data, 2, newArray, 0, n);
 		if (command == TWITTER_COMMAND) {
 			String tweet = new String(newArray);
-			lastTweet = tweet;
 			if (isTwitterLoggedInAlready())
 				if (methodId == UPDATE_STATUS_METHOD_ID) {
-					tweet(tweet);
-					eventHandler.onRecieveTweet(tweet);
+					if (!tweet.equals(lastTweet)) {
+						tweet(tweet);
+						eventHandler.onRecieveTweet(tweet);
+					} else
+						eventHandler
+								.onTwitterError("You have posted this tweet before!");
+					lastTweet = tweet;
 				}
 
 		}
@@ -176,6 +180,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 							editor.putString(PREF_KEY_TWITTER_USERNAME,
 									TwitterAuthorization.TWITTER_USER_NAME);
 							editor.putBoolean(PREF_KEY_TWITTER_LOGIN, true);
+							eventHandler
+									.onTwitterLoggedIn(TwitterAuthorization.TWITTER_USER_NAME);
 							// Commit the edits!
 							editor.commit();
 
@@ -212,7 +218,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	public static interface TwitterEventHandler {
 		void onRecieveTweet(String tweet);
 
-		void onTwitterLoggedIn();
+		void onTwitterLoggedIn(String userName);
 
 		void onTwitterError(String error);
 	}

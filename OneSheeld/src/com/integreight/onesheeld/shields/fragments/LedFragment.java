@@ -33,19 +33,19 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	@Override
 	public void onStart() {
-		if (((LedShield) getApplication().getRunningSheelds().get(
+		if (((LedShield) getApplication().getRunningShields().get(
 				getControllerTag())) != null)
-			toggleLed(((LedShield) getApplication().getRunningSheelds().get(
+			toggleLed(((LedShield) getApplication().getRunningShields().get(
 					getControllerTag())).refreshLed());
 
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -80,16 +80,16 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 								// TODO Auto-generated method stub
 								((LedShield) getApplication()
-										.getRunningSheelds().get(
+										.getRunningShields().get(
 												getControllerTag()))
 										.setLedEventHandler(ledEventHandler);
 								((LedShield) getApplication()
-										.getRunningSheelds().get(
+										.getRunningShields().get(
 												getControllerTag()))
 										.setConnected(new ArduinoConnectedPin(
 												which, ArduinoFirmata.INPUT));
 								toggleLed(((LedShield) getApplication()
-										.getRunningSheelds().get(
+										.getRunningShields().get(
 												getControllerTag()))
 										.refreshLed());
 
@@ -131,8 +131,8 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 	// }
 
 	private void initializeFirmata() {
-		if (getApplication().getRunningSheelds().get(getControllerTag()) == null) {
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			getApplication().getRunningShields().put(getControllerTag(),
 					new LedShield(getActivity(), getControllerTag()));
 		}
 

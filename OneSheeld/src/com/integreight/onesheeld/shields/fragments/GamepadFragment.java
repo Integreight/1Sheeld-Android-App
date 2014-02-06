@@ -40,41 +40,41 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 			// TODO Auto-generated method stub
 			switch (k.getId()) {
 			case R.id.gamepad_up_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.UP_ARROW.getId());
 				break;
 			case R.id.gamepad_down_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.DOWN_ARROW
 						.getId());
 				break;
 			case R.id.gamepad_right_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.RIGHT_ARROW
 						.getId());
 				break;
 			case R.id.gamepad_left_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.LEFT_ARROW
 						.getId());
 				break;
 			case R.id.gamepad_yellow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.YELLOW_BUTTON
 						.getId());
 				break;
 			case R.id.gamepad_green_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.GREEN_BUTTON
 						.getId());
 				break;
 			case R.id.gamepad_red_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.RED_BUTTON
 						.getId());
 				break;
 			case R.id.gamepad_blue_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToHigh(Pin.BLUE_BUTTON
 						.getId());
 				break;
@@ -90,41 +90,41 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 			// TODO Auto-generated method stub
 			switch (k.getId()) {
 			case R.id.gamepad_up_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToLow(Pin.UP_ARROW.getId());
 				break;
 			case R.id.gamepad_down_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag()))
 						.setPinToLow(Pin.DOWN_ARROW.getId());
 				break;
 			case R.id.gamepad_right_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToLow(Pin.RIGHT_ARROW
 						.getId());
 				break;
 			case R.id.gamepad_left_arrow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag()))
 						.setPinToLow(Pin.LEFT_ARROW.getId());
 				break;
 			case R.id.gamepad_yellow_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToLow(Pin.YELLOW_BUTTON
 						.getId());
 				break;
 			case R.id.gamepad_green_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToLow(Pin.GREEN_BUTTON
 						.getId());
 				break;
 			case R.id.gamepad_red_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag()))
 						.setPinToLow(Pin.RED_BUTTON.getId());
 				break;
 			case R.id.gamepad_blue_key:
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).setPinToLow(Pin.BLUE_BUTTON
 						.getId());
 				break;
@@ -166,7 +166,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		// TODO Auto-generated method stub
 		super.onStart();
@@ -174,7 +174,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -204,8 +204,8 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 	}
 
 	private void initializeFirmata() {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new GamepadShield(getActivity(), getControllerTag()));
 		toggleMenuButtons();
 	}
@@ -267,7 +267,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 									public void onClick(DialogInterface dialog,
 											int whichArduinoPin) {
 										((GamepadShield) getApplication()
-												.getRunningSheelds().get(
+												.getRunningShields().get(
 														getControllerTag()))
 												.connectGamepadPinWithArduinoPin(
 														Pin.getPin(whichSegment),
@@ -287,7 +287,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// TODO Auto-generated method stub
-				((GamepadShield) getApplication().getRunningSheelds().get(
+				((GamepadShield) getApplication().getRunningShields().get(
 						getControllerTag())).initPins();
 
 			}

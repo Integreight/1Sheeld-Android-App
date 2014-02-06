@@ -31,9 +31,9 @@ public class ToggleButtonFragment extends
 						container, false);
 		toggleButtonButton = (ToggleButton) v
 				.findViewById(R.id.toggle_button_shield_button_toggle_button);
-		if ((ToggleButtonShield) getApplication().getRunningSheelds().get(
+		if ((ToggleButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) == null) {
-			getApplication().getRunningSheelds().put(getControllerTag(),
+			getApplication().getRunningShields().put(getControllerTag(),
 					new ToggleButtonShield(getActivity(), getControllerTag()));
 		}
 		toggleButtonButton
@@ -44,12 +44,12 @@ public class ToggleButtonFragment extends
 							boolean isChecked) {
 						// TODO Auto-generated method stub
 						((ToggleButtonShield) getApplication()
-								.getRunningSheelds().get(getControllerTag()))
+								.getRunningShields().get(getControllerTag()))
 								.setButtonOn(isChecked);
 
 					}
 				});
-		if ((ToggleButtonShield) getApplication().getRunningSheelds().get(
+		if ((ToggleButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) != null)
 			toggleButtonButton.setEnabled(true);
 
@@ -60,7 +60,7 @@ public class ToggleButtonFragment extends
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 
@@ -68,7 +68,7 @@ public class ToggleButtonFragment extends
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -103,7 +103,7 @@ public class ToggleButtonFragment extends
 
 								// TODO Auto-generated method stub
 								((ToggleButtonShield) getApplication()
-										.getRunningSheelds().get(
+										.getRunningShields().get(
 												getControllerTag()))
 										.setConnected(new ArduinoConnectedPin(
 												which, ArduinoFirmata.OUTPUT));

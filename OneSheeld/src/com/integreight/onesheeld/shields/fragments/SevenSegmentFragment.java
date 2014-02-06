@@ -59,12 +59,12 @@ public class SevenSegmentFragment extends
 
 	@Override
 	public void onStart() {
-		if (getApplication().getRunningSheelds().get(getControllerTag()) != null)
+		if (getApplication().getRunningShields().get(getControllerTag()) != null)
 			refreshSegments(((SevenSegmentShield) getApplication()
-					.getRunningSheelds().get(getControllerTag()))
+					.getRunningShields().get(getControllerTag()))
 					.refreshSegments());
 
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 
@@ -72,7 +72,7 @@ public class SevenSegmentFragment extends
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -118,7 +118,7 @@ public class SevenSegmentFragment extends
 													DialogInterface dialog,
 													int whichArduinoPin) {
 												((SevenSegmentShield) getApplication()
-														.getRunningSheelds()
+														.getRunningShields()
 														.get(getControllerTag())).connectSegmentWithPin(
 														Segment.getSegment(whichSegment),
 														whichArduinoPin);
@@ -138,10 +138,10 @@ public class SevenSegmentFragment extends
 					public void onClick(DialogInterface dialog, int which) {
 						// TODO Auto-generated method stub
 						((SevenSegmentShield) getApplication()
-								.getRunningSheelds().get(getControllerTag()))
+								.getRunningShields().get(getControllerTag()))
 								.setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
 						refreshSegments(((SevenSegmentShield) getApplication()
-								.getRunningSheelds().get(getControllerTag()))
+								.getRunningShields().get(getControllerTag()))
 								.refreshSegments());
 					}
 				});
@@ -238,8 +238,8 @@ public class SevenSegmentFragment extends
 	}
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new SevenSegmentShield(getActivity(), getControllerTag()));
 
 	}
