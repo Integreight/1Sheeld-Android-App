@@ -22,7 +22,7 @@ import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class MainActivity extends SlidingFragmentActivity {
 	// private final String TAG = "MainActivity";
-	private boolean isBoundService = false;
+	// private boolean isBoundService = false;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -69,7 +69,7 @@ public class MainActivity extends SlidingFragmentActivity {
 					.getServiceEventHandlers()) {
 				serviceHandler.onSuccess(getThisApplication().getAppFirmata());
 			}
-			isBoundService = true;
+			// isBoundService = true;
 
 		}
 
@@ -79,7 +79,7 @@ public class MainActivity extends SlidingFragmentActivity {
 					.getServiceEventHandlers()) {
 				serviceHandler.onFailure();
 			}
-			isBoundService = false;
+			// isBoundService = false;
 		}
 	};
 
@@ -130,28 +130,26 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 
 	private void bindFirmataService() {
-		isBoundService = OneSheeldService.isBound;
-		if (!isBoundService) {
+		// isBoundService = OneSheeldService.isBound;
+		if (!OneSheeldService.isBound) {
 			Intent intent = new Intent(this, OneSheeldService.class);
 			startService(intent);
+			// stopService(intent);
 			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 		}
 	}
 
-	private void unBindFirmataService() {
-		// TODO Auto-generated method stub
-		isBoundService = OneSheeldService.isBound;
-		if (isBoundService && isMyServiceRunning())
+	public void unBindFirmataService() {
 			this.unbindService(mConnection);
 
 	}
 
 	@Override
 	protected void onDestroy() {
-		isBoundService = OneSheeldService.isBound;
-		if (isBoundService && isMyServiceRunning())
+		// isBoundService = OneSheeldService.isBound;
+		if (isMyServiceRunning())
 			unBindFirmataService();
-		isBoundService = false;
+		// isBoundService = false;
 		super.onDestroy();
 	}
 

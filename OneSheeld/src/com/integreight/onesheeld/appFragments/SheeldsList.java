@@ -8,10 +8,13 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -180,7 +183,6 @@ public class SheeldsList extends SherlockFragment {
 	}
 
 	private void connectDevice(Intent data) {
-
 		String address = data.getExtras().getString(
 				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 		Intent intent = new Intent(getActivity(), OneSheeldService.class);
@@ -190,11 +192,15 @@ public class SheeldsList extends SherlockFragment {
 	}
 
 	private void disconnectService() {
-		// if (isOneSheeldServiceRunning()) {
-		getActivity().stopService(
-				new Intent(getActivity(), OneSheeldService.class));
-		setBWStrips();
-		// }
+		if (isOneSheeldServiceRunning()) {
+			((MainActivity) getActivity()).unBindFirmataService();
+			// getActivity().stopService(
+			// new Intent(getActivity(), OneSheeldService.class));
+			// ((OneSheeldApplication)
+			// getActivity().getApplication()).getAppFirmata()
+			// .close();
+			setBWStrips();
+		}
 	}
 
 	private void launchShieldsOperationActivity() {
@@ -203,9 +209,6 @@ public class SheeldsList extends SherlockFragment {
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-		// Intent shieldsActivity = new Intent(getActivity(),
-		// ShieldsOperationActivity.class);
-		// startActivity(shieldsActivity);
 		((MainActivity) getActivity()).replaceCurrentFragment(
 				ShieldsOperations.getInstance(),
 				ShieldsOperations.class.getName(), true);

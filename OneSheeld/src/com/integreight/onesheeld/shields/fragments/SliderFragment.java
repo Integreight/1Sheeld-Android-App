@@ -48,13 +48,13 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 			public void onProgressChanged(SeekBar seekBar, int progress,
 					boolean fromUser) {
 				// TODO Auto-generated method stub
-				((SliderShield) getApplication().getRunningSheelds().get(
+				((SliderShield) getApplication().getRunningShields().get(
 						getControllerTag())).setSliderValue(progress);
 
 			}
 		});
 
-		if (((SliderShield) getApplication().getRunningSheelds().get(
+		if (((SliderShield) getApplication().getRunningShields().get(
 				getControllerTag())) != null)
 			seekBar.setEnabled(true);
 
@@ -65,7 +65,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 
@@ -73,7 +73,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -107,7 +107,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 								int pin = Integer.parseInt(items[which]
 										.toString());
 								((SliderShield) getApplication()
-										.getRunningSheelds().get(
+										.getRunningShields().get(
 												getControllerTag()))
 										.setConnected(new ArduinoConnectedPin(
 												pin, ArduinoFirmata.OUTPUT));
@@ -126,8 +126,8 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	private void initializeFirmata(ArduinoFirmata firmata) {
 
-		if (getApplication().getRunningSheelds().get(getControllerTag()) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if (getApplication().getRunningShields().get(getControllerTag()) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new SliderShield(getActivity(), getControllerTag()));
 
 	}

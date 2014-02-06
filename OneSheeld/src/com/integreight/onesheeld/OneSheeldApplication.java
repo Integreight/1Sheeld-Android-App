@@ -49,7 +49,7 @@ public class OneSheeldApplication extends Application {
 				.commit();
 	}
 
-	public Hashtable<String, ControllerParent<?>> getRunningSheelds() {
+	public Hashtable<String, ControllerParent<?>> getRunningShields() {
 		return runningSheelds;
 	}
 

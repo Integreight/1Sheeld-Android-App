@@ -41,14 +41,14 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		initializeFirmata();
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -131,22 +131,22 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	};
 
 	private void initializeFirmata() {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(
 					getControllerTag(),
 					new FacebookShield(getActivity(), getControllerTag(), this,
 							savedInstanceState));
-		((FacebookShield) getApplication().getRunningSheelds().get(
+		((FacebookShield) getApplication().getRunningShields().get(
 				getControllerTag())).setShieldFragment(this);
-		((FacebookShield) getApplication().getRunningSheelds().get(
+		((FacebookShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setFacebookEventHandler(facebookEventHandler);
 		checkLogin();
 	}
 
 	private void checkLogin() {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) != null
-				&& ((FacebookShield) getApplication().getRunningSheelds().get(
+		if ((getApplication().getRunningShields().get(getControllerTag())) != null
+				&& ((FacebookShield) getApplication().getRunningShields().get(
 						getControllerTag())).isFacebookLoggedInAlready()) {
 			buttonToLoggedIn();
 		} else {
@@ -181,14 +181,14 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	}
 
 	private void logoutFromFacebook() {
-		((FacebookShield) getApplication().getRunningSheelds().get(
+		((FacebookShield) getApplication().getRunningShields().get(
 				getControllerTag())).logoutFromFacebook();
 		buttonToLoggedOut();
 	}
 
 	private void loginToFacebook() {
 
-		((FacebookShield) getApplication().getRunningSheelds().get(
+		((FacebookShield) getApplication().getRunningShields().get(
 				getControllerTag())).loginToFacebook();
 		getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
 	}
@@ -210,7 +210,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		if (userNameTextView != null)
 			userNameTextView.setVisibility(View.VISIBLE);
 		userNameTextView.setText("Logged in as: "
-				+ ((FacebookShield) getApplication().getRunningSheelds().get(
+				+ ((FacebookShield) getApplication().getRunningShields().get(
 						getControllerTag())).getUsername());
 	}
 

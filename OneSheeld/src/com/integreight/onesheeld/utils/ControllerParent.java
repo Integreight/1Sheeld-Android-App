@@ -173,7 +173,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	}
 
 	public void CommitInstanceTotable() {
-		getApplication().getRunningSheelds().put(tag, this);
+		getApplication().getRunningShields().put(tag, this);
 	}
 
 	public boolean isHasConnectedPins() {

@@ -33,7 +33,7 @@ public class NotificationFragment extends
 
 	@Override
 	public void onStart() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 
@@ -41,7 +41,7 @@ public class NotificationFragment extends
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -67,10 +67,10 @@ public class NotificationFragment extends
 	};
 
 	private void initializeFirmata() {
-		if (getApplication().getRunningSheelds().get(getControllerTag()) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if (getApplication().getRunningShields().get(getControllerTag()) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new NotificationShield(getActivity(), getControllerTag()));
-		((NotificationShield) getApplication().getRunningSheelds().get(
+		((NotificationShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setNotificationEventHandler(notificationEventHandler);
 		toggleMenuButtons();

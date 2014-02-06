@@ -3,14 +3,11 @@
     <item
         android:id="@+id/login_to_twitter_menuitem"
         android:orderInCategory="1"
-        android:showAsAction="never"
         android:title="@string/login_to_twitter"/>
     
         <item
         android:id="@+id/logout_from_twitter_menuitem"
         android:orderInCategory="2"
-        android:showAsAction="never"
-        android:title="@string/logout_from_twitter"
-        android:visible="false"/>
+        android:title="@string/logout_from_twitter"/>
 
 </menu>

@@ -36,14 +36,14 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningSheelds().get(getControllerTag())
+		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(false);
 		super.onStop();
 	}
@@ -79,10 +79,10 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	};
 
 	private void initializeFirmata() {
-		if ((getApplication().getRunningSheelds().get(getControllerTag())) == null)
-			getApplication().getRunningSheelds().put(getControllerTag(),
+		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
 					new LcdShield(getActivity(), getControllerTag()));
-		((LcdShield) getApplication().getRunningSheelds().get(
+		((LcdShield) getApplication().getRunningShields().get(
 				getControllerTag())).setLcdEventHandler(lcdEventHandler);
 		toggleMenuButtons();
 	}
@@ -120,18 +120,18 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	}
 
 	private void clearLcd() {
-		((LcdShield) getApplication().getRunningSheelds().get(
+		((LcdShield) getApplication().getRunningShields().get(
 				getControllerTag())).reset();
 		lcdTextView.setText(extractTextFromLcdShield());
 	}
 
 	private String extractTextFromLcdShield() {
 		String text = "";
-		for (int i = 0; i < ((LcdShield) getApplication().getRunningSheelds()
+		for (int i = 0; i < ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).getLcdText().length; i++) {
-			text += ((LcdShield) getApplication().getRunningSheelds().get(
+			text += ((LcdShield) getApplication().getRunningShields().get(
 					getControllerTag())).getLcdText()[i];
-			if (i == ((LcdShield) getApplication().getRunningSheelds().get(
+			if (i == ((LcdShield) getApplication().getRunningShields().get(
 					getControllerTag())).getLcdText().length - 1)
 				break;
 			text += "\n";
