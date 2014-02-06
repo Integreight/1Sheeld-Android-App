@@ -23,7 +23,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class TwitterShield extends ControllerParent<TwitterShield> {
 	private TwitterEventHandler eventHandler;
 	private String lastTweet;
-	private static final byte TWITTER_COMMAND = (byte) 0x30;
+	private static final byte TWITTER_COMMAND = (byte) 0x1A;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
 
 	public String getUsername() {
@@ -239,7 +239,18 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
+<<<<<<< HEAD
 		
+=======
+		if (frame.getShieldId() == TWITTER_COMMAND) {
+			lastTweet = frame.getArgumentAsString(0);
+			if (isTwitterLoggedInAlready())
+				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
+					tweet(lastTweet);
+					eventHandler.onRecieveTweet(lastTweet);
+				}
+		}
+>>>>>>> b051fb6f5f8e799d7f3c0aa6c390d45fd855cbd3
 	}
 
 }
