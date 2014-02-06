@@ -8,11 +8,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.widget.Toast;
 
-import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceCallback;
+import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
 
 
 public class ArduinoFirmata{
@@ -71,7 +69,7 @@ public class ArduinoFirmata{
 		return isUartInit;
 	}
 
-	public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
+	//public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
     private List<ArduinoFirmataEventHandler> eventHandlers;
     private List<ArduinoFirmataDataHandler> dataHandlers;
     private List<ArduinoFirmataShieldFrameHandler> frameHandlers;
@@ -107,12 +105,12 @@ public class ArduinoFirmata{
     }
 
     public ArduinoFirmata(Context context){
-        bluetoothService=new BluetoothService(context, mHandler);
+        bluetoothService=new BluetoothService(context, handler);
         eventHandlers=new ArrayList<ArduinoFirmataEventHandler>();
         dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
         frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
         this.context=context;
-        bluetoothService.setBluetoothServiceCallback(callback);
+        //bluetoothService.setBluetoothServiceCallback(callback);
     }
 
     public void connect(BluetoothDevice device){
@@ -398,76 +396,76 @@ public class ArduinoFirmata{
     	sysex(UART_DATA, getByteArrayAs2SevenBitsBytesArray(frame.getAllFrameAsBytes()));
     }
     
-    private final Handler mHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-            case BluetoothService.MESSAGE_STATE_CHANGE:
-                switch (msg.arg1) {
-                case BluetoothService.STATE_CONNECTED:
-
-                    break;
-                case BluetoothService.STATE_CONNECTING:
-
-                    break;
-                case BluetoothService.STATE_NONE:
-                	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-                		eventHandler.onClose(msg.arg2==1);
-            		}
-                	
-                    break;
-                }
-                break;
-            case BluetoothService.MESSAGE_WRITE:
-                byte[] writeBuf = (byte[]) msg.obj;
-                // construct a string from the buffer
-                break;
-            case BluetoothService.MESSAGE_READ:
-                byte[] readBuf = (byte[]) msg.obj;
-                // construct a string from the valid bytes in the buffer;
-                if(msg.arg1 > 0){
-//                	try {
-//                    for(int i = 0; i < msg.arg1; i++){
-//						//bluetoothBuffer.add(readBuf[i]);
-//                        processInput(readBuf[i]);
-//                    }
-//                    } catch (InterruptedException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-                }
-                break;
-            case BluetoothService.MESSAGE_DEVICE_NAME:
-                // save the connected device's name
-            	enableReporting();
-            	setAllPinsAsInput();
-            	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
-            	uartListeningThread=new UartListeningThread();
-            	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-            		eventHandler.onConnect();
-        		}
-            	
-                String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
-                Toast.makeText(context, "Connected to "
-                               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-                
-//                Message activityMsg = activityHandler.obtainMessage(ArduinoFirmata.MESSAGE_DEVICE_NAME);
-//                Bundle bundle = new Bundle();
-//                bundle.putString(BluetoothService.DEVICE_NAME, mConnectedDeviceName);
-//                activityMsg.setData(bundle);
-//                mHandler.sendMessage(activityMsg);
-//                activityHandler.sendMessage(activityMsg);
-                
-                break;
-            case BluetoothService.MESSAGE_TOAST:
-                Toast.makeText(context, msg.getData().getString(BluetoothService.TOAST),
-                               Toast.LENGTH_SHORT).show();
-                break;
-            }
-        }
-    };
+//    private final Handler mHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//            case BluetoothService.MESSAGE_STATE_CHANGE:
+//                switch (msg.arg1) {
+//                case BluetoothService.STATE_CONNECTED:
+//
+//                    break;
+//                case BluetoothService.STATE_CONNECTING:
+//
+//                    break;
+//                case BluetoothService.STATE_NONE:
+//                	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+//                		eventHandler.onClose(msg.arg2==1);
+//            		}
+//                	
+//                    break;
+//                }
+//                break;
+//            case BluetoothService.MESSAGE_WRITE:
+//                byte[] writeBuf = (byte[]) msg.obj;
+//                // construct a string from the buffer
+//                break;
+//            case BluetoothService.MESSAGE_READ:
+//                byte[] readBuf = (byte[]) msg.obj;
+//                // construct a string from the valid bytes in the buffer;
+//                if(msg.arg1 > 0){
+////                	try {
+////                    for(int i = 0; i < msg.arg1; i++){
+////						//bluetoothBuffer.add(readBuf[i]);
+////                        processInput(readBuf[i]);
+////                    }
+////                    } catch (InterruptedException e) {
+////						// TODO Auto-generated catch block
+////						e.printStackTrace();
+////					}
+//                }
+//                break;
+//            case BluetoothService.MESSAGE_DEVICE_NAME:
+//                // save the connected device's name
+//            	enableReporting();
+//            	setAllPinsAsInput();
+//            	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
+//            	uartListeningThread=new UartListeningThread();
+//            	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+//            		eventHandler.onConnect();
+//        		}
+//            	
+//                String mConnectedDeviceName = msg.getData().getString(BluetoothService.DEVICE_NAME);
+//                Toast.makeText(context, "Connected to "
+//                               + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+//                
+////                Message activityMsg = activityHandler.obtainMessage(ArduinoFirmata.MESSAGE_DEVICE_NAME);
+////                Bundle bundle = new Bundle();
+////                bundle.putString(BluetoothService.DEVICE_NAME, mConnectedDeviceName);
+////                activityMsg.setData(bundle);
+////                mHandler.sendMessage(activityMsg);
+////                activityHandler.sendMessage(activityMsg);
+//                
+//                break;
+//            case BluetoothService.MESSAGE_TOAST:
+//                Toast.makeText(context, msg.getData().getString(BluetoothService.TOAST),
+//                               Toast.LENGTH_SHORT).show();
+//                break;
+//            }
+//        }
+//    };
     
-    BluetoothServiceCallback callback=new BluetoothServiceCallback() {
+    BluetoothServiceHandler handler=new BluetoothServiceHandler() {
 		
 		@Override
 		public void onDataReceived(byte[] bytes, int length) {
@@ -476,6 +474,47 @@ public class ArduinoFirmata{
 				bluetoothBuffer.add(bytes[i]);
                 //processInput(bytes[i]);
             }
+			
+		}
+
+		@Override
+		public void onStateChanged(int state, boolean isManually) {
+			// TODO Auto-generated method stub
+			if(state==BluetoothService.STATE_NONE){
+				for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+	        		eventHandler.onClose(isManually);
+	    		}
+			}
+		}
+
+		@Override
+		public void onDataWritten(byte[] bytes) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onConnected(BluetoothDevice device) {
+			// TODO Auto-generated method stub
+			enableReporting();
+        	setAllPinsAsInput();
+        	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
+        	uartListeningThread=new UartListeningThread();
+        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+        		eventHandler.onConnect();
+    		}
+        	
+            String mConnectedDeviceName = device.getName();
+            Toast.makeText(context, "Connected to "
+                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+			
+		}
+
+		@Override
+		public void onError(String error) {
+			// TODO Auto-generated method stub
+			Toast.makeText(context, error,
+                    Toast.LENGTH_SHORT).show();
 			
 		}
 	};
