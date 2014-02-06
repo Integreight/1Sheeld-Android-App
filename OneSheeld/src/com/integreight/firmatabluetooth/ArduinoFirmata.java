@@ -481,13 +481,18 @@ public class ArduinoFirmata{
 		}
 
 		@Override
-		public void onStateChanged(int state, boolean isManually) {
+		public void onStateChanged(final int state, final boolean isManually) {
 			// TODO Auto-generated method stub
-			if(state==BluetoothService.STATE_NONE){
-				for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-	        		eventHandler.onClose(isManually);
-	    		}
+        	new Handler(Looper.getMainLooper()).post(new Runnable() {
+				@Override
+				public void run() {
+				if(state==BluetoothService.STATE_NONE){
+					for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+		        		eventHandler.onClose(isManually);
+		    		}
 			}
+				}
+			});
 		}
 
 		@Override
@@ -503,14 +508,14 @@ public class ArduinoFirmata{
         	setAllPinsAsInput();
         	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
         	uartListeningThread=new UartListeningThread();
-        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-        		eventHandler.onConnect();
-    		}
         	
         	new Handler(Looper.getMainLooper()).post(new Runnable() {
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
+					for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+		        		eventHandler.onConnect();
+		    		}
 		            String mConnectedDeviceName = device.getName();
 		            Toast.makeText(context, "Connected to "
 		                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
