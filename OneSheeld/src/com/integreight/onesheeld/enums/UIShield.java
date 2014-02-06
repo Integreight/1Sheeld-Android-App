@@ -8,6 +8,7 @@ import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
+import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
@@ -113,7 +114,11 @@ public enum UIShield {
 			22, "Flashlight", R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_flashlight_symbol, false);
+			R.drawable.shields_activity_flashlight_symbol, false), SKYPE_SHIELD(
+			22, "Skype", R.drawable.shields_activity_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22, R.drawable.shields_activity_led_symbol,
+			false,SkypeShield.class);
 
 	private int id;
 	private String name;
@@ -248,6 +253,8 @@ public enum UIShield {
 			return GYROSCOPE_SHIELD;
 		case 22:
 			return FLASHLIGHT_SHIELD;
+		case 23:
+			return SKYPE_SHIELD;
 		}
 		return null;
 	}
