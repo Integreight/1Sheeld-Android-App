@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#C1000000"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/oneSheeldLogo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/app_name"
+        android:padding="20dp"
+        android:src="@drawable/shields_activity_buzzer_symbol" />
+
+    <LinearLayout
+        android:id="@+id/initTransContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="1"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/green"
+        android:orientation="vertical" >
+    </LinearLayout>
+
+</LinearLayout>

@@ -77,8 +77,7 @@ public class OneSheeldApplication extends Application {
 		return serviceEventHandlers;
 	}
 
-	public void clearServiceEventHandlers(
-			List<OneSheeldServiceHandler> serviceEventHandlers) {
+	public void clearServiceEventHandlers() {
 		this.serviceEventHandlers.clear();
 	}
 

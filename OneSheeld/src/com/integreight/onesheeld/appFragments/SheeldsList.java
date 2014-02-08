@@ -94,6 +94,7 @@ public class SheeldsList extends SherlockFragment {
 				ft.commit();
 			}
 		}
+		((OneSheeldApplication)getActivity().getApplication()).clearServiceEventHandlers();
 		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
