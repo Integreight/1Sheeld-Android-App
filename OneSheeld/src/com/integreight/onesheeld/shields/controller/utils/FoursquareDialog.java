@@ -12,23 +12,21 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.jiramot.foursquare.android.R;
-import com.mukesh.foursquare.android.Foursquare.DialogListener;
+import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
+
+
 
 public class FoursquareDialog extends Dialog {
 
@@ -74,17 +72,12 @@ public class FoursquareDialog extends Dialog {
 		addContentView(mContent, new FrameLayout.LayoutParams(
 				(int) (dimensions[0] * scale + 0.5f), (int) (dimensions[1]
 						* scale + 0.5f)));
-		CookieSyncManager.createInstance(getContext());
-
-		CookieManager cookieManager = CookieManager.getInstance();
-
-		cookieManager.removeAllCookie();
 	}
 
 	private void setUpTitle() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		Drawable icon = getContext().getResources().getDrawable(
-				R.drawable.foursquare);
+		/*Drawable icon = getContext().getResources().getDrawable(
+				R.drawable.foursquare);*/
 		mTitle = new TextView(getContext());
 		mTitle.setText("Foursquare");
 		mTitle.setTextColor(Color.WHITE);
@@ -92,7 +85,7 @@ public class FoursquareDialog extends Dialog {
 		mTitle.setBackgroundColor(FB_BLUE);
 		mTitle.setPadding(MARGIN + PADDING, MARGIN, MARGIN, MARGIN);
 		mTitle.setCompoundDrawablePadding(MARGIN + PADDING);
-		mTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+		//mTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
 		mContent.addView(mTitle);
 	}
 
@@ -134,7 +127,7 @@ public class FoursquareDialog extends Dialog {
 			} else if (url.contains(DISPLAY_STRING)) {
 				return false;
 			}
-
+			
 			getContext().startActivity(
 					new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 			return true;
