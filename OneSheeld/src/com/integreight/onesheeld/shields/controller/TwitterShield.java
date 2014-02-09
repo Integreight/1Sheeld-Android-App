@@ -14,6 +14,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListner;
@@ -23,7 +24,6 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class TwitterShield extends ControllerParent<TwitterShield> {
 	private TwitterEventHandler eventHandler;
 	private String lastTweet;
-	private static final byte TWITTER_COMMAND = (byte) 0x1A;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
 
 	public String getUsername() {
@@ -75,7 +75,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		getApplication().getAppFirmata().initUart();
 	}
 
-	@Override
+	/*@Override
 	public void onUartReceive(byte[] data) {
 		if (data.length < 2)
 			return;
@@ -99,7 +99,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 		}
 		super.onUartReceive(data);
-	}
+	}*/
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
@@ -239,7 +239,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		if (frame.getShieldId() == TWITTER_COMMAND) {
+		if (frame.getShieldId() == UIShield.TWITTER_SHIELD.getId()) {
 			lastTweet = frame.getArgumentAsString(0);
 			if (isTwitterLoggedInAlready())
 				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
