@@ -25,7 +25,6 @@ import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
-import com.integreight.onesheeld.shields.fragments.InternetFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
 import com.integreight.onesheeld.shields.fragments.LcdFragment;
 import com.integreight.onesheeld.shields.fragments.LedFragment;
@@ -103,9 +102,6 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case GAMEDPAD_SHIELD:
 			return addToCreatedListAndReturn(UIShield.GAMEDPAD_SHIELD,
 					new GamepadFragment());
-		case INTERNET_SHIELD:
-			return addToCreatedListAndReturn(UIShield.INTERNET_SHIELD,
-					new InternetFragment());
 		case FOURSQUARE_SHIELD:
 			return addToCreatedListAndReturn(UIShield.FOURSQUARE_SHIELD,
 					new FoursquareFragment());
