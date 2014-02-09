@@ -199,7 +199,7 @@ public enum UIShield {
 		return id;
 	}
 
-	public static UIShield getItem(int id) {
+	public static UIShield getPosition(int id) {
 		switch (id) {
 		case 1:
 			return LED_SHIELD;

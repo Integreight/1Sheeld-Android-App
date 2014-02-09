@@ -134,13 +134,13 @@ public class SheeldsList extends SherlockFragment {
 					selectionMark.setChecked(false);
 					selectionMark.setVisibility(View.INVISIBLE);
 					selectionCircle.setVisibility(View.INVISIBLE);
-					UIShield.getItem(position + 1).setMainActivitySelection(
+					UIShield.getPosition(position + 1).setMainActivitySelection(
 							false);
 				} else {
 					selectionMark.setChecked(true);
 					selectionMark.setVisibility(View.VISIBLE);
 					selectionCircle.setVisibility(View.VISIBLE);
-					UIShield.getItem(position + 1).setMainActivitySelection(
+					UIShield.getPosition(position + 1).setMainActivitySelection(
 							true);
 
 				}
