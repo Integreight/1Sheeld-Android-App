@@ -3,6 +3,7 @@ package com.integreight.onesheeld;
 import java.util.Set;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
@@ -254,17 +255,30 @@ public class ArduinoConnectivityActivity extends Dialog {
 			showProgress();
 			changeSlogan("Connecting.....", COLOR.GREEN);
 			((OneSheeldApplication) activity.getApplication())
-					.addServiceEventHandler(new OneSheeldServiceHandler() {
+					.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
 
 						@Override
-						public void onSuccess(ArduinoFirmata firmate) {
+						public void onError(String errorMessage) {
+							setRetryButtonReady("Not Connected",
+									new View.OnClickListener() {
+
+										@Override
+										public void onClick(View arg0) {
+											
+										}
+									});
+
+						}
+
+						@Override
+						public void onConnect() {
 							cancel();
-							Toast.makeText(activity, "Would finish",
+							Toast.makeText(activity, "Connected, finish",
 									Toast.LENGTH_LONG).show();
 						}
 
 						@Override
-						public void onFailure() {
+						public void onClose(boolean closedManually) {
 							setRetryButtonReady("Not Connected",
 									new View.OnClickListener() {
 
@@ -273,6 +287,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 										}
 									});
+
 						}
 					});
 			String info = ((TextView) v).getText().toString();

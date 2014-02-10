@@ -25,7 +25,8 @@ public class OneSheeldApplication extends Application {
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
 	private ConnectionDetector connectionHandler;
-	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
+	private ArduinoFirmataEventHandler arduinoFirmataEventHandler,
+			arduinoFirmataHandlerForConnectivityPopup;
 
 	@Override
 	public void onCreate() {
@@ -68,6 +69,8 @@ public class OneSheeldApplication extends Application {
 	public void setAppFirmata(ArduinoFirmata appFirmata) {
 		this.appFirmata = appFirmata;
 		this.appFirmata.addEventHandler(arduinoFirmataEventHandler);
+		this.appFirmata
+				.addEventHandler(arduinoFirmataHandlerForConnectivityPopup);
 	}
 
 	public void addServiceEventHandler(
@@ -102,6 +105,15 @@ public class OneSheeldApplication extends Application {
 	public void setArduinoFirmataEventHandler(
 			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
 		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
+	}
+
+	public ArduinoFirmataEventHandler getArduinoFirmataHandlerForConnectivityPopup() {
+		return arduinoFirmataHandlerForConnectivityPopup;
+	}
+
+	public void setArduinoFirmataHandlerForConnectivityPopup(
+			ArduinoFirmataEventHandler arduinoFirmataHandlerForConnectivityPopup) {
+		this.arduinoFirmataHandlerForConnectivityPopup = arduinoFirmataHandlerForConnectivityPopup;
 	}
 
 	// public ServiceConnection getmConnection() {
