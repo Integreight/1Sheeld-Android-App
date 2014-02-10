@@ -153,7 +153,11 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 				//EntityUtils.toString(rp.getEntity());
 				HttpEntity mEntity = rp.getEntity();
 				InputStream resp =  mEntity.getContent();
+				try{
 				response =getStringFromInputStream(resp);
+				}catch (Exception e){
+					response =getStringFromInputStream(resp);
+				}
 
 				if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 					Log.d("Response From Server ::", rp.toString());
