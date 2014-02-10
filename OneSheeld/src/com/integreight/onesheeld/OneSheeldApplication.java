@@ -53,7 +53,8 @@ public class OneSheeldApplication extends Application {
 		return runningSheelds;
 	}
 
-	public void setRunningSheelds(Hashtable<String, ControllerParent<?>> runningSheelds) {
+	public void setRunningSheelds(
+			Hashtable<String, ControllerParent<?>> runningSheelds) {
 		this.runningSheelds = runningSheelds;
 	}
 
@@ -66,7 +67,6 @@ public class OneSheeldApplication extends Application {
 		this.appFirmata = appFirmata;
 	}
 
-
 	public void addServiceEventHandler(
 			OneSheeldServiceHandler serviceEventHandler) {
 		if (!this.serviceEventHandlers.contains(serviceEventHandler))
@@ -78,7 +78,10 @@ public class OneSheeldApplication extends Application {
 	}
 
 	public void clearServiceEventHandlers() {
-		this.serviceEventHandlers.clear();
+		if (getAppFirmata() != null) {
+			getAppFirmata().clearArduinoFirmataDataHandlers();
+			getAppFirmata().clearArduinoFirmataShieldFrameHandlers();
+		}
 	}
 
 	public ConnectionDetector getConnectionHandler() {

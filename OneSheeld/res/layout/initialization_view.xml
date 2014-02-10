@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#C1000000"
+    android:background="#E6000000"
     android:orientation="vertical" >
 
     <ImageView
@@ -13,24 +13,83 @@
         android:padding="20dp"
         android:src="@drawable/shields_activity_buzzer_symbol" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/initTransContainer"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:gravity="center"
         android:layout_weight="1"
+        android:gravity="center"
         android:orientation="vertical" >
 
-        <TextView
+        <Button
+            android:id="@+id/scanOrTryAgain"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@android:style/Widget.ProgressBar.Large.Inverse"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminateDrawable="@drawable/my_progress_indeterminate" >
+        </ProgressBar>
+
+        <RelativeLayout
+            android:id="@+id/devicesListContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:id="@+id/connectAutomotically"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="10dp" >
+
+                <CheckBox
+                    android:id="@+id/doAutomaticConnectionToThisDeviceCheckBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Connect automatically"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <ListView
+                android:id="@+id/devicesList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/connectAutomotically"
+                android:layout_centerInParent="true" >
+            </ListView>
+        </RelativeLayout>
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/transactionSlogan"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:background="@color/green"
         android:orientation="vertical" >
+
+        <com.integreight.onesheeld.utils.OneShieldTextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:text="Searching....."
+            android:typeface="sans" />
     </LinearLayout>
 
 </LinearLayout>

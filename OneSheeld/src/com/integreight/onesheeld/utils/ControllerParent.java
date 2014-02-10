@@ -168,7 +168,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	public ControllerParent<T> setTag(String tag) {
 		this.tag = tag;
-		CommitInstanceTotable();
+		getApplication().getRunningShields().put(tag, this);
 		return this;
 	}
 

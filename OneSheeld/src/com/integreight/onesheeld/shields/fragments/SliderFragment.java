@@ -64,7 +64,9 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	@Override
 	public void onStart() {
-
+		if (getApplication().getRunningShields().get(getControllerTag()) == null)
+			getApplication().getRunningShields().put(getControllerTag(),
+					new SliderShield(getActivity(), getControllerTag()));
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();
@@ -77,6 +79,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 				.setHasForgroundView(false);
 		super.onStop();
 	}
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub

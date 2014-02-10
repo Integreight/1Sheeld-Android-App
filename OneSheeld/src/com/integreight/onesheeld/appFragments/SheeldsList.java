@@ -8,13 +8,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -34,6 +31,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.ArduinoConnectivityActivity;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -80,6 +78,7 @@ public class SheeldsList extends SherlockFragment {
 
 	@Override
 	public void onResume() {
+		getSherlockActivity().getSupportActionBar().hide();
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
 		List<Fragment> frags = getActivity().getSupportFragmentManager()
@@ -94,7 +93,8 @@ public class SheeldsList extends SherlockFragment {
 				ft.commit();
 			}
 		}
-		((OneSheeldApplication)getActivity().getApplication()).clearServiceEventHandlers();
+		((OneSheeldApplication) getActivity().getApplication())
+				.clearServiceEventHandlers();
 		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
@@ -113,6 +113,17 @@ public class SheeldsList extends SherlockFragment {
 	}
 
 	private void initView() {
+		getActivity().findViewById(R.id.getAvailableDevices)
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						Intent serverIntent = new Intent(getActivity(),
+								ArduinoConnectivityActivity.class);
+						startActivityForResult(serverIntent,
+								REQUEST_CONNECT_DEVICE);
+					}
+				});
 		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
 		shieldsUIList = Arrays.asList(UIShield.values());
 		shieldsListView.setEnabled(false);

@@ -6,8 +6,8 @@ import android.widget.TextView;
 
 public class OneShieldTextView extends TextView{
 
-	public OneShieldTextView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+	public OneShieldTextView(Context context, AttributeSet attrs) {
+		super(context, attrs);
 		// TODO Auto-generated constructor stub
 	}
 
