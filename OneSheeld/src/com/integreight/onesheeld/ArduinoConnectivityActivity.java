@@ -2,19 +2,27 @@ package com.integreight.onesheeld;
 
 import java.util.Set;
 
+import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.activities.DeviceListActivity;
+import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.OneShieldTextView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,9 +31,17 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ArduinoConnectivityActivity extends Activity {
+public class ArduinoConnectivityActivity extends Dialog {
+	private Activity activity;
+
+	public ArduinoConnectivityActivity(Activity context) {
+		super(context, Window.FEATURE_NO_TITLE);
+		this.activity = context;
+		// TODO Auto-generated constructor stub
+	}
 
 	private static final String TAG = "DeviceListActivity";
 	private static final boolean isTrue = true;
@@ -43,6 +59,7 @@ public class ArduinoConnectivityActivity extends Activity {
 	private boolean isScanButton = true;
 	private OneShieldTextView statusText;
 	private LinearLayout transactionSlogan;
+	public static boolean isOpened = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +71,8 @@ public class ArduinoConnectivityActivity extends Activity {
 		transactionSlogan = (LinearLayout) findViewById(R.id.transactionSlogan);
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		setScanButtonReady();
+		getWindow().setBackgroundDrawable(
+				new ColorDrawable(android.graphics.Color.TRANSPARENT));
 		scanOrTryAgain.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -69,7 +88,31 @@ public class ArduinoConnectivityActivity extends Activity {
 				}
 			}
 		});
+		setOnCancelListener(new OnCancelListener() {
+
+			@Override
+			public void onCancel(DialogInterface dialog) {
+				isOpened = false;
+				// Make sure we're not doing discovery anymore
+				if (mBtAdapter != null) {
+					mBtAdapter.cancelDiscovery();
+				}
+
+				// Unregister broadcast listeners
+				try {
+					activity.unregisterReceiver(mReceiver);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		super.onCreate(savedInstanceState);
+	}
+
+	@Override
+	protected void onStart() {
+		isOpened = true;
+		super.onStart();
 	}
 
 	private void setScanButtonReady() {
@@ -107,15 +150,15 @@ public class ArduinoConnectivityActivity extends Activity {
 	}
 
 	private void scanDevices() {
-		setResult(Activity.RESULT_CANCELED);
+		// setResult(Activity.RESULT_CANCELED);
 
 		// Initialize the button to perform device discovery
 
 		// Initialize array adapters. One for already paired devices and
 		// one for newly discovered devices
-		mPairedDevicesArrayAdapter = new ArrayAdapter<String>(this,
+		mPairedDevicesArrayAdapter = new ArrayAdapter<String>(activity,
 				R.layout.device_name);
-		mNewDevicesArrayAdapter = new ArrayAdapter<String>(this,
+		mNewDevicesArrayAdapter = new ArrayAdapter<String>(activity,
 				R.layout.device_name);
 
 		// Find and set up the ListView for paired devices
@@ -130,11 +173,11 @@ public class ArduinoConnectivityActivity extends Activity {
 
 		// Register for broadcasts when a device is discovered
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-		this.registerReceiver(mReceiver, filter);
+		activity.registerReceiver(mReceiver, filter);
 
 		// Register for broadcasts when discovery has finished
 		filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-		this.registerReceiver(mReceiver, filter);
+		activity.registerReceiver(mReceiver, filter);
 
 		// Get the local Bluetooth adapter
 
@@ -150,7 +193,7 @@ public class ArduinoConnectivityActivity extends Activity {
 			}
 			changeSlogan("Select Your Device", COLOR.YELLOW);
 		} else {
-			setRetryButtonReady("Not Found", new OnClickListener() {
+			setRetryButtonReady("Not Found", new View.OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
@@ -158,27 +201,23 @@ public class ArduinoConnectivityActivity extends Activity {
 
 				}
 			});
-			String noDevices = getResources().getText(R.string.none_paired)
-					.toString();
+			String noDevices = activity.getResources()
+					.getText(R.string.none_paired).toString();
 			mPairedDevicesArrayAdapter.add(noDevices);
 		}
 	}
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-
-		// Make sure we're not doing discovery anymore
-		if (mBtAdapter != null) {
-			mBtAdapter.cancelDiscovery();
-		}
-
-		// Unregister broadcast listeners
-		try {
-			this.unregisterReceiver(mReceiver);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	private void startService(String address) {
+		// isBoundService = OneSheeldService.isBound;
+		// if (!OneSheeldService.isBound) {
+		Intent intent = new Intent(activity, OneSheeldService.class);
+		intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
+		activity.startService(intent);
+		// stopService(intent);
+		// activity.bindService(intent, ((OneSheeldApplication) activity
+		// .getApplication()).getmConnection(),
+		// Context.BIND_AUTO_CREATE);
+		// }
 	}
 
 	/**
@@ -212,16 +251,40 @@ public class ArduinoConnectivityActivity extends Activity {
 
 			// Get the device MAC address, which is the last 17 chars in the
 			// View
+			showProgress();
+			changeSlogan("Connecting.....", COLOR.GREEN);
+			((OneSheeldApplication) activity.getApplication())
+					.addServiceEventHandler(new OneSheeldServiceHandler() {
+
+						@Override
+						public void onSuccess(ArduinoFirmata firmate) {
+							cancel();
+							Toast.makeText(activity, "Would finish",
+									Toast.LENGTH_LONG).show();
+						}
+
+						@Override
+						public void onFailure() {
+							setRetryButtonReady("Not Connected",
+									new View.OnClickListener() {
+
+										@Override
+										public void onClick(View arg0) {
+
+										}
+									});
+						}
+					});
 			String info = ((TextView) v).getText().toString();
 			String address = info.substring(info.length() - 17);
-
+			startService(address);
 			// Create the result Intent and include the MAC address
-			Intent intent = new Intent();
-			intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-
-			// Set result and finish this Activity
-			setResult(Activity.RESULT_OK, intent);
-			finish();
+			// Intent intent = new Intent();
+			// intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+			//
+			// // Set result and finish activity Activity
+			// setResult(Activity.RESULT_OK, intent);
+			// finish();
 		}
 	};
 
@@ -250,17 +313,18 @@ public class ArduinoConnectivityActivity extends Activity {
 				// setProgressBarIndeterminateVisibility(false);
 				// setTitle(R.string.select_device);
 				if (mNewDevicesArrayAdapter.getCount() == 0) {
-					String noDevices = getResources().getText(
-							R.string.none_found).toString();
+					String noDevices = activity.getResources()
+							.getText(R.string.none_found).toString();
 					mNewDevicesArrayAdapter.add(noDevices);
-					setRetryButtonReady("Not Connected", new OnClickListener() {
+					setRetryButtonReady("Not Found",
+							new View.OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
+								@Override
+								public void onClick(View v) {
+									// TODO Auto-generated method stub
 
-						}
-					});
+								}
+							});
 				}
 			}
 		}

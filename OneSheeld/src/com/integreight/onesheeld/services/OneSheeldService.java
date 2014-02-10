@@ -21,6 +21,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 
 public class OneSheeldService extends Service {
@@ -29,8 +30,7 @@ public class OneSheeldService extends Service {
 	// private static final boolean D = true;
 	public static boolean isBound = false;
 	SharedPreferences sharedPrefs;
-	private ArduinoFirmata arduinoFirmata;
-	private final IBinder mBinder = new OneSheeldBinder();
+	// private final IBinder mBinder = new OneSheeldBinder();
 	private BluetoothAdapter mBluetoothAdapter = null;
 	private String deviceAddress;
 	private ArduinoFirmataEventHandler arduinoEventHandler = new ArduinoFirmataEventHandler() {
@@ -38,16 +38,16 @@ public class OneSheeldService extends Service {
 		@Override
 		public void onError(String errorMessage) {
 			// TODO Auto-generated method stub
-			sheeldConnectedMessageToActivity(COMMUNICAITON_ERROR);
+			// sheeldConnectedMessageToActivity(COMMUNICAITON_ERROR);
 			stopSelf();
 		}
 
 		@Override
 		public void onConnect() {
 			// TODO Auto-generated method stub
-			sheeldConnectedMessageToActivity(SHEELD_BLUETOOTH_CONNECTED);
-			sharedPrefs.edit().putString(DEVICE_ADDRESS_KEY, deviceAddress)
-					.commit();
+			// sheeldConnectedMessageToActivity(SHEELD_BLUETOOTH_CONNECTED);
+			// sharedPrefs.edit().putString(DEVICE_ADDRESS_KEY, deviceAddress)
+			// .commit();
 
 			showNotification();
 
@@ -56,25 +56,32 @@ public class OneSheeldService extends Service {
 		@Override
 		public void onClose(boolean closedManually) {
 			// TODO Auto-generated method stub
-			sheeldConnectedMessageToActivity(SHEELD_CLOSE_CONNECTION);
-			if (!closedManually)
-				sharedPrefs.edit().remove(DEVICE_ADDRESS_KEY).commit();
+			// sheeldConnectedMessageToActivity(SHEELD_CLOSE_CONNECTION);
+			// if (!closedManually)
+			// sharedPrefs.edit().remove(DEVICE_ADDRESS_KEY).commit();
 			stopSelf();
 
 		}
 	};
 
-	public static final String SHEELD_BLUETOOTH_CONNECTED = "com.integreight.SHEELD_BLUETOOTH_CONNECTED";
-	public static final String COMMUNICAITON_ERROR = "com.integreight.COMMUNICAITON_ERROR";
-	public static final String SHEELD_CLOSE_CONNECTION = "com.integreight.SHEELD_CLOES_CONNECTION";
+	// public static final String SHEELD_BLUETOOTH_CONNECTED =
+	// "com.integreight.SHEELD_BLUETOOTH_CONNECTED";
+	// public static final String COMMUNICAITON_ERROR =
+	// "com.integreight.COMMUNICAITON_ERROR";
+	// public static final String SHEELD_CLOSE_CONNECTION =
+	// "com.integreight.SHEELD_CLOES_CONNECTION";
 	public static final String PLUGIN_MESSAGE = "com.integreight.PLUGIN_MESSAGE";
-	public static final String DEVICE_ADDRESS_KEY = "com.integreight.DEVICE_ADDRESS_KEY";
+
+	// public static final String DEVICE_ADDRESS_KEY =
+	// "com.integreight.DEVICE_ADDRESS_KEY";
+	OneSheeldApplication app;
 
 	@Override
 	public void onCreate() {
 		// TODO Auto-generated method stub
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-		arduinoFirmata = new ArduinoFirmata(this);
+		app = (OneSheeldApplication) getApplication();
+		app.setAppFirmata(new ArduinoFirmata(this));
 		LocalBroadcastManager.getInstance(this).registerReceiver(
 				mMessageReceiver,
 				new IntentFilter(OneSheeldService.PLUGIN_MESSAGE));
@@ -94,8 +101,8 @@ public class OneSheeldService extends Service {
 					.getRemoteDevice(deviceAddress);
 			// Attempt to connect to the device
 
-			arduinoFirmata.addEventHandler(arduinoEventHandler);
-			arduinoFirmata.connect(device);
+			app.getAppFirmata().addEventHandler(arduinoEventHandler);
+			app.getAppFirmata().connect(device);
 		}
 		return START_REDELIVER_INTENT;
 	}
@@ -104,20 +111,22 @@ public class OneSheeldService extends Service {
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
 		isBound = true;
-		return mBinder;
+		// return mBinder;
+		return null;
 	}
 
 	@Override
 	public boolean onUnbind(Intent intent) {
 		isBound = false;
-		stopSelf();
+		// stopSelf();
 		return super.onUnbind(intent);
 	}
 
 	@Override
 	public void onDestroy() {
 		// TODO Auto-generated method stub
-		while (!arduinoFirmata.close());
+		while (!app.getAppFirmata().close())
+			;
 		hideNotifcation();
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(
 				mMessageReceiver);
@@ -158,23 +167,23 @@ public class OneSheeldService extends Service {
 		stopForeground(true);
 	}
 
-	private void sheeldConnectedMessageToActivity(String event) {
-		Intent intent = new Intent(event);
-		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-	}
+	// private void sheeldConnectedMessageToActivity(String event) {
+	// Intent intent = new Intent(event);
+	// LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+	// }
 
 	public ArduinoFirmata getFirmata() {
-		return arduinoFirmata;
+		return app.getAppFirmata();
 	}
 
-	public class OneSheeldBinder extends Binder {
-		public OneSheeldService getService() {
-			// Return this instance of LocalService so clients can call public
-			// methods
-			return OneSheeldService.this;
-		}
-
-	}
+	// public class OneSheeldBinder extends Binder {
+	// public OneSheeldService getService() {
+	// // Return this instance of LocalService so clients can call public
+	// // methods
+	// return OneSheeldService.this;
+	// }
+	//
+	// }
 
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
@@ -184,11 +193,11 @@ public class OneSheeldService extends Service {
 
 			String action = intent.getAction();
 			if (action.equals(OneSheeldService.PLUGIN_MESSAGE)) {
-				if (arduinoFirmata != null && arduinoFirmata.isOpen()) {
+				if (app.getAppFirmata() != null && app.getAppFirmata().isOpen()) {
 					int pin = intent.getIntExtra("pin", -1);
 					boolean output = intent.getBooleanExtra("output", false);
-					arduinoFirmata.pinMode(pin, ArduinoFirmata.OUTPUT);
-					arduinoFirmata.digitalWrite(pin, output);
+					app.getAppFirmata().pinMode(pin, ArduinoFirmata.OUTPUT);
+					app.getAppFirmata().digitalWrite(pin, output);
 					Toast.makeText(
 							context,
 							"Pin " + pin + " set to "

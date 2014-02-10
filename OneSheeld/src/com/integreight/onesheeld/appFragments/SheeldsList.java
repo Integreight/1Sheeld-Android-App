@@ -118,10 +118,7 @@ public class SheeldsList extends SherlockFragment {
 
 					@Override
 					public void onClick(View v) {
-						Intent serverIntent = new Intent(getActivity(),
-								ArduinoConnectivityActivity.class);
-						startActivityForResult(serverIntent,
-								REQUEST_CONNECT_DEVICE);
+						new ArduinoConnectivityActivity(getActivity()).show();
 					}
 				});
 		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
@@ -179,7 +176,7 @@ public class SheeldsList extends SherlockFragment {
 			if (resultCode == Activity.RESULT_OK) {
 				((MainActivity) getActivity())
 						.setSupportProgressBarIndeterminateVisibility(true);
-				connectDevice(data);
+				// connectDevice(data);
 			}
 			break;
 		case REQUEST_ENABLE_BT:
@@ -205,7 +202,7 @@ public class SheeldsList extends SherlockFragment {
 
 	private void disconnectService() {
 		if (isOneSheeldServiceRunning()) {
-			((MainActivity) getActivity()).unBindFirmataService();
+			((MainActivity) getActivity()).stopService();
 			// getActivity().stopService(
 			// new Intent(getActivity(), OneSheeldService.class));
 			// ((OneSheeldApplication)
@@ -228,14 +225,17 @@ public class SheeldsList extends SherlockFragment {
 
 	@Override
 	public void onStart() {
-		((MainActivity) getActivity())
-				.setArduinoFirmataHandler(new ArduinoFirmataEventHandler() {
+		((OneSheeldApplication) getActivity().getApplication())
+				.setArduinoFirmataEventHandler(new ArduinoFirmataEventHandler() {
 
 					@Override
 					public void onError(String errorMessage) {
 						UIShield.setConnected(false);
 						adapter.notifyDataSetChanged();
 						arduinoConnected = false;
+						if (!ArduinoConnectivityActivity.isOpened)
+							new ArduinoConnectivityActivity(getActivity())
+									.show();
 					}
 
 					@Override
@@ -257,6 +257,9 @@ public class SheeldsList extends SherlockFragment {
 						if (getActivity() != null)
 							((MainActivity) getActivity())
 									.setSupportProgressBarIndeterminateVisibility(false);
+						if (!ArduinoConnectivityActivity.isOpened)
+							new ArduinoConnectivityActivity(getActivity())
+									.show();
 					}
 				});
 
@@ -272,17 +275,17 @@ public class SheeldsList extends SherlockFragment {
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
-			if (((OneSheeldApplication) getActivity().getApplication())
-					.getAppPreferences().contains(
-							OneSheeldService.DEVICE_ADDRESS_KEY)) {
-				((MainActivity) getActivity())
-						.setSupportProgressBarIndeterminateVisibility(true);
-				Intent intent = new Intent();
-				intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS,
-						((OneSheeldApplication) getActivity().getApplication())
-								.getLastConnectedDevice());
-				connectDevice(intent);
-			}
+			// if (((OneSheeldApplication) getActivity().getApplication())
+			// .getAppPreferences().contains(
+			// OneSheeldService.DEVICE_ADDRESS_KEY)) {
+			// ((MainActivity) getActivity())
+			// .setSupportProgressBarIndeterminateVisibility(true);
+			// Intent intent = new Intent();
+			// intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS,
+			// ((OneSheeldApplication) getActivity().getApplication())
+			// .getLastConnectedDevice());
+			// connectDevice(intent);
+			// }
 
 		} else {
 			setColoredStrips();
