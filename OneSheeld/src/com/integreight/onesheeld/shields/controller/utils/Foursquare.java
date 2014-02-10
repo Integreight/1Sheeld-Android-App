@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +25,7 @@ public class Foursquare {
 	public static final String API_END_POING_BASE_URL = "https://api.foursquare.com/v2/";
 	public static String REDIRECT_URI;
 	public static final String API_URL = "https://foursquare.com/oauth2/";
-	//public static final String CANCEL_URI = "";
+	// public static final String CANCEL_URI = "";
 	public static final String TOKEN = "access_token";
 	public static final String EXPIRES = "expires_in";
 	public static final String SINGLE_SIGN_ON_DISABLED = "service_disabled";
@@ -35,7 +36,8 @@ public class Foursquare {
 	private String mAccessToken = null;
 
 	private DialogListener mAuthDialogListener;
-	
+	private static SharedPreferences mSharedPreferences;
+
 	public Foursquare(String clientId, String clientSecret, String redirectUrl) {
 		if (clientId == null || clientSecret == null) {
 			throw new IllegalArgumentException(
@@ -49,6 +51,9 @@ public class Foursquare {
 
 	public void authorize(Activity activity, final DialogListener listener) {
 		mAuthDialogListener = listener;
+		mSharedPreferences = activity.getApplicationContext()
+				.getSharedPreferences("com.integreight.onesheeld",
+						Context.MODE_PRIVATE);
 		startDialogAuth(activity);
 	}
 
@@ -104,9 +109,9 @@ public class Foursquare {
 			parameters.putString("redirect_uri", REDIRECT_URI);
 		}
 
-//		if (isSessionValid()) {
-//			parameters.putString(TOKEN, getAccessToken());
-//		}
+		// if (isSessionValid()) {
+		// parameters.putString(TOKEN, getAccessToken());
+		// }
 		String url = endpoint + "?" + ForsquareUtil.encodeUrl(parameters);
 		if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
 			ForsquareUtil.showAlert(context, "Error",
@@ -125,6 +130,13 @@ public class Foursquare {
 
 	public void setAccessToken(String token) {
 		mAccessToken = token;
+		SharedPreferences.Editor editor = mSharedPreferences.edit();
+		editor.putString("PREF_FourSquare_OAUTH_TOKEN", token);
+		editor.putBoolean("PREF_KEY_FOURSQUARE_LOGIN", true);
+
+		// Commit the edits!
+		editor.commit();
+
 		Log.d("Access Token::", token);
 	}
 
@@ -146,7 +158,8 @@ public class Foursquare {
 			throws FileNotFoundException, MalformedURLException, IOException {
 		params.putString("format", "json");
 		if (isSessionValid()) {
-			params.putString("oauth_token", getAccessToken());
+			String myToken = mSharedPreferences.getString("PREF_FourSquare_OAUTH_TOKEN", "");
+			params.putString("oauth_token", myToken);
 		}
 		String url = API_END_POING_BASE_URL + graphPath;
 		return ForsquareUtil.openUrl(url, httpMethod, params);

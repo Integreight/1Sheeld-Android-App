@@ -2,6 +2,7 @@ package com.integreight.onesheeld.enums;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
+import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
@@ -94,7 +95,7 @@ public enum UIShield {
 			17, "Foursquare", R.drawable.shields_activity_strip_8,
 			R.drawable.shields_activity_strip_8_bw,
 			R.drawable.shields_activity_small_strip_8,
-			R.drawable.shields_activity_foursquare_symbol, false), GPS_SHIELD(
+			R.drawable.shields_activity_foursquare_symbol, false, FoursquareShield.class), GPS_SHIELD(
 			18, "GPS", R.drawable.shields_activity_strip_18,
 			R.drawable.shields_activity_strip_18_bw,
 			R.drawable.shields_activity_small_strip_18,

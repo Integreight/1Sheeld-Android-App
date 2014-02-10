@@ -64,7 +64,7 @@ public final class ForsquareUtil {
         StringBuilder sb = new StringBuilder();
         boolean first = true;
         for (String key : parameters.keySet()) {
-            if (first) first = false; else sb.append("&");
+            if (first) first = false; else sb.append("&v=20140201"+"&");
             sb.append(URLEncoder.encode(key) + "=" +
                       URLEncoder.encode(parameters.getString(key)));
         }

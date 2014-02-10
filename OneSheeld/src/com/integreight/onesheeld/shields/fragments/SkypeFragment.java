@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import java.util.ResourceBundle.Control;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +10,9 @@ import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandler;
-import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,14 +27,16 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningShields().get(getControllerTag()).setHasForgroundView(true);
+		getApplication().getRunningShields().get(getControllerTag())
+				.setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag()).setHasForgroundView(true);
+		getApplication().getRunningShields().get(getControllerTag())
+				.setHasForgroundView(true);
 
 		super.onStop();
 	}
@@ -49,7 +47,6 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Skype Sheeld::OnActivityCreated()", "");
 
-		
 	}
 
 	private SkypeEventHandler skypeEventHandler = new SkypeEventHandler() {
@@ -101,9 +98,8 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
 					new SkypeShield(getActivity(), getControllerTag()));
-			((SkypeShield) getApplication()
-					.getRunningShields().get(
-							getControllerTag()))
+			((SkypeShield) getApplication().getRunningShields().get(
+					getControllerTag()))
 					.setSkypeEventHandler(skypeEventHandler);
 		}
 
