@@ -92,7 +92,7 @@ public enum UIShield {
 			(byte)0x1B, "Foursquare", R.drawable.shields_activity_strip_8,
 			R.drawable.shields_activity_strip_8_bw,
 			R.drawable.shields_activity_small_strip_8,
-			R.drawable.shields_activity_foursquare_symbol, false), GPS_SHIELD(
+			R.drawable.shields_activity_foursquare_symbol, false,FoursquareShield.class), GPS_SHIELD(
 			(byte)0x1C, "GPS", R.drawable.shields_activity_strip_18,
 			R.drawable.shields_activity_strip_18_bw,
 			R.drawable.shields_activity_small_strip_18,
@@ -113,7 +113,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_flashlight_symbol, false), SKYPE_SHIELD(
-			22, "Skype", R.drawable.shields_activity_strip_22,
+			(byte)0x1F, "Skype", R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22, R.drawable.shields_activity_led_symbol,
 			false,SkypeShield.class);
@@ -249,7 +249,7 @@ public enum UIShield {
 			return GYROSCOPE_SHIELD;
 		case 21:
 			return FLASHLIGHT_SHIELD;
-		case 23:
+		case 22:
 			return SKYPE_SHIELD;
 		}
 		return null;

@@ -1,9 +1,13 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -127,6 +131,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	private class ConnectFour extends AsyncTask<String, String, String> {
 
+		String response="";
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -144,28 +149,75 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 				HttpClient hc = new DefaultHttpClient();
 				HttpResponse rp = hc.execute(post);
-				// Log.v(TAG,"response from server "+EntityUtils.toString(rp.getEntity()));
+				//Log.d("response from server ",EntityUtils.toString(rp.getEntity())+"");
+				//EntityUtils.toString(rp.getEntity());
+				HttpEntity mEntity = rp.getEntity();
+				InputStream resp =  mEntity.getContent();
+				response =getStringFromInputStream(resp);
+
 				if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					// String response =
-					// EntityUtils.toString(rp.getEntity().toString());
 					Log.d("Response From Server ::", rp.toString());
-					
 				}
 			} catch (Exception e) {
 				Log.d("HTTP ERROR ::", e.toString());
 			}
-			return "";
+			return response;
 		}
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			//parse checkin response !
-		//	new ParseUserFoursquareData().execute("");
+			try {
+				JSONObject json = new JSONObject(result);
+				JSONObject response = json.getJSONObject("response");
+				JSONObject checkins = response.getJSONObject("checkin");
+				JSONObject venue = checkins.getJSONObject("venue");
+				String placeName = venue.getString("name");
+				eventHandler.onPlaceCheckin(placeName);
+				// save in share prefrences
+				SharedPreferences.Editor editor = mSharedPreferences.edit();
+				editor.putString("PREF_FourSquare_LastPlace", placeName);
+				// Commit the edits!
+				editor.commit();
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				Log.d("Exception of Parsing checkin response :: ", e.toString());
+			}
+			
 		}
 
 	}
-	
+	// convert InputStream to String
+		private static String getStringFromInputStream(InputStream is) {
+	 
+			BufferedReader br = null;
+			StringBuilder sb = new StringBuilder();
+	 
+			String line;
+			try {
+	 
+				br = new BufferedReader(new InputStreamReader(is));
+				while ((line = br.readLine()) != null) {
+					sb.append(line);
+				}
+	 
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally {
+				if (br != null) {
+					try {
+						br.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+	 
+			return sb.toString();
+	 
+		}
 	 private class ParseUserFoursquareData extends AsyncTask<String, Void, String> {
 
 	        @Override
@@ -215,7 +267,8 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.d("Exception of Parsing User login response :: ", e.toString());
+				
 			}
 	            
 	        }
