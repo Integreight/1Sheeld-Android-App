@@ -10,8 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
-        android:padding="20dp"
-        android:src="@drawable/shields_activity_buzzer_symbol" />
+        android:padding="10dp"
+        android:src="@drawable/arduino_connectivity_activity_onesheeld_logo" />
 
     <RelativeLayout
         android:id="@+id/initTransContainer"
@@ -25,7 +25,14 @@
             android:id="@+id/scanOrTryAgain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
+            android:layout_centerInParent="true"
+            android:background="@drawable/circle_button_selector"
+            android:gravity="center"
+            android:padding="3dp"
+            android:text="@string/scan"
+            android:textColor="@drawable/white_black_text_selector"
+            android:textSize="17sp"
+            android:typeface="sans" />
 
         <ProgressBar
             android:id="@+id/progress"
@@ -60,7 +67,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:text="Connect automatically"
+                    android:text="@string/connectAutomatocallyToThisDevice"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -74,7 +81,7 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/transactionSlogan"
         android:layout_width="match_parent"
         android:layout_height="120dp"
@@ -85,12 +92,21 @@
             android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
+            android:text="@string/searching"
             android:textColor="@color/white"
             android:textSize="22sp"
-            android:text="Searching....."
             android:typeface="sans" />
-    </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/arduino_connectivity_activity_integreight_logo" />
+    </RelativeLayout>
 
 </LinearLayout>

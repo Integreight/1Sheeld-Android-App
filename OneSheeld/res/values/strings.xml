@@ -50,5 +50,6 @@
     <string name="connecting">Connecting......</string>
     <string name="selectYourDevice">Select Your Device</string>
     <string name="scanForOneSheeld">Scan For 1Sheeld</string>
+    <string name="connectAutomatocallyToThisDevice">Connect Automatically to This Device</string>
 
 </resources>

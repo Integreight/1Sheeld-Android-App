@@ -103,8 +103,8 @@ public class MainActivity extends SlidingFragmentActivity {
 	@Override
 	protected void onDestroy() {
 		// isBoundService = OneSheeldService.isBound;
-		if (isMyServiceRunning())
-			stopService();
+		// if (isMyServiceRunning())
+		stopService();
 		// isBoundService = false;
 		super.onDestroy();
 	}

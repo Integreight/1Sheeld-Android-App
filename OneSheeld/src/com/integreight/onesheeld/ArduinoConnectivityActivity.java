@@ -59,7 +59,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 	private Button scanOrTryAgain;
 	private boolean isScanButton = true;
 	private OneShieldTextView statusText;
-	private LinearLayout transactionSlogan;
+	private RelativeLayout transactionSlogan;
 	public static boolean isOpened = false;
 
 	@Override
@@ -69,26 +69,11 @@ public class ArduinoConnectivityActivity extends Dialog {
 		loading = (ProgressBar) findViewById(R.id.progress);
 		scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
 		statusText = (OneShieldTextView) findViewById(R.id.statusText);
-		transactionSlogan = (LinearLayout) findViewById(R.id.transactionSlogan);
+		transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		setScanButtonReady();
 		getWindow().setBackgroundDrawable(
 				new ColorDrawable(android.graphics.Color.TRANSPARENT));
-		scanOrTryAgain.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				if (isScanButton) {
-					showProgress();
-					changeSlogan("Searching.....", COLOR.RED);
-					scanDevices();
-					doDiscovery();
-				} else {
-					showProgress();
-					changeSlogan("Connecting.....", COLOR.GREEN);
-				}
-			}
-		});
 		setOnCancelListener(new OnCancelListener() {
 
 			@Override
@@ -121,6 +106,19 @@ public class ArduinoConnectivityActivity extends Dialog {
 		deviceListCont.setVisibility(View.INVISIBLE);
 		loading.setVisibility(View.INVISIBLE);
 		scanOrTryAgain.setVisibility(View.VISIBLE);
+		scanOrTryAgain.setText(R.string.scan);
+		scanOrTryAgain.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				showProgress();
+				changeSlogan(
+						activity.getResources().getString(R.string.searching),
+						COLOR.RED);
+				scanDevices();
+				doDiscovery();
+			}
+		});
 		isScanButton = true;
 	}
 
@@ -129,7 +127,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 		loading.setVisibility(View.INVISIBLE);
 		scanOrTryAgain.setVisibility(View.VISIBLE);
 		changeSlogan(msg, COLOR.ORANGE);
-		scanOrTryAgain.setOnClickListener(onClick);
+		scanOrTryAgain.setText(R.string.tryAgain);
 		isScanButton = false;
 	}
 
@@ -192,16 +190,20 @@ public class ArduinoConnectivityActivity extends Dialog {
 				mPairedDevicesArrayAdapter.add(device.getName() + "\n"
 						+ device.getAddress());
 			}
-			changeSlogan("Select Your Device", COLOR.YELLOW);
+			changeSlogan(
+					activity.getResources()
+							.getString(R.string.selectYourDevice), COLOR.YELLOW);
 		} else {
-			setRetryButtonReady("Not Found", new View.OnClickListener() {
+			setRetryButtonReady(
+					activity.getResources().getString(R.string.none_found),
+					new View.OnClickListener() {
 
-				@Override
-				public void onClick(View arg0) {
-					// TODO Auto-generated method stub
+						@Override
+						public void onClick(View arg0) {
+							// TODO Auto-generated method stub
 
-				}
-			});
+						}
+					});
 			String noDevices = activity.getResources()
 					.getText(R.string.none_paired).toString();
 			mPairedDevicesArrayAdapter.add(noDevices);
@@ -253,18 +255,21 @@ public class ArduinoConnectivityActivity extends Dialog {
 			// Get the device MAC address, which is the last 17 chars in the
 			// View
 			showProgress();
-			changeSlogan("Connecting.....", COLOR.GREEN);
+			changeSlogan(
+					activity.getResources().getString(R.string.connecting),
+					COLOR.GREEN);
 			((OneSheeldApplication) activity.getApplication())
 					.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
 
 						@Override
 						public void onError(String errorMessage) {
-							setRetryButtonReady("Not Connected",
+							setRetryButtonReady(activity.getResources()
+									.getString(R.string.notConnected),
 									new View.OnClickListener() {
 
 										@Override
 										public void onClick(View arg0) {
-											
+
 										}
 									});
 
@@ -279,7 +284,8 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 						@Override
 						public void onClose(boolean closedManually) {
-							setRetryButtonReady("Not Connected",
+							setRetryButtonReady(activity.getResources()
+									.getString(R.string.notConnected),
 									new View.OnClickListener() {
 
 										@Override
@@ -331,7 +337,9 @@ public class ArduinoConnectivityActivity extends Dialog {
 					String noDevices = activity.getResources()
 							.getText(R.string.none_found).toString();
 					mNewDevicesArrayAdapter.add(noDevices);
-					setRetryButtonReady("Not Found",
+					setRetryButtonReady(
+							activity.getResources().getString(
+									R.string.none_found),
 							new View.OnClickListener() {
 
 								@Override
