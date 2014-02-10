@@ -8,6 +8,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -24,6 +25,8 @@ public class OneSheeldApplication extends Application {
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
 	private ConnectionDetector connectionHandler;
+	private ArduinoFirmataEventHandler arduinoFirmataEventHandler,
+			arduinoFirmataHandlerForConnectivityPopup;
 
 	@Override
 	public void onCreate() {
@@ -53,7 +56,8 @@ public class OneSheeldApplication extends Application {
 		return runningSheelds;
 	}
 
-	public void setRunningSheelds(Hashtable<String, ControllerParent<?>> runningSheelds) {
+	public void setRunningSheelds(
+			Hashtable<String, ControllerParent<?>> runningSheelds) {
 		this.runningSheelds = runningSheelds;
 	}
 
@@ -64,8 +68,10 @@ public class OneSheeldApplication extends Application {
 
 	public void setAppFirmata(ArduinoFirmata appFirmata) {
 		this.appFirmata = appFirmata;
+		this.appFirmata.addEventHandler(arduinoFirmataEventHandler);
+		this.appFirmata
+				.addEventHandler(arduinoFirmataHandlerForConnectivityPopup);
 	}
-
 
 	public void addServiceEventHandler(
 			OneSheeldServiceHandler serviceEventHandler) {
@@ -77,9 +83,11 @@ public class OneSheeldApplication extends Application {
 		return serviceEventHandlers;
 	}
 
-	public void clearServiceEventHandlers(
-			List<OneSheeldServiceHandler> serviceEventHandlers) {
-		this.serviceEventHandlers.clear();
+	public void clearServiceEventHandlers() {
+		if (getAppFirmata() != null) {
+			getAppFirmata().clearArduinoFirmataDataHandlers();
+			getAppFirmata().clearArduinoFirmataShieldFrameHandlers();
+		}
 	}
 
 	public ConnectionDetector getConnectionHandler() {
@@ -89,4 +97,54 @@ public class OneSheeldApplication extends Application {
 	public void setConnectionHandler(ConnectionDetector connectionHandler) {
 		this.connectionHandler = connectionHandler;
 	}
+
+	public ArduinoFirmataEventHandler getArduinoFirmataEventHandler() {
+		return arduinoFirmataEventHandler;
+	}
+
+	public void setArduinoFirmataEventHandler(
+			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
+		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
+	}
+
+	public ArduinoFirmataEventHandler getArduinoFirmataHandlerForConnectivityPopup() {
+		return arduinoFirmataHandlerForConnectivityPopup;
+	}
+
+	public void setArduinoFirmataHandlerForConnectivityPopup(
+			ArduinoFirmataEventHandler arduinoFirmataHandlerForConnectivityPopup) {
+		this.arduinoFirmataHandlerForConnectivityPopup = arduinoFirmataHandlerForConnectivityPopup;
+	}
+
+	// public ServiceConnection getmConnection() {
+	// return mConnection;
+	// }
+	//
+	// private final ServiceConnection mConnection = new ServiceConnection() {
+	//
+	// @Override
+	// public void onServiceConnected(ComponentName className, IBinder service)
+	// {
+	// // We've bound to LocalService, cast the IBinder and get
+	// // LocalService instance
+	// // OneSheeldBinder binder = (OneSheeldBinder) service;
+	// setAppFirmata(binder.getService().getFirmata());
+	// getAppFirmata().addEventHandler(getArduinoFirmataEventHandler());
+	// for (OneSheeldServiceHandler serviceHandler : getServiceEventHandlers())
+	// {
+	// serviceHandler.onSuccess(getAppFirmata());
+	// }
+	// // isBoundService = true;
+	//
+	// }
+	//
+	// @Override
+	// public void onServiceDisconnected(ComponentName arg0) {
+	// for (OneSheeldServiceHandler serviceHandler : getServiceEventHandlers())
+	// {
+	// serviceHandler.onFailure();
+	// }
+	// // isBoundService = false;
+	// }
+	// };
 }

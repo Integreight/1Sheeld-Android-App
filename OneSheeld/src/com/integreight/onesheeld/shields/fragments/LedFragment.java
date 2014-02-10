@@ -37,7 +37,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 				getControllerTag())) != null)
 			toggleLed(((LedShield) getApplication().getRunningShields().get(
 					getControllerTag())).refreshLed());
-
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		super.onStart();

@@ -57,8 +57,16 @@ public class ShieldFrame {
 		arguments.add(new byte[]{(byte)data});
 	}
 	
-	public void addIntegerArgument(int data){
-		arguments.add(new byte[]{(byte)data,(byte)(data>>8)});
+	public void addIntegerArgument(byte bytes, boolean isSigned,int data){
+		if(!isSigned)data=Math.abs(data);
+		switch(bytes){
+		case 0:return;
+		case 1:arguments.add(new byte[]{(byte)data}); break;
+		case 2:arguments.add(new byte[]{(byte)data,(byte)(data>>8)}); break;
+		case 3:arguments.add(new byte[]{(byte)data,(byte)(data>>8),(byte)(data>>16)}); break;
+		case 4:arguments.add(new byte[]{(byte)data,(byte)(data>>8),(byte)(data>>16),(byte)(data>>24)}); break;
+		default: return;
+		}
 	}
 	
 	public void addStringArgument(String data){

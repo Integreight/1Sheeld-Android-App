@@ -190,4 +190,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 		mContent=null;
 		super.onDestroy();
 	}
+	@Override
+	public void onResume() {
+		getSherlockActivity().getSupportActionBar().hide();
+		super.onResume();
+	}
 }

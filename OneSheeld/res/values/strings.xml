@@ -43,5 +43,13 @@
     <string name="facebook_app_id">1423548367865538</string>
     <string name="twitter_consumer_key">W89WcoS0fjGJ4pGgyBmA</string>
     <string name="twitter_consumer_secret">izyhv5RIIaQgNsYX55hHVMj0BYm2p5bWQk8vqlasTo</string>
+    <string name="scan">Scan</string>
+    <string name="tryAgain">Try Again</string>
+    <string name="notConnected">Not Connected</string>
+    <string name="searching">Searching......</string>
+    <string name="connecting">Connecting......</string>
+    <string name="selectYourDevice">Select Your Device</string>
+    <string name="scanForOneSheeld">Scan For 1Sheeld</string>
+    <string name="connectAutomatocallyToThisDevice">Connect Automatically to This Device</string>
 
 </resources>

@@ -5,6 +5,11 @@
     android:background="#fffad7"
     tools:context=".OneSheeldActivity" >
 
+    <include
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/header" />
+
     <com.integreight.onesheeld.utils.ListViewReversed
         android:id="@+id/main_activity_shields_listview"
         android:layout_width="fill_parent"

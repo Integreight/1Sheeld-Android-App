@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.enums;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
@@ -19,100 +20,96 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public enum UIShield {
 
-	LED_SHIELD(1, "LED", R.drawable.shields_activity_strip_13,
+	LED_SHIELD((byte)0x02, "LED", R.drawable.shields_activity_strip_13,
 			R.drawable.shields_activity_strip_13_bw,
 			R.drawable.shields_activity_small_strip_13,
 			R.drawable.shields_activity_led_symbol, false, LedShield.class), NOTIFICATION_SHIELD(
-			2, "Notification", R.drawable.shields_activity_strip_1,
+			(byte)0x06, "Notification", R.drawable.shields_activity_strip_1,
 			R.drawable.shields_activity_strip_1_bw,
 			R.drawable.shields_activity_small_strip_1,
 			R.drawable.shields_activity_vibration_symbol, false,
-			NotificationShield.class), SEVENSEGMENT_SHIELD(3, "Seven Segment",
+			NotificationShield.class), SEVENSEGMENT_SHIELD((byte)0x07, "Seven Segment",
 			R.drawable.shields_activity_strip_19,
 			R.drawable.shields_activity_strip_19_bw,
 			R.drawable.shields_activity_small_strip_19,
 			R.drawable.shields_activity_seven_segment_symbol, false,
-			SevenSegmentShield.class), BUZZER_SHIELD(4, "Buzzer",
+			SevenSegmentShield.class), BUZZER_SHIELD((byte)0x08, "Buzzer",
 			R.drawable.shields_activity_strip_9,
 			R.drawable.shields_activity_strip_9_bw,
 			R.drawable.shields_activity_small_strip_9,
 			R.drawable.shields_activity_buzzer_symbol, false,
-			SpeakerShield.class), MIC_SHIELD(5, "Mic",
+			SpeakerShield.class), MIC_SHIELD((byte)0x18, "Mic",
 			R.drawable.shields_activity_strip_15,
 			R.drawable.shields_activity_strip_15_bw,
 			R.drawable.shields_activity_small_strip_15,
-			R.drawable.shields_activity_mic_symbol, false, SpeakerShield.class), KEYPAD_SHIELD(
-			6, "Keypad", R.drawable.shields_activity_strip_2,
+			R.drawable.shields_activity_mic_symbol, false, EmptyShield.class), KEYPAD_SHIELD(
+			(byte)0x09, "Keypad", R.drawable.shields_activity_strip_2,
 			R.drawable.shields_activity_strip_2_bw,
 			R.drawable.shields_activity_small_strip_2,
 			R.drawable.shields_activity_keypad_symbol, false,
-			KeypadShield.class), SLIDER_SHIELD(7, "Sliders",
+			KeypadShield.class), SLIDER_SHIELD((byte)0x01, "Sliders",
 			R.drawable.shields_activity_strip_3,
 			R.drawable.shields_activity_strip_3_bw,
 			R.drawable.shields_activity_small_strip_3,
 			R.drawable.shields_activity_sliders_symbol, false,
-			SliderShield.class), LCD_SHIELD(8, "LCD",
+			SliderShield.class), LCD_SHIELD((byte)0x17, "LCD",
 			R.drawable.shields_activity_strip_4,
 			R.drawable.shields_activity_strip_4_bw,
 			R.drawable.shields_activity_small_strip_4,
 			R.drawable.shields_activity_lcd_symbol, false, LcdShield.class), MAGNETOMETER_SHIELD(
-			9, "Magnetometer", R.drawable.shields_activity_strip_16,
+			(byte)0x0A, "Magnetometer", R.drawable.shields_activity_strip_16,
 			R.drawable.shields_activity_strip_16_bw,
 			R.drawable.shields_activity_small_strip_16,
 			R.drawable.shields_activity_magnetometer_symbol, false), PUSHBUTTON_SHIELD(
-			10, "Push Button", R.drawable.shields_activity_strip_12,
+			(byte)0x03, "Push Button", R.drawable.shields_activity_strip_12,
 			R.drawable.shields_activity_strip_12_bw,
 			R.drawable.shields_activity_small_strip_12,
 			R.drawable.shields_activity_push_button_symbol, false), TOGGLEBUTTON_SHIELD(
-			11, "On/Off Button", R.drawable.shields_activity_strip_6,
+			(byte)0x04, "On/Off Button", R.drawable.shields_activity_strip_6,
 			R.drawable.shields_activity_strip_6_bw,
 			R.drawable.shields_activity_small_strip_6,
 			R.drawable.shields_activity_push_button_symbol, false,
-			ToggleButtonShield.class), ACCELEROMETER_SHIELD(12,
+			ToggleButtonShield.class), ACCELEROMETER_SHIELD((byte)0x0B,
 			"Accelerometer", R.drawable.shields_activity_strip_21,
 			R.drawable.shields_activity_strip_21_bw,
 			R.drawable.shields_activity_small_strip_21,
 			R.drawable.shields_activity_accelerometer_symbol, false), FACEBOOK_SHIELD(
-			13, "Facebook", R.drawable.shields_activity_strip_7,
+			(byte)0x19, "Facebook", R.drawable.shields_activity_strip_7,
 			R.drawable.shields_activity_strip_7_bw,
 			R.drawable.shields_activity_small_strip_7,
 			R.drawable.shields_activity_facebook_symbol, false,
-			FacebookShield.class), TWITTER_SHIELD(14, "Twitter",
+			FacebookShield.class), TWITTER_SHIELD((byte)0x1A, "Twitter",
 			R.drawable.shields_activity_strip_17,
 			R.drawable.shields_activity_strip_17_bw,
 			R.drawable.shields_activity_small_strip_17,
 			R.drawable.shields_activity_twitter_symbol, false,
-			TwitterShield.class), GAMEDPAD_SHIELD(15, "Game Pad",
+			TwitterShield.class), GAMEDPAD_SHIELD((byte)0x0C, "Game Pad",
 			R.drawable.shields_activity_strip_10,
 			R.drawable.shields_activity_strip_10_bw,
 			R.drawable.shields_activity_small_strip_10,
 			R.drawable.shields_activity_gamepad_symbol, false,
-			GamepadShield.class), INTERNET_SHIELD(16, "Internet",
-			R.drawable.shields_activity_strip_5,
-			R.drawable.shields_activity_strip_5_bw,
-			R.drawable.shields_activity_small_strip_5,
-			R.drawable.shields_activity_internet_symbol, false), FOURSQUARE_SHIELD(
-			17, "Foursquare", R.drawable.shields_activity_strip_8,
+			GamepadShield.class),FOURSQUARE_SHIELD(
+			(byte)0x1B, "Foursquare", R.drawable.shields_activity_strip_8,
 			R.drawable.shields_activity_strip_8_bw,
 			R.drawable.shields_activity_small_strip_8,
-			R.drawable.shields_activity_foursquare_symbol, false, FoursquareShield.class), GPS_SHIELD(
-			18, "GPS", R.drawable.shields_activity_strip_18,
+			R.drawable.shields_activity_foursquare_symbol, false), GPS_SHIELD(
+			(byte)0x1C, "GPS", R.drawable.shields_activity_strip_18,
 			R.drawable.shields_activity_strip_18_bw,
 			R.drawable.shields_activity_small_strip_18,
-			R.drawable.shields_activity_gps_symbol, false), SMS_SHIELD(19,
+			R.drawable.shields_activity_gps_symbol, false), SMS_SHIELD((byte)0x0D,
 			"SMS", R.drawable.shields_activity_strip_20,
 			R.drawable.shields_activity_strip_20_bw,
 			R.drawable.shields_activity_small_strip_20,
 			R.drawable.shields_activity_sms_symbol, false, SmsShield.class), MUSICPLAYER_SHIELD(
-			20, "Music Player", R.drawable.shields_activity_strip_11,
+			(byte)0x1D, "Music Player", R.drawable.shields_activity_strip_11,
 			R.drawable.shields_activity_strip_11_bw,
 			R.drawable.shields_activity_small_strip_11,
 			R.drawable.shields_activity_musicplayer_symbol, false), GYROSCOPE_SHIELD(
-			21, "Gyroscope", R.drawable.shields_activity_strip_14,
+			(byte)0x0E, "Gyroscope", R.drawable.shields_activity_strip_14,
 			R.drawable.shields_activity_strip_14_bw,
 			R.drawable.shields_activity_small_strip_14,
 			R.drawable.shields_activity_gyroscope_symbol, false), FLASHLIGHT_SHIELD(
-			22, "Flashlight", R.drawable.shields_activity_strip_22,
+			(byte)0x05, "Flashlight", R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_flashlight_symbol, false), SKYPE_SHIELD(
@@ -121,7 +118,7 @@ public enum UIShield {
 			R.drawable.shields_activity_small_strip_22, R.drawable.shields_activity_led_symbol,
 			false,SkypeShield.class);
 
-	private int id;
+	private byte id;
 	private String name;
 	private int mainImageStripId;
 	private int mainBWImageStripId;
@@ -178,7 +175,7 @@ public enum UIShield {
 		this.shieldType = shieldType;
 	}
 
-	private UIShield(int id, String name, int mainImageStripId,
+	private UIShield(byte id, String name, int mainImageStripId,
 			int mainBWImageStripId, int smallImageStripId, int symbolId,
 			boolean mainActivitySelection) {
 		this.id = id;
@@ -190,7 +187,7 @@ public enum UIShield {
 		this.mainActivitySelection = mainActivitySelection;
 	}
 
-	private UIShield(int id, String name, int mainImageStripId,
+	private UIShield(byte id, String name, int mainImageStripId,
 			int mainBWImageStripId, int smallImageStripId, int symbolId,
 			boolean mainActivitySelection,
 			Class<? extends ControllerParent<?>> shieldType) {
@@ -208,7 +205,7 @@ public enum UIShield {
 		return id;
 	}
 
-	public static UIShield getItem(int id) {
+	public static UIShield getPosition(int id) {
 		switch (id) {
 		case 1:
 			return LED_SHIELD;
@@ -241,18 +238,16 @@ public enum UIShield {
 		case 15:
 			return GAMEDPAD_SHIELD;
 		case 16:
-			return INTERNET_SHIELD;
-		case 17:
 			return FOURSQUARE_SHIELD;
-		case 18:
+		case 17:
 			return GPS_SHIELD;
-		case 19:
+		case 18:
 			return SMS_SHIELD;
-		case 20:
+		case 19:
 			return MUSICPLAYER_SHIELD;
-		case 21:
+		case 20:
 			return GYROSCOPE_SHIELD;
-		case 22:
+		case 21:
 			return FLASHLIGHT_SHIELD;
 		case 23:
 			return SKYPE_SHIELD;

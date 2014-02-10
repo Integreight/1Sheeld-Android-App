@@ -53,20 +53,9 @@
 
         <service
             android:name="com.integreight.onesheeld.services.OneSheeldService"
-            android:exported="false" />
+            android:exported="false"
+            android:singleUser="true" />
 
-        <activity
-            android:name="com.integreight.onesheeld.ShieldsOperationActivity"
-            android:configChanges="orientation"
-            android:label="@string/title_activity_shields_operation"
-            android:parentActivityName="com.integreight.onesheeld.OneSheeldActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/one_sheeld_action_bar_colored" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.integreight.onesheeld.activities.MainActivity" />
-
-        </activity>
         <activity
             android:name="com.integreight.onesheeld.plugin.EditActivity"
             android:configChanges="orientation"
@@ -89,7 +78,7 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
-                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"

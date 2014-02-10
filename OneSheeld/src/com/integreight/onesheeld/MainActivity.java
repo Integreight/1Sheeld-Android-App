@@ -2,22 +2,16 @@ package com.integreight.onesheeld;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.view.Window;
-import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.services.OneSheeldService.OneSheeldBinder;
-import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class MainActivity extends SlidingFragmentActivity {
@@ -28,60 +22,32 @@ public class MainActivity extends SlidingFragmentActivity {
 		return (OneSheeldApplication) getApplication();
 	}
 
-	private ArduinoFirmataEventHandler arduinoEventHandler = new ArduinoFirmataEventHandler() {
-
-		@Override
-		public void onError(String errorMessage) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onConnect() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void onClose(boolean closedManually) {
-			// TODO Auto-generated method stub
-
-		}
-	};
-
-	public void setArduinoFirmataHandler(ArduinoFirmataEventHandler handler) {
-		this.arduinoEventHandler = handler;
-		bindFirmataService();
-	}
-
-	private ServiceConnection mConnection = new ServiceConnection() {
-
-		@Override
-		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
-			OneSheeldBinder binder = (OneSheeldBinder) service;
-			getThisApplication()
-					.setAppFirmata(binder.getService().getFirmata());
-			getThisApplication().getAppFirmata().addEventHandler(
-					arduinoEventHandler);
-			for (OneSheeldServiceHandler serviceHandler : ((OneSheeldApplication) getApplication())
-					.getServiceEventHandlers()) {
-				serviceHandler.onSuccess(getThisApplication().getAppFirmata());
-			}
-			// isBoundService = true;
-
-		}
-
-		@Override
-		public void onServiceDisconnected(ComponentName arg0) {
-			for (OneSheeldServiceHandler serviceHandler : ((OneSheeldApplication) getApplication())
-					.getServiceEventHandlers()) {
-				serviceHandler.onFailure();
-			}
-			// isBoundService = false;
-		}
-	};
+	// private ArduinoFirmataEventHandler arduinoEventHandler = new
+	// ArduinoFirmataEventHandler() {
+	//
+	// @Override
+	// public void onError(String errorMessage) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onConnect() {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onClose(boolean closedManually) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	// };
+	//
+	// public void setArduinoFirmataHandler(ArduinoFirmataEventHandler handler)
+	// {
+	// this.arduinoEventHandler = handler;
+	// }
 
 	@Override
 	public void onCreate(Bundle arg0) {
@@ -129,26 +95,16 @@ public class MainActivity extends SlidingFragmentActivity {
 		}
 	}
 
-	private void bindFirmataService() {
-		// isBoundService = OneSheeldService.isBound;
-		if (!OneSheeldService.isBound) {
-			Intent intent = new Intent(this, OneSheeldService.class);
-			startService(intent);
-			// stopService(intent);
-			bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-		}
-	}
-
-	public void unBindFirmataService() {
-			this.unbindService(mConnection);
+	public void stopService() {
+		this.stopService(new Intent(this, OneSheeldService.class));
 
 	}
 
 	@Override
 	protected void onDestroy() {
 		// isBoundService = OneSheeldService.isBound;
-		if (isMyServiceRunning())
-			unBindFirmataService();
+		// if (isMyServiceRunning())
+		stopService();
 		// isBoundService = false;
 		super.onDestroy();
 	}

@@ -8,13 +8,10 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -34,6 +31,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.ArduinoConnectivityActivity;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -80,6 +78,7 @@ public class SheeldsList extends SherlockFragment {
 
 	@Override
 	public void onResume() {
+		getSherlockActivity().getSupportActionBar().hide();
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
 		List<Fragment> frags = getActivity().getSupportFragmentManager()
@@ -94,6 +93,8 @@ public class SheeldsList extends SherlockFragment {
 				ft.commit();
 			}
 		}
+		((OneSheeldApplication) getActivity().getApplication())
+				.clearServiceEventHandlers();
 		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
@@ -112,6 +113,14 @@ public class SheeldsList extends SherlockFragment {
 	}
 
 	private void initView() {
+		getActivity().findViewById(R.id.getAvailableDevices)
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						launchShieldsOperationActivity();
+					}
+				});
 		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
 		shieldsUIList = Arrays.asList(UIShield.values());
 		shieldsListView.setEnabled(false);
@@ -133,14 +142,14 @@ public class SheeldsList extends SherlockFragment {
 					selectionMark.setChecked(false);
 					selectionMark.setVisibility(View.INVISIBLE);
 					selectionCircle.setVisibility(View.INVISIBLE);
-					UIShield.getItem(position + 1).setMainActivitySelection(
-							false);
+					UIShield.getPosition(position + 1)
+							.setMainActivitySelection(false);
 				} else {
 					selectionMark.setChecked(true);
 					selectionMark.setVisibility(View.VISIBLE);
 					selectionCircle.setVisibility(View.VISIBLE);
-					UIShield.getItem(position + 1).setMainActivitySelection(
-							true);
+					UIShield.getPosition(position + 1)
+							.setMainActivitySelection(true);
 
 				}
 			}
@@ -167,7 +176,7 @@ public class SheeldsList extends SherlockFragment {
 			if (resultCode == Activity.RESULT_OK) {
 				((MainActivity) getActivity())
 						.setSupportProgressBarIndeterminateVisibility(true);
-				connectDevice(data);
+				// connectDevice(data);
 			}
 			break;
 		case REQUEST_ENABLE_BT:
@@ -193,7 +202,7 @@ public class SheeldsList extends SherlockFragment {
 
 	private void disconnectService() {
 		if (isOneSheeldServiceRunning()) {
-			((MainActivity) getActivity()).unBindFirmataService();
+			((MainActivity) getActivity()).stopService();
 			// getActivity().stopService(
 			// new Intent(getActivity(), OneSheeldService.class));
 			// ((OneSheeldApplication)
@@ -216,14 +225,17 @@ public class SheeldsList extends SherlockFragment {
 
 	@Override
 	public void onStart() {
-		((MainActivity) getActivity())
-				.setArduinoFirmataHandler(new ArduinoFirmataEventHandler() {
+		((OneSheeldApplication) getActivity().getApplication())
+				.setArduinoFirmataEventHandler(new ArduinoFirmataEventHandler() {
 
 					@Override
 					public void onError(String errorMessage) {
 						UIShield.setConnected(false);
 						adapter.notifyDataSetChanged();
 						arduinoConnected = false;
+						if (!ArduinoConnectivityActivity.isOpened)
+							new ArduinoConnectivityActivity(getActivity())
+									.show();
 					}
 
 					@Override
@@ -245,6 +257,9 @@ public class SheeldsList extends SherlockFragment {
 						if (getActivity() != null)
 							((MainActivity) getActivity())
 									.setSupportProgressBarIndeterminateVisibility(false);
+						if (!ArduinoConnectivityActivity.isOpened)
+							new ArduinoConnectivityActivity(getActivity())
+									.show();
 					}
 				});
 
@@ -260,17 +275,18 @@ public class SheeldsList extends SherlockFragment {
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
-			if (((OneSheeldApplication) getActivity().getApplication())
-					.getAppPreferences().contains(
-							OneSheeldService.DEVICE_ADDRESS_KEY)) {
-				((MainActivity) getActivity())
-						.setSupportProgressBarIndeterminateVisibility(true);
-				Intent intent = new Intent();
-				intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS,
-						((OneSheeldApplication) getActivity().getApplication())
-								.getLastConnectedDevice());
-				connectDevice(intent);
-			}
+			new ArduinoConnectivityActivity(getActivity()).show();
+			// if (((OneSheeldApplication) getActivity().getApplication())
+			// .getAppPreferences().contains(
+			// OneSheeldService.DEVICE_ADDRESS_KEY)) {
+			// ((MainActivity) getActivity())
+			// .setSupportProgressBarIndeterminateVisibility(true);
+			// Intent intent = new Intent();
+			// intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS,
+			// ((OneSheeldApplication) getActivity().getApplication())
+			// .getLastConnectedDevice());
+			// connectDevice(intent);
+			// }
 
 		} else {
 			setColoredStrips();
