@@ -20,6 +20,22 @@ public class ShieldFrame {
 		arguments=new ArrayList<byte[]>();
 	}
 	
+	public ShieldFrame(byte shieldId,byte functionId) {
+		// TODO Auto-generated constructor stub
+		this.shieldId=shieldId;
+		this.instanceId=0;
+		this.functionId=functionId;
+		arguments=new ArrayList<byte[]>();
+	}
+	
+	public ShieldFrame(byte shieldId) {
+		// TODO Auto-generated constructor stub
+		this.shieldId=shieldId;
+		this.instanceId=0;
+		this.functionId=DATA_SENT;
+		arguments=new ArrayList<byte[]>();
+	}
+	
 	public byte getShieldId() {
 		return shieldId;
 	}
