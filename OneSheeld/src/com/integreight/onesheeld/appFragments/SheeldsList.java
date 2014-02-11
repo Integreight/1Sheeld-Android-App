@@ -118,7 +118,7 @@ public class SheeldsList extends SherlockFragment {
 
 					@Override
 					public void onClick(View v) {
-						new ArduinoConnectivityActivity(getActivity()).show();
+						launchShieldsOperationActivity();
 					}
 				});
 		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
@@ -142,14 +142,14 @@ public class SheeldsList extends SherlockFragment {
 					selectionMark.setChecked(false);
 					selectionMark.setVisibility(View.INVISIBLE);
 					selectionCircle.setVisibility(View.INVISIBLE);
-					UIShield.getPosition(position + 1).setMainActivitySelection(
-							false);
+					UIShield.getPosition(position + 1)
+							.setMainActivitySelection(false);
 				} else {
 					selectionMark.setChecked(true);
 					selectionMark.setVisibility(View.VISIBLE);
 					selectionCircle.setVisibility(View.VISIBLE);
-					UIShield.getPosition(position + 1).setMainActivitySelection(
-							true);
+					UIShield.getPosition(position + 1)
+							.setMainActivitySelection(true);
 
 				}
 			}
@@ -275,6 +275,7 @@ public class SheeldsList extends SherlockFragment {
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
+			new ArduinoConnectivityActivity(getActivity()).show();
 			// if (((OneSheeldApplication) getActivity().getApplication())
 			// .getAppPreferences().contains(
 			// OneSheeldService.DEVICE_ADDRESS_KEY)) {

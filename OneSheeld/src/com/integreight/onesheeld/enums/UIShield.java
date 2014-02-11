@@ -3,12 +3,14 @@ package com.integreight.onesheeld.enums;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
+import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
+import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
@@ -90,7 +92,7 @@ public enum UIShield {
 			(byte)0x1B, "Foursquare", R.drawable.shields_activity_strip_8,
 			R.drawable.shields_activity_strip_8_bw,
 			R.drawable.shields_activity_small_strip_8,
-			R.drawable.shields_activity_foursquare_symbol, false), GPS_SHIELD(
+			R.drawable.shields_activity_foursquare_symbol, false,FoursquareShield.class), GPS_SHIELD(
 			(byte)0x1C, "GPS", R.drawable.shields_activity_strip_18,
 			R.drawable.shields_activity_strip_18_bw,
 			R.drawable.shields_activity_small_strip_18,
@@ -110,7 +112,11 @@ public enum UIShield {
 			(byte)0x05, "Flashlight", R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_flashlight_symbol, false);
+			R.drawable.shields_activity_flashlight_symbol, false), SKYPE_SHIELD(
+			(byte)0x1F, "Skype", R.drawable.shields_activity_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22, R.drawable.shields_activity_led_symbol,
+			false,SkypeShield.class);
 
 	private byte id;
 	private String name;
@@ -195,7 +201,7 @@ public enum UIShield {
 		this.shieldType = shieldType;
 	}
 
-	public int getId() {
+	public byte getId() {
 		return id;
 	}
 
@@ -243,6 +249,8 @@ public enum UIShield {
 			return GYROSCOPE_SHIELD;
 		case 21:
 			return FLASHLIGHT_SHIELD;
+		case 22:
+			return SKYPE_SHIELD;
 		}
 		return null;
 	}

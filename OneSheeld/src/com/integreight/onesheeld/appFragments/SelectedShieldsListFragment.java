@@ -34,6 +34,7 @@ import com.integreight.onesheeld.shields.fragments.MusicPlayerFragment;
 import com.integreight.onesheeld.shields.fragments.NotificationFragment;
 import com.integreight.onesheeld.shields.fragments.PushButtonFragment;
 import com.integreight.onesheeld.shields.fragments.SevenSegmentFragment;
+import com.integreight.onesheeld.shields.fragments.SkypeFragment;
 import com.integreight.onesheeld.shields.fragments.SliderFragment;
 import com.integreight.onesheeld.shields.fragments.SmsFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
@@ -123,6 +124,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case MIC_SHIELD:
 			return addToCreatedListAndReturn(UIShield.MIC_SHIELD,
 					new MicFragment());
+		case SKYPE_SHIELD:
+			return addToCreatedListAndReturn(UIShield.SKYPE_SHIELD,
+					new SkypeFragment());
 
 		default:
 			return new EmptyShieldFragment();
