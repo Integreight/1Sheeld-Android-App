@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public class ShieldFrame {
 	public static final byte START_OF_FRAME=(byte) 0xFF;
+	public static final byte DATA_SENT=(byte) 0x00;
 	
 	private byte shieldId;
 	private byte instanceId;
@@ -57,7 +58,7 @@ public class ShieldFrame {
 		arguments.add(new byte[]{(byte)data});
 	}
 	
-	public void addIntegerArgument(byte bytes, boolean isSigned,int data){
+	public void addIntegerArgument(int bytes, boolean isSigned,int data){
 		if(!isSigned)data=Math.abs(data);
 		switch(bytes){
 		case 0:return;

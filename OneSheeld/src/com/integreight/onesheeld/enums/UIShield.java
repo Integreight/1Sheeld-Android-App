@@ -201,7 +201,7 @@ public enum UIShield {
 		this.shieldType = shieldType;
 	}
 
-	public int getId() {
+	public byte getId() {
 		return id;
 	}
 
