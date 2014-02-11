@@ -32,6 +32,7 @@ import com.integreight.onesheeld.shields.fragments.MagnetometerFragment;
 import com.integreight.onesheeld.shields.fragments.MicFragment;
 import com.integreight.onesheeld.shields.fragments.MusicPlayerFragment;
 import com.integreight.onesheeld.shields.fragments.NotificationFragment;
+import com.integreight.onesheeld.shields.fragments.ProximityFragment;
 import com.integreight.onesheeld.shields.fragments.PushButtonFragment;
 import com.integreight.onesheeld.shields.fragments.SevenSegmentFragment;
 import com.integreight.onesheeld.shields.fragments.SkypeFragment;
@@ -127,6 +128,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case SKYPE_SHIELD:
 			return addToCreatedListAndReturn(UIShield.SKYPE_SHIELD,
 					new SkypeFragment());
+		case PROXIMITY_SHIELD:
+			return addToCreatedListAndReturn(UIShield.PROXIMITY_SHIELD,
+					new ProximityFragment());
 
 		default:
 			return new EmptyShieldFragment();
