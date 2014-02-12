@@ -75,8 +75,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	public void registerSensorListener() {
 		String sensorName = PackageManager.FEATURE_SENSOR_PROXIMITY;
 		if (SensorUtil.isDeviceHasSensor(sensorName, activity.getApplication())) {
-			mSensorManager.registerListener(this, mGravity,
-					5000000);
+			mSensorManager.registerListener(this, mGravity,2000000);
 			eventHandler.isDeviceHasSensor(true);
 
 		} else {
