@@ -75,31 +75,31 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		getApplication().getAppFirmata().initUart();
 	}
 
-	@Override
-	public void onUartReceive(byte[] data) {
-		if (data.length < 2)
-			return;
-		byte command = data[0];
-		byte methodId = data[1];
-		int n = data.length - 2;
-		byte[] newArray = new byte[n];
-		System.arraycopy(data, 2, newArray, 0, n);
-		if (command == UPDATE_STATUS_METHOD_ID) {
-			String tweet = new String(newArray);
-			if (isTwitterLoggedInAlready())
-				if (methodId == UPDATE_STATUS_METHOD_ID) {
-					if (!tweet.equals(lastTweet)) {
-						tweet(tweet);
-						eventHandler.onRecieveTweet(tweet);
-					} else
-						eventHandler
-								.onTwitterError("You have posted this tweet before!");
-					lastTweet = tweet;
-				}
-
-		}
-		super.onUartReceive(data);
-	}
+//	@Override
+//	public void onUartReceive(byte[] data) {
+//		if (data.length < 2)
+//			return;
+//		byte command = data[0];
+//		byte methodId = data[1];
+//		int n = data.length - 2;
+//		byte[] newArray = new byte[n];
+//		System.arraycopy(data, 2, newArray, 0, n);
+//		if (command == UPDATE_STATUS_METHOD_ID) {
+//			String tweet = new String(newArray);
+//			if (isTwitterLoggedInAlready())
+//				if (methodId == UPDATE_STATUS_METHOD_ID) {
+//					if (!tweet.equals(lastTweet)) {
+//						tweet(tweet);
+//						eventHandler.onRecieveTweet(tweet);
+//					} else
+//						eventHandler
+//								.onTwitterError("You have posted this tweet before!");
+//					lastTweet = tweet;
+//				}
+//
+//		}
+//		super.onUartReceive(data);
+//	}
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		this.eventHandler = eventHandler;

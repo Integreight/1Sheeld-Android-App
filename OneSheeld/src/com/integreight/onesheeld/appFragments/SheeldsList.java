@@ -191,14 +191,14 @@ public class SheeldsList extends SherlockFragment {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	private void connectDevice(Intent data) {
-		String address = data.getExtras().getString(
-				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-		Intent intent = new Intent(getActivity(), OneSheeldService.class);
-		intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
-		getActivity().startService(intent);
-
-	}
+	// private void connectDevice(Intent data) {
+	// String address = data.getExtras().getString(
+	// DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+	// Intent intent = new Intent(getActivity(), OneSheeldService.class);
+	// intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
+	// getActivity().startService(intent);
+	//
+	// }
 
 	private void disconnectService() {
 		if (isOneSheeldServiceRunning()) {

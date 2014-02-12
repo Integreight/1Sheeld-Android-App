@@ -2,13 +2,6 @@ package com.integreight.onesheeld;
 
 import java.util.Set;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.activities.DeviceListActivity;
-import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -22,18 +15,21 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.activities.DeviceListActivity;
+import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 
 public class ArduinoConnectivityActivity extends Dialog {
 	private Activity activity;
@@ -57,7 +53,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 	private RelativeLayout deviceListCont;
 	private ProgressBar loading;
 	private Button scanOrTryAgain;
-	private boolean isScanButton = true;
+//	private boolean isScanButton = true;
 	private OneShieldTextView statusText;
 	private RelativeLayout transactionSlogan;
 	public static boolean isOpened = false;
@@ -119,7 +115,6 @@ public class ArduinoConnectivityActivity extends Dialog {
 				doDiscovery();
 			}
 		});
-		isScanButton = true;
 	}
 
 	private void setRetryButtonReady(String msg, View.OnClickListener onClick) {
@@ -128,7 +123,6 @@ public class ArduinoConnectivityActivity extends Dialog {
 		scanOrTryAgain.setVisibility(View.VISIBLE);
 		changeSlogan(msg, COLOR.ORANGE);
 		scanOrTryAgain.setText(R.string.tryAgain);
-		isScanButton = false;
 	}
 
 	private void setDevicesListReady() {
@@ -200,8 +194,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 						@Override
 						public void onClick(View arg0) {
-							// TODO Auto-generated method stub
-
+							scanDevices();
 						}
 					});
 			String noDevices = activity.getResources()
@@ -269,7 +262,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 										@Override
 										public void onClick(View arg0) {
-
+											scanDevices();
 										}
 									});
 
@@ -290,7 +283,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 										@Override
 										public void onClick(View arg0) {
-
+											scanDevices();
 										}
 									});
 
@@ -344,8 +337,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 								@Override
 								public void onClick(View v) {
-									// TODO Auto-generated method stub
-
+									scanDevices();
 								}
 							});
 				}
