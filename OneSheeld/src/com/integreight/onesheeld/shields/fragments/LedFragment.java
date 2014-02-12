@@ -44,8 +44,9 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
+		if (getApplication().getRunningShields().get(getControllerTag()) != null)
+			getApplication().getRunningShields().get(getControllerTag())
+					.setHasForgroundView(false);
 		super.onStop();
 	}
 

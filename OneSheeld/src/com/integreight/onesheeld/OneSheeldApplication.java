@@ -85,7 +85,7 @@ public class OneSheeldApplication extends Application {
 
 	public void clearServiceEventHandlers() {
 		if (getAppFirmata() != null) {
-			getRunningShields().clear();
+			// getRunningShields().clear();
 			getAppFirmata().clearArduinoFirmataDataHandlers();
 			getAppFirmata().clearArduinoFirmataShieldFrameHandlers();
 		}

@@ -58,8 +58,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		MainActivity myActivity = (MainActivity) getActivity();
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		myActivity.getSupportActionBar().setHomeButtonEnabled(true);
+		// myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+		// myActivity.getSupportActionBar().setHomeButtonEnabled(true);
 
 		if (savedInstanceState == null) {
 			FragmentTransaction t = myActivity.getSupportFragmentManager()
@@ -102,8 +102,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 			// set the Above View
 			// setContentView(R.layout.content_frame);
 			((MainActivity) getActivity()).getSupportFragmentManager()
-					.beginTransaction().replace(R.id.appTransitionsContainer, mContent)
-					.commit();
+					.beginTransaction()
+					.replace(R.id.appTransitionsContainer, mContent).commit();
 		}
 
 		// bindFirmataService();
@@ -144,8 +144,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 	public void switchContent(Fragment fragment) {
 		mContent = fragment;
 		((MainActivity) getActivity()).getSupportFragmentManager()
-				.beginTransaction().replace(R.id.appTransitionsContainer, fragment)
-				.commit();
+				.beginTransaction()
+				.replace(R.id.appTransitionsContainer, fragment).commit();
 		((MainActivity) getActivity()).getSlidingMenu().showContent();
 	}
 
@@ -185,14 +185,16 @@ public class ShieldsOperations extends BaseContainerFragment {
 		} else
 			mp.start();
 	}
+
 	@Override
 	public void onDestroy() {
-		mContent=null;
+		mContent = null;
 		super.onDestroy();
 	}
+
 	@Override
 	public void onResume() {
-		getSherlockActivity().getSupportActionBar().hide();
+		// getSherlockActivity().getSupportActionBar().hide();
 		super.onResume();
 	}
 }

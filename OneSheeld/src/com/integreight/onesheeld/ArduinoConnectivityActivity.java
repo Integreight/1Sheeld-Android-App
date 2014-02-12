@@ -15,7 +15,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -35,7 +34,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 	private Activity activity;
 
 	public ArduinoConnectivityActivity(Activity context) {
-		super(context, Window.FEATURE_NO_TITLE);
+		super(context, android.R.style.Theme_Translucent_NoTitleBar);
 		this.activity = context;
 		// TODO Auto-generated constructor stub
 	}
@@ -53,7 +52,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 	private RelativeLayout deviceListCont;
 	private ProgressBar loading;
 	private Button scanOrTryAgain;
-//	private boolean isScanButton = true;
+	// private boolean isScanButton = true;
 	private OneShieldTextView statusText;
 	private RelativeLayout transactionSlogan;
 	public static boolean isOpened = false;
@@ -61,6 +60,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.initialization_view);
+		setCancelable(false);
 		deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
 		loading = (ProgressBar) findViewById(R.id.progress);
 		scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
@@ -68,8 +68,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 		transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		setScanButtonReady();
-		getWindow().setBackgroundDrawable(
-				new ColorDrawable(android.graphics.Color.TRANSPARENT));
+		getWindow().setBackgroundDrawable(new ColorDrawable(0));
 		setOnCancelListener(new OnCancelListener() {
 
 			@Override

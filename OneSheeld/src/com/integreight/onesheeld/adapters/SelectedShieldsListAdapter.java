@@ -60,8 +60,6 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 					.findViewById(R.id.selected_shield_list_item_symbol_imageview);
 			holder.selectionCircle = (ImageView) row
 					.findViewById(R.id.selected_shield_list_item_selection_circle_imageview);
-			holder.blackUpperLayer = (ImageView) row
-					.findViewById(R.id.shildListItemBlackSquare);
 			row.setTag(holder);
 		} else {
 			holder = (Holder) row.getTag();
@@ -76,10 +74,8 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 
 		if (UIShield.getShieldsActivitySelection() == shield) {
 			holder.selectionCircle.setVisibility(View.VISIBLE);
-			holder.blackUpperLayer.setVisibility(View.INVISIBLE);
 		} else {
 			holder.selectionCircle.setVisibility(View.INVISIBLE);
-			holder.blackUpperLayer.setVisibility(View.VISIBLE);
 		}
 		// RelativeLayout.LayoutParams head_params =
 		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
@@ -104,7 +100,6 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 	static class Holder {
 		ImageView symbol;
 		ImageView selectionCircle;
-		ImageView blackUpperLayer;
 	}
 
 }
