@@ -1,5 +1,6 @@
 package com.integreight.firmatabluetooth;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -17,6 +18,22 @@ public class ShieldFrame {
 		this.shieldId=shieldId;
 		this.instanceId=instanceId;
 		this.functionId=functionId;
+		arguments=new ArrayList<byte[]>();
+	}
+	
+	public ShieldFrame(byte shieldId,byte functionId) {
+		// TODO Auto-generated constructor stub
+		this.shieldId=shieldId;
+		this.instanceId=0;
+		this.functionId=functionId;
+		arguments=new ArrayList<byte[]>();
+	}
+	
+	public ShieldFrame(byte shieldId) {
+		// TODO Auto-generated constructor stub
+		this.shieldId=shieldId;
+		this.instanceId=0;
+		this.functionId=DATA_SENT;
 		arguments=new ArrayList<byte[]>();
 	}
 	
@@ -68,6 +85,12 @@ public class ShieldFrame {
 		case 4:arguments.add(new byte[]{(byte)data,(byte)(data>>8),(byte)(data>>16),(byte)(data>>24)}); break;
 		default: return;
 		}
+	}
+	
+	public void addFloatArgument(float f){
+		byte[] data = ByteBuffer.allocate(4).putFloat(f).array(); 
+		arguments.add(new byte[]{data[3],data[2],data[1],data[0]});
+
 	}
 	
 	public void addStringArgument(String data){
