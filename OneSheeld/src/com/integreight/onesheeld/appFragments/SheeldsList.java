@@ -279,7 +279,8 @@ public class SheeldsList extends SherlockFragment {
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
-			new ArduinoConnectivityActivity(getActivity()).show();
+			if (!ArduinoConnectivityActivity.isOpened)
+				new ArduinoConnectivityActivity(getActivity()).show();
 			// if (((OneSheeldApplication) getActivity().getApplication())
 			// .getAppPreferences().contains(
 			// OneSheeldService.DEVICE_ADDRESS_KEY)) {
