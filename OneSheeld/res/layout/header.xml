@@ -2,15 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/abs__background_holo_light"
-    android:padding="5dp" >
+    android:background="#E1000000"
+    android:padding="10dp" >
 
     <TextView
         android:id="@+id/currentViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="140dp"
+        android:layout_height="40dp"
         android:layout_centerInParent="true"
-        android:text="@string/app_name"
+        android:background="@drawable/arduino_connectivity_activity_onesheeld_logo"
         android:textColor="@android:color/background_dark"
         android:textSize="15sp"
         android:textStyle="normal"
@@ -21,6 +21,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:background="@android:drawable/ic_search_category_default" />
 
 </RelativeLayout>

@@ -58,6 +58,8 @@ public class ShieldsListAdapter extends BaseAdapter {
 					.findViewById(R.id.shield_list_item_selection_toggle_button);
 			holder.selectionCircle = (ImageView) row
 					.findViewById(R.id.shield_list_item_selection_circle_imageview);
+			holder.blackUpperLayer = (ImageView) row
+					.findViewById(R.id.shildListItemBlackSquare);
 			row.setTag(holder);
 		} else {
 			holder = (Holder) row.getTag();
@@ -77,10 +79,12 @@ public class ShieldsListAdapter extends BaseAdapter {
 			holder.selectionButton.setChecked(true);
 			holder.selectionButton.setVisibility(View.VISIBLE);
 			holder.selectionCircle.setVisibility(View.VISIBLE);
+			holder.blackUpperLayer.setVisibility(View.INVISIBLE);
 		} else {
 			holder.selectionButton.setChecked(false);
 			holder.selectionButton.setVisibility(View.INVISIBLE);
 			holder.selectionCircle.setVisibility(View.INVISIBLE);
+			holder.blackUpperLayer.setVisibility(View.VISIBLE);
 		}
 		// RelativeLayout.LayoutParams head_params =
 		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
@@ -107,6 +111,7 @@ public class ShieldsListAdapter extends BaseAdapter {
 		ImageView icon;
 		ToggleButton selectionButton;
 		ImageView selectionCircle;
+		ImageView blackUpperLayer;
 	}
 
 }

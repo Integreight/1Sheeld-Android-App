@@ -24,10 +24,11 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 		this.activity = a;
 		this.shieldList = new ArrayList<UIShield>();
 		List<UIShield> tempShieldsList = Arrays.asList(UIShield.values());
-		for(UIShield shield:tempShieldsList){
-			if(shield.isMainActivitySelection())this.shieldList.add(shield);
+		for (UIShield shield : tempShieldsList) {
+			if (shield.isMainActivitySelection())
+				this.shieldList.add(shield);
 		}
-		
+
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	}
@@ -51,32 +52,36 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 		Holder holder = null;
 		if (row == null) {
 
-			row = inflater.inflate(R.layout.selected_shields_list_item, parent, false);
+			row = inflater.inflate(R.layout.selected_shields_list_item, parent,
+					false);
 
 			holder = new Holder();
-			holder.symbol = (ImageView) row.findViewById(R.id.selected_shield_list_item_symbol_imageview);
-			holder.selectionCircle=(ImageView) row.findViewById(R.id.selected_shield_list_item_selection_circle_imageview);
+			holder.symbol = (ImageView) row
+					.findViewById(R.id.selected_shield_list_item_symbol_imageview);
+			holder.selectionCircle = (ImageView) row
+					.findViewById(R.id.selected_shield_list_item_selection_circle_imageview);
 			row.setTag(holder);
 		} else {
 			holder = (Holder) row.getTag();
 		}
 
-		UIShield shield=shieldList.get(position);
+		UIShield shield = shieldList.get(position);
 		Integer iconId = shield.getSymbolId();
 		Integer imageId = shield.getSmallImageStripId();
 		holder.symbol.setBackgroundResource(iconId);
 
 		row.setBackgroundResource(imageId);
-		
-		if(UIShield.getShieldsActivitySelection()==shield){
+
+		if (UIShield.getShieldsActivitySelection() == shield) {
 			holder.selectionCircle.setVisibility(View.VISIBLE);
-		}
-		else{
+		} else {
 			holder.selectionCircle.setVisibility(View.INVISIBLE);
 		}
-//		RelativeLayout.LayoutParams head_params = (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
-//		head_params.setMargins(0, -20, 0, 0); //substitute parameters for left, top, right, bottom
-//		row.setLayoutParams(head_params);
+		// RelativeLayout.LayoutParams head_params =
+		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
+		// head_params.setMargins(0, -20, 0, 0); //substitute parameters for
+		// left, top, right, bottom
+		// row.setLayoutParams(head_params);
 
 		// row.setOnClickListener(new OnClickListener() {
 		//
@@ -96,7 +101,5 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 		ImageView symbol;
 		ImageView selectionCircle;
 	}
-	
-
 
 }

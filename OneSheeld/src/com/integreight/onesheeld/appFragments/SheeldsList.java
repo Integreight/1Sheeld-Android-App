@@ -78,7 +78,7 @@ public class SheeldsList extends SherlockFragment {
 
 	@Override
 	public void onResume() {
-		getSherlockActivity().getSupportActionBar().hide();
+		// getSherlockActivity().getSupportActionBar().hide();
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
 		List<Fragment> frags = getActivity().getSupportFragmentManager()
@@ -137,17 +137,21 @@ public class SheeldsList extends SherlockFragment {
 				ToggleButton selectionMark = (ToggleButton) rLayout
 						.getChildAt(0);
 				ImageView selectionCircle = (ImageView) rLayout.getChildAt(1);
+				ImageView upperBlackLayer = (ImageView) rLayout
+						.findViewById(R.id.shildListItemBlackSquare);
 
 				if (selectionMark.isChecked()) {
 					selectionMark.setChecked(false);
 					selectionMark.setVisibility(View.INVISIBLE);
 					selectionCircle.setVisibility(View.INVISIBLE);
+					upperBlackLayer.setVisibility(View.VISIBLE);
 					UIShield.getPosition(position + 1)
 							.setMainActivitySelection(false);
 				} else {
 					selectionMark.setChecked(true);
 					selectionMark.setVisibility(View.VISIBLE);
 					selectionCircle.setVisibility(View.VISIBLE);
+					upperBlackLayer.setVisibility(View.INVISIBLE);
 					UIShield.getPosition(position + 1)
 							.setMainActivitySelection(true);
 
@@ -191,14 +195,14 @@ public class SheeldsList extends SherlockFragment {
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	private void connectDevice(Intent data) {
-		String address = data.getExtras().getString(
-				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-		Intent intent = new Intent(getActivity(), OneSheeldService.class);
-		intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
-		getActivity().startService(intent);
-
-	}
+	// private void connectDevice(Intent data) {
+	// String address = data.getExtras().getString(
+	// DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+	// Intent intent = new Intent(getActivity(), OneSheeldService.class);
+	// intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
+	// getActivity().startService(intent);
+	//
+	// }
 
 	private void disconnectService() {
 		if (isOneSheeldServiceRunning()) {
@@ -275,7 +279,8 @@ public class SheeldsList extends SherlockFragment {
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
-			new ArduinoConnectivityActivity(getActivity()).show();
+			if (!ArduinoConnectivityActivity.isOpened)
+				new ArduinoConnectivityActivity(getActivity()).show();
 			// if (((OneSheeldApplication) getActivity().getApplication())
 			// .getAppPreferences().contains(
 			// OneSheeldService.DEVICE_ADDRESS_KEY)) {
