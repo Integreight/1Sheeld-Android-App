@@ -75,7 +75,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		getApplication().getAppFirmata().initUart();
 	}
 
-	/*@Override
+	@Override
 	public void onUartReceive(byte[] data) {
 		if (data.length < 2)
 			return;
@@ -84,7 +84,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		int n = data.length - 2;
 		byte[] newArray = new byte[n];
 		System.arraycopy(data, 2, newArray, 0, n);
-		if (command == TWITTER_COMMAND) {
+		if (command == UPDATE_STATUS_METHOD_ID) {
 			String tweet = new String(newArray);
 			if (isTwitterLoggedInAlready())
 				if (methodId == UPDATE_STATUS_METHOD_ID) {
@@ -99,7 +99,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 		}
 		super.onUartReceive(data);
-	}*/
+	}
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		this.eventHandler = eventHandler;

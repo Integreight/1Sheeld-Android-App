@@ -216,8 +216,8 @@ public class ArduinoFirmata{
     private byte[] getByteArrayAs2SevenBitsBytesArray(byte[] data){
     	byte[] temp=new byte[data.length*2];
     	for (int i = 0; i < temp.length; i+=2) {
-    		temp[i]=getByteAs2SevenBitsBytes(temp[i])[0];
-    		temp[i+1]=getByteAs2SevenBitsBytes(temp[i])[1];
+    		temp[i]=getByteAs2SevenBitsBytes(data[i])[0];
+    		temp[i+1]=getByteAs2SevenBitsBytes(data[i])[1];
 		}
     	return temp;
     }
