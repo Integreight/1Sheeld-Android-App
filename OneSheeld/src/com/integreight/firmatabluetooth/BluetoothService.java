@@ -166,9 +166,10 @@ public class BluetoothService {
         //bundle.putString(BluetoothService.DEVICE_NAME, device.getName());
         //msg.setData(bundle);
         //mHandler.sendMessage(msg);
+        setState(STATE_CONNECTED);
         if(handler!=null)handler.onConnected(device);
 
-        setState(STATE_CONNECTED);
+       
     }
 
     /**
