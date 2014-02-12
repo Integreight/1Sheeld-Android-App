@@ -1,10 +1,13 @@
 package com.integreight.onesheeld.enums;
 
+import android.app.backup.RestoreObserver;
+
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
+import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
@@ -124,7 +127,11 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_led_symbol, false,
-			ProximityShield.class);
+			ProximityShield.class), GRAVITY_SHIELD((byte) 0x14, "Gravity",
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false, GravityShield.class);
 
 	private byte id;
 	private String name;
@@ -261,6 +268,8 @@ public enum UIShield {
 			return SKYPE_SHIELD;
 		case 23:
 			return PROXIMITY_SHIELD;
+		case 24:
+			return GRAVITY_SHIELD;
 		}
 		return null;
 	}

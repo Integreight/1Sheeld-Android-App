@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.backup.RestoreObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -16,6 +17,7 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
@@ -24,6 +26,7 @@ import com.integreight.onesheeld.shields.fragments.FlashlightFragment;
 import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
+import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
 import com.integreight.onesheeld.shields.fragments.LcdFragment;
@@ -131,6 +134,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case PROXIMITY_SHIELD:
 			return addToCreatedListAndReturn(UIShield.PROXIMITY_SHIELD,
 					new ProximityFragment());
+		case GRAVITY_SHIELD:
+			return addToCreatedListAndReturn(UIShield.GRAVITY_SHIELD, new GravityFragment());
 
 		default:
 			return new EmptyShieldFragment();
