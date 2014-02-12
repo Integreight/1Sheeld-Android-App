@@ -89,7 +89,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	// Unregister a listener for the sensor .
 	public void unegisterSensorListener() {
 		if (mSensorManager != null) {
-			mSensorManager.unregisterListener(this);
+			//mSensorManager.unregisterListener(this);
 			mSensorManager.unregisterListener(this, mProximity);
 		}
 	}
