@@ -14,13 +14,13 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class ProximityShield extends ControllerParent<ProximityShield>implements SensorEventListener {
+public class ProximityShield extends ControllerParent<ProximityShield>
+		implements SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mProximity;
 	private ProximityEventHandler eventHandler;
 	private ShieldFrame frame;
 
-	
 	public ProximityShield() {
 	}
 
@@ -65,7 +65,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>implements
 		frame.addByteArgument((byte) Math.round(event.values[0]));
 		// frame.addIntegerArgument(1, false, Math.round(distance));
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
-		eventHandler.onSensorValueChangedByte((byte) Math.round(event.values[0]) + "");
+		eventHandler.onSensorValueChangedByte((byte) Math
+				.round(event.values[0]) + "");
 		eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 	}
 
@@ -78,14 +79,18 @@ public class ProximityShield extends ControllerParent<ProximityShield>implements
 			eventHandler.isDeviceHasSensor(true);
 
 		} else {
-			Log.d("Device dos't have Sensor ",PackageManager.FEATURE_SENSOR_PROXIMITY);
+			Log.d("Device dos't have Sensor ",
+					PackageManager.FEATURE_SENSOR_PROXIMITY);
 			eventHandler.isDeviceHasSensor(false);
 		}
 	}
 
 	// Unregister a listener for the sensor .
 	public void unegisterSensorListener() {
-		mSensorManager.unregisterListener(this);
+		if (mSensorManager != null) {
+			mSensorManager.unregisterListener(this);
+			mSensorManager.unregisterListener(this, mProximity);
+		}
 	}
 
 	public static interface ProximityEventHandler {

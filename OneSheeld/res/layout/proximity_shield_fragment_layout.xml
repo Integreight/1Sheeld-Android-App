@@ -31,7 +31,6 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Your Device not have The Sensor"
         android:textColor="@color/white"
         android:visibility="invisible" />
 
@@ -39,7 +38,7 @@
         android:id="@+id/distance_float_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/device_not_has_sensor_text"
+        android:layout_below="@+id/start_listener_bt"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"

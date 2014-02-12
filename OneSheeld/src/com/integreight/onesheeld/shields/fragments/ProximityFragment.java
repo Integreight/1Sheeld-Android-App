@@ -99,9 +99,16 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 		@Override
 		public void onSensorValueChangedFloat(String value) {
 			// TODO Auto-generated method stub
-			distance_float.setVisibility(View.VISIBLE);
-			distance_float.setText("Distance in float = " + value);
-
+			
+			if (canChangeUI())
+			{
+				distance_float.setVisibility(View.VISIBLE);
+				distance_float.setText("Distance in float = " + value);
+			Toast.makeText(getActivity(),
+					"Value changed "+value,
+					Toast.LENGTH_SHORT).show();
+			}
+			
 		}
 
 		@Override
@@ -117,7 +124,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
 				if (!hasSensor) {
-					devicehasSensor.setVisibility(View.VISIBLE);
+					devicehasSensor.setText("Your Device not have The Sensor");
 					Toast.makeText(getActivity(),
 							"Device dosen't have This Sensor !",
 							Toast.LENGTH_SHORT).show();
