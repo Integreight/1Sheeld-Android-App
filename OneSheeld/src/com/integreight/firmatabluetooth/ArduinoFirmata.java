@@ -76,13 +76,13 @@ public class ArduinoFirmata{
     private List<ArduinoFirmataDataHandler> dataHandlers;
     private List<ArduinoFirmataShieldFrameHandler> frameHandlers;
     public void addEventHandler(ArduinoFirmataEventHandler handler){
-        if(!eventHandlers.contains(handler))eventHandlers.add(handler);
+        if(handler!=null&&!eventHandlers.contains(handler))eventHandlers.add(handler);
     }
     public void addDataHandler(ArduinoFirmataDataHandler handler){
-        if(!dataHandlers.contains(handler))dataHandlers.add(handler);
+        if(handler!=null&&!dataHandlers.contains(handler))dataHandlers.add(handler);
     }
     public void addShieldFrameHandler(ArduinoFirmataShieldFrameHandler handler){
-        if(!frameHandlers.contains(handler))frameHandlers.add(handler);
+        if(handler!=null&&!frameHandlers.contains(handler))frameHandlers.add(handler);
     }
 
     private int waitForData = 0;
@@ -488,7 +488,7 @@ public class ArduinoFirmata{
 				public void run() {
 				if(state==BluetoothService.STATE_NONE){
 					for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-		        		eventHandler.onClose(isManually);
+		        		if(eventHandler!=null)eventHandler.onClose(isManually);
 		    		}
 			}
 				}
@@ -514,7 +514,7 @@ public class ArduinoFirmata{
 				public void run() {
 					// TODO Auto-generated method stub
 					for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-		        		eventHandler.onConnect();
+		        		if(eventHandler!=null)eventHandler.onConnect();
 		    		}
 		            String mConnectedDeviceName = device.getName();
 		            Toast.makeText(context, "Connected to "
