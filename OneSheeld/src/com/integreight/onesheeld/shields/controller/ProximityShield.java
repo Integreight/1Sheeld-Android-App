@@ -37,8 +37,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-		frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(), (byte) 0,
-				ShieldFrame.DATA_SENT);
+		
 		return super.setTag(tag);
 	}
 
@@ -62,8 +61,10 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		frame.addByteArgument((byte) Math.round(event.values[0]));
-		// frame.addIntegerArgument(1, false, Math.round(distance));
+		frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(), (byte) 0,
+				ShieldFrame.DATA_SENT);
+		 frame.addByteArgument((byte) Math.round(event.values[0]));
+	     //frame.addIntegerArgument(1, false, Math.round((int) Math.round(event.values[0])));
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
 		eventHandler.onSensorValueChangedByte((byte) Math
 				.round(event.values[0]) + "");
