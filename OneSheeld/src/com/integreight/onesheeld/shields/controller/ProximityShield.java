@@ -123,6 +123,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 			public void run() {
 				// use data here
 				eventHandler.onSensorValueChangedFloat(data);
+				//eventHandler.onSensorValueChangedByte(data);
+
 			}
 		});
 	}
