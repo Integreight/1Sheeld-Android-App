@@ -41,8 +41,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 				Context.SENSOR_SERVICE);
 		mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 
-		if (mHandlerThread == null)
-		{
+		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
 		}
 		return super.setTag(tag);
@@ -75,7 +74,10 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		frame.addFloatArgument(event.values[1]);
 		frame.addFloatArgument(event.values[2]);
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
-		// eventHandler.onSensorValueChangedFloat(event.values);
+
+		final float sensorData[] = event.values;
+		OnNewSensorData(sensorData);
+
 		Log.d("Sensor Data of X", event.values[0] + "");
 		Log.d("Sensor Data of Y", event.values[1] + "");
 		Log.d("Sensor Data of Z", event.values[2] + "");
@@ -85,13 +87,13 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
 		String sensorName = PackageManager.FEATURE_SENSOR_PROXIMITY;
-		if (mHandlerThread == null)
-		{
-			mHandlerThread = new HandlerThread("sensorThread");			
+		if (mHandlerThread == null) {
+			mHandlerThread = new HandlerThread("sensorThread");
 		}
 		if (!mHandlerThread.isAlive()) {
 
-			if (SensorUtil.isDeviceHasSensor(sensorName,activity.getApplication())) {
+			if (SensorUtil.isDeviceHasSensor(sensorName,
+					activity.getApplication())) {
 				mHandlerThread.start();
 				handler = new Handler(mHandlerThread.getLooper());
 				mSensorManager.registerListener(this, mGravity, 1000000,
@@ -110,7 +112,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	// Unregister a listener for the sensor .
 	public void unegisterSensorListener() {
-		if (mSensorManager != null && mHandlerThread != null && mHandlerThread.isAlive()) {
+		if (mSensorManager != null && mHandlerThread != null
+				&& mHandlerThread.isAlive()) {
 			// mSensorManager.unregisterListener(this);
 			mSensorManager.unregisterListener(this, mGravity);
 			mSensorManager.unregisterListener(this);
@@ -118,17 +121,27 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			mHandlerThread.interrupt();
 			mHandlerThread.getLooper().quit();
 			stopThread();
-			}
+		}
 	}
 
-	public synchronized void stopThread(){
-		  if(mHandlerThread != null){
-		    Thread moribund = mHandlerThread;
-		    mHandlerThread = null;
-		    moribund.interrupt();
-		  }
+	public void OnNewSensorData(final float data[]) {
+		getActivity().runOnUiThread(new Runnable() {
+			public void run() {
+				// use data here
+				eventHandler.onSensorValueChangedFloat(data);
+
+			}
+		});
+	}
+
+	public synchronized void stopThread() {
+		if (mHandlerThread != null) {
+			Thread moribund = mHandlerThread;
+			mHandlerThread = null;
+			moribund.interrupt();
 		}
-	
+	}
+
 	public static interface GravityEventHandler {
 
 		void onSensorValueChangedFloat(float[] value);
