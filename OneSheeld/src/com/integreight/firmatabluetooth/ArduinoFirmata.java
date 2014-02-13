@@ -316,37 +316,45 @@ public class ArduinoFirmata{
             if(inputData == END_SYSEX){
                 parsingSysex = false;
                 byte sysexCommand = storedInputData[0];
-                byte[] sysexData = new byte[sysexBytesRead-1];
-                
-                System.arraycopy(storedInputData, 1, sysexData, 0, sysexBytesRead-1);
-                
-                byte[] fixedSysexData = null;
-                if(sysexData.length%2==0){
-                	fixedSysexData=new byte[sysexData.length/2];
-                	for(int i=0;i<sysexData.length;i+=2){
-                		fixedSysexData[i/2]=(byte) (sysexData[i]|(sysexData[i+1]<<7));
-                	}
-                	
-                	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
-                		
-//                		try {
-            				for(byte b:fixedSysexData){
-            					uartBuffer.add(b);
-            				}
-//            			} catch (InterruptedException e) {
-//            				// TODO Auto-generated catch block
-//            				e.printStackTrace();
-//            			}
-                	}
-                
-                for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
-                	dataHandler.onSysex(sysexCommand, sysexData);
-                	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
-                		dataHandler.onUartReceive(fixedSysexData);
-                	}
-                	
-        		}
+                if(sysexBytesRead>0){
+                	byte[] sysexData = new byte[sysexBytesRead-1];
+                    
+                    System.arraycopy(storedInputData, 1, sysexData, 0, sysexBytesRead-1);
+                    
+                    byte[] fixedSysexData = null;
+                    if(sysexData.length%2==0){
+                    	fixedSysexData=new byte[sysexData.length/2];
+                    	for(int i=0;i<sysexData.length;i+=2){
+                    		fixedSysexData[i/2]=(byte) (sysexData[i]|(sysexData[i+1]<<7));
+                    	}
+                    	
+                    	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
+                    		
+//                    		try {
+                				for(byte b:fixedSysexData){
+                					uartBuffer.add(b);
+                				}
+//                			} catch (InterruptedException e) {
+//                				// TODO Auto-generated catch block
+//                				e.printStackTrace();
+//                			}
+                    	}
+                    
+                    for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
+                    	dataHandler.onSysex(sysexCommand, sysexData);
+                    	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
+                    		dataHandler.onUartReceive(fixedSysexData);
+                    	}
+                    	
+            		}
+                    }
                 }
+                else{
+                	for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
+                    	dataHandler.onSysex(sysexCommand, new byte[]{});
+            		}
+                }
+                
             }
             else{
                 if(sysexBytesRead < storedInputData.length){
@@ -621,21 +629,20 @@ public class ArduinoFirmata{
     	public void run() {
     		// TODO Auto-generated method stub
     		while(isRunning){
-    			if((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
+    			while((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
     			byte shieldId=readByteFromUartBuffer();
-    			boolean noFound=false;
+    			boolean found=false;
     			for (UIShield shield : UIShield.values()) {
-					if(shieldId==shield.getId())noFound=true;
+					if(shieldId==shield.getId())found=true;
 				}
-    			if(noFound){uartBuffer.clear();continue;}
+    			if(!found){uartBuffer.clear();continue;}
     			byte instanceId=readByteFromUartBuffer();
     			byte functionId=readByteFromUartBuffer();
     			ShieldFrame frame=new ShieldFrame(shieldId, instanceId, functionId);
-    			byte argumentsNumber=readByteFromUartBuffer();
-    			if(argumentsNumber<=0){uartBuffer.clear();continue;}
+    			int argumentsNumber=readByteFromUartBuffer();
     			for(byte i=0;i<argumentsNumber;i++){
-    				byte length=readByteFromUartBuffer();
-    				if(length!=0) {uartBuffer.clear();continue;}
+    				int length=readByteFromUartBuffer();
+    				if(length<=0) {uartBuffer.clear();continue;}
     				byte[] data=new byte[length];
     				for(byte j=0;j<length;j++){
     					data[j]=readByteFromUartBuffer();
