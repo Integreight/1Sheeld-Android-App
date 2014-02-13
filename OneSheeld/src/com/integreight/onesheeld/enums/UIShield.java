@@ -3,6 +3,7 @@ package com.integreight.onesheeld.enums;
 import android.app.backup.RestoreObserver;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
@@ -80,7 +81,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_21_bw,
 			R.drawable.shields_activity_small_strip_21,
 			R.drawable.shields_activity_accelerometer_symbol, false,
-			EmptyShield.class), FACEBOOK_SHIELD((byte) 0x19, "Facebook",
+			AccelerometerShield.class), FACEBOOK_SHIELD((byte) 0x19, "Facebook",
 			R.drawable.shields_activity_strip_7,
 			R.drawable.shields_activity_strip_7_bw,
 			R.drawable.shields_activity_small_strip_7,
