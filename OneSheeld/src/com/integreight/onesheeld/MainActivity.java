@@ -139,6 +139,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	}
 
 	public void disableMenu() {
+		appSlidingMenu.closePane();
 		appSlidingMenu.setCanSlide(false);
 	}
 }
