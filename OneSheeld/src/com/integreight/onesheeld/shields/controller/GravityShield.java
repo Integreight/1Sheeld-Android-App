@@ -67,7 +67,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(), (byte) 0,
+		frame = new ShieldFrame(UIShield.GRAVITY_SHIELD.getId(), (byte) 0,
 				ShieldFrame.DATA_SENT);
 		// frame.addByteArgument((byte) Math.round(event.values[0]));
 		frame.addFloatArgument(event.values[0]);
