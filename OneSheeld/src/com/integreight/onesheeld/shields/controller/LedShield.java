@@ -74,12 +74,12 @@ public class LedShield extends ControllerParent<LedShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+		System.out.println("Reset");
 	}
 }

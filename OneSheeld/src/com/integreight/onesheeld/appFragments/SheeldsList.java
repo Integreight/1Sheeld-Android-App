@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.appFragments;
 
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -92,6 +93,13 @@ public class SheeldsList extends SherlockFragment {
 				ft.remove(frag);
 				ft.commit();
 			}
+		}
+		Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
+				.getApplication()).getRunningShields();
+		Enumeration<String> enumKey = controllers.keys();
+		while (enumKey.hasMoreElements()) {
+			String key = enumKey.nextElement();
+			controllers.get(key).reset();
 		}
 		((OneSheeldApplication) getActivity().getApplication())
 				.clearServiceEventHandlers();
