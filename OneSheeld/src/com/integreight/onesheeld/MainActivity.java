@@ -86,11 +86,15 @@ public class MainActivity extends SlidingFragmentActivity {
 			// create
 			// it.
 			FragmentTransaction ft = manager.beginTransaction();
+			// if (addToBackStack) {
+			// ft.setCustomAnimations(R.anim.slide_in_right,
+			// R.anim.slide_out_left);
+			// }
 			ft.replace(R.id.appTransitionsContainer, targetFragment,
 					fragmentTag);
-			ft.setTransition(FragmentTransaction.TRANSIT_ENTER_MASK);
-			if (addToBackStack)
+			if (addToBackStack) {
 				ft.addToBackStack(backStateName);
+			}
 			ft.commit();
 		}
 	}

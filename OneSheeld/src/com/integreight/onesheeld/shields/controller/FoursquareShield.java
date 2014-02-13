@@ -350,4 +350,10 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		this.lastcheckin = lastcheckin;
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

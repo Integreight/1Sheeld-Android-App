@@ -72,13 +72,22 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/devicesList"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_above="@id/connectAutomotically"
-                android:layout_centerInParent="true" >
-            </ListView>
+                android:scrollbarThumbVertical="@drawable/transparent"
+                android:scrollbars="vertical" >
+
+                <LinearLayout
+                    android:id="@+id/devicesList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+                </LinearLayout>
+            </ScrollView>
         </RelativeLayout>
     </RelativeLayout>
 

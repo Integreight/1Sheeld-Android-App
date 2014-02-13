@@ -93,4 +93,10 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -40,4 +40,10 @@ public class SliderShield extends ControllerParent<SliderShield> {
 		
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -187,4 +187,9 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 		}
 		return (true);
 	}
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
 }

@@ -47,4 +47,10 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

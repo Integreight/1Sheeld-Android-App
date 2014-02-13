@@ -71,4 +71,10 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
 }

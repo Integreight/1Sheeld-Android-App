@@ -64,12 +64,14 @@ public enum UIShield {
 			(byte) 0x0A, "Magnetometer", R.drawable.shields_activity_strip_16,
 			R.drawable.shields_activity_strip_16_bw,
 			R.drawable.shields_activity_small_strip_16,
-			R.drawable.shields_activity_magnetometer_symbol, false), PUSHBUTTON_SHIELD(
-			(byte) 0x03, "Push Button", R.drawable.shields_activity_strip_12,
+			R.drawable.shields_activity_magnetometer_symbol, false,
+			EmptyShield.class), PUSHBUTTON_SHIELD((byte) 0x03, "Push Button",
+			R.drawable.shields_activity_strip_12,
 			R.drawable.shields_activity_strip_12_bw,
 			R.drawable.shields_activity_small_strip_12,
-			R.drawable.shields_activity_push_button_symbol, false), TOGGLEBUTTON_SHIELD(
-			(byte) 0x04, "On/Off Button", R.drawable.shields_activity_strip_6,
+			R.drawable.shields_activity_push_button_symbol, false,
+			EmptyShield.class), TOGGLEBUTTON_SHIELD((byte) 0x04,
+			"On/Off Button", R.drawable.shields_activity_strip_6,
 			R.drawable.shields_activity_strip_6_bw,
 			R.drawable.shields_activity_small_strip_6,
 			R.drawable.shields_activity_push_button_symbol, false,
@@ -77,8 +79,9 @@ public enum UIShield {
 			"Accelerometer", R.drawable.shields_activity_strip_21,
 			R.drawable.shields_activity_strip_21_bw,
 			R.drawable.shields_activity_small_strip_21,
-			R.drawable.shields_activity_accelerometer_symbol, false), FACEBOOK_SHIELD(
-			(byte) 0x19, "Facebook", R.drawable.shields_activity_strip_7,
+			R.drawable.shields_activity_accelerometer_symbol, false,
+			EmptyShield.class), FACEBOOK_SHIELD((byte) 0x19, "Facebook",
+			R.drawable.shields_activity_strip_7,
 			R.drawable.shields_activity_strip_7_bw,
 			R.drawable.shields_activity_small_strip_7,
 			R.drawable.shields_activity_facebook_symbol, false,
@@ -101,7 +104,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_18,
 			R.drawable.shields_activity_strip_18_bw,
 			R.drawable.shields_activity_small_strip_18,
-			R.drawable.shields_activity_gps_symbol, false), SMS_SHIELD(
+			R.drawable.shields_activity_gps_symbol, false, EmptyShield.class), SMS_SHIELD(
 			(byte) 0x0D, "SMS", R.drawable.shields_activity_strip_20,
 			R.drawable.shields_activity_strip_20_bw,
 			R.drawable.shields_activity_small_strip_20,
@@ -109,16 +112,19 @@ public enum UIShield {
 			(byte) 0x1D, "Music Player", R.drawable.shields_activity_strip_11,
 			R.drawable.shields_activity_strip_11_bw,
 			R.drawable.shields_activity_small_strip_11,
-			R.drawable.shields_activity_musicplayer_symbol, false), GYROSCOPE_SHIELD(
-			(byte) 0x0E, "Gyroscope", R.drawable.shields_activity_strip_14,
+			R.drawable.shields_activity_musicplayer_symbol, false,
+			EmptyShield.class), GYROSCOPE_SHIELD((byte) 0x0E, "Gyroscope",
+			R.drawable.shields_activity_strip_14,
 			R.drawable.shields_activity_strip_14_bw,
 			R.drawable.shields_activity_small_strip_14,
-			R.drawable.shields_activity_gyroscope_symbol, false), FLASHLIGHT_SHIELD(
-			(byte) 0x05, "Flashlight", R.drawable.shields_activity_strip_22,
+			R.drawable.shields_activity_gyroscope_symbol, false,
+			EmptyShield.class), FLASHLIGHT_SHIELD((byte) 0x05, "Flashlight",
+			R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_flashlight_symbol, false), SKYPE_SHIELD(
-			(byte) 0x1F, "Skype", R.drawable.shields_activity_strip_22,
+			R.drawable.shields_activity_flashlight_symbol, false,
+			EmptyShield.class), SKYPE_SHIELD((byte) 0x1F, "Skype",
+			R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_led_symbol, false, SkypeShield.class), PROXIMITY_SHIELD(
@@ -188,18 +194,6 @@ public enum UIShield {
 
 	public void setShieldType(Class<? extends ControllerParent<?>> shieldType) {
 		this.shieldType = shieldType;
-	}
-
-	private UIShield(byte id, String name, int mainImageStripId,
-			int mainBWImageStripId, int smallImageStripId, int symbolId,
-			boolean mainActivitySelection) {
-		this.id = id;
-		this.name = name;
-		this.mainImageStripId = mainImageStripId;
-		this.mainBWImageStripId = mainBWImageStripId;
-		this.smallImageStripId = smallImageStripId;
-		this.symbolId = symbolId;
-		this.mainActivitySelection = mainActivitySelection;
 	}
 
 	private UIShield(byte id, String name, int mainImageStripId,

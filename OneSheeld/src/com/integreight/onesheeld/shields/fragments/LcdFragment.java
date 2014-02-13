@@ -121,7 +121,7 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 
 	private void clearLcd() {
 		((LcdShield) getApplication().getRunningShields().get(
-				getControllerTag())).reset();
+				getControllerTag())).resetPins();
 		lcdTextView.setText(extractTextFromLcdShield());
 	}
 

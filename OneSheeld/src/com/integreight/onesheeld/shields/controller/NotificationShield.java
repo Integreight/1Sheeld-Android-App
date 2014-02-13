@@ -103,4 +103,10 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 		
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
