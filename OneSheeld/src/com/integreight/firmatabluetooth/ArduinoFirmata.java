@@ -13,6 +13,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
+import com.integreight.onesheeld.enums.UIShield;
 
 
 public class ArduinoFirmata{
@@ -622,12 +623,19 @@ public class ArduinoFirmata{
     		while(isRunning){
     			if((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
     			byte shieldId=readByteFromUartBuffer();
+    			boolean noFound=false;
+    			for (UIShield shield : UIShield.values()) {
+					if(shieldId==shield.getId())noFound=true;
+				}
+    			if(noFound){uartBuffer.clear();continue;}
     			byte instanceId=readByteFromUartBuffer();
     			byte functionId=readByteFromUartBuffer();
     			ShieldFrame frame=new ShieldFrame(shieldId, instanceId, functionId);
     			byte argumentsNumber=readByteFromUartBuffer();
+    			if(argumentsNumber<=0){uartBuffer.clear();continue;}
     			for(byte i=0;i<argumentsNumber;i++){
     				byte length=readByteFromUartBuffer();
+    				if(length!=0) {uartBuffer.clear();continue;}
     				byte[] data=new byte[length];
     				for(byte j=0;j<length;j++){
     					data[j]=readByteFromUartBuffer();
