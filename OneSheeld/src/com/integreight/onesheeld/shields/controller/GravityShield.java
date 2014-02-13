@@ -150,4 +150,11 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		this.unegisterSensorListener();
+		
+	}
+
 }
