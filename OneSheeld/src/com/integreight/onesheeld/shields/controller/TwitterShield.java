@@ -249,4 +249,10 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		}
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

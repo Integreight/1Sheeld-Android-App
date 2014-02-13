@@ -23,4 +23,10 @@ public class EmptyShield extends ControllerParent<EmptyShield> {
 		
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

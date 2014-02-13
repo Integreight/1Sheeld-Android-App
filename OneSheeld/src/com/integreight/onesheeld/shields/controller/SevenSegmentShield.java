@@ -138,4 +138,10 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
 }

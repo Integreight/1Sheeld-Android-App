@@ -103,4 +103,10 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 	}
 
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

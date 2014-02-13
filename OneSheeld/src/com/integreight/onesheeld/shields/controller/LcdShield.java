@@ -52,13 +52,13 @@ public class LcdShield extends ControllerParent<LcdShield> {
 		// this.activity = activity;
 		rawText = new char[rows][columns];
 		lcdText = new String[rows];
-		reset();
+		resetPins();
 	}
 	@Override
 	public ControllerParent<LcdShield> setTag(String tag) {
 		rawText = new char[rows][columns];
 		lcdText = new String[rows];
-		reset();
+		resetPins();
 		return super.setTag(tag);
 	}
 
@@ -180,7 +180,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 
 	}
 
-	public void reset() {
+	public void resetPins() {
 		cursorYLocation = 0;
 		cursorXLocation = 0;
 		for (int i = 0; i < rawText.length; i++) {
@@ -199,6 +199,12 @@ public class LcdShield extends ControllerParent<LcdShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void reset() {
 		// TODO Auto-generated method stub
 		
 	}

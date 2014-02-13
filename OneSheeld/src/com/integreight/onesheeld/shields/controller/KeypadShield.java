@@ -169,4 +169,9 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void reset() {
+		// TODO Auto-generated method stub
+		
+	}
 }

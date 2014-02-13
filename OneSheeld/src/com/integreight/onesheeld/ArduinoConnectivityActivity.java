@@ -11,18 +11,16 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -32,10 +30,12 @@ import com.integreight.onesheeld.utils.OneShieldTextView;
 
 public class ArduinoConnectivityActivity extends Dialog {
 	private Activity activity;
+	private float scale;
 
 	public ArduinoConnectivityActivity(Activity context) {
 		super(context, android.R.style.Theme_Translucent_NoTitleBar);
 		this.activity = context;
+		scale = activity.getResources().getDisplayMetrics().density;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -47,9 +47,9 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 	// Member fields
 	private BluetoothAdapter mBtAdapter;
-	private ArrayAdapter<String> mPairedDevicesArrayAdapter;
-	private ArrayAdapter<String> mNewDevicesArrayAdapter;
+	// private ArrayAdapter<String> mNewDevicesArrayAdapter;
 	private RelativeLayout deviceListCont;
+	private LinearLayout devicesList;
 	private ProgressBar loading;
 	private Button scanOrTryAgain;
 	// private boolean isScanButton = true;
@@ -66,6 +66,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 		scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
 		statusText = (OneShieldTextView) findViewById(R.id.statusText);
 		transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
+		devicesList = (LinearLayout) findViewById(R.id.devicesList);
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 		setScanButtonReady();
 		getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -142,27 +143,12 @@ public class ArduinoConnectivityActivity extends Dialog {
 	}
 
 	private void scanDevices() {
-		// setResult(Activity.RESULT_CANCELED);
-
-		// Initialize the button to perform device discovery
-
-		// Initialize array adapters. One for already paired devices and
-		// one for newly discovered devices
-		mPairedDevicesArrayAdapter = new ArrayAdapter<String>(activity,
-				R.layout.device_name);
-		mNewDevicesArrayAdapter = new ArrayAdapter<String>(activity,
-				R.layout.device_name);
-
-		// Find and set up the ListView for paired devices
-		ListView pairedListView = (ListView) findViewById(R.id.devicesList);
-		pairedListView.setAdapter(mPairedDevicesArrayAdapter);
-		pairedListView.setOnItemClickListener(mDeviceClickListener);
 
 		// Find and set up the ListView for newly discovered devices
 		// ListView newDevicesListView = (ListView)
 		// findViewById(R.id.devicesList);
 		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
-
+		devicesList.removeAllViews();
 		// Register for broadcasts when a device is discovered
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
 		activity.registerReceiver(mReceiver, filter);
@@ -180,8 +166,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 		if (pairedDevices.size() > 0) {
 			// findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
 			for (BluetoothDevice device : pairedDevices) {
-				mPairedDevicesArrayAdapter.add(device.getName() + "\n"
-						+ device.getAddress());
+				addFoundDevice(device.getName(), device.getAddress());
 			}
 			changeSlogan(
 					activity.getResources()
@@ -196,9 +181,9 @@ public class ArduinoConnectivityActivity extends Dialog {
 							scanDevices();
 						}
 					});
-			String noDevices = activity.getResources()
-					.getText(R.string.none_paired).toString();
-			mPairedDevicesArrayAdapter.add(noDevices);
+			// String noDevices = activity.getResources()
+			// .getText(R.string.none_paired).toString();
+			// mPairedDevicesArrayAdapter.add(noDevices);
 		}
 	}
 
@@ -239,67 +224,137 @@ public class ArduinoConnectivityActivity extends Dialog {
 	}
 
 	// The on-click listener for all devices in the ListViews
-	private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
-			// Cancel discovery because it's costly and we're about to connect
-			mBtAdapter.cancelDiscovery();
+	// private OnItemClickListener mDeviceClickListener = new
+	// OnItemClickListener() {
+	// public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
+	// // Cancel discovery because it's costly and we're about to connect
+	// mBtAdapter.cancelDiscovery();
+	//
+	// // Get the device MAC address, which is the last 17 chars in the
+	// // View
+	// showProgress();
+	// changeSlogan(
+	// activity.getResources().getString(R.string.connecting),
+	// COLOR.GREEN);
+	// ((OneSheeldApplication) activity.getApplication())
+	// .setArduinoFirmataHandlerForConnectivityPopup(new
+	// ArduinoFirmataEventHandler() {
+	//
+	// @Override
+	// public void onError(String errorMessage) {
+	// setRetryButtonReady(activity.getResources()
+	// .getString(R.string.notConnected),
+	// new View.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View arg0) {
+	// scanDevices();
+	// }
+	// });
+	//
+	// }
+	//
+	// @Override
+	// public void onConnect() {
+	// cancel();
+	// Toast.makeText(activity, "Connected, finish",
+	// Toast.LENGTH_LONG).show();
+	// }
+	//
+	// @Override
+	// public void onClose(boolean closedManually) {
+	// setRetryButtonReady(activity.getResources()
+	// .getString(R.string.notConnected),
+	// new View.OnClickListener() {
+	//
+	// @Override
+	// public void onClick(View arg0) {
+	// scanDevices();
+	// }
+	// });
+	//
+	// }
+	// });
+	// String info = ((TextView) v).getText().toString();
+	// String address = info.substring(info.length() - 17);
+	// startService(address);
+	// // Create the result Intent and include the MAC address
+	// // Intent intent = new Intent();
+	// // intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+	// //
+	// // // Set result and finish activity Activity
+	// // setResult(Activity.RESULT_OK, intent);
+	// // finish();
+	// }
+	// };
 
-			// Get the device MAC address, which is the last 17 chars in the
-			// View
-			showProgress();
-			changeSlogan(
-					activity.getResources().getString(R.string.connecting),
-					COLOR.GREEN);
-			((OneSheeldApplication) activity.getApplication())
-					.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
+	private void addFoundDevice(String name, final String address) {
+		OneShieldTextView item = new OneShieldTextView(activity, null);
+		item.setLayoutParams(new LinearLayout.LayoutParams(
+				LinearLayout.LayoutParams.MATCH_PARENT,
+				LinearLayout.LayoutParams.WRAP_CONTENT));
+		item.setText(name);
+		item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+		item.setTextColor(Color.WHITE);
+		int pdng = (int) (8 * scale - .5f);
+		item.setPadding(pdng, pdng, pdng, pdng);
+		item.setBackgroundResource(R.drawable.devices_list_item_selector);
+		item.setOnClickListener(new View.OnClickListener() {
 
-						@Override
-						public void onError(String errorMessage) {
-							setRetryButtonReady(activity.getResources()
-									.getString(R.string.notConnected),
-									new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				mBtAdapter.cancelDiscovery();
 
-										@Override
-										public void onClick(View arg0) {
-											scanDevices();
-										}
-									});
+				// Get the device MAC address, which is the last 17 chars in the
+				// View
+				showProgress();
+				changeSlogan(
+						activity.getResources().getString(R.string.connecting),
+						COLOR.GREEN);
+				((OneSheeldApplication) activity.getApplication())
+						.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
 
-						}
+							@Override
+							public void onError(String errorMessage) {
+								setRetryButtonReady(activity.getResources()
+										.getString(R.string.notConnected),
+										new View.OnClickListener() {
 
-						@Override
-						public void onConnect() {
-							cancel();
-							Toast.makeText(activity, "Connected, finish",
-									Toast.LENGTH_LONG).show();
-						}
+											@Override
+											public void onClick(View arg0) {
+												scanDevices();
+											}
+										});
 
-						@Override
-						public void onClose(boolean closedManually) {
-							setRetryButtonReady(activity.getResources()
-									.getString(R.string.notConnected),
-									new View.OnClickListener() {
+							}
 
-										@Override
-										public void onClick(View arg0) {
-											scanDevices();
-										}
-									});
+							@Override
+							public void onConnect() {
+								cancel();
+								Toast.makeText(activity, "Connected, finish",
+										Toast.LENGTH_LONG).show();
+							}
 
-						}
-					});
-			String info = ((TextView) v).getText().toString();
-			String address = info.substring(info.length() - 17);
-			startService(address);
-			// Create the result Intent and include the MAC address
-			// Intent intent = new Intent();
-			// intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-			//
-			// // Set result and finish activity Activity
-			// setResult(Activity.RESULT_OK, intent);
-			// finish();
-		}
-	};
+							@Override
+							public void onClose(boolean closedManually) {
+								setRetryButtonReady(activity.getResources()
+										.getString(R.string.notConnected),
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View arg0) {
+												scanDevices();
+											}
+										});
+
+							}
+						});
+				startService(address);
+			}
+		});
+		devicesList.addView(item);
+		devicesList.invalidate();
+	}
 
 	// The BroadcastReceiver that listens for discovered devices and
 	// changes the title when discovery is finished
@@ -317,18 +372,17 @@ public class ArduinoConnectivityActivity extends Dialog {
 				// If it's already paired, skip it, because it's been listed
 				// already
 				if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-					mNewDevicesArrayAdapter.add(device.getName() + "\n"
-							+ device.getAddress());
+					addFoundDevice(device.getName(), device.getAddress());
 				}
 				// When discovery is finished, change the Activity title
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
 					.equals(action)) {
 				// setProgressBarIndeterminateVisibility(false);
 				// setTitle(R.string.select_device);
-				if (mNewDevicesArrayAdapter.getCount() == 0) {
-					String noDevices = activity.getResources()
-							.getText(R.string.none_found).toString();
-					mNewDevicesArrayAdapter.add(noDevices);
+				if (devicesList.getChildCount() == 0) {
+					// String noDevices = activity.getResources()
+					// .getText(R.string.none_found).toString();
+					// mPairedDevicesArrayAdapter.add(noDevices);
 					setRetryButtonReady(
 							activity.getResources().getString(
 									R.string.none_found),
