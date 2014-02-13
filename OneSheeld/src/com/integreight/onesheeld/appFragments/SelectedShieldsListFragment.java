@@ -168,8 +168,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 	}
 
 	private void switchFragment(Fragment fragment) {
-		((MainActivity) getActivity()).replaceCurrentFragment(fragment, "",
-				false);
-		((MainActivity) getActivity()).getSlidingMenu().showContent();
+		((MainActivity) getActivity()).replaceCurrentFragment(
+				R.id.appTransitionsContainer, fragment, "", false);
+		((MainActivity) getActivity()).closeMenu();
 	}
 }

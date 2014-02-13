@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -166,7 +167,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 		if (pairedDevices.size() > 0) {
 			// findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
 			for (BluetoothDevice device : pairedDevices) {
-				addFoundDevice(device.getName(), device.getAddress());
+				addFoundDevice(device.getName(), device.getAddress(), true);
 			}
 			changeSlogan(
 					activity.getResources()
@@ -288,7 +289,8 @@ public class ArduinoConnectivityActivity extends Dialog {
 	// }
 	// };
 
-	private void addFoundDevice(String name, final String address) {
+	private void addFoundDevice(String name, final String address,
+			boolean isPaired) {
 		OneShieldTextView item = new OneShieldTextView(activity, null);
 		item.setLayoutParams(new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT,
@@ -298,7 +300,14 @@ public class ArduinoConnectivityActivity extends Dialog {
 		item.setTextColor(Color.WHITE);
 		int pdng = (int) (8 * scale - .5f);
 		item.setPadding(pdng, pdng, pdng, pdng);
+		Drawable img = getContext()
+				.getResources()
+				.getDrawable(
+						isPaired ? R.drawable.arduino_connectivity_activity_onesheeld_small_green_logo
+								: R.drawable.arduino_connectivity_activity_onesheeld_small_logo);
+		item.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
 		item.setBackgroundResource(R.drawable.devices_list_item_selector);
+		item.setCompoundDrawablePadding(pdng);
 		item.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -372,7 +381,7 @@ public class ArduinoConnectivityActivity extends Dialog {
 				// If it's already paired, skip it, because it's been listed
 				// already
 				if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
-					addFoundDevice(device.getName(), device.getAddress());
+					addFoundDevice(device.getName(), device.getAddress(), false);
 				}
 				// When discovery is finished, change the Activity title
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED

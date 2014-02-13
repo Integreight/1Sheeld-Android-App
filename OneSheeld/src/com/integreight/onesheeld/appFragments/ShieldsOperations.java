@@ -7,6 +7,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -55,8 +56,16 @@ public class ShieldsOperations extends BaseContainerFragment {
 		sm.setShadowDrawable(R.drawable.shadow);
 		sm.setBehindWidth(150);
 		sm.setFadeDegree(0.35f);
-		sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		MainActivity myActivity = (MainActivity) getActivity();
+		// sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+		final MainActivity myActivity = (MainActivity) getActivity();
+		myActivity.enableMenu();
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				myActivity.openMenu();
+			}
+		}, 500);
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		// myActivity.getSupportActionBar().setHomeButtonEnabled(true);
@@ -65,7 +74,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			FragmentTransaction t = myActivity.getSupportFragmentManager()
 					.beginTransaction();
 			mFrag = SelectedShieldsListFragment.newInstance(myActivity);
-			t.replace(R.id.menu_frame, mFrag);
+			t.replace(R.id.selectedShieldsContainer, mFrag);
 			t.commit();
 		} else {
 			mFrag = (SelectedShieldsListFragment) myActivity

@@ -10,9 +10,21 @@
         android:layout_height="wrap_content"
         layout="@layout/header" />
 
-    <FrameLayout
-        android:id="@+id/appTransitionsContainer"
+    <com.integreight.onesheeld.utils.AppSlidingLeftMenu
+        android:id="@+id/sliding_pane_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+        <FrameLayout
+            android:id="@+id/selectedShieldsContainer"
+            android:layout_width="75dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="left" />
+
+        <FrameLayout
+            android:id="@+id/appTransitionsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.integreight.onesheeld.utils.AppSlidingLeftMenu>
 
 </LinearLayout>

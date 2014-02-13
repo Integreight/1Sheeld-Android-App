@@ -82,6 +82,7 @@ public class SheeldsList extends SherlockFragment {
 		// getSherlockActivity().getSupportActionBar().hide();
 		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 				SlidingMenu.TOUCHMODE_NONE);
+		((MainActivity) getActivity()).disableMenu();
 		List<Fragment> frags = getActivity().getSupportFragmentManager()
 				.getFragments();
 		for (Fragment frag : frags) {
@@ -231,7 +232,7 @@ public class SheeldsList extends SherlockFragment {
 			return;
 		}
 		((MainActivity) getActivity()).replaceCurrentFragment(
-				ShieldsOperations.getInstance(),
+				R.id.appTransitionsContainer, ShieldsOperations.getInstance(),
 				ShieldsOperations.class.getName(), true);
 	}
 

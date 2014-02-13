@@ -1,8 +1,5 @@
 package com.integreight.onesheeld;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningServiceInfo;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,11 +9,13 @@ import android.support.v4.app.FragmentTransaction;
 import com.actionbarsherlock.view.Window;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class MainActivity extends SlidingFragmentActivity {
 	// private final String TAG = "MainActivity";
 	// private boolean isBoundService = false;
+	private AppSlidingLeftMenu appSlidingMenu;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -56,7 +55,9 @@ public class MainActivity extends SlidingFragmentActivity {
 		setContentView(R.layout.one_sheeld_main);
 		// set the Behind View
 		setBehindContentView(R.layout.menu_frame);
-		replaceCurrentFragment(SheeldsList.getInstance(), "base", true);
+		replaceCurrentFragment(R.id.appTransitionsContainer,
+				SheeldsList.getInstance(), "base", true);
+		appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
 	}
 
 	@Override
@@ -69,8 +70,8 @@ public class MainActivity extends SlidingFragmentActivity {
 			finish();
 	}
 
-	public void replaceCurrentFragment(Fragment targetFragment, String tag,
-			boolean addToBackStack) {
+	public void replaceCurrentFragment(int container, Fragment targetFragment,
+			String tag, boolean addToBackStack) {
 		String backStateName = targetFragment.getClass().getName();
 		String fragmentTag = backStateName;
 
@@ -90,8 +91,7 @@ public class MainActivity extends SlidingFragmentActivity {
 			// ft.setCustomAnimations(R.anim.slide_in_right,
 			// R.anim.slide_out_left);
 			// }
-			ft.replace(R.id.appTransitionsContainer, targetFragment,
-					fragmentTag);
+			ft.replace(container, targetFragment, fragmentTag);
 			if (addToBackStack) {
 				ft.addToBackStack(backStateName);
 			}
@@ -113,15 +113,32 @@ public class MainActivity extends SlidingFragmentActivity {
 		super.onDestroy();
 	}
 
-	private boolean isMyServiceRunning() {
-		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		for (RunningServiceInfo service : manager
-				.getRunningServices(Integer.MAX_VALUE)) {
-			if (OneSheeldApplication.class.getName().equals(
-					service.service.getClassName())) {
-				return true;
-			}
-		}
-		return false;
+	//
+	// private boolean isMyServiceRunning() {
+	// ActivityManager manager = (ActivityManager)
+	// getSystemService(Context.ACTIVITY_SERVICE);
+	// for (RunningServiceInfo service : manager
+	// .getRunningServices(Integer.MAX_VALUE)) {
+	// if (OneSheeldApplication.class.getName().equals(
+	// service.service.getClassName())) {
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
+	public void openMenu() {
+		appSlidingMenu.openPane();
+	}
+
+	public void closeMenu() {
+		appSlidingMenu.closePane();
+	}
+
+	public void enableMenu() {
+		appSlidingMenu.setCanSlide(true);
+	}
+
+	public void disableMenu() {
+		appSlidingMenu.setCanSlide(false);
 	}
 }
