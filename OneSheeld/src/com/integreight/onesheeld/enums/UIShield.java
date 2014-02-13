@@ -13,6 +13,7 @@ import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
+import com.integreight.onesheeld.shields.controller.OrientationShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
@@ -81,8 +82,8 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_21_bw,
 			R.drawable.shields_activity_small_strip_21,
 			R.drawable.shields_activity_accelerometer_symbol, false,
-			AccelerometerShield.class), FACEBOOK_SHIELD((byte) 0x19, "Facebook",
-			R.drawable.shields_activity_strip_7,
+			AccelerometerShield.class), FACEBOOK_SHIELD((byte) 0x19,
+			"Facebook", R.drawable.shields_activity_strip_7,
 			R.drawable.shields_activity_strip_7_bw,
 			R.drawable.shields_activity_small_strip_7,
 			R.drawable.shields_activity_facebook_symbol, false,
@@ -138,7 +139,12 @@ public enum UIShield {
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_led_symbol, false, GravityShield.class);
+			R.drawable.shields_activity_led_symbol, false, GravityShield.class), ORIENTATION_SHIELD(
+			(byte) 0x0F, "Orientation", R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false,
+			OrientationShield.class);
 
 	private byte id;
 	private String name;
@@ -265,6 +271,8 @@ public enum UIShield {
 			return PROXIMITY_SHIELD;
 		case 24:
 			return GRAVITY_SHIELD;
+		case 25:
+			return ORIENTATION_SHIELD;
 		}
 		return null;
 	}

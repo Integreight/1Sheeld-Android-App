@@ -11,6 +11,10 @@ public class SensorUtil {
 
 		PM = mContext.getPackageManager();
 		sensor = PM.hasSystemFeature(sensorType);
+		if (sensorType.contains("Orientation"))
+		{
+			sensor = true;
+		}
 		return sensor;
 	}
 
