@@ -57,17 +57,21 @@ public class MainActivity extends SlidingFragmentActivity {
 		setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true);
-		appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
+		resetSlidingMenu();
 	}
 
 	@Override
 	public void onBackPressed() {
-
-		if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-			getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-			getSupportFragmentManager().executePendingTransactions();
-		} else
-			finish();
+		resetSlidingMenu();
+		if (appSlidingMenu.isOpen()) {
+			appSlidingMenu.closePane();
+		} else {
+			if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+				getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				getSupportFragmentManager().executePendingTransactions();
+			} else
+				finish();
+		}
 	}
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,
@@ -127,19 +131,29 @@ public class MainActivity extends SlidingFragmentActivity {
 	// return false;
 	// }
 	public void openMenu() {
+		resetSlidingMenu();
 		appSlidingMenu.openPane();
 	}
 
 	public void closeMenu() {
+		resetSlidingMenu();
 		appSlidingMenu.closePane();
 	}
 
 	public void enableMenu() {
+		resetSlidingMenu();
 		appSlidingMenu.setCanSlide(true);
 	}
 
 	public void disableMenu() {
+		resetSlidingMenu();
 		appSlidingMenu.closePane();
 		appSlidingMenu.setCanSlide(false);
+	}
+
+	private void resetSlidingMenu() {
+		if (appSlidingMenu == null) {
+			appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
+		}
 	}
 }

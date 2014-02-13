@@ -7,10 +7,10 @@
     <dimen name="slidingmenu_offset">60dp</dimen>
     <dimen name="list_padding">10dp</dimen>
     <dimen name="shadow_width">15dp</dimen>
-    <dimen name="gamepad_blueButtonHeight">50dp</dimen>
-    <dimen name="gamepad_blueButtonWidth">25dp</dimen>
-    <dimen name="gamepad_circularButtonDimen">30dp</dimen>
-    <dimen name="gamepad_blueButtonDimen">120dp</dimen>
+    <dimen name="gamepad_blueButtonHeight">70dp</dimen>
+    <dimen name="gamepad_blueButtonWidth">35dp</dimen>
+    <dimen name="gamepad_circularButtonDimen">60dp</dimen>
+    <dimen name="gamepad_blueButtonDimen">160dp</dimen>
 
     <integer name="num_cols">1</integer>
 

@@ -8,8 +8,7 @@
         android:id="@+id/speaker_fragment_background_imageview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
+        android:layout_centerInParent="true"
         android:layout_margin="20dp"
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
@@ -27,9 +26,7 @@
         android:id="@+id/speaker_shield_led_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/speaker_fragment_background_imageview"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_centerInParent="true"
         android:src="@drawable/speaker_shield_speaker_icon" />
 
 </RelativeLayout>

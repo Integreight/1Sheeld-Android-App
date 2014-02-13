@@ -20,103 +20,102 @@
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="45dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:layout_marginTop="45dp"
-        android:layout_marginBottom="45dp"
         android:background="@drawable/gamepad_shield_gamepad_background"
         android:padding="10dp" >
 
-            <RelativeLayout
-                android:layout_width="160dp"
-                android:layout_height="160dp"
+        <RelativeLayout
+            android:layout_width="@dimen/gamepad_blueButtonDimen"
+            android:layout_height="@dimen/gamepad_blueButtonDimen"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="83dp"
+            android:layout_marginTop="25dp" >
+
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_up_arrow_key"
+                android:layout_width="@dimen/gamepad_blueButtonHeight"
+                android:layout_height="@dimen/gamepad_blueButtonWidth"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_up_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_up_button" />
+
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_down_arrow_key"
+                android:layout_width="@dimen/gamepad_blueButtonHeight"
+                android:layout_height="@dimen/gamepad_blueButtonWidth"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_down_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_down_button" />
+
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_left_arrow_key"
+                android:layout_width="@dimen/gamepad_blueButtonWidth"
+                android:layout_height="@dimen/gamepad_blueButtonHeight"
                 android:layout_alignParentTop="true"
-                android:layout_marginLeft="83dp"
-                android:layout_marginTop="25dp" >
+                android:layout_centerHorizontal="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_left_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_left_button" />
 
-                <com.integreight.onesheeld.utils.Key
-                    android:id="@+id/gamepad_up_arrow_key"
-                    android:layout_width="70dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_up_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_up_button" />
-
-                <com.integreight.onesheeld.utils.Key
-                     android:id="@+id/gamepad_down_arrow_key"
-                    android:layout_width="70dp"
-                    android:layout_height="35dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_down_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_down_button" />
-
-                <com.integreight.onesheeld.utils.Key
-                     android:id="@+id/gamepad_left_arrow_key"
-                    android:layout_width="35dp"
-                    android:layout_height="70dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_left_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_left_button" />
-
-                <com.integreight.onesheeld.utils.Key
-                     android:id="@+id/gamepad_right_arrow_key"
-                    android:layout_width="35dp"
-                    android:layout_height="70dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_right_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_right_button" />
-            </RelativeLayout>
-            
-             <RelativeLayout
-                android:layout_width="180dp"
-                android:layout_height="180dp"
-                android:layout_alignParentLeft="true"
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_right_arrow_key"
+                android:layout_width="@dimen/gamepad_blueButtonWidth"
+                android:layout_height="@dimen/gamepad_blueButtonHeight"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="83dp"
-                android:layout_marginTop="25dp" >
+                android:layout_centerHorizontal="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_right_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_right_button" />
+        </RelativeLayout>
 
-                <com.integreight.onesheeld.utils.Key
-                    android:id="@+id/gamepad_yellow_key"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_yellow_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_yellow_button" />
+        <RelativeLayout
+            android:layout_width="180dp"
+            android:layout_height="180dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="83dp"
+            android:layout_marginTop="25dp" >
 
-                <com.integreight.onesheeld.utils.Key
-                    android:id="@+id/gamepad_green_key"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_green_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_green_button" />
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_yellow_key"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_yellow_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_yellow_button" />
 
-                <com.integreight.onesheeld.utils.Key
-                    android:id="@+id/gamepad_blue_key"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_blue_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_blue_button" />
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_green_key"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_green_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_green_button" />
 
-                <com.integreight.onesheeld.utils.Key
-                    android:id="@+id/gamepad_red_key"
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
-                    android:layout_alignParentBottom="true"
-                    android:layout_centerHorizontal="true"
-                    key:normalbackground="@drawable/gamepad_shield_normal_red_button"
-                    key:pressedbackground="@drawable/gamepad_shield_pressed_red_button" />
-            </RelativeLayout>
-      
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_blue_key"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_blue_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_blue_button" />
+
+            <com.integreight.onesheeld.utils.Key
+                android:id="@+id/gamepad_red_key"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                key:normalbackground="@drawable/gamepad_shield_normal_red_button"
+                key:pressedbackground="@drawable/gamepad_shield_pressed_red_button" />
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

@@ -18,9 +18,7 @@
         android:id="@+id/facebook_shield_logo_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/facebook_fragment_background_imageview"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_centerInParent="true"
         android:src="@drawable/facebook_shield_facebook_logo" />
 
     <TextView
@@ -39,9 +37,9 @@
         android:id="@+id/facebook_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/facebook_fragment_background_imageview"
+        android:layout_above="@id/facebook_shield_logo_imageview"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="128dp"
+        android:layout_marginBottom="10dp"
         android:text="Logged in as: Islam Mustafa"
         android:textColor="@color/white"
         android:visibility="invisible" />
