@@ -7,6 +7,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -20,6 +22,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	private Sensor mGravity;
 	private GravityEventHandler eventHandler;
 	private ShieldFrame frame;
+	HandlerThread mHandlerThread;
+	Handler handler;
 
 	public GravityShield() {
 	}
@@ -27,7 +31,6 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	public GravityShield(Activity activity, String tag) {
 		super(activity, tag);
 		getApplication().getAppFirmata().initUart();
-
 	}
 
 	@Override
@@ -38,6 +41,10 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 				Context.SENSOR_SERVICE);
 		mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 
+		if (mHandlerThread == null)
+		{
+			mHandlerThread = new HandlerThread("sensorThread");
+		}
 		return super.setTag(tag);
 	}
 
@@ -68,31 +75,60 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		frame.addFloatArgument(event.values[1]);
 		frame.addFloatArgument(event.values[2]);
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
-		eventHandler.onSensorValueChangedFloat(event.values);
+		// eventHandler.onSensorValueChangedFloat(event.values);
+		Log.d("Sensor Data of X", event.values[0] + "");
+		Log.d("Sensor Data of Y", event.values[1] + "");
+		Log.d("Sensor Data of Z", event.values[2] + "");
+
 	}
 
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
 		String sensorName = PackageManager.FEATURE_SENSOR_PROXIMITY;
-		if (SensorUtil.isDeviceHasSensor(sensorName, activity.getApplication())) {
-			mSensorManager.registerListener(this, mGravity,2000000);
-			eventHandler.isDeviceHasSensor(true);
-
-		} else {
-			Log.d("Device dos't have Sensor ",
-					PackageManager.FEATURE_SENSOR_PROXIMITY);
-			eventHandler.isDeviceHasSensor(false);
+		if (mHandlerThread == null)
+		{
+			mHandlerThread = new HandlerThread("sensorThread");			
 		}
+		if (!mHandlerThread.isAlive()) {
+
+			if (SensorUtil.isDeviceHasSensor(sensorName,activity.getApplication())) {
+				mHandlerThread.start();
+				handler = new Handler(mHandlerThread.getLooper());
+				mSensorManager.registerListener(this, mGravity, 1000000,
+						handler);
+				eventHandler.isDeviceHasSensor(true);
+			} else {
+				Log.d("Device dos't have Sensor ",
+						PackageManager.FEATURE_SENSOR_PROXIMITY);
+				eventHandler.isDeviceHasSensor(false);
+			}
+		} else {
+			Log.d("Your Sensor is registered", sensorName);
+		}
+
 	}
 
 	// Unregister a listener for the sensor .
 	public void unegisterSensorListener() {
-		if (mSensorManager != null) {
+		if (mSensorManager != null && mHandlerThread != null && mHandlerThread.isAlive()) {
 			// mSensorManager.unregisterListener(this);
 			mSensorManager.unregisterListener(this, mGravity);
-		}
+			mSensorManager.unregisterListener(this);
+			handler.removeCallbacks(mHandlerThread);
+			mHandlerThread.interrupt();
+			mHandlerThread.getLooper().quit();
+			stopThread();
+			}
 	}
 
+	public synchronized void stopThread(){
+		  if(mHandlerThread != null){
+		    Thread moribund = mHandlerThread;
+		    mHandlerThread = null;
+		    moribund.interrupt();
+		  }
+		}
+	
 	public static interface GravityEventHandler {
 
 		void onSensorValueChangedFloat(float[] value);
