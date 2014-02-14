@@ -22,6 +22,7 @@ import com.facebook.SessionState;
 import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.EventHandler;
 
@@ -29,7 +30,6 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	private static FacebookEventHandler eventHandler;
 	private String lastPost;
 	private Fragment fragment;
-	private static final byte FACEBOOK_COMMAND = (byte) 0x31;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
 
 	static final String PREF_KEY_FACEBOOK_USERNAME = "FacebookName";
@@ -135,21 +135,21 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	@Override
 	public void onUartReceive(byte[] data) {
 		// TODO Auto-generated method stub
-		if (data.length < 2)
-			return;
-		byte command = data[0];
-		byte methodId = data[1];
-		int n = data.length - 2;
-		byte[] newArray = new byte[n];
-		System.arraycopy(data, 2, newArray, 0, n);
-		if (command == FACEBOOK_COMMAND) {
-			String post = new String(newArray);
-			lastPost = post;
-			if (isFacebookLoggedInAlready())
-				if (methodId == UPDATE_STATUS_METHOD_ID)
-					publishStory(post);
-
-		}
+		//if (data.length < 2)
+		//	return;
+		//byte command = data[0];
+		//byte methodId = data[1];
+		//int n = data.length - 2;
+		//byte[] newArray = new byte[n];
+		//System.arraycopy(data, 2, newArray, 0, n);
+//		if (command == FACEBOOK_COMMAND) {
+//			String post = new String(newArray);
+//			lastPost = post;
+//			if (isFacebookLoggedInAlready())
+//				if (methodId == UPDATE_STATUS_METHOD_ID)
+//					publishStory(post);
+//
+//		}
 		super.onUartReceive(data);
 	}
 
@@ -286,6 +286,13 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
+		if (frame.getShieldId() == UIShield.FACEBOOK_SHIELD.getId()) {
+			lastPost = frame.getArgumentAsString(0);
+			if (isFacebookLoggedInAlready())
+				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
+					publishStory(lastPost);
+
+		}
 		
 	}
 
