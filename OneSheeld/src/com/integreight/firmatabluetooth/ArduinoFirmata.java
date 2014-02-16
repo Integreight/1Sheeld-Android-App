@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
@@ -403,8 +404,17 @@ public class ArduinoFirmata{
         }
     }
     
+    private void printFrameToLog(byte[] frame){
+    	String s="";
+    	for (byte b : frame) {
+			s+=Integer.toHexString(b)+",";
+		}
+    	Log.d("frame", s);
+    }
+    
     public void sendShieldFrame(ShieldFrame frame){
     	if(!isUartInit)return;
+    	printFrameToLog(frame.getAllFrameAsBytes());
     	sysex(UART_DATA, getByteArrayAs2SevenBitsBytesArray(frame.getAllFrameAsBytes()));
     }
     
