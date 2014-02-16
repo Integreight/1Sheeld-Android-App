@@ -102,8 +102,6 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 			if (canChangeUI()) {
 				light_float.setVisibility(View.VISIBLE);
 				light_float.setText("Light in float = " + value);
-				Toast.makeText(getActivity(), "Value changed " + value,
-						Toast.LENGTH_SHORT).show();
 			}
 
 		}

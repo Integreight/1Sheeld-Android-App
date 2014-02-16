@@ -104,9 +104,6 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 			{
 				distance_float.setVisibility(View.VISIBLE);
 				distance_float.setText("Distance in float = " + value);
-			Toast.makeText(getActivity(),
-					"Value changed "+value,
-					Toast.LENGTH_SHORT).show();
 			}
 			
 		}
