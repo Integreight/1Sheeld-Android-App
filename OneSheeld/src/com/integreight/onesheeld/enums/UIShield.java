@@ -9,6 +9,7 @@ import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GravityShield;
+import com.integreight.onesheeld.shields.controller.GyroscopeShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
@@ -120,7 +121,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_14_bw,
 			R.drawable.shields_activity_small_strip_14,
 			R.drawable.shields_activity_gyroscope_symbol, false,
-			EmptyShield.class), FLASHLIGHT_SHIELD((byte) 0x05, "Flashlight",
+			GyroscopeShield.class), FLASHLIGHT_SHIELD((byte) 0x05, "Flashlight",
 			R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,

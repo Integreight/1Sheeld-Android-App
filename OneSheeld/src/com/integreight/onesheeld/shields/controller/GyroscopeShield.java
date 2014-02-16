@@ -16,30 +16,29 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class GravityShield extends ControllerParent<GravityShield> implements
-		SensorEventListener {
+public class GyroscopeShield extends ControllerParent<GyroscopeShield> implements SensorEventListener {
 	private SensorManager mSensorManager;
-	private Sensor mGravity;
-	private GravityEventHandler eventHandler;
+	private Sensor mGyroscope;
+	private GyroscopeEventHandler eventHandler;
 	private ShieldFrame frame;
 	HandlerThread mHandlerThread;
 	Handler handler;
 
-	public GravityShield() {
+	public GyroscopeShield() {
 	}
 
-	public GravityShield(Activity activity, String tag) {
+	public GyroscopeShield(Activity activity, String tag) {
 		super(activity, tag);
 		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
-	public ControllerParent<GravityShield> setTag(String tag) {
+	public ControllerParent<GyroscopeShield> setTag(String tag) {
 		getApplication().getAppFirmata().initUart();
 
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
-		mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+		mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
 		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
@@ -47,7 +46,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		return super.setTag(tag);
 	}
 
-	public void setGravityEventHandler(GravityEventHandler eventHandler) {
+	public void setGravityEventHandler(GyroscopeEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
@@ -67,7 +66,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		frame = new ShieldFrame(UIShield.GRAVITY_SHIELD.getId(), (byte) 0,
+		frame = new ShieldFrame(UIShield.GYROSCOPE_SHIELD.getId(), (byte) 0,
 				ShieldFrame.DATA_SENT);
 		// frame.addByteArgument((byte) Math.round(event.values[0]));
 		frame.addFloatArgument(event.values[0]);
@@ -86,7 +85,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
-		String sensorName = mGravity.getName();
+		String sensorName = PackageManager.FEATURE_SENSOR_GYROSCOPE;
 		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
 		}
@@ -96,11 +95,12 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 					activity.getApplication())) {
 				mHandlerThread.start();
 				handler = new Handler(mHandlerThread.getLooper());
-				mSensorManager.registerListener(this, mGravity, 1000000,
+				mSensorManager.registerListener(this, mGyroscope, 1000000,
 						handler);
 				eventHandler.isDeviceHasSensor(true);
 			} else {
-				Log.d("Device dos't have Sensor ","Gravity");
+				Log.d("Device dos't have Sensor ",
+						PackageManager.FEATURE_SENSOR_GYROSCOPE);
 				eventHandler.isDeviceHasSensor(false);
 			}
 		} else {
@@ -114,7 +114,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		if (mSensorManager != null && mHandlerThread != null
 				&& mHandlerThread.isAlive()) {
 			// mSensorManager.unregisterListener(this);
-			mSensorManager.unregisterListener(this, mGravity);
+			mSensorManager.unregisterListener(this, mGyroscope);
 			mSensorManager.unregisterListener(this);
 			handler.removeCallbacks(mHandlerThread);
 			mHandlerThread.interrupt();
@@ -141,7 +141,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		}
 	}
 
-	public static interface GravityEventHandler {
+	public static interface GyroscopeEventHandler {
 
 		void onSensorValueChangedFloat(float[] value);
 
@@ -153,7 +153,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	public void reset() {
 		// TODO Auto-generated method stub
 		this.unegisterSensorListener();
-		
+
 	}
 
 }
