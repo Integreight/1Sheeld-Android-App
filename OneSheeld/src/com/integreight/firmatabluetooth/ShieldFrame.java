@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class ShieldFrame {
 	public static final byte START_OF_FRAME=(byte) 0xFF;
+	public static final byte END_OF_FRAME=(byte) 0x00;
 	public static final byte DATA_SENT=(byte) 0x00;
 	
 	private byte shieldId;
