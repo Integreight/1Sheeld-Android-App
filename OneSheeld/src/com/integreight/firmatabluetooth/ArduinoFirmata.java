@@ -649,7 +649,7 @@ public class ArduinoFirmata{
     				}
     				frame.addArgument(data);
     			}
-    			//while((readByteFromUartBuffer())!=ShieldFrame.END_OF_FRAME);
+    			if((readByteFromUartBuffer())!=ShieldFrame.END_OF_FRAME){uartBuffer.clear();continue;}
     			
     			for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
     				frameHandler.onNewShieldFrameReceived(frame);
