@@ -116,7 +116,7 @@ public class ShieldFrame {
 			for (int k = 0; k < data[j]; k++) {
 				data[j+k+1]=arguments.get(i)[k];
 			}
-			if(i+1<arguments.size())j+=arguments.get(i+1).length;
+			if(i+1<arguments.size())j+=arguments.get(i+1).length+1;
 		}
 		return data;
 	}
