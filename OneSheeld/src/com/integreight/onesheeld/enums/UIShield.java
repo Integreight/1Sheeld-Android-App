@@ -15,6 +15,7 @@ import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
+import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
@@ -150,7 +151,12 @@ public enum UIShield {
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_led_symbol, false, LightShield.class);
+			R.drawable.shields_activity_led_symbol, false, LightShield.class), Pressure_SHIELD(
+			(byte) 0x11, "Pressure",
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false, PressureShield.class);
 
 	private byte id;
 	private String name;
@@ -281,6 +287,8 @@ public enum UIShield {
 			return ORIENTATION_SHIELD;
 		case 26:
 			return LIGHT_SHIELD;
+		case 27:
+			return Pressure_SHIELD;
 		}
 		return null;
 	}
