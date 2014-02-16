@@ -13,6 +13,7 @@ import com.integreight.onesheeld.shields.controller.GyroscopeShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
+import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
@@ -68,7 +69,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_16_bw,
 			R.drawable.shields_activity_small_strip_16,
 			R.drawable.shields_activity_magnetometer_symbol, false,
-			EmptyShield.class), PUSHBUTTON_SHIELD((byte) 0x03, "Push Button",
+			MagnetometerShield.class), PUSHBUTTON_SHIELD((byte) 0x03, "Push Button",
 			R.drawable.shields_activity_strip_12,
 			R.drawable.shields_activity_strip_12_bw,
 			R.drawable.shields_activity_small_strip_12,
