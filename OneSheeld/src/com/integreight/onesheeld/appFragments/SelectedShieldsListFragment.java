@@ -31,6 +31,7 @@ import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
 import com.integreight.onesheeld.shields.fragments.LcdFragment;
 import com.integreight.onesheeld.shields.fragments.LedFragment;
+import com.integreight.onesheeld.shields.fragments.LightFragment;
 import com.integreight.onesheeld.shields.fragments.MagnetometerFragment;
 import com.integreight.onesheeld.shields.fragments.MicFragment;
 import com.integreight.onesheeld.shields.fragments.MusicPlayerFragment;
@@ -139,6 +140,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.GRAVITY_SHIELD, new GravityFragment());
 		case ORIENTATION_SHIELD:
 			return addToCreatedListAndReturn(UIShield.ORIENTATION_SHIELD, new OrientationFragment());
+		case LIGHT_SHIELD:
+			return addToCreatedListAndReturn(UIShield.LIGHT_SHIELD,new LightFragment() );
 
 		default:
 			return new EmptyShieldFragment();

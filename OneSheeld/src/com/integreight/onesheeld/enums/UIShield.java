@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.enums;
 
-import android.app.backup.RestoreObserver;
-
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
@@ -13,6 +11,7 @@ import com.integreight.onesheeld.shields.controller.GyroscopeShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
+import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
@@ -69,8 +68,8 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_16_bw,
 			R.drawable.shields_activity_small_strip_16,
 			R.drawable.shields_activity_magnetometer_symbol, false,
-			MagnetometerShield.class), PUSHBUTTON_SHIELD((byte) 0x03, "Push Button",
-			R.drawable.shields_activity_strip_12,
+			MagnetometerShield.class), PUSHBUTTON_SHIELD((byte) 0x03,
+			"Push Button", R.drawable.shields_activity_strip_12,
 			R.drawable.shields_activity_strip_12_bw,
 			R.drawable.shields_activity_small_strip_12,
 			R.drawable.shields_activity_push_button_symbol, false,
@@ -122,8 +121,8 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_14_bw,
 			R.drawable.shields_activity_small_strip_14,
 			R.drawable.shields_activity_gyroscope_symbol, false,
-			GyroscopeShield.class), FLASHLIGHT_SHIELD((byte) 0x05, "Flashlight",
-			R.drawable.shields_activity_strip_22,
+			GyroscopeShield.class), FLASHLIGHT_SHIELD((byte) 0x05,
+			"Flashlight", R.drawable.shields_activity_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_flashlight_symbol, false,
@@ -142,11 +141,16 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_led_symbol, false, GravityShield.class), ORIENTATION_SHIELD(
-			(byte) 0x0F, "Orientation", R.drawable.shields_activity_small_strip_22,
+			(byte) 0x0F, "Orientation",
+			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_led_symbol, false,
-			OrientationShield.class);
+			OrientationShield.class), LIGHT_SHIELD((byte) 0x10, "Light",
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false, LightShield.class);
 
 	private byte id;
 	private String name;
@@ -275,6 +279,8 @@ public enum UIShield {
 			return GRAVITY_SHIELD;
 		case 25:
 			return ORIENTATION_SHIELD;
+		case 26:
+			return LIGHT_SHIELD;
 		}
 		return null;
 	}
