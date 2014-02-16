@@ -16,30 +16,30 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class PressureShield extends ControllerParent<PressureShield>
+public class TemperatureShield extends ControllerParent<TemperatureShield>
 		implements SensorEventListener {
 	private SensorManager mSensorManager;
-	private Sensor mPressure;
-	private PressureEventHandler eventHandler;
+	private Sensor mTemperature;
+	private TemperatureEventHandler eventHandler;
 	private ShieldFrame frame;
 	HandlerThread mHandlerThread;
 	Handler handler;
 
-	public PressureShield() {
+	public TemperatureShield() {
 	}
 
-	public PressureShield(Activity activity, String tag) {
+	public TemperatureShield(Activity activity, String tag) {
 		super(activity, tag);
 		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
-	public ControllerParent<PressureShield> setTag(String tag) {
+	public ControllerParent<TemperatureShield> setTag(String tag) {
 		getApplication().getAppFirmata().initUart();
 
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
-		mPressure = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
+		mTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
 		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
@@ -47,7 +47,7 @@ public class PressureShield extends ControllerParent<PressureShield>
 		return super.setTag(tag);
 	}
 
-	public void setPressureEventHandler(PressureEventHandler eventHandler) {
+	public void setTemperatureEventHandler(TemperatureEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
@@ -67,7 +67,7 @@ public class PressureShield extends ControllerParent<PressureShield>
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(), (byte) 0,
+		frame = new ShieldFrame(UIShield.TEMPERATURE_SHIELD.getId(), (byte) 0,
 				ShieldFrame.DATA_SENT);
 		frame.addByteArgument((byte) Math.round(event.values[0]));
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
@@ -80,7 +80,7 @@ public class PressureShield extends ControllerParent<PressureShield>
 
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
-		String sensorName = PackageManager.FEATURE_SENSOR_BAROMETER;
+		String sensorName = mTemperature.getName();
 		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
 		}
@@ -90,12 +90,12 @@ public class PressureShield extends ControllerParent<PressureShield>
 					activity.getApplication())) {
 				mHandlerThread.start();
 				handler = new Handler(mHandlerThread.getLooper());
-				mSensorManager.registerListener(this, mPressure, 1000000,
+				mSensorManager.registerListener(this, mTemperature, 1000000,
 						handler);
 				eventHandler.isDeviceHasSensor(true);
 			} else {
 				Log.d("Device dos't have Sensor ",
-						PackageManager.FEATURE_SENSOR_BAROMETER);
+						"Temperature");
 				eventHandler.isDeviceHasSensor(false);
 			}
 		} else {
@@ -109,7 +109,7 @@ public class PressureShield extends ControllerParent<PressureShield>
 		if (mSensorManager != null && mHandlerThread != null
 				&& mHandlerThread.isAlive()) {
 			// mSensorManager.unregisterListener(this);
-			mSensorManager.unregisterListener(this, mPressure);
+			mSensorManager.unregisterListener(this, mTemperature);
 			mSensorManager.unregisterListener(this);
 			handler.removeCallbacks(mHandlerThread);
 			mHandlerThread.interrupt();
@@ -137,7 +137,7 @@ public class PressureShield extends ControllerParent<PressureShield>
 		}
 	}
 
-	public static interface PressureEventHandler {
+	public static interface TemperatureEventHandler {
 
 		void onSensorValueChangedFloat(String value);
 

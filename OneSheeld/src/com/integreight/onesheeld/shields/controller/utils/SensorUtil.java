@@ -11,7 +11,7 @@ public class SensorUtil {
 
 		PM = mContext.getPackageManager();
 		sensor = PM.hasSystemFeature(sensorType);
-		if (sensorType.contains("Orientation") || sensorType.contains("Gravity"))
+		if (sensorType.contains("Orientation") || sensorType.contains("Gravity")||sensorType.contains("Temperature"))
 		{
 			sensor = true;
 		}

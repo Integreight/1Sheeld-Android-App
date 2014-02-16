@@ -44,6 +44,7 @@ import com.integreight.onesheeld.shields.fragments.SevenSegmentFragment;
 import com.integreight.onesheeld.shields.fragments.SkypeFragment;
 import com.integreight.onesheeld.shields.fragments.SliderFragment;
 import com.integreight.onesheeld.shields.fragments.SmsFragment;
+import com.integreight.onesheeld.shields.fragments.TemperatureFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
@@ -143,8 +144,10 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.ORIENTATION_SHIELD, new OrientationFragment());
 		case LIGHT_SHIELD:
 			return addToCreatedListAndReturn(UIShield.LIGHT_SHIELD,new LightFragment() );
-		case Pressure_SHIELD:
-			return addToCreatedListAndReturn(UIShield.Pressure_SHIELD, new PressureFragment());
+		case PRESSURE_SHIELD:
+			return addToCreatedListAndReturn(UIShield.PRESSURE_SHIELD, new PressureFragment());
+		case TEMPERATURE_SHIELD:
+			return addToCreatedListAndReturn(UIShield.TEMPERATURE_SHIELD, new TemperatureFragment());
 
 		default:
 			return new EmptyShieldFragment();

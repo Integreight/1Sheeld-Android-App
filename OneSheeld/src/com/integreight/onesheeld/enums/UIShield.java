@@ -22,6 +22,7 @@ import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
+import com.integreight.onesheeld.shields.controller.TemperatureShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -151,12 +152,18 @@ public enum UIShield {
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_led_symbol, false, LightShield.class), Pressure_SHIELD(
+			R.drawable.shields_activity_led_symbol, false, LightShield.class), PRESSURE_SHIELD(
 			(byte) 0x11, "Pressure",
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_led_symbol, false, PressureShield.class);
+			R.drawable.shields_activity_led_symbol, false, PressureShield.class), TEMPERATURE_SHIELD(
+			(byte) 0x12, "Temperature",
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false,
+			TemperatureShield.class);
 
 	private byte id;
 	private String name;
@@ -288,7 +295,9 @@ public enum UIShield {
 		case 26:
 			return LIGHT_SHIELD;
 		case 27:
-			return Pressure_SHIELD;
+			return PRESSURE_SHIELD;
+		case 28:
+			return TEMPERATURE_SHIELD;
 		}
 		return null;
 	}
