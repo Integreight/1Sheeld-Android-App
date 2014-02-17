@@ -179,7 +179,7 @@ public class ArduinoFirmata{
 
     public void sysex(byte command, byte[] data){
      	 // http://firmata.org/wiki/V2.1ProtocolDetails#Sysex_Message_Format
-        if(data.length > 32) return;
+        //if(data.length > 32) return;
         byte[] writeData = new byte[data.length+3];
         writeData[0] = START_SYSEX;
         writeData[1] = command;
