@@ -146,8 +146,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		((MainActivity) getActivity()).getSupportFragmentManager().putFragment(
-				outState, "mContent", mContent);
+//		((MainActivity) getActivity()).getSupportFragmentManager().putFragment(
+//				outState, "mContent", mContent);
 	}
 
 	public void switchContent(Fragment fragment) {

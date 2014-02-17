@@ -27,14 +27,13 @@
         android:id="@+id/toggle_button_shield_button_toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/toggle_button_fragment_background_imageview"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="150dp"
+        android:layout_marginTop="30dp"
         android:background="@drawable/toggle_button_shield_background_images"
         android:checked="false"
         android:enabled="false"
-        android:focusable="false"
-        android:textOff=""
-        android:textOn="" />
+        android:focusable="false" />
 
 </RelativeLayout>
