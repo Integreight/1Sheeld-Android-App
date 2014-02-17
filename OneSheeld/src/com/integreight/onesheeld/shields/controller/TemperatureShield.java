@@ -80,28 +80,37 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
-		String sensorName = mTemperature.getName();
-		if (mHandlerThread == null) {
-			mHandlerThread = new HandlerThread("sensorThread");
+		String sensorName;
+		if (mTemperature == null)
+		{
+			eventHandler.isDeviceHasSensor(false);
 		}
-		if (!mHandlerThread.isAlive()) {
-
-			if (SensorUtil.isDeviceHasSensor(sensorName,
-					activity.getApplication())) {
-				mHandlerThread.start();
-				handler = new Handler(mHandlerThread.getLooper());
-				mSensorManager.registerListener(this, mTemperature, 1000000,
-						handler);
-				eventHandler.isDeviceHasSensor(true);
-			} else {
-				Log.d("Device dos't have Sensor ",
-						"Temperature");
-				eventHandler.isDeviceHasSensor(false);
+		else 
+		{
+			sensorName = mTemperature.getName();
+			if (mHandlerThread == null) {
+				mHandlerThread = new HandlerThread("sensorThread");
 			}
-		} else {
-			Log.d("Your Sensor is registered", sensorName);
-		}
+			if (!mHandlerThread.isAlive()) {
 
+				if (SensorUtil.isDeviceHasSensor(sensorName,
+						activity.getApplication())) {
+					mHandlerThread.start();
+					handler = new Handler(mHandlerThread.getLooper());
+					mSensorManager.registerListener(this, mTemperature, 1000000,
+							handler);
+					eventHandler.isDeviceHasSensor(true);
+				} else {
+					Log.d("Device dos't have Sensor ",
+							"Temperature");
+					eventHandler.isDeviceHasSensor(false);
+				}
+			} else {
+				Log.d("Your Sensor is registered", sensorName);
+			}
+
+		}
+		
 	}
 
 	// Unregister a listener for the sensor .
