@@ -3,6 +3,7 @@ package com.integreight.firmatabluetooth;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.utils.ArrayUtils;
 
 
 public class ArduinoFirmata{
@@ -44,6 +46,7 @@ public class ArduinoFirmata{
     public static final int A5=18;
     
     private final char MAX_DATA_BYTES  = 4096;
+    private final char MAX_OUTPUT_BYTES  = 32;
     private final byte DIGITAL_MESSAGE = (byte)0x90;
     private final byte ANALOG_MESSAGE  = (byte)0xE0;
     private final byte REPORT_ANALOG   = (byte)0xC0;
@@ -179,7 +182,7 @@ public class ArduinoFirmata{
 
     public void sysex(byte command, byte[] data){
      	 // http://firmata.org/wiki/V2.1ProtocolDetails#Sysex_Message_Format
-        //if(data.length > 32) return;
+        if(data.length > 32) return;
         byte[] writeData = new byte[data.length+3];
         writeData[0] = START_SYSEX;
         writeData[1] = command;
@@ -420,8 +423,13 @@ public class ArduinoFirmata{
     
     public void sendShieldFrame(ShieldFrame frame){
     	if(!isUartInit)return;
-    	printFrameToLog(frame.getAllFrameAsBytes());
-    	sysex(UART_DATA, getByteArrayAs2SevenBitsBytesArray(frame.getAllFrameAsBytes()));
+    	byte[] frameBytes=frame.getAllFrameAsBytes();
+    	printFrameToLog(frameBytes);
+    	int maxShieldFrameBytes=(MAX_OUTPUT_BYTES-3)/2;//The 3 is for StartSysex, EndSysex and Uart_data
+    	for (int i = 0; i < frameBytes.length; i+=maxShieldFrameBytes) {
+			byte[] subArray=(i+maxShieldFrameBytes>frameBytes.length)?ArrayUtils.copyOfRange(frameBytes, i, frameBytes.length):ArrayUtils.copyOfRange(frameBytes, i, i+maxShieldFrameBytes);
+			sysex(UART_DATA, getByteArrayAs2SevenBitsBytesArray(subArray));
+		}
     }
     
 //    private final Handler mHandler = new Handler() {
