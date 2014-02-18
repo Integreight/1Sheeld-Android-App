@@ -135,7 +135,7 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 		super.onResume();
 		((GyroscopeShield) getApplication().getRunningShields().get(
 				getControllerTag()))
-				.setGravityEventHandler(gyroscopeEventHandler);
+				.setGyroscopeEventHandler(gyroscopeEventHandler);
 
 	}
 }

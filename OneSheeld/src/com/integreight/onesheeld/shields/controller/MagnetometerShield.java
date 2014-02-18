@@ -2,18 +2,15 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class MagnetometerShield extends ControllerParent<MagnetometerShield>
@@ -22,8 +19,21 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	private Sensor mMagnetometer;
 	private MagnetometerEventHandler eventHandler;
 	private ShieldFrame frame;
-	HandlerThread mHandlerThread;
 	Handler handler;
+	int PERIOD = 1000;
+	boolean flag = false;
+	boolean isHandlerLive = false;
+
+	private final Runnable processSensors = new Runnable() {
+		@Override
+		public void run() {
+			// Do work with the sensor values.
+
+			flag = true;
+			// The Runnable is posted to run again here:
+			handler.postDelayed(this, PERIOD);
+		}
+	};
 
 	public MagnetometerShield() {
 	}
@@ -42,14 +52,10 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 		mMagnetometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
-		if (mHandlerThread == null) {
-			mHandlerThread = new HandlerThread("sensorThread");
-		}
 		return super.setTag(tag);
 	}
 
-	public void setMagnetometerEventHandler(
-			MagnetometerEventHandler eventHandler) {
+	public void setMagnetometerEventHandler(MagnetometerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
@@ -68,79 +74,61 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
-		frame = new ShieldFrame(UIShield.MAGNETOMETER_SHIELD.getId(), (byte) 0,
-				ShieldFrame.DATA_SENT);
-		// frame.addByteArgument((byte) Math.round(event.values[0]));
-		frame.addFloatArgument(event.values[0]);
-		frame.addFloatArgument(event.values[1]);
-		frame.addFloatArgument(event.values[2]);
-		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
+		if (flag) {
+			// TODO Auto-generated method stub
+			frame = new ShieldFrame(UIShield.MAGNETOMETER_SHIELD.getId(),
+					(byte) 0, ShieldFrame.DATA_SENT);
+			// frame.addByteArgument((byte) Math.round(event.values[0]));
+			frame.addFloatArgument(event.values[0]);
+			frame.addFloatArgument(event.values[1]);
+			frame.addFloatArgument(event.values[2]);
+			activity.getThisApplication().getAppFirmata()
+					.sendShieldFrame(frame);
 
-		final float sensorData[] = event.values;
-		OnNewSensorData(sensorData);
+			eventHandler.onSensorValueChangedFloat(event.values);
 
-		Log.d("Sensor Data of X", event.values[0] + "");
-		Log.d("Sensor Data of Y", event.values[1] + "");
-		Log.d("Sensor Data of Z", event.values[2] + "");
+			Log.d("Sensor Data of X", event.values[0] + "");
+			Log.d("Sensor Data of Y", event.values[1] + "");
+			Log.d("Sensor Data of Z", event.values[2] + "");
+
+			//
+			flag = false;
+		}
 
 	}
 
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
-		String sensorName = PackageManager.FEATURE_SENSOR_COMPASS;
-		if (mHandlerThread == null) {
-			mHandlerThread = new HandlerThread("sensorThread");
-		}
-		if (!mHandlerThread.isAlive()) {
-
-			if (SensorUtil.isDeviceHasSensor(sensorName,
-					activity.getApplication())) {
-				mHandlerThread.start();
-				handler = new Handler(mHandlerThread.getLooper());
-				mSensorManager.registerListener(this, mMagnetometer, 1000000,
-						handler);
+		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+			// Success! There's sensor.
+			if (!isHandlerLive) {
+				handler = new Handler();
+				mSensorManager.registerListener(this, mMagnetometer,
+						SensorManager.SENSOR_DELAY_NORMAL);
+				handler.post(processSensors);
 				eventHandler.isDeviceHasSensor(true);
+				isHandlerLive = true;
 			} else {
-				Log.d("Device dos't have Sensor ",
-						PackageManager.FEATURE_SENSOR_COMPASS);
-				eventHandler.isDeviceHasSensor(false);
+				Log.d("Your Sensor is registered", "Magnetometer");
 			}
 		} else {
-			Log.d("Your Sensor is registered", sensorName);
-		}
+			// Failure! No sensor.
+			Log.d("Device dos't have Sensor ", "Magnetometer");
+			eventHandler.isDeviceHasSensor(false);
 
+		}
 	}
 
 	// Unregister a listener for the sensor .
 	public void unegisterSensorListener() {
-		if (mSensorManager != null && mHandlerThread != null
-				&& mHandlerThread.isAlive()) {
-			// mSensorManager.unregisterListener(this);
+		// mSensorManager.unregisterListener(this);
+		if (mSensorManager != null && handler != null && mMagnetometer != null) {
+
 			mSensorManager.unregisterListener(this, mMagnetometer);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(mHandlerThread);
-			mHandlerThread.interrupt();
-			mHandlerThread.getLooper().quit();
-			stopThread();
-		}
-	}
-
-	public void OnNewSensorData(final float data[]) {
-		getActivity().runOnUiThread(new Runnable() {
-			public void run() {
-				// use data here
-				eventHandler.onSensorValueChangedFloat(data);
-
-			}
-		});
-	}
-
-	public synchronized void stopThread() {
-		if (mHandlerThread != null) {
-			Thread moribund = mHandlerThread;
-			mHandlerThread = null;
-			moribund.interrupt();
+			handler.removeCallbacks(processSensors);
+			handler.removeCallbacksAndMessages(null);
+			isHandlerLive = false;
 		}
 	}
 
