@@ -57,7 +57,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	@Override
 	public ControllerParent<FoursquareShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 		// getShareprefrences
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
@@ -100,7 +99,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	public void setFoursquareEventHandler(FoursquareEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		getApplication().getAppFirmata().initUart();
 		CommitInstanceTotable();
 	}
 

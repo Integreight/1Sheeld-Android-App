@@ -40,17 +40,15 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 	public AccelerometerShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<AccelerometerShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mAccelerometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+
 		return super.setTag(tag);
 	}
 
@@ -74,6 +72,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
+		
 		if (flag) {
 			// TODO Auto-generated method stub
 			frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(),
@@ -93,6 +92,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 			//
 			flag = false;
 		}
+
 	}
 
 	// Register a listener for the sensor.

@@ -171,6 +171,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public ControllerParent<T> setTag(String tag) {
 		this.tag = tag;
 		getApplication().getRunningShields().put(tag, this);
+		getApplication().getAppFirmata().initUart();
 		return this;
 	}
 

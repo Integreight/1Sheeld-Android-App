@@ -40,12 +40,10 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 	public TemperatureShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<TemperatureShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
@@ -111,6 +109,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 			eventHandler.isDeviceHasSensor(false);
 
 		}
+
 	}
 
 	// Unregister a listener for the sensor .

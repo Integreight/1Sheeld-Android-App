@@ -24,9 +24,9 @@ public class SmsShield extends ControllerParent<SmsShield> {
 	public SmsShield() {
 		super();
 	}
+
 	@Override
 	public ControllerParent<SmsShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 		return super.setTag(tag);
 	}
 
@@ -36,13 +36,13 @@ public class SmsShield extends ControllerParent<SmsShield> {
 
 	@Override
 	public void onUartReceive(byte[] data) {
-//		if (data.length < 2)
-//			return;
-//		byte command = data[0];
-//		byte methodId = data[1];
-//		int n = data.length - 2;
-//		byte[] newArray = new byte[n];
-//		System.arraycopy(data, 2, newArray, 0, n);
+		// if (data.length < 2)
+		// return;
+		// byte command = data[0];
+		// byte methodId = data[1];
+		// int n = data.length - 2;
+		// byte[] newArray = new byte[n];
+		// System.arraycopy(data, 2, newArray, 0, n);
 
 		super.onUartReceive(data);
 	}
@@ -61,11 +61,9 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		CommitInstanceTotable();
 
 	}
-	
 
 	public void setSmsEventHandler(SmsEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		getApplication().getAppFirmata().initUart();
 		CommitInstanceTotable();
 	}
 
@@ -88,13 +86,13 @@ public class SmsShield extends ControllerParent<SmsShield> {
 			}
 
 		}
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -19,15 +19,14 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 
 	public GamepadShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
 			connectedPins.put(pin, null);
 		}
 	}
+
 	@Override
 	public ControllerParent<GamepadShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
 			connectedPins.put(pin, null);
@@ -137,11 +136,12 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

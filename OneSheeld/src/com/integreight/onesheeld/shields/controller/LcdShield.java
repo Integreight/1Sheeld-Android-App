@@ -54,6 +54,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 		lcdText = new String[rows];
 		resetPins();
 	}
+
 	@Override
 	public ControllerParent<LcdShield> setTag(String tag) {
 		rawText = new char[rows][columns];
@@ -78,7 +79,6 @@ public class LcdShield extends ControllerParent<LcdShield> {
 
 	public void setLcdEventHandler(LcdEventHandler eventHandler) {
 		LcdShield.eventHandler = eventHandler;
-		getApplication().getAppFirmata().initUart();
 		CommitInstanceTotable();
 	}
 
@@ -200,13 +200,13 @@ public class LcdShield extends ControllerParent<LcdShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
