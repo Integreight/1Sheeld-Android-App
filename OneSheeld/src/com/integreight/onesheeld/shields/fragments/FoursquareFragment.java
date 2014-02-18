@@ -104,6 +104,11 @@ public class FoursquareFragment extends
 		((FoursquareShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setFoursquareEventHandler(foursquareEventHandler);
+
+		((FoursquareShield) getApplication().getRunningShields().get(
+				getControllerTag()))
+				.startFoursquare();
+
 	}
 
 	@Override

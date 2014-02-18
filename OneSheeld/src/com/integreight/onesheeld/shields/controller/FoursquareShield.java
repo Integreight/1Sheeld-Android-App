@@ -61,27 +61,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
-		
-		if (!isFoursquareLoggedInAlready()) {
-			Log.d("Foursquare::User not LoggedIn", "");
-			foursquare = new Foursquare(clintID, clintSecret, redirectUrl);
-
-			foursquare.authorize(getActivity(),
-					new FoursquareAuthenDialogListener());
-		}
-		else 
-		{
-			Log.d("Foursquare::User LoggedIn", "");
-			String userName = mSharedPreferences.getString(
-					"PREF_FourSquare_UserName", "");
-			String lastCheckin = mSharedPreferences.getString(
-					"PREF_FourSquare_LastPlace", "");
-
-			setUserName(userName);
-			setLastcheckin(lastCheckin);
-			
-		}
-		
 
 		return super.setTag(tag);
 	}
@@ -331,7 +310,29 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		}
 
 	}
-	
+
+	public void startFoursquare() {
+
+		if (!isFoursquareLoggedInAlready()) {
+			Log.d("Foursquare::User not LoggedIn", "");
+			foursquare = new Foursquare(clintID, clintSecret, redirectUrl);
+
+			foursquare.authorize(getActivity(),
+					new FoursquareAuthenDialogListener());
+		} else {
+			Log.d("Foursquare::User LoggedIn", "");
+			String userName = mSharedPreferences.getString(
+					"PREF_FourSquare_UserName", "");
+			String lastCheckin = mSharedPreferences.getString(
+					"PREF_FourSquare_LastPlace", "");
+
+			setUserName(userName);
+			setLastcheckin(lastCheckin);
+
+		}
+
+	}
+
 	public String getUserName() {
 		return userName;
 	}
