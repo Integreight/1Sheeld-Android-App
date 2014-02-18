@@ -18,21 +18,21 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 
 	public KeypadShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
 			connectedPins.put(pin, null);
 		}
 	}
+
 	@Override
 	public ControllerParent<KeypadShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 		connectedPins = new HashMap<Pin, Integer>();
 		for (Pin pin : Pin.values()) {
 			connectedPins.put(pin, null);
 		}
 		return super.setTag(tag);
 	}
+
 	public KeypadShield() {
 		super();
 	}
@@ -167,11 +167,12 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

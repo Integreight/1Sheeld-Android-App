@@ -98,7 +98,6 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	public void setFacebookEventHandler(FacebookEventHandler eventHandler) {
 		FacebookShield.eventHandler = eventHandler;
-		getApplication().getAppFirmata().initUart();
 		CommitInstanceTotable();
 	}
 
@@ -132,26 +131,26 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		CommitInstanceTotable();
 	}
 
-	@Override
-	public void onUartReceive(byte[] data) {
-		// TODO Auto-generated method stub
-		//if (data.length < 2)
-		//	return;
-		//byte command = data[0];
-		//byte methodId = data[1];
-		//int n = data.length - 2;
-		//byte[] newArray = new byte[n];
-		//System.arraycopy(data, 2, newArray, 0, n);
-//		if (command == FACEBOOK_COMMAND) {
-//			String post = new String(newArray);
-//			lastPost = post;
-//			if (isFacebookLoggedInAlready())
-//				if (methodId == UPDATE_STATUS_METHOD_ID)
-//					publishStory(post);
-//
-//		}
-		super.onUartReceive(data);
-	}
+	// @Override
+	// public void onUartReceive(byte[] data) {
+	// TODO Auto-generated method stub
+	// if (data.length < 2)
+	// return;
+	// byte command = data[0];
+	// byte methodId = data[1];
+	// int n = data.length - 2;
+	// byte[] newArray = new byte[n];
+	// System.arraycopy(data, 2, newArray, 0, n);
+	// if (command == FACEBOOK_COMMAND) {
+	// String post = new String(newArray);
+	// lastPost = post;
+	// if (isFacebookLoggedInAlready())
+	// if (methodId == UPDATE_STATUS_METHOD_ID)
+	// publishStory(post);
+	//
+	// // }
+	// super.onUartReceive(data);
+	// }
 
 	public String getUsername() {
 		// TODO Auto-generated method stub
@@ -170,7 +169,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		@Override
 		public void call(final Session session, SessionState state,
 				Exception exception) {
-			if (exception != null && eventHandler != null){
+			if (exception != null && eventHandler != null) {
 				exception.printStackTrace();
 				eventHandler.onFacebookError(exception.getMessage());
 			}
@@ -251,9 +250,8 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 				public void onCompleted(Response response) {
 					FacebookRequestError error = response.getError();
 					if (error != null) {
-						if (eventHandler != null)
-						{
-							System.err.println("$#$#$ "+error);
+						if (eventHandler != null) {
+							System.err.println("$#$#$ " + error);
 							eventHandler.onFacebookError(error
 									.getErrorMessage());
 						}
@@ -293,12 +291,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					publishStory(lastPost);
 
 		}
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

@@ -24,14 +24,11 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 	}
 	@Override
 	public ControllerParent<SkypeShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 		return super.setTag(tag);
 	}
 
 	public SkypeShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
-
 	}
 
 	public void setSkypeEventHandler(SkypeEventHandler eventHandler) {

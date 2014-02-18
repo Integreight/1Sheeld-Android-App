@@ -16,8 +16,8 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class PressureShield extends ControllerParent<PressureShield>
-		implements SensorEventListener {
+public class PressureShield extends ControllerParent<PressureShield> implements
+		SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mPressure;
 	private PressureEventHandler eventHandler;
@@ -30,13 +30,10 @@ public class PressureShield extends ControllerParent<PressureShield>
 
 	public PressureShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<PressureShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mPressure = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
@@ -123,7 +120,7 @@ public class PressureShield extends ControllerParent<PressureShield>
 			public void run() {
 				// use data here
 				eventHandler.onSensorValueChangedFloat(data);
-				//eventHandler.onSensorValueChangedByte(data);
+				// eventHandler.onSensorValueChangedByte(data);
 
 			}
 		});

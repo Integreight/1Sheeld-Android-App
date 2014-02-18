@@ -30,13 +30,10 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 	public MagnetometerShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<MagnetometerShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mMagnetometer = mSensorManager

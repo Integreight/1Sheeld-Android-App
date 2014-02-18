@@ -30,13 +30,10 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 	public ProximityShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<ProximityShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
@@ -123,7 +120,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 			public void run() {
 				// use data here
 				eventHandler.onSensorValueChangedFloat(data);
-				//eventHandler.onSensorValueChangedByte(data);
+				// eventHandler.onSensorValueChangedByte(data);
 
 			}
 		});

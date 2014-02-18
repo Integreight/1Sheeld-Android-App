@@ -16,8 +16,8 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class AccelerometerShield extends ControllerParent<AccelerometerShield> implements
-		SensorEventListener {
+public class AccelerometerShield extends ControllerParent<AccelerometerShield>
+		implements SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private AccelerometerEventHandler eventHandler;
@@ -30,16 +30,14 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> i
 
 	public AccelerometerShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<AccelerometerShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
-		mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		mAccelerometer = mSensorManager
+				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
 		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
@@ -47,7 +45,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> i
 		return super.setTag(tag);
 	}
 
-	public void setAccelerometerEventHandler(AccelerometerEventHandler eventHandler) {
+	public void setAccelerometerEventHandler(
+			AccelerometerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
@@ -67,8 +66,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> i
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(), (byte) 0,
-				ShieldFrame.DATA_SENT);
+		frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(),
+				(byte) 0, ShieldFrame.DATA_SENT);
 		// frame.addByteArgument((byte) Math.round(event.values[0]));
 		frame.addFloatArgument(event.values[0]);
 		frame.addFloatArgument(event.values[1]);
@@ -154,7 +153,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> i
 	public void reset() {
 		// TODO Auto-generated method stub
 		this.unegisterSensorListener();
-		
+
 	}
 
 }

@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -29,11 +30,11 @@ import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.OneShieldTextView;
 
-public class ArduinoConnectivityActivity extends Dialog {
+public class ArduinoConnectivityPopup extends Dialog {
 	private Activity activity;
 	private float scale;
 
-	public ArduinoConnectivityActivity(Activity context) {
+	public ArduinoConnectivityPopup(Activity context) {
 		super(context, android.R.style.Theme_Translucent_NoTitleBar);
 		this.activity = context;
 		scale = activity.getResources().getDisplayMetrics().density;
@@ -291,78 +292,85 @@ public class ArduinoConnectivityActivity extends Dialog {
 
 	private void addFoundDevice(String name, final String address,
 			boolean isPaired) {
-		OneShieldTextView item = new OneShieldTextView(activity, null);
-		item.setLayoutParams(new LinearLayout.LayoutParams(
-				LinearLayout.LayoutParams.MATCH_PARENT,
-				LinearLayout.LayoutParams.WRAP_CONTENT));
-		item.setText(name);
-		item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-		item.setTextColor(Color.WHITE);
-		int pdng = (int) (8 * scale - .5f);
-		item.setPadding(pdng, pdng, pdng, pdng);
-		Drawable img = getContext()
-				.getResources()
-				.getDrawable(
-						isPaired ? R.drawable.arduino_connectivity_activity_onesheeld_small_green_logo
-								: R.drawable.arduino_connectivity_activity_onesheeld_small_logo);
-		item.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-		item.setBackgroundResource(R.drawable.devices_list_item_selector);
-		item.setCompoundDrawablePadding(pdng);
-		item.setOnClickListener(new View.OnClickListener() {
+		if (name == null)
+			name = "";
+		if (name.trim().length() == 0 || name.toLowerCase().contains("1sheeld")) {
+			OneShieldTextView item = new OneShieldTextView(activity, null);
+			item.setLayoutParams(new LinearLayout.LayoutParams(
+					LinearLayout.LayoutParams.MATCH_PARENT,
+					LinearLayout.LayoutParams.WRAP_CONTENT));
+			item.setText(name);
+			item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+			item.setTextColor(Color.WHITE);
+			int pdng = (int) (8 * scale - .5f);
+			item.setPadding(pdng, pdng, pdng, pdng);
+			Drawable img = getContext()
+					.getResources()
+					.getDrawable(
+							isPaired ? R.drawable.arduino_connectivity_activity_onesheeld_small_green_logo
+									: R.drawable.arduino_connectivity_activity_onesheeld_small_logo);
+			item.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
+			item.setBackgroundResource(R.drawable.devices_list_item_selector);
+			item.setCompoundDrawablePadding(pdng);
+			item.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				mBtAdapter.cancelDiscovery();
+				@Override
+				public void onClick(View v) {
+					mBtAdapter.cancelDiscovery();
 
-				// Get the device MAC address, which is the last 17 chars in the
-				// View
-				showProgress();
-				changeSlogan(
-						activity.getResources().getString(R.string.connecting),
-						COLOR.GREEN);
-				((OneSheeldApplication) activity.getApplication())
-						.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
+					// Get the device MAC address, which is the last 17 chars in
+					// the
+					// View
+					showProgress();
+					changeSlogan(
+							activity.getResources().getString(
+									R.string.connecting), COLOR.GREEN);
+					((OneSheeldApplication) activity.getApplication())
+							.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
 
-							@Override
-							public void onError(String errorMessage) {
-								setRetryButtonReady(activity.getResources()
-										.getString(R.string.notConnected),
-										new View.OnClickListener() {
+								@Override
+								public void onError(String errorMessage) {
+									setRetryButtonReady(activity.getResources()
+											.getString(R.string.notConnected),
+											new View.OnClickListener() {
 
-											@Override
-											public void onClick(View arg0) {
-												scanDevices();
-											}
-										});
+												@Override
+												public void onClick(View arg0) {
+													scanDevices();
+												}
+											});
 
-							}
+								}
 
-							@Override
-							public void onConnect() {
-								cancel();
-								Toast.makeText(activity, "Connected, finish",
-										Toast.LENGTH_LONG).show();
-							}
+								@Override
+								public void onConnect() {
+									cancel();
+									Toast.makeText(activity,
+											"Connected, finish",
+											Toast.LENGTH_LONG).show();
+								}
 
-							@Override
-							public void onClose(boolean closedManually) {
-								setRetryButtonReady(activity.getResources()
-										.getString(R.string.notConnected),
-										new View.OnClickListener() {
+								@Override
+								public void onClose(boolean closedManually) {
+									setRetryButtonReady(activity.getResources()
+											.getString(R.string.notConnected),
+											new View.OnClickListener() {
 
-											@Override
-											public void onClick(View arg0) {
-												scanDevices();
-											}
-										});
+												@Override
+												public void onClick(View arg0) {
+													scanDevices();
+												}
+											});
 
-							}
-						});
-				startService(address);
-			}
-		});
-		devicesList.addView(item);
-		devicesList.invalidate();
+								}
+							});
+					startService(address);
+				}
+			});
+			devicesList.addView(item);
+			devicesList.invalidate();
+			((ScrollView) devicesList.getParent()).invalidate();
+		}
 	}
 
 	// The BroadcastReceiver that listens for discovered devices and

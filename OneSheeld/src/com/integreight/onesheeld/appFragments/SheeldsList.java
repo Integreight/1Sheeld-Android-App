@@ -32,7 +32,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.ArduinoConnectivityActivity;
+import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -198,6 +198,7 @@ public class SheeldsList extends SherlockFragment {
 				Log.d(TAG, "BT not enabled");
 				Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
 						Toast.LENGTH_SHORT).show();
+				ArduinoConnectivityPopup.isOpened = false;
 				getActivity().finish();
 			}
 		}
@@ -246,9 +247,8 @@ public class SheeldsList extends SherlockFragment {
 						UIShield.setConnected(false);
 						adapter.notifyDataSetChanged();
 						arduinoConnected = false;
-						if (!ArduinoConnectivityActivity.isOpened)
-							new ArduinoConnectivityActivity(getActivity())
-									.show();
+						if (!ArduinoConnectivityPopup.isOpened)
+							new ArduinoConnectivityPopup(getActivity()).show();
 					}
 
 					@Override
@@ -270,9 +270,8 @@ public class SheeldsList extends SherlockFragment {
 						if (getActivity() != null)
 							((MainActivity) getActivity())
 									.setSupportProgressBarIndeterminateVisibility(false);
-						if (!ArduinoConnectivityActivity.isOpened)
-							new ArduinoConnectivityActivity(getActivity())
-									.show();
+						if (!ArduinoConnectivityPopup.isOpened)
+							new ArduinoConnectivityPopup(getActivity()).show();
 					}
 				});
 
@@ -288,8 +287,8 @@ public class SheeldsList extends SherlockFragment {
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
 			setBWStrips();
-			if (!ArduinoConnectivityActivity.isOpened)
-				new ArduinoConnectivityActivity(getActivity()).show();
+			if (!ArduinoConnectivityPopup.isOpened)
+				new ArduinoConnectivityPopup(getActivity()).show();
 			// if (((OneSheeldApplication) getActivity().getApplication())
 			// .getAppPreferences().contains(
 			// OneSheeldService.DEVICE_ADDRESS_KEY)) {

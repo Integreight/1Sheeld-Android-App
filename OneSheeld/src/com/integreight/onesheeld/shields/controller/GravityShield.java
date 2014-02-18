@@ -30,13 +30,10 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	public GravityShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<GravityShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);

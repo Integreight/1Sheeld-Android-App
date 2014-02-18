@@ -5,10 +5,12 @@ import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -32,6 +34,17 @@ public class OneSheeldApplication extends Application {
 	public void onCreate() {
 		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
 		setConnectionHandler(new ConnectionDetector(getApplicationContext()));
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+			@Override
+			public void uncaughtException(Thread arg0, Throwable arg1) {
+				arg1.printStackTrace();
+				ArduinoConnectivityPopup.isOpened = false;
+				stopService(new Intent(getApplicationContext(),
+						OneSheeldService.class));
+				System.exit(0);
+			}
+		});
 		super.onCreate();
 	}
 

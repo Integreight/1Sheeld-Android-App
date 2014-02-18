@@ -16,7 +16,8 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class GyroscopeShield extends ControllerParent<GyroscopeShield> implements SensorEventListener {
+public class GyroscopeShield extends ControllerParent<GyroscopeShield>
+		implements SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mGyroscope;
 	private GyroscopeEventHandler eventHandler;
@@ -29,13 +30,10 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield> implement
 
 	public GyroscopeShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<GyroscopeShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);

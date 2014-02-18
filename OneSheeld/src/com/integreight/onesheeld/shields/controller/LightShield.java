@@ -16,8 +16,8 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class LightShield extends ControllerParent<LightShield>
-		implements SensorEventListener {
+public class LightShield extends ControllerParent<LightShield> implements
+		SensorEventListener {
 	private SensorManager mSensorManager;
 	private Sensor mLight;
 	private LightEventHandler eventHandler;
@@ -30,13 +30,10 @@ public class LightShield extends ControllerParent<LightShield>
 
 	public LightShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<LightShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
-
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
@@ -90,8 +87,7 @@ public class LightShield extends ControllerParent<LightShield>
 					activity.getApplication())) {
 				mHandlerThread.start();
 				handler = new Handler(mHandlerThread.getLooper());
-				mSensorManager.registerListener(this, mLight, 1000000,
-						handler);
+				mSensorManager.registerListener(this, mLight, 1000000, handler);
 				eventHandler.isDeviceHasSensor(true);
 			} else {
 				Log.d("Device dos't have Sensor ",
@@ -123,7 +119,7 @@ public class LightShield extends ControllerParent<LightShield>
 			public void run() {
 				// use data here
 				eventHandler.onSensorValueChangedFloat(data);
-				//eventHandler.onSensorValueChangedByte(data);
+				// eventHandler.onSensorValueChangedByte(data);
 
 			}
 		});

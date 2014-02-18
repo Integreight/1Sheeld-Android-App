@@ -30,16 +30,15 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 	public TemperatureShield(Activity activity, String tag) {
 		super(activity, tag);
-		getApplication().getAppFirmata().initUart();
 	}
 
 	@Override
 	public ControllerParent<TemperatureShield> setTag(String tag) {
-		getApplication().getAppFirmata().initUart();
 
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
-		mTemperature = mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
+		mTemperature = mSensorManager
+				.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 
 		if (mHandlerThread == null) {
 			mHandlerThread = new HandlerThread("sensorThread");
@@ -81,12 +80,9 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
 		String sensorName;
-		if (mTemperature == null)
-		{
+		if (mTemperature == null) {
 			eventHandler.isDeviceHasSensor(false);
-		}
-		else 
-		{
+		} else {
 			sensorName = mTemperature.getName();
 			if (mHandlerThread == null) {
 				mHandlerThread = new HandlerThread("sensorThread");
@@ -97,12 +93,11 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 						activity.getApplication())) {
 					mHandlerThread.start();
 					handler = new Handler(mHandlerThread.getLooper());
-					mSensorManager.registerListener(this, mTemperature, 1000000,
-							handler);
+					mSensorManager.registerListener(this, mTemperature,
+							1000000, handler);
 					eventHandler.isDeviceHasSensor(true);
 				} else {
-					Log.d("Device dos't have Sensor ",
-							"Temperature");
+					Log.d("Device dos't have Sensor ", "Temperature");
 					eventHandler.isDeviceHasSensor(false);
 				}
 			} else {
@@ -110,7 +105,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 			}
 
 		}
-		
+
 	}
 
 	// Unregister a listener for the sensor .
@@ -132,7 +127,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 			public void run() {
 				// use data here
 				eventHandler.onSensorValueChangedFloat(data);
-				//eventHandler.onSensorValueChangedByte(data);
+				// eventHandler.onSensorValueChangedByte(data);
 
 			}
 		});

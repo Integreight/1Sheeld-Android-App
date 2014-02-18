@@ -65,7 +65,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			public void run() {
 				myActivity.openMenu();
 			}
-		}, 500);
+		}, 700);
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		// myActivity.getSupportActionBar().setHomeButtonEnabled(true);
@@ -82,9 +82,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 							R.id.menu_frame);
 		}
 
-		if (savedInstanceState != null)
-			mContent = myActivity.getSupportFragmentManager().getFragment(
-					savedInstanceState, "mContent");
+		// if (savedInstanceState != null)
+		// mContent = myActivity.getSupportFragmentManager().getFragment(
+		// savedInstanceState, "mContent");
 
 		// // set the Behind View
 		// setBehindContentView(R.layout.menu_frame);
@@ -146,8 +146,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-//		((MainActivity) getActivity()).getSupportFragmentManager().putFragment(
-//				outState, "mContent", mContent);
+		// ((MainActivity)
+		// getActivity()).getSupportFragmentManager().putFragment(
+		// outState, "mContent", mContent);
 	}
 
 	public void switchContent(Fragment fragment) {

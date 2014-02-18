@@ -89,7 +89,6 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 	public void setNotificationEventHandler(
 			NotificationEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		getApplication().getAppFirmata().initUart();
 		CommitInstanceTotable();
 	}
 
@@ -100,13 +99,13 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

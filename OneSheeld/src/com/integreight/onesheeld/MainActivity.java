@@ -91,10 +91,12 @@ public class MainActivity extends SlidingFragmentActivity {
 			// create
 			// it.
 			FragmentTransaction ft = manager.beginTransaction();
-			// if (addToBackStack) {
-			// ft.setCustomAnimations(R.anim.slide_in_right,
-			// R.anim.slide_out_left);
-			// }
+			if (addToBackStack) {
+				// ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+				// ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+				ft.setCustomAnimations(R.anim.slide_out_left,
+						R.anim.slide_in_right, 0, 0);
+			}
 			ft.replace(container, targetFragment, fragmentTag);
 			if (addToBackStack) {
 				ft.addToBackStack(backStateName);
@@ -112,6 +114,7 @@ public class MainActivity extends SlidingFragmentActivity {
 	protected void onDestroy() {
 		// isBoundService = OneSheeldService.isBound;
 		// if (isMyServiceRunning())
+		ArduinoConnectivityPopup.isOpened = false;
 		stopService();
 		// isBoundService = false;
 		super.onDestroy();
