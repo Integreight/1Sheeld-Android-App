@@ -3,7 +3,6 @@ package com.integreight.firmatabluetooth;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -56,16 +55,17 @@ public class ArduinoFirmata{
     private final byte SYSTEM_RESET    = (byte)0xFF;
     private final byte START_SYSEX     = (byte)0xF0;
     private final byte END_SYSEX       = (byte)0xF7;
+    private final byte MUTE_FIRMATA    = (byte)0x64;
     private final byte UART_COMMAND    = (byte)0x65;
     private final byte UART_DATA       = (byte)0x66;
-    private final byte PULSE_IN_INIT    = (byte)0x67;
-    private final byte PULSE_IN_DATA       = (byte)0x68;
+    //private final byte PULSE_IN_INIT    = (byte)0x67;
+    //private final byte PULSE_IN_DATA       = (byte)0x68;
 
     private final byte UART_BEGIN       = (byte)0x01;
     private final byte UART_END       = (byte)0x00;
     
-    public final char STX       = (byte)0x02;
-    public final char ETX       = (byte)0x03;
+//    public final char STX       = (byte)0x02;
+//    public final char ETX       = (byte)0x03;
     
     
     
@@ -117,7 +117,6 @@ public class ArduinoFirmata{
         dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
         frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
         this.context=context;
-        //bluetoothService.setBluetoothServiceCallback(callback);
     }
 
     public void connect(BluetoothDevice device){
@@ -193,23 +192,23 @@ public class ArduinoFirmata{
         write(writeData);
     }
     
-    public void sendUart(char shieldCommand, char methodId, char[] data){
-    	if(!isUartInit)return;
-    	byte[] byteArray=new byte[data.length*2+8];
-    	byteArray[0]=getCharAs2SevenBitsBytes(STX)[0];
-    	byteArray[1]=getCharAs2SevenBitsBytes(STX)[1];
-    	byteArray[2]=getCharAs2SevenBitsBytes(shieldCommand)[0];
-    	byteArray[3]=getCharAs2SevenBitsBytes(shieldCommand)[1];
-    	byteArray[4]=getCharAs2SevenBitsBytes(methodId)[0];
-    	byteArray[5]=getCharAs2SevenBitsBytes(methodId)[1];
-    	for (int i = 0; i < data.length*2; i+=2) {
-    		byteArray[i+6]=getCharAs2SevenBitsBytes(data[i/2])[0];
-    		byteArray[i+1+6]=getCharAs2SevenBitsBytes(data[i/2])[1];
-		}
-    	byteArray[byteArray.length-2]=getCharAs2SevenBitsBytes(ETX)[0];
-    	byteArray[byteArray.length-1]=getCharAs2SevenBitsBytes(ETX)[1];
-    	sysex(UART_DATA, byteArray);
-    }
+//    public void sendUart(char shieldCommand, char methodId, char[] data){
+//    	if(!isUartInit)return;
+//    	byte[] byteArray=new byte[data.length*2+8];
+//    	byteArray[0]=getCharAs2SevenBitsBytes(STX)[0];
+//    	byteArray[1]=getCharAs2SevenBitsBytes(STX)[1];
+//    	byteArray[2]=getCharAs2SevenBitsBytes(shieldCommand)[0];
+//    	byteArray[3]=getCharAs2SevenBitsBytes(shieldCommand)[1];
+//    	byteArray[4]=getCharAs2SevenBitsBytes(methodId)[0];
+//    	byteArray[5]=getCharAs2SevenBitsBytes(methodId)[1];
+//    	for (int i = 0; i < data.length*2; i+=2) {
+//    		byteArray[i+6]=getCharAs2SevenBitsBytes(data[i/2])[0];
+//    		byteArray[i+1+6]=getCharAs2SevenBitsBytes(data[i/2])[1];
+//		}
+//    	byteArray[byteArray.length-2]=getCharAs2SevenBitsBytes(ETX)[0];
+//    	byteArray[byteArray.length-1]=getCharAs2SevenBitsBytes(ETX)[1];
+//    	sysex(UART_DATA, byteArray);
+//    }
     
     private byte[] getByteAs2SevenBitsBytes(byte data){
     	byte[] temp=new byte[2];
@@ -227,9 +226,9 @@ public class ArduinoFirmata{
     	return temp;
     }
     
-    private byte[] getCharAs2SevenBitsBytes(char data){
-    	return getByteAs2SevenBitsBytes((byte)data);
-    }
+//    private byte[] getCharAs2SevenBitsBytes(char data){
+//    	return getByteAs2SevenBitsBytes((byte)data);
+//    }
     
     public void initUart(BaudRate baud){
     	sysex(UART_COMMAND, new byte[]{UART_BEGIN,baud.getValue()});
