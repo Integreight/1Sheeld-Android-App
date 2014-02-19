@@ -6,6 +6,7 @@ import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
+import com.integreight.onesheeld.shields.controller.GpsShield;
 import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
@@ -109,7 +110,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_18,
 			R.drawable.shields_activity_strip_18_bw,
 			R.drawable.shields_activity_small_strip_18,
-			R.drawable.shields_activity_gps_symbol, false, EmptyShield.class), SMS_SHIELD(
+			R.drawable.shields_activity_gps_symbol, false, GpsShield.class), SMS_SHIELD(
 			(byte) 0x0D, "SMS", R.drawable.shields_activity_strip_20,
 			R.drawable.shields_activity_strip_20_bw,
 			R.drawable.shields_activity_small_strip_20,
