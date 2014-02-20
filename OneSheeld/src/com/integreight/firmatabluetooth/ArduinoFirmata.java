@@ -129,7 +129,7 @@ public class ArduinoFirmata{
             write((byte)1);
         }
 
-        for (byte i = 0; i < 2; i++) {
+        for (byte i = 0; i < 3; i++) {
             write((byte)(REPORT_DIGITAL | i));
             write((byte)1);
         }
