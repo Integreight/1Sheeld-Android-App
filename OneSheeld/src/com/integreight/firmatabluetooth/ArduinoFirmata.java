@@ -122,11 +122,12 @@ public class ArduinoFirmata{
     }
 
     public ArduinoFirmata(Context context){
-        bluetoothService=new BluetoothService(context, handler);
+        bluetoothService=new BluetoothService(context);
         eventHandlers=new ArrayList<ArduinoFirmataEventHandler>();
         dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
         frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
         this.context=context;
+        bluetoothService.addBluetoothServiceHandler(handler);
     }
 
     public void connect(BluetoothDevice device){
@@ -181,8 +182,8 @@ public class ArduinoFirmata{
     }
 
     public void write(byte writeData){
-        byte[] _writeData = {(byte)writeData};
-        write(_writeData);
+       // byte[] _writeData = {(byte)writeData};
+    	bluetoothService.write(writeData);
     }
 
     public void reset(){
