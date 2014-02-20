@@ -105,7 +105,6 @@ public class SheeldsList extends SherlockFragment {
 		}
 		((OneSheeldApplication) getActivity().getApplication())
 				.clearServiceEventHandlers();
-		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
 
@@ -224,6 +223,8 @@ public class SheeldsList extends SherlockFragment {
 			// getActivity().getApplication()).getAppFirmata()
 			// .close();
 			setBWStrips();
+			if (!ArduinoConnectivityPopup.isOpened)
+				new ArduinoConnectivityPopup(getActivity()).show();
 		}
 	}
 
