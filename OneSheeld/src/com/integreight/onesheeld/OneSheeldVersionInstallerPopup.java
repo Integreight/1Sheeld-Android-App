@@ -69,8 +69,6 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 
 			}
 		});
-		// setCancelable(false);
-		// getWindow().setBackgroundDrawable(new ColorDrawable(0));
 		setOnCancelListener(new OnCancelListener() {
 
 			@Override
