@@ -44,6 +44,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				OneSheeldVersionInstallerPopup.this.setCancelable(false);
 				jodemThread = new Thread(new Runnable() {
 
 					@Override
@@ -106,6 +107,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							public void run() {
 								// TODO Auto-generated method stub
 								button.setEnabled(true);
+								OneSheeldVersionInstallerPopup.this.setCancelable(true);
 							}
 						});
 
