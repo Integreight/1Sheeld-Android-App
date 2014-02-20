@@ -38,8 +38,8 @@
         <ProgressBar
             android:id="@+id/progress"
             style="@android:style/Widget.ProgressBar.Large.Inverse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:layout_centerInParent="true"
             android:indeterminateDrawable="@drawable/my_progress_indeterminate" >
         </ProgressBar>
@@ -71,22 +71,32 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
-            <ScrollView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/connectAutomotically"
-                android:scrollbarThumbVertical="@drawable/transparent"
-                android:scrollbars="vertical" >
+                android:layout_above="@id/connectAutomotically" >
 
-                <LinearLayout
-                    android:id="@+id/devicesList"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <ScrollView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="vertical" >
-                </LinearLayout>
-            </ScrollView>
+                    android:layout_centerInParent="true"
+                    android:fillViewport="true"
+                    android:scrollbarThumbVertical="@drawable/transparent"
+                    android:scrollbars="vertical" >
+
+                    <LinearLayout
+                        android:id="@+id/devicesList"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="vertical" >
+                    </LinearLayout>
+                </ScrollView>
+            </RelativeLayout>
         </RelativeLayout>
     </RelativeLayout>
 

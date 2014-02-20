@@ -80,15 +80,16 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	private void startPeriodicUpdates() {
 		if (servicesConnected()) {
 			lastLocation = mLocationClient.getLastLocation();
-			Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
-			Log.d("Gps Lat::Double in Radians",
-					getRadians(lastLocation.getLatitude()) + "");
-			Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
-			Log.d("Gps Long::Double in Radians",
-					getRadians(lastLocation.getLongitude()) + "");
-			eventHandler.onLangChanged(lastLocation.getLongitude() + "");
-			eventHandler.onLatChanged(lastLocation.getLatitude() + "");
-
+			if (lastLocation != null) {
+				Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
+				Log.d("Gps Lat::Double in Radians",
+						getRadians(lastLocation.getLatitude()) + "");
+				Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
+				Log.d("Gps Long::Double in Radians",
+						getRadians(lastLocation.getLongitude()) + "");
+				eventHandler.onLangChanged(lastLocation.getLongitude() + "");
+				eventHandler.onLatChanged(lastLocation.getLatitude() + "");
+			}
 		}
 
 	}

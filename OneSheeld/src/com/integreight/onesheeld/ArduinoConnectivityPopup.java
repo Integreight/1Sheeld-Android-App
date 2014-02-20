@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
@@ -170,9 +171,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 			for (BluetoothDevice device : pairedDevices) {
 				addFoundDevice(device.getName(), device.getAddress(), true);
 			}
-			changeSlogan(
-					activity.getResources()
-							.getString(R.string.selectYourDevice), COLOR.YELLOW);
 		} else {
 			setRetryButtonReady(
 					activity.getResources().getString(R.string.none_found),
@@ -368,8 +366,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 				}
 			});
 			devicesList.addView(item);
-			devicesList.invalidate();
-			((ScrollView) devicesList.getParent()).invalidate();
+			changeSlogan(
+					activity.getResources()
+							.getString(R.string.selectYourDevice), COLOR.YELLOW);
 		}
 	}
 
