@@ -28,7 +28,7 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		return isButtonOn;
 	}
 
-	public void setButtonOn(boolean isButtonOn) {
+	public void setButton(boolean isButtonOn) {
 		this.isButtonOn = isButtonOn;
 		activity.getThisApplication().getAppFirmata()
 				.digitalWrite(connectedPin, isButtonOn);
