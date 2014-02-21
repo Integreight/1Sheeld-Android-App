@@ -119,10 +119,10 @@ public class Jodem {
 			return false;
 		}
 		ByteArrayInputStream stream=new ByteArrayInputStream(fileBuffer,0,fileLength);
-		while(readByteFromBuffer()!=NAK);
-		write(ACK);
 		timeoutThread=new Thread(timeoutThreadRunnable);
 		timeoutThread.start();
+		while(readByteFromBuffer()!=NAK);
+		write(ACK);
 		int packet_size = 128;
 
 
