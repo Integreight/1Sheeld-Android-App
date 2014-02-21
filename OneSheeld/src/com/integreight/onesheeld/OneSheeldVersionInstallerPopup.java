@@ -146,6 +146,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							public void run() {
 								button.setEnabled(true);
 								textView.setText(error);
+								OneSheeldVersionInstallerPopup.this.setCancelable(true);
 							}
 						});
 					}
@@ -163,6 +164,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							public void run() {
 								button.setEnabled(true);
 								textView.setText("Timout Happened");
+								OneSheeldVersionInstallerPopup.this.setCancelable(true);
 							}
 						});
 						
