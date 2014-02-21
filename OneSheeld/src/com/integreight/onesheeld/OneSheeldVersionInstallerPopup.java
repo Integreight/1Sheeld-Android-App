@@ -136,6 +136,10 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 
 					@Override
 					public void onError(final String error) {
+						if (jodemThread != null && jodemThread.isAlive()) {
+							jodemThread.interrupt();
+							jodemThread = null;
+						}
 						handler.post(new Runnable() {
 
 							@Override
@@ -144,6 +148,24 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								textView.setText(error);
 							}
 						});
+					}
+
+					@Override
+					public void onTimout() {
+						// TODO Auto-generated method stub
+						if (jodemThread != null && jodemThread.isAlive()) {
+							jodemThread.interrupt();
+							jodemThread = null;
+						}
+						handler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								button.setEnabled(true);
+								textView.setText("Timout Happened");
+							}
+						});
+						
 					}
 				});
 		super.onStart();
