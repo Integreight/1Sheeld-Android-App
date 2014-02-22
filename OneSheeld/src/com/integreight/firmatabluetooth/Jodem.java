@@ -9,6 +9,8 @@ import android.bluetooth.BluetoothDevice;
 import android.util.Log;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
+import com.integreight.onesheeld.utils.TimeOut;
+import com.integreight.onesheeld.utils.TimeOut.TimeoutHandler;
 
 public class Jodem {
 
@@ -22,30 +24,9 @@ public class Jodem {
 	public static final byte CRC = 0x43; //C
 	public static final byte SUB = 0x1A;
 	BluetoothService btService;
-	int timeoutCounter=3;
-	Thread timeoutThread;
-	Runnable timeoutThreadRunnable=new Runnable() {
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			try {
-			do{
-			
-				Thread.sleep(1000);
-				Log.d("bootloader","Time left for timeout: "+timeoutCounter+" Seconds!");
-			timeoutCounter--;
-			}while(timeoutCounter>=0);
-			jodemHandler.onTimout();
-			Log.d("bootloader","Timeout Occured!");
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return;
-			}
-			
-		}
-	};
+	TimeOut timeout;
+	
+	Thread fileSendingThread;
 
 	LinkedBlockingQueue<Byte> buffer = new LinkedBlockingQueue<Byte>();
 	
@@ -58,6 +39,20 @@ public class Jodem {
 	}
 	
 	private JodemEventHandler jodemHandler;
+	private TimeoutHandler timeoutHandler=new TimeoutHandler() {
+		
+		@Override
+		public void onTimeout() {
+			// TODO Auto-generated method stub
+			Jodem.this.onTimeout();
+		}
+		
+		@Override
+		public void onTick(int secondsLeft) {
+			// TODO Auto-generated method stub
+			Log.d("bootloader","Time left for timeout: "+secondsLeft+" Seconds!");
+		}
+	};
 
 	private int crctable[] = {
 			0x0000, 0x1021, 0x2042, 0x3063, 0x4084, 0x50a5, 0x60c6, 0x70e7,
@@ -101,14 +96,50 @@ public class Jodem {
 		this.jodemHandler=jodemHandler;
 	}
 	
-	public void abort(int count){
+	private void onError(String error){
+		stop();
+		Log.d("bootloader",error);
+		jodemHandler.onError(error);
+		timeout.stopTimer();
+	}
+	
+	private void onTimeout(){
+		stop();
+		jodemHandler.onTimout();
+		Log.d("bootloader","Timeout Occured!");
+	}
+	
+	private void abort(int count){
 
 		for (int counter=0;counter<count;counter++){
 			write(CAN);
 		}
 	}
 
-	public boolean send(InputStream inputStream, int retry) throws InterruptedException{
+	public void stop(){
+		if (fileSendingThread != null && fileSendingThread.isAlive()) {
+			fileSendingThread.interrupt();
+			fileSendingThread = null;
+		}
+		if(timeout!=null)timeout.stopTimer();
+	}
+	public void send(final InputStream inputStream, final int retry){
+		stop();
+		fileSendingThread=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					sendFile(inputStream, retry);
+				} catch (InterruptedException e) {
+					return;
+				}
+			}
+		});
+		fileSendingThread.start();
+	}
+	private boolean sendFile(InputStream inputStream, int retry) throws InterruptedException{
 		buffer.clear();
 		byte[] fileBuffer=new byte[10240];
 		int fileLength;
@@ -119,8 +150,7 @@ public class Jodem {
 			return false;
 		}
 		ByteArrayInputStream stream=new ByteArrayInputStream(fileBuffer,0,fileLength);
-		timeoutThread=new Thread(timeoutThreadRunnable);
-		timeoutThread.start();
+		timeout=new TimeOut(3, timeoutHandler);
 		while(readByteFromBuffer()!=NAK);
 		write(ACK);
 		int packet_size = 128;
@@ -151,10 +181,7 @@ public class Jodem {
 					cancel = 1;
 			}
 			else{
-				String s="send ERROR expected NAK/CRC, got "+readChar;
-				Log.d("bootloader",s);
-				jodemHandler.onError(s);
-				if(timeoutThread.isAlive())timeoutThread.interrupt();
+				onError("send ERROR expected NAK/CRC, got "+readChar);
 			}
 
 			error_count += 1;
@@ -221,10 +248,7 @@ public class Jodem {
 							//// excessive amounts of retransmissions requested,
 							//// abort transfer
 							abort(2);
-							String s="excessive NAKs, transfer aborted";
-							Log.d("bootloader",s);
-							jodemHandler.onError(s);
-							if(timeoutThread.isAlive())timeoutThread.interrupt();
+							onError("excessive NAKs, transfer aborted");
 							return false;
 						}
 					// return to loop and resend
@@ -232,10 +256,7 @@ public class Jodem {
 				}
 				//  // protocol error
 				abort(2);
-				String s="protocol error";
-				Log.d("bootloader",s);
-				jodemHandler.onError(s);
-				if(timeoutThread.isAlive())timeoutThread.interrupt();
+				onError("protocol error");
 				return false;
 			}
 			// // keep track of sequence
@@ -249,7 +270,7 @@ public class Jodem {
 			//An ACK should be returned
 			byte readChar = readByteFromBuffer();
 			if (readChar == ACK){
-				if(timeoutThread.isAlive())timeoutThread.interrupt();
+				timeout.stopTimer();
 				jodemHandler.onSuccess();
 				break;
 				}
@@ -257,10 +278,7 @@ public class Jodem {
 				error_count += 1;
 				if (error_count >= retry){
 					abort(2);
-					String s="EOT was not ACKd, transfer aborted";
-					Log.d("bootloader",s);
-					jodemHandler.onError(s);
-					if(timeoutThread.isAlive())timeoutThread.interrupt();
+					onError("EOT was not ACKd, transfer aborted");
 					return false;
 				}
 			}
@@ -269,7 +287,7 @@ public class Jodem {
 	}
 	
 	public byte readByteFromBuffer() throws InterruptedException{
-		timeoutCounter=3;
+		timeout.resetTimer();
 		return buffer.take().byteValue();
 	}
 	

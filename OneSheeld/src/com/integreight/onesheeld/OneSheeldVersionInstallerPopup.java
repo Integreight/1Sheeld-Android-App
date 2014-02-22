@@ -3,7 +3,6 @@ package com.integreight.onesheeld;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.res.Resources.NotFoundException;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -19,7 +18,6 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	ArduinoFirmata firmata;
 	Button button;
 	Jodem jodem;
-	Thread jodemThread;
 	ProgressBar progressBar;
 	TextView textView;
 
@@ -45,28 +43,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
-				jodemThread = new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						try {
-							jodem.send(
-									activity.getResources().openRawResource(
-											R.raw.atmega_firmata), 3);
-						} catch (NotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
-					}
-				});
 				firmata.prepareAppForSendingFirmware();
 				button.setEnabled(false);
-				jodemThread.start();
+				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata), 3);
 
 			}
 		});
@@ -136,10 +115,6 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 
 					@Override
 					public void onError(final String error) {
-						if (jodemThread != null && jodemThread.isAlive()) {
-							jodemThread.interrupt();
-							jodemThread = null;
-						}
 						handler.post(new Runnable() {
 
 							@Override
@@ -154,10 +129,6 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 					@Override
 					public void onTimout() {
 						// TODO Auto-generated method stub
-						if (jodemThread != null && jodemThread.isAlive()) {
-							jodemThread.interrupt();
-							jodemThread = null;
-						}
 						handler.post(new Runnable() {
 
 							@Override
@@ -176,10 +147,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	@Override
 	protected void onStop() {
 		// TODO Auto-generated method stub
-		if (jodemThread != null && jodemThread.isAlive()) {
-			jodemThread.interrupt();
-			jodemThread = null;
-		}
+		jodem.stop();
 	}
 
 }
