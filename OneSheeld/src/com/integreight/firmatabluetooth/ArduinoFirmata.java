@@ -82,6 +82,8 @@ public class ArduinoFirmata{
     private List<ArduinoFirmataEventHandler> eventHandlers;
     private List<ArduinoFirmataDataHandler> dataHandlers;
     private List<ArduinoFirmataShieldFrameHandler> frameHandlers;
+    private List<ArduinoVersionQueryHandler> versionQueryHandlers;
+    
     public void addEventHandler(ArduinoFirmataEventHandler handler){
         if(handler!=null&&!eventHandlers.contains(handler))eventHandlers.add(handler);
     }
@@ -90,6 +92,9 @@ public class ArduinoFirmata{
     }
     public void addShieldFrameHandler(ArduinoFirmataShieldFrameHandler handler){
         if(handler!=null&&!frameHandlers.contains(handler))frameHandlers.add(handler);
+    }
+    public void addVersionQueryHandler(ArduinoVersionQueryHandler handler){
+        if(handler!=null&&!versionQueryHandlers.contains(handler))versionQueryHandlers.add(handler);
     }
 
     private int waitForData = 0;
@@ -127,6 +132,7 @@ public class ArduinoFirmata{
         eventHandlers=new ArrayList<ArduinoFirmataEventHandler>();
         dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
         frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
+        versionQueryHandlers=new ArrayList<ArduinoVersionQueryHandler>();
         this.context=context;
         bluetoothService.addBluetoothServiceHandler(handler);
     }
@@ -364,6 +370,9 @@ public class ArduinoFirmata{
                     		if(sysexData.length>=2){
                     		minorVersion=sysexData[0];
                     		majorVersion=sysexData[1];
+                    		for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
+								handler.onVersionReceived(minorVersion, majorVersion);
+							}
                     		}
                     	}
                     	
