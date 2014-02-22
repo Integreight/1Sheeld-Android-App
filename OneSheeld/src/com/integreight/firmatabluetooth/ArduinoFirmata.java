@@ -210,24 +210,6 @@ public class ArduinoFirmata{
         write(writeData);
     }
     
-//    public void sendUart(char shieldCommand, char methodId, char[] data){
-//    	if(!isUartInit)return;
-//    	byte[] byteArray=new byte[data.length*2+8];
-//    	byteArray[0]=getCharAs2SevenBitsBytes(STX)[0];
-//    	byteArray[1]=getCharAs2SevenBitsBytes(STX)[1];
-//    	byteArray[2]=getCharAs2SevenBitsBytes(shieldCommand)[0];
-//    	byteArray[3]=getCharAs2SevenBitsBytes(shieldCommand)[1];
-//    	byteArray[4]=getCharAs2SevenBitsBytes(methodId)[0];
-//    	byteArray[5]=getCharAs2SevenBitsBytes(methodId)[1];
-//    	for (int i = 0; i < data.length*2; i+=2) {
-//    		byteArray[i+6]=getCharAs2SevenBitsBytes(data[i/2])[0];
-//    		byteArray[i+1+6]=getCharAs2SevenBitsBytes(data[i/2])[1];
-//		}
-//    	byteArray[byteArray.length-2]=getCharAs2SevenBitsBytes(ETX)[0];
-//    	byteArray[byteArray.length-1]=getCharAs2SevenBitsBytes(ETX)[1];
-//    	sysex(UART_DATA, byteArray);
-//    }
-    
     private byte[] getByteAs2SevenBitsBytes(byte data){
     	byte[] temp=new byte[2];
     	temp[0]=(byte) (data & 127);
@@ -244,13 +226,8 @@ public class ArduinoFirmata{
     	return temp;
     }
     
-//    private byte[] getCharAs2SevenBitsBytes(char data){
-//    	return getByteAs2SevenBitsBytes((byte)data);
-//    }
-    
     public void initUart(BaudRate baud){
     	sysex(UART_COMMAND, new byte[]{UART_BEGIN,baud.getValue()});
-    	//sysex(UART_COMMAND, new byte[]{baud.getValue()});
     	isUartInit=true;
     }
     
@@ -350,15 +327,9 @@ public class ArduinoFirmata{
                     	}
                     	
                     	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
-                    		
-//                    		try {
                 				for(byte b:fixedSysexData){
                 					uartBuffer.add(b);
                 				}
-//                			} catch (InterruptedException e) {
-//                				// TODO Auto-generated catch block
-//                				e.printStackTrace();
-//                			}
                     	}
                     
                     for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
