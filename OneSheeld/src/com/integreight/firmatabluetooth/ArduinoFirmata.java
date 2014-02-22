@@ -56,6 +56,7 @@ public class ArduinoFirmata{
     private final byte SYSTEM_RESET    = (byte)0xFF;
     private final byte START_SYSEX     = (byte)0xF0;
     private final byte END_SYSEX       = (byte)0xF7;
+    private final byte FIRMWARE_VERSION_QUERY    = (byte)0x63;
     private final byte MUTE_FIRMATA    = (byte)0x64;
     private final byte UART_COMMAND    = (byte)0x65;
     private final byte UART_DATA       = (byte)0x66;
@@ -359,6 +360,12 @@ public class ArduinoFirmata{
                     	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
                     		dataHandler.onUartReceive(fixedSysexData);
                     	}
+                    	if(sysexCommand==FIRMWARE_VERSION_QUERY){
+                    		if(sysexData.length>=2){
+                    		minorVersion=sysexData[0];
+                    		majorVersion=sysexData[1];
+                    		}
+                    	}
                     	
             		}
                     }
@@ -463,6 +470,10 @@ public class ArduinoFirmata{
     	sysex(MUTE_FIRMATA, new byte[]{0});
     }
     
+    private void queryVersion(){
+    	sysex(FIRMWARE_VERSION_QUERY, new byte[]{});
+    }
+    
     private void clearAllBuffers(){
     	bluetoothBuffer.clear();
     	uartBuffer.clear();
@@ -513,7 +524,7 @@ public class ArduinoFirmata{
         	setAllPinsAsInput();
         	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
         	uartListeningThread=new UartListeningThread();
-        	
+        	queryVersion();
         	new Handler(Looper.getMainLooper()).post(new Runnable() {
 				@Override
 				public void run() {
