@@ -177,13 +177,13 @@ public class ArduinoFirmata{
 
     public void write(byte[] writeData){
 
-    if(isOpen()) bluetoothService.write(writeData);
+    	if(isOpen())bluetoothService.write(writeData);
 
     }
 
     public void write(byte writeData){
        // byte[] _writeData = {(byte)writeData};
-    	bluetoothService.write(writeData);
+    	if(isOpen()) bluetoothService.write(writeData);
     }
 
     public void reset(){
