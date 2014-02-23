@@ -1,8 +1,13 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.shields.controller.utils.TakePicture;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
 
@@ -13,7 +18,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
 	private static final byte FLASH_METHOD_ID = (byte) 0x02;
 	private static String FLASH_MODE;
-	private boolean requestCamera = false;
 
 	public CameraShield() {
 
@@ -43,13 +47,33 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 			switch (frame.getFunctionId()) {
 			case FLASH_METHOD_ID:
-				FLASH_MODE = frame.getArgumentAsString(0);
-				eventHandler.setFlashMode(FLASH_MODE);
+				byte flash_mode  = frame.getArgument(0)[0];
+				switch (flash_mode) {
+				case 0:
+					FLASH_MODE = "off";
+					break;
+				case 1:
+					FLASH_MODE = "on";
+					break;
+				case 2:
+					FLASH_MODE = "auto";
+					break;
+				default:
+					break;
+				}
 				break;
 
 			case CAPTURE_METHOD_ID:
-				requestCamera = true;
-				eventHandler.takePicture();
+				Intent translucent = new Intent(getApplication(),
+						TakePicture.class);
+				translucent.putExtra("FLASH", FLASH_MODE);
+				translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				getApplication().startActivity(translucent);
+				/*
+				 * new AlertDialog.Builder(getApplication()
+				 * .getApplicationContext()).setMessage("Ya Rab").create()
+				 * .show();
+				 */
 				break;
 
 			default:
