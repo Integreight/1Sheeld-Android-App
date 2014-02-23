@@ -16,7 +16,9 @@ import com.integreight.firmatabluetooth.Jodem;
 public class OneSheeldVersionInstallerPopup extends Dialog {
 	private Activity activity;
 	ArduinoFirmata firmata;
-	Button button;
+	Button firmataButton;
+	Button rxButton;
+	Button txButton;
 	Jodem jodem;
 	ProgressBar progressBar;
 	TextView textView;
@@ -31,21 +33,53 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.upgrading_firmware_dialog_layout);
-		button = (Button) findViewById(R.id.bootloaderbutton);
+		firmataButton = (Button) findViewById(R.id.firmatabootloaderbutton);
+		rxButton = (Button) findViewById(R.id.rxbootloaderbutton);
+		txButton = (Button) findViewById(R.id.txbootloaderbutton);
 		progressBar = (ProgressBar) findViewById(R.id.bootloaderProgressBar);
 		textView = (TextView) findViewById(R.id.bootloaderUploadPercentage);
 		progressBar.setProgress(0);
 		progressBar.setMax(100);
 
-		button.setOnClickListener(new View.OnClickListener() {
+		firmataButton.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
-				button.setEnabled(false);
+				firmataButton.setEnabled(false);
+				rxButton.setEnabled(false);
+				txButton.setEnabled(false);
 				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata), 3);
+
+			}
+		});
+		rxButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				//firmata.prepareAppForSendingFirmware();
+				firmataButton.setEnabled(false);
+				rxButton.setEnabled(false);
+				txButton.setEnabled(false);
+				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_rx_flash), 3);
+
+			}
+		});
+		txButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				//firmata.prepareAppForSendingFirmware();
+				firmataButton.setEnabled(false);
+				rxButton.setEnabled(false);
+				txButton.setEnabled(false);
+				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_tx_flash), 3);
 
 			}
 		});
@@ -85,7 +119,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								button.setEnabled(true);
+								firmataButton.setEnabled(true);
+								rxButton.setEnabled(true);
+								txButton.setEnabled(true);
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
 							}
 						});
@@ -119,7 +155,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 
 							@Override
 							public void run() {
-								button.setEnabled(true);
+								firmataButton.setEnabled(true);
+								rxButton.setEnabled(true);
+								txButton.setEnabled(true);
 								textView.setText(error);
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
 							}
@@ -133,7 +171,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 
 							@Override
 							public void run() {
-								button.setEnabled(true);
+								firmataButton.setEnabled(true);
+								rxButton.setEnabled(true);
+								txButton.setEnabled(true);
 								textView.setText("Timout Happened");
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
 							}
