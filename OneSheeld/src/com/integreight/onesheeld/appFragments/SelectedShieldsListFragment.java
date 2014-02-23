@@ -18,6 +18,7 @@ import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
+import com.integreight.onesheeld.shields.fragments.CameraFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
 import com.integreight.onesheeld.shields.fragments.FlashlightFragment;
@@ -146,6 +147,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.PRESSURE_SHIELD, new PressureFragment());
 		case TEMPERATURE_SHIELD:
 			return addToCreatedListAndReturn(UIShield.TEMPERATURE_SHIELD, new TemperatureFragment());
+		case CAMERA_SHIELD:
+			return addToCreatedListAndReturn(UIShield.CAMERA_SHIELD, new CameraFragment());
 
 		default:
 			return new EmptyShieldFragment();
