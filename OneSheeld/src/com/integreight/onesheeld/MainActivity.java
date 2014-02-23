@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.actionbarsherlock.view.Window;
 import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;

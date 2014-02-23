@@ -9,12 +9,12 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class NotificationShield extends ControllerParent<NotificationShield> {
 	private NotificationEventHandler eventHandler;
 	private String lastNotificationText;
-	private static final byte NOTIFICATION_COMMAND = (byte) 0x34;
 	private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
 
 	public String getLastNotificationText() {
@@ -31,23 +31,23 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 
 	@Override
 	public void onUartReceive(byte[] data) {
-		if (data.length < 2)
-			return;
-		byte command = data[0];
-		byte methodId = data[1];
-		int n = data.length - 2;
-		byte[] newArray = new byte[n];
-		System.arraycopy(data, 2, newArray, 0, n);
-		if (command == NOTIFICATION_COMMAND) {
-			String notificationText = new String(newArray);
-			lastNotificationText = notificationText;
-			if (methodId == NOTIFY_PHONE_METHOD_ID) {
-				showNotification(notificationText);
-				eventHandler.onNotificationReceive(notificationText);
-			}
-
-		}
-		super.onUartReceive(data);
+//		if (data.length < 2)
+//			return;
+//		byte command = data[0];
+//		byte methodId = data[1];
+//		int n = data.length - 2;
+//		byte[] newArray = new byte[n];
+//		System.arraycopy(data, 2, newArray, 0, n);
+//		if (command == NOTIFICATION_COMMAND) {
+//			String notificationText = new String(newArray);
+//			lastNotificationText = notificationText;
+//			if (methodId == NOTIFY_PHONE_METHOD_ID) {
+//				showNotification(notificationText);
+//				eventHandler.onNotificationReceive(notificationText);
+//			}
+//
+//		}
+//		super.onUartReceive(data);
 	}
 
 	protected void showNotification(String notificationText) {
@@ -99,6 +99,15 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
+		if (frame.getShieldId() == UIShield.NOTIFICATION_SHIELD.getId()) {
+			String notificationText = frame.getArgumentAsString(0);
+			lastNotificationText = notificationText;
+			if (frame.getFunctionId() == NOTIFY_PHONE_METHOD_ID) {
+				showNotification(notificationText);
+				eventHandler.onNotificationReceive(notificationText);
+			}
+
+		}
 
 	}
 

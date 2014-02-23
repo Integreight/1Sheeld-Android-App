@@ -80,15 +80,16 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	private void startPeriodicUpdates() {
 		if (servicesConnected()) {
 			lastLocation = mLocationClient.getLastLocation();
-			Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
-			Log.d("Gps Lat::Double in Radians",
-					getRadians(lastLocation.getLatitude()) + "");
-			Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
-			Log.d("Gps Long::Double in Radians",
-					getRadians(lastLocation.getLongitude()) + "");
-			eventHandler.onLangChanged(lastLocation.getLongitude() + "");
-			eventHandler.onLatChanged(lastLocation.getLatitude() + "");
-
+			if (lastLocation != null) {
+				Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
+				Log.d("Gps Lat::Double in Radians",
+						getRadians(lastLocation.getLatitude()) + "");
+				Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
+				Log.d("Gps Long::Double in Radians",
+						getRadians(lastLocation.getLongitude()) + "");
+				eventHandler.onLangChanged(lastLocation.getLongitude() + "");
+				eventHandler.onLatChanged(lastLocation.getLatitude() + "");
+			}
 		}
 
 	}
@@ -167,8 +168,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		frame = new ShieldFrame(UIShield.GPS_SHIELD.getId(), (byte) 0,
 				ShieldFrame.DATA_SENT);
 		// frame.addByteArgument((byte) Math.round(event.values[0]));
-		float lat = (float) getRadians(myLocation.getLatitude());
-		float lang = (float) getRadians(myLocation.getLongitude());
+		float lat = (float)myLocation.getLatitude();// getRadians(myLocation.getLatitude());
+		float lang = (float)myLocation.getLongitude();// getRadians(myLocation.getLongitude());
 		frame.addFloatArgument(lat);
 		frame.addFloatArgument(lang);
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);

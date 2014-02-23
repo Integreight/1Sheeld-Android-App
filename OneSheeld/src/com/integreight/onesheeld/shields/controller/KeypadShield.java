@@ -64,8 +64,8 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 					connectedPins.get(Pin.getColumn(column)),
 					ArduinoFirmata.HIGH);
 		}
-		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
-				new char[] { row, column });
+//		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
+//				new char[] { row, column });
 		CommitInstanceTotable();
 	}
 
@@ -80,8 +80,8 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 					connectedPins.get(Pin.getColumn(column)),
 					ArduinoFirmata.LOW);
 		}
-		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
-				new char[] { NOTHING_PRESSED, NOTHING_PRESSED });
+//		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
+//				new char[] { NOTHING_PRESSED, NOTHING_PRESSED });
 		CommitInstanceTotable();
 	}
 

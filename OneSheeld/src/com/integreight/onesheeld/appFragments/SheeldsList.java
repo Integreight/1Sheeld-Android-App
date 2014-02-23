@@ -35,6 +35,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.OneSheeldVersionInstallerPopup;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
@@ -104,7 +105,6 @@ public class SheeldsList extends SherlockFragment {
 		}
 		((OneSheeldApplication) getActivity().getApplication())
 				.clearServiceEventHandlers();
-		getActivity().setTitle("OneSheeld");
 		super.onResume();
 	}
 
@@ -223,6 +223,8 @@ public class SheeldsList extends SherlockFragment {
 			// getActivity().getApplication()).getAppFirmata()
 			// .close();
 			setBWStrips();
+			if (!ArduinoConnectivityPopup.isOpened)
+				new ArduinoConnectivityPopup(getActivity()).show();
 		}
 	}
 
@@ -339,6 +341,10 @@ public class SheeldsList extends SherlockFragment {
 			return true;
 		case R.id.main_activity_action_forward:
 			launchShieldsOperationActivity();
+			return true;
+		case R.id.open_bootloader_popup:
+			if (!OneSheeldVersionInstallerPopup.isOpened)
+				new OneSheeldVersionInstallerPopup(getActivity()).show();
 			return true;
 		}
 

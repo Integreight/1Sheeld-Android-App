@@ -129,36 +129,4 @@ public class OneSheeldApplication extends Application {
 			ArduinoFirmataEventHandler arduinoFirmataHandlerForConnectivityPopup) {
 		this.arduinoFirmataHandlerForConnectivityPopup = arduinoFirmataHandlerForConnectivityPopup;
 	}
-
-	// public ServiceConnection getmConnection() {
-	// return mConnection;
-	// }
-	//
-	// private final ServiceConnection mConnection = new ServiceConnection() {
-	//
-	// @Override
-	// public void onServiceConnected(ComponentName className, IBinder service)
-	// {
-	// // We've bound to LocalService, cast the IBinder and get
-	// // LocalService instance
-	// // OneSheeldBinder binder = (OneSheeldBinder) service;
-	// setAppFirmata(binder.getService().getFirmata());
-	// getAppFirmata().addEventHandler(getArduinoFirmataEventHandler());
-	// for (OneSheeldServiceHandler serviceHandler : getServiceEventHandlers())
-	// {
-	// serviceHandler.onSuccess(getAppFirmata());
-	// }
-	// // isBoundService = true;
-	//
-	// }
-	//
-	// @Override
-	// public void onServiceDisconnected(ComponentName arg0) {
-	// for (OneSheeldServiceHandler serviceHandler : getServiceEventHandlers())
-	// {
-	// serviceHandler.onFailure();
-	// }
-	// // isBoundService = false;
-	// }
-	// };
 }

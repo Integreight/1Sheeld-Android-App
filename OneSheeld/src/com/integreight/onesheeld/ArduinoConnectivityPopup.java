@@ -22,7 +22,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -170,9 +169,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 			for (BluetoothDevice device : pairedDevices) {
 				addFoundDevice(device.getName(), device.getAddress(), true);
 			}
-			changeSlogan(
-					activity.getResources()
-							.getString(R.string.selectYourDevice), COLOR.YELLOW);
 		} else {
 			setRetryButtonReady(
 					activity.getResources().getString(R.string.none_found),
@@ -368,8 +364,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 				}
 			});
 			devicesList.addView(item);
-			devicesList.invalidate();
-			((ScrollView) devicesList.getParent()).invalidate();
+			changeSlogan(
+					activity.getResources()
+							.getString(R.string.selectYourDevice), COLOR.YELLOW);
 		}
 	}
 

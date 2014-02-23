@@ -5,8 +5,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <uses-sdk
-        android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="8" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -18,7 +17,6 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
-    
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <uses-feature
@@ -96,7 +94,7 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
-                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"

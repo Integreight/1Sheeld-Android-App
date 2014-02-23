@@ -45,7 +45,7 @@ public class ToggleButtonFragment extends
 						// TODO Auto-generated method stub
 						((ToggleButtonShield) getApplication()
 								.getRunningShields().get(getControllerTag()))
-								.setButtonOn(isChecked);
+								.setButton(isChecked);
 
 					}
 				});
@@ -107,6 +107,10 @@ public class ToggleButtonFragment extends
 												getControllerTag()))
 										.setConnected(new ArduinoConnectedPin(
 												which, ArduinoFirmata.OUTPUT));
+								((ToggleButtonShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag()))
+										.setButton(toggleButtonButton.isChecked());
 								toggleButtonButton.setEnabled(true);
 
 							}
