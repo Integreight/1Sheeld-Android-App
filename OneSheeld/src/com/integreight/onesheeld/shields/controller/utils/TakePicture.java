@@ -158,6 +158,10 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				mCamera.stopPreview();
 				// release the camera
 				mCamera.release();
+				Toast.makeText(getApplicationContext(),
+						"Your Picture has been taken !", Toast.LENGTH_LONG)
+						.show();
+				
 				finish();
 
 			}
