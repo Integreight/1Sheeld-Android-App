@@ -1,9 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -47,7 +44,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 			switch (frame.getFunctionId()) {
 			case FLASH_METHOD_ID:
-				byte flash_mode  = frame.getArgument(0)[0];
+				byte flash_mode = frame.getArgument(0)[0];
 				switch (flash_mode) {
 				case 0:
 					FLASH_MODE = "off";
@@ -64,16 +61,12 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				break;
 
 			case CAPTURE_METHOD_ID:
+
 				Intent translucent = new Intent(getApplication(),
 						TakePicture.class);
 				translucent.putExtra("FLASH", FLASH_MODE);
 				translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				getApplication().startActivity(translucent);
-				/*
-				 * new AlertDialog.Builder(getApplication()
-				 * .getApplicationContext()).setMessage("Ya Rab").create()
-				 * .show();
-				 */
 				break;
 
 			default:

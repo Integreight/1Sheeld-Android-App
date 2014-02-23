@@ -39,7 +39,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	private Camera mCamera;
 	// the camera parameters
 	private Parameters parameters;
-	String FLASH_MODE = "on";
+	private String FLASH_MODE ;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings("deprecation")
@@ -107,6 +107,10 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 		// get camera parameters
 		parameters = mCamera.getParameters();
+		if (FLASH_MODE == null || FLASH_MODE.isEmpty())
+		{
+			FLASH_MODE = "auto";
+		}
 		parameters.setFlashMode(FLASH_MODE);
 
 		// set camera parameters
@@ -154,6 +158,10 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				mCamera.stopPreview();
 				// release the camera
 				mCamera.release();
+				Toast.makeText(getApplicationContext(),
+						"Your Picture has been taken !", Toast.LENGTH_LONG)
+						.show();
+				
 				finish();
 
 			}

@@ -92,7 +92,8 @@
         <activity
             android:name="com.integreight.onesheeld.shields.controller.utils.TakePicture"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:taskAffinity="" >
         </activity>
         <!--
              This is the "fire" BroadcastReceiver. Note that Locale will reject plug-in BroadcastReceivers for the following reasons:
