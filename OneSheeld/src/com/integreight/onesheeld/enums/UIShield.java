@@ -2,6 +2,7 @@ package com.integreight.onesheeld.enums;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
+import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
@@ -164,7 +165,11 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_led_symbol, false,
-			TemperatureShield.class);
+			TemperatureShield.class), CAMERA_SHIELD((byte) 0x15, "Camera",
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false, CameraShield.class);
 
 	private byte id;
 	private String name;
@@ -299,6 +304,8 @@ public enum UIShield {
 			return PRESSURE_SHIELD;
 		case 28:
 			return TEMPERATURE_SHIELD;
+		case 29:
+			return CAMERA_SHIELD;
 		}
 		return null;
 	}
