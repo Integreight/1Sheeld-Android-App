@@ -5,6 +5,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
+import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 import android.app.AlertDialog;
@@ -39,6 +40,8 @@ public class PushButtonFragment extends
 
 		final Button push = (Button) v
 				.findViewById(R.id.push_button_shield_button_push_button);
+		final AppSlidingLeftMenu menu = (AppSlidingLeftMenu) getActivity()
+				.findViewById(R.id.sliding_pane_layout);
 		push.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -54,15 +57,18 @@ public class PushButtonFragment extends
 						((PushButtonShield) getApplication()
 								.getRunningShields().get(getControllerTag()))
 								.setButton(true);
+						menu.setCanSlide(false);
 					} else {
 						((PushButtonShield) getApplication()
 								.getRunningShields().get(getControllerTag()))
 								.setButton(false);
+						menu.setCanSlide(true);
 					}
 					return true;
 				} else if (arg1.getAction() == MotionEvent.ACTION_UP) {
 					((PushButtonShield) getApplication().getRunningShields()
 							.get(getControllerTag())).setButton(false);
+					menu.setCanSlide(false);
 					return true;
 				}
 				return false;
@@ -79,16 +85,26 @@ public class PushButtonFragment extends
 						}
 						if (event.getAction() == MotionEvent.ACTION_DOWN
 								|| event.getAction() == MotionEvent.ACTION_MOVE) {
-							((PushButtonShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag())).setButton(rect
-									.contains((int) event.getX(),
-											(int) event.getY()));
+							if (rect.contains((int) event.getX(),
+									(int) event.getY())) {
+								((PushButtonShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag()))
+										.setButton(true);
+								menu.setCanSlide(false);
+							} else {
+								((PushButtonShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag()))
+										.setButton(false);
+								menu.setCanSlide(true);
+							}
 							return true;
 						} else if (event.getAction() == MotionEvent.ACTION_UP) {
 							((PushButtonShield) getApplication()
 									.getRunningShields()
 									.get(getControllerTag())).setButton(false);
+							menu.setCanSlide(true);
 							return true;
 						}
 						return false;
