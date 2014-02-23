@@ -6,8 +6,18 @@
 <Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@+id/bootloaderbutton"
-     android:text="Upgrade Firmware"/>
+    android:id="@+id/firmatabootloaderbutton"
+     android:text="Upgrade Firmata Firmware"/>
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/rxbootloaderbutton"
+     android:text="Upgrade RX Led Firmware"/>
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/txbootloaderbutton"
+     android:text="Upgrade Tx Led Firmware"/>
     <ProgressBar
         android:id="@+id/bootloaderProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
