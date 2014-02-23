@@ -19,6 +19,7 @@ import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
 import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
+import com.integreight.onesheeld.shields.controller.PushButtonShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
@@ -77,7 +78,7 @@ public enum UIShield {
 			R.drawable.shields_activity_strip_12_bw,
 			R.drawable.shields_activity_small_strip_12,
 			R.drawable.shields_activity_push_button_symbol, false,
-			EmptyShield.class), TOGGLEBUTTON_SHIELD((byte) 0x04,
+			PushButtonShield.class), TOGGLEBUTTON_SHIELD((byte) 0x04,
 			"On/Off Button", R.drawable.shields_activity_strip_6,
 			R.drawable.shields_activity_strip_6_bw,
 			R.drawable.shields_activity_small_strip_6,

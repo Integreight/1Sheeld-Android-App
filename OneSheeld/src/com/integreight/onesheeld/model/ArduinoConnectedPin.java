@@ -3,6 +3,7 @@ package com.integreight.onesheeld.model;
 public class ArduinoConnectedPin {
 	private int pinID;
 	private byte pinMode;
+	
 	public ArduinoConnectedPin() {
 		// TODO Auto-generated constructor stub
 	}
@@ -23,6 +24,5 @@ public class ArduinoConnectedPin {
 	public void setPinMode(byte pinMode) {
 		this.pinMode = pinMode;
 	}
-	
 	
 }
