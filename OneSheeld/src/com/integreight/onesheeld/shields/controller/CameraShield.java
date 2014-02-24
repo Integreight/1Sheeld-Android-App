@@ -15,6 +15,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
 	private static final byte FLASH_METHOD_ID = (byte) 0x02;
 	private static String FLASH_MODE;
+	private static final byte FRONT_CAPTURE = (byte) 0x03;
 
 	public CameraShield() {
 
@@ -68,7 +69,13 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				getApplication().startActivity(translucent);
 				break;
-
+			case FRONT_CAPTURE:
+				Intent front_translucent = new Intent(getApplication(),
+						TakePicture.class);
+				front_translucent.putExtra("Front_Request", true);
+				front_translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				getApplication().startActivity(front_translucent);
+				
 			default:
 				break;
 			}
