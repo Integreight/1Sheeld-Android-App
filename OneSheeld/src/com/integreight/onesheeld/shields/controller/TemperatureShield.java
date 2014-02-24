@@ -20,7 +20,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	private TemperatureEventHandler eventHandler;
 	private ShieldFrame frame;
 	Handler handler;
-	int PERIOD = 1000;
+	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
 

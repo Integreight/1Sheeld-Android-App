@@ -20,7 +20,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	private ProximityEventHandler eventHandler;
 	private ShieldFrame frame;
 	Handler handler;
-	int PERIOD = 1000;
+	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
 
