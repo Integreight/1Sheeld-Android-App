@@ -56,6 +56,7 @@ public class ArduinoFirmata{
     private final byte SYSTEM_RESET    = (byte)0xFF;
     private final byte START_SYSEX     = (byte)0xF0;
     private final byte END_SYSEX       = (byte)0xF7;
+    private final byte IS_ALIVE    = (byte)0x62;
     private final byte FIRMWARE_VERSION_QUERY    = (byte)0x63;
     private final byte MUTE_FIRMATA    = (byte)0x64;
     private final byte UART_COMMAND    = (byte)0x65;
@@ -500,24 +501,8 @@ public class ArduinoFirmata{
 		@Override
 		public void onConnected(final BluetoothDevice device) {
 			// TODO Auto-generated method stub
-			enableReporting();
-        	setAllPinsAsInput();
-        	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
-        	uartListeningThread=new UartListeningThread();
-        	queryVersion();
-        	new Handler(Looper.getMainLooper()).post(new Runnable() {
-				@Override
-				public void run() {
-					// TODO Auto-generated method stub
-					for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-		        		if(eventHandler!=null)eventHandler.onConnect();
-		    		}
-		            String mConnectedDeviceName = device.getName();
-		            Toast.makeText(context, "Connected to "
-		                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
-				}
-			});
-
+			
+			initFirmata(device);
 			
 		}
 
@@ -535,6 +520,27 @@ public class ArduinoFirmata{
 		}
 	};
 
+	private void initFirmata(final BluetoothDevice device){
+		enableReporting();
+    	setAllPinsAsInput();
+    	initUart();
+    	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
+    	uartListeningThread=new UartListeningThread();
+    	queryVersion();
+    	new Handler(Looper.getMainLooper()).post(new Runnable() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+	        		if(eventHandler!=null)eventHandler.onConnect();
+	    		}
+	            String mConnectedDeviceName = device.getName();
+	            Toast.makeText(context, "Connected to "
+	                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
+			}
+		});
+	}
+	
 	private byte readByteFromUartBuffer() {
 		//while(uartBuffer.peek()==null);
 		
