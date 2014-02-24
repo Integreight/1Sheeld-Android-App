@@ -21,7 +21,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 	private LightEventHandler eventHandler;
 	private ShieldFrame frame;
 	Handler handler;
-	int PERIOD = 1000;
+	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
 

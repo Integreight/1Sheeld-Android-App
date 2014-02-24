@@ -21,7 +21,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 	private PressureEventHandler eventHandler;
 	private ShieldFrame frame;
 	Handler handler;
-	int PERIOD = 1000;
+	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
 

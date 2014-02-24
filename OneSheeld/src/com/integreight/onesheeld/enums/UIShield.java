@@ -17,6 +17,7 @@ import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
+import com.integreight.onesheeld.shields.controller.PhoneShield;
 import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
@@ -170,7 +171,11 @@ public enum UIShield {
 			R.drawable.shields_activity_small_strip_22,
 			R.drawable.shields_activity_strip_22_bw,
 			R.drawable.shields_activity_small_strip_22,
-			R.drawable.shields_activity_led_symbol, false, CameraShield.class);
+			R.drawable.shields_activity_led_symbol, false, CameraShield.class), PHONE_SHIELD(
+			(byte) 0x20, "Phone", R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_strip_22_bw,
+			R.drawable.shields_activity_small_strip_22,
+			R.drawable.shields_activity_led_symbol, false, PhoneShield.class);
 
 	private byte id;
 	private String name;
@@ -307,6 +312,8 @@ public enum UIShield {
 			return TEMPERATURE_SHIELD;
 		case 29:
 			return CAMERA_SHIELD;
+		case 30:
+			return PHONE_SHIELD;
 		}
 		return null;
 	}

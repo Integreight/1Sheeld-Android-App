@@ -36,6 +36,7 @@ import com.integreight.onesheeld.shields.fragments.MicFragment;
 import com.integreight.onesheeld.shields.fragments.MusicPlayerFragment;
 import com.integreight.onesheeld.shields.fragments.NotificationFragment;
 import com.integreight.onesheeld.shields.fragments.OrientationFragment;
+import com.integreight.onesheeld.shields.fragments.PhoneFragment;
 import com.integreight.onesheeld.shields.fragments.PressureFragment;
 import com.integreight.onesheeld.shields.fragments.ProximityFragment;
 import com.integreight.onesheeld.shields.fragments.PushButtonFragment;
@@ -149,6 +150,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.TEMPERATURE_SHIELD, new TemperatureFragment());
 		case CAMERA_SHIELD:
 			return addToCreatedListAndReturn(UIShield.CAMERA_SHIELD, new CameraFragment());
+		case PHONE_SHIELD:
+			return addToCreatedListAndReturn(UIShield.PHONE_SHIELD, new PhoneFragment());
 
 		default:
 			return new EmptyShieldFragment();
