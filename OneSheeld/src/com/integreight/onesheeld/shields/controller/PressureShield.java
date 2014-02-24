@@ -74,7 +74,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 		// TODO Auto-generated method stub
 		if (flag) {
 			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(), PRESSURE_VALUE);
-			frame.addByteArgument((byte) Math.round(event.values[0]));
+			frame.addIntegerArgument(2, false, Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
 
