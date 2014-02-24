@@ -15,11 +15,11 @@ import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 
 public class TakePicture extends Activity implements SurfaceHolder.Callback {
@@ -40,6 +40,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	// the camera parameters
 	private Parameters parameters;
 	private String FLASH_MODE ;
+	private boolean isFrontCamRequest = false;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings("deprecation")
@@ -57,7 +58,9 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 			Bundle extras = getIntent().getExtras();
 			String flash_mode = extras.getString("FLASH");
 			FLASH_MODE = flash_mode;
-
+			boolean front_cam_req = extras.getBoolean("Front_Request");
+			isFrontCamRequest = front_cam_req;
+			
 			sv = (SurfaceView) findViewById(R.id.camera_preview);
 
 			// Get a surface
@@ -174,14 +177,50 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw the preview.
-		mCamera = getCameraInstance();
-		try {
-			mCamera.setPreviewDisplay(holder);
+		if (isFrontCamRequest)
+		{
+			//set flash 0ff
+			FLASH_MODE = "off";
+			// only for gingerbread and newer versions
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
+			{
+			   mCamera = openFrontFacingCameraGingerbread();
+			   try {
+					mCamera.setPreviewDisplay(holder);
 
-		} catch (IOException exception) {
-			mCamera.release();
-			mCamera = null;
+				} catch (IOException exception) {
+					mCamera.release();
+					mCamera = null;
+					Toast.makeText(getApplicationContext(),
+							"API dosen't support front camera", Toast.LENGTH_LONG)
+							.show();
+					finish();
+				}
+			}
+			else 
+			{
+				// API dosen't support front camera
+				Log.d("Camer", "API dosen't support front camera");
+				Toast.makeText(getApplicationContext(),
+						"API dosen't support front camera", Toast.LENGTH_LONG)
+						.show();
+				
+				finish();
+				
+			}
 		}
+		else 
+		{
+			mCamera = getCameraInstance();
+			try {
+				mCamera.setPreviewDisplay(holder);
+
+			} catch (IOException exception) {
+				mCamera.release();
+				mCamera = null;
+			}
+		}
+		
 	}
 
 	@Override
@@ -192,6 +231,27 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 		 */
 		// unbind the camera from this object
 		mCamera = null;
+	}
+	
+	private Camera openFrontFacingCameraGingerbread() {
+	    int cameraCount = 0;
+	    Camera cam = null;
+	    Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+	    cameraCount = Camera.getNumberOfCameras();
+	    for (int camIdx = 0; camIdx<cameraCount; camIdx++) {
+	        Camera.getCameraInfo(camIdx, cameraInfo);
+	        if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+	            try {
+	                cam = Camera.open(camIdx);
+	            } catch (RuntimeException e) {
+	                Log.e("Camera", "Camera failed to open: " + e.getLocalizedMessage());
+	                Toast.makeText(getApplicationContext(),
+							"Front Camera failed to open", Toast.LENGTH_LONG)
+							.show();
+	            }
+	        }
+	    }
+	    return cam;
 	}
 
 }
