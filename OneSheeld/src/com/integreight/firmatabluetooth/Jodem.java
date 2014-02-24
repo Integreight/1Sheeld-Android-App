@@ -23,6 +23,7 @@ public class Jodem {
 	public static final byte CAN = 0x18;
 	public static final byte CRC = 0x43; //C
 	public static final byte SUB = 0x1A;
+	public static final byte KEY[]={(byte) 0x64, (byte) 0x0E, (byte) 0x1C, (byte) 0x39, (byte) 0x14, (byte) 0x28, (byte) 0x57, (byte) 0xAA};
 	BluetoothService btService;
 	TimeOut timeout;
 	
@@ -152,7 +153,7 @@ public class Jodem {
 		ByteArrayInputStream stream=new ByteArrayInputStream(fileBuffer,0,fileLength);
 		timeout=new TimeOut(3, timeoutHandler);
 		while(readByteFromBuffer()!=NAK);
-		write(ACK);
+		write(KEY);
 		int packet_size = 128;
 
 
