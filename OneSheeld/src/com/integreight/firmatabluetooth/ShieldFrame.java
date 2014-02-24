@@ -76,6 +76,10 @@ public class ShieldFrame {
 		arguments.add(new byte[]{(byte)data});
 	}
 	
+	public void addBooleanArgument(boolean data){
+		arguments.add(new byte[]{(byte)(data?1:0)});
+	}
+	
 	public void addIntegerArgument(int bytes, boolean isSigned,int data){
 		if(!isSigned)data=Math.abs(data);
 		switch(bytes){
