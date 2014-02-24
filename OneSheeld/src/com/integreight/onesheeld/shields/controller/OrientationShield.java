@@ -24,6 +24,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
+	float oldInput_x = 0,oldInput_y = 0, oldInput_z = 0 ;
+	boolean isFirstTime=true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -71,9 +73,12 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (flag) {
+		if (flag&&(oldInput_x!=event.values[0]||oldInput_y!=event.values[1]||oldInput_z!=event.values[2]||isFirstTime)) {
 			// TODO Auto-generated method stub
 			frame = new ShieldFrame(UIShield.ORIENTATION_SHIELD.getId(), ORIENTATION_VALUE);
+			oldInput_x = event.values[0];
+			oldInput_y = event.values[1];
+			oldInput_z = event.values[2];
 			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);

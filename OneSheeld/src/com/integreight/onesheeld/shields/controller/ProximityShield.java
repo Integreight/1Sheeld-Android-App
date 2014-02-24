@@ -24,6 +24,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
+	float oldInput = 0;
+	boolean isFirstTime=true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -72,8 +74,10 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (flag) {
+		if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
+			isFirstTime=false;
 			frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(), PROXIMITY_VALUE);
+			oldInput=event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);

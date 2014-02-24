@@ -24,6 +24,8 @@ public class LightShield extends ControllerParent<LightShield> implements
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
+	float oldInput = 0;
+	boolean isFirstTime=true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -66,24 +68,25 @@ public class LightShield extends ControllerParent<LightShield> implements
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
-		if (flag) {
-			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
-			frame.addIntegerArgument(3, false, Math.round(event.values[0]));
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			// TODO Auto-generated method stub 
+			if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
+				isFirstTime=false;
+				frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
+				oldInput=event.values[0];
+				frame.addIntegerArgument(3, false, Math.round(event.values[0]));
+				activity.getThisApplication().getAppFirmata()
+						.sendShieldFrame(frame);
 
-			Log.d("Sensor Data of X", event.values[0] + "");
-			eventHandler.onSensorValueChangedFloat(event.values[0]+"");
-			//
-			flag = false;
-		}
-
+				Log.d("Sensor Data of X", event.values[0] + "");
+				eventHandler.onSensorValueChangedFloat(event.values[0]+"");
+				//
+				oldInput = event.values[0];
+				flag = false;
+			}
 	}
 
 	// Register a listener for the sensor.

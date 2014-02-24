@@ -24,6 +24,8 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
+	float oldInput = 0;
+	boolean isFirstTime=true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -74,8 +76,10 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (flag) {
+		if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
+			isFirstTime = false;
 			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), TEMPERATURE_VALUE);
+			oldInput=event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
