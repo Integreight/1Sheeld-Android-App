@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class ProximityShield extends ControllerParent<ProximityShield>
 		implements SensorEventListener {
+	public static final byte PROXIMITY_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mProximity;
 	private ProximityEventHandler eventHandler;
@@ -72,8 +73,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		if (flag) {
-			frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(),
-					(byte) 0, ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(), PROXIMITY_VALUE);
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);

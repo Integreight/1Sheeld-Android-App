@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GravityShield extends ControllerParent<GravityShield> implements
 		SensorEventListener {
+	public static final byte GRAVITY_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mGravity;
 	private GravityEventHandler eventHandler;
@@ -72,8 +73,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	public void onSensorChanged(SensorEvent event) {
 		if (flag) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.GRAVITY_SHIELD.getId(), (byte) 0,
-					ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.GRAVITY_SHIELD.getId(), GRAVITY_VALUE);
 			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);

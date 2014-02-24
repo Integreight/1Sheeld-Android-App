@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 		implements SensorEventListener {
+	public static final byte ACCELEROMETER_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private AccelerometerEventHandler eventHandler;
@@ -75,8 +76,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 		
 		if (flag) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(),
-					(byte) 0, ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(), ACCELEROMETER_VALUE);
 			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);

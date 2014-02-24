@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class TemperatureShield extends ControllerParent<TemperatureShield>
 		implements SensorEventListener {
+	public static final byte TEMPERATURE_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mTemperature;
 	private TemperatureEventHandler eventHandler;
@@ -74,8 +75,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		if (flag) {
-			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), (byte) 0,
-					ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), TEMPERATURE_VALUE);
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);

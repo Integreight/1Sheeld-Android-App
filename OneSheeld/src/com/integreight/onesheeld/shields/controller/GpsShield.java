@@ -18,6 +18,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class GpsShield extends ControllerParent<GpsShield> implements
 		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener {
+	public static final byte GPS_VALUE=0x01;
 	private GpsEventHandler eventHandler;
 	private LocationRequest mLocationRequest;
 	private LocationClient mLocationClient;
@@ -165,8 +166,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
 	private void sendFrame(Location myLocation) {
 		// TODO Auto-generated method stub
-		frame = new ShieldFrame(UIShield.GPS_SHIELD.getId(), (byte) 0,
-				ShieldFrame.DATA_SENT);
+		frame = new ShieldFrame(UIShield.GPS_SHIELD.getId(), GPS_VALUE);
 		// frame.addByteArgument((byte) Math.round(event.values[0]));
 		float lat = (float)myLocation.getLatitude();// getRadians(myLocation.getLatitude());
 		float lang = (float)myLocation.getLongitude();// getRadians(myLocation.getLongitude());

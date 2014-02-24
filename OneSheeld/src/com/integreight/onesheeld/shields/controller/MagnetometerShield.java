@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 		implements SensorEventListener {
+	public static final byte MAGNETOMETER_VALUE=0x01; 
 	private SensorManager mSensorManager;
 	private Sensor mMagnetometer;
 	private MagnetometerEventHandler eventHandler;
@@ -73,8 +74,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	public void onSensorChanged(SensorEvent event) {
 		if (flag) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.MAGNETOMETER_SHIELD.getId(),
-					(byte) 0, ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.MAGNETOMETER_SHIELD.getId(), MAGNETOMETER_VALUE);
 			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);

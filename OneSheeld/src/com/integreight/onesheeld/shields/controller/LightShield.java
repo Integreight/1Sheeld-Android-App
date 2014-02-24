@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LightShield extends ControllerParent<LightShield> implements
 		SensorEventListener {
+	public static final byte LIGHT_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mLight;
 	private LightEventHandler eventHandler;
@@ -72,8 +73,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		if (flag) {
-			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), (byte) 0,
-					ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);

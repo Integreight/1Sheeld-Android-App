@@ -15,6 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class PressureShield extends ControllerParent<PressureShield> implements
 		SensorEventListener {
+	public static final byte PRESSURE_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mPressure;
 	private PressureEventHandler eventHandler;
@@ -72,8 +73,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
 		if (flag) {
-			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(), (byte) 0,
-					ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(), PRESSURE_VALUE);
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);

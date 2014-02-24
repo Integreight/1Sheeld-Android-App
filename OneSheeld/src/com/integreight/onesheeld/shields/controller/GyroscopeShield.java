@@ -18,6 +18,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 		implements SensorEventListener {
+	public static final byte GYROSCOPE_VALUE=0x01;
 	private SensorManager mSensorManager;
 	private Sensor mGyroscope;
 	private GyroscopeEventHandler eventHandler;
@@ -75,8 +76,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 	public void onSensorChanged(SensorEvent event) {
 		if (flag) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.GYROSCOPE_SHIELD.getId(), (byte) 0,
-					ShieldFrame.DATA_SENT);
+			frame = new ShieldFrame(UIShield.GYROSCOPE_SHIELD.getId(), GYROSCOPE_VALUE);
 			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);
