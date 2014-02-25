@@ -1,33 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#232323"
     android:gravity="center"
     android:padding="10dp" >
 
-    <Button
-        android:id="@+id/cancelConnection"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/shields_list_disonnect_button" />
-
     <TextView
         android:id="@+id/currentViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
+        android:layout_centerInParent="true"
         android:background="@drawable/onsheeld_logo_top_bar"
         android:textColor="@android:color/background_dark"
         android:textSize="15sp"
         android:textStyle="normal"
         android:typeface="sans" />
 
-    <Button
-        android:id="@+id/getAvailableDevices"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/cancelConnection"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
-        android:background="@drawable/shields_list_shields_operation_button" />
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/currentViewTitle" >
 
-</LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shields_list_disonnect_button"
+            android:contentDescription="@string/app_name"
+            android:scaleType="fitCenter" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/getAvailableDevices"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/currentViewTitle" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/shields_list_shields_operation_button"
+            android:contentDescription="@string/app_name" />
+    </RelativeLayout>
+
+</RelativeLayout>

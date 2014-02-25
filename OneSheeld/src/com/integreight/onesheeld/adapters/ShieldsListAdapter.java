@@ -68,12 +68,12 @@ public class ShieldsListAdapter extends BaseAdapter {
 		UIShield shield = shieldList.get(position);
 		String name = shield.getName();
 		Integer iconId = shield.getSymbolId();
-		Integer imageId = shield.getMainImageStripId();
+		Integer imageId = shield.getItemBackgroundColor();
 
 		holder.name.setText(name);
 		holder.icon.setBackgroundResource(iconId);
 
-		row.setBackgroundResource(imageId);
+		row.setBackgroundColor(imageId);
 
 		if (shield.isMainActivitySelection()) {
 			holder.selectionButton.setChecked(true);

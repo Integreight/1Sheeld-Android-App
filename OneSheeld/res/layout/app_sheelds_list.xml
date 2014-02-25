@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contentFrame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/contentFrame"
     tools:context=".MainActivity" >
 
     <TextView
@@ -17,9 +17,10 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:background="#fffad7"
-        android:cacheColorHint="@android:color/transparent"
-        android:divider="@null"
-        android:dividerHeight="-6dp"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@drawable/transparent"
+        android:fadeScrollbars="false"
+        android:fadingEdge="none"
         tools:context=".MainActivity" >
     </com.integreight.onesheeld.utils.ListViewReversed>
 

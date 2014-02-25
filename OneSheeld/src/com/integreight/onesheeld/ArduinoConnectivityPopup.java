@@ -61,7 +61,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.initialization_view);
-		setCancelable(false);
+		setCancelable(true);
 		deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
 		loading = (ProgressBar) findViewById(R.id.progress);
 		scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.actionbarsherlock.view.Window;
 import com.integreight.onesheeld.appFragments.SheeldsList;
@@ -59,21 +60,33 @@ public class MainActivity extends FragmentActivity {
 		// setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true);
+		findViewById(R.id.cancelConnection).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						stopService();
+						new ArduinoConnectivityPopup(MainActivity.this).show();
+					}
+				});
 		resetSlidingMenu();
 	}
 
 	@Override
 	public void onBackPressed() {
 		resetSlidingMenu();
-		if (appSlidingMenu.isOpen()) {
-			appSlidingMenu.closePane();
-		} else {
-			if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-				getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				getSupportFragmentManager().executePendingTransactions();
-			} else
-				finish();
-		}
+		if (!ArduinoConnectivityPopup.isOpened) {
+			if (appSlidingMenu.isOpen()) {
+				appSlidingMenu.closePane();
+			} else {
+				if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+					getSupportFragmentManager().executePendingTransactions();
+				} else
+					finish();
+			}
+		} else
+			finish();
 	}
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,

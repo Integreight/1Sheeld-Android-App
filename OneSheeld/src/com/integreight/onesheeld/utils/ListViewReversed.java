@@ -6,16 +6,15 @@ import android.widget.ListView;
 
 public class ListViewReversed extends ListView {
 
+	public ListViewReversed(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		// this.setChildrenDrawingOrderEnabled(true);
+	}
 
-    public ListViewReversed(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.setChildrenDrawingOrderEnabled(true);
-    }
-    
-    @Override
-    protected int getChildDrawingOrder (int childCount, int i) {
-
-    	return childCount-1 - i;
-
-    }
+	// @Override
+	// protected int getChildDrawingOrder (int childCount, int i) {
+	//
+	// return childCount-1 - i;
+	//
+	// }
 }

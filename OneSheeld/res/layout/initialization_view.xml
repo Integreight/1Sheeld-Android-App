@@ -22,7 +22,7 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <Button
+        <com.integreight.onesheeld.utils.OneShieldButton
             android:id="@+id/scanOrTryAgain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:padding="3dp"
             android:text="@string/scan"
             android:textColor="@drawable/white_black_text_selector"
-            android:textSize="17sp"
+            android:textSize="22sp"
             android:typeface="sans" />
 
         <ProgressBar

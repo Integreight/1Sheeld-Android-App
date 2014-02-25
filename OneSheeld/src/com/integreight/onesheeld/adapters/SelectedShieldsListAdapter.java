@@ -67,10 +67,10 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 
 		UIShield shield = shieldList.get(position);
 		Integer iconId = shield.getSymbolId();
-		Integer imageId = shield.getSmallImageStripId();
+		Integer imageId = shield.getItemBackgroundColor();
 		holder.symbol.setBackgroundResource(iconId);
 
-		row.setBackgroundResource(imageId);
+		row.setBackgroundColor(imageId);
 
 		if (UIShield.getShieldsActivitySelection() == shield) {
 			holder.selectionCircle.setVisibility(View.VISIBLE);
