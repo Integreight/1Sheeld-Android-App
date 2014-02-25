@@ -65,6 +65,12 @@ public class MainActivity extends FragmentActivity {
 
 					@Override
 					public void onClick(View v) {
+						if (getSupportFragmentManager()
+								.getBackStackEntryCount() > 1) {
+							getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+							getSupportFragmentManager()
+									.executePendingTransactions();
+						}
 						stopService();
 						new ArduinoConnectivityPopup(MainActivity.this).show();
 					}

@@ -61,7 +61,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.initialization_view);
-		setCancelable(true);
+		setCancelable(false);
 		deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
 		loading = (ProgressBar) findViewById(R.id.progress);
 		scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
@@ -89,46 +89,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 				}
 			}
 		});
-		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
-				.addEventHandler(new ArduinoFirmataEventHandler() {
-
-					@Override
-					public void onError(String errorMessage) {
-						setRetryButtonReady(
-								activity.getResources().getString(
-										R.string.notConnected),
-								new View.OnClickListener() {
-
-									@Override
-									public void onClick(View arg0) {
-										scanDevices();
-									}
-								});
-
-					}
-
-					@Override
-					public void onConnect() {
-						cancel();
-						Toast.makeText(activity, "Connected, finish",
-								Toast.LENGTH_LONG).show();
-					}
-
-					@Override
-					public void onClose(boolean closedManually) {
-						setRetryButtonReady(
-								activity.getResources().getString(
-										R.string.notConnected),
-								new View.OnClickListener() {
-
-									@Override
-									public void onClick(View arg0) {
-										scanDevices();
-									}
-								});
-
-					}
-				});
 		super.onCreate(savedInstanceState);
 	}
 
@@ -358,6 +318,53 @@ public class ArduinoConnectivityPopup extends Dialog {
 					// the
 					// View
 					showProgress();
+					((OneSheeldApplication) activity.getApplication())
+							.getAppFirmata().addEventHandler(
+									new ArduinoFirmataEventHandler() {
+
+										@Override
+										public void onError(String errorMessage) {
+											setRetryButtonReady(
+													activity.getResources()
+															.getString(
+																	R.string.notConnected),
+													new View.OnClickListener() {
+
+														@Override
+														public void onClick(
+																View arg0) {
+															scanDevices();
+														}
+													});
+
+										}
+
+										@Override
+										public void onConnect() {
+											cancel();
+											Toast.makeText(activity,
+													"Connected, finish",
+													Toast.LENGTH_LONG).show();
+										}
+
+										@Override
+										public void onClose(
+												boolean closedManually) {
+											setRetryButtonReady(
+													activity.getResources()
+															.getString(
+																	R.string.notConnected),
+													new View.OnClickListener() {
+
+														@Override
+														public void onClick(
+																View arg0) {
+															scanDevices();
+														}
+													});
+
+										}
+									});
 					changeSlogan(
 							activity.getResources().getString(
 									R.string.connecting), COLOR.GREEN);

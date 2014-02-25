@@ -132,7 +132,7 @@ public class SheeldsList extends Fragment {
 				});
 		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
 		shieldsUIList = Arrays.asList(UIShield.values());
-		shieldsListView.setEnabled(false);
+		// shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(getActivity());
 		shieldsListView.setAdapter(adapter);
 		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
@@ -367,17 +367,17 @@ public class SheeldsList extends Fragment {
 	}
 
 	private void setColoredStrips() {
-		UIShield.setConnected(true);
-		adapter.notifyDataSetChanged();
-		shieldsListView.setEnabled(true);
-		changeActionIconsToConnected();
+		// UIShield.setConnected(true);
+		// adapter.notifyDataSetChanged();
+		// shieldsListView.setEnabled(true);
+		// changeActionIconsToConnected();
 	}
 
 	private void setBWStrips() {
-		UIShield.setConnected(false);
-		adapter.notifyDataSetChanged();
-		shieldsListView.setEnabled(false);
-		changeActionIconsToDisconnected();
+		// UIShield.setConnected(false);
+		// adapter.notifyDataSetChanged();
+		// shieldsListView.setEnabled(false);
+		// changeActionIconsToDisconnected();
 	}
 
 	private boolean isAnyShieldsSelected() {

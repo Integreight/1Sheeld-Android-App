@@ -21,6 +21,7 @@
         android:divider="@drawable/transparent"
         android:fadeScrollbars="false"
         android:fadingEdge="none"
+        android:scrollbarThumbVertical="@drawable/transparent"
         tools:context=".MainActivity" >
     </com.integreight.onesheeld.utils.ListViewReversed>
 
