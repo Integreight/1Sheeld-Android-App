@@ -107,7 +107,7 @@ public class ShieldFrame {
 		for (byte[] argument : arguments) {
 			totalSizeOfArguments+=argument.length;
 		}
-		int frameSize=5+arguments.size()+totalSizeOfArguments;
+		int frameSize=6+arguments.size()+totalSizeOfArguments;
 		byte[] data=new byte[frameSize];
 		data[0]=START_OF_FRAME;
 		data[1]=shieldId;
@@ -122,6 +122,7 @@ public class ShieldFrame {
 			}
 			if(i+1<arguments.size())j+=arguments.get(i+1).length+1;
 		}
+		data[frameSize-1]=END_OF_FRAME;
 		return data;
 	}
 
