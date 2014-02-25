@@ -81,7 +81,6 @@ public class OneSheeldService extends Service {
 		// TODO Auto-generated method stub
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		app = (OneSheeldApplication) getApplication();
-		app.setAppFirmata(new ArduinoFirmata(this));
 		LocalBroadcastManager.getInstance(this).registerReceiver(
 				mMessageReceiver,
 				new IntentFilter(OneSheeldService.PLUGIN_MESSAGE));

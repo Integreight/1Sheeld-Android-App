@@ -36,7 +36,7 @@ public enum UIShield {
 	LED_SHIELD((byte) 0x02, "LED", R.drawable.shields_activity_strip_13,
 			R.drawable.shields_activity_strip_13_bw,
 			R.drawable.shields_activity_small_strip_13,
-			R.drawable.shields_activity_led_symbol, false, LedShield.class), NOTIFICATION_SHIELD(
+			R.drawable.shields_list_led_symbol, false, LedShield.class), NOTIFICATION_SHIELD(
 			(byte) 0x06, "Notification", R.drawable.shields_activity_strip_1,
 			R.drawable.shields_activity_strip_1_bw,
 			R.drawable.shields_activity_small_strip_1,

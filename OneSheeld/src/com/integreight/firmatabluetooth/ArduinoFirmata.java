@@ -179,7 +179,7 @@ public class ArduinoFirmata{
 //        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
 //        		eventHandler.onClose();
 //    		}
-            this.bluetoothService = null;
+           // this.bluetoothService = null;
             return true;
     }
 

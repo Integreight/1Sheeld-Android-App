@@ -89,6 +89,46 @@ public class ArduinoConnectivityPopup extends Dialog {
 				}
 			}
 		});
+		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
+				.addEventHandler(new ArduinoFirmataEventHandler() {
+
+					@Override
+					public void onError(String errorMessage) {
+						setRetryButtonReady(
+								activity.getResources().getString(
+										R.string.notConnected),
+								new View.OnClickListener() {
+
+									@Override
+									public void onClick(View arg0) {
+										scanDevices();
+									}
+								});
+
+					}
+
+					@Override
+					public void onConnect() {
+						cancel();
+						Toast.makeText(activity, "Connected, finish",
+								Toast.LENGTH_LONG).show();
+					}
+
+					@Override
+					public void onClose(boolean closedManually) {
+						setRetryButtonReady(
+								activity.getResources().getString(
+										R.string.notConnected),
+								new View.OnClickListener() {
+
+									@Override
+									public void onClick(View arg0) {
+										scanDevices();
+									}
+								});
+
+					}
+				});
 		super.onCreate(savedInstanceState);
 	}
 
@@ -321,45 +361,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 					changeSlogan(
 							activity.getResources().getString(
 									R.string.connecting), COLOR.GREEN);
-					((OneSheeldApplication) activity.getApplication())
-							.setArduinoFirmataHandlerForConnectivityPopup(new ArduinoFirmataEventHandler() {
-
-								@Override
-								public void onError(String errorMessage) {
-									setRetryButtonReady(activity.getResources()
-											.getString(R.string.notConnected),
-											new View.OnClickListener() {
-
-												@Override
-												public void onClick(View arg0) {
-													scanDevices();
-												}
-											});
-
-								}
-
-								@Override
-								public void onConnect() {
-									cancel();
-									Toast.makeText(activity,
-											"Connected, finish",
-											Toast.LENGTH_LONG).show();
-								}
-
-								@Override
-								public void onClose(boolean closedManually) {
-									setRetryButtonReady(activity.getResources()
-											.getString(R.string.notConnected),
-											new View.OnClickListener() {
-
-												@Override
-												public void onClick(View arg0) {
-													scanDevices();
-												}
-											});
-
-								}
-							});
 					startService(address);
 				}
 			});

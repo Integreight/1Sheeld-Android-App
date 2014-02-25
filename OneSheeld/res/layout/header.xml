@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#E1000000"
+    android:background="#232323"
+    android:gravity="center"
     android:padding="10dp" >
+
+    <Button
+        android:id="@+id/cancelConnection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shields_list_disonnect_button" />
 
     <TextView
         android:id="@+id/currentViewTitle"
-        android:layout_width="140dp"
-        android:layout_height="40dp"
-        android:layout_centerInParent="true"
-        android:background="@drawable/arduino_connectivity_activity_onesheeld_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/onsheeld_logo_top_bar"
         android:textColor="@android:color/background_dark"
         android:textSize="15sp"
         android:textStyle="normal"
@@ -18,10 +25,9 @@
 
     <Button
         android:id="@+id/getAvailableDevices"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:background="@android:drawable/ic_search_category_default" />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/shields_list_shields_operation_button" />
 
-</RelativeLayout>
+</LinearLayout>

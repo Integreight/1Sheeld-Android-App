@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Application;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -27,13 +28,15 @@ public class OneSheeldApplication extends Application {
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
 	private ConnectionDetector connectionHandler;
-	private ArduinoFirmataEventHandler arduinoFirmataEventHandler,
-			arduinoFirmataHandlerForConnectivityPopup;
+	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
+	public Typeface appFont;
 
 	@Override
 	public void onCreate() {
 		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
 		setConnectionHandler(new ConnectionDetector(getApplicationContext()));
+		appFont = Typeface.createFromAsset(getAssets(), "light.otf");
+		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
 			@Override
@@ -81,9 +84,6 @@ public class OneSheeldApplication extends Application {
 
 	public void setAppFirmata(ArduinoFirmata appFirmata) {
 		this.appFirmata = appFirmata;
-		this.appFirmata.addEventHandler(arduinoFirmataEventHandler);
-		this.appFirmata
-				.addEventHandler(arduinoFirmataHandlerForConnectivityPopup);
 	}
 
 	public void addServiceEventHandler(
@@ -119,14 +119,17 @@ public class OneSheeldApplication extends Application {
 	public void setArduinoFirmataEventHandler(
 			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
 		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
+		appFirmata.addEventHandler(arduinoFirmataEventHandler);
 	}
 
-	public ArduinoFirmataEventHandler getArduinoFirmataHandlerForConnectivityPopup() {
-		return arduinoFirmataHandlerForConnectivityPopup;
-	}
-
-	public void setArduinoFirmataHandlerForConnectivityPopup(
-			ArduinoFirmataEventHandler arduinoFirmataHandlerForConnectivityPopup) {
-		this.arduinoFirmataHandlerForConnectivityPopup = arduinoFirmataHandlerForConnectivityPopup;
-	}
+	// public ArduinoFirmataEventHandler
+	// getArduinoFirmataHandlerForConnectivityPopup() {
+	// return arduinoFirmataHandlerForConnectivityPopup;
+	// }
+	//
+	// public void setArduinoFirmataHandlerForConnectivityPopup(
+	// ArduinoFirmataEventHandler arduinoFirmataHandlerForConnectivityPopup) {
+	// this.arduinoFirmataHandlerForConnectivityPopup =
+	// arduinoFirmataHandlerForConnectivityPopup;
+	// }
 }
