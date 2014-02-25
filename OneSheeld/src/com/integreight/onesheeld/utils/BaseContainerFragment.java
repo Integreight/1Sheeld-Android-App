@@ -10,12 +10,13 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 
-public class BaseContainerFragment extends SherlockFragment {
+public class BaseContainerFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		super.onCreate(savedInstanceState);
 	}
+
 	public void replaceFragment(Fragment fragment, boolean addToBackStack,
 			boolean animate) {
 		try {
@@ -42,9 +43,9 @@ public class BaseContainerFragment extends SherlockFragment {
 		}
 		return isPop;
 	}
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.main, menu);
-	}
-}
 
+	// @Override
+	// public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	// inflater.inflate(R.menu.main, menu);
+	// }
+}

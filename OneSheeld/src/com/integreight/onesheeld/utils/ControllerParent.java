@@ -9,6 +9,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.model.ShieldPin;
 
 @SuppressWarnings("unchecked")
 public abstract class ControllerParent<T extends ControllerParent<?>> {

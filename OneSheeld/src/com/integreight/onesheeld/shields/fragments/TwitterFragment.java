@@ -2,14 +2,11 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
@@ -144,9 +141,9 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	 * Check user already logged in your application using twitter Login flag is
 	 * fetched from Shared Preferences
 	 * */
-
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(android.view.Menu menu,
+			android.view.MenuInflater inflater) {
 		// TODO Auto-generated method stub
 		inflater.inflate(R.menu.twitter_shield_menu, menu);
 		twitterLogin = (MenuItem) menu.findItem(R.id.login_to_twitter_menuitem);
@@ -167,8 +164,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+	public boolean onOptionsItemSelected(android.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.logout_from_twitter_menuitem:
 			logoutFromTwitter();

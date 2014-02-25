@@ -3,14 +3,14 @@ package com.integreight.onesheeld.shields.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.facebook.Session;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
@@ -100,9 +100,9 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 					@Override
 					public void run() {
 						buttonToLoggedIn();
-						getAppActivity()
-								.setSupportProgressBarIndeterminateVisibility(
-										false);
+						// getAppActivity()
+						// .setSupportProgressBarIndeterminateVisibility(
+						// false);
 					}
 				});
 			}
@@ -120,9 +120,9 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 						Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
 								.show();
 						buttonToLoggedIn();
-						getAppActivity()
-								.setSupportProgressBarIndeterminateVisibility(
-										false);
+						// getAppActivity()
+						// .setSupportProgressBarIndeterminateVisibility(
+						// false);
 					}
 				});
 			}
@@ -190,7 +190,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 		((FacebookShield) getApplication().getRunningShields().get(
 				getControllerTag())).loginToFacebook();
-		getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
+		// getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
 	}
 
 	private void buttonToLoggedOut() {

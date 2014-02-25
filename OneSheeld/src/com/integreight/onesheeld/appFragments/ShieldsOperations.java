@@ -14,13 +14,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class ShieldsOperations extends BaseContainerFragment {
 	private View v;
@@ -51,11 +50,11 @@ public class ShieldsOperations extends BaseContainerFragment {
 	}
 
 	private void initView(Bundle savedInstanceState) {
-		SlidingMenu sm = ((MainActivity) getActivity()).getSlidingMenu();
-		sm.setShadowWidthRes(R.dimen.shadow_width);
-		sm.setShadowDrawable(R.drawable.shadow);
-		sm.setBehindWidth(150);
-		sm.setFadeDegree(0.35f);
+		// SlidingMenu sm = ((MainActivity) getActivity()).getSlidingMenu();
+		// sm.setShadowWidthRes(R.dimen.shadow_width);
+		// sm.setShadowDrawable(R.drawable.shadow);
+		// sm.setBehindWidth(150);
+		// sm.setFadeDegree(0.35f);
 		// sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		final MainActivity myActivity = (MainActivity) getActivity();
 		myActivity.enableMenu();
@@ -138,7 +137,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
 			//
 			// NavUtils.navigateUpFromSameTask(this);
-			((MainActivity) getActivity()).toggle();
+			// ((MainActivity) getActivity()).toggle();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -156,7 +155,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 		((MainActivity) getActivity()).getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.appTransitionsContainer, fragment).commit();
-		((MainActivity) getActivity()).getSlidingMenu().showContent();
+		// ((MainActivity) getActivity()).getSlidingMenu().showContent();
 	}
 
 	// public void toggleLed(View v){

@@ -2,13 +2,13 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield.NotificationEventHandler;
@@ -60,8 +60,8 @@ public class NotificationFragment extends
 		@Override
 		public void onNotificationReceive(String notificationText) {
 			// TODO Auto-generated method stub
-			if(canChangeUI())
-			notificationTextTextView.setText(notificationText);
+			if (canChangeUI())
+				notificationTextTextView.setText(notificationText);
 
 		}
 	};

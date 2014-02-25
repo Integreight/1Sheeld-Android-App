@@ -17,6 +17,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,9 +31,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
@@ -44,7 +44,7 @@ import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class SheeldsList extends SherlockFragment {
+public class SheeldsList extends Fragment {
 	View v;
 	boolean isInflated = false;
 	private ListView shieldsListView;
@@ -81,8 +81,8 @@ public class SheeldsList extends SherlockFragment {
 	@Override
 	public void onResume() {
 		// getSherlockActivity().getSupportActionBar().hide();
-		((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
-				SlidingMenu.TOUCHMODE_NONE);
+		// ((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
+		// SlidingMenu.TOUCHMODE_NONE);
 		((MainActivity) getActivity()).disableMenu();
 		List<Fragment> frags = getActivity().getSupportFragmentManager()
 				.getFragments();
@@ -186,11 +186,11 @@ public class SheeldsList extends SherlockFragment {
 		switch (requestCode) {
 		case REQUEST_CONNECT_DEVICE:
 			// When DeviceListActivity returns with a device to connect
-			if (resultCode == Activity.RESULT_OK) {
-				((MainActivity) getActivity())
-						.setSupportProgressBarIndeterminateVisibility(true);
-				// connectDevice(data);
-			}
+			// if (resultCode == Activity.RESULT_OK) {
+			// ((MainActivity) getActivity())
+			// .setSupportProgressBarIndeterminateVisibility(true);
+			// // connectDevice(data);
+			// }
 			break;
 		case REQUEST_ENABLE_BT:
 			// When the request to enable Bluetooth returns
@@ -260,18 +260,18 @@ public class SheeldsList extends SherlockFragment {
 							arduinoConnected = true;
 							setColoredStrips();
 						}
-						if (getActivity() != null)
-							((MainActivity) getActivity())
-									.setSupportProgressBarIndeterminateVisibility(false);
+						// if (getActivity() != null)
+						// ((MainActivity) getActivity())
+						// .setSupportProgressBarIndeterminateVisibility(false);
 					}
 
 					@Override
 					public void onClose(boolean closedManually) {
 						arduinoConnected = false;
 						setBWStrips();
-						if (getActivity() != null)
-							((MainActivity) getActivity())
-									.setSupportProgressBarIndeterminateVisibility(false);
+						// if (getActivity() != null)
+						// ((MainActivity) getActivity())
+						// .setSupportProgressBarIndeterminateVisibility(false);
 						if (!ArduinoConnectivityPopup.isOpened)
 							new ArduinoConnectivityPopup(getActivity()).show();
 					}

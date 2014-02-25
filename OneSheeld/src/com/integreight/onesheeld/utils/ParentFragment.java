@@ -20,11 +20,13 @@ public class ParentFragment extends BaseContainerFragment {
 	public ParentFragment() {
 		// TODO Auto-generated constructor stub
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		super.onCreate(savedInstanceState);
 	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -38,11 +40,6 @@ public class ParentFragment extends BaseContainerFragment {
 			replaceFragment(fragmentToReplace, true, false);
 		}
 		super.onViewCreated(view, savedInstanceState);
-	}
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// TODO Auto-generated method stub
-		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 }

@@ -3,6 +3,7 @@ package com.integreight.onesheeld;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
@@ -13,7 +14,7 @@ import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
-public class MainActivity extends SlidingFragmentActivity {
+public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
 	// private boolean isBoundService = false;
 	private AppSlidingLeftMenu appSlidingMenu;
@@ -52,10 +53,10 @@ public class MainActivity extends SlidingFragmentActivity {
 	@Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
 		// set the Behind View
-		setBehindContentView(R.layout.menu_frame);
+		// setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true);
 		resetSlidingMenu();

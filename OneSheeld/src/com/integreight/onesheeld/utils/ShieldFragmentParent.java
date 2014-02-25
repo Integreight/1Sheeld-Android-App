@@ -1,16 +1,19 @@
 package com.integreight.onesheeld.utils;
 
-import com.actionbarsherlock.app.SherlockFragment;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 
-import android.os.Bundle;
-
 @SuppressWarnings("unchecked")
 public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
-		extends SherlockFragment {
+		extends Fragment {
 	private String controllerTag = "";
 
 	public MainActivity getAppActivity() {
@@ -23,7 +26,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-
+		setHasOptionsMenu(true);
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -41,7 +44,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 						@Override
 						public void onFailure() {
-							
+
 						}
 					});
 		} else
@@ -64,5 +67,17 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public boolean canChangeUI() {
 		return (getActivity() != null && getApplication().getRunningShields()
 				.get(getControllerTag()).isHasForgroundView());
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		// TODO Auto-generated method stub
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return super.onOptionsItemSelected(item);
 	}
 }

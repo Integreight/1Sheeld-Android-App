@@ -1,13 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.shields.controller.PushButtonShield;
-import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
-import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Rect;
@@ -17,9 +9,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.ToggleButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+
+import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.controller.PushButtonShield;
+import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class PushButtonFragment extends
 		ShieldFragmentParent<PushButtonFragment> {
