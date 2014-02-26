@@ -120,7 +120,7 @@ public class ShieldFrame {
 			for (int k = 0; k < data[j]; k++) {
 				data[j+k+1]=arguments.get(i)[k];
 			}
-			if(i+1<arguments.size())j+=arguments.get(i+1).length+1;
+			j+=arguments.get(i).length+1;
 		}
 		data[frameSize-1]=END_OF_FRAME;
 		return data;

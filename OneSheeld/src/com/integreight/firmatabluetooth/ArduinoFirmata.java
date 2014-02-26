@@ -419,7 +419,7 @@ public class ArduinoFirmata{
     	Log.d("frame", s);
     }
     
-    public void sendShieldFrame(ShieldFrame frame){
+    public synchronized void sendShieldFrame(ShieldFrame frame){
     	if(!isUartInit)return;
     	byte[] frameBytes=frame.getAllFrameAsBytes();
     	printFrameToLog(frameBytes);
