@@ -139,19 +139,26 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.PROXIMITY_SHIELD,
 					new ProximityFragment());
 		case GRAVITY_SHIELD:
-			return addToCreatedListAndReturn(UIShield.GRAVITY_SHIELD, new GravityFragment());
+			return addToCreatedListAndReturn(UIShield.GRAVITY_SHIELD,
+					new GravityFragment());
 		case ORIENTATION_SHIELD:
-			return addToCreatedListAndReturn(UIShield.ORIENTATION_SHIELD, new OrientationFragment());
+			return addToCreatedListAndReturn(UIShield.ORIENTATION_SHIELD,
+					new OrientationFragment());
 		case LIGHT_SHIELD:
-			return addToCreatedListAndReturn(UIShield.LIGHT_SHIELD,new LightFragment() );
+			return addToCreatedListAndReturn(UIShield.LIGHT_SHIELD,
+					new LightFragment());
 		case PRESSURE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.PRESSURE_SHIELD, new PressureFragment());
+			return addToCreatedListAndReturn(UIShield.PRESSURE_SHIELD,
+					new PressureFragment());
 		case TEMPERATURE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.TEMPERATURE_SHIELD, new TemperatureFragment());
+			return addToCreatedListAndReturn(UIShield.TEMPERATURE_SHIELD,
+					new TemperatureFragment());
 		case CAMERA_SHIELD:
-			return addToCreatedListAndReturn(UIShield.CAMERA_SHIELD, new CameraFragment());
+			return addToCreatedListAndReturn(UIShield.CAMERA_SHIELD,
+					new CameraFragment());
 		case PHONE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.PHONE_SHIELD, new PhoneFragment());
+			return addToCreatedListAndReturn(UIShield.PHONE_SHIELD,
+					new PhoneFragment());
 
 		default:
 			return new EmptyShieldFragment();
@@ -185,7 +192,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 	private void switchFragment(Fragment fragment) {
 		((MainActivity) getActivity()).replaceCurrentFragment(
-				R.id.appTransitionsContainer, fragment, "", false);
+				R.id.appTransitionsContainer, fragment, "", false, false);
 		((MainActivity) getActivity()).closeMenu();
 	}
 }
