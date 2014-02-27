@@ -249,6 +249,13 @@ public class SheeldsList extends Fragment {
 						UIShield.setConnected(false);
 						adapter.notifyDataSetChanged();
 						arduinoConnected = false;
+						if (getActivity().getSupportFragmentManager()
+								.getBackStackEntryCount() > 1) {
+							getActivity().getSupportFragmentManager()
+									.popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+							getActivity().getSupportFragmentManager()
+									.executePendingTransactions();
+						}
 						if (!ArduinoConnectivityPopup.isOpened)
 							new ArduinoConnectivityPopup(getActivity()).show();
 					}
@@ -272,6 +279,13 @@ public class SheeldsList extends Fragment {
 						// if (getActivity() != null)
 						// ((MainActivity) getActivity())
 						// .setSupportProgressBarIndeterminateVisibility(false);
+						if (getActivity().getSupportFragmentManager()
+								.getBackStackEntryCount() > 1) {
+							getActivity().getSupportFragmentManager()
+									.popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+							getActivity().getSupportFragmentManager()
+									.executePendingTransactions();
+						}
 						if (!ArduinoConnectivityPopup.isOpened)
 							new ArduinoConnectivityPopup(getActivity()).show();
 					}
@@ -345,6 +359,10 @@ public class SheeldsList extends Fragment {
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopup.isOpened)
 				new OneSheeldVersionInstallerPopup(getActivity()).show();
+			return true;
+		case R.id.action_settings:
+			((OneSheeldApplication) getActivity().getApplication())
+					.setLastConnectedDevice(null);
 			return true;
 		}
 
