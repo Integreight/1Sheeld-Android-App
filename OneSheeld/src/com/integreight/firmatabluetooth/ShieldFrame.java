@@ -99,7 +99,7 @@ public class ShieldFrame {
 	}
 	
 	public void addStringArgument(String data){
-		String temp=(data.length()>256)?data.substring(0,256):data;
+		String temp=(data.length()>255)?data.substring(0,255):data;
 		arguments.add(temp.getBytes(Charset.forName("UTF-8")));
 	}
 	
