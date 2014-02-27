@@ -20,6 +20,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -33,6 +34,7 @@ import com.integreight.onesheeld.utils.OneShieldTextView;
 public class ArduinoConnectivityPopup extends Dialog {
 	private Activity activity;
 	private float scale;
+	private boolean isConnecting = false;
 
 	public ArduinoConnectivityPopup(Activity context) {
 		super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -90,6 +92,13 @@ public class ArduinoConnectivityPopup extends Dialog {
 				}
 			}
 		});
+
+		// if (((OneSheeldApplication)
+		// activity.getApplication()).getAppFirmata() != null) {
+		// while (!((OneSheeldApplication) activity.getApplication())
+		// .getAppFirmata().close())
+		// ;
+		// }
 		super.onCreate(savedInstanceState);
 	}
 
@@ -153,6 +162,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		devicesList.removeAllViews();
 		// Register for broadcasts when a device is discovered
 		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
 		activity.registerReceiver(mReceiver, filter);
 
 		// Register for broadcasts when discovery has finished
@@ -188,57 +198,62 @@ public class ArduinoConnectivityPopup extends Dialog {
 	private void startService(String address) {
 		// isBoundService = OneSheeldService.isBound;
 		// if (!OneSheeldService.isBound) {
-		mBtAdapter.cancelDiscovery();
+		if (!isConnecting) {
+			mBtAdapter.cancelDiscovery();
 
-		// Get the device MAC address, which is the last 17 chars in
-		// the
-		// View
-		showProgress();
-		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
-				.addEventHandler(new ArduinoFirmataEventHandler() {
+			// Get the device MAC address, which is the last 17 chars in
+			// the
+			// View
+			showProgress();
+			((OneSheeldApplication) activity.getApplication()).getAppFirmata()
+					.addEventHandler(new ArduinoFirmataEventHandler() {
 
-					@Override
-					public void onError(String errorMessage) {
-						setRetryButtonReady(
-								activity.getResources().getString(
-										R.string.notConnected),
-								new View.OnClickListener() {
+						@Override
+						public void onError(String errorMessage) {
+							isConnecting = false;
+							setRetryButtonReady(activity.getResources()
+									.getString(R.string.notConnected),
+									new View.OnClickListener() {
 
-									@Override
-									public void onClick(View arg0) {
-										scanDevices();
-									}
-								});
+										@Override
+										public void onClick(View arg0) {
+											scanDevices();
+										}
+									});
 
-					}
+						}
 
-					@Override
-					public void onConnect() {
-						cancel();
-						Toast.makeText(activity, "Connected, finish",
-								Toast.LENGTH_LONG).show();
-					}
+						@Override
+						public void onConnect() {
+							isConnecting = false;
+							cancel();
+							Toast.makeText(activity, "Connected, finish",
+									Toast.LENGTH_LONG).show();
+						}
 
-					@Override
-					public void onClose(boolean closedManually) {
-						setRetryButtonReady(
-								activity.getResources().getString(
-										R.string.notConnected),
-								new View.OnClickListener() {
+						@Override
+						public void onClose(boolean closedManually) {
+							isConnecting = false;
+							setRetryButtonReady(activity.getResources()
+									.getString(R.string.notConnected),
+									new View.OnClickListener() {
 
-									@Override
-									public void onClick(View arg0) {
-										scanDevices();
-									}
-								});
+										@Override
+										public void onClick(View arg0) {
+											scanDevices();
+										}
+									});
 
-					}
-				});
-		changeSlogan(activity.getResources().getString(R.string.connecting),
-				COLOR.GREEN);
-		Intent intent = new Intent(activity, OneSheeldService.class);
-		intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
-		activity.startService(intent);
+						}
+					});
+			changeSlogan(
+					activity.getResources().getString(R.string.connecting),
+					COLOR.GREEN);
+			Intent intent = new Intent(activity, OneSheeldService.class);
+			intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
+			activity.startService(intent);
+			isConnecting = true;
+		}
 		// stopService(intent);
 		// activity.bindService(intent, ((OneSheeldApplication) activity
 		// .getApplication()).getmConnection(),
@@ -338,37 +353,51 @@ public class ArduinoConnectivityPopup extends Dialog {
 			boolean isPaired) {
 		if (name == null)
 			name = "";
-		if (name.trim().length() == 0 || name.toLowerCase().contains("1sheeld")) {
-			OneShieldTextView item = new OneShieldTextView(activity, null);
-			item.setLayoutParams(new LinearLayout.LayoutParams(
-					LinearLayout.LayoutParams.MATCH_PARENT,
-					LinearLayout.LayoutParams.WRAP_CONTENT));
-			item.setText(name);
-			item.setTag(address);
-			item.setGravity(Gravity.CENTER_VERTICAL);
-			item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-			item.setTextColor(Color.WHITE);
-			int pdng = (int) (8 * scale - .5f);
-			item.setPadding(pdng, pdng, pdng, pdng);
-			Drawable img = getContext()
-					.getResources()
-					.getDrawable(
-							isPaired ? R.drawable.arduino_connectivity_activity_onesheeld_small_green_logo
-									: R.drawable.arduino_connectivity_activity_onesheeld_small_logo);
-			item.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-			item.setBackgroundResource(R.drawable.devices_list_item_selector);
-			item.setCompoundDrawablePadding(pdng);
-			item.setOnClickListener(new View.OnClickListener() {
+		if (name.trim().length() > 0 && name.toLowerCase().contains("1sheeld")
+				&& devicesList.findViewWithTag(address) == null) {
+			if (((OneSheeldApplication) activity.getApplication())
+					.getLastConnectedDevice() != null
+					&& ((OneSheeldApplication) activity.getApplication())
+							.getLastConnectedDevice().equals(address)) {
+				startService(address);
+			} else {
+				OneShieldTextView item = new OneShieldTextView(activity, null);
+				item.setLayoutParams(new LinearLayout.LayoutParams(
+						LinearLayout.LayoutParams.MATCH_PARENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT));
+				item.setText(name);
+				item.setTag(address);
+				item.setGravity(Gravity.CENTER_VERTICAL);
+				item.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+				item.setTextColor(Color.WHITE);
+				int pdng = (int) (8 * scale - .5f);
+				item.setPadding(pdng, pdng, pdng, pdng);
+				Drawable img = getContext()
+						.getResources()
+						.getDrawable(
+								isPaired ? R.drawable.arduino_connectivity_activity_onesheeld_small_green_logo
+										: R.drawable.arduino_connectivity_activity_onesheeld_small_logo);
+				item.setCompoundDrawablesWithIntrinsicBounds(img, null, null,
+						null);
+				item.setBackgroundResource(R.drawable.devices_list_item_selector);
+				item.setCompoundDrawablePadding(pdng);
+				item.setOnClickListener(new View.OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					startService(address);
-				}
-			});
-			devicesList.addView(item);
-			changeSlogan(
-					activity.getResources()
-							.getString(R.string.selectYourDevice), COLOR.YELLOW);
+					@Override
+					public void onClick(View v) {
+						if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
+								.isChecked())
+							((OneSheeldApplication) activity.getApplication())
+									.setLastConnectedDevice(address);
+						startService(address);
+					}
+				});
+				devicesList.addView(item);
+				setDevicesListReady();
+				changeSlogan(
+						activity.getResources().getString(
+								R.string.selectYourDevice), COLOR.YELLOW);
+			}
 		}
 	}
 
@@ -380,9 +409,10 @@ public class ArduinoConnectivityPopup extends Dialog {
 			String action = intent.getAction();
 
 			// When discovery finds a device
+			if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action))
+				scanDevices();
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
 				// Get the BluetoothDevice object from the Intent
-				setDevicesListReady();
 				BluetoothDevice device = intent
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 				// If it's already paired, skip it, because it's been listed
@@ -410,14 +440,15 @@ public class ArduinoConnectivityPopup extends Dialog {
 									scanDevices();
 								}
 							});
-				} else if (devicesList.getChildCount() == 1) {
-					try {
-						startService((String) ((OneShieldTextView) devicesList
-								.getChildAt(0)).getTag());
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
 				}
+				// else if (devicesList.getChildCount() == 1) {
+				// try {
+				// startService((String) ((OneShieldTextView) devicesList
+				// .getChildAt(0)).getTag());
+				// } catch (Exception e) {
+				// e.printStackTrace();
+				// }
+				// }
 			}
 		}
 	};

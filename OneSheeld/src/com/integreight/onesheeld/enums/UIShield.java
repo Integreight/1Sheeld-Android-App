@@ -101,9 +101,8 @@ public enum UIShield {
 			0xff6d0347, R.drawable.shields_list_camera_symbol, false,
 			CameraShield.class), PHONE_SHIELD((byte) 0x20, "Phone", 0xffe9bd03,
 			R.drawable.shields_list_email_symbol, false, PhoneShield.class), NFC(
-			(byte) 0x20, "Phone", 0xff127303,
-			R.drawable.shields_list_nfc_symbol, false, EmptyShield.class), WIFI(
-			(byte) 0x20, "WIFI", 0xff08bbb2,
+			(byte) 0x20, "NFC", 0xff127303, R.drawable.shields_list_nfc_symbol,
+			false, EmptyShield.class), WIFI((byte) 0x20, "WIFI", 0xff08bbb2,
 			R.drawable.shields_list_wifi_symbol, false, EmptyShield.class), GSM(
 			(byte) 0x20, "GSM", 0xff5a0303, R.drawable.shields_list_gsm_symbol,
 			false, EmptyShield.class), GLCD((byte) 0x20, "GLCD", 0xff988564,
@@ -234,6 +233,14 @@ public enum UIShield {
 			return CAMERA_SHIELD;
 		case 30:
 			return PHONE_SHIELD;
+		case 31:
+			return NFC;
+		case 32:
+			return WIFI;
+		case 33:
+			return GSM;
+		case 34:
+			return GLCD;
 		}
 		return null;
 	}
