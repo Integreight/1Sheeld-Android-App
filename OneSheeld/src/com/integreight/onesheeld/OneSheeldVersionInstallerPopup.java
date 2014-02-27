@@ -61,7 +61,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
-				//firmata.prepareAppForSendingFirmware();
+				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
@@ -75,7 +75,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
-				//firmata.prepareAppForSendingFirmware();
+				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
