@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
-import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener.PhoneRingingEventHandler;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -13,7 +11,7 @@ public class SmsListener extends BroadcastReceiver {
 
 	public void sendSMS()
 	{
-		eventHandler.onSmsReceiveSuccess("+201119611432","Welcome from OneSheeld, ya bash welcome to one sheed");
+		eventHandler.onSmsReceiveSuccess("+201119611432","Welcome OneSheeld,: MyCuisine is a community for people who cook it's like");
 	}
 	@Override
 	public void onReceive(Context context, Intent intent) {

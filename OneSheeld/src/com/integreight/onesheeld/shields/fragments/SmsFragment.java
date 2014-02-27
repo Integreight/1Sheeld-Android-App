@@ -7,6 +7,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +21,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	TextView smsTextTextView;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
+	Button sendSMS;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -53,6 +55,15 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 		super.onActivityCreated(savedInstanceState);
 		smsTextTextView = (TextView) getView().findViewById(
 				R.id.sms_shield_text_textview);
+		sendSMS = (Button) getView().findViewById(R.id.sendMessage);
+		sendSMS.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				((SmsShield) getApplication().getRunningShields().get(
+						getControllerTag())).sendSmsToArduino();
+			}
+		});
 
 	}
 

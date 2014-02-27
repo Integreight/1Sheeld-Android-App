@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+
+    <LinearLayout
+        android:id="@+id/micLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/mic" 
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/start_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start Mic" />
+
+        <TextView
+            android:id="@+id/mytext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/stop_mic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Mic" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/backLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/micLayout" >
+
+        <ImageView
+            android:id="@+id/mybox"
+            android:layout_width="wrap_content"
+            android:layout_height="200dp"
+            android:layout_alignParentBottom="true"
+            android:scaleX="200"
+            android:src="@drawable/mic_bg" />
+    </RelativeLayout>
+
+</RelativeLayout>
