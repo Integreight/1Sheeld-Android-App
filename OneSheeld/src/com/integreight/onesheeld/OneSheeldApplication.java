@@ -43,8 +43,12 @@ public class OneSheeldApplication extends Application {
 			public void uncaughtException(Thread arg0, Throwable arg1) {
 				arg1.printStackTrace();
 				ArduinoConnectivityPopup.isOpened = false;
-				stopService(new Intent(getApplicationContext(),
-						OneSheeldService.class));
+				// stopService(new Intent(getApplicationContext(),
+				// OneSheeldService.class));
+				if (getAppFirmata() != null) {
+					while (!getAppFirmata().close())
+						;
+				}
 				System.exit(0);
 			}
 		});
