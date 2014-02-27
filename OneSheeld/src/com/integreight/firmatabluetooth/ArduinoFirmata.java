@@ -2,7 +2,6 @@ package com.integreight.firmatabluetooth;
 
 
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -557,7 +556,7 @@ public class ArduinoFirmata{
 			return uartBuffer.take().byteValue();
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 			return 0;
 		}
 	}
@@ -569,7 +568,7 @@ public class ArduinoFirmata{
 				return bluetoothBuffer.take().byteValue();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 				return 0;
 			}
 		
