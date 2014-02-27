@@ -99,7 +99,8 @@ public class ShieldFrame {
 	}
 	
 	public void addStringArgument(String data){
-		arguments.add(data.getBytes(Charset.forName("UTF-8")));
+		String temp=(data.length()>256)?data.substring(0,256):data;
+		arguments.add(temp.getBytes(Charset.forName("UTF-8")));
 	}
 	
 	public byte[] getAllFrameAsBytes(){
@@ -117,7 +118,7 @@ public class ShieldFrame {
 		
 		for (int i = 0,j=5; i < arguments.size(); i++) {
 			data[j]=(byte)arguments.get(i).length;
-			for (int k = 0; k < data[j]; k++) {
+			for (int k = 0; k < arguments.get(i).length; k++) {
 				data[j+k+1]=arguments.get(i)[k];
 			}
 			j+=arguments.get(i).length+1;
