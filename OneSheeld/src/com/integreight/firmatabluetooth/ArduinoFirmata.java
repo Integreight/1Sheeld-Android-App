@@ -70,7 +70,7 @@ public class ArduinoFirmata{
 //    public final char STX       = (byte)0x02;
 //    public final char ETX       = (byte)0x03;
     
-    
+    Handler uiThreadHandler;
     
     boolean isUartInit=false;
     
@@ -136,6 +136,7 @@ public class ArduinoFirmata{
         versionQueryHandlers=new ArrayList<ArduinoVersionQueryHandler>();
         this.context=context;
         bluetoothService.addBluetoothServiceHandler(handler);
+        uiThreadHandler=new Handler(Looper.getMainLooper());
     }
 
     public void connect(BluetoothDevice device){
@@ -480,7 +481,7 @@ public class ArduinoFirmata{
 		@Override
 		public void onStateChanged(final int state, final boolean isManually) {
 			// TODO Auto-generated method stub
-        	new Handler(Looper.getMainLooper()).post(new Runnable() {
+        	uiThreadHandler.post(new Runnable() {
 				@Override
 				public void run() {
 				if(state==BluetoothService.STATE_NONE){
@@ -509,7 +510,7 @@ public class ArduinoFirmata{
 		@Override
 		public void onError(final String error) {
 			// TODO Auto-generated method stub
-			new Handler(Looper.getMainLooper()).post(new Runnable() {
+			uiThreadHandler.post(new Runnable() {
 				@Override
 				public void run() {
 					Toast.makeText(context, error,
@@ -527,7 +528,7 @@ public class ArduinoFirmata{
     	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
     	uartListeningThread=new UartListeningThread();
     	queryVersion();
-    	new Handler(Looper.getMainLooper()).post(new Runnable() {
+    	uiThreadHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
