@@ -3,7 +3,7 @@ package com.integreight.firmatabluetooth;
 
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
@@ -80,10 +80,10 @@ public class ArduinoFirmata{
 	}
 
 	//public static final int MESSAGE_DEVICE_NAME = BluetoothService.MESSAGE_DEVICE_NAME;
-    private List<ArduinoFirmataEventHandler> eventHandlers;
-    private List<ArduinoFirmataDataHandler> dataHandlers;
-    private List<ArduinoFirmataShieldFrameHandler> frameHandlers;
-    private List<ArduinoVersionQueryHandler> versionQueryHandlers;
+    private CopyOnWriteArrayList<ArduinoFirmataEventHandler> eventHandlers;
+    private CopyOnWriteArrayList<ArduinoFirmataDataHandler> dataHandlers;
+    private CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler> frameHandlers;
+    private CopyOnWriteArrayList<ArduinoVersionQueryHandler> versionQueryHandlers;
     
     public void addEventHandler(ArduinoFirmataEventHandler handler){
         if(handler!=null&&!eventHandlers.contains(handler))eventHandlers.add(handler);
@@ -130,10 +130,10 @@ public class ArduinoFirmata{
 
     public ArduinoFirmata(Context context){
         bluetoothService=new BluetoothService(context);
-        eventHandlers=new ArrayList<ArduinoFirmataEventHandler>();
-        dataHandlers=new ArrayList<ArduinoFirmataDataHandler>();
-        frameHandlers=new ArrayList<ArduinoFirmataShieldFrameHandler>();
-        versionQueryHandlers=new ArrayList<ArduinoVersionQueryHandler>();
+        eventHandlers=new CopyOnWriteArrayList<ArduinoFirmataEventHandler>();
+        dataHandlers=new CopyOnWriteArrayList<ArduinoFirmataDataHandler>();
+        frameHandlers=new CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler>();
+        versionQueryHandlers=new CopyOnWriteArrayList<ArduinoVersionQueryHandler>();
         this.context=context;
         bluetoothService.addBluetoothServiceHandler(handler);
         uiThreadHandler=new Handler(Looper.getMainLooper());
@@ -166,7 +166,9 @@ public class ArduinoFirmata{
     }
 
     public boolean close(){
-    	clearAllHandlers();
+    	//clearAllHandlers();
+    	clearArduinoFirmataDataHandlers();
+    	clearArduinoFirmataShieldFrameHandlers();
     	if(bluetoothBufferListeningThread!=null&&bluetoothBufferListeningThread.isAlive()){
     		bluetoothBufferListeningThread.stopRunning();
     		bluetoothBufferListeningThread.interrupt();
@@ -175,7 +177,7 @@ public class ArduinoFirmata{
     		uartListeningThread.stopRunning();
     		uartListeningThread.interrupt();
     	}
-        	if(bluetoothService!=null)bluetoothService.stopConnection();
+        	if(bluetoothService!=null&&isOpen())bluetoothService.stopConnection();
         	
 //        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
 //        		eventHandler.onClose();
@@ -465,7 +467,16 @@ public class ArduinoFirmata{
     	return bluetoothService;
     }
     
-    
+    private void onClose(boolean isManually){
+			for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+        		if(eventHandler!=null)eventHandler.onClose(isManually);
+    		}
+    }
+    private void onConnect(){
+			for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+        		if(eventHandler!=null)eventHandler.onConnect();
+    		}
+    }
     BluetoothServiceHandler handler=new BluetoothServiceHandler() {
 		
 		@Override
@@ -485,9 +496,7 @@ public class ArduinoFirmata{
 				@Override
 				public void run() {
 				if(state==BluetoothService.STATE_NONE){
-					for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-		        		if(eventHandler!=null)eventHandler.onClose(isManually);
-		    		}
+					onClose(isManually);
 			}
 				}
 			});
@@ -532,9 +541,8 @@ public class ArduinoFirmata{
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-	        		if(eventHandler!=null)eventHandler.onConnect();
-	    		}
+				
+				onConnect();
 	            String mConnectedDeviceName = device.getName();
 	            Toast.makeText(context, "Connected to "
 	                           + mConnectedDeviceName, Toast.LENGTH_SHORT).show();
@@ -568,7 +576,7 @@ public class ArduinoFirmata{
 	}
     
 	public void clearAllHandlers(){
-		eventHandlers.clear();
+		eventHandlers.clear();	
 		dataHandlers.clear();
 		frameHandlers.clear();
 	}
