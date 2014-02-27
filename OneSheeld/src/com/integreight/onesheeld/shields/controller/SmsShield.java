@@ -19,7 +19,6 @@ public class SmsShield extends ControllerParent<SmsShield> {
 	private SmsListener smsListener;
 	private ShieldFrame frame;
 
-
 	public String getLastSmsText() {
 		return lastSmsText;
 	}
@@ -39,7 +38,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		filter.addAction("android.provider.Telephony.SMS_RECEIVED");
 		smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
 		getActivity().registerReceiver(smsListener, filter);
-		//smsListener.sendSMS();
+		// smsListener.sendSMS();
 		return super.setTag(tag);
 	}
 
@@ -105,16 +104,14 @@ public class SmsShield extends ControllerParent<SmsShield> {
 	private SmsReceiveEventHandler smsReceiveEventHandler = new SmsReceiveEventHandler() {
 
 		@Override
-		public void onSmsReceiveSuccess(String mobile_num , String sms_body) {
+		public void onSmsReceiveSuccess(String mobile_num, String sms_body) {
 			// send frame contain SMS body..
 			Log.d("SMS::Controller::onSmsReceiveSuccess", sms_body);
 			frame = new ShieldFrame(UIShield.SMS_SHIELD.getId(), (byte) 0x01);
 			frame.addStringArgument(mobile_num);
-			if(sms_body.length()>255)
-			{
-				frame.addStringArgument(sms_body.substring(0,255));
-			}else 
-			{
+			if (sms_body.length() > 255) {
+				frame.addStringArgument(sms_body.substring(0, 255));
+			} else {
 				frame.addStringArgument(sms_body);
 			}
 			Log.d("Fram", frame.getArgumentAsString(1));
@@ -124,14 +121,18 @@ public class SmsShield extends ControllerParent<SmsShield> {
 
 		@Override
 		public void onSmsReceiveFailed() {
-			Log.d("SMS::Controller::onSmsReceiveFailed","Failed to receive SMS !" );
+			Log.d("SMS::Controller::onSmsReceiveFailed",
+					"Failed to receive SMS !");
 		}
 	};
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		getActivity().unregisterReceiver(smsListener);
+		try {
+			getActivity().unregisterReceiver(smsListener);
+		} catch (Exception e) {
+		}
 	}
 
 }
