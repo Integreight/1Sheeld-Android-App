@@ -56,11 +56,11 @@ public class SheeldsList extends Fragment {
 	private static final String TAG = "ShieldsList";
 	private static final boolean D = true;
 
-	private static final int REQUEST_CONNECT_DEVICE = 1;
-	private static final int REQUEST_ENABLE_BT = 3;
+	public static final int REQUEST_CONNECT_DEVICE = 1;
+	public static final int REQUEST_ENABLE_BT = 3;
 	private static boolean arduinoConnected;
 
-	private BluetoothAdapter mBluetoothAdapter = null;
+	// private BluetoothAdapter mBluetoothAdapter = null;
 
 	public static SheeldsList getInstance() {
 		if (thisInstance == null) {
@@ -166,41 +166,15 @@ public class SheeldsList extends Fragment {
 			}
 
 		});
-		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+		// mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
-		if (mBluetoothAdapter == null) {
-			Toast.makeText(getActivity(), "Bluetooth is not available",
-					Toast.LENGTH_LONG).show();
-			getActivity().finish();
-			return;
-		}
-	}
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (D)
-			Log.d(TAG, "onActivityResult " + resultCode);
-		switch (requestCode) {
-		case REQUEST_CONNECT_DEVICE:
-			// When DeviceListActivity returns with a device to connect
-			// if (resultCode == Activity.RESULT_OK) {
-			// ((MainActivity) getActivity())
-			// .setSupportProgressBarIndeterminateVisibility(true);
-			// // connectDevice(data);
-			// }
-			break;
-		case REQUEST_ENABLE_BT:
-			// When the request to enable Bluetooth returns
-			if (resultCode != Activity.RESULT_OK) {
-				Log.d(TAG, "BT not enabled");
-				Toast.makeText(getActivity(), R.string.bt_not_enabled_leaving,
-						Toast.LENGTH_SHORT).show();
-				ArduinoConnectivityPopup.isOpened = false;
-				getActivity().finish();
-			}
-		}
-		super.onActivityResult(requestCode, resultCode, data);
+		// if (mBluetoothAdapter == null) {
+		// Toast.makeText(getActivity(), "Bluetooth is not available",
+		// Toast.LENGTH_LONG).show();
+		// getActivity().finish();
+		// return;
+		// }
 	}
 
 	// private void connectDevice(Intent data) {
@@ -288,13 +262,13 @@ public class SheeldsList extends Fragment {
 	public void onStart() {
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
-
-		if (!mBluetoothAdapter.isEnabled()) {
-			Intent enableIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
-			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-
-		}
+		//
+		// if (!mBluetoothAdapter.isEnabled()) {
+		// Intent enableIntent = new Intent(
+		// BluetoothAdapter.ACTION_REQUEST_ENABLE);
+		// startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
+		//
+		// }
 		if (((OneSheeldApplication) getActivity().getApplication())
 				.getAppFirmata() == null
 				|| (((OneSheeldApplication) getActivity().getApplication())

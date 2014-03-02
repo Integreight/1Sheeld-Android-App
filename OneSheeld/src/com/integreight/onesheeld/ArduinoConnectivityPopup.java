@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.activities.DeviceListActivity;
+import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.OneShieldTextView;
 
@@ -99,6 +100,19 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// .getAppFirmata().close())
 		// ;
 		// }
+		if (mBtAdapter == null) {
+			Toast.makeText(activity, "Bluetooth is not available",
+					Toast.LENGTH_LONG).show();
+			activity.finish();
+			return;
+		}
+		if (!mBtAdapter.isEnabled()) {
+			Intent enableIntent = new Intent(
+					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			activity.startActivityForResult(enableIntent,
+					SheeldsList.REQUEST_ENABLE_BT);
+
+		}
 		super.onCreate(savedInstanceState);
 	}
 
@@ -172,27 +186,27 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// Get the local Bluetooth adapter
 
 		// Get a set of currently paired devices
-		Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
+		// Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
 		// If there are paired devices, add each one to the ArrayAdapter
-		if (pairedDevices.size() > 0) {
-			// findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
-			// for (BluetoothDevice device : pairedDevices) {
-			// addFoundDevice(device.getName(), device.getAddress(), true);
-			// }
-		} else {
-			setRetryButtonReady(
-					activity.getResources().getString(R.string.none_found),
-					new View.OnClickListener() {
-
-						@Override
-						public void onClick(View arg0) {
-							scanDevices();
-						}
-					});
-			// String noDevices = activity.getResources()
-			// .getText(R.string.none_paired).toString();
-			// mPairedDevicesArrayAdapter.add(noDevices);
-		}
+		// if (pairedDevices.size() > 0) {
+		// findViewById(R.id.title_paired_devices).setVisibility(View.VISIBLE);
+		// for (BluetoothDevice device : pairedDevices) {
+		// addFoundDevice(device.getName(), device.getAddress(), true);
+		// }
+		// } else {
+		// setRetryButtonReady(
+		// activity.getResources().getString(R.string.none_found),
+		// new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View arg0) {
+		// scanDevices();
+		// }
+		// });
+		// String noDevices = activity.getResources()
+		// .getText(R.string.none_paired).toString();
+		// mPairedDevicesArrayAdapter.add(noDevices);
+		// }
 	}
 
 	ArduinoFirmataEventHandler connectivityFirmataHandler = new ArduinoFirmataEventHandler() {

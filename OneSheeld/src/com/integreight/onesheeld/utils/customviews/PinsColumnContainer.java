@@ -26,9 +26,9 @@ public class PinsColumnContainer extends RelativeLayout {
 
 	public PinsColumnContainer(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		extraHorizontalSpace = (int) (30 * context.getResources()
+		extraHorizontalSpace = (int) (50 * context.getResources()
 				.getDisplayMetrics().density - .5f);
-		extraVerticalSpace = (int) (3 * context.getResources()
+		extraVerticalSpace = (int) (1 * context.getResources()
 				.getDisplayMetrics().density - .5f);
 		// setOrientation(VERTICAL);
 	}
@@ -38,21 +38,30 @@ public class PinsColumnContainer extends RelativeLayout {
 		this.cursor = cursor;
 	}
 
+	int concatenatedLeft = 0, concatenatedTop = 0, concatenatedRight = 0;
+
 	private void loadRects(ViewGroup vg) {
+		concatenatedLeft = getChildAt(1).getLeft();
+		concatenatedTop = getChildAt(1).getTop();
+		concatenatedRight = getChildAt(1).getRight();
 		cursorParams = (LayoutParams) cursor.getLayoutParams();
 		for (int i = 0; i < vg.getChildCount(); i++) {
 			if (vg.getChildAt(i) instanceof PinView) {
 				PinView v = (PinView) vg.getChildAt(i);
 				childrenRects.add(new PinData(((String) v.getTag()), new Rect(
-						vg.getLeft()
+						concatenatedLeft
+								+ vg.getLeft()
 								- (extraHorizontalSpace * (!v.getTag()
 										.toString().startsWith("_") ? 2 : 1))
-								+ v.getLeft(), vg.getTop() + v.getTop()
-								- extraVerticalSpace, vg.getLeft()
+								+ v.getLeft(), concatenatedTop + vg.getTop()
+								+ v.getTop() - extraVerticalSpace,
+						concatenatedTop
+								+ vg.getLeft()
 								+ v.getRight()
 								+ (extraHorizontalSpace * (v.getTag()
-										.toString().startsWith("_") ? 2 : 1)),
-						vg.getTop() + v.getBottom() + extraVerticalSpace), i));
+										.toString().startsWith("_") ? 2 : 2)),
+						concatenatedTop + vg.getTop() + v.getBottom()
+								+ extraVerticalSpace), i));
 			} else if (vg.getChildAt(i) instanceof ViewGroup) {
 				loadRects((ViewGroup) vg.getChildAt(i));
 			}
@@ -86,9 +95,10 @@ public class PinsColumnContainer extends RelativeLayout {
 				if (item.index != -1) {
 					cursor.setVisibility(View.VISIBLE);
 					cursorParams.topMargin = item.rect.top
-							+ (extraVerticalSpace / 3);
-					cursorParams.leftMargin = (currentTag.startsWith("_") ? item.rect.left
-							: (item.rect.right - cursorParams.width));
+							- (cursorParams.height / 2)
+							- (5 * extraVerticalSpace);
+					cursorParams.leftMargin = (currentTag.startsWith("_") ? (concatenatedLeft - extraHorizontalSpace / 2)
+							: (concatenatedRight + extraHorizontalSpace / 4));
 					cursor.setBackgroundResource(currentTag.startsWith("_") ? R.drawable.arduino_pins_view_left_selector
 							: R.drawable.arduino_pins_view_right_selector);
 					cursor.requestLayout();
