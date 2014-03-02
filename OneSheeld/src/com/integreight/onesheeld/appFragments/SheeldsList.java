@@ -30,7 +30,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
@@ -42,7 +41,6 @@ import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class SheeldsList extends Fragment {
 	View v;

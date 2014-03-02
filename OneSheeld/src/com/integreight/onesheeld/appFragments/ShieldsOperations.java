@@ -10,7 +10,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,6 +24,9 @@ import android.view.MenuItem;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
+import com.integreight.onesheeld.utils.customviews.PinsColumnContainer;
 
 public class ShieldsOperations extends BaseContainerFragment {
 	private View v;
@@ -80,7 +87,37 @@ public class ShieldsOperations extends BaseContainerFragment {
 					.getSupportFragmentManager().findFragmentById(
 							R.id.menu_frame);
 		}
+		if (mContent == null) {
+			mContent = mFrag.getShieldFragment(0);
+			((MainActivity) getActivity()).setTitle(mFrag.getUIShield(0)
+					.getName() + " Shield");
+			// set the Above View
+			// setContentView(R.layout.content_frame);
+			((MainActivity) getActivity()).getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.shieldsContainerFrame, mContent).commit();
+		}
+		// myActivity.replaceCurrentFragment(R.id.pinsViewContainer,
+		// ConnectingPinsView.getInstance(), "", false, false);
+		myActivity
+				.getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.pinsViewContainer,
+						ConnectingPinsView.getInstance()).commit();
+		final MultiDirectionSlidingDrawer pinsSlidingView = (MultiDirectionSlidingDrawer) getView()
+				.findViewById(R.id.pinsViewSlidingView);
+		getView().findViewById(R.id.pinsFixedHandler).setOnClickListener(
+				new View.OnClickListener() {
 
+					@Override
+					public void onClick(View v) {
+						if (!pinsSlidingView.isOpened())
+							myActivity.disableMenu();
+						else
+							myActivity.enableMenu();
+						pinsSlidingView.animateOpen();
+					}
+				});
 		// if (savedInstanceState != null)
 		// mContent = myActivity.getSupportFragmentManager().getFragment(
 		// savedInstanceState, "mContent");
@@ -103,16 +140,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 	public void onStart() {
 		// TODO Auto-generated method stub
 		super.onStart();
-		if (mContent == null) {
-			mContent = mFrag.getShieldFragment(0);
-			((MainActivity) getActivity()).setTitle(mFrag.getUIShield(0)
-					.getName() + " Shield");
-			// set the Above View
-			// setContentView(R.layout.content_frame);
-			((MainActivity) getActivity()).getSupportFragmentManager()
-					.beginTransaction()
-					.replace(R.id.appTransitionsContainer, mContent).commit();
-		}
 
 		// bindFirmataService();
 		// DisplayMetrics metr=getResources().getDisplayMetrics();

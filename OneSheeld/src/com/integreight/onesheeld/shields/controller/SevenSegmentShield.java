@@ -27,6 +27,7 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 			segmentsConnectedPins.put(segment, null);
 		}
 	}
+
 	@Override
 	public ControllerParent<SevenSegmentShield> setTag(String tag) {
 		segmentsStatus = new HashMap<Segment, Boolean>();
@@ -37,6 +38,7 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 		}
 		return super.setTag(tag);
 	}
+
 	public void connectSegmentWithPin(Segment segment, int pin) {
 		segmentsConnectedPins.put(segment, pin);
 		CommitInstanceTotable();
@@ -136,12 +138,12 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
