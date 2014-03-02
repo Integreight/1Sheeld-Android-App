@@ -59,7 +59,7 @@ public class MainActivity extends FragmentActivity {
 		// set the Behind View
 		// setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
-				SheeldsList.getInstance(), "base", true);
+				SheeldsList.getInstance(), "base", true, false);
 		findViewById(R.id.cancelConnection).setOnClickListener(
 				new View.OnClickListener() {
 
@@ -96,7 +96,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,
-			String tag, boolean addToBackStack) {
+			String tag, boolean addToBackStack, boolean animate) {
 		String backStateName = targetFragment.getClass().getName();
 		String fragmentTag = backStateName;
 
@@ -115,8 +115,9 @@ public class MainActivity extends FragmentActivity {
 			if (addToBackStack) {
 				// ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 				// ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-				ft.setCustomAnimations(R.anim.slide_out_left,
-						R.anim.slide_in_right, 0, 0);
+				if (animate)
+					ft.setCustomAnimations(R.anim.slide_out_left,
+							R.anim.slide_in_right, 0, 0);
 			}
 			ft.replace(container, targetFragment, fragmentTag);
 			if (addToBackStack) {

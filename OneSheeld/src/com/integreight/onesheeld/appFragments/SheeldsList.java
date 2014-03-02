@@ -236,60 +236,60 @@ public class SheeldsList extends Fragment {
 		}
 		((MainActivity) getActivity()).replaceCurrentFragment(
 				R.id.appTransitionsContainer, ShieldsOperations.getInstance(),
-				ShieldsOperations.class.getName(), true);
+				ShieldsOperations.class.getName(), true, true);
 	}
+
+	ArduinoFirmataEventHandler sheeldsFirmataHandler = new ArduinoFirmataEventHandler() {
+
+		@Override
+		public void onError(String errorMessage) {
+			UIShield.setConnected(false);
+			adapter.notifyDataSetChanged();
+			arduinoConnected = false;
+			if (getActivity().getSupportFragmentManager()
+					.getBackStackEntryCount() > 1) {
+				getActivity().getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				getActivity().getSupportFragmentManager()
+						.executePendingTransactions();
+			}
+			if (!ArduinoConnectivityPopup.isOpened)
+				new ArduinoConnectivityPopup(getActivity()).show();
+		}
+
+		@Override
+		public void onConnect() {
+			Log.e(TAG, "- ARDUINO CONNECTED -");
+			if (isOneSheeldServiceRunning()) {
+				arduinoConnected = true;
+				setColoredStrips();
+			}
+			// if (getActivity() != null)
+			// ((MainActivity) getActivity())
+			// .setSupportProgressBarIndeterminateVisibility(false);
+		}
+
+		@Override
+		public void onClose(boolean closedManually) {
+			arduinoConnected = false;
+			setBWStrips();
+			// if (getActivity() != null)
+			// ((MainActivity) getActivity())
+			// .setSupportProgressBarIndeterminateVisibility(false);
+			if (getActivity().getSupportFragmentManager()
+					.getBackStackEntryCount() > 1) {
+				getActivity().getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				getActivity().getSupportFragmentManager()
+						.executePendingTransactions();
+			}
+			if (!ArduinoConnectivityPopup.isOpened)
+				new ArduinoConnectivityPopup(getActivity()).show();
+		}
+	};
 
 	@Override
 	public void onStart() {
 		((OneSheeldApplication) getActivity().getApplication())
-				.setArduinoFirmataEventHandler(new ArduinoFirmataEventHandler() {
-
-					@Override
-					public void onError(String errorMessage) {
-						UIShield.setConnected(false);
-						adapter.notifyDataSetChanged();
-						arduinoConnected = false;
-						if (getActivity().getSupportFragmentManager()
-								.getBackStackEntryCount() > 1) {
-							getActivity().getSupportFragmentManager()
-									.popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-							getActivity().getSupportFragmentManager()
-									.executePendingTransactions();
-						}
-						if (!ArduinoConnectivityPopup.isOpened)
-							new ArduinoConnectivityPopup(getActivity()).show();
-					}
-
-					@Override
-					public void onConnect() {
-						Log.e(TAG, "- ARDUINO CONNECTED -");
-						if (isOneSheeldServiceRunning()) {
-							arduinoConnected = true;
-							setColoredStrips();
-						}
-						// if (getActivity() != null)
-						// ((MainActivity) getActivity())
-						// .setSupportProgressBarIndeterminateVisibility(false);
-					}
-
-					@Override
-					public void onClose(boolean closedManually) {
-						arduinoConnected = false;
-						setBWStrips();
-						// if (getActivity() != null)
-						// ((MainActivity) getActivity())
-						// .setSupportProgressBarIndeterminateVisibility(false);
-						if (getActivity().getSupportFragmentManager()
-								.getBackStackEntryCount() > 1) {
-							getActivity().getSupportFragmentManager()
-									.popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-							getActivity().getSupportFragmentManager()
-									.executePendingTransactions();
-						}
-						if (!ArduinoConnectivityPopup.isOpened)
-							new ArduinoConnectivityPopup(getActivity()).show();
-					}
-				});
+				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
 
 		if (!mBluetoothAdapter.isEnabled()) {
 			Intent enableIntent = new Intent(
