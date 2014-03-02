@@ -5,4 +5,41 @@
     android:background="#fffad7"
     tools:context=".ShieldsOperationActivity" >
 
+    <FrameLayout
+        android:id="@+id/shieldsContainerFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer
+        xmlns:my="http://schemas.android.com/apk/res/com.integreight.onesheeld"
+        android:id="@+id/pinsViewSlidingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        my:content="@id/pinsViewContainer"
+        my:direction="rightToLeft"
+        my:handle="@id/handler" >
+
+        <Button
+            android:id="@+id/handler"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="invisible" />
+
+        <FrameLayout
+            android:id="@+id/pinsViewContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:background="#D9000000" >
+        </FrameLayout>
+    </com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer>
+
+    <Button
+        android:id="@+id/pinsFixedHandler"
+        android:layout_width="40dp"
+        android:layout_height="100dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
 </RelativeLayout>

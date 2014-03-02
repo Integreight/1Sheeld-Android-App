@@ -192,7 +192,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 	private void switchFragment(Fragment fragment) {
 		((MainActivity) getActivity()).replaceCurrentFragment(
-				R.id.appTransitionsContainer, fragment, "", false, false);
+				R.id.shieldsContainerFrame, fragment, "", false, false);
 		((MainActivity) getActivity()).closeMenu();
 	}
 }

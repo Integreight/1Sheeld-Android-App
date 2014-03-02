@@ -11,5 +11,6 @@
     <integer name="num_cols">1</integer>
 
     <dimen name="key_label">32dp</dimen>
+    <dimen name="pinViewDimen">10dp</dimen>
 
 </resources>

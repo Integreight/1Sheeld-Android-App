@@ -8,12 +8,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import com.actionbarsherlock.view.Window;
 import com.integreight.onesheeld.appFragments.SheeldsList;
-import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.jeremyfeinstein.slidingmenu.lib.app.SlidingFragmentActivity;
 
 public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
@@ -112,13 +109,9 @@ public class MainActivity extends FragmentActivity {
 			// create
 			// it.
 			FragmentTransaction ft = manager.beginTransaction();
-			if (addToBackStack) {
-				// ft.setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-				// ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-				if (animate)
-					ft.setCustomAnimations(R.anim.slide_out_left,
-							R.anim.slide_in_right, 0, 0);
-			}
+			if (animate)
+				ft.setCustomAnimations(R.anim.slide_out_left,
+						R.anim.slide_in_right, 0, 0);
 			ft.replace(container, targetFragment, fragmentTag);
 			if (addToBackStack) {
 				ft.addToBackStack(backStateName);

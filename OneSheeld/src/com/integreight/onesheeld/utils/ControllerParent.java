@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.utils;
 
+import java.util.Hashtable;
+
 import android.app.Activity;
 import android.os.Handler;
 
@@ -8,8 +10,8 @@ import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.model.ShieldPin;
 
 @SuppressWarnings("unchecked")
 public abstract class ControllerParent<T extends ControllerParent<?>> {
@@ -17,6 +19,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	private boolean hasConnectedPins = false;
 	private String tag = "";
 	private boolean hasForgroundView = false;
+	public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>();
+	private String[] requiredPinsNames = null;
 
 	public ControllerParent() {
 		// TODO Auto-generated constructor stub
@@ -189,4 +193,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	}
 
 	public abstract void reset();
+
+	public String[] getRequiredPinsNames() {
+		return requiredPinsNames;
+	}
+
+	public void setRequiredPinsNames(String[] requiredPinsNames) {
+		this.requiredPinsNames = requiredPinsNames;
+		for (int i = 0; i < requiredPinsNames.length; i++) {
+			matchedShieldPins.put(requiredPinsNames[i], null);
+		}
+	}
 }
