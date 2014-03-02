@@ -1,23 +1,27 @@
 package com.integreight.onesheeld.shields.controller;
 
-import android.app.Activity;
+import java.io.FileDescriptor;
+import java.io.IOException;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
+import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
+import android.media.MediaPlayer;
+
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
-	private int connectedPin;
 	private SpeakerEventHandler eventHandler;
-	private boolean isSpeakerPinOn;
+	private static final byte BUZZER_COMMAND = (byte) 0x08;
+	private static final byte BUZZER_ON = (byte) 0x01;
+	private static final byte BUZZER_OFF = (byte) 0x00;
+	private boolean isResumed = false;
+	MediaPlayer mp;
+	private static final int soundResourceId=R.raw.door_chime_sound;
 
-	// public Led(ArduinoFirmata firmata, int connectedPin) {
-	// this.connectedPin = connectedPin;
-	// this.firmata = firmata;
-	// setFirmataEventHandler();
-	// firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
-	// isLedOn = firmata.digitalRead(connectedPin);
-	// }
+
 	public SpeakerShield() {
 		super();
 	}
@@ -26,55 +30,71 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		super(activity, tag);
 	}
 
-	public boolean isSpeakerPinOn() {
-		return isSpeakerPinOn;
-	}
-
-	// public boolean refreshLed(){
-	// isSpeakerPinOn = firmata.digitalRead(connectedPin);
-	// return isSpeakerPinOn;
-	// }
-
-	@Override
-	public void onDigital(int portNumber, int portData) {
-
-		isSpeakerPinOn = getApplication().getAppFirmata().digitalRead(
-				connectedPin);
-		if (eventHandler != null) {
-			eventHandler.onSpeakerPinChange(isSpeakerPinOn);
-		}
-		CommitInstanceTotable();
-		super.onDigital(portNumber, portData);
-	}
-
-	// public void setLedEventHandler(LedEventHandler eventHandler) {
-	// this.eventHandler = eventHandler;
-	// }
-
-	public void setSpeakerEventHandler(SpeakerEventHandler eventHandler,
-			int connectedPin) {
+	public void setSpeakerEventHandler(SpeakerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		this.connectedPin = connectedPin;
-		getApplication().getAppFirmata().pinMode(connectedPin,
-				ArduinoFirmata.INPUT);
-		isSpeakerPinOn = getApplication().getAppFirmata().digitalRead(
-				connectedPin);
 		CommitInstanceTotable();
 	}
 
 	public static interface SpeakerEventHandler {
-		void onSpeakerPinChange(boolean isOn);
+		void onSpeakerChange(boolean isOn);
 	}
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
-		
+
+		if (frame.getShieldId() == BUZZER_COMMAND) {
+			switch (frame.getFunctionId()) {
+			case BUZZER_ON:
+				// turn on bin
+				playSound(soundResourceId);
+				if(isResumed)
+				eventHandler.onSpeakerChange(true);
+				break;
+			case BUZZER_OFF:
+				// turn off bin
+				if(isResumed)
+				eventHandler.onSpeakerChange(false);
+				break;
+			default:
+				break;
+			}
+
+		}
 	}
 
+	public void doOnResume ()
+	{
+		isResumed = true;
+	}
+	public void playSound(int soundResourceId){
+		if(mp==null)mp = MediaPlayer.create(getApplication(), soundResourceId);
+		if(mp.isPlaying()){
+			Resources res = getActivity().getResources();
+			AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
+			FileDescriptor fd = afd.getFileDescriptor();
+			mp.reset();
+			try {
+				mp.setDataSource(fd);
+				mp.prepare();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalStateException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			mp.start();
+		}
+		else
+			mp.start();
+	}
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
