@@ -42,7 +42,7 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}

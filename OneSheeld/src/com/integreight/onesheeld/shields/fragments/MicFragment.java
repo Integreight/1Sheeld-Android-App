@@ -5,6 +5,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.MicShield;
-import com.integreight.onesheeld.shields.controller.ProximityShield;
+import com.integreight.onesheeld.shields.controller.MicShield.MicEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
@@ -23,7 +24,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	ImageView myBox;
 	int leftMargin;
 	int topMargin;
-	LinearLayout.LayoutParams params;
+	RelativeLayout.LayoutParams params;
 	TranslateAnimation tAnimation;
 	LinearLayout micLayout;
 	RelativeLayout backLayout;
@@ -51,7 +52,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}
@@ -59,14 +60,15 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		params = new LinearLayout.LayoutParams(500, 500);
+		params = new RelativeLayout.LayoutParams(500, 500);
 		amplitude_value = (TextView) getView().findViewById(R.id.mytext);
 		myBox = (ImageView) getView().findViewById(R.id.mybox);
 		micLayout = (LinearLayout) getView().findViewById(R.id.micLayout);
 		boxheigh = myBox.getHeight();
 		backLayout = (RelativeLayout) getView().findViewById(R.id.backLayout);
 		micLayout.bringToFront();
-		params.gravity = Gravity.BOTTOM;
+		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
+		//params.gravity = Gravity.BOTTOM;
 		start_mic_bt = (Button) getActivity().findViewById(R.id.start_mic);
 		stop_mic_bt = (Button) getActivity().findViewById(R.id.stop_mic);
 
@@ -91,6 +93,20 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 	}
 
+	private MicEventHandler micEventHandler = new MicEventHandler() {
+
+		@Override
+		public void getAmplitude(Double value) {
+
+			if (canChangeUI()) {
+				// set data to UI
+				amplitude_value.setText(value + "");
+				params.height = (int) ((value) * 7);
+				myBox.setLayoutParams(params);
+			}
+		}
+	};
+
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
@@ -105,7 +121,19 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
+		((MicShield) getApplication().getRunningShields().get(
+				getControllerTag())).setMicEventHandler(micEventHandler);
+		((MicShield) getApplication().getRunningShields().get(
+				getControllerTag())).doOnResume();
 		super.onResume();
+	}
+	
+	public void startAnimation(int y) {
+		tAnimation = new TranslateAnimation(0, 0, boxheigh, -y);
+		tAnimation.setDuration(5000);
+		tAnimation.setRepeatCount(0);
+		tAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+		tAnimation.setFillAfter(true);
+		myBox.startAnimation(tAnimation);
 	}
 }

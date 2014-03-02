@@ -57,7 +57,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}

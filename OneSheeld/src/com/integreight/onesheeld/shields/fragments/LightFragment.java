@@ -42,7 +42,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}

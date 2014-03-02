@@ -38,7 +38,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}

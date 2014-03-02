@@ -35,7 +35,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}

@@ -43,7 +43,7 @@ public class TemperatureFragment extends ShieldFragmentParent<TemperatureFragmen
 	@Override
 	public void onStop() {
 		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+				.setHasForgroundView(false);
 
 		super.onStop();
 	}
