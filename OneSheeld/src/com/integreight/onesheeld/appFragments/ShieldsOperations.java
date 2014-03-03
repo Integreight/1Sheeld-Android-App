@@ -131,7 +131,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
-				return true;
+				return pinsSlidingView.isOpened();
 			}
 		});
 		// if (savedInstanceState != null)
