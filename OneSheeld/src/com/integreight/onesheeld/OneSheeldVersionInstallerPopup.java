@@ -35,7 +35,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.upgrading_firmware_dialog_layout);
 		firmataButton = (Button) findViewById(R.id.firmatabootloaderbutton);
-		firmataButton = (Button) findViewById(R.id.firmatabootloaderrxtxbutton);
+		firmatarxtxButton = (Button) findViewById(R.id.firmatabootloaderrxtxbutton);
 		rxButton = (Button) findViewById(R.id.rxbootloaderbutton);
 		txButton = (Button) findViewById(R.id.txbootloaderbutton);
 		progressBar = (ProgressBar) findViewById(R.id.bootloaderProgressBar);
