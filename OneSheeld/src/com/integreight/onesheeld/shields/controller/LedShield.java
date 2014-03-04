@@ -7,7 +7,7 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LedShield extends ControllerParent<LedShield> {
-	private int connectedPin;
+	public int connectedPin = -1;
 	private LedEventHandler eventHandler;
 	private boolean isLedOn;
 
@@ -20,13 +20,12 @@ public class LedShield extends ControllerParent<LedShield> {
 	// }
 	public LedShield() {
 		super();
+		requiredPinsIndex = 0;
+		shieldPins = new String[] { "Led" };
 	}
 
 	public LedShield(Activity activity, String tag) {
 		super(activity, tag);
-		requiredPinsNames = new String[] { "2", "3", "4", "5", "6", "7", "8",
-				"9", "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
-		shieldPins = new String[] { "Led" };
 	}
 
 	public boolean isLedOn() {
@@ -34,16 +33,22 @@ public class LedShield extends ControllerParent<LedShield> {
 	}
 
 	public boolean refreshLed() {
-		isLedOn = activity.getThisApplication().getAppFirmata()
-				.digitalRead(connectedPin);
+		if (connectedPin != -1)
+			isLedOn = activity.getThisApplication().getAppFirmata()
+					.digitalRead(connectedPin);
+		else
+			isLedOn = false;
 		CommitInstanceTotable();
 		return isLedOn;
 	}
 
 	@Override
 	public void onDigital(int portNumber, int portData) {
-		isLedOn = activity.getThisApplication().getAppFirmata()
-				.digitalRead(connectedPin);
+		if (connectedPin != -1) {
+			isLedOn = activity.getThisApplication().getAppFirmata()
+					.digitalRead(connectedPin);
+			isLedOn = false;
+		}
 		if (eventHandler != null) {
 			eventHandler.onLedChange(isLedOn);
 		}
@@ -53,8 +58,11 @@ public class LedShield extends ControllerParent<LedShield> {
 
 	public void setLedEventHandler(LedEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		isLedOn = activity.getThisApplication().getAppFirmata()
-				.digitalRead(connectedPin);
+		if (connectedPin != -1)
+			isLedOn = activity.getThisApplication().getAppFirmata()
+					.digitalRead(connectedPin);
+		else
+			isLedOn = false;
 		CommitInstanceTotable();
 	}
 

@@ -20,7 +20,11 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	private String tag = "";
 	private boolean hasForgroundView = false;
 	public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>();
-	public String[] requiredPinsNames = new String[] {};
+	public int requiredPinsIndex = 0;
+	public String[][] requiredPinsNames = new String[][] {
+			{ "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
+					"A0", "A1", "A2", "A3", "A4", "A5" },
+			{ "3", "5", "6", "9", "10", "11" } };
 	public String[] shieldPins = new String[] {};
 
 	public ControllerParent() {
@@ -196,13 +200,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public abstract void reset();
 
 	public String[] getRequiredPinsNames() {
-		return requiredPinsNames;
+		return requiredPinsNames[requiredPinsIndex];
 	}
 
-	public void setRequiredPinsNames(String[] requiredPinsNames) {
-		this.requiredPinsNames = requiredPinsNames;
-		for (int i = 0; i < requiredPinsNames.length; i++) {
-			matchedShieldPins.put(requiredPinsNames[i], null);
-		}
-	}
 }

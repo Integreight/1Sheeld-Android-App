@@ -28,7 +28,6 @@ public class PinsColumnContainer extends RelativeLayout {
 	private ArrayList<PinData> childrenRects = new ArrayList<PinData>();
 	ImageView cursor;
 	RelativeLayout.LayoutParams cursorParams;
-	private String[] enabledPins = new String[] {};
 	ControllerParent<?> controller;
 
 	public PinsColumnContainer(Context context, AttributeSet attrs) {
@@ -44,12 +43,18 @@ public class PinsColumnContainer extends RelativeLayout {
 		this.focusListener = focusListener;
 		this.cursor = cursor;
 		this.controller = controller;
+		currentIndex = -1;
+		currentTag = null;
+		childrenRects = new ArrayList<PinData>();
 		getViewTreeObserver().addOnGlobalLayoutListener(
 				new OnGlobalLayoutListener() {
 
 					@Override
 					public void onGlobalLayout() {
-						loadRects(PinsColumnContainer.this);
+						if (childrenRects == null || childrenRects.size() == 0) {
+							childrenRects = new ArrayList<PinsColumnContainer.PinData>();
+							loadRects(PinsColumnContainer.this);
+						}
 					}
 				});
 	}
@@ -57,8 +62,8 @@ public class PinsColumnContainer extends RelativeLayout {
 	int concatenatedLeft = 0, concatenatedTop = 0, concatenatedRight = 0;
 
 	private boolean isPinEnabled(String tag) {
-		for (int i = 0; i < enabledPins.length; i++) {
-			if (tag.equals(enabledPins[i])) {
+		for (int i = 0; i < controller.getRequiredPinsNames().length; i++) {
+			if (tag.equals(controller.getRequiredPinsNames()[i])) {
 				return true;
 			}
 		}
@@ -76,7 +81,7 @@ public class PinsColumnContainer extends RelativeLayout {
 		Enumeration<String> enumKey = table.keys();
 		while (enumKey.hasMoreElements()) {
 			String key = enumKey.nextElement();
-			if (table.containsKey(key)) {
+			if (!key.startsWith(controller.getClass().getName())) {
 				type = PinData.TYPE.CONNECTED_OUT;
 			}
 		}
@@ -93,46 +98,43 @@ public class PinsColumnContainer extends RelativeLayout {
 	}
 
 	private void loadRects(ViewGroup vg) {
-		if (childrenRects == null || childrenRects.size() == 0) {
-			concatenatedLeft = getChildAt(1).getLeft();
-			concatenatedTop = getChildAt(1).getTop();
-			concatenatedRight = getChildAt(1).getRight();
-			cursorParams = (LayoutParams) cursor.getLayoutParams();
-			for (int i = 0; i < vg.getChildCount(); i++) {
-				if (vg.getChildAt(i) instanceof PinView) {
-					PinView v = (PinView) vg.getChildAt(i);
-					int type = getType(v);
-					v.setBackgroundResource(type);
-					childrenRects.add(new PinData(((String) v.getTag()),
-							new Rect(
-									concatenatedLeft
-											+ vg.getLeft()
-											- (extraHorizontalSpace * (!v
-													.getTag().toString()
-													.startsWith("_") ? 2 : 1))
-											+ v.getLeft(), concatenatedTop
-											+ vg.getTop() + v.getTop()
-											- extraVerticalSpace,
-									concatenatedTop
-											+ vg.getLeft()
-											+ v.getRight()
-											+ (extraHorizontalSpace * (v
-													.getTag().toString()
-													.startsWith("_") ? 2 : 2)),
-									concatenatedTop + vg.getTop()
-											+ v.getBottom()
-											+ extraVerticalSpace), i, type));
-				} else if (vg.getChildAt(i) instanceof ViewGroup) {
-					loadRects((ViewGroup) vg.getChildAt(i));
-				}
+		concatenatedLeft = getChildAt(1).getLeft();
+		concatenatedTop = getChildAt(1).getTop();
+		concatenatedRight = getChildAt(1).getRight();
+		cursorParams = (LayoutParams) cursor.getLayoutParams();
+		for (int i = 0; i < vg.getChildCount(); i++) {
+			if (vg.getChildAt(i) instanceof PinView) {
+				PinView v = (PinView) vg.getChildAt(i);
+				int type = getType(v);
+				v.setBackgroundResource(type);
+				childrenRects.add(new PinData(((String) v.getTag()), new Rect(
+						concatenatedLeft
+								+ vg.getLeft()
+								- (extraHorizontalSpace * (!v.getTag()
+										.toString().startsWith("_") ? 2 : 1))
+								+ v.getLeft(), concatenatedTop + vg.getTop()
+								+ v.getTop() - extraVerticalSpace,
+						concatenatedTop
+								+ vg.getLeft()
+								+ v.getRight()
+								+ (extraHorizontalSpace * (v.getTag()
+										.toString().startsWith("_") ? 2 : 2)),
+						concatenatedTop + vg.getTop() + v.getBottom()
+								+ extraVerticalSpace), i, type));
+			} else if (vg.getChildAt(i) instanceof ViewGroup) {
+				loadRects((ViewGroup) vg.getChildAt(i));
 			}
 		}
 	}
 
 	private synchronized PinData getTouhedIndex(MotionEvent event) {
-		loadRects(this);
+		if (childrenRects == null || childrenRects.size() == 0) {
+			childrenRects = new ArrayList<PinsColumnContainer.PinData>();
+			loadRects(this);
+		}
 		for (PinData item : childrenRects) {
-			if (item.rect.contains((int) event.getX(), (int) event.getY()))
+			if (item.rect.contains((int) event.getX(), (int) event.getY())
+					&& item.type != PinData.TYPE.DISABLED)
 				return item;
 		}
 		return new PinData("", null, -1, PinData.TYPE.NOT_CONNECTED_AND_ENABLED);
@@ -149,6 +151,15 @@ public class PinsColumnContainer extends RelativeLayout {
 		cursor.requestLayout();
 	}
 
+	public PinData getDataOfTag(String tag) {
+		for (PinData item : childrenRects) {
+			if (tag.equals(item.tag)) {
+				return item;
+			}
+		}
+		return new PinData("", null, -1, PinData.TYPE.NOT_CONNECTED_AND_ENABLED);
+	}
+
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
 		if (event.getAction() == MotionEvent.ACTION_DOWN
@@ -157,11 +168,8 @@ public class PinsColumnContainer extends RelativeLayout {
 			if (item.index != currentIndex) {
 				currentIndex = item.index;
 				currentTag = item.tag;
-				focusListener.focusOnThisChild(
-						currentIndex,
-						currentIndex == -1 ? ""
-								: (currentTag.contains("_") ? currentTag
-										.substring(1) : currentTag));
+				focusListener.focusOnThisChild(currentIndex,
+						currentIndex == -1 ? "" : currentTag);
 				if (item.index != -1) {
 					setCursorTo(item);
 				} else
@@ -172,9 +180,14 @@ public class PinsColumnContainer extends RelativeLayout {
 			PinData item = getTouhedIndex(event);
 			currentIndex = item.index;
 			currentTag = item.tag;
+			if (item.index != -1) {
+				setCursorTo(item);
+			} else
+				cursor.setVisibility(View.INVISIBLE);
 			focusListener.selectThisChild(currentIndex, currentIndex == -1 ? ""
-					: (currentTag.contains("_") ? currentTag.substring(1)
-							: currentTag));
+					: currentTag);
+			childrenRects = new ArrayList<PinsColumnContainer.PinData>();
+			loadRects(this);
 			return true;
 		}
 		return true;

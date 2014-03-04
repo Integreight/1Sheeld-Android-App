@@ -38,9 +38,11 @@ import com.integreight.onesheeld.OneSheeldVersionInstallerPopup;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
+import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 
 public class SheeldsList extends Fragment {
 	View v;
@@ -101,8 +103,13 @@ public class SheeldsList extends Fragment {
 			String key = enumKey.nextElement();
 			controllers.get(key).reset();
 		}
+		ArduinoPin[] pins = ArduinoPin.values();
+		for (int i = 0; i < pins.length; i++) {
+			pins[i].connectedPins.clear();
+		}
 		((OneSheeldApplication) getActivity().getApplication())
 				.clearServiceEventHandlers();
+		ConnectingPinsView.getInstance().recycle();
 		super.onResume();
 	}
 
