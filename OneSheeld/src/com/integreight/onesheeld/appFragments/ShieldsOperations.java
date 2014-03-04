@@ -10,23 +10,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
-import com.integreight.onesheeld.utils.customviews.PinsColumnContainer;
 
 public class ShieldsOperations extends BaseContainerFragment {
 	private View v;
@@ -111,13 +107,33 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onClick(View v) {
-						if (!pinsSlidingView.isOpened())
-							myActivity.disableMenu();
-						else
-							myActivity.enableMenu();
 						pinsSlidingView.animateOpen();
 					}
 				});
+		pinsSlidingView
+				.setOnDrawerOpenListener(new MultiDirectionSlidingDrawer.OnDrawerOpenListener() {
+
+					@Override
+					public void onDrawerOpened() {
+						myActivity.disableMenu();
+					}
+				});
+		pinsSlidingView
+				.setOnDrawerCloseListener(new MultiDirectionSlidingDrawer.OnDrawerCloseListener() {
+
+					@Override
+					public void onDrawerClosed() {
+						myActivity.enableMenu();
+					}
+				});
+		pinsSlidingView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				return pinsSlidingView.isOpened();
+			}
+		});
 		// if (savedInstanceState != null)
 		// mContent = myActivity.getSupportFragmentManager().getFragment(
 		// savedInstanceState, "mContent");

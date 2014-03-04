@@ -44,6 +44,9 @@ public class ArduinoFirmata{
     public static final int A4=17;
     public static final int A5=18;
     
+    
+    public static byte arduinoLibraryVersion;
+    
     private final char MAX_DATA_BYTES  = 4096;
     private final char MAX_OUTPUT_BYTES  = 32;
     private final byte DIGITAL_MESSAGE = (byte)0x90;
@@ -631,6 +634,7 @@ public class ArduinoFirmata{
     		// TODO Auto-generated method stub
     		while(isRunning){
     			while((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
+    			arduinoLibraryVersion=readByteFromUartBuffer();
     			byte shieldId=readByteFromUartBuffer();
     			boolean found=false;
     			for (UIShield shield : UIShield.values()) {

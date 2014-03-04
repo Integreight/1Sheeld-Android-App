@@ -17,6 +17,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	private Activity activity;
 	ArduinoFirmata firmata;
 	Button firmataButton;
+	Button firmatarxtxButton;
 	Button rxButton;
 	Button txButton;
 	Jodem jodem;
@@ -34,6 +35,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.upgrading_firmware_dialog_layout);
 		firmataButton = (Button) findViewById(R.id.firmatabootloaderbutton);
+		firmatarxtxButton = (Button) findViewById(R.id.firmatabootloaderrxtxbutton);
 		rxButton = (Button) findViewById(R.id.rxbootloaderbutton);
 		txButton = (Button) findViewById(R.id.txbootloaderbutton);
 		progressBar = (ProgressBar) findViewById(R.id.bootloaderProgressBar);
@@ -49,9 +51,25 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
+				firmatarxtxButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata), 3);
+
+			}
+		});
+		firmatarxtxButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				firmata.prepareAppForSendingFirmware();
+				firmataButton.setEnabled(false);
+				firmatarxtxButton.setEnabled(false);
+				rxButton.setEnabled(false);
+				txButton.setEnabled(false);
+				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_rxtx), 3);
 
 			}
 		});
@@ -63,6 +81,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
+				firmatarxtxButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_rx_flash), 3);
@@ -76,6 +95,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				// TODO Auto-generated method stub
 				OneSheeldVersionInstallerPopup.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
+				firmatarxtxButton.setEnabled(false);
 				firmataButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
@@ -120,6 +140,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							public void run() {
 								// TODO Auto-generated method stub
 								firmataButton.setEnabled(true);
+								firmatarxtxButton.setEnabled(true);
 								rxButton.setEnabled(true);
 								txButton.setEnabled(true);
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
@@ -156,6 +177,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							@Override
 							public void run() {
 								firmataButton.setEnabled(true);
+								firmatarxtxButton.setEnabled(true);
 								rxButton.setEnabled(true);
 								txButton.setEnabled(true);
 								textView.setText(error);
@@ -172,6 +194,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							@Override
 							public void run() {
 								firmataButton.setEnabled(true);
+								firmatarxtxButton.setEnabled(true);
 								rxButton.setEnabled(true);
 								txButton.setEnabled(true);
 								textView.setText("Timout Happened");

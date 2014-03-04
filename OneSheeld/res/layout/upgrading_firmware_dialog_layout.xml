@@ -11,6 +11,11 @@
 <Button
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/firmatabootloaderrxtxbutton"
+     android:text="Upgrade Firmata Firmware with RX and Tx Leds"/>
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:id="@+id/rxbootloaderbutton"
      android:text="Upgrade RX Led Firmware"/>
 <Button

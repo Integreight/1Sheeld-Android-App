@@ -8,4 +8,8 @@
     <color name="normal_control">#ff0000</color>
     <color name="pressed_control">#00ffff</color>
     <color name="transparent">#00000000</color>
+    <color name="textColorOnDark">#FEFAD6</color>
+    <color name="arduinoPinsSelector">#4F4E47</color>
+    <color name="arduino_conn_resetAll_bg">#191919</color>
+    <color name="arduino_conn_gray_bg">#232323</color>
 </resources>

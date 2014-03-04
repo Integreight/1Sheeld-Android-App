@@ -1,12 +1,15 @@
 package com.integreight.onesheeld;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -174,4 +177,28 @@ public class MainActivity extends FragmentActivity {
 			appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
 		}
 	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		switch (requestCode) {
+		case SheeldsList.REQUEST_CONNECT_DEVICE:
+			// When DeviceListActivity returns with a device to connect
+			// if (resultCode == Activity.RESULT_OK) {
+			// ((MainActivity) getActivity())
+			// .setSupportProgressBarIndeterminateVisibility(true);
+			// // connectDevice(data);
+			// }
+			break;
+		case SheeldsList.REQUEST_ENABLE_BT:
+			// When the request to enable Bluetooth returns
+			if (resultCode != Activity.RESULT_OK) {
+				Toast.makeText(this, R.string.bt_not_enabled_leaving,
+						Toast.LENGTH_SHORT).show();
+				ArduinoConnectivityPopup.isOpened = false;
+				finish();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
 }

@@ -10,8 +10,10 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="25dp"
-        android:background="#D9000000"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/transparent"
         android:fillViewport="true"
         android:scrollbarThumbHorizontal="@drawable/transparent" >
 
@@ -28,193 +30,220 @@
         android:id="@+id/cont"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/scrollingPins"
-        android:padding="50dp" >
+        android:layout_above="@id/scrollingPins" >
 
-        <LinearLayout
-            android:id="@+id/pinsCont"
-            android:layout_width="100dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:gravity="right"
-            android:orientation="vertical" >
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="A5" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="A4" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="A3" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="A2" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="A1" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="A0" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/pinsCont2"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:gravity="left"
-            android:orientation="vertical" >
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_0" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_1" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_2" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_3" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_4" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_5" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_6" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_7" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/pinsCont3"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/pinsCont2"
-            android:layout_marginTop="10dp"
-            android:gravity="left"
-            android:orientation="vertical" >
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_8" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_9" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_10" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_11" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_12" />
-
-            <com.integreight.onesheeld.utils.customviews.PinView
-                android:layout_width="@dimen/pinViewDimen"
-                android:layout_height="@dimen/pinViewDimen"
-                android:layout_marginTop="5dp"
-                android:background="#CDB1FD"
-                android:tag="_13" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/show"
+        <ImageView
+            android:id="@+id/background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:textSize="88sp" />
-    </com.integreight.onesheeld.utils.customviews.PinsColumnContainer>
+            android:layout_centerInParent="true"
+            android:background="@drawable/arduino_pins_view_arduino"
+            android:contentDescription="@string/app_name" />
 
-    <ImageView
-        android:id="@+id/cursor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/arduino_pins_view_right_selector"
-        android:contentDescription="@string/app_name"
-        android:visibility="invisible" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/background"
+            android:layout_alignLeft="@id/background"
+            android:layout_alignRight="@id/background"
+            android:layout_alignTop="@id/background"
+            android:paddingBottom="10dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="18dp" >
+
+            <LinearLayout
+                android:id="@+id/pinsCont"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/arduino_default_pin"
+                android:gravity="right"
+                android:orientation="vertical"
+                android:padding="2dp" >
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="A5" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="A4" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="A3" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="A2" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="A1" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="A0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pinsCont2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:background="@drawable/arduino_default_pin"
+                android:gravity="left"
+                android:orientation="vertical"
+                android:padding="2dp" >
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_0" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_1" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_2" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_3" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_4" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_5" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_6" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_7" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pinsCont3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@id/pinsCont2"
+                android:layout_marginTop="3dp"
+                android:background="@drawable/arduino_default_pin"
+                android:gravity="left"
+                android:orientation="vertical"
+                android:padding="2dp" >
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_8" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_9" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_10" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_11" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_12" />
+
+                <com.integreight.onesheeld.utils.customviews.PinView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:background="@drawable/arduino_default_pin"
+                    android:tag="_13" />
+            </LinearLayout>
+
+            <com.integreight.onesheeld.utils.OneShieldTextView
+                android:id="@+id/show"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/arduino_selected_pin_rounded_bg"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="@color/textColorOnDark"
+                android:textSize="70sp" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/cursor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/arduino_pins_view_right_selector"
+            android:contentDescription="@string/app_name"
+            android:visibility="invisible" />
+    </com.integreight.onesheeld.utils.customviews.PinsColumnContainer>
 
 </RelativeLayout>
