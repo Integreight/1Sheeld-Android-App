@@ -140,17 +140,31 @@ public class Jodem {
 		});
 		fileSendingThread.start();
 	}
-	private boolean sendFile(InputStream inputStream, int retry) throws InterruptedException{
+	
+	public void send(final byte[] fileArray, final int retry){
+		stop();
+		fileSendingThread=new Thread(new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				try {
+					sendFile(fileArray, retry);
+				} catch (InterruptedException e) {
+					return;
+				}
+			}
+		});
+		fileSendingThread.start();
+	}
+	
+	private boolean sendFile(byte[] fileArray, int retry) throws InterruptedException{
+		return sendFile(fileArray, fileArray.length, retry);
+	}
+	
+	private boolean sendFile(byte[] fileArray, int length, int retry) throws InterruptedException{
 		buffer.clear();
-		byte[] fileBuffer=new byte[10240];
-		int fileLength;
-		try {
-			fileLength = inputStream.read(fileBuffer);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-			return false;
-		}
-		ByteArrayInputStream stream=new ByteArrayInputStream(fileBuffer,0,fileLength);
+		ByteArrayInputStream stream=new ByteArrayInputStream(fileArray,0,length);
 		timeout=new TimeOut(3, timeoutHandler);
 		while(readByteFromBuffer()!=NAK);
 		write(KEY);
@@ -195,7 +209,7 @@ public class Jodem {
 
 		error_count = 0;
 		int success_count = 0;
-		int total_packets = 0;
+		//int total_packets = 0;
 		byte sequence = 1;
 		while (true){
 			byte[] data=new byte[packet_size];
@@ -205,7 +219,7 @@ public class Jodem {
 				Log.d("bootloader","sending EOT");
 				break;
 			}
-			total_packets += 1;
+			//total_packets += 1;
 			for(int i=readCount;i<packet_size;i++){
 				data[i]=SUB;
 			}
@@ -237,12 +251,12 @@ public class Jodem {
 					success_count += 1;
 //					if (callable(callback))
 //						callback(total_packets, success_count, error_count);
-					jodemHandler.onProgress(fileLength, (readCount>=128)?success_count*readCount:((success_count-1)*packet_size+readCount), error_count);
+					jodemHandler.onProgress(length, (readCount>=128)?success_count*readCount:((success_count-1)*packet_size+readCount), error_count);
 					break;
 				}
 				if (readChar == NAK){
 					error_count += 1;
-					jodemHandler.onProgress(fileLength, (readCount>=128)?success_count*readCount:((success_count-1)*packet_size+readCount), error_count);
+					jodemHandler.onProgress(length, (readCount>=128)?success_count*readCount:((success_count-1)*packet_size+readCount), error_count);
 //					if (callable(callback))
 //						callback(total_packets, success_count, error_count)
 						if (error_count >= retry){
@@ -285,6 +299,19 @@ public class Jodem {
 			}
 		}
 		return true;
+	}
+	
+	private boolean sendFile(InputStream inputStream, int retry) throws InterruptedException{
+		buffer.clear();
+		byte[] fileBuffer=new byte[10240];
+		int fileLength;
+		try {
+			fileLength = inputStream.read(fileBuffer);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+		return sendFile(fileBuffer, fileLength, retry);
 	}
 	
 	public byte readByteFromBuffer() throws InterruptedException{

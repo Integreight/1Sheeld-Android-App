@@ -1,5 +1,9 @@
 package com.integreight.onesheeld;
 
+import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -12,6 +16,9 @@ import android.widget.TextView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.Jodem;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.BinaryHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class OneSheeldVersionInstallerPopup extends Dialog {
 	private Activity activity;
@@ -23,6 +30,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	Jodem jodem;
 	ProgressBar progressBar;
 	TextView textView;
+	AsyncHttpClient httpClient;
 
 	public OneSheeldVersionInstallerPopup(Activity context) {
 		super(context, android.R.style.Theme_Black);
@@ -40,6 +48,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 		txButton = (Button) findViewById(R.id.txbootloaderbutton);
 		progressBar = (ProgressBar) findViewById(R.id.bootloaderProgressBar);
 		textView = (TextView) findViewById(R.id.bootloaderUploadPercentage);
+		httpClient=new AsyncHttpClient();
 		progressBar.setProgress(0);
 		progressBar.setMax(100);
 
@@ -48,13 +57,58 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				OneSheeldVersionInstallerPopup.this.setCancelable(false);
-				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
 				firmatarxtxButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
-				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata), 3);
+				progressBar.setProgress(0);
+				httpClient.get("http://www.1sheeld.com/api/firmware.json", new JsonHttpResponseHandler(){
+					@Override
+					public void onSuccess(JSONObject response) {
+						// TODO Auto-generated method stub
+						try {
+							Log.d("bootloader",response.get("url").toString());
+							textView.setText("Downloading...");
+							httpClient.get(response.get("url").toString(),new BinaryHttpResponseHandler(new String[]{"application/octet-stream","text/plain"}){
+								@Override
+								public void onSuccess(byte[] binaryData) {
+									// TODO Auto-generated method stub
+									OneSheeldVersionInstallerPopup.this.setCancelable(false);
+									firmata.prepareAppForSendingFirmware();
+									
+									jodem.send(binaryData, 4);
+									textView.setText("Press reset now!");
+									progressBar.setProgress(0);
+									super.onSuccess(binaryData);
+								}
+								@Override
+								public void onFailure(int statusCode,
+										Header[] headers, byte[] binaryData,
+										Throwable error) {
+									// TODO Auto-generated method stub
+									firmataButton.setEnabled(true);
+									firmatarxtxButton.setEnabled(true);
+									rxButton.setEnabled(true);
+									txButton.setEnabled(true);
+									textView.setText("Error Downloading!");
+									Log.d("bootloader", statusCode+"");
+									super.onFailure(statusCode, headers, binaryData, error);
+								}
+								@Override
+								public void onProgress(int bytesWritten,
+										int totalSize) {
+									// TODO Auto-generated method stub
+									progressBar.setProgress((int) ((bytesWritten/(float)totalSize)*100));
+									super.onProgress(bytesWritten, totalSize);
+								}
+							});
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						super.onSuccess(response);
+					};
+				});
 
 			}
 		});
@@ -69,8 +123,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				firmatarxtxButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
-				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_rxtx), 3);
-
+				progressBar.setProgress(0);
+				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_rxtx), 4);
+				textView.setText("Press reset now!");
 			}
 		});
 		rxButton.setOnClickListener(new View.OnClickListener() {
@@ -84,8 +139,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				firmatarxtxButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
-				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_rx_flash), 3);
-
+				progressBar.setProgress(0);
+				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_rx_flash), 4);
+				textView.setText("Press reset now!");
 			}
 		});
 		txButton.setOnClickListener(new View.OnClickListener() {
@@ -99,8 +155,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				firmataButton.setEnabled(false);
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
-				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_tx_flash), 3);
-
+				progressBar.setProgress(0);
+				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_tx_flash), 4);
+				textView.setText("Press reset now!");
 			}
 		});
 		setOnCancelListener(new OnCancelListener() {
