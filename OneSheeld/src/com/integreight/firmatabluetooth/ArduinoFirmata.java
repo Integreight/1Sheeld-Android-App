@@ -634,13 +634,13 @@ public class ArduinoFirmata{
     		// TODO Auto-generated method stub
     		while(isRunning){
     			while((readByteFromUartBuffer())!=ShieldFrame.START_OF_FRAME);
+    			arduinoLibraryVersion=readByteFromUartBuffer();
     			byte shieldId=readByteFromUartBuffer();
     			boolean found=false;
     			for (UIShield shield : UIShield.values()) {
 					if(shieldId==shield.getId())found=true;
 				}
     			if(!found){uartBuffer.clear();continue;}
-    			arduinoLibraryVersion=readByteFromUartBuffer();
     			byte instanceId=readByteFromUartBuffer();
     			byte functionId=readByteFromUartBuffer();
     			ShieldFrame frame=new ShieldFrame(shieldId, instanceId, functionId);
