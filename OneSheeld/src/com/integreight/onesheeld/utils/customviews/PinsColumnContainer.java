@@ -1,19 +1,24 @@
 package com.integreight.onesheeld.utils.customviews;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.Hashtable;
 
-import com.google.android.gms.internal.cu;
-import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
-
+import android.R.bool;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
+import com.integreight.onesheeld.utils.ControllerParent;
 
 public class PinsColumnContainer extends RelativeLayout {
 	public int currentIndex = -1;
@@ -23,6 +28,8 @@ public class PinsColumnContainer extends RelativeLayout {
 	private ArrayList<PinData> childrenRects = new ArrayList<PinData>();
 	ImageView cursor;
 	RelativeLayout.LayoutParams cursorParams;
+	private String[] enabledPins = new String[] {};
+	ControllerParent<?> controller;
 
 	public PinsColumnContainer(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -30,53 +37,116 @@ public class PinsColumnContainer extends RelativeLayout {
 				.getDisplayMetrics().density - .5f);
 		extraVerticalSpace = (int) (1 * context.getResources()
 				.getDisplayMetrics().density - .5f);
-		// setOrientation(VERTICAL);
 	}
 
-	public void setup(OnChildFocusListener focusListener, ImageView cursor) {
+	public void setup(OnChildFocusListener focusListener, ImageView cursor,
+			ControllerParent<?> controller) {
 		this.focusListener = focusListener;
 		this.cursor = cursor;
+		this.controller = controller;
+		getViewTreeObserver().addOnGlobalLayoutListener(
+				new OnGlobalLayoutListener() {
+
+					@Override
+					public void onGlobalLayout() {
+						loadRects(PinsColumnContainer.this);
+					}
+				});
 	}
 
 	int concatenatedLeft = 0, concatenatedTop = 0, concatenatedRight = 0;
 
+	private boolean isPinEnabled(String tag) {
+		for (int i = 0; i < enabledPins.length; i++) {
+			if (tag.equals(enabledPins[i])) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private int getType(PinView v) {
+		int type = PinData.TYPE.NOT_CONNECTED_AND_ENABLED;
+		String tag = v.getTag().toString().startsWith("_") ? v.getTag()
+				.toString().substring(1) : v.getTag().toString();
+		if (isPinEnabled(tag) == false)
+			return PinData.TYPE.DISABLED;
+		Hashtable<String, Boolean> table = ArduinoPin.valueOf(v.getTag()
+				.toString()).connectedPins;
+		Enumeration<String> enumKey = table.keys();
+		while (enumKey.hasMoreElements()) {
+			String key = enumKey.nextElement();
+			if (table.containsKey(key)) {
+				type = PinData.TYPE.CONNECTED_OUT;
+			}
+		}
+		enumKey = controller.matchedShieldPins.keys();
+		while (enumKey.hasMoreElements()) {
+			String key = enumKey.nextElement();
+			if (controller.matchedShieldPins.get(key) != null
+					&& controller.matchedShieldPins.get(key) == ArduinoPin
+							.valueOf(v.getTag().toString())) {
+				return PinData.TYPE.CONNECTED_HERE;
+			}
+		}
+		return type;
+	}
+
 	private void loadRects(ViewGroup vg) {
-		concatenatedLeft = getChildAt(1).getLeft();
-		concatenatedTop = getChildAt(1).getTop();
-		concatenatedRight = getChildAt(1).getRight();
-		cursorParams = (LayoutParams) cursor.getLayoutParams();
-		for (int i = 0; i < vg.getChildCount(); i++) {
-			if (vg.getChildAt(i) instanceof PinView) {
-				PinView v = (PinView) vg.getChildAt(i);
-				childrenRects.add(new PinData(((String) v.getTag()), new Rect(
-						concatenatedLeft
-								+ vg.getLeft()
-								- (extraHorizontalSpace * (!v.getTag()
-										.toString().startsWith("_") ? 2 : 1))
-								+ v.getLeft(), concatenatedTop + vg.getTop()
-								+ v.getTop() - extraVerticalSpace,
-						concatenatedTop
-								+ vg.getLeft()
-								+ v.getRight()
-								+ (extraHorizontalSpace * (v.getTag()
-										.toString().startsWith("_") ? 2 : 2)),
-						concatenatedTop + vg.getTop() + v.getBottom()
-								+ extraVerticalSpace), i));
-			} else if (vg.getChildAt(i) instanceof ViewGroup) {
-				loadRects((ViewGroup) vg.getChildAt(i));
+		if (childrenRects == null || childrenRects.size() == 0) {
+			concatenatedLeft = getChildAt(1).getLeft();
+			concatenatedTop = getChildAt(1).getTop();
+			concatenatedRight = getChildAt(1).getRight();
+			cursorParams = (LayoutParams) cursor.getLayoutParams();
+			for (int i = 0; i < vg.getChildCount(); i++) {
+				if (vg.getChildAt(i) instanceof PinView) {
+					PinView v = (PinView) vg.getChildAt(i);
+					int type = getType(v);
+					v.setBackgroundResource(type);
+					childrenRects.add(new PinData(((String) v.getTag()),
+							new Rect(
+									concatenatedLeft
+											+ vg.getLeft()
+											- (extraHorizontalSpace * (!v
+													.getTag().toString()
+													.startsWith("_") ? 2 : 1))
+											+ v.getLeft(), concatenatedTop
+											+ vg.getTop() + v.getTop()
+											- extraVerticalSpace,
+									concatenatedTop
+											+ vg.getLeft()
+											+ v.getRight()
+											+ (extraHorizontalSpace * (v
+													.getTag().toString()
+													.startsWith("_") ? 2 : 2)),
+									concatenatedTop + vg.getTop()
+											+ v.getBottom()
+											+ extraVerticalSpace), i, type));
+				} else if (vg.getChildAt(i) instanceof ViewGroup) {
+					loadRects((ViewGroup) vg.getChildAt(i));
+				}
 			}
 		}
 	}
 
 	private synchronized PinData getTouhedIndex(MotionEvent event) {
-		if (childrenRects == null || childrenRects.size() == 0) {
-			loadRects(this);
-		}
+		loadRects(this);
 		for (PinData item : childrenRects) {
 			if (item.rect.contains((int) event.getX(), (int) event.getY()))
 				return item;
 		}
-		return new PinData("", null, -1);
+		return new PinData("", null, -1, PinData.TYPE.NOT_CONNECTED_AND_ENABLED);
+	}
+
+	public void setCursorTo(PinData item) {
+		cursor.setVisibility(View.VISIBLE);
+		cursorParams.topMargin = item.rect.top - (cursorParams.height / 2)
+				- (5 * extraVerticalSpace);
+		cursorParams.leftMargin = (currentTag.startsWith("_") ? (concatenatedLeft - extraHorizontalSpace / 2)
+				: (concatenatedRight + extraHorizontalSpace / 4));
+		cursor.setBackgroundResource(currentTag.startsWith("_") ? R.drawable.arduino_pins_view_left_selector
+				: R.drawable.arduino_pins_view_right_selector);
+		cursor.requestLayout();
 	}
 
 	@Override
@@ -93,15 +163,7 @@ public class PinsColumnContainer extends RelativeLayout {
 								: (currentTag.contains("_") ? currentTag
 										.substring(1) : currentTag));
 				if (item.index != -1) {
-					cursor.setVisibility(View.VISIBLE);
-					cursorParams.topMargin = item.rect.top
-							- (cursorParams.height / 2)
-							- (5 * extraVerticalSpace);
-					cursorParams.leftMargin = (currentTag.startsWith("_") ? (concatenatedLeft - extraHorizontalSpace / 2)
-							: (concatenatedRight + extraHorizontalSpace / 4));
-					cursor.setBackgroundResource(currentTag.startsWith("_") ? R.drawable.arduino_pins_view_left_selector
-							: R.drawable.arduino_pins_view_right_selector);
-					cursor.requestLayout();
+					setCursorTo(item);
 				} else
 					cursor.setVisibility(View.INVISIBLE);
 				return true;
@@ -124,20 +186,29 @@ public class PinsColumnContainer extends RelativeLayout {
 		return true;
 	}
 
-	public class PinData {
+	public static class PinData {
 		public String tag;
 		public Rect rect;
 		public int index;
+		public int type;
 
 		public PinData() {
 			// TODO Auto-generated constructor stub
 		}
 
-		public PinData(String tag, Rect rect, int index) {
+		public PinData(String tag, Rect rect, int index, int type) {
 			super();
 			this.tag = tag;
 			this.rect = rect;
 			this.index = index;
+			this.type = type;
+		}
+
+		public static final class TYPE {
+			public final static int CONNECTED_HERE = R.drawable.arduino_green_pin;
+			public final static int CONNECTED_OUT = R.drawable.arduino_orange_pin;
+			public final static int NOT_CONNECTED_AND_ENABLED = R.drawable.arduino_default_pin;
+			public final static int DISABLED = R.drawable.arduino_red_pin;
 		}
 
 	}

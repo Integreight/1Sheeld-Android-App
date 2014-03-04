@@ -113,8 +113,9 @@ public class MainActivity extends FragmentActivity {
 			// it.
 			FragmentTransaction ft = manager.beginTransaction();
 			if (animate)
-				ft.setCustomAnimations(R.anim.slide_out_left,
-						R.anim.slide_in_right, 0, 0);
+				ft.setCustomAnimations(R.anim.slide_out_right,
+						R.anim.slide_in_left, R.anim.slide_out_left,
+						R.anim.slide_in_right);
 			ft.replace(container, targetFragment, fragmentTag);
 			if (addToBackStack) {
 				ft.addToBackStack(backStateName);

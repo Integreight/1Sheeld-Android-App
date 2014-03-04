@@ -53,13 +53,18 @@ public class ShieldsOperations extends BaseContainerFragment {
 	}
 
 	private void initView(Bundle savedInstanceState) {
+		final MainActivity myActivity = (MainActivity) getActivity();
+		myActivity
+				.getSupportFragmentManager()
+				.beginTransaction()
+				.replace(R.id.pinsViewContainer,
+						ConnectingPinsView.getInstance()).commit();
 		// SlidingMenu sm = ((MainActivity) getActivity()).getSlidingMenu();
 		// sm.setShadowWidthRes(R.dimen.shadow_width);
 		// sm.setShadowDrawable(R.drawable.shadow);
 		// sm.setBehindWidth(150);
 		// sm.setFadeDegree(0.35f);
 		// sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-		final MainActivity myActivity = (MainActivity) getActivity();
 		myActivity.enableMenu();
 		new Handler().postDelayed(new Runnable() {
 
@@ -67,7 +72,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			public void run() {
 				myActivity.openMenu();
 			}
-		}, 700);
+		}, 400);
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		// myActivity.getSupportActionBar().setHomeButtonEnabled(true);
@@ -95,11 +100,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 		}
 		// myActivity.replaceCurrentFragment(R.id.pinsViewContainer,
 		// ConnectingPinsView.getInstance(), "", false, false);
-		myActivity
-				.getSupportFragmentManager()
-				.beginTransaction()
-				.replace(R.id.pinsViewContainer,
-						ConnectingPinsView.getInstance()).commit();
 		final MultiDirectionSlidingDrawer pinsSlidingView = (MultiDirectionSlidingDrawer) getView()
 				.findViewById(R.id.pinsViewSlidingView);
 		getView().findViewById(R.id.pinsFixedHandler).setOnClickListener(

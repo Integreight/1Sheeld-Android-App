@@ -15,6 +15,7 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 
 public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
@@ -39,6 +40,8 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 					getControllerTag())).refreshLed());
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()));
 		super.onStart();
 	}
 

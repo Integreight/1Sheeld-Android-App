@@ -20,7 +20,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	private String tag = "";
 	private boolean hasForgroundView = false;
 	public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>();
-	private String[] requiredPinsNames = null;
+	public String[] requiredPinsNames = new String[] {};
+	public String[] shieldPins = new String[] {};
 
 	public ControllerParent() {
 		// TODO Auto-generated constructor stub
