@@ -645,11 +645,11 @@ public class ArduinoFirmata{
     			byte functionId=readByteFromUartBuffer();
     			ShieldFrame frame=new ShieldFrame(shieldId, instanceId, functionId);
     			int argumentsNumber=readByteFromUartBuffer();
-    			for(byte i=0;i<argumentsNumber;i++){
-    				int length=readByteFromUartBuffer();
+    			for(int i=0;i<argumentsNumber;i++){
+    				int length=readByteFromUartBuffer()&0xff;
     				if(length<=0) {uartBuffer.clear();continue;}
     				byte[] data=new byte[length];
-    				for(byte j=0;j<length;j++){
+    				for(int j=0;j<length;j++){
     					data[j]=readByteFromUartBuffer();
     				}
     				frame.addArgument(data);
