@@ -3,6 +3,7 @@ package com.integreight.onesheeld.enums;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
+import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
@@ -107,7 +108,9 @@ public enum UIShield {
 			R.drawable.shields_list_wifi_symbol, false, EmptyShield.class), GSM(
 			(byte) 0x20, "GSM", 0xff5a0303, R.drawable.shields_list_gsm_symbol,
 			false, EmptyShield.class), GLCD((byte) 0x20, "GLCD", 0xff988564,
-			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class);
+			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class), EMAIL_SHIELD(
+			(byte) 0x1E, "Email", 0xffd95342,
+			R.drawable.shields_list_gravity_symbol, false, EmailShield.class), ;
 
 	private byte id;
 	private String name;
@@ -242,6 +245,8 @@ public enum UIShield {
 			return GSM;
 		case 34:
 			return GLCD;
+		case 35:
+			return EMAIL_SHIELD;
 		}
 		return null;
 	}
