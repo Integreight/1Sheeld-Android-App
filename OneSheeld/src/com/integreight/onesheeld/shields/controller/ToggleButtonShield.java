@@ -12,10 +12,12 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 
 	public ToggleButtonShield() {
 		super();
+		requiredPinsIndex = 0;
+		shieldPins = new String[] { "Toggle" };
 	}
 
-	public ToggleButtonShield(Activity activity,String tag) {
-		super(activity,tag);
+	public ToggleButtonShield(Activity activity, String tag) {
+		super(activity, tag);
 	}
 
 	@Override
@@ -29,9 +31,11 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 	}
 
 	public void setButton(boolean isButtonOn) {
-		this.isButtonOn = isButtonOn;
-		activity.getThisApplication().getAppFirmata()
-				.digitalWrite(connectedPin, isButtonOn);
+		if (connectedPin != -1) {
+			this.isButtonOn = isButtonOn;
+			activity.getThisApplication().getAppFirmata()
+					.digitalWrite(connectedPin, isButtonOn);
+		}
 		CommitInstanceTotable();
 	}
 
@@ -44,13 +48,13 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
