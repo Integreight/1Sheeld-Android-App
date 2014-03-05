@@ -20,7 +20,7 @@ import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.onPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class ToggleButtonFragment extends
 		ShieldFragmentParent<ToggleButtonFragment> {
@@ -76,7 +76,7 @@ public class ToggleButtonFragment extends
 				ConnectingPinsView.getInstance().reset(
 						getApplication().getRunningShields().get(
 								getControllerTag()),
-						new onPinSelectionListener() {
+						new OnPinSelectionListener() {
 
 							@Override
 							public void onSelect(ArduinoPin pin) {

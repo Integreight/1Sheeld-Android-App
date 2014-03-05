@@ -19,6 +19,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinsDrawn;
 
 public class PinsColumnContainer extends RelativeLayout {
 	public int currentIndex = -1;
@@ -39,7 +40,7 @@ public class PinsColumnContainer extends RelativeLayout {
 	}
 
 	public void setup(OnChildFocusListener focusListener, ImageView cursor,
-			ControllerParent<?> controller) {
+			ControllerParent<?> controller, final OnPinsDrawn drawListener) {
 		this.focusListener = focusListener;
 		this.cursor = cursor;
 		this.controller = controller;
@@ -54,6 +55,7 @@ public class PinsColumnContainer extends RelativeLayout {
 						if (childrenRects == null || childrenRects.size() == 0) {
 							childrenRects = new ArrayList<PinsColumnContainer.PinData>();
 							loadRects(PinsColumnContainer.this);
+							drawListener.onDraw();
 						}
 					}
 				});
