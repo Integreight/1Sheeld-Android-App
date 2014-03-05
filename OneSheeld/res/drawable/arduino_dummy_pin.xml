@@ -9,6 +9,6 @@
         android:height="@dimen/pinViewDimen"
         android:width="@dimen/pinViewDimen" />
 
-    <solid android:color="#E74D01" />
+    <solid android:color="#e7fcfe" />
 
 </shape>

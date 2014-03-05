@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -24,8 +25,12 @@ import android.widget.Checkable;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
+import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.appFragments.SheeldsList;
@@ -113,6 +118,27 @@ public class ArduinoConnectivityPopup extends Dialog {
 					SheeldsList.REQUEST_ENABLE_BT);
 
 		}
+		((PullToRefreshScrollView) findViewById(R.id.scrollingDevices))
+				.setOnRefreshListener(new OnRefreshListener<ScrollView>() {
+
+					@Override
+					public void onRefresh(
+							PullToRefreshBase<ScrollView> refreshView) {
+						((PullToRefreshScrollView) findViewById(R.id.scrollingDevices))
+								.onRefreshComplete();
+						try {
+							activity.unregisterReceiver(mReceiver);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						showProgress();
+						changeSlogan(
+								activity.getResources().getString(
+										R.string.searching), COLOR.RED);
+						scanDevices();
+						doDiscovery();
+					}
+				});
 		super.onCreate(savedInstanceState);
 	}
 
@@ -174,13 +200,12 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// findViewById(R.id.devicesList);
 		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
 		devicesList.removeAllViews();
+		found = 0;
 		// Register for broadcasts when a device is discovered
-		IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-		activity.registerReceiver(mReceiver, filter);
-
-		// Register for broadcasts when discovery has finished
-		filter = new IntentFilter(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		activity.registerReceiver(mReceiver, filter);
 
 		// Get the local Bluetooth adapter
@@ -379,7 +404,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 			} else {
 				OneShieldTextView item = new OneShieldTextView(activity, null);
 				item.setLayoutParams(new LinearLayout.LayoutParams(
-						LinearLayout.LayoutParams.MATCH_PARENT,
+						LinearLayout.LayoutParams.WRAP_CONTENT,
 						LinearLayout.LayoutParams.WRAP_CONTENT));
 				item.setText(name);
 				item.setTag(address);
@@ -419,6 +444,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 	// The BroadcastReceiver that listens for discovered devices and
 	// changes the title when discovery is finished
+	private int found = 0;
+	Handler delayingHandler = new Handler();
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -434,6 +461,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 				// If it's already paired, skip it, because it's been listed
 				// already
 				// if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+				found += 1;
 				addFoundDevice(device.getName(), device.getAddress(),
 						device.getBondState() == BluetoothDevice.BOND_BONDED);
 				// }
@@ -442,7 +470,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 					.equals(action)) {
 				// setProgressBarIndeterminateVisibility(false);
 				// setTitle(R.string.select_device);
-				if (devicesList.getChildCount() == 0) {
+				if (found == 0) {
 					// String noDevices = activity.getResources()
 					// .getText(R.string.none_found).toString();
 					// mPairedDevicesArrayAdapter.add(noDevices);
