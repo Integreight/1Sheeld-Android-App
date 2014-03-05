@@ -1,14 +1,11 @@
 package com.integreight.onesheeld.utils;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.integreight.onesheeld.R;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+
+import com.integreight.onesheeld.R;
 
 public class BaseContainerFragment extends Fragment {
 	@Override

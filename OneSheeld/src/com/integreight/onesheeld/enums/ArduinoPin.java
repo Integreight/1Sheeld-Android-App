@@ -121,7 +121,7 @@ public enum ArduinoPin {
 					ArduinoPinCapability.OUTPUT, ArduinoPinCapability.ANALOG),
 			new Hashtable<String, Boolean>());
 	EnumSet<ArduinoPinCapability> capabilitySet;
-	int microHardwarePin;
+	public int microHardwarePin;
 	public Hashtable<String, Boolean> connectedPins;
 
 	ArduinoPin(int microHardwarePin, EnumSet<ArduinoPinCapability> set,

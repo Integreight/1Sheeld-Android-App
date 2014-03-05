@@ -234,7 +234,8 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:textColor="@color/textColorOnDark"
-                android:textSize="70sp" />
+                android:textSize="70sp"
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <ImageView
