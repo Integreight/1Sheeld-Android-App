@@ -72,7 +72,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			public void run() {
 				myActivity.openMenu();
 			}
-		}, 400);
+		}, 500);
 		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		// myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		// myActivity.getSupportActionBar().setHomeButtonEnabled(true);

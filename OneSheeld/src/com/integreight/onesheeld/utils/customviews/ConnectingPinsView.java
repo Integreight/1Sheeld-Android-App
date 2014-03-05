@@ -8,12 +8,15 @@ import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.OneShieldButton;
 import com.integreight.onesheeld.utils.OneShieldTextView;
+import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,9 +25,10 @@ import android.widget.TextView;
 public class ConnectingPinsView extends Fragment {
 	private static ConnectingPinsView thisInstance;
 	TextView show;
-	private int selectedConnectingPin = 0;
+	private int selectedPin = 0;
 	private ArrayList<LinearLayout> pinsSubContainers = new ArrayList<LinearLayout>();
 	private View view;
+	private String selectedPinName = "";
 
 	public static ConnectingPinsView getInstance() {
 		if (thisInstance == null) {
@@ -61,24 +65,31 @@ public class ConnectingPinsView extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	private Handler resettingHandler = new Handler();
+
 	public void reset(final ControllerParent<?> controller,
 			final OnPinSelectionListener listner) {
-		selectedConnectingPin = 0;
+		selectedPin = 0;
+		selectedPinName = "";
+		show.setText("");
+		show.setVisibility(View.INVISIBLE);
 		final int selectedColor = getResources().getColor(
 				R.color.arduinoPinsSelector);
 		final int unSelectedColor = 0x00000000;
-		((ImageView) getView().findViewById(R.id.cursor))
-				.setVisibility(View.INVISIBLE);
-		show.setText("");
-		show.setVisibility(View.INVISIBLE);
+		final ImageView cursor = ((ImageView) getView().findViewById(
+				R.id.cursor));
+		cursor.setVisibility(View.INVISIBLE);
 		final PinsColumnContainer thisPinsContainer = ((PinsColumnContainer) getView()
 				.findViewById(R.id.cont));
-		pinsSubContainers = new ArrayList<LinearLayout>();
-		final LinearLayout pinsContainer = (LinearLayout) getView()
-				.findViewById(R.id.requiredPinsContainer);
-		pinsContainer.removeAllViews();
-		thisPinsContainer.setup(
-				new OnChildFocusListener() {
+		if (resettingHandler == null)
+			resettingHandler = new Handler();
+		resettingHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				thisPinsContainer.setup(new OnChildFocusListener() {
 
 					@Override
 					public void focusOnThisChild(int childIndex, String tag) {
@@ -94,7 +105,7 @@ public class ConnectingPinsView extends Fragment {
 								: View.INVISIBLE);
 						show.setText(tag.startsWith("_") ? tag.substring(1)
 								: tag);
-						String shieldPinName = controller.shieldPins[selectedConnectingPin];
+						String shieldPinName = controller.shieldPins[selectedPin];
 						if (childIndex != -1) {
 							ArduinoPin arduinoPin = ArduinoPin.valueOf(tag);
 							ArduinoPin prevArduinoPin = controller.matchedShieldPins
@@ -120,84 +131,118 @@ public class ConnectingPinsView extends Fragment {
 								prevArduinoPin.connectedPins.remove(controller
 										.getClass().getName() + shieldPinName);
 							controller.matchedShieldPins
-									.remove(controller.shieldPins[selectedConnectingPin]);
+									.remove(controller.shieldPins[selectedPin]);
 							listner.onSelect(null);
 						}
-						((OneShieldTextView) pinsSubContainers.get(selectedConnectingPin)
+						((OneShieldTextView) pinsSubContainers.get(selectedPin)
 								.getChildAt(1))
 								.setText(tag.startsWith("_") ? tag.substring(1)
 										: tag);
 					}
-				}, (ImageView) getView().findViewById(R.id.cursor), controller,
-				new OnPinsDrawn() {
+				}, cursor, controller, new onGetPinsView() {
 
 					@Override
-					public void onDraw() {
-						// int pdng = (int) (2 *
-						// getResources().getDisplayMetrics().density
-						// -
-						// .5f);
-						HorizontalScrollView scrollingPins = (HorizontalScrollView) getView()
-								.findViewById(R.id.scrollingPins);
-						for (int i = 0; i < controller.shieldPins.length; i++) {
-							LinearLayout pinSubContainer = (LinearLayout) getActivity()
-									.getLayoutInflater().inflate(
-											R.layout.pin_sub_container, null,
-											false);
-							OneShieldButton pinButton = (OneShieldButton) pinSubContainer
-									.getChildAt(0);
-							pinButton.setText(controller.shieldPins[i]);
-							OneShieldTextView pinText = (OneShieldTextView) pinSubContainer
-									.getChildAt(1);
-							final String pinName = controller.matchedShieldPins
+					public void onPinsDrawn() {
+						pinsSubContainers.get(0).getChildAt(0)
+								.setBackgroundColor(selectedColor);
+						selectedPin = 0;
+						selectedPinName = controller.matchedShieldPins
+								.get(controller.shieldPins[0]) != null ? controller.matchedShieldPins
+								.get(controller.shieldPins[0]).name() : "";
+						if (selectedPinName.length() > 0) {
+							PinData data = thisPinsContainer
+									.getDataOfTag(selectedPinName);
+							if (data.rect != null && data.index != -1) {
+								thisPinsContainer.setCursorTo(data);
+								show.setVisibility(View.VISIBLE);
+								show.setText(data.tag.startsWith("_") ? data.tag
+										.substring(1) : data.tag);
+							} else {
+								show.setText("");
+								show.setVisibility(View.INVISIBLE);
+								cursor.setVisibility(View.INVISIBLE);
+							}
+						} else {
+							show.setText("");
+							show.setVisibility(View.INVISIBLE);
+							cursor.setVisibility(View.INVISIBLE);
+						}
+					}
+				});
+				pinsSubContainers = new ArrayList<LinearLayout>();
+				LinearLayout pinsContainer = (LinearLayout) getView()
+						.findViewById(R.id.requiredPinsContainer);
+				pinsContainer.removeAllViews();
+				// int pdng = (int) (2 *
+				// getResources().getDisplayMetrics().density
+				// -
+				// .5f);
+				HorizontalScrollView scrollingPins = (HorizontalScrollView) getView()
+						.findViewById(R.id.scrollingPins);
+				for (int i = 0; i < controller.shieldPins.length; i++) {
+					LinearLayout pinSubContainer = (LinearLayout) getActivity()
+							.getLayoutInflater().inflate(
+									R.layout.pin_sub_container, null, false);
+					final OneShieldButton pinButton = (OneShieldButton) pinSubContainer
+							.getChildAt(0);
+					pinButton.setText(controller.shieldPins[i]);
+					OneShieldTextView pinText = (OneShieldTextView) pinSubContainer
+							.getChildAt(1);
+					String pinName = controller.matchedShieldPins.get(pinButton
+							.getText().toString()) != null ? controller.matchedShieldPins
+							.get(pinButton.getText().toString()).name() : "";
+					pinText.setText(pinName.startsWith("_") ? pinName
+							.substring(1) : pinName);
+					final int x = i;
+					pinButton.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View arg0) {
+							if (selectedPin != -1)
+								pinsSubContainers.get(selectedPin)
+										.getChildAt(0)
+										.setBackgroundColor(unSelectedColor);
+							pinsSubContainers.get(x).getChildAt(0)
+									.setBackgroundColor(selectedColor);
+							selectedPin = x;
+							selectedPinName = controller.matchedShieldPins
 									.get(pinButton.getText().toString()) != null ? controller.matchedShieldPins
 									.get(pinButton.getText().toString()).name()
 									: "";
-							pinText.setText(pinName.startsWith("_") ? pinName
-									.substring(1) : pinName);
-							final int x = i;
-							pinButton
-									.setOnClickListener(new View.OnClickListener() {
-
-										@Override
-										public void onClick(View arg0) {
-											if (selectedConnectingPin != -1)
-												pinsSubContainers
-														.get(selectedConnectingPin)
-														.getChildAt(0)
-														.setBackgroundColor(
-																unSelectedColor);
-											pinsSubContainers
-													.get(x)
-													.getChildAt(0)
-													.setBackgroundColor(
-															selectedColor);
-											selectedConnectingPin = x;
-											// thisPinsContainer.setCursorTo(thisPinsContainer
-											// .getDataOfTag(pinName));
-										}
-									});
-							pinsContainer.addView(pinSubContainer);
-							pinsSubContainers.add(pinSubContainer);
-							scrollingPins.invalidate();
+							if (selectedPinName != null
+									&& selectedPinName.length() > 0) {
+								PinData data = thisPinsContainer
+										.getDataOfTag(selectedPinName);
+								if (data.rect != null && data.index != -1) {
+									thisPinsContainer.setCursorTo(data);
+									show.setVisibility(View.VISIBLE);
+									show.setText(data.tag.startsWith("_") ? data.tag
+											.substring(1) : data.tag);
+								} else {
+									show.setText("");
+									show.setVisibility(View.INVISIBLE);
+									cursor.setVisibility(View.INVISIBLE);
+								}
+							} else {
+								show.setText("");
+								show.setVisibility(View.INVISIBLE);
+								cursor.setVisibility(View.INVISIBLE);
+							}
 						}
-						pinsSubContainers.get(0).getChildAt(0)
-								.setBackgroundColor(selectedColor);
-						selectedConnectingPin = 0;
-						// thisPinsContainer
-						// .setCursorTo(thisPinsContainer.getDataOfTag(controller.matchedShieldPins
-						// .get(controller.shieldPins[0]) != null ?
-						// controller.matchedShieldPins
-						// .get(controller.shieldPins[0]).name() : ""));
-					}
-				});
+					});
+					pinsContainer.addView(pinSubContainer);
+					pinsSubContainers.add(pinSubContainer);
+					scrollingPins.invalidate();
+				}
+			}
+		});
 	}
 
 	public static interface OnPinSelectionListener {
 		public void onSelect(ArduinoPin pin);
 	}
 
-	public static interface OnPinsDrawn {
-		public void onDraw();
+	public static interface onGetPinsView {
+		public void onPinsDrawn();
 	}
 }
