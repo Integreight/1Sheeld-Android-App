@@ -11,11 +11,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
+import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
@@ -60,6 +67,29 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		// TODO Auto-generated method stub
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()),
+				new OnPinSelectionListener() {
+
+					@Override
+					public void onSelect(ArduinoPin pin) {
+						if (pin != null) {
+							((KeypadShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.setConnected(new ArduinoConnectedPin(
+											pin.microHardwarePin,
+											ArduinoFirmata.OUTPUT));
+							((KeypadShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.connectKeypadPinWithArduinoPin(
+											Pin.getPin(pin.microHardwarePin),
+											pin.microHardwarePin);
+						}
+
+					}
+				});
 		super.onStart();
 	}
 
@@ -75,73 +105,6 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		initializeKeysEventHandler((ViewGroup) getView());
-
-		connectButton = (Button) getView().findViewById(
-				R.id.keypad_fragment_connect_button);
-
-		final CharSequence[] arduinoPins = { "0", "1", "2", "3", "4", "5", "6",
-				"7", "8", "9", "10", "11", "12", "13", "A0", "A1", "A2", "A3",
-				"A4", "A5" };
-
-		connectButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				// TODO Auto-generated method stub
-
-				final AlertDialog.Builder builder3 = new AlertDialog.Builder(
-						getActivity());
-				builder3.setTitle("Choose pin to connect").setItems(
-						Pin.getPinsNames(),
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									final int whichSegment) {
-
-								// TODO Auto-generated method stub
-								AlertDialog.Builder builder2 = new AlertDialog.Builder(
-										getActivity());
-								builder2.setTitle("Connect With").setItems(
-										arduinoPins,
-										new DialogInterface.OnClickListener() {
-
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int whichArduinoPin) {
-												((KeypadShield) getApplication()
-														.getRunningShields()
-														.get(getControllerTag()))
-														.connectKeypadPinWithArduinoPin(
-																Pin.getPin(whichSegment),
-																whichArduinoPin);
-												builder3.show();
-											}
-
-										});
-
-								builder2.show();
-
-							}
-
-						});
-				builder3.setPositiveButton("Done!", new OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						((KeypadShield) getApplication().getRunningShields()
-								.get(getControllerTag())).initPins();
-
-					}
-				});
-				builder3.show();
-
-			}
-
-		});
 
 	}
 

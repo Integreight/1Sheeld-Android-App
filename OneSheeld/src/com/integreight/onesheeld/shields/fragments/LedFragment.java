@@ -1,9 +1,6 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +15,7 @@ import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.onPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
@@ -43,45 +40,32 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 					getControllerTag())).refreshLed());
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
-		new Handler().post(new Runnable() {
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()),
+				new OnPinSelectionListener() {
 
-			@Override
-			public void run() {
-				ConnectingPinsView.getInstance().reset(
-						getApplication().getRunningShields().get(
-								getControllerTag()),
-						new onPinSelectionListener() {
+					@Override
+					public void onSelect(ArduinoPin pin) {
+						if (pin != null) {
+							((LedShield) getApplication().getRunningShields()
+									.get(getControllerTag()))
+									.setLedEventHandler(ledEventHandler);
+							((LedShield) getApplication().getRunningShields()
+									.get(getControllerTag()))
+									.setConnected(new ArduinoConnectedPin(
+											pin.microHardwarePin,
+											ArduinoFirmata.INPUT));
+							toggleLed(((LedShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).refreshLed());
+						} else {
+							((LedShield) getApplication().getRunningShields()
+									.get(getControllerTag())).connectedPin = -1;
+							toggleLed(false);
+						}
 
-							@Override
-							public void onSelect(ArduinoPin pin) {
-								if (pin != null) {
-									((LedShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag()))
-											.setLedEventHandler(ledEventHandler);
-									((LedShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag()))
-											.setConnected(new ArduinoConnectedPin(
-													pin.microHardwarePin,
-													ArduinoFirmata.INPUT));
-									toggleLed(((LedShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag()))
-											.refreshLed());
-								} else {
-									((LedShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag())).connectedPin = -1;
-									toggleLed(false);
-								}
-
-							}
-						}); // TODO Auto-generated method stub
-
-			}
-		});
-
+					}
+				}); // TODO Auto-generated method stub
 		super.onStart();
 	}
 

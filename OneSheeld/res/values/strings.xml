@@ -52,4 +52,7 @@
     <string name="scanForOneSheeld">Scan For 1Sheeld</string>
     <string name="connectAutomatocallyToThisDevice">Connect Automatically to This Device</string>
 
+    <!-- Hint text in Gmail signin dialog -->
+    <string name="gmail_hint_text">\@ gmail.com</string>
+
 </resources>

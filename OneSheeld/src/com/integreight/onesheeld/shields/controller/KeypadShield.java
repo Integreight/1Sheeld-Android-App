@@ -7,6 +7,7 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class KeypadShield extends ControllerParent<KeypadShield> {
@@ -35,8 +36,15 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 
 	public KeypadShield() {
 		super();
+		requiredPinsIndex = 0;
+		shieldPins = new String[] { "Row 0", "Row 1", "Row 2", "Row 3",
+				"Column 0", "Column 1", "Column 2", "Column 3" };
 	}
-
+	@Override
+	public void setConnected(ArduinoConnectedPin... pins) {
+		// TODO Auto-generated method stub
+		super.setConnected(pins);
+	}
 	public void initPins() {
 		if (connectedPins == null)
 			return;
@@ -64,8 +72,8 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 					connectedPins.get(Pin.getColumn(column)),
 					ArduinoFirmata.HIGH);
 		}
-//		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
-//				new char[] { row, column });
+		// getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
+		// new char[] { row, column });
 		CommitInstanceTotable();
 	}
 
@@ -80,8 +88,8 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 					connectedPins.get(Pin.getColumn(column)),
 					ArduinoFirmata.LOW);
 		}
-//		getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
-//				new char[] { NOTHING_PRESSED, NOTHING_PRESSED });
+		// getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
+		// new char[] { NOTHING_PRESSED, NOTHING_PRESSED });
 		CommitInstanceTotable();
 	}
 

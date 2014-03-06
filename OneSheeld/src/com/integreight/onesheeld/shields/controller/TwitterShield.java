@@ -242,7 +242,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			if (isTwitterLoggedInAlready())
 				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
 					tweet(lastTweet);
-					eventHandler.onRecieveTweet(lastTweet);
+					if(eventHandler!=null)eventHandler.onRecieveTweet(lastTweet);
 				}
 		}
 	}

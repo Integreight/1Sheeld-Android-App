@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -84,32 +85,39 @@ public class SheeldsList extends Fragment {
 		// ((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 		// SlidingMenu.TOUCHMODE_NONE);
 		((MainActivity) getActivity()).disableMenu();
-		List<Fragment> frags = getActivity().getSupportFragmentManager()
-				.getFragments();
-		for (Fragment frag : frags) {
-			if (frag != null
-					&& !frag.getClass().getName()
-							.equals(SheeldsList.class.getName())) {
-				FragmentTransaction ft = getActivity()
-						.getSupportFragmentManager().beginTransaction();
-				ft.remove(frag);
-				ft.commit();
+		new Handler().post(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				// List<Fragment> frags = getActivity()
+				// .getSupportFragmentManager().getFragments();
+				// for (Fragment frag : frags) {
+				// if (frag != null
+				// && !frag.getClass().getName()
+				// .equals(SheeldsList.class.getName())) {
+				// FragmentTransaction ft = getActivity()
+				// .getSupportFragmentManager().beginTransaction();
+				// ft.remove(frag);
+				// ft.commit();
+				// }
+				// }
+				Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
+						.getApplication()).getRunningShields();
+				Enumeration<String> enumKey = controllers.keys();
+				while (enumKey.hasMoreElements()) {
+					String key = enumKey.nextElement();
+					controllers.get(key).reset();
+				}
+				ArduinoPin[] pins = ArduinoPin.values();
+				for (int i = 0; i < pins.length; i++) {
+					pins[i].connectedPins.clear();
+				}
+				((OneSheeldApplication) getActivity().getApplication())
+						.clearServiceEventHandlers();
+				ConnectingPinsView.getInstance().recycle();
 			}
-		}
-		Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
-				.getApplication()).getRunningShields();
-		Enumeration<String> enumKey = controllers.keys();
-		while (enumKey.hasMoreElements()) {
-			String key = enumKey.nextElement();
-			controllers.get(key).reset();
-		}
-		ArduinoPin[] pins = ArduinoPin.values();
-		for (int i = 0; i < pins.length; i++) {
-			pins[i].connectedPins.clear();
-		}
-		((OneSheeldApplication) getActivity().getApplication())
-				.clearServiceEventHandlers();
-		ConnectingPinsView.getInstance().recycle();
+		});
 		super.onResume();
 	}
 
@@ -254,19 +262,33 @@ public class SheeldsList extends Fragment {
 			// if (getActivity() != null)
 			// ((MainActivity) getActivity())
 			// .setSupportProgressBarIndeterminateVisibility(false);
-			if (getActivity().getSupportFragmentManager()
-					.getBackStackEntryCount() > 1) {
-				getActivity().getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				getActivity().getSupportFragmentManager()
-						.executePendingTransactions();
+			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
+			List<Fragment> frags = getActivity().getSupportFragmentManager()
+					.getFragments();
+			for (Fragment frag : frags) {
+				if (frag != null
+						&& !frag.getClass().getName()
+								.equals(SheeldsList.class.getName())
+						&& !frag.getClass().getName()
+								.equals(ShieldsOperations.class.getName())) {
+					FragmentTransaction ft = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					ft.setCustomAnimations(0, 0, 0, 0);
+					frag.onDestroy();
+					ft.remove(frag);
+					ft.commitAllowingStateLoss();
+				}
 			}
-			if (!ArduinoConnectivityPopup.isOpened)
-				new ArduinoConnectivityPopup(getActivity()).show();
+			if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
+					|| ((MainActivity) getActivity()).isForground)
+				((MainActivity) getActivity()).getOnConnectionLostHandler()
+						.sendEmptyMessage(0);
 		}
 	};
 
 	@Override
 	public void onStart() {
+		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
 		//
