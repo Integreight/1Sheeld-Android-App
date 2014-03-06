@@ -23,7 +23,7 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
 	private static final int SOME_REQUEST_CODE = 0;
-	TextView sendTo, subject , userName;
+	TextView sendTo, subject, userName;
 	Button login_bt, logout_bt;
 	private static SharedPreferences mSharedPreferences;
 	private static final String PREF_EMAIL_SHIELD_USER_LOGIN = "user_login_status";
@@ -61,24 +61,32 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		((EmailShield) getApplication().getRunningShields().get(
-				getControllerTag()))
-				.setEmailEventHandler(emailEventHandler);
-	
+
 		Log.d("Email Sheeld::OnActivityCreated()", "");
 
 		sendTo = (TextView) getView().findViewById(
 				R.id.gmail_shield_sendto_textview);
-		userName = (TextView) getView().findViewById(R.id.gmail_shield_username_textview);
+		userName = (TextView) getView().findViewById(
+				R.id.gmail_shield_username_textview);
 		subject = (TextView) getView().findViewById(
 				R.id.gmail_shield_subject_textview);
 		login_bt = (Button) getView().findViewById(R.id.login_gmail_bt);
 		logout_bt = (Button) getView().findViewById(R.id.logout_gmail_bt);
 		login_bt.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				addAccount();
+				// addAccount();
+				((EmailShield) getApplication().getRunningShields().get(
+						getControllerTag()))
+						.setEmailEventHandler(emailEventHandler);
+				((EmailShield) getApplication().getRunningShields().get(
+						getControllerTag())).setUserasLoggedIn(
+						"iabdelgawaad@gmail.com", "123");
+				login_bt.setVisibility(View.INVISIBLE);
+				logout_bt.setVisibility(View.VISIBLE);
+				userName.setVisibility(View.VISIBLE);
+				userName.setText("iabdelgawaad@gmail.com");
 			}
 		});
 		mSharedPreferences = getActivity().getApplicationContext()
@@ -87,21 +95,22 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
 		// if user logged in run controller else ask for login
 		if (isGmailLoggedInAlready()) {
-			userEmail = mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
+			userEmail = mSharedPreferences.getString(
+					PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
 			((EmailShield) getApplication().getRunningShields().get(
-					getControllerTag())).setUserasLoggedIn(userEmail,"");
+					getControllerTag())).setUserasLoggedIn(userEmail, "");
 			userName.setVisibility(View.VISIBLE);
 			userName.setText(userEmail);
 			logout_bt.setVisibility(View.VISIBLE);
 		} else {
 			login_bt.setVisibility(View.VISIBLE);
 		}
-		
+
 		logout_bt.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				logoutGmailAccount();	
+				logoutGmailAccount();
 
 			}
 		});
@@ -138,6 +147,10 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
 					new EmailShield(getActivity(), getControllerTag()));
+			((EmailShield) getApplication().getRunningShields().get(
+					getControllerTag()))
+					.setEmailEventHandler(emailEventHandler);
+
 		}
 	}
 
@@ -163,7 +176,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			// Commit the edits!
 			editor.commit();
 			((EmailShield) getApplication().getRunningShields().get(
-					getControllerTag())).setUserasLoggedIn(accountName,"");
+					getControllerTag())).setUserasLoggedIn(accountName, "");
 			login_bt.setVisibility(View.INVISIBLE);
 			logout_bt.setVisibility(View.VISIBLE);
 			userName.setVisibility(View.VISIBLE);
@@ -176,7 +189,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	public void doOnServiceConnected() {
 		initializeFirmata();
 	}
-	
+
 	private void logoutGmailAccount() {
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT);
@@ -187,7 +200,6 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		userName.setVisibility(View.INVISIBLE);
 		subject.setText("");
 		sendTo.setText("");
-
 
 	}
 }

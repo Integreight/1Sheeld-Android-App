@@ -63,6 +63,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 					String email_send_to = frame.getArgumentAsString(0);
 					String subject = frame.getArgumentAsString(1);
 					String body = frame.getArgumentAsString(2);
+					if (eventHandler != null)
 					eventHandler.onEmailsent(email_send_to, subject);
 					//sendMail(email_send_to, subject, body);
 					sendMailUsingJavaAPI(email_send_to, subject, body);
@@ -73,9 +74,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	}
 
 	public void setUserasLoggedIn(String userEmail , String password) {
-		isLoggedIn = true;
 		this.userEmail = userEmail;
 		this.password = password;
+		isLoggedIn = true;
 	}
 	
 	@Override
@@ -123,7 +124,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 			try {
 				Transport.send(messages[0]);
 			} catch (MessagingException e) {
-				e.printStackTrace();
+				Log.d("Email Sheeld", e.toString());
 			}
 			return null;
 		}
