@@ -12,10 +12,12 @@ public class PushButtonShield extends ControllerParent<PushButtonShield> {
 
 	public PushButtonShield() {
 		super();
+		requiredPinsIndex = 0;
+		shieldPins = new String[] { "Push" };
 	}
 
-	public PushButtonShield(Activity activity,String tag) {
-		super(activity,tag);
+	public PushButtonShield(Activity activity, String tag) {
+		super(activity, tag);
 	}
 
 	@Override
@@ -44,13 +46,13 @@ public class PushButtonShield extends ControllerParent<PushButtonShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -4,26 +4,32 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 <Button
+    android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/firmatabootloaderbutton"
-     android:text="Upgrade Firmata Firmware"/>
+     android:text="Upgrade firmata with the latest one online!"/>
 <Button
+        android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/firmatabootloaderrxtxbutton"
-     android:text="Upgrade Firmata Firmware with RX and Tx Leds"/>
+     android:text="Upgrade firmware from the app resources!"/>
 <Button
+        android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/rxbootloaderbutton"
-     android:text="Upgrade RX Led Firmware"/>
+     android:text="Upgrade Rx Led Flashing Firmware"/>
 <Button
+        android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/txbootloaderbutton"
-     android:text="Upgrade Tx Led Firmware"/>
+     android:text="Upgrade Tx Led Flashing Firmware"/>
     <ProgressBar
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
         android:id="@+id/bootloaderProgressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="wrap_content"
@@ -35,6 +41,7 @@
         android:progress="1" />
 
     <TextView
+        android:layout_gravity="center_horizontal"
         android:id="@+id/bootloaderUploadPercentage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

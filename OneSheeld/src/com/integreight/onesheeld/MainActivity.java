@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
 public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
@@ -82,15 +83,20 @@ public class MainActivity extends FragmentActivity {
 	public void onBackPressed() {
 		resetSlidingMenu();
 		if (!ArduinoConnectivityPopup.isOpened) {
-			if (appSlidingMenu.isOpen()) {
-				appSlidingMenu.closePane();
-			} else {
-				if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-					getSupportFragmentManager().executePendingTransactions();
-				} else
-					finish();
-			}
+			MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
+			if (pinsView == null || (pinsView != null && !pinsView.isOpened())) {
+				if (appSlidingMenu.isOpen()) {
+					appSlidingMenu.closePane();
+				} else {
+					if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+						getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+						getSupportFragmentManager()
+								.executePendingTransactions();
+					} else
+						finish();
+				}
+			} else
+				pinsView.animateOpen();
 		} else
 			finish();
 	}

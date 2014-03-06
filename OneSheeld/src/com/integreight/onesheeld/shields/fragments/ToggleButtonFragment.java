@@ -20,7 +20,7 @@ import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.onPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class ToggleButtonFragment extends
 		ShieldFragmentParent<ToggleButtonFragment> {
@@ -67,39 +67,29 @@ public class ToggleButtonFragment extends
 
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
-		new Handler().post(new Runnable() {
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()),
+				new OnPinSelectionListener() {
 
-				ConnectingPinsView.getInstance().reset(
-						getApplication().getRunningShields().get(
-								getControllerTag()),
-						new onPinSelectionListener() {
+					@Override
+					public void onSelect(ArduinoPin pin) {
+						if (pin != null) {
+							((ToggleButtonShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.setConnected(new ArduinoConnectedPin(
+											pin.microHardwarePin,
+											ArduinoFirmata.OUTPUT));
+							((ToggleButtonShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.setButton(toggleButtonButton.isChecked());
+							toggleButtonButton.setEnabled(true);
+						}
 
-							@Override
-							public void onSelect(ArduinoPin pin) {
-								if (pin != null) {
-									((ToggleButtonShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag()))
-											.setConnected(new ArduinoConnectedPin(
-													pin.microHardwarePin,
-													ArduinoFirmata.OUTPUT));
-									((ToggleButtonShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag()))
-											.setButton(toggleButtonButton
-													.isChecked());
-									toggleButtonButton.setEnabled(true);
-								}
-
-							}
-						});
-			}
-		});
-
+					}
+				});
 		super.onStart();
 
 	}

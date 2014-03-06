@@ -19,6 +19,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.onGetPinsView;
 
 public class PinsColumnContainer extends RelativeLayout {
 	public int currentIndex = -1;
@@ -29,6 +30,8 @@ public class PinsColumnContainer extends RelativeLayout {
 	ImageView cursor;
 	RelativeLayout.LayoutParams cursorParams;
 	ControllerParent<?> controller;
+	private onGetPinsView onGetPinsListener;
+	private boolean isOnglobalCalled = false;
 
 	public PinsColumnContainer(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -39,21 +42,28 @@ public class PinsColumnContainer extends RelativeLayout {
 	}
 
 	public void setup(OnChildFocusListener focusListener, ImageView cursor,
-			ControllerParent<?> controller) {
+			ControllerParent<?> controller, onGetPinsView onGetPinsListener) {
 		this.focusListener = focusListener;
 		this.cursor = cursor;
 		this.controller = controller;
+		this.onGetPinsListener = onGetPinsListener;
 		currentIndex = -1;
 		currentTag = null;
+		isOnglobalCalled = false;
 		childrenRects = new ArrayList<PinData>();
 		getViewTreeObserver().addOnGlobalLayoutListener(
 				new OnGlobalLayoutListener() {
 
 					@Override
 					public void onGlobalLayout() {
-						if (childrenRects == null || childrenRects.size() == 0) {
+						if (!isOnglobalCalled
+								&& (childrenRects == null || childrenRects
+										.size() == 0)) {
 							childrenRects = new ArrayList<PinsColumnContainer.PinData>();
 							loadRects(PinsColumnContainer.this);
+							PinsColumnContainer.this.onGetPinsListener
+									.onPinsDrawn();
+							isOnglobalCalled = true;
 						}
 					}
 				});
@@ -128,10 +138,6 @@ public class PinsColumnContainer extends RelativeLayout {
 	}
 
 	private synchronized PinData getTouhedIndex(MotionEvent event) {
-		if (childrenRects == null || childrenRects.size() == 0) {
-			childrenRects = new ArrayList<PinsColumnContainer.PinData>();
-			loadRects(this);
-		}
 		for (PinData item : childrenRects) {
 			if (item.rect.contains((int) event.getX(), (int) event.getY())
 					&& item.type != PinData.TYPE.DISABLED)
@@ -144,9 +150,9 @@ public class PinsColumnContainer extends RelativeLayout {
 		cursor.setVisibility(View.VISIBLE);
 		cursorParams.topMargin = item.rect.top - (cursorParams.height / 2)
 				- (5 * extraVerticalSpace);
-		cursorParams.leftMargin = (currentTag.startsWith("_") ? (concatenatedLeft - extraHorizontalSpace / 2)
+		cursorParams.leftMargin = (item.tag.startsWith("_") ? (concatenatedLeft - extraHorizontalSpace / 2)
 				: (concatenatedRight + extraHorizontalSpace / 4));
-		cursor.setBackgroundResource(currentTag.startsWith("_") ? R.drawable.arduino_pins_view_left_selector
+		cursor.setBackgroundResource(item.tag.startsWith("_") ? R.drawable.arduino_pins_view_left_selector
 				: R.drawable.arduino_pins_view_right_selector);
 		cursor.requestLayout();
 	}

@@ -12,6 +12,8 @@ public class SliderShield extends ControllerParent<SliderShield> {
 
 	public SliderShield() {
 		super();
+		requiredPinsIndex = 1;
+		shieldPins = new String[] { "Slider" };
 	}
 
 	public SliderShield(Activity activity, String tag) {
@@ -37,13 +39,13 @@ public class SliderShield extends ControllerParent<SliderShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

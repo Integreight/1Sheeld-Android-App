@@ -8,7 +8,7 @@
 
     <com.integreight.onesheeld.utils.OneShieldButton
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="35dp"
         android:background="#00000000"
         android:clickable="true"
         android:gravity="center"
@@ -18,7 +18,7 @@
 
     <com.integreight.onesheeld.utils.OneShieldTextView
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="33dp"
         android:gravity="center"
         android:padding="7dp"
         android:textColor="#B1ffffff"
