@@ -3,6 +3,8 @@ package com.integreight.onesheeld;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -20,6 +22,7 @@ public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
 	// private boolean isBoundService = false;
 	private AppSlidingLeftMenu appSlidingMenu;
+	public boolean isForground = false;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -79,26 +82,56 @@ public class MainActivity extends FragmentActivity {
 		resetSlidingMenu();
 	}
 
+	private BackOnconnectionLostHandler backOnConnectionLostHandler;
+
+	public BackOnconnectionLostHandler getOnConnectionLostHandler() {
+		if (backOnConnectionLostHandler == null) {
+			backOnConnectionLostHandler = new BackOnconnectionLostHandler() {
+
+				@Override
+				public void handleMessage(Message msg) {
+					if (connectionLost) {
+						if (getSupportFragmentManager()
+								.getBackStackEntryCount() > 1) {
+							getSupportFragmentManager().beginTransaction()
+									.setCustomAnimations(0, 0, 0, 0).commit();
+							getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+							getSupportFragmentManager()
+									.executePendingTransactions();
+						}
+						if (!ArduinoConnectivityPopup.isOpened)
+							new ArduinoConnectivityPopup(MainActivity.this)
+									.show();
+					}
+					connectionLost = false;
+					super.handleMessage(msg);
+				}
+			};
+		}
+		return backOnConnectionLostHandler;
+	}
+
+	public class BackOnconnectionLostHandler extends Handler {
+		public boolean canInvokeOnCloseConnection = true,
+				connectionLost = false;
+	}
+
 	@Override
 	public void onBackPressed() {
 		resetSlidingMenu();
-		if (!ArduinoConnectivityPopup.isOpened) {
-			MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
-			if (pinsView == null || (pinsView != null && !pinsView.isOpened())) {
-				if (appSlidingMenu.isOpen()) {
-					appSlidingMenu.closePane();
-				} else {
-					if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-						getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-						getSupportFragmentManager()
-								.executePendingTransactions();
-					} else
-						finish();
-				}
-			} else
-				pinsView.animateOpen();
+		MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
+		if (pinsView == null || (pinsView != null && !pinsView.isOpened())) {
+			if (appSlidingMenu.isOpen()) {
+				appSlidingMenu.closePane();
+			} else {
+				if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+					getSupportFragmentManager().executePendingTransactions();
+				} else
+					finish();
+			}
 		} else
-			finish();
+			pinsView.animateOpen();
 	}
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,
@@ -206,6 +239,18 @@ public class MainActivity extends FragmentActivity {
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onStart() {
+		isForground = true;
+		super.onStart();
+	}
+
+	@Override
+	protected void onStop() {
+		isForground = false;
+		super.onStop();
 	}
 
 }

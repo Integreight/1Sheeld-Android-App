@@ -262,19 +262,33 @@ public class SheeldsList extends Fragment {
 			// if (getActivity() != null)
 			// ((MainActivity) getActivity())
 			// .setSupportProgressBarIndeterminateVisibility(false);
-			if (getActivity().getSupportFragmentManager()
-					.getBackStackEntryCount() > 1) {
-				getActivity().getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				getActivity().getSupportFragmentManager()
-						.executePendingTransactions();
+			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
+			List<Fragment> frags = getActivity().getSupportFragmentManager()
+					.getFragments();
+			for (Fragment frag : frags) {
+				if (frag != null
+						&& !frag.getClass().getName()
+								.equals(SheeldsList.class.getName())
+						&& !frag.getClass().getName()
+								.equals(ShieldsOperations.class.getName())) {
+					FragmentTransaction ft = getActivity()
+							.getSupportFragmentManager().beginTransaction();
+					ft.setCustomAnimations(0, 0, 0, 0);
+					frag.onDestroy();
+					ft.remove(frag);
+					ft.commitAllowingStateLoss();
+				}
 			}
-			if (!ArduinoConnectivityPopup.isOpened)
-				new ArduinoConnectivityPopup(getActivity()).show();
+			if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
+					|| ((MainActivity) getActivity()).isForground)
+				((MainActivity) getActivity()).getOnConnectionLostHandler()
+						.sendEmptyMessage(0);
 		}
 	};
 
 	@Override
 	public void onStart() {
+		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
 		//
