@@ -13,7 +13,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.AsyncTask;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -26,8 +25,8 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	private static final byte EMAIL_COMMAND = (byte) 0x1E;
 	private static final byte SEND_METHOD_ID = (byte) 0x01;
 	private boolean isLoggedIn = false;
-	private String userEmail = "iabdelgawaad@gmail.com";
-	private String password = "********";
+	private String userEmail = "";
+	private String password = "";
 
 	public EmailShield() {
 		super();
@@ -57,15 +56,17 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
 		if (frame.getShieldId() == EMAIL_COMMAND) {
-
-			if (isLoggedIn) {
-				// send Email
-				String email_send_to = frame.getArgumentAsString(0);
-				String subject = frame.getArgumentAsString(1);
-				String body = frame.getArgumentAsString(2);
-				eventHandler.onEmailsent(email_send_to, subject);
-				//sendMail(email_send_to, subject, body);
-				sendMailUsingJavaAPI(email_send_to, subject, body);
+			if (frame.getFunctionId() == SEND_METHOD_ID)
+			{
+				if (isLoggedIn) {
+					// send Email
+					String email_send_to = frame.getArgumentAsString(0);
+					String subject = frame.getArgumentAsString(1);
+					String body = frame.getArgumentAsString(2);
+					eventHandler.onEmailsent(email_send_to, subject);
+					//sendMail(email_send_to, subject, body);
+					sendMailUsingJavaAPI(email_send_to, subject, body);
+				}
 			}
 		}
 
@@ -76,24 +77,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 		this.userEmail = userEmail;
 		this.password = password;
 	}
-
-	private void sendMail(String email, String subject, String body) {
-		Intent emailIntent = new Intent(Intent.ACTION_SEND);
-		emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { email });
-		emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
-		emailIntent.putExtra(Intent.EXTRA_TEXT, body);
-		emailIntent.setType("text/plain");
-		try {
-			getActivity().startActivity(
-					Intent.createChooser(emailIntent, "com.google").addFlags(
-							Intent.FLAG_ACTIVITY_NEW_TASK));
-		} catch (android.content.ActivityNotFoundException ex) {
-			Log.d("Email Sheeld:: Send Email()",
-					"There are no email clients installed");
-		}
-		Log.d("Email Sheeld:: Send Email()", email);
-	}
-
+	
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
@@ -117,8 +101,8 @@ public class EmailShield extends ControllerParent<EmailShield> {
 			String messageBody, Session session) throws MessagingException,
 			UnsupportedEncodingException {
 		Message message = new MimeMessage(session);
-		message.setFrom(new InternetAddress("iabdelgawaad@gmail.com",
-				"Hema"));
+		message.setFrom(new InternetAddress(userEmail,
+				""));
 		message.addRecipient(Message.RecipientType.TO, new InternetAddress(
 				email));
 		message.setSubject(subject);
@@ -132,7 +116,6 @@ public class EmailShield extends ControllerParent<EmailShield> {
 		protected void onPostExecute(Void aVoid) {
 			super.onPostExecute(aVoid);
 			Log.d("Email Sheeld:: SendMailTask ", "");
-
 		}
 
 		@Override
