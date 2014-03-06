@@ -77,8 +77,11 @@ public class MicShield extends ControllerParent<MicShield> {
 	}
 
 	public void stopMic() {
-		handler.removeCallbacks(processMic);
-		handler.removeCallbacksAndMessages(null);
+		if (handler != null) {
+			if (processMic != null)
+				handler.removeCallbacks(processMic);
+			handler.removeCallbacksAndMessages(null);
+		}
 		MicSoundMeter.getInstance().stop();
 	}
 

@@ -65,7 +65,41 @@ public class ArduinoConnectivityPopup extends Dialog {
 	// private boolean isScanButton = true;
 	private OneShieldTextView statusText;
 	private RelativeLayout transactionSlogan;
-	public static boolean isOpened = false;
+	public static boolean isOpened = false, backPressed = true;
+
+	@Override
+	public void onBackPressed() {
+		if (mBtAdapter != null && mBtAdapter.isDiscovering()) {
+			mBtAdapter.cancelDiscovery();
+			setScanButtonReady();
+		} else if (isConnecting) {
+			if (((OneSheeldApplication) activity.getApplication())
+					.getAppFirmata() != null
+					&& ((OneSheeldApplication) activity.getApplication())
+							.getAppFirmata().getBTService() != null) {
+				try {
+					((OneSheeldApplication) activity.getApplication())
+							.getAppFirmata().getBTService().stopConnection();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			setDevicesListReady();
+		} else if (scanOrTryAgain.getVisibility() != View.VISIBLE
+				|| !scanOrTryAgain
+						.getText()
+						.toString()
+						.equalsIgnoreCase(
+								activity.getResources()
+										.getString(R.string.scan)))
+			setScanButtonReady();
+		else {
+			cancel();
+			activity.finish();
+		}
+		backPressed = true;
+		super.onBackPressed();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -150,6 +184,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 	private void setScanButtonReady() {
 		changeSlogan("Scan for 1Sheeld", COLOR.RED);
+		isConnecting = false;
 		deviceListCont.setVisibility(View.INVISIBLE);
 		loading.setVisibility(View.INVISIBLE);
 		scanOrTryAgain.setVisibility(View.VISIBLE);
@@ -158,6 +193,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 			@Override
 			public void onClick(View v) {
+				backPressed = false;
 				showProgress();
 				changeSlogan(
 						activity.getResources().getString(R.string.searching),
@@ -169,11 +205,14 @@ public class ArduinoConnectivityPopup extends Dialog {
 	}
 
 	private void setRetryButtonReady(String msg, View.OnClickListener onClick) {
-		deviceListCont.setVisibility(View.INVISIBLE);
-		loading.setVisibility(View.INVISIBLE);
-		scanOrTryAgain.setVisibility(View.VISIBLE);
-		changeSlogan(msg, COLOR.ORANGE);
-		scanOrTryAgain.setText(R.string.tryAgain);
+		isConnecting = false;
+		if (!backPressed) {
+			deviceListCont.setVisibility(View.INVISIBLE);
+			loading.setVisibility(View.INVISIBLE);
+			scanOrTryAgain.setVisibility(View.VISIBLE);
+			changeSlogan(msg, COLOR.ORANGE);
+			scanOrTryAgain.setText(R.string.tryAgain);
+		}
 	}
 
 	private void setDevicesListReady() {
@@ -200,6 +239,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// findViewById(R.id.devicesList);
 		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
 		devicesList.removeAllViews();
+		backPressed = false;
 		found = 0;
 		// Register for broadcasts when a device is discovered
 		IntentFilter filter = new IntentFilter();
@@ -232,6 +272,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// .getText(R.string.none_paired).toString();
 		// mPairedDevicesArrayAdapter.add(noDevices);
 		// }
+		backPressed = true;
 	}
 
 	ArduinoFirmataEventHandler connectivityFirmataHandler = new ArduinoFirmataEventHandler() {
@@ -279,6 +320,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// isBoundService = OneSheeldService.isBound;
 		// if (!OneSheeldService.isBound) {
 		if (!isConnecting) {
+			isConnecting = true;
 			mBtAdapter.cancelDiscovery();
 
 			// Get the device MAC address, which is the last 17 chars in
@@ -426,6 +468,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 					@Override
 					public void onClick(View v) {
+						backPressed = false;
 						if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
 								.isChecked())
 							((OneSheeldApplication) activity.getApplication())

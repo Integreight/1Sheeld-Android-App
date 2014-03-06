@@ -2,6 +2,17 @@ package com.integreight.onesheeld.utils.customviews;
 
 import java.util.ArrayList;
 
+import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
@@ -9,18 +20,6 @@ import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.OneShieldButton;
 import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.widget.HorizontalScrollView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 public class ConnectingPinsView extends Fragment {
 	private static ConnectingPinsView thisInstance;

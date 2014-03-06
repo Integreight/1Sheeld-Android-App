@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -18,7 +19,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
@@ -43,6 +46,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 			Bundle savedInstanceState) {
 		v = inflater.inflate(R.layout.activity_shields_operation, container,
 				false);
+		setRetainInstance(true);
 		return v;
 	}
 
@@ -154,7 +158,16 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
+		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
+		if (((OneSheeldApplication) getActivity().getApplication())
+				.getAppFirmata() == null
+				|| !((OneSheeldApplication) getActivity().getApplication())
+						.getAppFirmata().isOpen()) {
+			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
+		}
+		((MainActivity) getActivity()).getOnConnectionLostHandler()
+				.sendEmptyMessage(0);
+
 		super.onStart();
 
 		// bindFirmataService();
