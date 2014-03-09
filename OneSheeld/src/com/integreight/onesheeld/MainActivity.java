@@ -128,7 +128,7 @@ public class MainActivity extends FragmentActivity {
 					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 					getSupportFragmentManager().executePendingTransactions();
 				} else
-					finish();
+					moveTaskToBack(true);
 			}
 		} else
 			pinsView.animateOpen();

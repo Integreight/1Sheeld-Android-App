@@ -142,9 +142,9 @@ public class ConnectingPinsView extends Fragment {
 
 					@Override
 					public void onPinsDrawn() {
-						pinsSubContainers.get(0).getChildAt(0)
-								.setBackgroundColor(selectedColor);
-						selectedPin = 0;
+						// pinsSubContainers.get(0).getChildAt(0)
+						// .setBackgroundColor(selectedColor);
+						// selectedPin = 0;
 						selectedPinName = controller.matchedShieldPins
 								.get(controller.shieldPins[0]) != null ? controller.matchedShieldPins
 								.get(controller.shieldPins[0]).name() : "";
@@ -176,6 +176,7 @@ public class ConnectingPinsView extends Fragment {
 				// getResources().getDisplayMetrics().density
 				// -
 				// .5f);
+				selectedPin = 0;
 				HorizontalScrollView scrollingPins = (HorizontalScrollView) getView()
 						.findViewById(R.id.scrollingPins);
 				for (int i = 0; i < controller.shieldPins.length; i++) {
@@ -185,6 +186,10 @@ public class ConnectingPinsView extends Fragment {
 					final OneShieldButton pinButton = (OneShieldButton) pinSubContainer
 							.getChildAt(0);
 					pinButton.setText(controller.shieldPins[i]);
+					if (i == 0)
+						pinButton.setBackgroundColor(selectedColor);
+					else
+						pinButton.setBackgroundColor(unSelectedColor);
 					OneShieldTextView pinText = (OneShieldTextView) pinSubContainer
 							.getChildAt(1);
 					String pinName = controller.matchedShieldPins.get(pinButton

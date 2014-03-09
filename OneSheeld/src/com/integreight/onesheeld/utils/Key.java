@@ -38,7 +38,7 @@ public class Key extends Button {
 		super(context, attrs);
 		setAttributesFromXml(context, attrs);
 		init();
-		
+
 	}
 
 	private void setAttributesFromXml(Context context, AttributeSet attrs) {
@@ -75,10 +75,10 @@ public class Key extends Button {
 	}
 
 	private void init() {
-//		row = -1;
-//		column = -1;
+		// row = -1;
+		// column = -1;
 		setKeyColor(this, normalBackground);
-		
+
 	}
 
 	public void setCounterpart(int id) {
@@ -129,28 +129,28 @@ public class Key extends Button {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		final int action = event.getActionMasked();
+		final int action = event.getAction();
 
-		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-			
-			break;
-
-		case MotionEvent.ACTION_MOVE:
-		case MotionEvent.ACTION_UP:
-
-			if (dragging) {
-
-				break;
-			}
-
-			
-
-			// fall through
-
-		default:
-			return super.onTouchEvent(event);
-		}
+		// switch (action) {
+		// case MotionEvent.ACTION_DOWN:
+		//
+		// break;
+		//
+		// case MotionEvent.ACTION_MOVE:
+		// case MotionEvent.ACTION_UP:
+		//
+		// if (dragging) {
+		//
+		// break;
+		// }
+		//
+		//
+		//
+		// // fall through
+		//
+		// default:
+		// return super.onTouchEvent(event);
+		// }
 
 		final float x = event.getX();
 		final float y = event.getY();
@@ -159,7 +159,8 @@ public class Key extends Button {
 			dragging = true;
 			outOfBounds = false;
 			Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
-			if(eventListener!=null)eventListener.onPressed(this);
+			if (eventListener != null)
+				eventListener.onPressed(this);
 			beginDrag();
 
 			return hitFeedback();
@@ -170,7 +171,8 @@ public class Key extends Button {
 			if (action == MotionEvent.ACTION_UP) {
 				endDrag();
 				Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
-				if(eventListener!=null)eventListener.onReleased(this);
+				if (eventListener != null)
+					eventListener.onReleased(this);
 				dragging = false;
 			}
 		}
@@ -193,16 +195,17 @@ public class Key extends Button {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public static void setKeyColor(Button key, Drawable bg) {
-//		GradientDrawable background = (GradientDrawable) key.getBackground();
-//
-//		background.setColorFilter(new LightingColorFilter(color, 0));
+		// GradientDrawable background = (GradientDrawable) key.getBackground();
+		//
+		// background.setColorFilter(new LightingColorFilter(color, 0));
 		key.setBackgroundDrawable(bg);
-		
-		//key.setTextColor(bg);
+
+		// key.setTextColor(bg);
 	}
-	
-	public static interface KeyTouchEventListener{
+
+	public static interface KeyTouchEventListener {
 		void onPressed(Key k);
+
 		void onReleased(Key k);
 	}
 }

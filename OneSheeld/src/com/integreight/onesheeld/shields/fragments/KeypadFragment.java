@@ -1,8 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,13 +14,11 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
-import com.integreight.onesheeld.shields.controller.LedShield;
-import com.integreight.onesheeld.shields.controller.KeypadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
@@ -37,8 +32,8 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		public void onReleased(Key k) {
 			// TODO Auto-generated method stub
 			((KeypadShield) getApplication().getRunningShields().get(
-					getControllerTag())).resetRowAndColumn((char) k.getRow(),
-					(char) k.getColumn());
+					getControllerTag())).resetRowAndColumn(k.getRow(),
+					k.getColumn());
 
 		}
 
@@ -46,8 +41,8 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 		public void onPressed(Key k) {
 			// TODO Auto-generated method stub
 			((KeypadShield) getApplication().getRunningShields().get(
-					getControllerTag())).setRowAndColumn((char) k.getRow(),
-					(char) k.getColumn());
+					getControllerTag())).setRowAndColumn(k.getRow(),
+					k.getColumn());
 
 		}
 	};
@@ -80,12 +75,6 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 									.setConnected(new ArduinoConnectedPin(
 											pin.microHardwarePin,
 											ArduinoFirmata.OUTPUT));
-							((KeypadShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag()))
-									.connectKeypadPinWithArduinoPin(
-											Pin.getPin(pin.microHardwarePin),
-											pin.microHardwarePin);
 						}
 
 					}

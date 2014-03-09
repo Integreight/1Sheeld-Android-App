@@ -90,18 +90,6 @@ public class SheeldsList extends Fragment {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				// List<Fragment> frags = getActivity()
-				// .getSupportFragmentManager().getFragments();
-				// for (Fragment frag : frags) {
-				// if (frag != null
-				// && !frag.getClass().getName()
-				// .equals(SheeldsList.class.getName())) {
-				// FragmentTransaction ft = getActivity()
-				// .getSupportFragmentManager().beginTransaction();
-				// ft.remove(frag);
-				// ft.commit();
-				// }
-				// }
 				Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
 						.getApplication()).getRunningShields();
 				Enumeration<String> enumKey = controllers.keys();
@@ -118,6 +106,25 @@ public class SheeldsList extends Fragment {
 				ConnectingPinsView.getInstance().recycle();
 			}
 		});
+		new Handler().postDelayed(new Runnable() {
+
+			@Override
+			public void run() {
+				List<Fragment> frags = getActivity()
+						.getSupportFragmentManager().getFragments();
+				for (Fragment frag : frags) {
+					if (frag != null
+							&& !frag.getClass().getName()
+									.equals(SheeldsList.class.getName())) {
+						FragmentTransaction ft = getActivity()
+								.getSupportFragmentManager().beginTransaction();
+						frag.onDestroy();
+						ft.remove(frag);
+						ft.commitAllowingStateLoss();
+					}
+				}
+			}
+		}, 500);
 		super.onResume();
 	}
 
@@ -263,26 +270,28 @@ public class SheeldsList extends Fragment {
 			// ((MainActivity) getActivity())
 			// .setSupportProgressBarIndeterminateVisibility(false);
 			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
-			List<Fragment> frags = getActivity().getSupportFragmentManager()
-					.getFragments();
-			for (Fragment frag : frags) {
-				if (frag != null
-						&& !frag.getClass().getName()
-								.equals(SheeldsList.class.getName())
-						&& !frag.getClass().getName()
-								.equals(ShieldsOperations.class.getName())) {
-					FragmentTransaction ft = getActivity()
-							.getSupportFragmentManager().beginTransaction();
-					ft.setCustomAnimations(0, 0, 0, 0);
-					frag.onDestroy();
-					ft.remove(frag);
-					ft.commitAllowingStateLoss();
-				}
-			}
 			if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
 					|| ((MainActivity) getActivity()).isForground)
 				((MainActivity) getActivity()).getOnConnectionLostHandler()
 						.sendEmptyMessage(0);
+			else {
+				List<Fragment> frags = getActivity()
+						.getSupportFragmentManager().getFragments();
+				for (Fragment frag : frags) {
+					if (frag != null
+							&& !frag.getClass().getName()
+									.equals(SheeldsList.class.getName())
+							&& !frag.getClass().getName()
+									.equals(ShieldsOperations.class.getName())) {
+						FragmentTransaction ft = getActivity()
+								.getSupportFragmentManager().beginTransaction();
+						ft.setCustomAnimations(0, 0, 0, 0);
+						frag.onDestroy();
+						ft.remove(frag);
+						ft.commitAllowingStateLoss();
+					}
+				}
+			}
 		}
 	};
 
