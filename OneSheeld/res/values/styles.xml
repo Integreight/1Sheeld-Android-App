@@ -16,53 +16,56 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
-
-    <style name="one_sheeld_action_bar_colored" parent="Theme.Sherlock">
-    </style>
 
     <style name="action_bar_colored" parent="@android:style/Widget.ListView.Menu">
         <item name="android:background">#fffad7</item>
     </style>
 
     <style name="Keypad">
-		<item name="android:orientation">vertical</item>
-		<item name="android:layout_width">fill_parent</item>
-		<item name="android:layout_height">fill_parent</item>
-		<item name="android:layout_weight">0</item>
-		<item name="android:gravity">center</item>
-		<item name="android:padding">4dp</item>
-		<item name="android:background">@drawable/keypad_keys_background</item>
-	</style>
-	<style name="KeypadRow">
-		<item name="android:orientation">horizontal</item>
-		<item name="android:layout_width">fill_parent</item>
-		<item name="android:layout_height">wrap_content</item>
-		<item name="android:layout_gravity">center</item>
-	</style>
-	<style name="Key" parent="@android:style/Widget.Button">
-		<item name="android:layout_width">wrap_content</item>
-		<item name="android:layout_height">60dp</item>
-		<item name="android:layout_weight">1</item>
-		<item name="android:layout_margin">4dp</item>
-		<item name="android:textColor">#fffed7</item>
-		<item name="android:textSize">@dimen/key_label</item>
-	</style>
-	<style name="Key.Numeric">
-	    <item name="android:background">@drawable/keypad_blue_key_up</item>
-	    <item name="normalbackground">@drawable/keypad_blue_key_up</item>
-	    <item name="pressedbackground">@drawable/keypad_blue_key_down</item>
-	</style>
-	<style name="Key.Function">
-	    <item name="android:background">@drawable/keypad_red_key_up</item>
-		<item name="normalbackground">@drawable/keypad_red_key_up</item>
-	    <item name="pressedbackground">@drawable/keypad_red_key_down</item>
-	</style>
-	<style name="Key.Disabled">
-		<item name="android:clickable">false</item>
-		<item name="android:visibility">invisible</item>
-	</style>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">0</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:background">@drawable/keypad_keys_background</item>
+    </style>
+
+    <style name="KeypadRow">
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="Key" parent="@android:style/Widget.Button">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:textColor">#fffed7</item>
+        <item name="android:textSize">@dimen/key_label</item>
+    </style>
+
+    <style name="Key.Numeric">
+        <item name="android:background">@drawable/keypad_blue_key_up</item>
+        <item name="normalbackground">@drawable/keypad_blue_key_up</item>
+        <item name="pressedbackground">@drawable/keypad_blue_key_down</item>
+    </style>
+
+    <style name="Key.Function">
+        <item name="android:background">@drawable/keypad_red_key_up</item>
+        <item name="normalbackground">@drawable/keypad_red_key_up</item>
+        <item name="pressedbackground">@drawable/keypad_red_key_down</item>
+    </style>
+
+    <style name="Key.Disabled">
+        <item name="android:clickable">false</item>
+        <item name="android:visibility">invisible</item>
+    </style>
+
     <style name="FullHeightDialog" parent="android:style/Theme.Dialog">
-     <item name="android:windowNoTitle">true</item>
-     </style>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 </resources>
