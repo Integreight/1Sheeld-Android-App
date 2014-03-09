@@ -18,10 +18,10 @@
         <TextView
             android:id="@+id/constant_text"
             android:layout_width="wrap_content"
-            android:gravity="center_vertical|center_horizontal"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignBaseline="@+id/username"
+            android:layout_alignParentRight="true"
+            android:gravity="center_vertical|center_horizontal"
             android:padding="5dp"
             android:text="@string/gmail_hint_text"
             android:textColor="#C0C0C0"
@@ -29,10 +29,9 @@
             android:textStyle="bold" />
 
         <EditText
-            android:id="@+id/username"
+            android:id="@+id/gmail_signin_dialog_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_toLeftOf="@+id/constant_text"
@@ -41,24 +40,44 @@
             android:paddingTop="10dp"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/gmail_signin_dialog_invalide_username_tx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gmail_signin_dialog_username"
+            android:layout_marginLeft="4dp"
+            android:layout_marginBottom="10dp"
+            android:text="invalid user name"
+            android:visibility="invisible" />
+
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/gmail_signin_dialog_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/username"
-            android:layout_alignRight="@+id/username"
+            android:layout_alignRight="@+id/gmail_signin_dialog_username"
+            android:layout_below="@+id/gmail_signin_dialog_invalide_username_tx"
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:fontFamily="sans-serif"
             android:hint="password"
             android:inputType="textPassword"
             android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/gmail_signin_dialog_invalide_password_tx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/gmail_signin_dialog_password"
+            android:layout_marginLeft="4dp"
+            android:text="invalid password"
+            android:visibility="invisible" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
         android:orientation="horizontal"
         android:weightSum="2" >
 
