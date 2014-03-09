@@ -7,6 +7,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.utils.BitsUtils;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class KeypadShield extends ControllerParent<KeypadShield> {
@@ -39,21 +40,20 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 	}
 
 	ShieldFrame sf;
-	byte rowByte, columnByte;
+	byte rowByte = 0, columnByte = 0;
 
 	public void setRowAndColumn(int row, int column) {
 		ArduinoPin columnPin = matchedShieldPins.get("Column " + column);
-		rowByte = 0;
-		columnByte = 0;
 		if (columnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					columnPin.microHardwarePin, ArduinoFirmata.HIGH);
+			columnByte = BitsUtils.setBit(columnByte, column);
 		}
-		System.out.println("Row " + row);
 		ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
 		if (rowPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					rowPin.microHardwarePin, ArduinoFirmata.HIGH);
+			rowByte = BitsUtils.setBit(rowByte, row);
 		}
 		sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(rowByte);
@@ -66,17 +66,16 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 
 	public void resetRowAndColumn(int row, int column) {
 		ArduinoPin columnPin = matchedShieldPins.get("Column " + column);
-		rowByte = 0;
-		columnByte = 0;
 		if (columnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					columnPin.microHardwarePin, ArduinoFirmata.LOW);
-			
+			columnByte = BitsUtils.resetBit(columnByte, column);
 		}
 		ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
 		if (rowPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					rowPin.microHardwarePin, ArduinoFirmata.LOW);
+			rowByte = BitsUtils.resetBit(rowByte, row);
 		}
 		sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(rowByte);
