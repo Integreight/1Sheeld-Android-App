@@ -340,9 +340,6 @@ public class ArduinoFirmata{
                     
                     for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
                     	dataHandler.onSysex(sysexCommand, sysexData);
-                    	if(sysexCommand==UART_DATA&&fixedSysexData!=null) {
-                    		dataHandler.onUartReceive(fixedSysexData);
-                    	}
                     	if(sysexCommand==FIRMWARE_VERSION_QUERY){
                     		if(sysexData.length>=2){
                     		minorVersion=sysexData[0];

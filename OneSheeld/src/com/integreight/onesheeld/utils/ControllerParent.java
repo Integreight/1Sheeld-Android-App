@@ -140,17 +140,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 							}
 						});
 					}
-
-					@Override
-					public void onUartReceive(final byte[] data) {
-						actionHandler.post(new Runnable() {
-
-							@Override
-							public void run() {
-								((T) ControllerParent.this).onUartReceive(data);
-							}
-						});
-					}
 				});
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
 				.addShieldFrameHandler(new ArduinoFirmataShieldFrameHandler() {
