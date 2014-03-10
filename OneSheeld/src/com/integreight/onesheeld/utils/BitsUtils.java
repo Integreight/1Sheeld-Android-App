@@ -11,4 +11,8 @@ public class BitsUtils {
 		if (bit>=8)return b;
 		return (byte)(b&(~(1<<bit)));
 	}
+	
+	public static boolean isBitSet(byte b, int bit){
+		return (b&(1<<bit))>0;
+	}
 }
