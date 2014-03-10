@@ -47,14 +47,14 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		if (columnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					columnPin.microHardwarePin, ArduinoFirmata.HIGH);
-			columnByte = BitsUtils.setBit(columnByte, column);
 		}
+		columnByte = BitsUtils.setBit(columnByte, column);
 		ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
 		if (rowPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					rowPin.microHardwarePin, ArduinoFirmata.HIGH);
-			rowByte = BitsUtils.setBit(rowByte, row);
 		}
+		rowByte = BitsUtils.setBit(rowByte, row);
 		sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(rowByte);
 		sf.addByteArgument(columnByte);
@@ -69,14 +69,14 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		if (columnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					columnPin.microHardwarePin, ArduinoFirmata.LOW);
-			columnByte = BitsUtils.resetBit(columnByte, column);
 		}
+		columnByte = BitsUtils.resetBit(columnByte, column);
 		ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
 		if (rowPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					rowPin.microHardwarePin, ArduinoFirmata.LOW);
-			rowByte = BitsUtils.resetBit(rowByte, row);
 		}
+		rowByte = BitsUtils.resetBit(rowByte, row);
 		sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(rowByte);
 		sf.addByteArgument(columnByte);

@@ -4,12 +4,14 @@ import java.util.Hashtable;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.view.View;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 
@@ -20,7 +22,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	private String tag = "";
 	private boolean hasForgroundView = false;
 	public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>();
-	public int requiredPinsIndex = 0;
+	public int requiredPinsIndex = -1;
 	public String[][] requiredPinsNames = new String[][] {
 			{ "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
 					"A0", "A1", "A2", "A3", "A4", "A5" },
@@ -55,8 +57,16 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	public void setHasForgroundView(boolean hasForgroundView) {
 		this.hasForgroundView = hasForgroundView;
-		if (hasForgroundView)
+		if (hasForgroundView) {
 			((T) ControllerParent.this).refresh();
+			if (getActivity() != null
+					&& getActivity().findViewById(R.id.pinsFixedHandler) != null)
+				getActivity().findViewById(R.id.pinsFixedHandler)
+						.setVisibility(
+								requiredPinsIndex != -1 ? View.VISIBLE
+										: View.INVISIBLE);
+		}
+
 		CommitInstanceTotable();
 	}
 

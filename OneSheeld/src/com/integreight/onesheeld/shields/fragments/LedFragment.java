@@ -34,10 +34,10 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	@Override
 	public void onStart() {
-		if (((LedShield) getApplication().getRunningShields().get(
-				getControllerTag())) != null)
-			toggleLed(((LedShield) getApplication().getRunningShields().get(
-					getControllerTag())).refreshLed());
+		((LedShield) getApplication().getRunningShields().get(
+				getControllerTag())).setLedEventHandler(ledEventHandler);
+		toggleLed(((LedShield) getApplication().getRunningShields().get(
+				getControllerTag())).refreshLed());
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
 		ConnectingPinsView.getInstance().reset(
@@ -49,15 +49,11 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 						if (pin != null) {
 							((LedShield) getApplication().getRunningShields()
 									.get(getControllerTag()))
-									.setLedEventHandler(ledEventHandler);
-							((LedShield) getApplication().getRunningShields()
-									.get(getControllerTag()))
 									.setConnected(new ArduinoConnectedPin(
 											pin.microHardwarePin,
 											ArduinoFirmata.INPUT));
-							toggleLed(((LedShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag())).refreshLed());
+							toggleLed(getApplication().getAppFirmata()
+									.digitalRead(pin.microHardwarePin));
 						} else {
 							((LedShield) getApplication().getRunningShields()
 									.get(getControllerTag())).connectedPin = -1;

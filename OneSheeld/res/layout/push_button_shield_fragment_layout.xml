@@ -16,15 +16,6 @@
         android:src="@drawable/shield_fragment_background" />
 
     <Button
-        android:id="@+id/push_button_fragment_connect_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/toggle_button_fragment_background_imageview"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:text="Connect" />
-
-    <Button
         android:id="@+id/push_button_shield_button_push_button"
         android:layout_width="100dp"
         android:layout_height="60dp"

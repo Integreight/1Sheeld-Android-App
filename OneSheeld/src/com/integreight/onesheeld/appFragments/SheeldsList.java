@@ -43,12 +43,13 @@ import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.ListViewReversed;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 
 public class SheeldsList extends Fragment {
 	View v;
 	boolean isInflated = false;
-	private ListView shieldsListView;
+	private ListViewReversed shieldsListView;
 	private static SheeldsList thisInstance;
 	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
@@ -150,7 +151,8 @@ public class SheeldsList extends Fragment {
 						launchShieldsOperationActivity();
 					}
 				});
-		shieldsListView = (ListView) getView().findViewById(R.id.sheeldsList);
+		shieldsListView = (ListViewReversed) getView().findViewById(
+				R.id.sheeldsList);
 		shieldsUIList = Arrays.asList(UIShield.values());
 		// shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(getActivity());

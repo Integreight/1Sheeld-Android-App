@@ -1,10 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import java.util.Map;
+import java.util.Hashtable;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +11,13 @@ import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
-import com.integreight.onesheeld.shields.controller.SevenSegmentShield.Segment;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class SevenSegmentFragment extends
 		ShieldFragmentParent<SevenSegmentFragment> {
@@ -66,6 +66,23 @@ public class SevenSegmentFragment extends
 
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()),
+				new OnPinSelectionListener() {
+
+					@Override
+					public void onSelect(ArduinoPin pin) {
+						if (pin != null) {
+							((SevenSegmentShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.setConnected(new ArduinoConnectedPin(
+											pin.microHardwarePin,
+											ArduinoFirmata.INPUT));
+						}
+
+					}
+				});
 		super.onStart();
 
 	}
@@ -80,82 +97,17 @@ public class SevenSegmentFragment extends
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		((SevenSegmentShield) getApplication().getRunningShields().get(
+				getControllerTag()))
+				.setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
 		super.onActivityCreated(savedInstanceState);
 
-		connectButton = (Button) getView().findViewById(
-				R.id.sevensegment_fragment_connect_button);
-
-		final CharSequence[] arduinoPins = { "0", "1", "2", "3", "4", "5", "6",
-				"7", "8", "9", "10", "11", "12", "13", "A0", "A1", "A2", "A3",
-				"A4", "A5" };
-
-		connectButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-
-				// TODO Auto-generated method stub
-
-				final AlertDialog.Builder builder3 = new AlertDialog.Builder(
-						getActivity());
-				builder3.setTitle("Choose pin to connect").setItems(
-						Segment.getSegmentsNames(),
-						new DialogInterface.OnClickListener() {
-
-							@Override
-							public void onClick(DialogInterface dialog,
-									final int whichSegment) {
-
-								// TODO Auto-generated method stub
-								AlertDialog.Builder builder2 = new AlertDialog.Builder(
-										getActivity());
-								builder2.setTitle("Connect With").setItems(
-										arduinoPins,
-										new DialogInterface.OnClickListener() {
-
-											@Override
-											public void onClick(
-													DialogInterface dialog,
-													int whichArduinoPin) {
-												((SevenSegmentShield) getApplication()
-														.getRunningShields()
-														.get(getControllerTag())).connectSegmentWithPin(
-														Segment.getSegment(whichSegment),
-														whichArduinoPin);
-												builder3.show();
-											}
-
-										});
-
-								builder2.show();
-
-							}
-
-						});
-				builder3.setPositiveButton("Done!", new OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						// TODO Auto-generated method stub
-						((SevenSegmentShield) getApplication()
-								.getRunningShields().get(getControllerTag()))
-								.setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
-						refreshSegments(((SevenSegmentShield) getApplication()
-								.getRunningShields().get(getControllerTag()))
-								.refreshSegments());
-					}
-				});
-				builder3.show();
-
-			}
-
-		});
 	}
 
 	private SevenSegmentsEventHandler sevenSegmentsEventHandler = new SevenSegmentsEventHandler() {
 
 		@Override
-		public void onSegmentsChange(Map<Segment, Boolean> segmentsStatus) {
+		public void onSegmentsChange(Hashtable<String, Boolean> segmentsStatus) {
 			// TODO Auto-generated method stub
 			if (canChangeUI())
 				refreshSegments(segmentsStatus);
@@ -163,73 +115,50 @@ public class SevenSegmentFragment extends
 		}
 	};
 
-	private void refreshSegments(Map<Segment, Boolean> segmentsStatus) {
-		if (segmentsStatus.get(Segment.A)) {
+	private void refreshSegments(Hashtable<String, Boolean> segmentsStatus) {
+		if (segmentsStatus.get("  A  ")) {
 			aSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			aSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
 
-		if (segmentsStatus.get(Segment.B)) {
+		if (segmentsStatus.get("  B  ")) {
 			bSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			bSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get(Segment.C)) {
+		if (segmentsStatus.get("  C  ")) {
 			cSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			cSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get(Segment.D)) {
+		if (segmentsStatus.get("  D  ")) {
 			dSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			dSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
 
-		if (segmentsStatus.get(Segment.E)) {
+		if (segmentsStatus.get("  E  ")) {
 			eSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			eSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get(Segment.F)) {
+		if (segmentsStatus.get("  F  ")) {
 			fSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			fSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if ((segmentsStatus.get(Segment.A) && segmentsStatus.get(Segment.B)
-				&& segmentsStatus.get(Segment.E) && segmentsStatus
-					.get(Segment.D))
-				|| (segmentsStatus.get(Segment.A)
-						&& segmentsStatus.get(Segment.B)
-						&& segmentsStatus.get(Segment.C) && segmentsStatus
-							.get(Segment.D))
-				|| (segmentsStatus.get(Segment.F)
-						&& segmentsStatus.get(Segment.B) && segmentsStatus
-							.get(Segment.C))
-				|| (segmentsStatus.get(Segment.A)
-						&& segmentsStatus.get(Segment.F)
-						&& segmentsStatus.get(Segment.C) && segmentsStatus
-							.get(Segment.D))
-				|| (segmentsStatus.get(Segment.C)
-						&& segmentsStatus.get(Segment.D)
-						&& segmentsStatus.get(Segment.E)
-						&& segmentsStatus.get(Segment.F) && segmentsStatus
-							.get(Segment.A))
-				|| (segmentsStatus.get(Segment.F)
-						&& segmentsStatus.get(Segment.A)
-						&& segmentsStatus.get(Segment.B)
-						&& segmentsStatus.get(Segment.C) && segmentsStatus
-							.get(Segment.D))) {
+		if (segmentsStatus.get("  G  ")) {
 			gSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			gSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
 
-		if (segmentsStatus.get(Segment.DOT)) {
+		if (segmentsStatus.get(" DOT ")) {
 			dotSegment.setImageResource(R.drawable.seventsegment_on_dot_image);
 		} else {
 			dotSegment.setImageResource(R.drawable.seventsegment_off_dot_image);

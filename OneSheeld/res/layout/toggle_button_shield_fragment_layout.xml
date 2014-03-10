@@ -14,22 +14,13 @@
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
 
-    <Button
-        android:id="@+id/toggle_button_fragment_connect_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/toggle_button_fragment_background_imageview"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:text="Connect" />
-
     <ToggleButton
         android:id="@+id/toggle_button_shield_button_toggle_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_marginBottom="150dp"
+        android:layout_marginBottom="30dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/toggle_button_shield_background_images"
         android:checked="false"

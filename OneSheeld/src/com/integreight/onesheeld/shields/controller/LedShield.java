@@ -34,7 +34,7 @@ public class LedShield extends ControllerParent<LedShield> {
 
 	public boolean refreshLed() {
 		if (connectedPin != -1)
-			isLedOn = activity.getThisApplication().getAppFirmata()
+			isLedOn = getApplication().getAppFirmata()
 					.digitalRead(connectedPin);
 		else
 			isLedOn = false;
@@ -44,10 +44,10 @@ public class LedShield extends ControllerParent<LedShield> {
 
 	@Override
 	public void onDigital(int portNumber, int portData) {
+		isLedOn = false;
 		if (connectedPin != -1) {
-			isLedOn = activity.getThisApplication().getAppFirmata()
+			isLedOn = getApplication().getAppFirmata()
 					.digitalRead(connectedPin);
-			isLedOn = false;
 		}
 		if (eventHandler != null) {
 			eventHandler.onLedChange(isLedOn);
