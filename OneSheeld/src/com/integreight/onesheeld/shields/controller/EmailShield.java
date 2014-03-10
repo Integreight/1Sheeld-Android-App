@@ -36,9 +36,11 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	public static interface EmailEventHandler {
 		void onEmailsent(String email_send_to, String subject);
 
-		void onSendingError(String error);
+		void onSendingAuthError(String error);
 
 		void onSuccess();
+
+		void onEmailnotSent(String message_not_sent);
 
 		void onLoginSuccess(String userName, String password);
 	}
