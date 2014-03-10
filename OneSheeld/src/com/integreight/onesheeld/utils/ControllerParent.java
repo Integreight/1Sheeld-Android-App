@@ -21,7 +21,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	private boolean hasForgroundView = false;
 	public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>();
 	public int requiredPinsIndex = 0;
-	public String[][] requiredPinsNames = new String[][] {
+	public final String[][] requiredPinsNames = new String[][] {
 			{ "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
 					"A0", "A1", "A2", "A3", "A4", "A5" },
 			{ "3", "5", "6", "9", "10", "11" } };

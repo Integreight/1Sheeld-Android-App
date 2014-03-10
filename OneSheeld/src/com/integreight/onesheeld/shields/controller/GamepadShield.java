@@ -36,6 +36,9 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 
 	public GamepadShield() {
 		super();
+		requiredPinsIndex = 0;
+		shieldPins = new String[] { "Up Arrow", "Right Arrow", "Down Arrow", "Left Arrow",
+				"Yellow Button", "Red Button", "Green Button", "Blue Button" };
 	}
 
 	public void initPins() {
