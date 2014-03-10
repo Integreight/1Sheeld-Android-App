@@ -88,7 +88,11 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		for (int i = 0; i < shieldPins.length; i++) {
-			// pinsStatus.put(shieldPins[i], BitsUtils.)
+			pinsStatus.put(shieldPins[i],
+					BitsUtils.isBitSet(frame.getArgument(0)[0], i));
+			if (eventHandler != null) {
+				eventHandler.onSegmentsChange(pinsStatus);
+			}
 		}
 	}
 

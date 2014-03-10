@@ -78,7 +78,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			@Override
 			public void onClick(View v) {
 				// show dialog of registration then call add account method
-				new GmailSinginPopup(getActivity()).show();
+				new GmailSinginPopup(getActivity(), emailEventHandler).show();
 			}
 		});
 
@@ -121,7 +121,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	private EmailEventHandler emailEventHandler = new EmailEventHandler() {
 
 		@Override
-		public void onSendingError(String error) {
+		public void onSendingAuthError(String error) {
 			if (canChangeUI())
 				Toast.makeText(getApplication(), error, Toast.LENGTH_LONG)
 						.show();
@@ -144,6 +144,20 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			if (canChangeUI())
 				Toast.makeText(getApplication(), "Email sent Successful",
 						Toast.LENGTH_LONG).show();
+		}
+
+		@Override
+		public void onLoginSuccess(String userName, String password) {
+			addAccount(userName, password);
+		}
+
+		@Override
+		public void onEmailnotSent(String message_not_sent) {
+
+			if (canChangeUI()) {
+				Toast.makeText(getApplication(), message_not_sent,
+						Toast.LENGTH_LONG).show();
+			}
 		}
 	};
 
@@ -179,7 +193,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		login_bt.setVisibility(View.INVISIBLE);
 		logout_bt.setVisibility(View.VISIBLE);
 		userName.setVisibility(View.VISIBLE);
-		userName.setText(userEmail);
+		userName.setText(accountName);
 	}
 
 	private void logoutGmailAccount() {

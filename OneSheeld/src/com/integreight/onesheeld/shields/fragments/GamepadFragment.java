@@ -10,11 +10,18 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
+import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield.Pin;
 import com.integreight.onesheeld.utils.Key;
 import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
@@ -164,10 +171,26 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
 	@Override
 	public void onStart() {
-
+		// TODO Auto-generated method stub
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
-		// TODO Auto-generated method stub
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()),
+				new OnPinSelectionListener() {
+
+					@Override
+					public void onSelect(ArduinoPin pin) {
+						if (pin != null) {
+							((KeypadShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.setConnected(new ArduinoConnectedPin(
+											pin.microHardwarePin,
+											ArduinoFirmata.OUTPUT));
+						}
+
+					}
+				});
 		super.onStart();
 	}
 

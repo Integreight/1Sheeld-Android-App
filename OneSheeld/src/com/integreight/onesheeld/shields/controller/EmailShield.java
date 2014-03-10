@@ -14,6 +14,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	private boolean isLoggedIn = false;
 	private String userEmail = "";
 	private String password = "";
+
 	public EmailShield() {
 		super();
 	}
@@ -35,9 +36,13 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	public static interface EmailEventHandler {
 		void onEmailsent(String email_send_to, String subject);
 
-		void onSendingError(String error);
+		void onSendingAuthError(String error);
 
 		void onSuccess();
+
+		void onEmailnotSent(String message_not_sent);
+
+		void onLoginSuccess(String userName, String password);
 	}
 
 	@Override
@@ -59,6 +64,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 		}
 
 	}
+
 	private void sendGmail(String email_send_to, String subject, String body) {
 		try {
 			GMailSender sender = new GMailSender(userEmail, password,
@@ -79,5 +85,5 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-}
+	}
 }

@@ -9,106 +9,124 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.AuthenticationFailedException;
 import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.PasswordAuthentication;
+import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import com.integreight.onesheeld.Log;
+import android.util.Log;
+
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 
-public class GMailSender extends javax.mail.Authenticator {   
-    private String mailhost = "smtp.gmail.com";   
-    private String user;   
-    private String password;   
-    private Session session;   
-    EmailEventHandler emailEventHandler;
+public class GMailSender extends javax.mail.Authenticator {
+	private String mailhost = "smtp.gmail.com";
+	private static String user;
+	private static String password;
+	private Session session;
+	EmailEventHandler emailEventHandler;
 
-    static {   
-        Security.addProvider(new JSSEProvider());   
-    }  
+	static {
+		Security.addProvider(new JSSEProvider());
+	}
 
-    public GMailSender(String user, String password, EmailEventHandler handler) {   
-        this.user = user;   
-        this.password = password;   
-        this.emailEventHandler = handler;
+	public GMailSender(String user_email, String pass, EmailEventHandler handler) {
+		user = user_email;
+		password = pass;
+		this.emailEventHandler = handler;
 
-        Properties props = new Properties();   
-        props.setProperty("mail.transport.protocol", "smtp");   
-        props.setProperty("mail.host", mailhost);   
-        props.put("mail.smtp.auth", "true");   
-        props.put("mail.smtp.port", "465");   
-        props.put("mail.smtp.socketFactory.port", "465");   
-        props.put("mail.smtp.socketFactory.class",   
-                "javax.net.ssl.SSLSocketFactory");   
-        props.put("mail.smtp.socketFactory.fallback", "false");   
-        props.setProperty("mail.smtp.quitwait", "false");   
+		Properties props = new Properties();
+		props.setProperty("mail.transport.protocol", "smtp");
+		props.setProperty("mail.host", mailhost);
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.port", "465");
+		props.put("mail.smtp.socketFactory.port", "465");
+		props.put("mail.smtp.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.put("mail.smtp.socketFactory.fallback", "false");
+		props.setProperty("mail.smtp.quitwait", "false");
 
-        session = Session.getDefaultInstance(props, this);   
-    }   
+		session = Session.getDefaultInstance(props, this);
+	}
 
-    protected PasswordAuthentication getPasswordAuthentication() {   
-        return new PasswordAuthentication(user, password);   
-    }   
+	protected PasswordAuthentication getPasswordAuthentication() {
+		return new PasswordAuthentication(user, password);
+	}
 
-    public synchronized void sendMail(String subject, String body, String sender, String recipients) throws Exception {   
-        try{
-        MimeMessage message = new MimeMessage(session);   
-        DataHandler handler = new DataHandler(new ByteArrayDataSource(body.getBytes(), "text/plain"));   
-        message.setSender(new InternetAddress(sender));   
-        message.setSubject(subject);   
-        message.setDataHandler(handler);   
-        if (recipients.indexOf(',') > 0)   
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipients));   
-        else  
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipients));   
-        Transport.send(message);  
-        emailEventHandler.onSuccess();
-        }catch(Exception e){
+	public synchronized void sendMail(String subject, String body,
+			String sender, String recipients) throws Exception {
+		try {
+			MimeMessage message = new MimeMessage(session);
+			DataHandler handler = new DataHandler(new ByteArrayDataSource(
+					body.getBytes(), "text/plain"));
+			message.setSender(new InternetAddress(sender));
+			message.setSubject(subject);
+			message.setDataHandler(handler);
+			if (recipients.indexOf(',') > 0)
+				message.setRecipients(Message.RecipientType.TO,
+						InternetAddress.parse(recipients));
+			else
 
-        	Log.d("Email Sheeld", e.toString());
-        	emailEventHandler.onSendingError("Authentication Failed");
-        }
-    }   
+				message.setRecipient(Message.RecipientType.TO,
+						new InternetAddress(recipients));
 
-    public class ByteArrayDataSource implements DataSource {   
-        private byte[] data;   
-        private String type;   
+			Transport.send(message);
+			emailEventHandler.onSuccess();
+		} catch (AuthenticationFailedException e) {
+			emailEventHandler.onSendingAuthError("Authentication Failed");
+		} catch (AddressException e) {
+			emailEventHandler
+			.onEmailnotSent("message could not be sent to the recipient");
+		} catch (SendFailedException e) {
+			emailEventHandler
+					.onEmailnotSent("message could not be sent to the recipient ");
+		} catch (MessagingException e) {
+			emailEventHandler
+					.onEmailnotSent("message could not be sent to the recipient ");
+		} 
+	}
 
-        public ByteArrayDataSource(byte[] data, String type) {   
-            super();   
-            this.data = data;   
-            this.type = type;   
-        }   
+	public class ByteArrayDataSource implements DataSource {
+		private byte[] data;
+		private String type;
 
-        public ByteArrayDataSource(byte[] data) {   
-            super();   
-            this.data = data;   
-        }   
+		public ByteArrayDataSource(byte[] data, String type) {
+			super();
+			this.data = data;
+			this.type = type;
+		}
 
-        public void setType(String type) {   
-            this.type = type;   
-        }   
+		public ByteArrayDataSource(byte[] data) {
+			super();
+			this.data = data;
+		}
 
-        public String getContentType() {   
-            if (type == null)   
-                return "application/octet-stream";   
-            else  
-                return type;   
-        }   
+		public void setType(String type) {
+			this.type = type;
+		}
 
-        public InputStream getInputStream() throws IOException {   
-            return new ByteArrayInputStream(data);   
-        }   
+		public String getContentType() {
+			if (type == null)
+				return "application/octet-stream";
+			else
+				return type;
+		}
 
-        public String getName() {   
-            return "ByteArrayDataSource";   
-        }   
+		public InputStream getInputStream() throws IOException {
+			return new ByteArrayInputStream(data);
+		}
 
-        public OutputStream getOutputStream() throws IOException {   
-            throw new IOException("Not Supported");   
-        }   
-    }   
-}  
+		public String getName() {
+			return "ByteArrayDataSource";
+		}
+
+		public OutputStream getOutputStream() throws IOException {
+			throw new IOException("Not Supported");
+		}
+	}
+}
