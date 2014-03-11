@@ -47,7 +47,7 @@ public class LedShield extends ControllerParent<LedShield> {
 		if (connectedPin != -1) {
 			isLedOn = activity.getThisApplication().getAppFirmata()
 					.digitalRead(connectedPin);
-			isLedOn = false;
+			//isLedOn = false;
 		}
 		if (eventHandler != null) {
 			eventHandler.onLedChange(isLedOn);
