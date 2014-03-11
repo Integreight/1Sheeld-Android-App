@@ -534,12 +534,13 @@ public class ArduinoFirmata{
 	};
 
 	private void initFirmata(final BluetoothDevice device){
+		stopBuffersThreads();
+		clearAllBuffers();
+		bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
+    	uartListeningThread=new UartListeningThread();
 		enableReporting();
     	setAllPinsAsInput();
     	initUart();
-    	stopBuffersThreads();
-    	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
-    	uartListeningThread=new UartListeningThread();
     	queryVersion();
     	uiThreadHandler.post(new Runnable() {
 			@Override
