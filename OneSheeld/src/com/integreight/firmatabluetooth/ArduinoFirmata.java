@@ -171,6 +171,17 @@ public class ArduinoFirmata{
     	//clearAllHandlers();
     	clearArduinoFirmataDataHandlers();
     	clearArduinoFirmataShieldFrameHandlers();
+    	stopBuffersThreads();
+        	if(bluetoothService!=null&&isOpen())bluetoothService.stopConnection();
+        	
+//        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+//        		eventHandler.onClose();
+//    		}
+           // this.bluetoothService = null;
+            return true;
+    }
+    
+    public void stopBuffersThreads(){
     	if(bluetoothBufferListeningThread!=null&&bluetoothBufferListeningThread.isAlive()){
     		bluetoothBufferListeningThread.stopRunning();
     		bluetoothBufferListeningThread.interrupt();
@@ -179,13 +190,6 @@ public class ArduinoFirmata{
     		uartListeningThread.stopRunning();
     		uartListeningThread.interrupt();
     	}
-        	if(bluetoothService!=null&&isOpen())bluetoothService.stopConnection();
-        	
-//        	for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-//        		eventHandler.onClose();
-//    		}
-           // this.bluetoothService = null;
-            return true;
     }
 
     public void write(byte[] writeData){
@@ -530,11 +534,13 @@ public class ArduinoFirmata{
 	};
 
 	private void initFirmata(final BluetoothDevice device){
+		stopBuffersThreads();
+		clearAllBuffers();
+		bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
+    	uartListeningThread=new UartListeningThread();
 		enableReporting();
     	setAllPinsAsInput();
     	initUart();
-    	bluetoothBufferListeningThread=new BluetoothBufferListeningThread();
-    	uartListeningThread=new UartListeningThread();
     	queryVersion();
     	uiThreadHandler.post(new Runnable() {
 			@Override

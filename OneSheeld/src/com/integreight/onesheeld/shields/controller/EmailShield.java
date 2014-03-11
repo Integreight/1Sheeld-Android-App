@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.os.AsyncTask;
+
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.shields.controller.utils.GMailSender;
@@ -14,6 +16,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	private boolean isLoggedIn = false;
 	private String userEmail = "";
 	private String password = "";
+	private static String message_body = "";
+	private static String message_reciption = "";
+	private static String message_subject = "";
 
 	public EmailShield() {
 		super();
@@ -66,12 +71,48 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	}
 
 	private void sendGmail(String email_send_to, String subject, String body) {
-		try {
-			GMailSender sender = new GMailSender(userEmail, password,
-					eventHandler);
-			sender.sendMail(subject, body, userEmail, email_send_to);
-		} catch (Exception e) {
-			Log.d("SendMail", e.getMessage());
+		message_body = body;
+		message_reciption = email_send_to;
+		message_subject = subject;
+		new sendGmailinBackground().execute();
+
+	}
+
+	public class sendGmailinBackground extends AsyncTask<Void, Void, Integer> {
+		GMailSender sender = new GMailSender(userEmail, password);
+		int result;
+
+		@Override
+		protected Integer doInBackground(Void... params) {
+			try {
+				result = sender.sendMail(message_subject, message_body,
+						userEmail, message_reciption);
+			} catch (Exception e) {
+				Log.d("SendMail", e.getMessage());
+			}
+			return result;
+		}
+		@Override
+		protected void onPostExecute(Integer result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+			switch (result) {
+			case 0:
+				eventHandler.onSuccess();
+				break;
+			case 1:
+				eventHandler.onEmailnotSent("message could not be sent to the recipient");
+				break;
+			case 2:
+				eventHandler.onEmailnotSent("message could not be sent to the recipient ");
+				break;
+			case 3:
+				eventHandler.onEmailnotSent("message could not be sent to the recipient ");
+				break;
+
+			default:
+				break;
+			}
 		}
 
 	}

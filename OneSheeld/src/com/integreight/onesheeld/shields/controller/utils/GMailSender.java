@@ -19,9 +19,6 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
-import android.util.Log;
-
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 
 public class GMailSender extends javax.mail.Authenticator {
@@ -29,16 +26,16 @@ public class GMailSender extends javax.mail.Authenticator {
 	private static String user;
 	private static String password;
 	private Session session;
-	EmailEventHandler emailEventHandler;
+	// EmailEventHandler emailEventHandler;
 
 	static {
 		Security.addProvider(new JSSEProvider());
 	}
 
-	public GMailSender(String user_email, String pass, EmailEventHandler handler) {
+	public GMailSender(String user_email, String pass) {
 		user = user_email;
 		password = pass;
-		this.emailEventHandler = handler;
+		// this.emailEventHandler = handler;
 
 		Properties props = new Properties();
 		props.setProperty("mail.transport.protocol", "smtp");
@@ -58,8 +55,8 @@ public class GMailSender extends javax.mail.Authenticator {
 		return new PasswordAuthentication(user, password);
 	}
 
-	public synchronized void sendMail(String subject, String body,
-			String sender, String recipients) throws Exception {
+	public synchronized int sendMail(String subject, String body,
+			String sender, String recipients) {
 		try {
 			MimeMessage message = new MimeMessage(session);
 			DataHandler handler = new DataHandler(new ByteArrayDataSource(
@@ -76,19 +73,21 @@ public class GMailSender extends javax.mail.Authenticator {
 						new InternetAddress(recipients));
 
 			Transport.send(message);
-			emailEventHandler.onSuccess();
+			// emailEventHandler.onSuccess();
+			return 0;
 		} catch (AuthenticationFailedException e) {
-			emailEventHandler.onSendingAuthError("Authentication Failed");
+			// emailEventHandler.onSendingAuthError("Authentication Failed");
+			return 1;
 		} catch (AddressException e) {
-			emailEventHandler
-			.onEmailnotSent("message could not be sent to the recipient");
+			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient");
+			return 2;
 		} catch (SendFailedException e) {
-			emailEventHandler
-					.onEmailnotSent("message could not be sent to the recipient ");
+			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
+			return 2;
 		} catch (MessagingException e) {
-			emailEventHandler
-					.onEmailnotSent("message could not be sent to the recipient ");
-		} 
+			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
+			return 3;
+		}
 	}
 
 	public class ByteArrayDataSource implements DataSource {
