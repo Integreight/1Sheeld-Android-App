@@ -101,12 +101,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
 				eventHandler.onSuccess();
 				break;
 			case 1:
-				eventHandler.onEmailnotSent("message could not be sent to the recipient");
+				eventHandler.onEmailnotSent("Authentication Failedd");
 				break;
 			case 2:
-				eventHandler.onEmailnotSent("message could not be sent to the recipient ");
-				break;
-			case 3:
 				eventHandler.onEmailnotSent("message could not be sent to the recipient ");
 				break;
 

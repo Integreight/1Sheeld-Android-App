@@ -86,7 +86,7 @@ public class GMailSender extends javax.mail.Authenticator {
 			return 2;
 		} catch (MessagingException e) {
 			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
-			return 3;
+			return 2;
 		}
 	}
 
