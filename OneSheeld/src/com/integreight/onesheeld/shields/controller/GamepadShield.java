@@ -7,10 +7,16 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.utils.BitsUtils;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GamepadShield extends ControllerParent<GamepadShield> {
 	private Map<Pin, Integer> connectedPins;
+	ShieldFrame sf;
+	byte buttonByte = 0; 
+	private static final byte DATA_IN = 0x01;
+
 
 	// private static final char GAMEPAD_COMMAND = (byte) 0x37;
 	// private static final char DATA_IN = (byte) 0x01;
@@ -63,9 +69,15 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 				&& connectedPins.get(Pin.getPin(pinId)) != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.HIGH);
+			buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		}
+		
+		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
+		sf.addByteArgument(buttonByte);
+		getApplication().getAppFirmata().sendShieldFrame(sf);
 		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
+		
 	}
 
 	public void setPinToLow(int pinId) {
@@ -74,7 +86,11 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 				&& connectedPins.get(Pin.getPin(pinId)) != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.LOW);
+			buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		}
+		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
+		sf.addByteArgument(buttonByte);
+		getApplication().getAppFirmata().sendShieldFrame(sf);
 		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
 		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});
