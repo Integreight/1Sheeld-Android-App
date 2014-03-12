@@ -224,7 +224,7 @@ public class PinsColumnContainer extends RelativeLayout {
 		}
 
 		public static final class TYPE {
-			public final static int CONNECTED_HERE = R.drawable.arduino_green_pin;
+			public final static int CONNECTED_HERE = R.drawable.arduino_green_temp_pin;
 			public final static int CONNECTED_OUT = R.drawable.arduino_orange_pin;
 			public final static int NOT_CONNECTED_AND_ENABLED = R.drawable.arduino_default_pin;
 			public final static int DISABLED = R.drawable.arduino_red_pin;

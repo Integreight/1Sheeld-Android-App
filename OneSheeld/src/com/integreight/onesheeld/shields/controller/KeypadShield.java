@@ -87,7 +87,6 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

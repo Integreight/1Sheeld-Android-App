@@ -1,7 +1,5 @@
 package com.integreight.onesheeld;
 
-import java.util.Set;
-
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -85,6 +83,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 				}
 			}
 			setDevicesListReady();
+			changeSlogan(
+					activity.getResources()
+							.getString(R.string.selectYourDevice), COLOR.YELLOW);
 		} else if (scanOrTryAgain.getVisibility() != View.VISIBLE
 				|| !scanOrTryAgain
 						.getText()
