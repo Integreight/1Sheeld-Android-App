@@ -14,10 +14,34 @@
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
 
+    <Button
+        android:id="@+id/foursquare_shiled_login_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Login with your Foursquare Account"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/foursquare_shiled_logout_bt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/foursquare_shiled_login_bt"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:text="Logout"
+        android:visibility="invisible" />
+
     <TextView
         android:id="@+id/foursquare_shield_last_checkin_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/foursquare_shiled_logout_bt"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"

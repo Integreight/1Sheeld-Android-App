@@ -13,18 +13,14 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
-import twitter4j.TwitterException;
 import twitter4j.internal.org.json.JSONException;
 import twitter4j.internal.org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.telephony.gsm.GsmCellLocation;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
@@ -45,8 +41,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	String redirectUrl = "https://www.foursquare.com";
 	String placeID = "";
 	String message = "";
-	public String userName="";
-	public String lastcheckin="";
 
 	// Shared Preferences
 	private static SharedPreferences mSharedPreferences;
@@ -84,6 +78,8 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	public static interface FoursquareEventHandler {
 		void onPlaceCheckin(String placeName);
 
+		void setLastPlaceCheckin(String placeName);
+
 		void onForsquareLoggedIn(String userName);
 
 		void onForsquareLogout();
@@ -108,7 +104,8 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	private class ConnectFour extends AsyncTask<String, String, String> {
 
-		String response="";
+		String response = "";
+
 		@Override
 		protected String doInBackground(String... params) {
 			// TODO Auto-generated method stub
@@ -118,22 +115,26 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 				String placeId = placeID;
 				String messageId = URLEncoder.encode(message, "UTF-8");
 				String checkinURLRequest = "https://api.foursquare.com/v2/checkins/add?venueId="
-						+ placeId + "&" + "shout=" + messageId
+						+ placeId
+						+ "&"
+						+ "shout="
+						+ messageId
 						+ "&broadcast=public&oauth_token="
-						+ foursquare_token + "&v=20140201";
+						+ foursquare_token
+						+ "&v=20140201";
 				Log.d("checkinURLRequest", checkinURLRequest);
 				HttpPost post = new HttpPost(checkinURLRequest);
 
 				HttpClient hc = new DefaultHttpClient();
 				HttpResponse rp = hc.execute(post);
-				//Log.d("response from server ",EntityUtils.toString(rp.getEntity())+"");
-				//EntityUtils.toString(rp.getEntity());
+				// Log.d("response from server ",EntityUtils.toString(rp.getEntity())+"");
+				// EntityUtils.toString(rp.getEntity());
 				HttpEntity mEntity = rp.getEntity();
-				InputStream resp =  mEntity.getContent();
-				try{
-				response =getStringFromInputStream(resp);
-				}catch (Exception e){
-					response =getStringFromInputStream(resp);
+				InputStream resp = mEntity.getContent();
+				try {
+					response = getStringFromInputStream(resp);
+				} catch (Exception e) {
+					response = getStringFromInputStream(resp);
 				}
 
 				if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -144,99 +145,106 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 			}
 			return response;
 		}
+
 		@Override
 		protected void onPostExecute(String result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
-			//parse checkin response !
+			// parse checkin response !
 			try {
 				JSONObject json = new JSONObject(result);
 				JSONObject response = json.getJSONObject("response");
 				JSONObject checkins = response.getJSONObject("checkin");
 				JSONObject venue = checkins.getJSONObject("venue");
 				String placeName = venue.getString("name");
-				eventHandler.onPlaceCheckin(placeName);
+				if (eventHandler != null)
+					eventHandler.onPlaceCheckin(placeName);
 				// save in share prefrences
 				SharedPreferences.Editor editor = mSharedPreferences.edit();
 				editor.putString("PREF_FourSquare_LastPlace", placeName);
 				// Commit the edits!
 				editor.commit();
-				
+
 			} catch (Exception e) {
 				// TODO: handle exception
 				Log.d("Exception of Parsing checkin response :: ", e.toString());
 			}
-			
+
 		}
 
 	}
+
 	// convert InputStream to String
-		private static String getStringFromInputStream(InputStream is) {
-	 
-			BufferedReader br = null;
-			StringBuilder sb = new StringBuilder();
-	 
-			String line;
-			try {
-	 
-				br = new BufferedReader(new InputStreamReader(is));
-				while ((line = br.readLine()) != null) {
-					sb.append(line);
-				}
-	 
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				if (br != null) {
-					try {
-						br.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+	private static String getStringFromInputStream(InputStream is) {
+
+		BufferedReader br = null;
+		StringBuilder sb = new StringBuilder();
+
+		String line;
+		try {
+
+			br = new BufferedReader(new InputStreamReader(is));
+			while ((line = br.readLine()) != null) {
+				sb.append(line);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-	 
-			return sb.toString();
-	 
 		}
-	 private class ParseUserFoursquareData extends AsyncTask<String, Void, String> {
 
-	        @Override
-	        protected String doInBackground(String... params) {
-				String aa = null;
+		return sb.toString();
 
-	        	try {
+	}
 
-					aa = foursquare.request("users/self");
-					// show and save prefrences user name , last place
-					// checkin
-					//jsonParser(aa);
-					Log.d("Foursquare-Main", aa);
-				} catch (MalformedURLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-	            return aa;
-	        }
+	private class ParseUserFoursquareData extends
+			AsyncTask<String, Void, String> {
 
-	        @Override
-	        protected void onPostExecute(String result) {
-	        	
-	        	try {
-	        		JSONObject json = new JSONObject(result);
+		@Override
+		protected String doInBackground(String... params) {
+			String aa = null;
+
+			try {
+
+				aa = foursquare.request("users/self");
+				// show and save prefrences user name , last place
+				// checkin
+				// jsonParser(aa);
+				Log.d("Foursquare-Main", aa);
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return aa;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+
+			try {
+				JSONObject json = new JSONObject(result);
 				JSONObject response = json.getJSONObject("response");
 				JSONObject user = response.getJSONObject("user");
 				String userName = user.getString("firstName");
 				// Set user name UI
-				eventHandler.onForsquareLoggedIn(userName);
+				if (eventHandler != null)
+					eventHandler.onForsquareLoggedIn(userName);
 				JSONObject venue = user.getJSONObject("checkins")
 						.getJSONArray("items").getJSONObject(0)
 						.getJSONObject("venue");
 				String placeName = venue.getString("name");
-				eventHandler.onPlaceCheckin(placeName);
+				if (eventHandler != null)
+					eventHandler.setLastPlaceCheckin(placeName);
 
 				// save in share prefrences
 				SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -248,13 +256,15 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
-				Log.d("Exception of Parsing User login response :: ", e.toString());
-				
-			}
-	            
-	        }
+				Log.d("Exception of Parsing User login response :: ",
+						e.toString());
 
-	    }
+			}
+
+		}
+
+	}
+
 	private class FoursquareAuthenDialogListener implements DialogListener {
 
 		@Override
@@ -289,12 +299,14 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 			JSONObject user = response.getJSONObject("user");
 			String userName = user.getString("firstName");
 			// Set user name UI
-			eventHandler.onForsquareLoggedIn(userName);
+			if (eventHandler != null)
+				eventHandler.onForsquareLoggedIn(userName);
 			JSONObject venue = user.getJSONObject("checkins")
 					.getJSONArray("items").getJSONObject(0)
 					.getJSONObject("venue");
 			String placeName = venue.getString("name");
-			eventHandler.onPlaceCheckin(placeName);
+			if (eventHandler != null)
+				eventHandler.onPlaceCheckin(placeName);
 
 			// save in share prefrences
 			SharedPreferences.Editor editor = mSharedPreferences.edit();
@@ -311,48 +323,17 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	}
 
-	public void startFoursquare() {
+	public void loginToFoursquare() {
+		foursquare = new Foursquare(clintID, clintSecret, redirectUrl);
 
-		if (!isFoursquareLoggedInAlready()) {
-			Log.d("Foursquare::User not LoggedIn", "");
-			foursquare = new Foursquare(clintID, clintSecret, redirectUrl);
-
-			foursquare.authorize(getActivity(),
-					new FoursquareAuthenDialogListener());
-		} else {
-			Log.d("Foursquare::User LoggedIn", "");
-			String userName = mSharedPreferences.getString(
-					"PREF_FourSquare_UserName", "");
-			String lastCheckin = mSharedPreferences.getString(
-					"PREF_FourSquare_LastPlace", "");
-
-			setUserName(userName);
-			setLastcheckin(lastCheckin);
-
-		}
-
-	}
-
-	public String getUserName() {
-		return userName;
-	}
-
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-
-	public String getLastcheckin() {
-		return lastcheckin;
-	}
-
-	public void setLastcheckin(String lastcheckin) {
-		this.lastcheckin = lastcheckin;
+		foursquare.authorize(getActivity(),
+				new FoursquareAuthenDialogListener());
 	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
