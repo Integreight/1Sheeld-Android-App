@@ -1,80 +1,72 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.utils.BitsUtils;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GamepadShield extends ControllerParent<GamepadShield> {
-	private Map<Pin, Integer> connectedPins;
-
-	// private static final char GAMEPAD_COMMAND = (byte) 0x37;
-	// private static final char DATA_IN = (byte) 0x01;
-
-	// private static final char NOTHING_PRESSED = (char) 0xFF;
+	ShieldFrame sf;
+	byte buttonByte = 0;
+	private static final byte DATA_IN = 0x01;
 
 	public GamepadShield(Activity activity, String tag) {
 		super(activity, tag);
-		connectedPins = new HashMap<Pin, Integer>();
-		for (Pin pin : Pin.values()) {
-			connectedPins.put(pin, null);
-		}
 	}
 
 	@Override
 	public ControllerParent<GamepadShield> setTag(String tag) {
-		connectedPins = new HashMap<Pin, Integer>();
-		for (Pin pin : Pin.values()) {
-			connectedPins.put(pin, null);
-		}
 		return super.setTag(tag);
+	}
+
+	@Override
+	public void setConnected(ArduinoConnectedPin... pins) {
+		// TODO Auto-generated method stub
+		super.setConnected(pins);
+	}
+
+	public void initPins() {
+		CommitInstanceTotable();
 	}
 
 	public GamepadShield() {
 		super();
 		requiredPinsIndex = 0;
-		shieldPins = new String[] { "Up Arrow", "Right Arrow", "Down Arrow", "Left Arrow",
-				"Yellow Button", "Red Button", "Green Button", "Blue Button" };
+		shieldPins = new String[] { "Up Arrow", "Right Arrow", "Down Arrow",
+				"Left Arrow", "Yellow Button", "Red Button", "Green Button",
+				"Blue Button" };
 	}
 
-	public void initPins() {
-		if (connectedPins == null)
-			return;
-		for (Integer connectedPin : this.connectedPins.values()) {
-			if (connectedPin != null)
-				getApplication().getAppFirmata().pinMode(connectedPin,
-						ArduinoFirmata.OUTPUT);
-		}
-		CommitInstanceTotable();
-	}
-
-	public void connectGamepadPinWithArduinoPin(Pin gPin, int pin) {
-		connectedPins.put(gPin, pin);
-		CommitInstanceTotable();
-	}
-
-	public void setPinToHigh(int pinId) {
-		if (connectedPins != null
-				&& connectedPins.containsKey(Pin.getPin(pinId))
-				&& connectedPins.get(Pin.getPin(pinId)) != null) {
+	public void setPinToHigh(String pinName, int pinId) {
+		ArduinoPin columnPincolumnPin = matchedShieldPins.get(pinName);
+		if (columnPincolumnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
-					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.HIGH);
+					columnPincolumnPin.microHardwarePin, ArduinoFirmata.HIGH);
+			buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		}
+		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
+		sf.addByteArgument(buttonByte);
+		getApplication().getAppFirmata().sendShieldFrame(sf);
 		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
 	}
 
-	public void setPinToLow(int pinId) {
-		if (connectedPins != null
-				&& connectedPins.containsKey(Pin.getPin(pinId))
-				&& connectedPins.get(Pin.getPin(pinId)) != null) {
+	public void setPinToLow(String pinName, int pinId) {
+		ArduinoPin columnPin = matchedShieldPins.get(pinName);
+
+		if (columnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
-					connectedPins.get(Pin.getPin(pinId)), ArduinoFirmata.LOW);
+					columnPin.microHardwarePin, ArduinoFirmata.LOW);
+			buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		}
+		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
+		sf.addByteArgument(buttonByte);
+		getApplication().getAppFirmata().sendShieldFrame(sf);
 		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
 		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});
@@ -94,7 +86,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 			this.name = name;
 		}
 
-		String getName() {
+		public String getName() {
 			return name;
 		}
 
