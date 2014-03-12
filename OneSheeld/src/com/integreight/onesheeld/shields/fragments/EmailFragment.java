@@ -27,7 +27,6 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	private static final String PREF_EMAIL_SHIELD_GMAIL_ACCOUNT = "gmail_account";
 	private static final String PREF_EMAIL_SHIELD_GMAIL_PASSWORD = "gmail_password";
 	private String userEmail;
-	private String password;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,14 +85,10 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		if (isGmailLoggedInAlready()) {
 			userEmail = mSharedPreferences.getString(
 					PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
-			password = mSharedPreferences.getString(
-					PREF_EMAIL_SHIELD_GMAIL_PASSWORD, "");
 
 			((EmailShield) getApplication().getRunningShields().get(
 					getControllerTag()))
 					.setEmailEventHandler(emailEventHandler);
-			((EmailShield) getApplication().getRunningShields().get(
-					getControllerTag())).setUserasLoggedIn(userEmail, password);
 			login_bt.setVisibility(View.INVISIBLE);
 			logout_bt.setVisibility(View.VISIBLE);
 			userName.setVisibility(View.VISIBLE);
@@ -112,7 +107,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
 	}
 
-	public boolean isGmailLoggedInAlready() {
+	private boolean isGmailLoggedInAlready() {
 		// return twitter login status from Shared Preferences
 		return mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,
 				false);
@@ -183,13 +178,10 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		editor.putString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, accountName);
 		editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD, password);
 		editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
-
 		// Commit the edits!
 		editor.commit();
 		((EmailShield) getApplication().getRunningShields().get(
 				getControllerTag())).setEmailEventHandler(emailEventHandler);
-		((EmailShield) getApplication().getRunningShields().get(
-				getControllerTag())).setUserasLoggedIn(accountName, password);
 		login_bt.setVisibility(View.INVISIBLE);
 		logout_bt.setVisibility(View.VISIBLE);
 		userName.setVisibility(View.VISIBLE);
