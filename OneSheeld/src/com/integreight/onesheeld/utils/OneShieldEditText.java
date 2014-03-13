@@ -4,9 +4,9 @@ import com.integreight.onesheeld.OneSheeldApplication;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.EditText;
+import android.widget.AutoCompleteTextView;
 
-public class OneShieldEditText extends EditText {
+public class OneShieldEditText extends AutoCompleteTextView {
 
 	public OneShieldEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
