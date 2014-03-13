@@ -8,11 +8,13 @@ import java.io.IOException;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.SurfaceHolder;
@@ -154,6 +156,9 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				// remember close de FileOutput
 				try {
 					fo.close();
+		        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+		        Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
