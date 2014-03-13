@@ -3,7 +3,8 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#03d203" >
+    android:background="#03d203"
+    android:clickable="true" >
 
     <ToggleButton
         android:id="@+id/shield_list_item_selection_toggle_button"

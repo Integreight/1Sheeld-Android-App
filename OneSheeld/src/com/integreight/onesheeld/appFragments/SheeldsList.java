@@ -76,8 +76,14 @@ public class SheeldsList extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		isInflated = (v == null);
 		v = inflater.inflate(R.layout.app_sheelds_list, container, false);
 		return v;
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
 	}
 
 	@Override
@@ -157,39 +163,41 @@ public class SheeldsList extends Fragment {
 		// shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(getActivity());
 		shieldsListView.setAdapter(adapter);
+		// if (isInflated)
+		shieldsListView.smoothScrollBy((int) (100 * getResources()
+				.getDisplayMetrics().density - .5f), 0);
 		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
 		shieldsListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		shieldsListView.setDrawingCacheEnabled(true);
-		shieldsListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> lv, View item, int position,
-					long id) {
-				RelativeLayout rLayout = (RelativeLayout) item;
-				ToggleButton selectionMark = (ToggleButton) rLayout
-						.getChildAt(0);
-				ImageView selectionCircle = (ImageView) rLayout.getChildAt(1);
-				ImageView upperBlackLayer = (ImageView) rLayout
-						.findViewById(R.id.shildListItemBlackSquare);
-
-				if (selectionMark.isChecked()) {
-					selectionMark.setChecked(false);
-					selectionMark.setVisibility(View.INVISIBLE);
-					selectionCircle.setVisibility(View.INVISIBLE);
-					upperBlackLayer.setVisibility(View.VISIBLE);
-					UIShield.getPosition(position + 1)
-							.setMainActivitySelection(false);
-				} else {
-					selectionMark.setChecked(true);
-					selectionMark.setVisibility(View.VISIBLE);
-					selectionCircle.setVisibility(View.VISIBLE);
-					upperBlackLayer.setVisibility(View.INVISIBLE);
-					UIShield.getPosition(position + 1)
-							.setMainActivitySelection(true);
-
-				}
-			}
-
-		});
+		// shieldsListView.setOnItemClickListener(new OnItemClickListener() {
+		// @Override
+		// public void onItemClick(AdapterView<?> lv, View item, int position,
+		// long id) {
+		// RelativeLayout rLayout = (RelativeLayout) item;
+		// ToggleButton selectionMark = (ToggleButton) rLayout
+		// .getChildAt(0);
+		// ImageView selectionCircle = (ImageView) rLayout.getChildAt(1);
+		// ImageView upperBlackLayer = (ImageView) rLayout
+		// .findViewById(R.id.shildListItemBlackSquare);
+		//
+		// if (selectionMark.isChecked()) {
+		// selectionMark.setChecked(false);
+		// selectionMark.setVisibility(View.INVISIBLE);
+		// selectionCircle.setVisibility(View.INVISIBLE);
+		// upperBlackLayer.setVisibility(View.VISIBLE);
+		// UIShield.getPosition(position + 1)
+		// .setMainActivitySelection(false);
+		// } else {
+		// selectionMark.setChecked(true);
+		// selectionMark.setVisibility(View.VISIBLE);
+		// selectionCircle.setVisibility(View.VISIBLE);
+		// upperBlackLayer.setVisibility(View.INVISIBLE);
+		// UIShield.getPosition(position + 1)
+		// .setMainActivitySelection(true);
+		// }
+		// }
+		//
+		// });
 		// mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 		// If the adapter is null, then Bluetooth is not supported
