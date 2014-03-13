@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import com.integreight.onesheeld.MainActivity;
@@ -60,6 +61,7 @@ public class ShieldsListAdapter extends BaseAdapter {
 					.findViewById(R.id.shield_list_item_selection_circle_imageview);
 			holder.blackUpperLayer = (ImageView) row
 					.findViewById(R.id.shildListItemBlackSquare);
+			holder.container = (ViewGroup) row.findViewById(R.id.container);
 			row.setTag(holder);
 		} else {
 			holder = (Holder) row.getTag();
@@ -91,18 +93,29 @@ public class ShieldsListAdapter extends BaseAdapter {
 		// head_params.setMargins(0, -20, 0, 0); //substitute parameters for
 		// left, top, right, bottom
 		// row.setLayoutParams(head_params);
+		final Holder tempHolder = holder;
+		holder.container.setOnClickListener(new View.OnClickListener() {
 
-		// row.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// //iv.animate();
-		// // String url = data.get(position).getUrl();
-		// // Intent intent = new Intent(context, Tutorial3Activity.class);
-		// // intent.putExtra("itemId", data.get(position).getId());
-		// // context.startActivity(intent);
-		// }
-		// });
+			@Override
+			public void onClick(View v) {
+
+				if (tempHolder.selectionButton.isChecked()) {
+					tempHolder.selectionButton.setChecked(false);
+					tempHolder.selectionButton.setVisibility(View.INVISIBLE);
+					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
+					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
+					UIShield.getPosition(position + 1)
+							.setMainActivitySelection(false);
+				} else {
+					tempHolder.selectionButton.setChecked(true);
+					tempHolder.selectionButton.setVisibility(View.VISIBLE);
+					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
+					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
+					UIShield.getPosition(position + 1)
+							.setMainActivitySelection(true);
+				}
+			}
+		});
 		return row;
 	}
 
@@ -112,6 +125,7 @@ public class ShieldsListAdapter extends BaseAdapter {
 		ToggleButton selectionButton;
 		ImageView selectionCircle;
 		ImageView blackUpperLayer;
+		ViewGroup container;
 	}
 
 }

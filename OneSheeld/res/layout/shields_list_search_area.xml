@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:background="@color/arduino_conn_gray_bg"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:orientation="horizontal" >
+
+        <com.integreight.onesheeld.utils.OneShieldButton
+            android:id="@+id/selectAll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight=".5dp"
+            android:layout_weight="1"
+            android:background="@drawable/search_area_buttons_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/selectAll"
+            android:textColor="@color/textColorOnDark"
+            android:textSize="15sp" />
+
+        <com.integreight.onesheeld.utils.OneShieldButton
+            android:id="@+id/reset"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".5dp"
+            android:layout_weight="1"
+            android:background="@drawable/search_area_buttons_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/reset"
+            android:textColor="@color/textColorOnDark"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.integreight.onesheeld.utils.OneShieldEditText
+            android:id="@+id/searchArea"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/shields_list_search_area_rounded_bg"
+            android:drawableLeft="@drawable/shields_list_search_symbol"
+            android:drawablePadding="5dp"
+            android:gravity="left|center_vertical"
+            android:singleLine="true"
+            android:textColor="@color/textColorOnDark"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+</LinearLayout>

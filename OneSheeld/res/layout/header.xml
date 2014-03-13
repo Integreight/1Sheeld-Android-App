@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:background="#232323"
     android:gravity="center"
-    android:padding="10dp" >
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp" >
 
     <TextView
         android:id="@+id/currentViewTitle"
