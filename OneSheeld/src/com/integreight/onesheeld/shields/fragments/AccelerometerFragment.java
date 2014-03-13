@@ -24,8 +24,9 @@ public class AccelerometerFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.accelerometer_shield_fragment_layout,
-				container, false);
+		View v = inflater
+				.inflate(R.layout.accelerometer_shield_fragment_layout,
+						container, false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -93,9 +94,11 @@ public class AccelerometerFragment extends
 		@Override
 		public void onSensorValueChangedFloat(float[] value) {
 			// TODO Auto-generated method stub
-			x.setText("X = " + value[0]);
-			y.setText("Y = " + value[1]);
-			z.setText("Z = " + value[2]);
+			if (canChangeUI()) {
+				x.setText("X = " + value[0]);
+				y.setText("Y = " + value[1]);
+				z.setText("Z = " + value[2]);
+			}
 		}
 
 		@Override

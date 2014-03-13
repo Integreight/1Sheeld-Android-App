@@ -108,8 +108,10 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 		@Override
 		public void onSensorValueChangedByte(String value) {
 			// TODO Auto-generated method stub
-			pressure_byte.setVisibility(View.VISIBLE);
-			pressure_byte.setText("Pressure in Byte = " + value);
+			if (canChangeUI()) {
+				pressure_byte.setVisibility(View.VISIBLE);
+				pressure_byte.setText("Pressure in Byte = " + value);
+			}
 
 		}
 

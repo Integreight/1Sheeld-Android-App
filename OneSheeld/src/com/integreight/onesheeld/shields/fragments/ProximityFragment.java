@@ -99,20 +99,21 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 		@Override
 		public void onSensorValueChangedFloat(String value) {
 			// TODO Auto-generated method stub
-			
-			if (canChangeUI())
-			{
+
+			if (canChangeUI()) {
 				distance_float.setVisibility(View.VISIBLE);
 				distance_float.setText("Distance in float = " + value);
 			}
-			
+
 		}
 
 		@Override
 		public void onSensorValueChangedByte(String value) {
 			// TODO Auto-generated method stub
-			distance_byte.setVisibility(View.VISIBLE);
-			distance_byte.setText("Distance in Byte = " + value);
+			if (canChangeUI()) {
+				distance_byte.setVisibility(View.VISIBLE);
+				distance_byte.setText("Distance in Byte = " + value);
+			}
 
 		}
 
@@ -154,7 +155,6 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 		((ProximityShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setProximityEventHandler(proximityEventHandler);
-		
 
 	}
 }

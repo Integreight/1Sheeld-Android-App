@@ -16,7 +16,8 @@ import com.integreight.onesheeld.shields.controller.TemperatureShield.Temperatur
 import com.integreight.onesheeld.shields.controller.TemperatureShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
-public class TemperatureFragment extends ShieldFragmentParent<TemperatureFragment> {
+public class TemperatureFragment extends
+		ShieldFragmentParent<TemperatureFragment> {
 	TextView temperature_float, temperature_byte;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
@@ -109,8 +110,10 @@ public class TemperatureFragment extends ShieldFragmentParent<TemperatureFragmen
 		@Override
 		public void onSensorValueChangedByte(String value) {
 			// TODO Auto-generated method stub
-			temperature_byte.setVisibility(View.VISIBLE);
-			temperature_byte.setText("temperature in Byte = " + value);
+			if (canChangeUI()) {
+				temperature_byte.setVisibility(View.VISIBLE);
+				temperature_byte.setText("temperature in Byte = " + value);
+			}
 
 		}
 

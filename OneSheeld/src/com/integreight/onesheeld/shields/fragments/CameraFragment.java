@@ -82,18 +82,21 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 		@Override
 		public void checkCameraHardware(boolean isHasCamera) {
 
-			if (!isHasCamera) {
-				Toast.makeText(getActivity(),
-						"Your Device doesn't have Camera", Toast.LENGTH_SHORT)
-						.show();
+			if (canChangeUI()) {
+				if (!isHasCamera) {
+					Toast.makeText(getActivity(),
+							"Your Device doesn't have Camera",
+							Toast.LENGTH_SHORT).show();
+				}
 			}
 		}
 
 		@Override
 		public void OnPictureTaken() {
-			Toast.makeText(getActivity(),
-					"Your Camera has been Captured Image", Toast.LENGTH_SHORT)
-					.show();
+			if (canChangeUI())
+				Toast.makeText(getActivity(),
+						"Your Camera has been Captured Image",
+						Toast.LENGTH_SHORT).show();
 		}
 
 		@Override

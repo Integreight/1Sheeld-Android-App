@@ -93,9 +93,11 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 		@Override
 		public void onSensorValueChangedFloat(float[] value) {
 			// TODO Auto-generated method stub
-			x.setText("X = " + value[0]);
-			y.setText("Y = " + value[1]);
-			z.setText("Z = " + value[2]);
+			if (canChangeUI()) {
+				x.setText("X = " + value[0]);
+				y.setText("Y = " + value[1]);
+				z.setText("Z = " + value[2]);
+			}
 
 		}
 

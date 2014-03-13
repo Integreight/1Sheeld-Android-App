@@ -83,12 +83,14 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		@Override
 		public void onLatChanged(String lat) {
 			// TODO Auto-generated method stub
+			if(canChangeUI())
 			Latit.setText(lat);
 		}
 
 		@Override
 		public void onLangChanged(String lang) {
 			// TODO Auto-generated method stub
+			if(canChangeUI())
 			Longit.setText(lang);
 
 		}
