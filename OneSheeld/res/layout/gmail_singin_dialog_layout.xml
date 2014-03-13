@@ -45,8 +45,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/gmail_signin_dialog_username"
-            android:layout_marginLeft="4dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="4dp"
             android:text="invalid user name"
             android:visibility="invisible" />
 
@@ -70,6 +70,29 @@
             android:layout_below="@+id/gmail_signin_dialog_password"
             android:layout_marginLeft="4dp"
             android:text="invalid password"
+            android:visibility="invisible" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@android:style/Widget.ProgressBar.Large.Inverse"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:layout_centerInParent="true"
+            android:indeterminateDrawable="@drawable/my_progress_indeterminate"
+            android:visibility="invisible" >
+        </ProgressBar>
+
+        <TextView
+            android:id="@+id/gmail_signin_dialog_auth_failed_tx"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="Authentication Failed, Try again ! "
             android:visibility="invisible" />
     </RelativeLayout>
 
