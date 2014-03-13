@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.adapters;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -9,17 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 
-public class ShieldsListAdapter extends BaseAdapter {
+public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	MainActivity activity;
-	List<UIShield> shieldList;
+	public List<UIShield> shieldList;
 	LayoutInflater inflater;
 
 	public ShieldsListAdapter(Activity a) {
@@ -119,6 +123,29 @@ public class ShieldsListAdapter extends BaseAdapter {
 		return row;
 	}
 
+	public void updateList(List<UIShield> shieldsList) {
+		if (shieldsList != null & shieldsList.size() > 0) {
+			this.shieldList = shieldsList;
+			// else
+			// shieldList = new ArrayList<UIShield>();
+			notifyDataSetChanged();
+		}
+	}
+
+	public void selectAll() {
+		for (UIShield item : shieldList) {
+			item.setMainActivitySelection(true);
+		}
+		notifyDataSetChanged();
+	}
+
+	public void reset() {
+		for (UIShield item : shieldList) {
+			item.setMainActivitySelection(false);
+		}
+		notifyDataSetChanged();
+	}
+
 	static class Holder {
 		TextView name;
 		ImageView icon;
@@ -126,6 +153,37 @@ public class ShieldsListAdapter extends BaseAdapter {
 		ImageView selectionCircle;
 		ImageView blackUpperLayer;
 		ViewGroup container;
+	}
+
+	@Override
+	public Filter getFilter() {
+		// TODO Auto-generated method stub
+		return new Filter() {
+
+			@Override
+			protected void publishResults(CharSequence arg0, FilterResults arg1) {
+				List<UIShield> values = (List<UIShield>) arg1.values;
+				updateList(values);
+			}
+
+			@Override
+			protected FilterResults performFiltering(CharSequence arg0) {
+				FilterResults results = new FilterResults();
+				List<UIShield> filteredShields = new ArrayList<UIShield>();
+				if (arg0 != null) {
+					for (UIShield uiShield : UIShield.values()) {
+						if (uiShield.name().toLowerCase()
+								.startsWith(arg0.toString().toLowerCase())) {
+							filteredShields.add(uiShield);
+						}
+					}
+				} else
+					filteredShields = Arrays.asList(UIShield.values());
+				results.values = filteredShields;
+				results.count = filteredShields.size();
+				return results;
+			}
+		};
 	}
 
 }

@@ -44,6 +44,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.ListViewReversed;
+import com.integreight.onesheeld.utils.OneShieldEditText;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 
 public class SheeldsList extends Fragment {
@@ -77,7 +78,17 @@ public class SheeldsList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		isInflated = (v == null);
+		// if (v == null)
 		v = inflater.inflate(R.layout.app_sheelds_list, container, false);
+		// else {
+		// try {
+		// ((ViewGroup) v.getParent()).removeView(v);
+		// } catch (Exception e) {
+		// // TODO: handle exception
+		// }
+		// if (shieldsListView != null)
+		// shieldsListView.setSelection(1);
+		// }
 		return v;
 	}
 
@@ -164,11 +175,38 @@ public class SheeldsList extends Fragment {
 		adapter = new ShieldsListAdapter(getActivity());
 		shieldsListView.setAdapter(adapter);
 		// if (isInflated)
-		shieldsListView.smoothScrollBy((int) (100 * getResources()
-				.getDisplayMetrics().density - .5f), 0);
+		shieldsListView.setSelection(1);
 		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
 		shieldsListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		shieldsListView.setDrawingCacheEnabled(true);
+		final OneShieldEditText searchBox = (OneShieldEditText) shieldsListView
+				.findViewById(R.id.searchArea);
+		// searchBox.setAdapter(adapter);
+		searchBox.setDropDownHeight(0);
+		shieldsListView.findViewById(R.id.selectAll).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						for (int i = 0; i < UIShield.values().length; i++) {
+							UIShield.getPosition(i + 1)
+									.setMainActivitySelection(true);
+						}
+						adapter.selectAll();
+					}
+				});
+		shieldsListView.findViewById(R.id.reset).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						for (int i = 0; i < UIShield.values().length; i++) {
+							UIShield.getPosition(i + 1)
+									.setMainActivitySelection(false);
+						}
+						adapter.reset();
+					}
+				});
 		// shieldsListView.setOnItemClickListener(new OnItemClickListener() {
 		// @Override
 		// public void onItemClick(AdapterView<?> lv, View item, int position,
