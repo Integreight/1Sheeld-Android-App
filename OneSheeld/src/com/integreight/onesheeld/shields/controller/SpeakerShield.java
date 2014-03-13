@@ -67,8 +67,9 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		isResumed = true;
 	}
 	public void playSound(int soundResourceId){
-		if(mp==null)mp = MediaPlayer.create(getApplication(), soundResourceId);
-		if(mp.isPlaying()){
+		if(mp==null)
+			mp = MediaPlayer.create(getApplication(), soundResourceId);
+		/*if(mp.isPlaying()){
 			Resources res = getActivity().getResources();
 			AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
 			FileDescriptor fd = afd.getFileDescriptor();
@@ -89,7 +90,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 			
 			mp.start();
 		}
-		else
+		else*/
 			mp.start();
 	}
 	@Override
