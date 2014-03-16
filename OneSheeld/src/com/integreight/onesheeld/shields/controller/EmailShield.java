@@ -1,5 +1,11 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +15,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.shields.controller.utils.GMailSender;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.SecurePreferences;
 
 public class EmailShield extends ControllerParent<EmailShield> {
 
@@ -128,10 +135,39 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	}
 
 	public void setUserData() {
-		this.userEmail = mSharedPreferences.getString(
+		byte[] decryptedData = null;
+		// password decryption 
+ 		this.userEmail = mSharedPreferences.getString(
 				PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
-		this.password = mSharedPreferences.getString(
+ 	// decrypt
+ 		String encryptedPassword_str = mSharedPreferences.getString(
 				PREF_EMAIL_SHIELD_GMAIL_PASSWORD, "");
+ 		byte[] encryptedPassword_bytes = SecurePreferences.convertStirngToByteArray(encryptedPassword_str);
+ 		//String mkey_str = mSharedPreferences.getString("M_KEY", "");
+ 		//byte[] mkey_bytes = SecurePreferences.convertStirngToByteArray(mkey_str);
+ 		byte[] keyStart = SecurePreferences.convertStirngToByteArray("password_key");
+		KeyGenerator kgen;
+		byte[] key  = null;
+		try {
+			kgen = KeyGenerator.getInstance("AES");
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+			sr.setSeed(keyStart);
+			kgen.init(128, sr);
+			SecretKey skey = kgen.generateKey();
+			key = skey.getEncoded();
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+ 		
+ 		try {
+ 			decryptedData = SecurePreferences.decrypt(key, encryptedPassword_bytes);
+		} catch (Exception e) {
+			//failed to decrypt password.
+			Log.d("Email", "failed to decrypt password");
+		}
+		this.password = SecurePreferences.convertByteArrayToString(decryptedData);
 	}
 	private boolean isLoggedIn() {
 		// return twitter login status from Shared Preferences

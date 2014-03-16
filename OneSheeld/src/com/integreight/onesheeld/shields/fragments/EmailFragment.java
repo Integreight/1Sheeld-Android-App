@@ -1,5 +1,12 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -16,6 +23,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
+import com.integreight.onesheeld.utils.SecurePreferences;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
@@ -176,7 +184,30 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		// save in share perefrences
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, accountName);
-		editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD, password);
+		// encrypt password before saved in share perefrence...
+		try {
+			byte[] b = SecurePreferences.convertStirngToByteArray(password);
+			byte[] keyStart = SecurePreferences.convertStirngToByteArray("password_key");
+			KeyGenerator kgen = KeyGenerator.getInstance("AES");
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+			sr.setSeed(keyStart);
+			kgen.init(128, sr);
+			SecretKey skey = kgen.generateKey();
+			byte[] key = skey.getEncoded();
+			// encrypt
+			byte[] encryptedPassword = SecurePreferences.encrypt(key, b);
+			String encryptedPassword_str = SecurePreferences.convertByteArrayToString(encryptedPassword);
+
+			editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD,
+					encryptedPassword_str);
+			String key_str = SecurePreferences.convertByteArrayToString(key);
+			editor.putString("M_KEY",key_str );
+		} catch (NoSuchAlgorithmException e) {
+			Log.d("Email", "failed to encrypt password");
+		} catch (Exception e) {
+			Log.d("Email", "failed to encrypt password");
+		}
+		// editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD, password);
 		editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
 		// Commit the edits!
 		editor.commit();
@@ -201,4 +232,5 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		sendTo.setText("");
 
 	}
+
 }
