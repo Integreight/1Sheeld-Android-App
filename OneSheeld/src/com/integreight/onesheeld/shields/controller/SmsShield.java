@@ -63,8 +63,10 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		try {
 			SmsManager smsManager = SmsManager.getDefault();
 			smsManager.sendTextMessage(smsNumber, null, smsText, null, null);
+			if(eventHandler != null)
 			eventHandler.onSmsSent(smsText, smsText);
 		} catch (Exception e) {
+			if(eventHandler != null)
 			eventHandler.onSmsFail(e.getMessage());
 
 			e.printStackTrace();
