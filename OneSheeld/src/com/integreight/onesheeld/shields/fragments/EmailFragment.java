@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -185,38 +186,36 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		SharedPreferences.Editor editor = mSharedPreferences.edit();
 		editor.putString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, accountName);
 		// encrypt password before saved in share perefrence...
+		byte[] b = SecurePreferences.convertStirngToByteArray(password);
+		// encrypt
 		try {
-			byte[] b = SecurePreferences.convertStirngToByteArray(password);
-			byte[] keyStart = SecurePreferences.convertStirngToByteArray("password_key");
-			KeyGenerator kgen = KeyGenerator.getInstance("AES");
-			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-			sr.setSeed(keyStart);
-			kgen.init(128, sr);
-			SecretKey skey = kgen.generateKey();
-			byte[] key = skey.getEncoded();
-			// encrypt
+			byte[] key = SecurePreferences.generateKey();
 			byte[] encryptedPassword = SecurePreferences.encrypt(key, b);
-			String encryptedPassword_str = SecurePreferences.convertByteArrayToString(encryptedPassword);
-
+			// String encryptedPassword_str =
+			// SecurePreferences.convertByteArrayToString(encryptedPassword);
+			String encryptedPassword_str = Base64.encodeToString(encryptedPassword,
+					Base64.DEFAULT);
 			editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD,
 					encryptedPassword_str);
-			String key_str = SecurePreferences.convertByteArrayToString(key);
-			editor.putString("M_KEY",key_str );
-		} catch (NoSuchAlgorithmException e) {
-			Log.d("Email", "failed to encrypt password");
+			// String key_str = SecurePreferences.convertByteArrayToString(key);
+			// String key_str = Base64.encodeToString(key, Base64.DEFAULT);
+
+			// editor.putString("M_KEY",key_str );
+			// editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD, password);
+			editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
+			// Commit the edits!
+			editor.commit();
+			((EmailShield) getApplication().getRunningShields().get(
+					getControllerTag())).setEmailEventHandler(emailEventHandler);
+			login_bt.setVisibility(View.INVISIBLE);
+			logout_bt.setVisibility(View.VISIBLE);
+			userName.setVisibility(View.VISIBLE);
+			userName.setText(accountName);
+
 		} catch (Exception e) {
-			Log.d("Email", "failed to encrypt password");
+			Log.d("Email", "EmaiFragment:: filed in password encryption");
 		}
-		// editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD, password);
-		editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
-		// Commit the edits!
-		editor.commit();
-		((EmailShield) getApplication().getRunningShields().get(
-				getControllerTag())).setEmailEventHandler(emailEventHandler);
-		login_bt.setVisibility(View.INVISIBLE);
-		logout_bt.setVisibility(View.VISIBLE);
-		userName.setVisibility(View.VISIBLE);
-		userName.setText(accountName);
+		
 	}
 
 	private void logoutGmailAccount() {

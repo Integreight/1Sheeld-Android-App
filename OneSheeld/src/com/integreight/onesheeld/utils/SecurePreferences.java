@@ -2,11 +2,14 @@ package com.integreight.onesheeld.utils;
 
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 public class SecurePreferences {
@@ -82,5 +85,23 @@ public class SecurePreferences {
 			}
 		}
 		return s;
+	}
+
+	public static byte[] generateKey() {
+		byte[] keyStart = convertStirngToByteArray("password_key");
+		KeyGenerator kgen;
+		byte[] key = null;
+		try {
+			kgen = KeyGenerator.getInstance("AES");
+			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
+			sr.setSeed(keyStart);
+			kgen.init(128, sr);
+			SecretKey skey = kgen.generateKey();
+			key = skey.getEncoded();
+		} catch (NoSuchAlgorithmException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return key;
 	}
 }

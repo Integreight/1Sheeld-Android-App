@@ -183,6 +183,9 @@ public class GmailSinginPopup extends Dialog {
 				auth_failed_tx.setVisibility(View.VISIBLE);
 				// eventHandler.onEmailnotSent("Authentication Failedd");
 				break;
+			case 2:
+				loading.setVisibility(View.INVISIBLE);
+				isUsernameValide(true);
 
 			default:
 				break;

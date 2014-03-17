@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Base64;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
@@ -109,22 +110,24 @@ public class EmailShield extends ControllerParent<EmailShield> {
 			}
 			return result;
 		}
+
 		@Override
 		protected void onPostExecute(Integer result) {
 			// TODO Auto-generated method stub
 			super.onPostExecute(result);
 			switch (result) {
 			case 0:
-				if(eventHandler !=null)
-				eventHandler.onSuccess();
+				if (eventHandler != null)
+					eventHandler.onSuccess();
 				break;
 			case 1:
-				if(eventHandler !=null)
-				eventHandler.onEmailnotSent("Authentication Failedd");
+				if (eventHandler != null)
+					eventHandler.onEmailnotSent("Authentication Failedd");
 				break;
 			case 2:
-				if(eventHandler !=null)
-				eventHandler.onEmailnotSent("message could not be sent to the recipient ");
+				if (eventHandler != null)
+					eventHandler
+							.onEmailnotSent("message could not be sent to the recipient ");
 				break;
 
 			default:
@@ -136,44 +139,42 @@ public class EmailShield extends ControllerParent<EmailShield> {
 
 	public void setUserData() {
 		byte[] decryptedData = null;
-		// password decryption 
- 		this.userEmail = mSharedPreferences.getString(
+		byte[] encryptedPassword_bytes = null;
+		// password decryption
+		this.userEmail = mSharedPreferences.getString(
 				PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
- 	// decrypt
- 		String encryptedPassword_str = mSharedPreferences.getString(
+		// decrypt
+		String encryptedPassword_str = mSharedPreferences.getString(
 				PREF_EMAIL_SHIELD_GMAIL_PASSWORD, "");
- 		byte[] encryptedPassword_bytes = SecurePreferences.convertStirngToByteArray(encryptedPassword_str);
- 		//String mkey_str = mSharedPreferences.getString("M_KEY", "");
- 		//byte[] mkey_bytes = SecurePreferences.convertStirngToByteArray(mkey_str);
- 		byte[] keyStart = SecurePreferences.convertStirngToByteArray("password_key");
-		KeyGenerator kgen;
-		byte[] key  = null;
+		// byte[] encryptedPassword_bytes =
+		// SecurePreferences.convertStirngToByteArray(encryptedPassword_str);
+		if (!encryptedPassword_str.equalsIgnoreCase("")) {
+			encryptedPassword_bytes = Base64.decode(encryptedPassword_str,
+					Base64.DEFAULT);
+		}
+		// String mkey_str = mSharedPreferences.getString("M_KEY", "");
+		// byte[] mkey_bytes =
+		// SecurePreferences.convertStirngToByteArray(mkey_str);
+
 		try {
-			kgen = KeyGenerator.getInstance("AES");
-			SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-			sr.setSeed(keyStart);
-			kgen.init(128, sr);
-			SecretKey skey = kgen.generateKey();
-			key = skey.getEncoded();
-		} catch (NoSuchAlgorithmException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
- 		
- 		try {
- 			decryptedData = SecurePreferences.decrypt(key, encryptedPassword_bytes);
+			byte[] key = SecurePreferences.generateKey();
+			decryptedData = SecurePreferences.decrypt(key,
+					encryptedPassword_bytes);
+			this.password = SecurePreferences
+					.convertByteArrayToString(decryptedData);
+
 		} catch (Exception e) {
-			//failed to decrypt password.
-			Log.d("Email", "failed to decrypt password");
+			// failed to decrypt password.
+			Log.d("Email", "Email Sheeld" + "failed to decrypt password");
 		}
-		this.password = SecurePreferences.convertByteArrayToString(decryptedData);
 	}
+
 	private boolean isLoggedIn() {
 		// return twitter login status from Shared Preferences
 		return mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,
 				false);
 	}
+
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
