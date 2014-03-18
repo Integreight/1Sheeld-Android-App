@@ -41,7 +41,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	private Camera mCamera;
 	// the camera parameters
 	private Parameters parameters;
-	private String FLASH_MODE ;
+	private String FLASH_MODE;
 	private boolean isFrontCamRequest = false;
 
 	/** Called when the activity is first created. */
@@ -62,7 +62,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 			FLASH_MODE = flash_mode;
 			boolean front_cam_req = extras.getBoolean("Front_Request");
 			isFrontCamRequest = front_cam_req;
-			
+
 			sv = (SurfaceView) findViewById(R.id.camera_preview);
 
 			// Get a surface
@@ -98,6 +98,18 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 		}
 	}
 
+	/** Check if this device has front camera */
+	private boolean checkFrontCamera(Context context) {
+		if (context.getPackageManager().hasSystemFeature(
+				PackageManager.FEATURE_CAMERA_FRONT)) {
+			// this device has front camera
+			return true;
+		} else {
+			// no front camera on this device
+			return false;
+		}
+	}
+
 	public static Camera getCameraInstance() {
 		Camera c = null;
 		try {
@@ -112,8 +124,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 		// get camera parameters
 		parameters = mCamera.getParameters();
-		if (FLASH_MODE == null || FLASH_MODE.isEmpty())
-		{
+		if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
 			FLASH_MODE = "auto";
 		}
 		parameters.setFlashMode(FLASH_MODE);
@@ -156,8 +167,10 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				// remember close de FileOutput
 				try {
 					fo.close();
-		        sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-		        Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
+					sendBroadcast(new Intent(
+							Intent.ACTION_MEDIA_MOUNTED,
+							Uri.parse("file://"
+									+ Environment.getExternalStorageDirectory())));
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -169,7 +182,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				Toast.makeText(getApplicationContext(),
 						"Your Picture has been taken !", Toast.LENGTH_LONG)
 						.show();
-				
+
 				finish();
 
 			}
@@ -182,40 +195,51 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	public void surfaceCreated(SurfaceHolder holder) {
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw the preview.
-		if (isFrontCamRequest)
-		{
-			//set flash 0ff
+		if (isFrontCamRequest) {
+			// set flash 0ff
 			FLASH_MODE = "off";
 			// only for gingerbread and newer versions
-			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD)
-			{
-			   mCamera = openFrontFacingCameraGingerbread();
-			   try {
+			if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+				mCamera = openFrontFacingCameraGingerbread();
+				try {
 					mCamera.setPreviewDisplay(holder);
 
 				} catch (IOException exception) {
 					mCamera.release();
 					mCamera = null;
 					Toast.makeText(getApplicationContext(),
-							"API dosen't support front camera", Toast.LENGTH_LONG)
-							.show();
+							"API dosen't support front camera",
+							Toast.LENGTH_LONG).show();
 					finish();
 				}
+			} else {
+				if (checkFrontCamera(getApplicationContext())) {
+					mCamera = openFrontFacingCameraGingerbread();
+					try {
+						mCamera.setPreviewDisplay(holder);
+
+					} catch (IOException exception) {
+						mCamera.release();
+						mCamera = null;
+						Toast.makeText(getApplicationContext(),
+								"API dosen't support front camera",
+								Toast.LENGTH_LONG).show();
+						finish();
+					}
+				}/* else {
+					// API dosen't support front camera or no front camera
+					Log.d("Camera",
+							"API dosen't support front camera or no front camera");
+					Toast.makeText(
+							getApplicationContext(),
+							"API dosen't support front camera or no front camera",
+							Toast.LENGTH_LONG).show();
+
+					finish();
+				}*/
+
 			}
-			else 
-			{
-				// API dosen't support front camera
-				Log.d("Camer", "API dosen't support front camera");
-				Toast.makeText(getApplicationContext(),
-						"API dosen't support front camera", Toast.LENGTH_LONG)
-						.show();
-				
-				finish();
-				
-			}
-		}
-		else 
-		{
+		} else {
 			mCamera = getCameraInstance();
 			try {
 				mCamera.setPreviewDisplay(holder);
@@ -225,7 +249,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				mCamera = null;
 			}
 		}
-		
+
 	}
 
 	@Override
@@ -237,26 +261,27 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 		// unbind the camera from this object
 		mCamera = null;
 	}
-	
+
 	private Camera openFrontFacingCameraGingerbread() {
-	    int cameraCount = 0;
-	    Camera cam = null;
-	    Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-	    cameraCount = Camera.getNumberOfCameras();
-	    for (int camIdx = 0; camIdx<cameraCount; camIdx++) {
-	        Camera.getCameraInfo(camIdx, cameraInfo);
-	        if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-	            try {
-	                cam = Camera.open(camIdx);
-	            } catch (RuntimeException e) {
-	                Log.e("Camera", "Camera failed to open: " + e.getLocalizedMessage());
-	                Toast.makeText(getApplicationContext(),
+		int cameraCount = 0;
+		Camera cam = null;
+		Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+		cameraCount = Camera.getNumberOfCameras();
+		for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+			Camera.getCameraInfo(camIdx, cameraInfo);
+			if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+				try {
+					cam = Camera.open(camIdx);
+				} catch (RuntimeException e) {
+					Log.e("Camera",
+							"Camera failed to open: " + e.getLocalizedMessage());
+					Toast.makeText(getApplicationContext(),
 							"Front Camera failed to open", Toast.LENGTH_LONG)
 							.show();
-	            }
-	        }
-	    }
-	    return cam;
+				}
+			}
+		}
+		return cam;
 	}
 
 }
