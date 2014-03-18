@@ -90,7 +90,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	}
 
 	public void onDigital(int portNumber, int portData) {
-		System.out.println("parent");
 		CommitInstanceTotable();
 	}
 

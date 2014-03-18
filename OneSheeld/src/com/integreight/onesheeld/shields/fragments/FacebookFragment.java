@@ -40,9 +40,9 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	@Override
 	public void onStart() {
 		// TODO Auto-generated method stub
-		initializeFirmata();
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
+		initializeFirmata();
 		super.onStart();
 	}
 
@@ -151,6 +151,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 			buttonToLoggedIn();
 		} else {
 			buttonToLoggedOut();
+			loginToFacebook();
 		}
 	}
 
@@ -216,7 +217,6 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 	@Override
 	public void doOnServiceConnected() {
-		initializeFirmata();
 	}
 
 }
