@@ -5,10 +5,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -23,13 +21,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
@@ -59,7 +52,7 @@ public class SheeldsList extends Fragment {
 	private MenuItem goToShieldsOperationActionButton;
 
 	private static final String TAG = "ShieldsList";
-	private static final boolean D = true;
+	// private static final boolean D = true;
 
 	public static final int REQUEST_CONNECT_DEVICE = 1;
 	public static final int REQUEST_ENABLE_BT = 3;
@@ -78,22 +71,26 @@ public class SheeldsList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		isInflated = (v == null);
-		// if (v == null)
-		v = inflater.inflate(R.layout.app_sheelds_list, container, false);
-		// else {
-		// try {
-		// ((ViewGroup) v.getParent()).removeView(v);
-		// } catch (Exception e) {
-		// // TODO: handle exception
-		// }
-		// if (shieldsListView != null)
-		// shieldsListView.setSelection(1);
-		// }
+		if (v == null)
+			v = inflater.inflate(R.layout.app_sheelds_list, container, false);
+		else {
+			try {
+				((ViewGroup) v.getParent()).removeView(v);
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+			if (shieldsListView != null)
+				shieldsListView.setSelection(1);
+		}
 		return v;
 	}
 
 	@Override
 	public void onStop() {
+		InputMethodManager imm = (InputMethodManager) getActivity()
+				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(((OneShieldEditText) shieldsListView
+				.findViewById(R.id.searchArea)).getWindowToken(), 0);
 		super.onStop();
 	}
 
@@ -154,8 +151,9 @@ public class SheeldsList extends Fragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		setRetainInstance(true);
-		initView();
+		// setRetainInstance(true);
+		if (isInflated)
+			initView();
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -181,7 +179,7 @@ public class SheeldsList extends Fragment {
 		shieldsListView.setDrawingCacheEnabled(true);
 		final OneShieldEditText searchBox = (OneShieldEditText) shieldsListView
 				.findViewById(R.id.searchArea);
-		// searchBox.setAdapter(adapter);
+		searchBox.setAdapter(adapter);
 		searchBox.setDropDownHeight(0);
 		shieldsListView.findViewById(R.id.selectAll).setOnClickListener(
 				new View.OnClickListener() {
@@ -192,6 +190,7 @@ public class SheeldsList extends Fragment {
 							UIShield.getPosition(i + 1)
 									.setMainActivitySelection(true);
 						}
+						searchBox.setText("");
 						adapter.selectAll();
 					}
 				});
@@ -204,6 +203,7 @@ public class SheeldsList extends Fragment {
 							UIShield.getPosition(i + 1)
 									.setMainActivitySelection(false);
 						}
+						searchBox.setText("");
 						adapter.reset();
 					}
 				});

@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fffad7"
+    android:background="@color/arduino_conn_gray_bg"
     tools:context=".OneSheeldActivity" >
 
     <include
@@ -17,7 +17,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginBottom="45dp"
-        android:background="#fffad7"
         android:cacheColorHint="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="-6dp"
@@ -39,6 +38,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:background="@null"
+            android:contentDescription="@string/app_name"
             android:onClick="addMoreShields"
             android:scaleType="center"
             android:src="@drawable/shields_activity_add_more_shields" />

@@ -71,7 +71,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 			holder = (Holder) row.getTag();
 		}
 
-		UIShield shield = shieldList.get(position);
+		final UIShield shield = shieldList.get(position);
 		String name = shield.getName();
 		Integer iconId = shield.getSymbolId();
 		Integer imageId = shield.getItemBackgroundColor();
@@ -108,15 +108,13 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
-					UIShield.getPosition(position + 1)
-							.setMainActivitySelection(false);
+					shield.setMainActivitySelection(false);
 				} else {
 					tempHolder.selectionButton.setChecked(true);
 					tempHolder.selectionButton.setVisibility(View.VISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
-					UIShield.getPosition(position + 1)
-							.setMainActivitySelection(true);
+					shield.setMainActivitySelection(true);
 				}
 			}
 		});
@@ -124,7 +122,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	}
 
 	public void updateList(List<UIShield> shieldsList) {
-		if (shieldsList != null & shieldsList.size() > 0) {
+		if (shieldsList != null) {
 			this.shieldList = shieldsList;
 			// else
 			// shieldList = new ArrayList<UIShield>();
@@ -133,16 +131,15 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	}
 
 	public void selectAll() {
-		for (UIShield item : shieldList) {
-			item.setMainActivitySelection(true);
-		}
+		shieldList = Arrays.asList(UIShield.values());
 		notifyDataSetChanged();
 	}
 
 	public void reset() {
-		for (UIShield item : shieldList) {
-			item.setMainActivitySelection(false);
-		}
+		// for (UIShield item : shieldList) {
+		// item.setMainActivitySelection(false);
+		// }
+		shieldList = Arrays.asList(UIShield.values());
 		notifyDataSetChanged();
 	}
 
@@ -172,7 +169,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 				List<UIShield> filteredShields = new ArrayList<UIShield>();
 				if (arg0 != null) {
 					for (UIShield uiShield : UIShield.values()) {
-						if (uiShield.name().toLowerCase()
+						if (uiShield.getName().toLowerCase()
 								.startsWith(arg0.toString().toLowerCase())) {
 							filteredShields.add(uiShield);
 						}
