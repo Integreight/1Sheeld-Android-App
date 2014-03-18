@@ -27,8 +27,8 @@ public class GmailSinginPopup extends Dialog {
 	private String userName, password;
 	TextView invalide_username_tx, invalide_password_tx, auth_failed_tx;
 	private EmailEventHandler emailEventHandler;
-	private static String message_body = "This Email just for insure that your mail is valid ";
-	private static String message_reciption = "to@example.com";
+	private static String message_body = "This mail just to insure that the user Email is valid";
+	private static String message_reciption = "testingonesheeld@gmail.com";
 	private static String message_subject = "OneSheeld";
 	private ProgressBar loading;
 
