@@ -2,6 +2,7 @@ package com.integreight.onesheeld.adapters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Activity;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
@@ -27,12 +29,16 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	MainActivity activity;
 	public List<UIShield> shieldList;
 	LayoutInflater inflater;
+	ControllerParent<?> type = null;
+	private Hashtable<String, ControllerParent<?>> runningShields = new Hashtable<String, ControllerParent<?>>();
 
 	public ShieldsListAdapter(Activity a) {
 		this.activity = (MainActivity) a;
 		this.shieldList = Arrays.asList(UIShield.values());
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		runningShields = ((OneSheeldApplication) activity.getApplication())
+				.getRunningShields();
 	}
 
 	public int getCount() {
@@ -61,8 +67,8 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					.findViewById(R.id.shield_list_item_name_textview);
 			holder.icon = (ImageView) row
 					.findViewById(R.id.shield_list_item_symbol_imageview);
-			holder.selectionButton = (ToggleButton) row
-					.findViewById(R.id.shield_list_item_selection_toggle_button);
+			// holder.selectionButton = (ToggleButton) row
+			// .findViewById(R.id.shield_list_item_selection_toggle_button);
 			holder.selectionCircle = (ImageView) row
 					.findViewById(R.id.shield_list_item_selection_circle_imageview);
 			holder.blackUpperLayer = (ImageView) row
@@ -72,7 +78,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		} else {
 			holder = (Holder) row.getTag();
 		}
-
+		final Holder tempHolder = holder;
 		final UIShield shield = shieldList.get(position);
 		String name = shield.getName();
 		Integer iconId = shield.getSymbolId();
@@ -84,43 +90,32 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		row.setBackgroundColor(imageId);
 
 		if (shield.isMainActivitySelection()) {
-			holder.selectionButton.setChecked(true);
-			holder.selectionButton.setVisibility(View.VISIBLE);
-			holder.selectionCircle.setVisibility(View.VISIBLE);
-			holder.blackUpperLayer.setVisibility(View.INVISIBLE);
+			// holder.selectionButton.setChecked(true);
+			// tempHolder.selectionButton.setVisibility(View.VISIBLE);
+			tempHolder.selectionCircle.setVisibility(View.VISIBLE);
+			tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
 		} else {
-			holder.selectionButton.setChecked(false);
-			holder.selectionButton.setVisibility(View.INVISIBLE);
-			holder.selectionCircle.setVisibility(View.INVISIBLE);
-			holder.blackUpperLayer.setVisibility(View.VISIBLE);
+			// holder.selectionButton.setChecked(false);
+			// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
+			tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
+			tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
 		}
 		// RelativeLayout.LayoutParams head_params =
 		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
 		// head_params.setMargins(0, -20, 0, 0); //substitute parameters for
 		// left, top, right, bottom
 		// row.setLayoutParams(head_params);
-		final Holder tempHolder = holder;
 		holder.container.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
-
-				if (tempHolder.selectionButton.isChecked()) {
-					tempHolder.selectionButton.setChecked(false);
-					tempHolder.selectionButton.setVisibility(View.INVISIBLE);
-					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
-					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
-					shield.setMainActivitySelection(false);
-				} else {
-					tempHolder.selectionButton.setChecked(true);
-					tempHolder.selectionButton.setVisibility(View.VISIBLE);
-					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
-					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
-					shield.setMainActivitySelection(true);
-				}
+				shield.setMainActivitySelection(!shield
+						.isMainActivitySelection());
 				if (shield.isMainActivitySelection()
 						&& shield.getShieldType() != null) {
-					ControllerParent<?> type = null;
+					// tempHolder.selectionButton.setVisibility(View.VISIBLE);
+					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
+					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
 					try {
 						type = shield.getShieldType().newInstance();
 					} catch (java.lang.InstantiationException e) {
@@ -132,13 +127,12 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					}
 					type.setActivity(activity).setTag(shield.getName());
 				} else {
-					if (((OneSheeldApplication) activity.getApplication())
-							.getRunningShields().get(shield.getName()) != null) {
-						((OneSheeldApplication) activity.getApplication())
-								.getRunningShields().get(shield.getName())
-								.resetThis();
-						((OneSheeldApplication) activity.getApplication())
-								.getRunningShields().remove(shield.getName());
+					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
+					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
+					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
+					if (runningShields.get(shield.getName()) != null) {
+						runningShields.get(shield.getName()).resetThis();
+						runningShields.remove(shield.getName());
 					}
 				}
 			}
@@ -157,6 +151,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 
 	public void selectAll() {
 		shieldList = Arrays.asList(UIShield.values());
+		applyToControllerTable();
 		notifyDataSetChanged();
 	}
 
@@ -165,13 +160,37 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		// item.setMainActivitySelection(false);
 		// }
 		shieldList = Arrays.asList(UIShield.values());
+		applyToControllerTable();
 		notifyDataSetChanged();
+	}
+
+	private void applyToControllerTable() {
+		for (UIShield shield : shieldList) {
+			if (shield.isMainActivitySelection()
+					&& shield.getShieldType() != null) {
+				try {
+					type = shield.getShieldType().newInstance();
+				} catch (java.lang.InstantiationException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				type.setActivity(activity).setTag(shield.getName());
+			} else {
+				if (runningShields.get(shield.getName()) != null) {
+					runningShields.get(shield.getName()).resetThis();
+					runningShields.remove(shield.getName());
+				}
+			}
+		}
 	}
 
 	static class Holder {
 		TextView name;
 		ImageView icon;
-		ToggleButton selectionButton;
+		// ToggleButton selectionButton;
 		ImageView selectionCircle;
 		ImageView blackUpperLayer;
 		ViewGroup container;
