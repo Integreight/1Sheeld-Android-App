@@ -111,7 +111,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	public void loginToFacebook() {
 		Session session = Session.getActiveSession();
-		if (!session.isOpened() && !session.isClosed()) {
+		if (session != null && !session.isOpened()) {
 			session.openForRead(new Session.OpenRequest(fragment)
 					.setCallback(statusCallback));
 		} else {
@@ -289,14 +289,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			if (isFacebookLoggedInAlready())
 				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
 					publishStory(lastPost);
-
 		}
 
 	}
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
 
 	}
 }

@@ -13,6 +13,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.widget.Toast;
+
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
@@ -101,8 +103,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		getApplication().getAppFirmata().initUart();
-		CommitInstanceTotable();
 	}
 
 	public void tweet(final String tweet) {
@@ -242,7 +242,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			if (isTwitterLoggedInAlready())
 				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
 					tweet(lastTweet);
-					if(eventHandler!=null)eventHandler.onRecieveTweet(lastTweet);
+					if (eventHandler != null)
+						eventHandler.onRecieveTweet(lastTweet);
 				}
 		}
 	}

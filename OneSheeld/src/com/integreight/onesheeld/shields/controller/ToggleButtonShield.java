@@ -3,12 +3,15 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.utils.BitsUtils;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 	private int connectedPin;
 	private boolean isButtonOn;
+	private static final byte DATA_IN = 0x01;
 
 	public ToggleButtonShield() {
 		super();
@@ -30,12 +33,20 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		return isButtonOn;
 	}
 
+	private ShieldFrame sf;
+	private byte toggle = 0;
+
 	public void setButton(boolean isButtonOn) {
 		if (connectedPin != -1) {
 			this.isButtonOn = isButtonOn;
 			activity.getThisApplication().getAppFirmata()
 					.digitalWrite(connectedPin, isButtonOn);
 		}
+		toggle = isButtonOn ? BitsUtils.setBit(toggle, 1) : BitsUtils.resetBit(
+				toggle, 1);
+		sf = new ShieldFrame(UIShield.TOGGLEBUTTON_SHIELD.getId(), DATA_IN);
+		sf.addByteArgument(toggle);
+		getApplication().getAppFirmata().sendShieldFrame(sf);
 		CommitInstanceTotable();
 	}
 

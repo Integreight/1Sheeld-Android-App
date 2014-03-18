@@ -34,6 +34,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	public void onStart() {
 		getApplication().getRunningShields().get(getControllerTag())
 				.setHasForgroundView(true);
+		initializeFirmata();
 		super.onStart();
 
 	}
@@ -109,7 +110,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	};
 
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
 					new TwitterShield(getActivity(), getControllerTag()));
@@ -124,6 +125,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				getControllerTag())) != null
 				&& ((TwitterShield) getApplication().getRunningShields().get(
 						getControllerTag())).isTwitterLoggedInAlready()) {
+			userNameTextView.setVisibility(View.VISIBLE);
 			userNameTextView.setText("Logged in as: @"
 					+ ((TwitterShield) getApplication().getRunningShields()
 							.get(getControllerTag())).getUsername());
@@ -157,8 +159,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			buttonToLoggedIn();
 		} else {
 			buttonToLoggedOut();
-			((TwitterShield) getApplication().getRunningShields().get(
-					getControllerTag())).login();
 		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
@@ -172,6 +172,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 		case R.id.login_to_twitter_menuitem:
 			((TwitterShield) getApplication().getRunningShields().get(
 					getControllerTag())).login();
+			buttonToLoggedIn();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -214,7 +215,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	@Override
 	public void doOnServiceConnected() {
-		initializeFirmata(getApplication().getAppFirmata());
 	}
 
 }
