@@ -18,8 +18,10 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.utils.ControllerParent;
 
 public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	MainActivity activity;
@@ -115,6 +117,29 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
 					shield.setMainActivitySelection(true);
+				}
+				if (shield.isMainActivitySelection()
+						&& shield.getShieldType() != null) {
+					ControllerParent<?> type = null;
+					try {
+						type = shield.getShieldType().newInstance();
+					} catch (java.lang.InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					type.setActivity(activity).setTag(shield.getName());
+				} else {
+					if (((OneSheeldApplication) activity.getApplication())
+							.getRunningShields().get(shield.getName()) != null) {
+						((OneSheeldApplication) activity.getApplication())
+								.getRunningShields().get(shield.getName())
+								.resetThis();
+						((OneSheeldApplication) activity.getApplication())
+								.getRunningShields().remove(shield.getName());
+					}
 				}
 			}
 		});

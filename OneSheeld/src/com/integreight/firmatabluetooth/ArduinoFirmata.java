@@ -93,9 +93,20 @@ public class ArduinoFirmata {
 			dataHandlers.add(handler);
 	}
 
+	public void removeDataHandler(ArduinoFirmataDataHandler handler) {
+		if (handler != null && dataHandlers.contains(handler))
+			dataHandlers.remove(handler);
+	}
+
 	public void addShieldFrameHandler(ArduinoFirmataShieldFrameHandler handler) {
 		if (handler != null && !frameHandlers.contains(handler))
 			frameHandlers.add(handler);
+	}
+
+	public void removeShieldFrameHandler(
+			ArduinoFirmataShieldFrameHandler handler) {
+		if (handler != null && frameHandlers.contains(handler))
+			frameHandlers.remove(handler);
 	}
 
 	public void addVersionQueryHandler(ArduinoVersionQueryHandler handler) {

@@ -109,27 +109,28 @@ public class SheeldsList extends Fragment {
 		// ((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
 		// SlidingMenu.TOUCHMODE_NONE);
 		((MainActivity) getActivity()).disableMenu();
-		new Handler().post(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
-						.getApplication()).getRunningShields();
-				Enumeration<String> enumKey = controllers.keys();
-				while (enumKey.hasMoreElements()) {
-					String key = enumKey.nextElement();
-					controllers.get(key).resetThis();
-				}
-				ArduinoPin[] pins = ArduinoPin.values();
-				for (int i = 0; i < pins.length; i++) {
-					pins[i].connectedPins.clear();
-				}
-				((OneSheeldApplication) getActivity().getApplication())
-						.clearServiceEventHandlers();
-				ConnectingPinsView.getInstance().recycle();
-			}
-		});
+		// new Handler().post(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// // TODO Auto-generated method stub
+		// Hashtable<String, ControllerParent<?>> controllers =
+		// ((OneSheeldApplication) getActivity()
+		// .getApplication()).getRunningShields();
+		// Enumeration<String> enumKey = controllers.keys();
+		// while (enumKey.hasMoreElements()) {
+		// String key = enumKey.nextElement();
+		// controllers.get(key).resetThis();
+		// }
+		// ArduinoPin[] pins = ArduinoPin.values();
+		// for (int i = 0; i < pins.length; i++) {
+		// pins[i].connectedPins.clear();
+		// }
+		// ((OneSheeldApplication) getActivity().getApplication())
+		// .clearServiceEventHandlers();
+		// ConnectingPinsView.getInstance().recycle();
+		// }
+		// });
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
@@ -469,7 +470,7 @@ public class SheeldsList extends Fragment {
 		int i = 0;
 		OneSheeldApplication app = (OneSheeldApplication) getActivity()
 				.getApplication();
-		app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
+		// app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
 		for (UIShield shield : shieldsUIList) {
 			if (shield.isMainActivitySelection()
 					&& shield.getShieldType() != null) {
@@ -483,8 +484,9 @@ public class SheeldsList extends Fragment {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				type.setActivity((MainActivity) getActivity()).setTag(
-						shield.getName());
+				if (app.getRunningShields().get(shield.getName()) == null)
+					type.setActivity((MainActivity) getActivity()).setTag(
+							shield.getName());
 				i++;
 			}
 		}

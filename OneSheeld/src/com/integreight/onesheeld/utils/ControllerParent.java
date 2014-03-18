@@ -110,74 +110,75 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	private void setFirmataEventHandler() {
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
-				.addDataHandler(new ArduinoFirmataDataHandler() {
+				.addDataHandler(arduinoFirmataDataHandler);
+		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
+				.addShieldFrameHandler(arduinoFirmataShieldFrameHandler);
+	}
 
-					@Override
-					public void onSysex(final byte command, final byte[] data) {
+	public ArduinoFirmataDataHandler arduinoFirmataDataHandler = new ArduinoFirmataDataHandler() {
+
+		@Override
+		public void onSysex(final byte command, final byte[] data) {
+			actionHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (isALive)
 						actionHandler.post(new Runnable() {
 
 							@Override
 							public void run() {
-								if (isALive)
-									actionHandler.post(new Runnable() {
-
-										@Override
-										public void run() {
-											((T) ControllerParent.this)
-													.onSysex(command, data);
-										}
-									});
+								((T) ControllerParent.this).onSysex(command,
+										data);
 							}
 						});
-					}
+				}
+			});
+		}
+
+		@Override
+		public void onDigital(final int portNumber, final int portData) {
+			if (isALive)
+				actionHandler.post(new Runnable() {
 
 					@Override
-					public void onDigital(final int portNumber,
-							final int portData) {
-						if (isALive)
-							actionHandler.post(new Runnable() {
-
-								@Override
-								public void run() {
-									if (hasConnectedPins)
-										((T) ControllerParent.this).onDigital(
-												portNumber, portData);
-								}
-							});
-					}
-
-					@Override
-					public void onAnalog(final int pin, final int value) {
-						if (isALive)
-							actionHandler.post(new Runnable() {
-
-								@Override
-								public void run() {
-									if (hasConnectedPins)
-										((T) ControllerParent.this).onAnalog(
-												pin, value);
-								}
-							});
+					public void run() {
+						if (hasConnectedPins)
+							((T) ControllerParent.this).onDigital(portNumber,
+									portData);
 					}
 				});
-		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
-				.addShieldFrameHandler(new ArduinoFirmataShieldFrameHandler() {
+		}
+
+		@Override
+		public void onAnalog(final int pin, final int value) {
+			if (isALive)
+				actionHandler.post(new Runnable() {
 
 					@Override
-					public void onNewShieldFrameReceived(final ShieldFrame frame) {
-						if (isALive)
-							actionHandler.post(new Runnable() {
-
-								@Override
-								public void run() {
-									((T) ControllerParent.this)
-											.onNewShieldFrameReceived(frame);
-									CommitInstanceTotable();
-								}
-							});
+					public void run() {
+						if (hasConnectedPins)
+							((T) ControllerParent.this).onAnalog(pin, value);
 					}
 				});
-	}
+		}
+	};
+	public ArduinoFirmataShieldFrameHandler arduinoFirmataShieldFrameHandler = new ArduinoFirmataShieldFrameHandler() {
+
+		@Override
+		public void onNewShieldFrameReceived(final ShieldFrame frame) {
+			if (isALive)
+				actionHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						((T) ControllerParent.this)
+								.onNewShieldFrameReceived(frame);
+						CommitInstanceTotable();
+					}
+				});
+		}
+	};
 
 	public OneSheeldApplication getApplication() {
 		return activity.getThisApplication();
@@ -210,6 +211,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public void resetThis() {
 		isALive = false;
 		((T) this).reset();
+		getApplication().getAppFirmata().removeDataHandler(
+				arduinoFirmataDataHandler);
+		getApplication().getAppFirmata().removeShieldFrameHandler(
+				arduinoFirmataShieldFrameHandler);
 	}
 
 	public abstract void reset();
