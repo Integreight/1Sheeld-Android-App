@@ -87,10 +87,19 @@ public class SheeldsList extends Fragment {
 
 	@Override
 	public void onStop() {
-		InputMethodManager imm = (InputMethodManager) getActivity()
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(((OneShieldEditText) shieldsListView
-				.findViewById(R.id.searchArea)).getWindowToken(), 0);
+		new Handler().post(new Runnable() {
+
+			@Override
+			public void run() {
+				InputMethodManager imm = (InputMethodManager) getActivity()
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(
+						((OneShieldEditText) shieldsListView
+								.findViewById(R.id.searchArea))
+								.getWindowToken(), 0);
+
+			}
+		});
 		super.onStop();
 	}
 
@@ -110,7 +119,7 @@ public class SheeldsList extends Fragment {
 				Enumeration<String> enumKey = controllers.keys();
 				while (enumKey.hasMoreElements()) {
 					String key = enumKey.nextElement();
-					controllers.get(key).reset();
+					controllers.get(key).resetThis();
 				}
 				ArduinoPin[] pins = ArduinoPin.values();
 				for (int i = 0; i < pins.length; i++) {

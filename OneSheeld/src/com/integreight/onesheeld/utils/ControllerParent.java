@@ -23,6 +23,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	private boolean hasForgroundView = false;
 	public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>();
 	public int requiredPinsIndex = -1;
+	private boolean isALive = false;
 	public String[][] requiredPinsNames = new String[][] {
 			{ "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
 					"A0", "A1", "A2", "A3", "A4", "A5" },
@@ -117,8 +118,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 							@Override
 							public void run() {
-								((T) ControllerParent.this).onSysex(command,
-										data);
+								if (isALive)
+									actionHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											((T) ControllerParent.this)
+													.onSysex(command, data);
+										}
+									});
 							}
 						});
 					}
@@ -126,28 +134,30 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 					@Override
 					public void onDigital(final int portNumber,
 							final int portData) {
-						actionHandler.post(new Runnable() {
+						if (isALive)
+							actionHandler.post(new Runnable() {
 
-							@Override
-							public void run() {
-								if (hasConnectedPins)
-									((T) ControllerParent.this).onDigital(
-											portNumber, portData);
-							}
-						});
+								@Override
+								public void run() {
+									if (hasConnectedPins)
+										((T) ControllerParent.this).onDigital(
+												portNumber, portData);
+								}
+							});
 					}
 
 					@Override
 					public void onAnalog(final int pin, final int value) {
-						actionHandler.post(new Runnable() {
+						if (isALive)
+							actionHandler.post(new Runnable() {
 
-							@Override
-							public void run() {
-								if (hasConnectedPins)
-									((T) ControllerParent.this).onAnalog(pin,
-											value);
-							}
-						});
+								@Override
+								public void run() {
+									if (hasConnectedPins)
+										((T) ControllerParent.this).onAnalog(
+												pin, value);
+								}
+							});
 					}
 				});
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
@@ -155,15 +165,16 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 					@Override
 					public void onNewShieldFrameReceived(final ShieldFrame frame) {
-						actionHandler.post(new Runnable() {
+						if (isALive)
+							actionHandler.post(new Runnable() {
 
-							@Override
-							public void run() {
-								((T) ControllerParent.this)
-										.onNewShieldFrameReceived(frame);
-								CommitInstanceTotable();
-							}
-						});
+								@Override
+								public void run() {
+									((T) ControllerParent.this)
+											.onNewShieldFrameReceived(frame);
+									CommitInstanceTotable();
+								}
+							});
 					}
 				});
 	}
@@ -178,6 +189,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	public ControllerParent<T> setTag(String tag) {
 		this.tag = tag;
+		isALive = true;
 		getApplication().getRunningShields().put(tag, this);
 		getApplication().getAppFirmata().initUart();
 		return this;
@@ -193,6 +205,11 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	public void setHasConnectedPins(boolean hasConnectedPins) {
 		this.hasConnectedPins = hasConnectedPins;
+	}
+
+	public void resetThis() {
+		isALive = false;
+		((T) this).reset();
 	}
 
 	public abstract void reset();
