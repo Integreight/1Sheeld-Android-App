@@ -19,7 +19,6 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 
 public class GMailSender extends javax.mail.Authenticator {
 	private String mailhost = "smtp.gmail.com";

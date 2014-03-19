@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +20,7 @@ import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandle
 public class GmailSinginPopup extends Dialog {
 	private AlertDialog.Builder builder;
 	private Activity activity;
-	private LayoutInflater inflater;
+	// private LayoutInflater inflater;
 	EditText userName_edt, password_edt;
 	Button login_bt, cancel_bt;
 	private String userName, password;
@@ -44,7 +43,7 @@ public class GmailSinginPopup extends Dialog {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gmail_singin_dialog_layout);
-		inflater = activity.getLayoutInflater();
+		// inflater = activity.getLayoutInflater();
 		builder = new AlertDialog.Builder(activity);
 		// Set other dialog properties
 		auth_failed_tx = (TextView) findViewById(R.id.gmail_signin_dialog_auth_failed_tx);

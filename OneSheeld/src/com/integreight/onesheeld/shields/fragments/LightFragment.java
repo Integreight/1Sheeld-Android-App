@@ -12,7 +12,6 @@ import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.LightShield.LightEventHandler;
-import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class LightFragment extends ShieldFragmentParent<LightFragment> {
@@ -53,10 +52,8 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Light Sheeld::OnActivityCreated()", "");
 
-		light_float = (TextView) getView().findViewById(
-				R.id.light_float_txt);
-		light_byte = (TextView) getView().findViewById(
-				R.id.light_byte_txt);
+		light_float = (TextView) getView().findViewById(R.id.light_float_txt);
+		light_byte = (TextView) getView().findViewById(R.id.light_byte_txt);
 
 		devicehasSensor = (TextView) getView().findViewById(
 				R.id.device_not_has_sensor_text);

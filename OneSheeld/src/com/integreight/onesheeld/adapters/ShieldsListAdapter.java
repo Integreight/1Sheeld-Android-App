@@ -11,13 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -203,6 +200,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 
 			@Override
 			protected void publishResults(CharSequence arg0, FilterResults arg1) {
+				@SuppressWarnings("unchecked")
 				List<UIShield> values = (List<UIShield>) arg1.values;
 				updateList(values);
 			}

@@ -2,23 +2,20 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.util.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.shields.controller.utils.SensorUtil;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 		implements SensorEventListener {
-	public static final byte GYROSCOPE_VALUE=0x01;
+	public static final byte GYROSCOPE_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mGyroscope;
 	private GyroscopeEventHandler eventHandler;
@@ -27,9 +24,8 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
-	float oldInput_x = 0,oldInput_y = 0, oldInput_z = 0 ;
-	boolean isFirstTime=true;
-
+	float oldInput_x = 0, oldInput_y = 0, oldInput_z = 0;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -77,9 +73,13 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (flag&&(oldInput_x!=event.values[0]||oldInput_y!=event.values[1]||oldInput_z!=event.values[2]||isFirstTime)) {
+		if (flag
+				&& (oldInput_x != event.values[0]
+						|| oldInput_y != event.values[1]
+						|| oldInput_z != event.values[2] || isFirstTime)) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.GYROSCOPE_SHIELD.getId(), GYROSCOPE_VALUE);
+			frame = new ShieldFrame(UIShield.GYROSCOPE_SHIELD.getId(),
+					GYROSCOPE_VALUE);
 			isFirstTime = false;
 			oldInput_x = event.values[0];
 			oldInput_y = event.values[1];

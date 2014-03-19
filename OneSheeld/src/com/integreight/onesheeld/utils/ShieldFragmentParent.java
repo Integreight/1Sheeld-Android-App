@@ -1,21 +1,23 @@
 package com.integreight.onesheeld.utils;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 
 @SuppressWarnings("unchecked")
 public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		extends Fragment {
 	private String controllerTag = "";
+	public boolean hasSettings = false;
 
 	public MainActivity getAppActivity() {
 		return (MainActivity) super.getActivity();
@@ -50,6 +52,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 					});
 		} else
 			((T) ShieldFragmentParent.this).doOnServiceConnected();
+		getActivity().findViewById(R.id.settingsFixedHandler).setVisibility(
+				hasSettings ? View.VISIBLE : View.GONE);
 		super.onStart();
 	}
 

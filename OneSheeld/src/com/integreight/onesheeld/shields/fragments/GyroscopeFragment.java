@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield.GyroscopeEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;

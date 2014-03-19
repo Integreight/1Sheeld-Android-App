@@ -15,8 +15,6 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
-import com.integreight.onesheeld.shields.controller.SkypeShield;
-import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield.FoursquareEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.ForsquareUtil;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
@@ -26,9 +24,8 @@ public class FoursquareFragment extends
 
 	TextView userName;
 	TextView lastCheckin;
-	Button login , logout;
+	Button login, logout;
 	private static SharedPreferences mSharedPreferences;
-
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -43,21 +40,21 @@ public class FoursquareFragment extends
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mSharedPreferences = getApplication()
-				.getSharedPreferences("com.integreight.onesheeld",
-						Context.MODE_PRIVATE);
-		login = (Button) getView().findViewById(R.id.foursquare_shiled_login_bt);
-		logout = (Button) getView().findViewById(R.id.foursquare_shiled_logout_bt);
+		mSharedPreferences = getApplication().getSharedPreferences(
+				"com.integreight.onesheeld", Context.MODE_PRIVATE);
+		login = (Button) getView()
+				.findViewById(R.id.foursquare_shiled_login_bt);
+		logout = (Button) getView().findViewById(
+				R.id.foursquare_shiled_logout_bt);
 		userName = (TextView) getView().findViewById(
 				R.id.foursquare_shield_username_textview);
 		lastCheckin = (TextView) getView().findViewById(
 				R.id.foursquare_shield_last_checkin_textview);
-		
+
 		Log.d("Foursquare Sheeld::OnActivityCreated()", "");
-		// if user logged in set data 
+		// if user logged in set data
 		if (((FoursquareShield) getApplication().getRunningShields().get(
-				getControllerTag())).isFoursquareLoggedInAlready() )
-		{
+				getControllerTag())).isFoursquareLoggedInAlready()) {
 			userName.setVisibility(View.VISIBLE);
 			logout.setVisibility(View.VISIBLE);
 			login.setVisibility(View.INVISIBLE);
@@ -66,17 +63,15 @@ public class FoursquareFragment extends
 					"PREF_FourSquare_UserName", "");
 			String lastcheck = mSharedPreferences.getString(
 					"PREF_FourSquare_LastPlace", "");
-			
+
 			userName.setText(name);
 			lastCheckin.setText(lastcheck);
-		}
-		else 
-		{
+		} else {
 			login.setVisibility(View.VISIBLE);
 			logout.setVisibility(View.INVISIBLE);
 		}
 		login.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				// start login to foursquare
@@ -85,7 +80,7 @@ public class FoursquareFragment extends
 			}
 		});
 		logout.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				login.setVisibility(View.VISIBLE);
@@ -169,8 +164,8 @@ public class FoursquareFragment extends
 	public void doOnServiceConnected() {
 		initializeFirmata(getApplication().getAppFirmata());
 	}
-	private void removeFoursquareData()
-	{
+
+	private void removeFoursquareData() {
 		Editor e = mSharedPreferences.edit();
 		e.remove("PREF_FourSquare_UserName");
 		e.remove("PREF_FourSquare_LastPlace");

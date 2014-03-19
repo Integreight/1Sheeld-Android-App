@@ -1,13 +1,10 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Map.Entry;
 
 import android.app.Activity;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.utils.BitsUtils;
@@ -72,17 +69,6 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 					.digitalRead(entry.getValue().microHardwarePin));
 		}
 		CommitInstanceTotable();
-	}
-
-	private synchronized String getSegment(int pinId) {
-		for (Entry<String, ArduinoPin> entry : matchedShieldPins.entrySet()) {
-
-			// THIS IS THE IMPORTANT LINE
-			if (entry.getValue().microHardwarePin == pinId) {
-				return entry.getKey();
-			}
-		}
-		return null;
 	}
 
 	@Override

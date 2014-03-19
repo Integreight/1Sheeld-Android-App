@@ -3,7 +3,6 @@ package com.integreight.onesheeld.appFragments;
 import java.io.FileDescriptor;
 import java.io.IOException;
 
-import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.media.MediaPlayer;
@@ -18,7 +17,6 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -106,6 +104,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 		// ConnectingPinsView.getInstance(), "", false, false);
 		final MultiDirectionSlidingDrawer pinsSlidingView = (MultiDirectionSlidingDrawer) getView()
 				.findViewById(R.id.pinsViewSlidingView);
+		final MultiDirectionSlidingDrawer settingsSlidingView = (MultiDirectionSlidingDrawer) getView()
+				.findViewById(R.id.settingsSlidingView);
 		getView().findViewById(R.id.pinsFixedHandler).setOnClickListener(
 				new View.OnClickListener() {
 
@@ -119,6 +119,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onDrawerOpened() {
+						if (settingsSlidingView.isOpened())
+							settingsSlidingView.animateOpen();
 						myActivity.disableMenu();
 					}
 				});
@@ -127,7 +129,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onDrawerClosed() {
-						myActivity.enableMenu();
+						if (!settingsSlidingView.isOpened())
+							myActivity.enableMenu();
 					}
 				});
 		pinsSlidingView.setOnTouchListener(new View.OnTouchListener() {
@@ -136,6 +139,42 @@ public class ShieldsOperations extends BaseContainerFragment {
 			public boolean onTouch(View v, MotionEvent event) {
 				// TODO Auto-generated method stub
 				return pinsSlidingView.isOpened();
+			}
+		});
+		getView().findViewById(R.id.settingsFixedHandler).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						settingsSlidingView.animateOpen();
+					}
+				});
+		settingsSlidingView
+				.setOnDrawerOpenListener(new MultiDirectionSlidingDrawer.OnDrawerOpenListener() {
+
+					@Override
+					public void onDrawerOpened() {
+						if (pinsSlidingView.isOpened()) {
+							pinsSlidingView.animateOpen();
+						}
+						myActivity.disableMenu();
+					}
+				});
+		settingsSlidingView
+				.setOnDrawerCloseListener(new MultiDirectionSlidingDrawer.OnDrawerCloseListener() {
+
+					@Override
+					public void onDrawerClosed() {
+						if (!pinsSlidingView.isOpened())
+							myActivity.enableMenu();
+					}
+				});
+		settingsSlidingView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				// TODO Auto-generated method stub
+				return settingsSlidingView.isOpened();
 			}
 		});
 		// if (savedInstanceState != null)

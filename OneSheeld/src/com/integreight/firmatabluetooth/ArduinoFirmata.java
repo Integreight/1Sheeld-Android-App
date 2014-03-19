@@ -54,7 +54,7 @@ public class ArduinoFirmata {
 	private final byte SYSTEM_RESET = (byte) 0xFF;
 	private final byte START_SYSEX = (byte) 0xF0;
 	private final byte END_SYSEX = (byte) 0xF7;
-	private final byte IS_ALIVE = (byte) 0x62;
+	// private final byte IS_ALIVE = (byte) 0x62;
 	private final byte FIRMWARE_VERSION_QUERY = (byte) 0x63;
 	private final byte MUTE_FIRMATA = (byte) 0x64;
 	private final byte UART_COMMAND = (byte) 0x65;

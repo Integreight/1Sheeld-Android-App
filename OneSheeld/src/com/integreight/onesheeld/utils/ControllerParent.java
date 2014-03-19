@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.utils;
 
+import java.util.Arrays;
 import java.util.Hashtable;
 
 import android.app.Activity;
@@ -65,7 +66,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				getActivity().findViewById(R.id.pinsFixedHandler)
 						.setVisibility(
 								requiredPinsIndex != -1 ? View.VISIBLE
-										: View.INVISIBLE);
+										: View.GONE);
 		}
 
 		CommitInstanceTotable();
@@ -210,7 +211,19 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	}
 
 	public void resetThis() {
+		if (matchedShieldPins != null)
+			matchedShieldPins.clear();
 		isALive = false;
+		if (shieldPins != null && shieldPins.length > 0) {
+			for (ArduinoPin pin : Arrays.asList(ArduinoPin.values())) {
+				for (int i = 0; i < shieldPins.length; i++) {
+					if (pin.connectedPins.size() == 0)
+						break;
+					pin.connectedPins.remove(((T) this).getClass().getName()
+							+ shieldPins[i]);
+				}
+			}
+		}
 		((T) this).reset();
 		getApplication().getAppFirmata().removeDataHandler(
 				arduinoFirmataDataHandler);

@@ -16,7 +16,6 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.shields.fragments.CameraFragment;
@@ -162,7 +161,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.PHONE_SHIELD,
 					new PhoneFragment());
 		case EMAIL_SHIELD:
-			return addToCreatedListAndReturn(UIShield.EMAIL_SHIELD, new EmailFragment());
+			return addToCreatedListAndReturn(UIShield.EMAIL_SHIELD,
+					new EmailFragment());
 
 		default:
 			return new EmptyShieldFragment();

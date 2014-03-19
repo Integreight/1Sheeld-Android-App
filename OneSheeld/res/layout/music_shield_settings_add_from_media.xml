@@ -21,24 +21,14 @@
         android:padding="10dp" >
 
         <com.integreight.onesheeld.utils.OneShieldButton
-            android:id="@+id/addFromSDcard"
+            android:id="@+id/addFromMedia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
+            android:padding="10dp"
             android:text="Add"
             android:textSize="15sp"
             android:textStyle="bold" />
 
-        <com.integreight.onesheeld.utils.OneShieldButton
-            android:id="@+id/removeFromPlayList"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
-            android:text="Remove"
-            android:textSize="15sp"
-            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>

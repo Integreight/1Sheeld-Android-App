@@ -1,11 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-
 import android.app.Activity;
-import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.media.MediaPlayer;
 
 import com.integreight.firmatabluetooth.ShieldFrame;

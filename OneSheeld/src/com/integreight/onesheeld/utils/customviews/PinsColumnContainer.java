@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import android.R.bool;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;

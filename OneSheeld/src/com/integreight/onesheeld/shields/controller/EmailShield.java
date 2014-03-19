@@ -1,11 +1,5 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;

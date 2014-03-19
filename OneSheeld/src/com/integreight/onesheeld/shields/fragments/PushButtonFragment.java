@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,7 +13,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
-import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;

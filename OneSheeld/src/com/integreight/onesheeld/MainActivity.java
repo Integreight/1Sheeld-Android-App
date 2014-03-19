@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -120,7 +119,10 @@ public class MainActivity extends FragmentActivity {
 	public void onBackPressed() {
 		resetSlidingMenu();
 		MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
-		if (pinsView == null || (pinsView != null && !pinsView.isOpened())) {
+		MultiDirectionSlidingDrawer settingsView = (MultiDirectionSlidingDrawer) findViewById(R.id.settingsSlidingView);
+		if ((pinsView == null || (pinsView != null && !pinsView.isOpened()))
+				&& (settingsView == null || (settingsView != null && !settingsView
+						.isOpened()))) {
 			if (appSlidingMenu.isOpen()) {
 				appSlidingMenu.closePane();
 			} else {
@@ -130,8 +132,12 @@ public class MainActivity extends FragmentActivity {
 				} else
 					moveTaskToBack(true);
 			}
-		} else
-			pinsView.animateOpen();
+		} else {
+			if (pinsView.isOpened())
+				pinsView.animateOpen();
+			else if (settingsView.isOpened())
+				settingsView.animateOpen();
+		}
 	}
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,

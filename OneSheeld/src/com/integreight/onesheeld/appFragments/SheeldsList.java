@@ -1,8 +1,6 @@
 package com.integreight.onesheeld.appFragments;
 
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 
 import android.app.ActivityManager;
@@ -32,13 +30,11 @@ import com.integreight.onesheeld.OneSheeldVersionInstallerPopup;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
-import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.ListViewReversed;
 import com.integreight.onesheeld.utils.OneShieldEditText;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 
 public class SheeldsList extends Fragment {
 	View v;

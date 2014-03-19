@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -12,7 +11,6 @@ import android.widget.Toast;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
-import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield.ProximityEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 

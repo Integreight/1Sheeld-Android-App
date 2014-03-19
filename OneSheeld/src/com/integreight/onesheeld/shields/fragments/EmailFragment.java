@@ -1,12 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -193,8 +186,8 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			byte[] encryptedPassword = SecurePreferences.encrypt(key, b);
 			// String encryptedPassword_str =
 			// SecurePreferences.convertByteArrayToString(encryptedPassword);
-			String encryptedPassword_str = Base64.encodeToString(encryptedPassword,
-					Base64.DEFAULT);
+			String encryptedPassword_str = Base64.encodeToString(
+					encryptedPassword, Base64.DEFAULT);
 			editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD,
 					encryptedPassword_str);
 			// String key_str = SecurePreferences.convertByteArrayToString(key);
@@ -206,7 +199,8 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			// Commit the edits!
 			editor.commit();
 			((EmailShield) getApplication().getRunningShields().get(
-					getControllerTag())).setEmailEventHandler(emailEventHandler);
+					getControllerTag()))
+					.setEmailEventHandler(emailEventHandler);
 			login_bt.setVisibility(View.INVISIBLE);
 			logout_bt.setVisibility(View.VISIBLE);
 			userName.setVisibility(View.VISIBLE);
@@ -215,7 +209,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		} catch (Exception e) {
 			Log.d("Email", "EmaiFragment:: filed in password encryption");
 		}
-		
+
 	}
 
 	private void logoutGmailAccount() {

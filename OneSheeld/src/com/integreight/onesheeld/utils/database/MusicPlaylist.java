@@ -64,7 +64,7 @@ public class MusicPlaylist {
 				KEY_ID + "='" + id + "'", null);
 	}
 
-	public ArrayList<PlaylistItem> getTopicsList() {
+	public ArrayList<PlaylistItem> getPlaylist() {
 		ArrayList<PlaylistItem> topics = new ArrayList<PlaylistItem>();
 		String[] columns = new String[] { KEY_ID, PATH, NAME };
 		Cursor cursor = sqLiteDatabase.query(MYDATABASE_TABLE, columns, null,

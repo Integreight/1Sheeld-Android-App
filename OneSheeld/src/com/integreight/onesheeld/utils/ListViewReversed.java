@@ -1,16 +1,14 @@
 package com.integreight.onesheeld.utils;
 
-import com.integreight.onesheeld.R;
-
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+
+import com.integreight.onesheeld.R;
 
 public class ListViewReversed extends ListView {
 

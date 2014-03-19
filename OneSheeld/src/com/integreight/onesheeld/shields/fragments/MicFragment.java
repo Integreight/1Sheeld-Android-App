@@ -1,7 +1,6 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,7 +67,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		backLayout = (RelativeLayout) getView().findViewById(R.id.backLayout);
 		micLayout.bringToFront();
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-		//params.gravity = Gravity.BOTTOM;
+		// params.gravity = Gravity.BOTTOM;
 		start_mic_bt = (Button) getActivity().findViewById(R.id.start_mic);
 		stop_mic_bt = (Button) getActivity().findViewById(R.id.stop_mic);
 
@@ -127,7 +126,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 				getControllerTag())).doOnResume();
 		super.onResume();
 	}
-	
+
 	public void startAnimation(int y) {
 		tAnimation = new TranslateAnimation(0, 0, boxheigh, -y);
 		tAnimation.setDuration(5000);

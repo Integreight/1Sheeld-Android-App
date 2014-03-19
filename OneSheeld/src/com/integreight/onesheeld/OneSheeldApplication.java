@@ -5,13 +5,11 @@ import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
