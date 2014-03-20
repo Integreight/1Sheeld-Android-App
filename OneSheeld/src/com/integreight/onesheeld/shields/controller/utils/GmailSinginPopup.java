@@ -193,4 +193,24 @@ public class GmailSinginPopup extends Dialog {
 
 	}
 
+	public static void sendReportMail(String sender_email,
+			String reciption_email, String title, String body, String password)
+
+	{
+		int result;
+		GMailSender sender = new GMailSender(sender_email, password);
+		result = sender.sendMail(title, body, sender_email, reciption_email);
+		switch (result) {
+		case 0:
+			Log.d("Crash Report", "Mail sent");
+			break;
+		case 1:
+			Log.d("Crash Report", "Auth faield");
+			break;
+		case 2:
+			Log.d("Crash Report", "Mail not sent yet, Try again");
+		default:
+			break;
+		}
+	}
 }
