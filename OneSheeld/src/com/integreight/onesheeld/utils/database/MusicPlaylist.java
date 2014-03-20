@@ -40,7 +40,8 @@ public class MusicPlaylist {
 	public MusicPlaylist openToWrite() throws android.database.SQLException {
 		sqLiteHelper = new SQLiteHelper(context, MYDATABASE_NAME, null,
 				MYDATABASE_VERSION);
-		sqLiteDatabase = sqLiteHelper.getWritableDatabase();
+		if (sqLiteHelper != null)
+			sqLiteDatabase = sqLiteHelper.getWritableDatabase();
 		return this;
 	}
 

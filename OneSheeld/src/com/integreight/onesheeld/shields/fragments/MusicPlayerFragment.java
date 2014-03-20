@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.MusicShield;
 import com.integreight.onesheeld.shields.fragments.settings.MusicShieldSettings;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
@@ -47,7 +48,10 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
+		((MusicShield) getApplication().getRunningShields().get(
+				getControllerTag())).togglePlayOrPause();
+		((MusicShield) getApplication().getRunningShields().get(
+				getControllerTag())).seekTo(50);
 		super.onActivityCreated(savedInstanceState);
 	}
 }
