@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Handler;
-import com.integreight.onesheeld.Log;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -12,12 +12,15 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.controller.utils.GSMLocationupdates;
+import com.integreight.onesheeld.shields.controller.utils.GSMLocationupdates.SendFrameHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GpsShield extends ControllerParent<GpsShield> implements
 		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener {
+		GooglePlayServicesClient.OnConnectionFailedListener, SendFrameHandler {
 	public static final byte GPS_VALUE = 0x01;
 	private GpsEventHandler eventHandler;
 	private LocationRequest mLocationRequest;
@@ -94,6 +97,11 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 							.onLangChanged(lastLocation.getLongitude() + "");
 					eventHandler.onLatChanged(lastLocation.getLatitude() + "");
 				}
+			} else {
+ 				GSMLocationupdates gsmLocationupdates = new GSMLocationupdates(
+						getApplication().getApplicationContext());
+				gsmLocationupdates.updateLocation();
+
 			}
 		}
 
@@ -128,6 +136,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		void onLangChanged(String lang);
 
 		void onLatChanged(String lat);
+
 	}
 
 	@Override
@@ -180,6 +189,19 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		frame.addFloatArgument(lang);
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
 
+	}
+
+	@Override
+	public void sendFrameHandler(Location location) {
+		if (location != null) {
+			double latitude = location.getLatitude();
+			double longitude = location.getLongitude();
+			if (eventHandler != null) {
+				eventHandler.onLangChanged(latitude + "");
+				eventHandler.onLatChanged(longitude + "");
+			}
+			sendFrame(location);
+		}
 	}
 
 }
