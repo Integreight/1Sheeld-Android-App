@@ -161,7 +161,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		notifyDataSetChanged();
 	}
 
-	private void applyToControllerTable() {
+	public void applyToControllerTable() {
 		for (UIShield shield : shieldList) {
 			if (shield.isMainActivitySelection()
 					&& shield.getShieldType() != null) {

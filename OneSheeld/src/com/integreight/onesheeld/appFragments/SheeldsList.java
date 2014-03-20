@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.appFragments;
 
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.List;
 
 import android.app.ActivityManager;
@@ -310,6 +312,8 @@ public class SheeldsList extends Fragment {
 			if (isOneSheeldServiceRunning()) {
 				arduinoConnected = true;
 				setColoredStrips();
+				if (adapter != null)
+					adapter.applyToControllerTable();
 			}
 			// if (getActivity() != null)
 			// ((MainActivity) getActivity())
@@ -345,6 +349,13 @@ public class SheeldsList extends Fragment {
 						ft.commitAllowingStateLoss();
 					}
 				}
+			}
+			Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
+					.getApplication()).getRunningShields();
+			Enumeration<String> enumKey = controllers.keys();
+			while (enumKey.hasMoreElements()) {
+				String key = enumKey.nextElement();
+				controllers.get(key).resetThis();
 			}
 		}
 	};

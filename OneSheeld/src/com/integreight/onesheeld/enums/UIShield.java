@@ -17,6 +17,7 @@ import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.MicShield;
+import com.integreight.onesheeld.shields.controller.MusicShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
 import com.integreight.onesheeld.shields.controller.PhoneShield;
@@ -78,7 +79,7 @@ public enum UIShield {
 			false, SmsShield.class), MUSICPLAYER_SHIELD((byte) 0x1D,
 			"Music Player", 0xffb950e9,
 			R.drawable.shields_list_musicplayer_symbol, false,
-			EmptyShield.class), GYROSCOPE_SHIELD((byte) 0x0E, "Gyroscope",
+			MusicShield.class), GYROSCOPE_SHIELD((byte) 0x0E, "Gyroscope",
 			0xff4c84e9, R.drawable.shields_list_gyroscope_symbol, false,
 			GyroscopeShield.class), FLASHLIGHT_SHIELD((byte) 0x05,
 			"Flashlight", 0xff0b4c8d,
