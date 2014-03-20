@@ -51,7 +51,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 				Context.SENSOR_SERVICE);
 		mMagnetometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -87,7 +87,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 			frame.addFloatArgument(event.values[2]);
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
+			if(eventHandler != null)
 			eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
@@ -109,6 +109,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 				mSensorManager.registerListener(this, mMagnetometer,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
+				if(eventHandler != null)
 				eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
@@ -117,6 +118,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Magnetometer");
+			if(eventHandler != null)
 			eventHandler.isDeviceHasSensor(false);
 
 		}

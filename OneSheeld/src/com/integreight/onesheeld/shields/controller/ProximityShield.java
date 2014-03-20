@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class ProximityShield extends ControllerParent<ProximityShield>
 		implements SensorEventListener {
-	public static final byte PROXIMITY_VALUE=0x01;
+	public static final byte PROXIMITY_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mProximity;
 	private ProximityEventHandler eventHandler;
@@ -25,7 +25,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	boolean flag = false;
 	boolean isHandlerLive = false;
 	float oldInput = 0;
-	boolean isFirstTime=true;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -50,7 +50,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -74,16 +74,18 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
-			isFirstTime=false;
-			frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(), PROXIMITY_VALUE);
-			oldInput=event.values[0];
+		if (flag && (oldInput != event.values[0] || isFirstTime)) {
+			isFirstTime = false;
+			frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(),
+					PROXIMITY_VALUE);
+			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
-			eventHandler.onSensorValueChangedFloat(event.values[0]+"");
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 
 			//
 			flag = false;
@@ -100,7 +102,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 				mSensorManager.registerListener(this, mProximity,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Proximity");
@@ -108,7 +111,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Proximity");
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}

@@ -18,7 +18,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class GpsShield extends ControllerParent<GpsShield> implements
 		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
 		GooglePlayServicesClient.OnConnectionFailedListener {
-	public static final byte GPS_VALUE=0x01;
+	public static final byte GPS_VALUE = 0x01;
 	private GpsEventHandler eventHandler;
 	private LocationRequest mLocationRequest;
 	private LocationClient mLocationClient;
@@ -42,6 +42,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mLocationClient = new LocationClient(getActivity()
 				.getApplicationContext(), this, this);
 		mUpdatesRequested = false;
+		startGps();
 		return super.setTag(tag);
 	}
 
@@ -88,8 +89,11 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 				Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
 				Log.d("Gps Long::Double in Radians",
 						getRadians(lastLocation.getLongitude()) + "");
-				eventHandler.onLangChanged(lastLocation.getLongitude() + "");
-				eventHandler.onLatChanged(lastLocation.getLatitude() + "");
+				if (eventHandler != null) {
+					eventHandler
+							.onLangChanged(lastLocation.getLongitude() + "");
+					eventHandler.onLatChanged(lastLocation.getLatitude() + "");
+				}
 			}
 		}
 
@@ -135,8 +139,10 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	@Override
 	public void onLocationChanged(Location arg0) {
 		// TODO Auto-generated method stub
-		eventHandler.onLangChanged(arg0.getLongitude() + "");
-		eventHandler.onLatChanged(arg0.getLatitude() + "");
+		if (eventHandler != null) {
+			eventHandler.onLangChanged(arg0.getLongitude() + "");
+			eventHandler.onLatChanged(arg0.getLatitude() + "");
+		}
 		lastLocation = arg0;
 		sendFrame(arg0);
 	}
@@ -168,8 +174,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		// TODO Auto-generated method stub
 		frame = new ShieldFrame(UIShield.GPS_SHIELD.getId(), GPS_VALUE);
 		// frame.addByteArgument((byte) Math.round(event.values[0]));
-		float lat = (float)myLocation.getLatitude();// getRadians(myLocation.getLatitude());
-		float lang = (float)myLocation.getLongitude();// getRadians(myLocation.getLongitude());
+		float lat = (float) myLocation.getLatitude();// getRadians(myLocation.getLatitude());
+		float lang = (float) myLocation.getLongitude();// getRadians(myLocation.getLongitude());
 		frame.addFloatArgument(lat);
 		frame.addFloatArgument(lang);
 		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);

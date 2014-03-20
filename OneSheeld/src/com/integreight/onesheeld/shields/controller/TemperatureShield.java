@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class TemperatureShield extends ControllerParent<TemperatureShield>
 		implements SensorEventListener {
-	public static final byte TEMPERATURE_VALUE=0x01;
+	public static final byte TEMPERATURE_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mTemperature;
 	private TemperatureEventHandler eventHandler;
@@ -25,7 +25,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	boolean flag = false;
 	boolean isHandlerLive = false;
 	float oldInput = 0;
-	boolean isFirstTime=true;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -52,7 +52,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				Context.SENSOR_SERVICE);
 		mTemperature = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -76,16 +76,18 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
+		if (flag && (oldInput != event.values[0] || isFirstTime)) {
 			isFirstTime = false;
-			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), TEMPERATURE_VALUE);
-			oldInput=event.values[0];
+			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(),
+					TEMPERATURE_VALUE);
+			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
-			eventHandler.onSensorValueChangedFloat(event.values[0]+"");
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 
 			//
 			flag = false;
@@ -102,7 +104,8 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				mSensorManager.registerListener(this, mTemperature,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Temperature");
@@ -110,7 +113,8 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Temperature");
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 

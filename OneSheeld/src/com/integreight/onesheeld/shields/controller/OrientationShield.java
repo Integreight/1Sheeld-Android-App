@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class OrientationShield extends ControllerParent<OrientationShield>
 		implements SensorEventListener {
-	public static final byte ORIENTATION_VALUE=0x01;
+	public static final byte ORIENTATION_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mOrientation;
 	private OrientationEventHandler eventHandler;
@@ -24,8 +24,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
-	float oldInput_x = 0,oldInput_y = 0, oldInput_z = 0 ;
-	boolean isFirstTime=true;
+	float oldInput_x = 0, oldInput_y = 0, oldInput_z = 0;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -50,7 +50,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -73,9 +73,13 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (flag&&(oldInput_x!=event.values[0]||oldInput_y!=event.values[1]||oldInput_z!=event.values[2]||isFirstTime)) {
+		if (flag
+				&& (oldInput_x != event.values[0]
+						|| oldInput_y != event.values[1]
+						|| oldInput_z != event.values[2] || isFirstTime)) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.ORIENTATION_SHIELD.getId(), ORIENTATION_VALUE);
+			frame = new ShieldFrame(UIShield.ORIENTATION_SHIELD.getId(),
+					ORIENTATION_VALUE);
 			oldInput_x = event.values[0];
 			oldInput_y = event.values[1];
 			oldInput_z = event.values[2];
@@ -85,8 +89,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 			frame.addFloatArgument(event.values[2]);
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
-			eventHandler.onSensorValueChangedFloat(event.values);
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
 			Log.d("Sensor Data of Y", event.values[1] + "");
@@ -107,7 +111,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 				mSensorManager.registerListener(this, mOrientation,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Orientation");
@@ -115,7 +120,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Orientation");
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}

@@ -50,7 +50,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -90,8 +90,8 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 			frame.addFloatArgument(event.values[2]);
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
-			eventHandler.onSensorValueChangedFloat(event.values);
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
 			Log.d("Sensor Data of Y", event.values[1] + "");
@@ -112,7 +112,9 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 				mSensorManager.registerListener(this, mGyroscope,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Gyroscope");
@@ -120,7 +122,8 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Gyroscope");
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}

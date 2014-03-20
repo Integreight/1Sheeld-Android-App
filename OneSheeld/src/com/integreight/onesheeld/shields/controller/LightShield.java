@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LightShield extends ControllerParent<LightShield> implements
 		SensorEventListener {
-	public static final byte LIGHT_VALUE=0x01;
+	public static final byte LIGHT_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mLight;
 	private LightEventHandler eventHandler;
@@ -25,7 +25,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 	boolean flag = false;
 	boolean isHandlerLive = false;
 	float oldInput = 0;
-	boolean isFirstTime=true;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -50,7 +50,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -72,21 +72,22 @@ public class LightShield extends ControllerParent<LightShield> implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-			// TODO Auto-generated method stub 
-			if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
-				isFirstTime=false;
-				frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
-				oldInput=event.values[0];
-				frame.addIntegerArgument(3, false, Math.round(event.values[0]));
-				activity.getThisApplication().getAppFirmata()
-						.sendShieldFrame(frame);
+		// TODO Auto-generated method stub
+		if (flag && (oldInput != event.values[0] || isFirstTime)) {
+			isFirstTime = false;
+			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
+			oldInput = event.values[0];
+			frame.addIntegerArgument(3, false, Math.round(event.values[0]));
+			activity.getThisApplication().getAppFirmata()
+					.sendShieldFrame(frame);
 
-				Log.d("Sensor Data of X", event.values[0] + "");
-				eventHandler.onSensorValueChangedFloat(event.values[0]+"");
-				//
-				oldInput = event.values[0];
-				flag = false;
-			}
+			Log.d("Sensor Data of X", event.values[0] + "");
+			if(eventHandler != null)
+			eventHandler.onSensorValueChangedFloat(event.values[0] + "");
+			//
+			oldInput = event.values[0];
+			flag = false;
+		}
 	}
 
 	// Register a listener for the sensor.
@@ -98,6 +99,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 				mSensorManager.registerListener(this, mLight,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
+				if(eventHandler != null)
 				eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
@@ -106,6 +108,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Light");
+			if(eventHandler != null)
 			eventHandler.isDeviceHasSensor(false);
 
 		}

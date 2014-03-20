@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class PressureShield extends ControllerParent<PressureShield> implements
 		SensorEventListener {
-	public static final byte PRESSURE_VALUE=0x01;
+	public static final byte PRESSURE_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mPressure;
 	private PressureEventHandler eventHandler;
@@ -25,7 +25,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 	boolean flag = false;
 	boolean isHandlerLive = false;
 	float oldInput = 0;
-	boolean isFirstTime=true;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -50,7 +50,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mPressure = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -74,17 +74,19 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 	@Override
 	public void onSensorChanged(SensorEvent event) {
 		// TODO Auto-generated method stub
-		if (flag&&(oldInput!=event.values[0]||isFirstTime)) {
+		if (flag && (oldInput != event.values[0] || isFirstTime)) {
 			isFirstTime = false;
-			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(), PRESSURE_VALUE);
-			oldInput=event.values[0];
+			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(),
+					PRESSURE_VALUE);
+			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addIntegerArgument(2, false, Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
-			eventHandler.onSensorValueChangedFloat(event.values[0]+"");
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 
 			//
 			flag = false;
@@ -101,7 +103,8 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 				mSensorManager.registerListener(this, mPressure,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Pressure");
@@ -109,7 +112,8 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Pressure");
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}

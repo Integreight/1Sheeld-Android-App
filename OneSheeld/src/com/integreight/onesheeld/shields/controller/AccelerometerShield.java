@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 		implements SensorEventListener {
-	public static final byte ACCELEROMETER_VALUE=0x01;
+	public static final byte ACCELEROMETER_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mAccelerometer;
 	private AccelerometerEventHandler eventHandler;
@@ -24,8 +24,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
-	float oldInput_x = 0,oldInput_y = 0, oldInput_z = 0 ;
-	boolean isFirstTime=true;
+	float oldInput_x = 0, oldInput_y = 0, oldInput_z = 0;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -51,7 +51,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 				Context.SENSOR_SERVICE);
 		mAccelerometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -75,9 +75,13 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		
-		if (flag&&(oldInput_x!=event.values[0]||oldInput_y!=event.values[1]||oldInput_z!=event.values[2]||isFirstTime)) {
-			frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(), ACCELEROMETER_VALUE);
+
+		if (flag
+				&& (oldInput_x != event.values[0]
+						|| oldInput_y != event.values[1]
+						|| oldInput_z != event.values[2] || isFirstTime)) {
+			frame = new ShieldFrame(UIShield.ACCELEROMETER_SHIELD.getId(),
+					ACCELEROMETER_VALUE);
 			isFirstTime = false;
 			oldInput_x = event.values[0];
 			oldInput_y = event.values[1];
@@ -89,7 +93,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
 
-			eventHandler.onSensorValueChangedFloat(event.values);
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
 			Log.d("Sensor Data of Y", event.values[1] + "");
@@ -109,7 +114,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 				mSensorManager.registerListener(this, mAccelerometer,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Accelerometer");
@@ -117,7 +123,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Accelerometer");
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}

@@ -37,6 +37,7 @@ public class MicShield extends ControllerParent<MicShield> {
 
 				if (counter == 5) {
 					if (isResumed)
+						if(eventHandler != null)
 						eventHandler.getAmplitude(ampl);
 					counter = 0;
 				}
@@ -60,6 +61,7 @@ public class MicShield extends ControllerParent<MicShield> {
 
 	@Override
 	public ControllerParent<MicShield> setTag(String tag) {
+		startMic();
 		return super.setTag(tag);
 	}
 

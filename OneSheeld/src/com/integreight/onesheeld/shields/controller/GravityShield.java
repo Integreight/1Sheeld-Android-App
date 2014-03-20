@@ -50,7 +50,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-
+		registerSensorListener();
 		return super.setTag(tag);
 	}
 
@@ -86,7 +86,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			frame.addFloatArgument(event.values[2]);
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
+			if(eventHandler != null)
 			eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
@@ -108,6 +108,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 				mSensorManager.registerListener(this, mGravity,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
+				if(eventHandler != null)
 				eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
@@ -116,6 +117,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Gravity");
+			if(eventHandler != null)
 			eventHandler.isDeviceHasSensor(false);
 
 		}
