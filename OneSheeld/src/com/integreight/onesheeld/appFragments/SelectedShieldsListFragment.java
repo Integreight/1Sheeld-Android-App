@@ -19,6 +19,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.shields.fragments.CameraFragment;
+import com.integreight.onesheeld.shields.fragments.ClockFragment;
 import com.integreight.onesheeld.shields.fragments.EmailFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
@@ -163,6 +164,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case EMAIL_SHIELD:
 			return addToCreatedListAndReturn(UIShield.EMAIL_SHIELD,
 					new EmailFragment());
+		case CLOCK_SHIELD:
+			return addToCreatedListAndReturn(UIShield.CLOCK_SHIELD,
+					new ClockFragment());
 
 		default:
 			return new EmptyShieldFragment();

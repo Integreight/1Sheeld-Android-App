@@ -3,6 +3,7 @@ package com.integreight.onesheeld.enums;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
+import com.integreight.onesheeld.shields.controller.ClockShield;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
@@ -111,7 +112,9 @@ public enum UIShield {
 			false, EmptyShield.class), GLCD((byte) 0x20, "GLCD", 0xff988564,
 			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class), EMAIL_SHIELD(
 			(byte) 0x1E, "Email", 0xffd95342,
-			R.drawable.shields_list_gravity_symbol, false, EmailShield.class), ;
+			R.drawable.shields_list_gravity_symbol, false, EmailShield.class), CLOCK_SHIELD(
+			(byte) 0x21, "Clock", 0xffd95342,
+			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), ;
 
 	private byte id;
 	private String name;
@@ -248,6 +251,8 @@ public enum UIShield {
 			return GLCD;
 		case 35:
 			return EMAIL_SHIELD;
+		case 36:
+			return CLOCK_SHIELD;
 		}
 		return null;
 	}
