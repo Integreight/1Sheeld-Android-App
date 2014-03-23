@@ -5,8 +5,10 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.net.Uri;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.PlaylistItem;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.database.MusicPlaylist;
@@ -15,6 +17,16 @@ public class MusicShield extends ControllerParent<MusicShield> {
 	private MediaPlayer mediaPlayer;
 	private ArrayList<PlaylistItem> mediaFiles = new ArrayList<PlaylistItem>();
 	private int currentIndex = 0;
+
+	private static class METHOD {
+		public static byte PLAY = 0x02;
+		public static byte PAUSE = 0x03;
+		public static byte STOP = 0x01;
+		public static byte PREV = 0x04;
+		public static byte NEXT = 0x05;
+		public static byte SEEK_FORWARD = 0x06;
+		public static byte SEEK_BACKWARD = 0x07;
+	}
 
 	public MusicShield() {
 		super();
@@ -35,24 +47,21 @@ public class MusicShield extends ControllerParent<MusicShield> {
 
 	private void init() {
 		try {
-			if (mediaFiles.size() > currentIndex) {
-				mediaPlayer.setDataSource(mediaFiles.get(currentIndex).path);
-				mediaPlayer.prepare();
+			if (mediaFiles.size() > currentIndex && currentIndex >= 0) {
+				if (mediaPlayer.isPlaying()) {
+					mediaPlayer.stop();
+					mediaPlayer.release();
+				}
+				mediaPlayer = MediaPlayer.create(activity,
+						Uri.parse(mediaFiles.get(currentIndex).path));
+				// mediaPlayer.prepare();
 			} else {
 				if (currentIndex > 0) {
 					currentIndex -= 1;
 					init();
 				}
 			}
-		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			MusicPlaylist db = new MusicPlaylist(activity);
-			db.openToWrite();
-			db.delete(mediaFiles.get(currentIndex).id);
-			mediaFiles = db.getPlaylist();
-			db.close();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			MusicPlaylist db = new MusicPlaylist(activity);
@@ -63,32 +72,43 @@ public class MusicShield extends ControllerParent<MusicShield> {
 		}
 	}
 
-	public void seekTo(int pos) {
+	public synchronized void seekTo(int pos, boolean playAfter) {
 		if (mediaPlayer != null) {
-			int p = mediaPlayer.getDuration();
-			int pos2 = (int) (pos * mediaPlayer.getDuration() / 100);
-			mediaPlayer.seekTo(pos2);
-			mediaPlayer.start();
+			mediaPlayer.seekTo(pos);
+			if (playAfter)
+				mediaPlayer.start();
 		}
 	}
 
-	public void next() {
+	public synchronized void next() {
 		currentIndex += 1;
 		init();
+		play();
 	}
 
-	public void prev() {
+	public synchronized void prev() {
 		currentIndex -= 1;
 		init();
+		play();
 	}
 
-	public void togglePlayOrPause() {
+	public synchronized void play() {
 		checkMedia();
 		checkMediaFilesList();
-		if (mediaPlayer.isPlaying()) {
-			mediaPlayer.pause();
-		} else {
+		if (!mediaPlayer.isPlaying())
 			mediaPlayer.start();
+	}
+
+	public synchronized void pause() {
+		checkMedia();
+		checkMediaFilesList();
+		if (mediaPlayer.isPlaying())
+			mediaPlayer.pause();
+	}
+
+	public synchronized void stop() {
+		if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+			init();
 		}
 	}
 
@@ -111,8 +131,29 @@ public class MusicShield extends ControllerParent<MusicShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
-
+		if (frame.getShieldId() == UIShield.MUSICPLAYER_SHIELD.getId()) {
+			if (frame.getFunctionId() == METHOD.STOP) {
+				stop();
+			} else if (frame.getFunctionId() == METHOD.PLAY) {
+				play();
+			} else if (frame.getFunctionId() == METHOD.PAUSE) {
+				pause();
+			} else if (frame.getFunctionId() == METHOD.NEXT)
+				next();
+			else if (frame.getFunctionId() == METHOD.PREV)
+				prev();
+			else if (frame.getFunctionId() == METHOD.SEEK_FORWARD) {
+				if (mediaPlayer != null) {
+					int pos = (int) (5 * mediaPlayer.getDuration() / 100);
+					seekTo(pos + mediaPlayer.getCurrentPosition(), true);
+				}
+			} else if (frame.getFunctionId() == METHOD.SEEK_BACKWARD) {
+				if (mediaPlayer != null) {
+					int pos = (int) (5 * mediaPlayer.getDuration() / 100);
+					seekTo(mediaPlayer.getCurrentPosition() - pos, true);
+				}
+			}
+		}
 	}
 
 	@Override
