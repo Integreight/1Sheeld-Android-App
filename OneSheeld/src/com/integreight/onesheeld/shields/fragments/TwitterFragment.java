@@ -130,8 +130,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 					+ ((TwitterShield) getApplication().getRunningShields()
 							.get(getControllerTag())).getUsername());
 		} else {
-			((TwitterShield) getApplication().getRunningShields().get(
-					getControllerTag())).login();
+			userNameTextView.setVisibility(View.INVISIBLE);
 		}
 	}
 

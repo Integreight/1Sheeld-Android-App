@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
 
+import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
@@ -22,6 +23,7 @@ public class MainActivity extends FragmentActivity {
 	// private boolean isBoundService = false;
 	private AppSlidingLeftMenu appSlidingMenu;
 	public boolean isForground = false;
+	private onConnectedToBluetooth onConnectToBlueTooth = null;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -224,6 +226,10 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
+	public void setOnConnectToBluetooth(onConnectedToBluetooth listener) {
+		this.onConnectToBlueTooth = listener;
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
@@ -242,6 +248,10 @@ public class MainActivity extends FragmentActivity {
 						Toast.LENGTH_SHORT).show();
 				ArduinoConnectivityPopup.isOpened = false;
 				finish();
+			} else {
+				if (onConnectToBlueTooth != null
+						&& ArduinoConnectivityPopup.isOpened)
+					onConnectToBlueTooth.onConnect();
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);

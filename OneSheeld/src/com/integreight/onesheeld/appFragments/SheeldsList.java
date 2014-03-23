@@ -89,13 +89,14 @@ public class SheeldsList extends Fragment {
 
 			@Override
 			public void run() {
-				InputMethodManager imm = (InputMethodManager) getActivity()
-						.getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(
-						((OneShieldEditText) shieldsListView
-								.findViewById(R.id.searchArea))
-								.getWindowToken(), 0);
-
+				if (getActivity() != null) {
+					InputMethodManager imm = (InputMethodManager) getActivity()
+							.getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.hideSoftInputFromWindow(
+							((OneShieldEditText) shieldsListView
+									.findViewById(R.id.searchArea))
+									.getWindowToken(), 0);
+				}
 			}
 		});
 		super.onStop();
