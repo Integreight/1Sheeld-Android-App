@@ -27,15 +27,14 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	public List<UIShield> shieldList;
 	LayoutInflater inflater;
 	ControllerParent<?> type = null;
-	private Hashtable<String, ControllerParent<?>> runningShields = new Hashtable<String, ControllerParent<?>>();
+	OneSheeldApplication app;
 
 	public ShieldsListAdapter(Activity a) {
 		this.activity = (MainActivity) a;
 		this.shieldList = Arrays.asList(UIShield.values());
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		runningShields = ((OneSheeldApplication) activity.getApplication())
-				.getRunningShields();
+		app = (OneSheeldApplication) activity.getApplication();
 	}
 
 	public int getCount() {
@@ -127,9 +126,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
-					if (runningShields.get(shield.getName()) != null) {
-						runningShields.get(shield.getName()).resetThis();
-						runningShields.remove(shield.getName());
+					if (app.getRunningShields().get(shield.getName()) != null) {
+						app.getRunningShields().get(shield.getName())
+								.resetThis();
+						app.getRunningShields().remove(shield.getName());
 					}
 				}
 			}
@@ -165,20 +165,22 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		for (UIShield shield : shieldList) {
 			if (shield.isMainActivitySelection()
 					&& shield.getShieldType() != null) {
-				try {
-					type = shield.getShieldType().newInstance();
-				} catch (java.lang.InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				if (app.getRunningShields().get(shield.getName()) == null) {
+					try {
+						type = shield.getShieldType().newInstance();
+					} catch (java.lang.InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					type.setActivity(activity).setTag(shield.getName());
 				}
-				type.setActivity(activity).setTag(shield.getName());
 			} else {
-				if (runningShields.get(shield.getName()) != null) {
-					runningShields.get(shield.getName()).resetThis();
-					runningShields.remove(shield.getName());
+				if (app.getRunningShields().get(shield.getName()) != null) {
+					app.getRunningShields().get(shield.getName()).resetThis();
+					app.getRunningShields().remove(shield.getName());
 				}
 			}
 		}

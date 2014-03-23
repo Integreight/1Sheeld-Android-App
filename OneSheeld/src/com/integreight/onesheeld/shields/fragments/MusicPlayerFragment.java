@@ -48,10 +48,10 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		((MusicShield) getApplication().getRunningShields().get(
-				getControllerTag())).togglePlayOrPause();
-		((MusicShield) getApplication().getRunningShields().get(
-				getControllerTag())).seekTo(50);
+		// ((MusicShield) getApplication().getRunningShields().get(
+		// getControllerTag())).togglePlayOrPause();
+		// ((MusicShield) getApplication().getRunningShields().get(
+		// getControllerTag())).seekTo(50,true);
 		super.onActivityCreated(savedInstanceState);
 	}
 }
