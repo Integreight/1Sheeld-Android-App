@@ -482,19 +482,20 @@ public class SheeldsList extends Fragment {
 		for (UIShield shield : shieldsUIList) {
 			if (shield.isMainActivitySelection()
 					&& shield.getShieldType() != null) {
-				ControllerParent<?> type = null;
-				try {
-					type = shield.getShieldType().newInstance();
-				} catch (java.lang.InstantiationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (app.getRunningShields().get(shield.getName()) == null)
+				if (app.getRunningShields().get(shield.getName()) == null) {
+					ControllerParent<?> type = null;
+					try {
+						type = shield.getShieldType().newInstance();
+					} catch (java.lang.InstantiationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 					type.setActivity((MainActivity) getActivity()).setTag(
 							shield.getName());
+				}
 				i++;
 			}
 		}

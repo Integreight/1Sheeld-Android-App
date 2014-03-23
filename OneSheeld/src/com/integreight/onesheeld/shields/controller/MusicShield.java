@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -74,6 +73,7 @@ public class MusicShield extends ControllerParent<MusicShield> {
 
 	public synchronized void seekTo(int pos, boolean playAfter) {
 		if (mediaPlayer != null) {
+			playAfter = mediaPlayer.isPlaying();
 			mediaPlayer.seekTo(pos);
 			if (playAfter)
 				mediaPlayer.start();
