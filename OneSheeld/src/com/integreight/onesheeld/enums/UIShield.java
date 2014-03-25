@@ -12,6 +12,7 @@ import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GpsShield;
 import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield;
+import com.integreight.onesheeld.shields.controller.KeyboardShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
@@ -114,7 +115,9 @@ public enum UIShield {
 			(byte) 0x1E, "Email", 0xffd95342,
 			R.drawable.shields_list_gravity_symbol, false, EmailShield.class), CLOCK_SHIELD(
 			(byte) 0x21, "Clock", 0xffd95342,
-			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), ;
+			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
+			(byte) 0x21, "Keyboard", 0xffd95342,
+			R.drawable.shields_list_gravity_symbol, false, KeyboardShield.class);
 
 	private byte id;
 	private String name;
@@ -253,6 +256,8 @@ public enum UIShield {
 			return EMAIL_SHIELD;
 		case 36:
 			return CLOCK_SHIELD;
+		case 37:
+			return KEYBOARD_SHIELD;
 		}
 		return null;
 	}

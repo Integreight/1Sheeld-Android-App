@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <ImageView
+        android:id="@+id/keyboard_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
+
+    <TextView
+        android:id="@+id/keyboard_head_txt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Write your text here, Then click Done!"
+        android:textColor="@android:color/white"
+        android:textSize="15sp" />
+
+    <EditText
+        android:id="@+id/keyboard_myEdit_txt"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_below="@+id/keyboard_head_txt"
+        android:layout_margin="30dp"
+        android:background="#ffffff"
+        android:gravity="top|left"
+        android:hint="write text to arduino"
+        android:inputType="textMultiLine"
+        android:padding="10dp"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/keyboard_done_bt"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/keyboard_myEdit_txt"
+        android:layout_centerInParent="true"
+        android:text="Done"
+        android:textSize="20sp" />
+
+</RelativeLayout>

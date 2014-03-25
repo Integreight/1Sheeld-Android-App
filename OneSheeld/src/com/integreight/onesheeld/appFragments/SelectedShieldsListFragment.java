@@ -29,6 +29,7 @@ import com.integreight.onesheeld.shields.fragments.GamepadFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
 import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
+import com.integreight.onesheeld.shields.fragments.KeyboardFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
 import com.integreight.onesheeld.shields.fragments.LcdFragment;
 import com.integreight.onesheeld.shields.fragments.LedFragment;
@@ -167,6 +168,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case CLOCK_SHIELD:
 			return addToCreatedListAndReturn(UIShield.CLOCK_SHIELD,
 					new ClockFragment());
+		case KEYBOARD_SHIELD:
+			return addToCreatedListAndReturn(UIShield.KEYBOARD_SHIELD,
+					new KeyboardFragment());
 
 		default:
 			return new EmptyShieldFragment();
