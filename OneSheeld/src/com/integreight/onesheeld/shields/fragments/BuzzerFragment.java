@@ -24,16 +24,11 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 

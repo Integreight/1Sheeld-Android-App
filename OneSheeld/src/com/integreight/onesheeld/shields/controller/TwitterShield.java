@@ -157,7 +157,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 								.getOAuthRequestToken(CALLBACKURL);
 						authUrl = requestToken.getAuthenticationURL();
 					} catch (TwitterException e) {
-
+						e.printStackTrace();
 					}
 					return null;
 				}

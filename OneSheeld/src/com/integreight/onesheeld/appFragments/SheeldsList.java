@@ -2,7 +2,6 @@ package com.integreight.onesheeld.appFragments;
 
 import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 
 import android.app.ActivityManager;
@@ -104,32 +103,7 @@ public class SheeldsList extends Fragment {
 
 	@Override
 	public void onResume() {
-		// getSherlockActivity().getSupportActionBar().hide();
-		// ((MainActivity) getActivity()).getSlidingMenu().setTouchModeAbove(
-		// SlidingMenu.TOUCHMODE_NONE);
 		((MainActivity) getActivity()).disableMenu();
-		// new Handler().post(new Runnable() {
-		//
-		// @Override
-		// public void run() {
-		// // TODO Auto-generated method stub
-		// Hashtable<String, ControllerParent<?>> controllers =
-		// ((OneSheeldApplication) getActivity()
-		// .getApplication()).getRunningShields();
-		// Enumeration<String> enumKey = controllers.keys();
-		// while (enumKey.hasMoreElements()) {
-		// String key = enumKey.nextElement();
-		// controllers.get(key).resetThis();
-		// }
-		// ArduinoPin[] pins = ArduinoPin.values();
-		// for (int i = 0; i < pins.length; i++) {
-		// pins[i].connectedPins.clear();
-		// }
-		// ((OneSheeldApplication) getActivity().getApplication())
-		// .clearServiceEventHandlers();
-		// ConnectingPinsView.getInstance().recycle();
-		// }
-		// });
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
@@ -165,6 +139,8 @@ public class SheeldsList extends Fragment {
 			initView();
 		super.onActivityCreated(savedInstanceState);
 	}
+
+	Handler searchActionHandler = new Handler();
 
 	private void initView() {
 		getActivity().findViewById(R.id.getAvailableDevices)
@@ -216,64 +192,11 @@ public class SheeldsList extends Fragment {
 						adapter.reset();
 					}
 				});
-		// shieldsListView.setOnItemClickListener(new OnItemClickListener() {
-		// @Override
-		// public void onItemClick(AdapterView<?> lv, View item, int position,
-		// long id) {
-		// RelativeLayout rLayout = (RelativeLayout) item;
-		// ToggleButton selectionMark = (ToggleButton) rLayout
-		// .getChildAt(0);
-		// ImageView selectionCircle = (ImageView) rLayout.getChildAt(1);
-		// ImageView upperBlackLayer = (ImageView) rLayout
-		// .findViewById(R.id.shildListItemBlackSquare);
-		//
-		// if (selectionMark.isChecked()) {
-		// selectionMark.setChecked(false);
-		// selectionMark.setVisibility(View.INVISIBLE);
-		// selectionCircle.setVisibility(View.INVISIBLE);
-		// upperBlackLayer.setVisibility(View.VISIBLE);
-		// UIShield.getPosition(position + 1)
-		// .setMainActivitySelection(false);
-		// } else {
-		// selectionMark.setChecked(true);
-		// selectionMark.setVisibility(View.VISIBLE);
-		// selectionCircle.setVisibility(View.VISIBLE);
-		// upperBlackLayer.setVisibility(View.INVISIBLE);
-		// UIShield.getPosition(position + 1)
-		// .setMainActivitySelection(true);
-		// }
-		// }
-		//
-		// });
-		// mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-
-		// If the adapter is null, then Bluetooth is not supported
-		// if (mBluetoothAdapter == null) {
-		// Toast.makeText(getActivity(), "Bluetooth is not available",
-		// Toast.LENGTH_LONG).show();
-		// getActivity().finish();
-		// return;
-		// }
 	}
-
-	// private void connectDevice(Intent data) {
-	// String address = data.getExtras().getString(
-	// DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-	// Intent intent = new Intent(getActivity(), OneSheeldService.class);
-	// intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
-	// getActivity().startService(intent);
-	//
-	// }
 
 	private void disconnectService() {
 		if (isOneSheeldServiceRunning()) {
 			((MainActivity) getActivity()).stopService();
-			// getActivity().stopService(
-			// new Intent(getActivity(), OneSheeldService.class));
-			// ((OneSheeldApplication)
-			// getActivity().getApplication()).getAppFirmata()
-			// .close();
-			setBWStrips();
 			if (!ArduinoConnectivityPopup.isOpened)
 				new ArduinoConnectivityPopup(getActivity()).show();
 		}
@@ -312,22 +235,14 @@ public class SheeldsList extends Fragment {
 			Log.e(TAG, "- ARDUINO CONNECTED -");
 			if (isOneSheeldServiceRunning()) {
 				arduinoConnected = true;
-				setColoredStrips();
 				if (adapter != null)
 					adapter.applyToControllerTable();
 			}
-			// if (getActivity() != null)
-			// ((MainActivity) getActivity())
-			// .setSupportProgressBarIndeterminateVisibility(false);
 		}
 
 		@Override
 		public void onClose(boolean closedManually) {
 			arduinoConnected = false;
-			setBWStrips();
-			// if (getActivity() != null)
-			// ((MainActivity) getActivity())
-			// .setSupportProgressBarIndeterminateVisibility(false);
 			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
 			if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
 					|| ((MainActivity) getActivity()).isForground)
@@ -351,12 +266,14 @@ public class SheeldsList extends Fragment {
 					}
 				}
 			}
-			Hashtable<String, ControllerParent<?>> controllers = ((OneSheeldApplication) getActivity()
-					.getApplication()).getRunningShields();
-			Enumeration<String> enumKey = controllers.keys();
+			Enumeration<String> enumKey = ((OneSheeldApplication) getActivity()
+					.getApplication()).getRunningShields().keys();
 			while (enumKey.hasMoreElements()) {
 				String key = enumKey.nextElement();
-				controllers.get(key).resetThis();
+				((OneSheeldApplication) getActivity().getApplication())
+						.getRunningShields().get(key).resetThis();
+				((OneSheeldApplication) getActivity().getApplication())
+						.getRunningShields().remove(key);
 			}
 		}
 	};
@@ -366,35 +283,13 @@ public class SheeldsList extends Fragment {
 		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
-		//
-		// if (!mBluetoothAdapter.isEnabled()) {
-		// Intent enableIntent = new Intent(
-		// BluetoothAdapter.ACTION_REQUEST_ENABLE);
-		// startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-		//
-		// }
 		if (((OneSheeldApplication) getActivity().getApplication())
 				.getAppFirmata() == null
 				|| (((OneSheeldApplication) getActivity().getApplication())
 						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
 						.getApplication()).getAppFirmata().isOpen())) {
-			setBWStrips();
 			if (!ArduinoConnectivityPopup.isOpened)
 				new ArduinoConnectivityPopup(getActivity()).show();
-			// if (((OneSheeldApplication) getActivity().getApplication())
-			// .getAppPreferences().contains(
-			// OneSheeldService.DEVICE_ADDRESS_KEY)) {
-			// ((MainActivity) getActivity())
-			// .setSupportProgressBarIndeterminateVisibility(true);
-			// Intent intent = new Intent();
-			// intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS,
-			// ((OneSheeldApplication) getActivity().getApplication())
-			// .getLastConnectedDevice());
-			// connectDevice(intent);
-			// }
-
-		} else {
-			setColoredStrips();
 		}
 		super.onStart();
 	}
@@ -458,20 +353,6 @@ public class SheeldsList extends Fragment {
 			}
 		}
 		return false;
-	}
-
-	private void setColoredStrips() {
-		// UIShield.setConnected(true);
-		// adapter.notifyDataSetChanged();
-		// shieldsListView.setEnabled(true);
-		// changeActionIconsToConnected();
-	}
-
-	private void setBWStrips() {
-		// UIShield.setConnected(false);
-		// adapter.notifyDataSetChanged();
-		// shieldsListView.setEnabled(false);
-		// changeActionIconsToDisconnected();
 	}
 
 	private boolean isAnyShieldsSelected() {

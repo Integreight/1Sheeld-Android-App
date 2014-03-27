@@ -113,9 +113,6 @@ public class PushButtonFragment extends
 
 	@Override
 	public void onStart() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
-
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {
@@ -139,8 +136,6 @@ public class PushButtonFragment extends
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 

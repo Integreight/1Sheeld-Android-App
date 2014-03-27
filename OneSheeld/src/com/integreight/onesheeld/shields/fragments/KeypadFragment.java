@@ -59,9 +59,6 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {
@@ -84,8 +81,6 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 

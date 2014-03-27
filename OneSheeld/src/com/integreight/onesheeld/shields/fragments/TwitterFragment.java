@@ -41,8 +41,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 
@@ -83,7 +81,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 					@Override
 					public void run() {
-						userNameTextView.setText(userName);
+						userNameTextView.setText("Logged in as: @" + userName);
 						buttonToLoggedIn();
 					}
 				});
@@ -131,6 +129,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 							.get(getControllerTag())).getUsername());
 		} else {
 			userNameTextView.setVisibility(View.INVISIBLE);
+			userNameTextView.setText("");
 		}
 	}
 

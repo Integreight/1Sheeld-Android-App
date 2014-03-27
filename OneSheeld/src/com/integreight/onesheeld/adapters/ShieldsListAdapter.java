@@ -2,11 +2,11 @@ package com.integreight.onesheeld.adapters;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -161,29 +161,53 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		notifyDataSetChanged();
 	}
 
+	Handler handler = new Handler();
+
 	public void applyToControllerTable() {
-		for (UIShield shield : shieldList) {
-			if (shield.isMainActivitySelection()
-					&& shield.getShieldType() != null) {
-				if (app.getRunningShields().get(shield.getName()) == null) {
-					try {
-						type = shield.getShieldType().newInstance();
-					} catch (java.lang.InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					type.setActivity(activity).setTag(shield.getName());
-				}
-			} else {
-				if (app.getRunningShields().get(shield.getName()) != null) {
-					app.getRunningShields().get(shield.getName()).resetThis();
-					app.getRunningShields().remove(shield.getName());
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				for (final UIShield shield : shieldList) {
+					handler.post(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+
+							if (shield.isMainActivitySelection()
+									&& shield.getShieldType() != null) {
+								if (app.getRunningShields().get(
+										shield.getName()) == null) {
+									try {
+										type = shield.getShieldType()
+												.newInstance();
+									} catch (java.lang.InstantiationException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									} catch (IllegalAccessException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									type.setActivity(activity).setTag(
+											shield.getName());
+								}
+							} else {
+								if (app.getRunningShields().get(
+										shield.getName()) != null) {
+									app.getRunningShields()
+											.get(shield.getName()).resetThis();
+									app.getRunningShields().remove(
+											shield.getName());
+								}
+							}
+						}
+					});
 				}
 			}
-		}
+		}).start();
 	}
 
 	static class Holder {

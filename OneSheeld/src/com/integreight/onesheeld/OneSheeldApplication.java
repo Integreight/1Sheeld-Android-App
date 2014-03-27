@@ -10,6 +10,7 @@ import android.graphics.Typeface;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -38,8 +39,18 @@ public class OneSheeldApplication extends Application {
 		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
 			@Override
-			public void uncaughtException(Thread arg0, Throwable arg1) {
+			public void uncaughtException(Thread arg0, final Throwable arg1) {
 				arg1.printStackTrace();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						GmailSinginPopup.sendReportMail(
+								"asaad@integreight.com",
+								"asaad@integreight.com", arg1.getMessage(),
+								arg1.getLocalizedMessage(), "knginekehna");
+					}
+				}).start();
 				ArduinoConnectivityPopup.isOpened = false;
 				// stopService(new Intent(getApplicationContext(),
 				// OneSheeldService.class));

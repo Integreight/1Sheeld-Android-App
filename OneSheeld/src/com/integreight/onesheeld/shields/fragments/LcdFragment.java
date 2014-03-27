@@ -34,16 +34,11 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 

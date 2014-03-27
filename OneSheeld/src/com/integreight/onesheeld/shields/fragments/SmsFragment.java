@@ -35,17 +35,12 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 	@Override
 	public void onStart() {
-
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 
@@ -57,7 +52,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 				R.id.sms_shield_text_textview);
 		sendSMS = (Button) getView().findViewById(R.id.sendMessage);
 		sendSMS.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				((SmsShield) getApplication().getRunningShields().get(

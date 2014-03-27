@@ -203,14 +203,11 @@ public class ArduinoFirmata {
 	}
 
 	public void stopBuffersThreads() {
-		if (bluetoothBufferListeningThread != null
-				&& bluetoothBufferListeningThread.isAlive()) {
-			bluetoothBufferListeningThread.stopRunning();
-			bluetoothBufferListeningThread.interrupt();
-		}
-		if (uartListeningThread != null && uartListeningThread.isAlive()) {
+		if (uartListeningThread != null) {
 			uartListeningThread.stopRunning();
-			uartListeningThread.interrupt();
+		}
+		if (bluetoothBufferListeningThread != null) {
+			bluetoothBufferListeningThread.stopRunning();
 		}
 	}
 
@@ -565,8 +562,14 @@ public class ArduinoFirmata {
 	private void initFirmata(final BluetoothDevice device) {
 		stopBuffersThreads();
 		clearAllBuffers();
+		// if (bluetoothBufferListeningThread == null ||
+		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
 		uartListeningThread = new UartListeningThread();
+		// else {
+		// uartListeningThread.isRunning = true;
+		// uartListeningThread.start();
+		// }
 		enableReporting();
 		setAllPinsAsInput();
 		initUart();
@@ -584,29 +587,12 @@ public class ArduinoFirmata {
 		});
 	}
 
-	private byte readByteFromUartBuffer() {
-		// while(uartBuffer.peek()==null);
-
-		try {
-			return uartBuffer.take().byteValue();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			return 0;
-		}
+	private byte readByteFromUartBuffer() throws InterruptedException {
+		return uartBuffer.take().byteValue();
 	}
 
-	private byte readByteFromBluetoothBuffer() {
-
-		// while(bluetoothBuffer.peek()==null);
-		try {
-			return bluetoothBuffer.take().byteValue();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			// e.printStackTrace();
-			return 0;
-		}
-
+	private byte readByteFromBluetoothBuffer() throws InterruptedException {
+		return bluetoothBuffer.take().byteValue();
 	}
 
 	public void clearAllHandlers() {
@@ -646,84 +632,87 @@ public class ArduinoFirmata {
 	}
 
 	private class UartListeningThread extends Thread {
-		private boolean isRunning = false;
-
 		public UartListeningThread() {
-			// TODO Auto-generated constructor stub
-			isRunning = true;
 			start();
 		}
 
 		private void stopRunning() {
-			isRunning = false;
+			if (this.isAlive())
+				this.interrupt();
 		}
 
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			while (isRunning) {
-				while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
-					;
-				arduinoLibraryVersion = readByteFromUartBuffer();
-				byte shieldId = readByteFromUartBuffer();
-				boolean found = false;
-				for (UIShield shield : UIShield.values()) {
-					if (shieldId == shield.getId())
-						found = true;
-				}
-				if (!found) {
-					uartBuffer.clear();
-					continue;
-				}
-				byte instanceId = readByteFromUartBuffer();
-				byte functionId = readByteFromUartBuffer();
-				ShieldFrame frame = new ShieldFrame(shieldId, instanceId,
-						functionId);
-				int argumentsNumber = readByteFromUartBuffer();
-				for (int i = 0; i < argumentsNumber; i++) {
-					int length = readByteFromUartBuffer() & 0xff;
-					if (length <= 0) {
+			while (!this.isInterrupted()) {
+				try {
+					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
+						;
+
+					arduinoLibraryVersion = readByteFromUartBuffer();
+					byte shieldId = readByteFromUartBuffer();
+					boolean found = false;
+					for (UIShield shield : UIShield.values()) {
+						if (shieldId == shield.getId())
+							found = true;
+					}
+					if (!found) {
 						uartBuffer.clear();
 						continue;
 					}
-					byte[] data = new byte[length];
-					for (int j = 0; j < length; j++) {
-						data[j] = readByteFromUartBuffer();
+					byte instanceId = readByteFromUartBuffer();
+					byte functionId = readByteFromUartBuffer();
+					ShieldFrame frame = new ShieldFrame(shieldId, instanceId,
+							functionId);
+					int argumentsNumber = readByteFromUartBuffer();
+					for (int i = 0; i < argumentsNumber; i++) {
+						int length = readByteFromUartBuffer() & 0xff;
+						if (length <= 0) {
+							uartBuffer.clear();
+							continue;
+						}
+						byte[] data = new byte[length];
+						for (int j = 0; j < length; j++) {
+							data[j] = readByteFromUartBuffer();
+						}
+						frame.addArgument(data);
 					}
-					frame.addArgument(data);
-				}
-				if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
-					uartBuffer.clear();
-					continue;
-				}
+					if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
+						uartBuffer.clear();
+						continue;
+					}
 
-				for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
-					frameHandler.onNewShieldFrameReceived(frame);
+					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
+						frameHandler.onNewShieldFrameReceived(frame);
+					}
+				} catch (InterruptedException e) {
+					return;
 				}
-
 			}
 		}
 	}
 
 	private class BluetoothBufferListeningThread extends Thread {
-		private boolean isRunning = false;
-
 		public BluetoothBufferListeningThread() {
 			// TODO Auto-generated constructor stub
-			isRunning = true;
 			start();
 		}
 
 		private void stopRunning() {
-			isRunning = false;
+			if (this.isAlive())
+				this.interrupt();
 		}
 
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			while (isRunning) {
+			while (!this.isInterrupted()) {
 				if (!isBootloader)
-					processInput(readByteFromBluetoothBuffer());
+					try {
+						processInput(readByteFromBluetoothBuffer());
+					} catch (InterruptedException e) {
+						return;
+					}
 
 			}
 		}

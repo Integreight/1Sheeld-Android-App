@@ -23,8 +23,6 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onStart() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		((MainActivity) getActivity())
 				.getSupportFragmentManager()
 				.beginTransaction()
@@ -41,8 +39,6 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 
