@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
-        android:text="Write your text here, Then click Done!"
+        android:text="Write your text, Then click Done!"
         android:textColor="@android:color/white"
         android:textSize="15sp" />
 
@@ -29,10 +29,12 @@
         android:id="@+id/keyboard_myEdit_txt"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_below="@+id/keyboard_head_txt"
-        android:layout_margin="30dp"
+        android:layout_below="@+id/keyboard_done_bt"
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:background="#ffffff"
-        android:gravity="top|left"
+        android:gravity="top"
         android:hint="write text to arduino"
         android:inputType="textMultiLine"
         android:padding="10dp"
@@ -42,8 +44,9 @@
         android:id="@+id/keyboard_done_bt"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/keyboard_myEdit_txt"
+        android:layout_below="@+id/keyboard_head_txt"
         android:layout_centerInParent="true"
+        android:layout_margin="10dp"
         android:text="Done"
         android:textSize="20sp" />
 
