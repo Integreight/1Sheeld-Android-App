@@ -25,7 +25,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
@@ -149,6 +148,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 							PullToRefreshBase<ScrollView> refreshView) {
 						((PullToRefreshScrollView) findViewById(R.id.scrollingDevices))
 								.onRefreshComplete();
+						if (mBtAdapter != null && mBtAdapter.isDiscovering()) {
+							mBtAdapter.cancelDiscovery();
+						}
 						try {
 							activity.unregisterReceiver(mReceiver);
 						} catch (Exception e) {
@@ -249,7 +251,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		backPressed = false;
 		found = 0;
 		// Register for broadcasts when a device is discovered
-		lockerTimeOut = new TimeOut(3, new TimeOut.TimeoutHandler() {
+		lockerTimeOut = new TimeOut(4, new TimeOut.TimeoutHandler() {
 
 			@Override
 			public void onTimeout() {

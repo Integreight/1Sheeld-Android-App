@@ -38,8 +38,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 				getControllerTag())).setLedEventHandler(ledEventHandler);
 		toggleLed(((LedShield) getApplication().getRunningShields().get(
 				getControllerTag())).refreshLed());
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {
@@ -67,9 +65,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	@Override
 	public void onStop() {
-		if (getApplication().getRunningShields().get(getControllerTag()) != null)
-			getApplication().getRunningShields().get(getControllerTag())
-					.setHasForgroundView(false);
 		super.onStop();
 	}
 

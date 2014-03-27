@@ -42,18 +42,12 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
 	@Override
 	public void onStart() {
-
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
-
 		super.onStop();
 	}
 

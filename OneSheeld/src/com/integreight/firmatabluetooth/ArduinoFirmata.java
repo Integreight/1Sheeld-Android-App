@@ -562,8 +562,14 @@ public class ArduinoFirmata {
 	private void initFirmata(final BluetoothDevice device) {
 		stopBuffersThreads();
 		clearAllBuffers();
+		// if (bluetoothBufferListeningThread == null ||
+		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
 		uartListeningThread = new UartListeningThread();
+		// else {
+		// uartListeningThread.isRunning = true;
+		// uartListeningThread.start();
+		// }
 		enableReporting();
 		setAllPinsAsInput();
 		initUart();

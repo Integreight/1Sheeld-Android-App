@@ -68,8 +68,6 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
 					new SliderShield(getActivity(), getControllerTag()));
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {
@@ -97,8 +95,6 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 

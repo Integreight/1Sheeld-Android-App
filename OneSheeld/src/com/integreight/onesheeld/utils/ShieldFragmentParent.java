@@ -35,6 +35,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) != null)
+			getApplication().getRunningShields().get(getControllerTag())
+					.setHasForgroundView(true);
 		if (getApplication().getAppFirmata() == null) {
 			getApplication().addServiceEventHandler(
 					new OneSheeldServiceHandler() {
@@ -55,6 +58,14 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		getActivity().findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);
 		super.onStart();
+	}
+
+	@Override
+	public void onStop() {
+		if (getApplication().getRunningShields().get(getControllerTag()) != null)
+			getApplication().getRunningShields().get(getControllerTag())
+					.setHasForgroundView(false);
+		super.onStop();
 	}
 
 	public void doOnServiceConnected() {
