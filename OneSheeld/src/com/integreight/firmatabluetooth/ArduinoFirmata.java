@@ -203,14 +203,14 @@ public class ArduinoFirmata {
 	}
 
 	public void stopBuffersThreads() {
+		if (uartListeningThread != null && uartListeningThread.isAlive()) {
+			uartListeningThread.stopRunning();
+			uartListeningThread.interrupt();
+		}
 		if (bluetoothBufferListeningThread != null
 				&& bluetoothBufferListeningThread.isAlive()) {
 			bluetoothBufferListeningThread.stopRunning();
 			bluetoothBufferListeningThread.interrupt();
-		}
-		if (uartListeningThread != null && uartListeningThread.isAlive()) {
-			uartListeningThread.stopRunning();
-			uartListeningThread.interrupt();
 		}
 	}
 
@@ -565,8 +565,14 @@ public class ArduinoFirmata {
 	private void initFirmata(final BluetoothDevice device) {
 		stopBuffersThreads();
 		clearAllBuffers();
+		// if (bluetoothBufferListeningThread == null ||
+		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
 		uartListeningThread = new UartListeningThread();
+		// else {
+		// uartListeningThread.isRunning = true;
+		// uartListeningThread.start();
+		// }
 		enableReporting();
 		setAllPinsAsInput();
 		initUart();
@@ -586,12 +592,15 @@ public class ArduinoFirmata {
 
 	private byte readByteFromUartBuffer() {
 		// while(uartBuffer.peek()==null);
-
 		try {
-			return uartBuffer.take().byteValue();
+			Byte b = uartBuffer.take();
+			if (b != null)
+				return b.byteValue();
+			else
+				return 0;
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
-			// e.printStackTrace();
+			e.printStackTrace();
 			return 0;
 		}
 	}

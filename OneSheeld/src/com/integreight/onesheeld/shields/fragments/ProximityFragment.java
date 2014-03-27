@@ -31,18 +31,12 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 
 	@Override
 	public void onStart() {
-
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
-
 		super.onStop();
 	}
 

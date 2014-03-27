@@ -39,17 +39,12 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 	@Override
 	public void onStart() {
-		// TODO Auto-generated method stub
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		initializeFirmata();
 		super.onStart();
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 		super.onStop();
 	}
 
@@ -151,7 +146,6 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 			buttonToLoggedIn();
 		} else {
 			buttonToLoggedOut();
-			loginToFacebook();
 		}
 	}
 

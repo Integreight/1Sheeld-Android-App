@@ -28,18 +28,12 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 
 	@Override
 	public void onStart() {
-
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
-
 		super.onStop();
 	}
 
@@ -83,15 +77,15 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		@Override
 		public void onLatChanged(String lat) {
 			// TODO Auto-generated method stub
-			if(canChangeUI())
-			Latit.setText(lat);
+			if (canChangeUI())
+				Latit.setText(lat);
 		}
 
 		@Override
 		public void onLangChanged(String lang) {
 			// TODO Auto-generated method stub
-			if(canChangeUI())
-			Longit.setText(lang);
+			if (canChangeUI())
+				Longit.setText(lang);
 
 		}
 	};

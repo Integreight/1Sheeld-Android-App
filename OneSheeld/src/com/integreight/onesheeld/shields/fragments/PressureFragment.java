@@ -31,9 +31,6 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 
 	@Override
 	public void onStart() {
-
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 
 	}

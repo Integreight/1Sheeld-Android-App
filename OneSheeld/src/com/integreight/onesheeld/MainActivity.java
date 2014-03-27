@@ -29,33 +29,6 @@ public class MainActivity extends FragmentActivity {
 		return (OneSheeldApplication) getApplication();
 	}
 
-	// private ArduinoFirmataEventHandler arduinoEventHandler = new
-	// ArduinoFirmataEventHandler() {
-	//
-	// @Override
-	// public void onError(String errorMessage) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	//
-	// @Override
-	// public void onConnect() {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	//
-	// @Override
-	// public void onClose(boolean closedManually) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	// };
-	//
-	// public void setArduinoFirmataHandler(ArduinoFirmataEventHandler handler)
-	// {
-	// this.arduinoEventHandler = handler;
-	// }
-
 	@Override
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
@@ -72,7 +45,7 @@ public class MainActivity extends FragmentActivity {
 					public void onClick(View v) {
 						if (getSupportFragmentManager()
 								.getBackStackEntryCount() > 1) {
-							getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+							getSupportFragmentManager().popBackStack();
 							getSupportFragmentManager()
 									.executePendingTransactions();
 						}
@@ -173,7 +146,6 @@ public class MainActivity extends FragmentActivity {
 
 	public void stopService() {
 		this.stopService(new Intent(this, OneSheeldService.class));
-
 	}
 
 	@Override
