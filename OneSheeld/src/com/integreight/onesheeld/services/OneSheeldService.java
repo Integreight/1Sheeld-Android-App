@@ -99,7 +99,6 @@ public class OneSheeldService extends Service {
 			BluetoothDevice device = mBluetoothAdapter
 					.getRemoteDevice(deviceAddress);
 			// Attempt to connect to the device
-
 			app.getAppFirmata().addEventHandler(arduinoEventHandler);
 			app.getAppFirmata().connect(device);
 		}

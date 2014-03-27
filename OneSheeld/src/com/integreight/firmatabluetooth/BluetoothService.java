@@ -398,6 +398,7 @@ public class BluetoothService {
 				tmpOut = socket.getOutputStream();
 			} catch (IOException e) {
 				Log.e(TAG, "temp sockets not created", e);
+				e.printStackTrace();
 			}
 
 			mmInStream = tmpIn;
@@ -423,6 +424,7 @@ public class BluetoothService {
 						handler.onDataReceived(buffer, bytes);
 					}
 				} catch (IOException e) {
+					e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
 					connectionLost();

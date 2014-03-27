@@ -205,6 +205,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 							SheeldsList.REQUEST_ENABLE_BT);
 				} else {
 					backPressed = false;
+					if (mBtAdapter != null && mBtAdapter.isDiscovering())
+						mBtAdapter.cancelDiscovery();
 					showProgress();
 					changeSlogan(
 							activity.getResources().getString(
@@ -251,7 +253,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		backPressed = false;
 		found = 0;
 		// Register for broadcasts when a device is discovered
-		lockerTimeOut = new TimeOut(4, new TimeOut.TimeoutHandler() {
+		lockerTimeOut = new TimeOut(10, new TimeOut.TimeoutHandler() {
 
 			@Override
 			public void onTimeout() {
@@ -288,7 +290,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-		filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
 		activity.registerReceiver(mReceiver, filter);
 	}
 
@@ -336,7 +337,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 	private void startService(String address) {
 		if (!isConnecting) {
 			isConnecting = true;
-			mBtAdapter.cancelDiscovery();
+			if (mBtAdapter != null && mBtAdapter.isDiscovering())
+				mBtAdapter.cancelDiscovery();
 
 			// Get the device MAC address, which is the last 17 chars in
 			// the
