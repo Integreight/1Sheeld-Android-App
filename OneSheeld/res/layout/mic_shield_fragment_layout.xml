@@ -8,9 +8,9 @@
         android:id="@+id/micLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/mic" 
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:background="@drawable/mic"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
 
         <Button
             android:id="@+id/start_mic"
@@ -23,8 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text=""
-            android:textSize="20sp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/stop_mic"
@@ -39,13 +39,17 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/micLayout" >
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <ImageView
             android:id="@+id/mybox"
             android:layout_width="wrap_content"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:scaleX="200"
-            android:src="@drawable/mic_bg" />
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/black_bg" />
     </RelativeLayout>
 
 </RelativeLayout>

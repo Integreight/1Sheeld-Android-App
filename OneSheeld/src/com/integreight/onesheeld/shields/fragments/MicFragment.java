@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
@@ -28,6 +29,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	LinearLayout micLayout;
 	RelativeLayout backLayout;
 	int boxheigh;
+	float scale;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,9 +61,10 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		params = new RelativeLayout.LayoutParams(500, 500);
+		scale = getResources().getDisplayMetrics().density;
 		amplitude_value = (TextView) getView().findViewById(R.id.mytext);
 		myBox = (ImageView) getView().findViewById(R.id.mybox);
+		params = (LayoutParams) myBox.getLayoutParams();
 		micLayout = (LinearLayout) getView().findViewById(R.id.micLayout);
 		boxheigh = myBox.getHeight();
 		backLayout = (RelativeLayout) getView().findViewById(R.id.backLayout);
@@ -100,8 +103,9 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 			if (canChangeUI()) {
 				// set data to UI
 				amplitude_value.setText(value + "");
-				params.height = (int) ((value) * 7);
-				myBox.setLayoutParams(params);
+				params.height = (int) (((value) * 4) * scale + .5f);
+				params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+				myBox.requestLayout();
 			}
 		}
 	};
