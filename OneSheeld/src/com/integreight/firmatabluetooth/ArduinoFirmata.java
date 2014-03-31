@@ -54,6 +54,7 @@ public class ArduinoFirmata {
 	private final byte SYSTEM_RESET = (byte) 0xFF;
 	private final byte START_SYSEX = (byte) 0xF0;
 	private final byte END_SYSEX = (byte) 0xF7;
+	private final byte BLUETOOTH_RESET = (byte) 0x61;
 	// private final byte IS_ALIVE = (byte) 0x62;
 	private final byte FIRMWARE_VERSION_QUERY = (byte) 0x63;
 	private final byte MUTE_FIRMATA = (byte) 0x64;
@@ -358,20 +359,26 @@ public class ArduinoFirmata {
 								uartBuffer.add(b);
 							}
 						}
+						
+						if (sysexCommand == FIRMWARE_VERSION_QUERY) {
+							if (sysexData.length >= 2) {
+								minorVersion = sysexData[0];
+								majorVersion = sysexData[1];
+								for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
+									handler.onVersionReceived(minorVersion,
+											majorVersion);
+								}
+							}
+						}
+						if (sysexCommand == BLUETOOTH_RESET) {
+							if(!isBootloader){
+							sysex(BLUETOOTH_RESET, new byte[]{});
+							close();
+							}
+						}
 
 						for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
 							dataHandler.onSysex(sysexCommand, sysexData);
-							if (sysexCommand == FIRMWARE_VERSION_QUERY) {
-								if (sysexData.length >= 2) {
-									minorVersion = sysexData[0];
-									majorVersion = sysexData[1];
-									for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
-										handler.onVersionReceived(minorVersion,
-												majorVersion);
-									}
-								}
-							}
-
 						}
 					}
 				} else {
@@ -443,7 +450,7 @@ public class ArduinoFirmata {
 	}
 
 	public synchronized void sendShieldFrame(ShieldFrame frame) {
-		if (!isUartInit)
+		if (!isUartInit||isBootloader)
 			return;
 		byte[] frameBytes = frame.getAllFrameAsBytes();
 		printFrameToLog(frameBytes);

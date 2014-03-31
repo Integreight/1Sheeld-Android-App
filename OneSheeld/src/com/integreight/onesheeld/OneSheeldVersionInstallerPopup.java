@@ -239,6 +239,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								txButton.setEnabled(true);
 								textView.setText(error);
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
+								firmata.returnAppToNormal();
+								firmata.enableReporting();
+								firmata.setAllPinsAsInput();
 							}
 						});
 					}
@@ -256,6 +259,9 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								txButton.setEnabled(true);
 								textView.setText("Timout Happened");
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
+								firmata.returnAppToNormal();
+								firmata.enableReporting();
+								firmata.setAllPinsAsInput();
 							}
 						});
 						
