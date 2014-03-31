@@ -134,6 +134,7 @@ public class Jodem {
 				try {
 					sendFile(inputStream, retry);
 				} catch (InterruptedException e) {
+					if(timeout!=null)timeout.stopTimer();
 					return;
 				}
 			}
@@ -151,6 +152,7 @@ public class Jodem {
 				try {
 					sendFile(fileArray, retry);
 				} catch (InterruptedException e) {
+					if(timeout!=null)timeout.stopTimer();
 					return;
 				}
 			}
