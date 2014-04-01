@@ -123,6 +123,14 @@ public class SheeldsList extends Fragment {
 				}
 			}
 		}, 500);
+		getActivity().findViewById(R.id.getAvailableDevices)
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						launchShieldsOperationActivity();
+					}
+				});
 		super.onResume();
 	}
 
@@ -143,14 +151,6 @@ public class SheeldsList extends Fragment {
 	Handler searchActionHandler = new Handler();
 
 	private void initView() {
-		getActivity().findViewById(R.id.getAvailableDevices)
-				.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						launchShieldsOperationActivity();
-					}
-				});
 		shieldsListView = (ListViewReversed) getView().findViewById(
 				R.id.sheeldsList);
 		shieldsUIList = Arrays.asList(UIShield.values());

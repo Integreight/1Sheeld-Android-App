@@ -170,7 +170,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 		case R.id.login_to_twitter_menuitem:
 			((TwitterShield) getApplication().getRunningShields().get(
 					getControllerTag())).login();
-			buttonToLoggedIn();
+			// buttonToLoggedIn();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

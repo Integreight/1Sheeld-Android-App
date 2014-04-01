@@ -57,6 +57,14 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 			((T) ShieldFragmentParent.this).doOnServiceConnected();
 		getActivity().findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);
+		getActivity()
+				.findViewById(R.id.pinsFixedHandler)
+				.setVisibility(
+						getApplication().getRunningShields().get(
+								getControllerTag()) == null
+								|| getApplication().getRunningShields().get(
+										getControllerTag()).requiredPinsIndex == -1 ? View.GONE
+								: View.VISIBLE);
 		super.onStart();
 	}
 

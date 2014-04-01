@@ -58,7 +58,6 @@ public class MusicShieldSettings_AddFromMedia extends Fragment {
 					.getColumnIndex(MediaStore.Audio.Media.DATA);
 			PlaylistItem item = new PlaylistItem();
 			item.path = imagecursor.getString(dataColumnIndex);
-
 			item.name = item.path.substring(item.path.lastIndexOf("/") + 1);
 			items.add(item);
 		}

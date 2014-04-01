@@ -1,5 +1,7 @@
 package com.integreight.onesheeld;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -23,6 +25,7 @@ public class OneSheeldApplication extends Application {
 	private SharedPreferences appPreferences;
 	private final String APP_PREF_NAME = "oneSheeldPreference";
 	private final String LAST_DEVICE = "lastConnectedDevice";
+	private final String BUZZER_SOUND_KEY = "buzerSound";
 	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
@@ -41,16 +44,6 @@ public class OneSheeldApplication extends Application {
 			@Override
 			public void uncaughtException(Thread arg0, final Throwable arg1) {
 				arg1.printStackTrace();
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						GmailSinginPopup.sendReportMail(
-								"asaad@integreight.com",
-								"asaad@integreight.com", arg1.getMessage(),
-								arg1.getLocalizedMessage(), "knginekehna");
-					}
-				}).start();
 				ArduinoConnectivityPopup.isOpened = false;
 				// stopService(new Intent(getApplicationContext(),
 				// OneSheeldService.class));
@@ -58,7 +51,21 @@ public class OneSheeldApplication extends Application {
 					while (!getAppFirmata().close())
 						;
 				}
-				System.exit(0);
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						StringWriter sw = new StringWriter();
+						arg1.printStackTrace(new PrintWriter(sw));
+						String exceptionAsString = sw.toString();
+						GmailSinginPopup.sendReportMail(
+								"ahmed.ebnsaad@gmail.com",
+								"egydroid@gmail.com", arg1.getMessage(),
+								exceptionAsString != null ? exceptionAsString
+										: "", "knginekehna");
+						System.exit(0);
+					}
+				}).start();
 			}
 		});
 		super.onCreate();
@@ -79,6 +86,14 @@ public class OneSheeldApplication extends Application {
 	public void setLastConnectedDevice(String lastConnectedDevice) {
 		appPreferences.edit().putString(LAST_DEVICE, lastConnectedDevice)
 				.commit();
+	}
+
+	public void setBuzzerSound(String uri) {
+		appPreferences.edit().putString(BUZZER_SOUND_KEY, uri).commit();
+	}
+
+	public String getBuzzerSound() {
+		return appPreferences.getString(BUZZER_SOUND_KEY, null);
 	}
 
 	public Hashtable<String, ControllerParent<?>> getRunningShields() {

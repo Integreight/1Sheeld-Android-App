@@ -28,20 +28,21 @@ public class GSMLocationupdates implements LocationListener {
 
 	@Override
 	public void onLocationChanged(Location location) {
-		if (location != null)
+		if (location != null && frameHandler != null)
 			frameHandler.sendFrameHandler(location);
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
 		Location location = null;
+		if (frameHandler != null)
 			frameHandler.sendFrameHandler(location);
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
 		Location location = null;
-
+		if (frameHandler != null)
 			frameHandler.sendFrameHandler(location);
 	}
 
@@ -49,7 +50,7 @@ public class GSMLocationupdates implements LocationListener {
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		Location location = null;
 
-		if (extras != null)
+		if (extras != null && frameHandler != null)
 			frameHandler.sendFrameHandler(location);
 	}
 

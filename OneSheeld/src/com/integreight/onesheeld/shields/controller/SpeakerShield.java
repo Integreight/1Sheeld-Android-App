@@ -1,7 +1,12 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.media.MediaPlayer;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
@@ -61,9 +66,71 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		isResumed = true;
 	}
 
+	String uri;
+
 	public void playSound(int soundResourceId) {
-		if (mp == null)
-			mp = MediaPlayer.create(getApplication(), soundResourceId);
+		uri = getApplication().getBuzzerSound();
+		if (mp == null) {
+			if (uri == null)
+				mp = MediaPlayer.create(getApplication(), soundResourceId);
+			else {
+				mp = new MediaPlayer();
+				if (uri != null)
+					try {
+						mp = MediaPlayer.create(activity, Uri.parse(uri));
+					} catch (IllegalArgumentException e) {
+						// TODO Auto-generated catch block
+						Toast.makeText(
+								activity,
+								"Can't play the current buzz! Please, replace it",
+								Toast.LENGTH_SHORT).show();
+						e.printStackTrace();
+					} catch (SecurityException e) {
+						Toast.makeText(
+								activity,
+								"Can't play the current buzz! Please, replace it",
+								Toast.LENGTH_SHORT).show();
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IllegalStateException e) {
+						Toast.makeText(
+								activity,
+								"Can't play the current buzz! Please, replace it",
+								Toast.LENGTH_SHORT).show();
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		} else {
+			if (mp.isPlaying())
+				mp.stop();
+			if (uri != null) {
+				try {
+					// Ring
+					mp = MediaPlayer.create(activity, Uri.parse(uri));
+				} catch (IllegalArgumentException e) {
+					Toast.makeText(activity,
+							"Can't play the current buzz! Please, replace it",
+							Toast.LENGTH_SHORT).show();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
+					Toast.makeText(activity,
+							"Can't play the current buzz! Please, replace it",
+							Toast.LENGTH_SHORT).show();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					Toast.makeText(activity,
+							"Can't play the current buzz! Please, replace it",
+							Toast.LENGTH_SHORT).show();
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
+				mp = MediaPlayer.create(getApplication(), soundResourceId);
+			}
+		}
 		/*
 		 * if(mp.isPlaying()){ Resources res = getActivity().getResources();
 		 * AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
@@ -81,7 +148,11 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-
+		if (mp != null) {
+			if (mp.isPlaying())
+				mp.stop();
+			mp.release();
+		}
+		mp = null;
 	}
 }
