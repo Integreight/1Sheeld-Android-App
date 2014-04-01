@@ -253,6 +253,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 		backPressed = false;
 		found = 0;
 		// Register for broadcasts when a device is discovered
+		if (lockerTimeOut != null)
+			lockerTimeOut.stopTimer();
 		lockerTimeOut = new TimeOut(10, new TimeOut.TimeoutHandler() {
 
 			@Override
