@@ -19,14 +19,22 @@
         android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:id="@+id/firmatabootloaderusabutton"
+     android:text="Upgrade firmware for usa version from the app resources! (115200)"/>
+<Button
+        android:layout_gravity="center_horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:id="@+id/rxbootloaderbutton"
-     android:text="Upgrade Rx Led Flashing Firmware"/>
+     android:text="Upgrade Rx Led Flashing Firmware"
+     android:visibility="gone"/>
 <Button
         android:layout_gravity="center_horizontal"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:id="@+id/txbootloaderbutton"
-     android:text="Upgrade Tx Led Flashing Firmware"/>
+     android:text="Upgrade Tx Led Flashing Firmware"
+     android:visibility="gone"/>
     <ProgressBar
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
