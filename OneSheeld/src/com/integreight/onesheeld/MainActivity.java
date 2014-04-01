@@ -38,6 +38,11 @@ public class MainActivity extends FragmentActivity {
 		// setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true, false);
+		resetSlidingMenu();
+	}
+
+	@Override
+	protected void onResume() {
 		findViewById(R.id.cancelConnection).setOnClickListener(
 				new View.OnClickListener() {
 
@@ -53,7 +58,7 @@ public class MainActivity extends FragmentActivity {
 						new ArduinoConnectivityPopup(MainActivity.this).show();
 					}
 				});
-		resetSlidingMenu();
+		super.onResume();
 	}
 
 	private BackOnconnectionLostHandler backOnConnectionLostHandler;

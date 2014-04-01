@@ -25,6 +25,8 @@ public class MusicShield extends ControllerParent<MusicShield> {
 		public static byte NEXT = 0x05;
 		public static byte SEEK_FORWARD = 0x06;
 		public static byte SEEK_BACKWARD = 0x07;
+		public static byte VOLUME = 0x08;
+		public static byte SEEK = 0x09;
 	}
 
 	public MusicShield() {
@@ -46,7 +48,7 @@ public class MusicShield extends ControllerParent<MusicShield> {
 
 	private void init() {
 		try {
-			if (mediaFiles.size() > currentIndex && currentIndex >= 0) {
+			if (currentIndex < mediaFiles.size() && currentIndex >= 0) {
 				if (mediaPlayer.isPlaying()) {
 					mediaPlayer.stop();
 					mediaPlayer.release();
@@ -55,8 +57,12 @@ public class MusicShield extends ControllerParent<MusicShield> {
 						Uri.parse(mediaFiles.get(currentIndex).path));
 				// mediaPlayer.prepare();
 			} else {
-				if (currentIndex > 0) {
-					currentIndex -= 1;
+				if (mediaFiles.size() != 0) {
+					if (currentIndex > mediaFiles.size()) {
+						currentIndex = 0;
+					} else {
+						currentIndex = mediaFiles.size() - 1;
+					}
 					init();
 				}
 			}
@@ -71,9 +77,9 @@ public class MusicShield extends ControllerParent<MusicShield> {
 		}
 	}
 
-	public synchronized void seekTo(int pos, boolean playAfter) {
+	public synchronized void seekTo(int pos) {
 		if (mediaPlayer != null) {
-			playAfter = mediaPlayer.isPlaying();
+			boolean playAfter = mediaPlayer.isPlaying();
 			mediaPlayer.seekTo(pos);
 			if (playAfter)
 				mediaPlayer.start();
@@ -144,13 +150,25 @@ public class MusicShield extends ControllerParent<MusicShield> {
 				prev();
 			else if (frame.getFunctionId() == METHOD.SEEK_FORWARD) {
 				if (mediaPlayer != null) {
-					int pos = (int) (5 * mediaPlayer.getDuration() / 100);
-					seekTo(pos + mediaPlayer.getCurrentPosition(), true);
+					int pos = (int) (((int) frame.getArgument(0)[0])
+							* mediaPlayer.getDuration() / 100);
+					seekTo(pos + mediaPlayer.getCurrentPosition());
 				}
 			} else if (frame.getFunctionId() == METHOD.SEEK_BACKWARD) {
 				if (mediaPlayer != null) {
-					int pos = (int) (5 * mediaPlayer.getDuration() / 100);
-					seekTo(mediaPlayer.getCurrentPosition() - pos, true);
+					int pos = (int) (((int) frame.getArgument(0)[0])
+							* mediaPlayer.getDuration() / 100);
+					seekTo(mediaPlayer.getCurrentPosition() - pos);
+				}
+			} else if (frame.getFunctionId() == METHOD.VOLUME) {
+				if (mediaPlayer != null) {
+					int pos = ((int) frame.getArgument(0)[0]);
+					mediaPlayer.setVolume(0, pos);
+				}
+			} else if (frame.getFunctionId() == METHOD.SEEK) {
+				if (mediaPlayer != null) {
+					int pos = ((int) frame.getArgument(0)[0]);
+					seekTo(pos);
 				}
 			}
 		}
