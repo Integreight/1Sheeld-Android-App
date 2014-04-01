@@ -32,8 +32,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	@Override
 	public void onStart() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
+
 		initializeFirmata();
 		super.onStart();
 

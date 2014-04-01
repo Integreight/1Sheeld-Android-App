@@ -18,7 +18,7 @@ public class MicShield extends ControllerParent<MicShield> {
 	boolean isResumed = false;
 	private ShieldFrame frame;
 	public static final byte MIC_VALUE = 0x01;
-	private int counter = 0;
+	//private int counter = 0;
 
 	private final Runnable processMic = new Runnable() {
 		@Override
@@ -27,7 +27,7 @@ public class MicShield extends ControllerParent<MicShield> {
 			double amplitude = MicSoundMeter.getInstance().getAmplitudeEMA();
 			if (!Double.isInfinite(amplitude)) {
 				// send Frame and update UI
-				counter++;
+			//	counter++;
 				Log.d("MIC", "Amp = " + ampl);
 				ampl = amplitude;
 				frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);
@@ -35,12 +35,12 @@ public class MicShield extends ControllerParent<MicShield> {
 				activity.getThisApplication().getAppFirmata()
 						.sendShieldFrame(frame);
 
-				if (counter == 5) {
+				//if (counter == 5) {
 					if (isResumed)
 						if(eventHandler != null)
 						eventHandler.getAmplitude(ampl);
-					counter = 0;
-				}
+				//	counter = 0;
+				//}
 
 			}
 			// The Runnable is posted to run again here:

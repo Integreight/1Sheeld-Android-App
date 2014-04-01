@@ -148,7 +148,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	@Override
 	public void onLocationChanged(Location arg0) {
 		// TODO Auto-generated method stub
-		if (eventHandler != null) {
+		if (eventHandler != null && mLocationClient.isConnected()) {
 			eventHandler.onLangChanged(arg0.getLongitude() + "");
 			eventHandler.onLatChanged(arg0.getLatitude() + "");
 		}
