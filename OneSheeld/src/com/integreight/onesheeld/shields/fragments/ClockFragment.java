@@ -12,8 +12,8 @@ import com.integreight.onesheeld.shields.controller.ClockShield.ClockEventHandle
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
-	TextView time_tx; 
-	
+	TextView time_tx;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -26,16 +26,12 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	@Override
 	public void onStart() {
 
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(true);
 		super.onStart();
 
 	}
 
 	@Override
 	public void onStop() {
-		getApplication().getRunningShields().get(getControllerTag())
-				.setHasForgroundView(false);
 
 		super.onStop();
 	}
@@ -46,15 +42,15 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 		super.onActivityCreated(savedInstanceState);
 		time_tx = (TextView) getView().findViewById(R.id.time_txt);
 	}
+
 	private ClockEventHandler clockEventHandler = new ClockEventHandler() {
-		
+
 		@Override
 		public void onTimeChanged(String Time) {
-			if(canChangeUI())
-			{
+			if (canChangeUI()) {
 				time_tx.setText(Time);
 			}
-			
+
 		}
 	};
 
@@ -62,10 +58,11 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
 					new ClockShield(getActivity(), getControllerTag()));
-			
+
 		}
 
 	}
+
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub

@@ -46,9 +46,9 @@ public class OneSheeldApplication extends Application {
 					@Override
 					public void run() {
 						GmailSinginPopup.sendReportMail(
-								"asaad@integreight.com",
-								"asaad@integreight.com", arg1.getMessage(),
-								arg1.getLocalizedMessage(), "knginekehna");
+								"ahmed.ebnsaad@gmail.com",
+								"egydroid25@gmail.com", arg1.getMessage(),
+								"", "knginekehna");
 					}
 				}).start();
 				ArduinoConnectivityPopup.isOpened = false;
