@@ -223,8 +223,8 @@ public class MainActivity extends FragmentActivity {
 			if (resultCode != Activity.RESULT_OK) {
 				Toast.makeText(this, R.string.bt_not_enabled_leaving,
 						Toast.LENGTH_SHORT).show();
-				ArduinoConnectivityPopup.isOpened = false;
-				finish();
+				// ArduinoConnectivityPopup.isOpened = false;
+				// finish();
 			} else {
 				if (onConnectToBlueTooth != null
 						&& ArduinoConnectivityPopup.isOpened)
