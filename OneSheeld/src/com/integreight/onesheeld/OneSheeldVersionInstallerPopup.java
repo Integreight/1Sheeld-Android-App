@@ -124,7 +124,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
-				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_rxtx), 4);
+				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_pulsein_and_reset), 4);
 				textView.setText("Press reset now!");
 			}
 		});
