@@ -424,7 +424,7 @@ public class BluetoothService {
 						handler.onDataReceived(buffer, bytes);
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					//e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
 					connectionLost();
