@@ -19,7 +19,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	private static final byte BUZZER_OFF = (byte) 0x00;
 	private boolean isResumed = false;
 	MediaPlayer mp;
-	private static final int soundResourceId = R.raw.door_chime_sound;
+	private static final int soundResourceId = R.raw.buzzer_sound;
 
 	public SpeakerShield() {
 		super();
