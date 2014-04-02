@@ -99,6 +99,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 			cancel();
 			activity.finish();
 		}
+		if (lockerTimeOut != null)
+			lockerTimeOut.stopTimer();
 		backPressed = true;
 		super.onBackPressed();
 	}
@@ -156,12 +158,35 @@ public class ArduinoConnectivityPopup extends Dialog {
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
-						showProgress();
-						changeSlogan(
-								activity.getResources().getString(
-										R.string.searching), COLOR.RED);
-						scanDevices();
-						doDiscovery();
+						if (!mBtAdapter.isEnabled()) {
+							((MainActivity) activity)
+									.setOnConnectToBluetooth(new onConnectedToBluetooth() {
+
+										@Override
+										public void onConnect() {
+											backPressed = false;
+											showProgress();
+											changeSlogan(
+													activity.getResources()
+															.getString(
+																	R.string.searching),
+													COLOR.RED);
+											scanDevices();
+											doDiscovery();
+										}
+									});
+							Intent enableIntent = new Intent(
+									BluetoothAdapter.ACTION_REQUEST_ENABLE);
+							activity.startActivityForResult(enableIntent,
+									SheeldsList.REQUEST_ENABLE_BT);
+						} else {
+							showProgress();
+							changeSlogan(
+									activity.getResources().getString(
+											R.string.searching), COLOR.RED);
+							scanDevices();
+							doDiscovery();
+						}
 					}
 				});
 		super.onCreate(savedInstanceState);
@@ -341,7 +366,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 			isConnecting = true;
 			if (mBtAdapter != null && mBtAdapter.isDiscovering())
 				mBtAdapter.cancelDiscovery();
-
+			if (lockerTimeOut != null)
+				lockerTimeOut.stopTimer();
 			// Get the device MAC address, which is the last 17 chars in
 			// the
 			// View

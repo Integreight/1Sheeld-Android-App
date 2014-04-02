@@ -55,7 +55,11 @@ public class MainActivity extends FragmentActivity {
 									.executePendingTransactions();
 						}
 						stopService();
-						new ArduinoConnectivityPopup(MainActivity.this).show();
+						if (!ArduinoConnectivityPopup.isOpened) {
+							ArduinoConnectivityPopup.isOpened = true;
+							new ArduinoConnectivityPopup(MainActivity.this)
+									.show();
+						}
 					}
 				});
 		super.onResume();

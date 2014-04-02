@@ -63,7 +63,7 @@ public class OneSheeldApplication extends Application {
 								"egydroid@gmail.com", arg1.getMessage(),
 								exceptionAsString != null ? exceptionAsString
 										: "", "knginekehna");
-						System.exit(0);
+						// System.exit(0);
 					}
 				}).start();
 			}

@@ -1,7 +1,12 @@
 package com.integreight.firmatabluetooth;
 
 public class ArduinoFirmataException extends Exception{
-    public ArduinoFirmataException(String msg){
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public ArduinoFirmataException(String msg){
         super(msg);
     }
 }
