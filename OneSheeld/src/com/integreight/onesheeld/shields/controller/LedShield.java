@@ -8,8 +8,8 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LedShield extends ControllerParent<LedShield> {
 	public int connectedPin = -1;
-	private LedEventHandler eventHandler;
 	private boolean isLedOn;
+	private LedEventHandler eventHandler;
 
 	// public Led(ArduinoFirmata firmata, int connectedPin) {
 	// this.connectedPin = connectedPin;

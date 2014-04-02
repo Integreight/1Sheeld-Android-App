@@ -2,7 +2,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name" translatable="false">1Sheeld</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Clear Automatically Connecting 1Sheeld</string>
     <string name="hello_world">Hello world!</string>
     <string name="search_for_bluetooth">Search for bluetooth devices</string>
     <string name="disconnect_device">Disconnect 1Sheeld</string>

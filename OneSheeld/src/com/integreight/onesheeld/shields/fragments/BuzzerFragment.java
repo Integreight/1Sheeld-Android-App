@@ -5,14 +5,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
 import com.integreight.onesheeld.shields.fragments.settings.BuzzerShieldSettings;
 import com.integreight.onesheeld.shields.fragments.settings.MusicShieldSettings;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
@@ -27,12 +33,36 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 	@Override
 	public void onStart() {
-		hasSettings = true;
-		((MainActivity) getActivity())
-				.getSupportFragmentManager()
-				.beginTransaction()
-				.replace(R.id.settingsViewContainer,
-						BuzzerShieldSettings.getInstance()).commit();
+		// hasSettings = true;
+		// ((MainActivity) getActivity())
+		// .getSupportFragmentManager()
+		// .beginTransaction()
+		// .replace(R.id.settingsViewContainer,
+		// BuzzerShieldSettings.getInstance()).commit();
+		ConnectingPinsView.getInstance().reset(
+				getApplication().getRunningShields().get(getControllerTag()),
+				new OnPinSelectionListener() {
+
+					@Override
+					public void onSelect(ArduinoPin pin) {
+						if (pin != null) {
+							((SpeakerShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag()))
+									.setConnected(new ArduinoConnectedPin(
+											pin.microHardwarePin,
+											ArduinoFirmata.INPUT));
+							// toggleLed(getApplication().getAppFirmata()
+							// .digitalRead(pin.microHardwarePin));
+						} else {
+							((SpeakerShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).connectedPin = -1;
+							// toggleLed(false);
+						}
+
+					}
+				});
 		super.onStart();
 	}
 

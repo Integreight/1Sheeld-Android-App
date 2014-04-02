@@ -1,32 +1,59 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.io.IOException;
-
 import android.app.Activity;
 import android.media.MediaPlayer;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	private SpeakerEventHandler eventHandler;
-	private static final byte BUZZER_COMMAND = (byte) 0x08;
 	private static final byte BUZZER_ON = (byte) 0x01;
 	private static final byte BUZZER_OFF = (byte) 0x00;
 	private boolean isResumed = false;
-	MediaPlayer mp;
+	public int connectedPin = -1;
+	private boolean isLedOn;
+	private MediaPlayer mp;
 	private static final int soundResourceId = R.raw.buzzer_sound;
 
 	public SpeakerShield() {
 		super();
+		requiredPinsIndex = 0;
+		shieldPins = new String[] { "Buzzer" };
 	}
 
 	public SpeakerShield(Activity activity, String tag) {
 		super(activity, tag);
+	}
+
+	public boolean refreshLed() {
+		if (connectedPin != -1)
+			isLedOn = getApplication().getAppFirmata()
+					.digitalRead(connectedPin);
+		else
+			isLedOn = false;
+		if (isLedOn)
+			playSound();
+		else
+			stopBuzzer();
+		return isLedOn;
+	}
+
+	@Override
+	public void onDigital(int portNumber, int portData) {
+		refreshLed();
+		super.onDigital(portNumber, portData);
+	}
+
+	@Override
+	public void setConnected(ArduinoConnectedPin... pins) {
+		this.connectedPin = pins[0].getPinID();
+		super.setConnected(pins);
 	}
 
 	public void setSpeakerEventHandler(SpeakerEventHandler eventHandler) {
@@ -41,12 +68,12 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 
-		if (frame.getShieldId() == BUZZER_COMMAND) {
+		if (frame.getShieldId() == UIShield.BUZZER_SHIELD.getId()) {
 			byte argumentValue = frame.getArgument(0)[0];
 			switch (argumentValue) {
 			case BUZZER_ON:
 				// turn on bin
-				playSound(soundResourceId);
+				playSound();
 				if (isResumed)
 					eventHandler.onSpeakerChange(true);
 				break;
@@ -68,8 +95,8 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 
 	String uri;
 
-	public void playSound(int soundResourceId) {
-		uri = getApplication().getBuzzerSound();
+	public synchronized void playSound() {
+		uri = null;// getApplication().getBuzzerSound();
 		if (mp == null) {
 			if (uri == null)
 				mp = MediaPlayer.create(getApplication(), soundResourceId);
@@ -101,49 +128,47 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 						e.printStackTrace();
 					}
 			}
-		} else {
-			if (mp.isPlaying())
-				mp.stop();
-			if (uri != null) {
-				try {
-					// Ring
-					mp = MediaPlayer.create(activity, Uri.parse(uri));
-				} catch (IllegalArgumentException e) {
-					Toast.makeText(activity,
-							"Can't play the current buzz! Please, replace it",
-							Toast.LENGTH_SHORT).show();
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (SecurityException e) {
-					Toast.makeText(activity,
-							"Can't play the current buzz! Please, replace it",
-							Toast.LENGTH_SHORT).show();
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IllegalStateException e) {
-					Toast.makeText(activity,
-							"Can't play the current buzz! Please, replace it",
-							Toast.LENGTH_SHORT).show();
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} else {
-				mp = MediaPlayer.create(getApplication(), soundResourceId);
-			}
 		}
-		/*
-		 * if(mp.isPlaying()){ Resources res = getActivity().getResources();
-		 * AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
-		 * FileDescriptor fd = afd.getFileDescriptor(); mp.reset(); try {
-		 * mp.setDataSource(fd); mp.prepare(); } catch (IllegalArgumentException
-		 * e) { // TODO Auto-generated catch block e.printStackTrace(); } catch
-		 * (IllegalStateException e) { // TODO Auto-generated catch block
-		 * e.printStackTrace(); } catch (IOException e) { // TODO Auto-generated
-		 * catch block e.printStackTrace(); }
-		 * 
-		 * mp.start(); } else
-		 */
-		mp.start();
+		// else {
+		// if (uri != null) {
+		// try {
+		// // Ring
+		// if (!mp.isPlaying())
+		// mp = MediaPlayer.create(activity, Uri.parse(uri));
+		// } catch (IllegalArgumentException e) {
+		// Toast.makeText(activity,
+		// "Can't play the current buzz! Please, replace it",
+		// Toast.LENGTH_SHORT).show();
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (SecurityException e) {
+		// Toast.makeText(activity,
+		// "Can't play the current buzz! Please, replace it",
+		// Toast.LENGTH_SHORT).show();
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// } catch (IllegalStateException e) {
+		// Toast.makeText(activity,
+		// "Can't play the current buzz! Please, replace it",
+		// Toast.LENGTH_SHORT).show();
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// } else {
+		// if (!mp.isPlaying())
+		// mp = MediaPlayer.create(getApplication(), soundResourceId);
+		// }
+		// }
+		mp.setLooping(true);
+		if (!mp.isPlaying())
+			mp.start();
+	}
+
+	public synchronized void stopBuzzer() {
+		if (mp != null && mp.isPlaying()) {
+			mp.setLooping(false);
+			mp.pause();
+		}
 	}
 
 	@Override

@@ -108,6 +108,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public abstract void onNewShieldFrameReceived(ShieldFrame frame);
 
 	public Handler actionHandler = new Handler();
+	public Handler onDigitalActionHandler = new Handler();
 
 	private void setFirmataEventHandler() {
 		((OneSheeldApplication) activity.getApplication()).getAppFirmata()
@@ -137,18 +138,24 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 			});
 		}
 
+		Runnable onDigitalRunnable = new Runnable() {
+
+			@Override
+			public void run() {
+				if (hasConnectedPins)
+					((T) ControllerParent.this).onDigital(portNumber, portData);
+			}
+		};
+		private int portNumber, portData;
+
 		@Override
 		public void onDigital(final int portNumber, final int portData) {
-			if (isALive)
-				actionHandler.post(new Runnable() {
-
-					@Override
-					public void run() {
-						if (hasConnectedPins)
-							((T) ControllerParent.this).onDigital(portNumber,
-									portData);
-					}
-				});
+			if (isALive) {
+				onDigitalActionHandler.removeCallbacks(onDigitalRunnable);
+				this.portData = portData;
+				this.portNumber = portNumber;
+				onDigitalActionHandler.post(onDigitalRunnable);
+			}
 		}
 
 		@Override
