@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -94,13 +96,36 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	}
 
 	String uri;
+	private boolean isPrepared = false;
 
 	public synchronized void playSound() {
 		uri = null;// getApplication().getBuzzerSound();
 		if (mp == null) {
-			if (uri == null)
-				mp = MediaPlayer.create(getApplication(), soundResourceId);
-			else {
+			if (uri == null) {
+				mp = new MediaPlayer();
+				try {
+					mp.setDataSource(activity.getAssets()
+							.openFd("buzzer_sound.mp3").getFileDescriptor());
+					mp.prepareAsync();
+					mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+						@Override
+						public void onPrepared(MediaPlayer mp) {
+							isPrepared = true;
+							mp.start();
+						}
+					});
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			} else {
 				mp = new MediaPlayer();
 				if (uri != null)
 					try {
@@ -160,14 +185,18 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		// }
 		// }
 		mp.setLooping(true);
-		if (!mp.isPlaying())
+		if (!mp.isPlaying() && isPrepared) {
 			mp.start();
+		}
 	}
 
 	public synchronized void stopBuzzer() {
 		if (mp != null && mp.isPlaying()) {
 			mp.setLooping(false);
-			mp.pause();
+			mp.stop();
+			mp.release();
+			mp = null;
+			isPrepared = false;
 		}
 	}
 
