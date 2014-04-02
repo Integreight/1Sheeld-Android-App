@@ -1,6 +1,12 @@
 package com.integreight.onesheeld;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +21,7 @@ import android.widget.Toast;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
@@ -39,6 +46,45 @@ public class MainActivity extends FragmentActivity {
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true, false);
 		resetSlidingMenu();
+		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+
+			@Override
+			public void uncaughtException(Thread arg0, final Throwable arg1) {
+				arg1.printStackTrace();
+				ArduinoConnectivityPopup.isOpened = false;
+				// stopService(new Intent(getApplicationContext(),
+				// OneSheeldService.class));
+				moveTaskToBack(true);
+				if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
+					while (!((OneSheeldApplication) getApplication())
+							.getAppFirmata().close())
+						;
+				}
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						StringWriter sw = new StringWriter();
+						arg1.printStackTrace(new PrintWriter(sw));
+						String exceptionAsString = sw.toString();
+						GmailSinginPopup.sendReportMail(
+								"ahmed.ebnsaad@gmail.com",
+								"egydroid@gmail.com", arg1.getMessage(),
+								exceptionAsString != null ? exceptionAsString
+										: "", "knginekehna");
+						Intent in = new Intent(getIntent());
+						PendingIntent intent = PendingIntent
+								.getActivity(getBaseContext(), 0, in,
+										getIntent().getFlags());
+
+						AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+						mgr.set(AlarmManager.RTC,
+								System.currentTimeMillis() + 1000, intent);
+						System.exit(0);
+					}
+				}).start();
+			}
+		});
 	}
 
 	@Override

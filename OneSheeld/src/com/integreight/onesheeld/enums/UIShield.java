@@ -1,5 +1,8 @@
 package com.integreight.onesheeld.enums;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
@@ -54,7 +57,7 @@ public enum UIShield {
 			(byte) 0x01, "Sliders", 0xffc0034c,
 			R.drawable.shields_list_slider_symbol, false, SliderShield.class), LCD_SHIELD(
 			(byte) 0x17, "LCD", 0xff99bd03, R.drawable.shields_list_lcd_symbol,
-			false, LcdShield.class), MAGNETOMETER_SHIELD((byte) 0x0A,
+			false, LcdShield.class, false), MAGNETOMETER_SHIELD((byte) 0x0A,
 			"Magnetometer", 0xff40039f,
 			R.drawable.shields_list_magnetometer_symbol, false,
 			MagnetometerShield.class), PUSHBUTTON_SHIELD((byte) 0x03,
@@ -85,11 +88,11 @@ public enum UIShield {
 			0xff4c84e9, R.drawable.shields_list_gyroscope_symbol, false,
 			GyroscopeShield.class), FLASHLIGHT_SHIELD((byte) 0x05,
 			"Flashlight", 0xff0b4c8d,
-			R.drawable.shields_list_flashlight_symbol, false, EmptyShield.class), SKYPE_SHIELD(
-			(byte) 0x1F, "Skype", 0xff08c473,
-			R.drawable.shields_list_skype_symbol, false, SkypeShield.class), PROXIMITY_SHIELD(
-			(byte) 0x13, "Proximity", 0xff543c8d,
-			R.drawable.shields_list_proximity_symbol, false,
+			R.drawable.shields_list_flashlight_symbol, false,
+			EmptyShield.class, false), SKYPE_SHIELD((byte) 0x1F, "Skype",
+			0xff08c473, R.drawable.shields_list_skype_symbol, false,
+			SkypeShield.class), PROXIMITY_SHIELD((byte) 0x13, "Proximity",
+			0xff543c8d, R.drawable.shields_list_proximity_symbol, false,
 			ProximityShield.class), GRAVITY_SHIELD((byte) 0x14, "Gravity",
 			0xffd95342, R.drawable.shields_list_gravity_symbol, false,
 			GravityShield.class), ORIENTATION_SHIELD((byte) 0x0F,
@@ -107,17 +110,19 @@ public enum UIShield {
 			CameraShield.class), PHONE_SHIELD((byte) 0x20, "Phone", 0xffe9bd03,
 			R.drawable.shields_list_email_symbol, false, PhoneShield.class), NFC(
 			(byte) 0x20, "NFC", 0xff127303, R.drawable.shields_list_nfc_symbol,
-			false, EmptyShield.class), WIFI((byte) 0x20, "WIFI", 0xff08bbb2,
-			R.drawable.shields_list_wifi_symbol, false, EmptyShield.class), GSM(
-			(byte) 0x20, "GSM", 0xff5a0303, R.drawable.shields_list_gsm_symbol,
-			false, EmptyShield.class), GLCD((byte) 0x20, "GLCD", 0xff988564,
-			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class), EMAIL_SHIELD(
+			false, EmptyShield.class, false), WIFI((byte) 0x20, "WIFI",
+			0xff08bbb2, R.drawable.shields_list_wifi_symbol, false,
+			EmptyShield.class, false), GSM((byte) 0x20, "GSM", 0xff5a0303,
+			R.drawable.shields_list_gsm_symbol, false, EmptyShield.class, false), GLCD(
+			(byte) 0x20, "GLCD", 0xff988564,
+			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class, false), EMAIL_SHIELD(
 			(byte) 0x1E, "Email", 0xffd95342,
 			R.drawable.shields_list_gravity_symbol, false, EmailShield.class), CLOCK_SHIELD(
 			(byte) 0x21, "Clock", 0xffd95342,
 			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x21, "Keyboard", 0xffd95342,
-			R.drawable.shields_list_gravity_symbol, false, KeyboardShield.class);
+			R.drawable.shields_list_gravity_symbol, false,
+			KeyboardShield.class, false);
 
 	private byte id;
 	private String name;
@@ -126,10 +131,15 @@ public enum UIShield {
 	private boolean mainActivitySelection;
 	private static UIShield shieldsActivitySelection;
 	private static boolean isConnected = false;
+	private boolean isReleasable = true;
 	private Class<? extends ControllerParent<?>> shieldType;
 
 	public int getSymbolId() {
 		return symbolId;
+	}
+
+	public boolean isReleasable() {
+		return isReleasable;
 	}
 
 	// public int getMainBWImageStripId() {
@@ -176,6 +186,19 @@ public enum UIShield {
 		this.symbolId = symbolId;
 		this.mainActivitySelection = mainActivitySelection;
 		this.shieldType = shieldType;
+	}
+
+	private UIShield(byte id, String name, int mainImageStripId, int symbolId,
+			boolean mainActivitySelection,
+			Class<? extends ControllerParent<?>> shieldType,
+			boolean isReleasable) {
+		this.id = id;
+		this.name = name;
+		this.itemBackgroundColor = mainImageStripId;
+		this.symbolId = symbolId;
+		this.mainActivitySelection = mainActivitySelection;
+		this.shieldType = shieldType;
+		this.isReleasable = isReleasable;
 	}
 
 	public byte getId() {
@@ -270,4 +293,15 @@ public enum UIShield {
 		UIShield.isConnected = isConnected;
 	}
 
+	public static List<UIShield> valuesFiltered() {
+		UIShield[] vals = values();
+		List<UIShield> valsFiltered = new ArrayList<UIShield>();
+		for (int i = 0; i < vals.length; i++) {
+			UIShield cur = vals[i];
+			if (cur.isReleasable)
+				valsFiltered.add(cur);
+		}
+		vals = null;
+		return valsFiltered;
+	}
 }

@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 
@@ -39,35 +40,6 @@ public class OneSheeldApplication extends Application {
 		setConnectionHandler(new ConnectionDetector(getApplicationContext()));
 		appFont = Typeface.createFromAsset(getAssets(), "light.otf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-
-			@Override
-			public void uncaughtException(Thread arg0, final Throwable arg1) {
-				arg1.printStackTrace();
-				ArduinoConnectivityPopup.isOpened = false;
-				// stopService(new Intent(getApplicationContext(),
-				// OneSheeldService.class));
-				if (getAppFirmata() != null) {
-					while (!getAppFirmata().close())
-						;
-				}
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						StringWriter sw = new StringWriter();
-						arg1.printStackTrace(new PrintWriter(sw));
-						String exceptionAsString = sw.toString();
-						GmailSinginPopup.sendReportMail(
-								"ahmed.ebnsaad@gmail.com",
-								"egydroid@gmail.com", arg1.getMessage(),
-								exceptionAsString != null ? exceptionAsString
-										: "", "knginekehna");
-						// System.exit(0);
-					}
-				}).start();
-			}
-		});
 		super.onCreate();
 	}
 

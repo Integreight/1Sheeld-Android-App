@@ -10,10 +10,13 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.MainActivity;
@@ -31,7 +34,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 
 	public ShieldsListAdapter(Activity a) {
 		this.activity = (MainActivity) a;
-		this.shieldList = Arrays.asList(UIShield.values());
+		this.shieldList = UIShield.valuesFiltered();
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		app = (OneSheeldApplication) activity.getApplication();
@@ -53,6 +56,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	public View getView(final int position, View convertView,
 			final ViewGroup parent) {
 		View row = convertView;
+		// if (shield.isReleasable()) {
 		Holder holder = null;
 		if (row == null) {
 
@@ -134,6 +138,14 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 				}
 			}
 		});
+		// row.setLayoutParams(new AbsListView.LayoutParams(
+		// AbsListView.LayoutParams.MATCH_PARENT,
+		// AbsListView.LayoutParams.WRAP_CONTENT));
+		// } else {
+		// View v = new View(activity);
+		// v.setLayoutParams(new AbsListView.LayoutParams(0, 0));
+		// return v;
+		// }
 		return row;
 	}
 
@@ -147,7 +159,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	}
 
 	public void selectAll() {
-		shieldList = Arrays.asList(UIShield.values());
+		shieldList = UIShield.valuesFiltered();
 		applyToControllerTable();
 		notifyDataSetChanged();
 	}
@@ -156,7 +168,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		// for (UIShield item : shieldList) {
 		// item.setMainActivitySelection(false);
 		// }
-		shieldList = Arrays.asList(UIShield.values());
+		shieldList = UIShield.valuesFiltered();
 		applyToControllerTable();
 		notifyDataSetChanged();
 	}
@@ -236,14 +248,14 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 				FilterResults results = new FilterResults();
 				List<UIShield> filteredShields = new ArrayList<UIShield>();
 				if (arg0 != null) {
-					for (UIShield uiShield : UIShield.values()) {
+					for (UIShield uiShield : UIShield.valuesFiltered()) {
 						if (uiShield.getName().toLowerCase()
 								.startsWith(arg0.toString().toLowerCase())) {
 							filteredShields.add(uiShield);
 						}
 					}
 				} else
-					filteredShields = Arrays.asList(UIShield.values());
+					filteredShields = UIShield.valuesFiltered();
 				results.values = filteredShields;
 				results.count = filteredShields.size();
 				return results;
