@@ -92,15 +92,10 @@ public class ClockShield extends
 					eventHandler.onTimeChanged(hour + ":" + minutes + ":"
 							+ seconds);
 
-				if (handler != null) {
-					if(updateClockSeconds != null)
-					handler.removeCallbacks(updateClockSeconds);
-					handler.removeCallbacksAndMessages(null);
-				} else {
-					handler = new Handler();
-					if (updateClockSeconds != null)
-						handler.post(updateClockSeconds);
-				}
+				handler = new Handler();
+				if (updateClockSeconds != null)
+					handler.post(updateClockSeconds);
+
 			}
 		}
 	}
