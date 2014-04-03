@@ -5,7 +5,7 @@ import java.io.IOException;
 import android.media.MediaRecorder;
 
 public class MicSoundMeter {
-	//static final private double EMA_FILTER = 0.6;
+	// static final private double EMA_FILTER = 0.6;
 	static final private double POWER_REFERENCE = 0.00002;
 
 	private MediaRecorder mRecorder = null;
@@ -45,7 +45,11 @@ public class MicSoundMeter {
 
 	public void stop() {
 		if (mRecorder != null) {
-			mRecorder.stop();
+			try {
+				mRecorder.stop();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			mRecorder.release();
 			mRecorder = null;
 		}
@@ -58,14 +62,14 @@ public class MicSoundMeter {
 			return 0;
 
 	}
-//db= 20* log10(amplitude/baseline_amplitude);
+
+	// db= 20* log10(amplitude/baseline_amplitude);
 	public double getAmplitudeEMA() {
 		double amp = getAmplitude();
-		//mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+		// mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
 
-		mEMA = (20.0 * Math.log10(amp/POWER_REFERENCE));
-		return (mEMA-100.0);
+		mEMA = (20.0 * Math.log10(amp / POWER_REFERENCE));
+		return (mEMA - 100.0);
 	}
-
 
 }

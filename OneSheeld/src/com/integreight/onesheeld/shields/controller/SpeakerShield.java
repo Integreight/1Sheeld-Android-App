@@ -21,7 +21,8 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	public int connectedPin = -1;
 	private boolean isLedOn;
 	private MediaPlayer mp;
-	private static final int soundResourceId = R.raw.buzzer_sound;
+
+	// private static final int soundResourceId = R.raw.buzzer_sound;
 
 	public SpeakerShield() {
 		super();
@@ -83,6 +84,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 				// turn off bin
 				if (isResumed)
 					eventHandler.onSpeakerChange(false);
+				stopBuzzer();
 				break;
 			default:
 				break;

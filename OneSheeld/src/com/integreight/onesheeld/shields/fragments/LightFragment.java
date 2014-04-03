@@ -138,10 +138,9 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
 	@Override
 	public void onResume() {
-		// TODO Auto-generated method stub
-		super.onResume();
 		((LightShield) getApplication().getRunningShields().get(
 				getControllerTag())).setLightEventHandler(lightEventHandler);
+		super.onResume();
 
 	}
 }

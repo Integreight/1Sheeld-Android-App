@@ -11,6 +11,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 
 @SuppressWarnings("unchecked")
@@ -38,6 +39,24 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		if (getApplication().getRunningShields().get(getControllerTag()) != null)
 			getApplication().getRunningShields().get(getControllerTag())
 					.setHasForgroundView(true);
+		else {
+			ControllerParent<?> type = null;
+			UIShield shield = UIShield.valueOf(getControllerTag());
+			try {
+				type = shield.getShieldType().newInstance();
+			} catch (java.lang.InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (type != null) {
+				type.setActivity(getAppActivity()).setTag(shield.name());
+				getApplication().getRunningShields().get(getControllerTag())
+						.setHasForgroundView(true);
+			}
+		}
 		if (getApplication().getAppFirmata() == null) {
 			getApplication().addServiceEventHandler(
 					new OneSheeldServiceHandler() {

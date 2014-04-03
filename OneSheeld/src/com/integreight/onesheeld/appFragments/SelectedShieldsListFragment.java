@@ -179,7 +179,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 	private ShieldFragmentParent<?> addToCreatedListAndReturn(
 			UIShield uiShield, ShieldFragmentParent<?> fragment) {
-		fragment.setControllerTag(uiShield.getName());
+		fragment.setControllerTag(uiShield.name());
 		creadtedShields.put(uiShield, fragment);
 		return fragment;
 	}

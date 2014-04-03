@@ -363,7 +363,7 @@ public class SheeldsList extends Fragment {
 		for (UIShield shield : shieldsUIList) {
 			if (shield.isMainActivitySelection()
 					&& shield.getShieldType() != null) {
-				if (app.getRunningShields().get(shield.getName()) == null) {
+				if (app.getRunningShields().get(shield.name()) == null) {
 					ControllerParent<?> type = null;
 					try {
 						type = shield.getShieldType().newInstance();
@@ -375,7 +375,7 @@ public class SheeldsList extends Fragment {
 						e.printStackTrace();
 					}
 					type.setActivity((MainActivity) getActivity()).setTag(
-							shield.getName());
+							shield.name());
 				}
 				i++;
 			}
