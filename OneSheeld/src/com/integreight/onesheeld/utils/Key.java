@@ -198,7 +198,11 @@ public class Key extends Button {
 		// GradientDrawable background = (GradientDrawable) key.getBackground();
 		//
 		// background.setColorFilter(new LightingColorFilter(color, 0));
-		key.setBackgroundDrawable(bg);
+		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+			key.setBackgroundDrawable(bg);
+		} else {
+			key.setBackground(bg);
+		}
 
 		// key.setTextColor(bg);
 	}

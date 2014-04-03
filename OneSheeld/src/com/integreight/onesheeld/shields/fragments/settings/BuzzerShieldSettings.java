@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.fragments.settings;
 
-import java.util.ArrayList;
-
 import android.database.Cursor;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -12,13 +10,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.model.PlaylistItem;
 
 public class BuzzerShieldSettings extends Fragment {
 	public static BuzzerShieldSettings getInstance() {

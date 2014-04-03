@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
-import android.os.Handler;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;

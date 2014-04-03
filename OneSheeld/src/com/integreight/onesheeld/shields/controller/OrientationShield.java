@@ -46,6 +46,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 		super(activity, tag);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ControllerParent<OrientationShield> setTag(String tag) {
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -104,6 +105,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 	}
 
 	// Register a listener for the sensor.
+	@SuppressWarnings("deprecation")
 	public void registerSensorListener() {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION) != null) {
 			// Success! There's sensor.

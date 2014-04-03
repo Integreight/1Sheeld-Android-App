@@ -10,7 +10,7 @@
             android:id="@+id/open_bootloader_popup"
             android:orderInCategory="100"
             android:showAsAction="never"
-            android:title="Upgrade Firmware"/>
+            android:title="@string/upgradeFirmata"/>
     </group>
     <group android:menuCategory="container" >
         <item

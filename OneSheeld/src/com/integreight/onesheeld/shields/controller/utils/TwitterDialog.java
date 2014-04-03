@@ -10,9 +10,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -67,7 +70,6 @@ public class TwitterDialog extends Dialog {
 		mListener = listener;
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -85,10 +87,28 @@ public class TwitterDialog extends Dialog {
 		setUpTitle();
 		setUpWebView();
 		createCrossImage();
-
-		Display display = getWindow().getWindowManager().getDefaultDisplay();
+		int screenHeight = 0, screenWidth = 0;
+		try {
+			DisplayMetrics displaymetrics = new DisplayMetrics();
+			getWindow().getWindowManager().getDefaultDisplay()
+					.getMetrics(displaymetrics);
+			screenHeight = displaymetrics.heightPixels;
+			screenWidth = displaymetrics.widthPixels;
+		} catch (Exception ignored) {
+		}
+		// includes window decorations (statusbar bar/menu bar)
+		if (Build.VERSION.SDK_INT >= 17)
+			try {
+				Point realSize = new Point();
+				Display.class.getMethod("getRealSize", Point.class).invoke(
+						getWindow().getWindowManager().getDefaultDisplay(),
+						realSize);
+				screenHeight = realSize.y;
+				screenWidth = realSize.x;
+			} catch (Exception ignored) {
+			}
 		final float scale = getContext().getResources().getDisplayMetrics().density;
-		float[] dimensions = (display.getWidth() < display.getHeight()) ? DIMENSIONS_PORTRAIT
+		float[] dimensions = (screenWidth < screenHeight) ? DIMENSIONS_PORTRAIT
 				: DIMENSIONS_LANDSCAPE;
 
 		mContent.addView(mCrossImage, new LayoutParams(

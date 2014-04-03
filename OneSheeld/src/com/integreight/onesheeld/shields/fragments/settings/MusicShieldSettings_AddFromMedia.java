@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.fragments.settings;
 import java.util.ArrayList;
 
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -15,10 +14,8 @@ import android.widget.ListView;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.MediaAudioFilesListAdapter;
-import com.integreight.onesheeld.adapters.MusicPlayListAdapter;
 import com.integreight.onesheeld.model.PlaylistItem;
 import com.integreight.onesheeld.utils.OneShieldButton;
-import com.integreight.onesheeld.utils.database.MusicPlaylist;
 
 public class MusicShieldSettings_AddFromMedia extends Fragment {
 	public static MusicShieldSettings_AddFromMedia getInstance() {

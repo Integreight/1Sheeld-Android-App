@@ -5,15 +5,19 @@ package com.integreight.onesheeld.shields.controller.utils;
  *
  * @author Mukesh Yadav
  */
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.ViewGroup;
@@ -25,8 +29,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
-
-
 
 public class FoursquareDialog extends Dialog {
 
@@ -65,9 +67,28 @@ public class FoursquareDialog extends Dialog {
 		mContent.setOrientation(LinearLayout.VERTICAL);
 		setUpTitle();
 		setUpWebView();
-		Display display = getWindow().getWindowManager().getDefaultDisplay();
 		final float scale = getContext().getResources().getDisplayMetrics().density;
-		float[] dimensions = (display.getWidth() < display.getHeight()) ? DIMENSIONS_PORTRAIT
+		int screenHeight = 0, screenWidth = 0;
+		try {
+			DisplayMetrics displaymetrics = new DisplayMetrics();
+			getWindow().getWindowManager().getDefaultDisplay()
+					.getMetrics(displaymetrics);
+			screenHeight = displaymetrics.heightPixels;
+			screenWidth = displaymetrics.widthPixels;
+		} catch (Exception ignored) {
+		}
+		// includes window decorations (statusbar bar/menu bar)
+		if (Build.VERSION.SDK_INT >= 17)
+			try {
+				Point realSize = new Point();
+				Display.class.getMethod("getRealSize", Point.class).invoke(
+						getWindow().getWindowManager().getDefaultDisplay(),
+						realSize);
+				screenHeight = realSize.y;
+				screenWidth = realSize.x;
+			} catch (Exception ignored) {
+			}
+		float[] dimensions = (screenWidth < screenHeight) ? DIMENSIONS_PORTRAIT
 				: DIMENSIONS_LANDSCAPE;
 		addContentView(mContent, new FrameLayout.LayoutParams(
 				(int) (dimensions[0] * scale + 0.5f), (int) (dimensions[1]
@@ -76,8 +97,10 @@ public class FoursquareDialog extends Dialog {
 
 	private void setUpTitle() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		/*Drawable icon = getContext().getResources().getDrawable(
-				R.drawable.foursquare);*/
+		/*
+		 * Drawable icon = getContext().getResources().getDrawable(
+		 * R.drawable.foursquare);
+		 */
 		mTitle = new TextView(getContext());
 		mTitle.setText("Foursquare");
 		mTitle.setTextColor(Color.WHITE);
@@ -85,10 +108,12 @@ public class FoursquareDialog extends Dialog {
 		mTitle.setBackgroundColor(FB_BLUE);
 		mTitle.setPadding(MARGIN + PADDING, MARGIN, MARGIN, MARGIN);
 		mTitle.setCompoundDrawablePadding(MARGIN + PADDING);
-		//mTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null);
+		// mTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null,
+		// null);
 		mContent.addView(mTitle);
 	}
 
+	@SuppressLint("SetJavaScriptEnabled")
 	private void setUpWebView() {
 		mWebView = new WebView(getContext());
 		mWebView.setVerticalScrollBarEnabled(false);
@@ -127,7 +152,7 @@ public class FoursquareDialog extends Dialog {
 			} else if (url.contains(DISPLAY_STRING)) {
 				return false;
 			}
-			
+
 			getContext().startActivity(
 					new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 			return true;

@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.KeyboardShield;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;

@@ -7,15 +7,11 @@ import android.view.ViewGroup;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.Log;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
-import com.integreight.onesheeld.shields.fragments.settings.BuzzerShieldSettings;
-import com.integreight.onesheeld.shields.fragments.settings.MusicShieldSettings;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;

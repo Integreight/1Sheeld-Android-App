@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.SurfaceHolder;
@@ -75,7 +76,8 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 
 			// tells Android that this surface will have its data constantly
 			// replaced
-			sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+			if (Build.VERSION.SDK_INT < 11)
+				sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 		} else {
 			// display in long period of time
@@ -226,17 +228,16 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 								Toast.LENGTH_LONG).show();
 						finish();
 					}
-				}/* else {
-					// API dosen't support front camera or no front camera
-					Log.d("Camera",
-							"API dosen't support front camera or no front camera");
-					Toast.makeText(
-							getApplicationContext(),
-							"API dosen't support front camera or no front camera",
-							Toast.LENGTH_LONG).show();
-
-					finish();
-				}*/
+				}/*
+				 * else { // API dosen't support front camera or no front camera
+				 * Log.d("Camera",
+				 * "API dosen't support front camera or no front camera");
+				 * Toast.makeText( getApplicationContext(),
+				 * "API dosen't support front camera or no front camera",
+				 * Toast.LENGTH_LONG).show();
+				 * 
+				 * finish(); }
+				 */
 
 			}
 		} else {

@@ -15,7 +15,7 @@ import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
-	private PhoneEventHandler eventHandler;
+	// private PhoneEventHandler eventHandler;
 	private static final byte PHONE_COMMAND = (byte) 0x20;
 	private static final byte CALL_METHOD_ID = (byte) 0x01;
 	private PhoneCallStateListener phoneListener;
@@ -57,7 +57,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 	}
 
 	public void setPhoneEventHandler(PhoneEventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+		// this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
 
@@ -106,8 +106,9 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 	public void reset() {
 		// TODO Auto-generated method stub
 		frame = null;
-		if(phoneListener != null && telephonyManager != null)
-		telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_NONE);
+		if (phoneListener != null && telephonyManager != null)
+			telephonyManager.listen(phoneListener,
+					PhoneStateListener.LISTEN_NONE);
 	}
 
 }

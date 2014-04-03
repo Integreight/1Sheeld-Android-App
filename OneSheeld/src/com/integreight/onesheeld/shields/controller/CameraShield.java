@@ -10,7 +10,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class CameraShield extends ControllerParent<CameraShield> implements
 		CameraFragmentHandler {
-	private CameraEventHandler eventHandler;
+	// private CameraEventHandler eventHandler;
 	private static final byte CAMERA_COMMAND = (byte) 0x15;
 	private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
 	private static final byte FLASH_METHOD_ID = (byte) 0x02;
@@ -32,7 +32,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	}
 
 	public void setCameraEventHandler(CameraEventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+		// this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
 
@@ -75,7 +75,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				front_translucent.putExtra("Front_Request", true);
 				front_translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 				getApplication().startActivity(front_translucent);
-				
+
 			default:
 				break;
 			}

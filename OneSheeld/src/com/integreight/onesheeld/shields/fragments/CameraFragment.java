@@ -2,13 +2,8 @@ package com.integreight.onesheeld.shields.fragments;
 
 import java.io.FileOutputStream;
 
-import android.graphics.Bitmap;
-import android.hardware.Camera;
-import android.hardware.Camera.Parameters;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -19,20 +14,20 @@ import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHand
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
-	private SurfaceView sv;
+	// private SurfaceView sv;
 
 	// a bitmap to display the captured image
-	private Bitmap bmp;
+	// private Bitmap bmp;
 	FileOutputStream fo;
 
 	// Camera variables
 	// a surface holder
-	private SurfaceHolder sHolder;
+	// private SurfaceHolder sHolder;
 	// a variable to control the camera
-	private Camera mCamera;
+	// private Camera mCamera;
 	// the camera parameters
-	private Parameters parameters;
-	private String FLASH_MODE = "on";
+	// private Parameters parameters;
+	// private String FLASH_MODE = "on";
 	private CameraFragmentHandler fragmentHandler;
 
 	@Override
