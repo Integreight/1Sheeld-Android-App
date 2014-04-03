@@ -34,7 +34,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -108,8 +109,9 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 			// Success! There's sensor.
 			if (!isHandlerLive) {
 				handler = new Handler();
-				mSensorManager.registerListener(this, mOrientation,
-						SensorManager.SENSOR_DELAY_NORMAL);
+				if (mOrientation != null)
+					mSensorManager.registerListener(this, mOrientation,
+							SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);

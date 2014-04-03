@@ -34,6 +34,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 			flag = true;
 			// The Runnable is posted to run again here:
+			if (handler != null)
 			handler.postDelayed(this, PERIOD);
 		}
 	};
@@ -100,8 +101,9 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			// Success! There's sensor.
 			if (!isHandlerLive) {
 				handler = new Handler();
-				mSensorManager.registerListener(this, mPressure,
-						SensorManager.SENSOR_DELAY_NORMAL);
+				if (mPressure != null)
+					mSensorManager.registerListener(this, mPressure,
+							SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
@@ -125,9 +127,11 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 			mSensorManager.unregisterListener(this, mPressure);
 			mSensorManager.unregisterListener(this);
+			if (processSensors != null)
 			handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
+			frame = null;
 		}
 	}
 

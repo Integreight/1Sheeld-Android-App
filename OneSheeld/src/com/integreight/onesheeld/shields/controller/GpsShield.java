@@ -29,7 +29,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	private Location lastLocation;
 	private ShieldFrame frame;
 
-	Handler handler;
 	int PERIOD = 5000;
 
 	public GpsShield() {
@@ -69,7 +68,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
 		mLocationClient = new LocationClient(getActivity()
 				.getApplicationContext(), this, this);
-		mLocationClient.connect();
+		if (mLocationClient != null)
+			mLocationClient.connect();
 
 	}
 
@@ -77,13 +77,14 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mUpdatesRequested = false;
 		if (servicesConnected() && mLocationClient.isConnected()) {
 			mLocationClient.removeLocationUpdates(this);
+			mLocationClient.disconnect();
 		}
+		frame = null;
 		// After disconnect() is called, the client is considered "dead".
-		mLocationClient.disconnect();
 	}
 
 	private void startPeriodicUpdates() {
-		if (servicesConnected()) {
+		if (servicesConnected() && mLocationClient != null) {
 			lastLocation = mLocationClient.getLastLocation();
 			if (lastLocation != null) {
 				Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
@@ -98,7 +99,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 					eventHandler.onLatChanged(lastLocation.getLatitude() + "");
 				}
 			} else {
- 				GSMLocationupdates gsmLocationupdates = new GSMLocationupdates(
+				GSMLocationupdates gsmLocationupdates = new GSMLocationupdates(
 						getApplication().getApplicationContext());
 				gsmLocationupdates.updateLocation();
 
@@ -166,7 +167,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	@Override
 	public void onConnected(Bundle arg0) {
 		// TODO Auto-generated method stub
-		if (mUpdatesRequested && servicesConnected()) {
+		if (mUpdatesRequested && servicesConnected()
+				&& mLocationRequest != null && mLocationClient != null) {
 			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 			startPeriodicUpdates();
 		}

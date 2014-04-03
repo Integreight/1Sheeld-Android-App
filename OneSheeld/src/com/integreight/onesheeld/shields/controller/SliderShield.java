@@ -14,8 +14,6 @@ public class SliderShield extends ControllerParent<SliderShield> {
 	private static final byte DATA_IN = 0x01;
 	private byte sValue = 0;
 
-
-
 	public SliderShield() {
 		super();
 		requiredPinsIndex = 1;
@@ -57,7 +55,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-
+		sf = null;
 	}
 
 }

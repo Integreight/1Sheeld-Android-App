@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
 
+import com.google.android.gms.internal.m;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -34,6 +35,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 			flag = true;
 			// The Runnable is posted to run again here:
+			if(handler != null)
 			handler.postDelayed(this, PERIOD);
 		}
 	};
@@ -111,6 +113,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 			// Success! There's sensor.
 			if (!isHandlerLive) {
 				handler = new Handler();
+				if(mAccelerometer != null)
 				mSensorManager.registerListener(this, mAccelerometer,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
@@ -136,7 +139,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 			mSensorManager.unregisterListener(this, mAccelerometer);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 		}

@@ -77,12 +77,14 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 				// turn on bin
 				playSound();
 				if (isResumed)
-					eventHandler.onSpeakerChange(true);
+					if (eventHandler != null)
+						eventHandler.onSpeakerChange(true);
 				break;
 			case BUZZER_OFF:
 				// turn off bin
 				if (isResumed)
-					eventHandler.onSpeakerChange(false);
+					if (eventHandler != null)
+						eventHandler.onSpeakerChange(false);
 				break;
 			default:
 				break;

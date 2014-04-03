@@ -34,7 +34,8 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -107,7 +108,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 	public void registerSensorListener() {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
 			// Success! There's sensor.
-			if (!isHandlerLive) {
+			if (!isHandlerLive && mGyroscope != null) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mGyroscope,
 						SensorManager.SENSOR_DELAY_NORMAL);
@@ -135,10 +136,12 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 
 			mSensorManager.unregisterListener(this, mGyroscope);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 		}
+		frame = null;
 	}
 
 	public static interface GyroscopeEventHandler {

@@ -58,6 +58,7 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
 	@Override
 	public void reset() {
 		keyboardEventHandler = null;
+		frame = null;
 	}
 
 }

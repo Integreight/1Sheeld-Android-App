@@ -34,7 +34,8 @@ public class LightShield extends ControllerParent<LightShield> implements
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -82,8 +83,8 @@ public class LightShield extends ControllerParent<LightShield> implements
 					.sendShieldFrame(frame);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
-			if(eventHandler != null)
-			eventHandler.onSensorValueChangedFloat(event.values[0] + "");
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 			//
 			oldInput = event.values[0];
 			flag = false;
@@ -92,15 +93,17 @@ public class LightShield extends ControllerParent<LightShield> implements
 
 	// Register a listener for the sensor.
 	public void registerSensorListener() {
-		if (mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null) {
+		if (mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null
+				&& mLight != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mLight,
 						SensorManager.SENSOR_DELAY_NORMAL);
-				handler.post(processSensors);
-				if(eventHandler != null)
-				eventHandler.isDeviceHasSensor(true);
+				if (processSensors != null)
+					handler.post(processSensors);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Light");
@@ -108,8 +111,8 @@ public class LightShield extends ControllerParent<LightShield> implements
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Light");
-			if(eventHandler != null)
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}
@@ -121,9 +124,11 @@ public class LightShield extends ControllerParent<LightShield> implements
 
 			mSensorManager.unregisterListener(this, mLight);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
+			frame = null;
 
 		}
 	}

@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
@@ -117,7 +118,8 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 			lastNotificationText = notificationText;
 			if (frame.getFunctionId() == NOTIFY_PHONE_METHOD_ID) {
 				showNotification(notificationText);
-				eventHandler.onNotificationReceive(notificationText);
+				if (eventHandler != null)
+					eventHandler.onNotificationReceive(notificationText);
 			}
 
 		}

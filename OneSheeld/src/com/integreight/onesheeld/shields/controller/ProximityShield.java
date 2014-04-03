@@ -34,7 +34,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -101,7 +102,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 				handler = new Handler();
 				mSensorManager.registerListener(this, mProximity,
 						SensorManager.SENSOR_DELAY_NORMAL);
-				handler.post(processSensors);
+				if (processSensors != null)
+					handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
@@ -124,9 +126,11 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 			mSensorManager.unregisterListener(this, mProximity);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
+			frame = null;
 		}
 	}
 

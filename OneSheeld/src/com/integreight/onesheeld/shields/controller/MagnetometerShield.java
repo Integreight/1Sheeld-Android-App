@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 		implements SensorEventListener {
-	public static final byte MAGNETOMETER_VALUE=0x01; 
+	public static final byte MAGNETOMETER_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mMagnetometer;
 	private MagnetometerEventHandler eventHandler;
@@ -24,8 +24,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
-	float oldInput_x = 0,oldInput_y = 0, oldInput_z = 0 ;
-	boolean isFirstTime=true;
+	float oldInput_x = 0, oldInput_y = 0, oldInput_z = 0;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -34,7 +34,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -55,7 +56,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 		return super.setTag(tag);
 	}
 
-	public void setMagnetometerEventHandler(MagnetometerEventHandler eventHandler) {
+	public void setMagnetometerEventHandler(
+			MagnetometerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
@@ -74,9 +76,13 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (flag&&(oldInput_x!=event.values[0]||oldInput_y!=event.values[1]||oldInput_z!=event.values[2]||isFirstTime)) {
+		if (flag
+				&& (oldInput_x != event.values[0]
+						|| oldInput_y != event.values[1]
+						|| oldInput_z != event.values[2] || isFirstTime)) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.MAGNETOMETER_SHIELD.getId(), MAGNETOMETER_VALUE);
+			frame = new ShieldFrame(UIShield.MAGNETOMETER_SHIELD.getId(),
+					MAGNETOMETER_VALUE);
 			isFirstTime = false;
 			oldInput_x = event.values[0];
 			oldInput_y = event.values[1];
@@ -87,8 +93,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 			frame.addFloatArgument(event.values[2]);
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-			if(eventHandler != null)
-			eventHandler.onSensorValueChangedFloat(event.values);
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
 			Log.d("Sensor Data of Y", event.values[1] + "");
@@ -109,8 +115,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 				mSensorManager.registerListener(this, mMagnetometer,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				if(eventHandler != null)
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Magnetometer");
@@ -118,8 +124,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Magnetometer");
-			if(eventHandler != null)
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}
@@ -131,7 +137,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 			mSensorManager.unregisterListener(this, mMagnetometer);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 		}
@@ -149,6 +156,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	public void reset() {
 		// TODO Auto-generated method stub
 		this.unegisterSensorListener();
+		frame = null;
 
 	}
 

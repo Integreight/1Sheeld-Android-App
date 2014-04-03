@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GravityShield extends ControllerParent<GravityShield> implements
 		SensorEventListener {
-	public static final byte GRAVITY_VALUE=0x01;
+	public static final byte GRAVITY_VALUE = 0x01;
 	private SensorManager mSensorManager;
 	private Sensor mGravity;
 	private GravityEventHandler eventHandler;
@@ -24,8 +24,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
-	float oldInput_x = 0,oldInput_y = 0, oldInput_z = 0 ;
-	boolean isFirstTime=true;
+	float oldInput_x = 0, oldInput_y = 0, oldInput_z = 0;
+	boolean isFirstTime = true;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -34,7 +34,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -73,9 +74,13 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		if (flag&&(oldInput_x!=event.values[0]||oldInput_y!=event.values[1]||oldInput_z!=event.values[2]||isFirstTime)) {
+		if (flag
+				&& (oldInput_x != event.values[0]
+						|| oldInput_y != event.values[1]
+						|| oldInput_z != event.values[2] || isFirstTime)) {
 			// TODO Auto-generated method stub
-			frame = new ShieldFrame(UIShield.GRAVITY_SHIELD.getId(), GRAVITY_VALUE);
+			frame = new ShieldFrame(UIShield.GRAVITY_SHIELD.getId(),
+					GRAVITY_VALUE);
 			isFirstTime = false;
 			oldInput_x = event.values[0];
 			oldInput_y = event.values[1];
@@ -86,8 +91,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			frame.addFloatArgument(event.values[2]);
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-			if(eventHandler != null)
-			eventHandler.onSensorValueChangedFloat(event.values);
+			if (eventHandler != null)
+				eventHandler.onSensorValueChangedFloat(event.values);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
 			Log.d("Sensor Data of Y", event.values[1] + "");
@@ -103,13 +108,13 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	public void registerSensorListener() {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
 			// Success! There's sensor.
-			if (!isHandlerLive) {
+			if (!isHandlerLive && mGravity != null) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mGravity,
 						SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
-				if(eventHandler != null)
-				eventHandler.isDeviceHasSensor(true);
+				if (eventHandler != null)
+					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
 			} else {
 				Log.d("Your Sensor is registered", "Gravity");
@@ -117,8 +122,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Gravity");
-			if(eventHandler != null)
-			eventHandler.isDeviceHasSensor(false);
+			if (eventHandler != null)
+				eventHandler.isDeviceHasSensor(false);
 
 		}
 	}
@@ -130,10 +135,12 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 			mSensorManager.unregisterListener(this, mGravity);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 		}
+		frame = null;
 	}
 
 	public static interface GravityEventHandler {
