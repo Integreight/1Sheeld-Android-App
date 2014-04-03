@@ -78,7 +78,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 									// TODO Auto-generated method stub
 									OneSheeldVersionInstallerPopup.this.setCancelable(false);
 									firmata.prepareAppForSendingFirmware();
-									
+									firmata.resetMicro();
 									jodem.send(binaryData, 4);
 									textView.setText("Press reset now!");
 									progressBar.setProgress(0);
@@ -129,6 +129,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
+				firmata.resetMicro();
 				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_pulsein_rxtx), 4);
 				textView.setText("Press reset now!");
 			}
@@ -146,6 +147,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
+				firmata.resetMicro();
 				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_usa_with_reset), 4);
 				textView.setText("Press reset now!");
 			}
@@ -163,6 +165,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
+				firmata.resetMicro();
 				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_rx_flash), 4);
 				textView.setText("Press reset now!");
 			}
@@ -180,6 +183,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 				rxButton.setEnabled(false);
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
+				firmata.resetMicro();
 				jodem.send(activity.getResources().openRawResource(R.raw.onesheeld_tx_flash), 4);
 				textView.setText("Press reset now!");
 			}
