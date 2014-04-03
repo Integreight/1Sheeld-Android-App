@@ -54,6 +54,7 @@ public class ArduinoFirmata {
 	private final byte SYSTEM_RESET = (byte) 0xFF;
 	private final byte START_SYSEX = (byte) 0xF0;
 	private final byte END_SYSEX = (byte) 0xF7;
+	private final byte RESET_MICRO = (byte) 0x60;
 	private final byte BLUETOOTH_RESET = (byte) 0x61;
 	// private final byte IS_ALIVE = (byte) 0x62;
 	private final byte FIRMWARE_VERSION_QUERY = (byte) 0x63;
@@ -75,6 +76,10 @@ public class ArduinoFirmata {
 
 	public boolean isUartInit() {
 		return isUartInit;
+	}
+	
+	public void resetMicro(){
+		sysex(RESET_MICRO, new byte[]{});
 	}
 
 	// public static final int MESSAGE_DEVICE_NAME =
