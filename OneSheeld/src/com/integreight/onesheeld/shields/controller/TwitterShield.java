@@ -177,6 +177,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 							editor.putString(PREF_KEY_TWITTER_USERNAME,
 									TwitterAuthorization.TWITTER_USER_NAME);
 							editor.putBoolean(PREF_KEY_TWITTER_LOGIN, true);
+							if (eventHandler != null)
 							eventHandler
 									.onTwitterLoggedIn(TwitterAuthorization.TWITTER_USER_NAME);
 							// Commit the edits!

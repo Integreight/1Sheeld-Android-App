@@ -36,7 +36,8 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		smsListener = new SmsListener();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-		smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
+		if (smsReceiveEventHandler != null)
+			smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
 		getActivity().registerReceiver(smsListener, filter);
 		return super.setTag(tag);
 	}
@@ -63,11 +64,11 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		try {
 			SmsManager smsManager = SmsManager.getDefault();
 			smsManager.sendTextMessage(smsNumber, null, smsText, null, null);
-			if(eventHandler != null)
-			eventHandler.onSmsSent(smsText, smsText);
+			if (eventHandler != null)
+				eventHandler.onSmsSent(smsText, smsText);
 		} catch (Exception e) {
-			if(eventHandler != null)
-			eventHandler.onSmsFail(e.getMessage());
+			if (eventHandler != null)
+				eventHandler.onSmsFail(e.getMessage());
 
 			e.printStackTrace();
 		}
@@ -129,17 +130,16 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		// TODO Auto-generated method stub
 		frame = null;
 		smsListener = null;
-		
-		try{
+
+		try {
 			getActivity().unregisterReceiver(smsListener);
-		}catch (Exception e) {
+		} catch (Exception e) {
 			// TODO: handle exception
 
 		}
 	}
 
-	public void sendSmsToArduino ()
-	{
+	public void sendSmsToArduino() {
 		smsListener.sendSMS();
 	}
 }

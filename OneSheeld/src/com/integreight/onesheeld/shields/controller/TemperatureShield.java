@@ -34,7 +34,8 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 			flag = true;
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -101,8 +102,9 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 			// Success! There's sensor.
 			if (!isHandlerLive) {
 				handler = new Handler();
-				mSensorManager.registerListener(this, mTemperature,
-						SensorManager.SENSOR_DELAY_NORMAL);
+				if (mTemperature != null)
+					mSensorManager.registerListener(this, mTemperature,
+							SensorManager.SENSOR_DELAY_NORMAL);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
@@ -127,9 +129,11 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 			mSensorManager.unregisterListener(this, mTemperature);
 			mSensorManager.unregisterListener(this);
-			handler.removeCallbacks(processSensors);
+			if (processSensors != null)
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
+			frame = null;
 		}
 	}
 

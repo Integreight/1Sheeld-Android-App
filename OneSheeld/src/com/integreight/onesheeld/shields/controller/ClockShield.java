@@ -48,7 +48,8 @@ public class ClockShield extends
 			}
 			calendar = null;
 			frame = null;
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 
 		}
 	};
@@ -92,11 +93,13 @@ public class ClockShield extends
 							+ seconds);
 
 				if (handler != null) {
+					if(updateClockSeconds != null)
 					handler.removeCallbacks(updateClockSeconds);
 					handler.removeCallbacksAndMessages(null);
 				} else {
 					handler = new Handler();
-					handler.post(updateClockSeconds);
+					if (updateClockSeconds != null)
+						handler.post(updateClockSeconds);
 				}
 			}
 		}
@@ -126,7 +129,8 @@ public class ClockShield extends
 	public void reset() {
 		// TODO Auto-generated method stub
 		if (handler != null) {
-			handler.removeCallbacks(updateClockSeconds);
+			if (updateClockSeconds != null)
+				handler.removeCallbacks(updateClockSeconds);
 			handler.removeCallbacksAndMessages(null);
 		}
 		if (m_timeChangedReceiver != null)

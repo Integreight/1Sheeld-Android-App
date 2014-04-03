@@ -26,10 +26,8 @@ public class MicShield extends ControllerParent<MicShield> {
 			// Do work with the MIC values.
 			double amplitude = MicSoundMeter.getInstance().getAmplitudeEMA();
 			if (!Double.isInfinite(amplitude)) {
-				// send Frame and update UI
-				// counter++;
-				Log.d("MIC", "Amp = " + ampl);
 				ampl = amplitude;
+				Log.d("MIC", "Amp = " + ampl);
 				frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);
 				frame.addByteArgument((byte) Math.round(ampl));
 				activity.getThisApplication().getAppFirmata()
@@ -44,7 +42,8 @@ public class MicShield extends ControllerParent<MicShield> {
 
 			}
 			// The Runnable is posted to run again here:
-			handler.postDelayed(this, PERIOD);
+			if (handler != null)
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -79,7 +78,8 @@ public class MicShield extends ControllerParent<MicShield> {
 	public void startMic() {
 		MicSoundMeter.getInstance().start();
 		handler = new Handler();
-		handler.post(processMic);
+		if (processMic != null)
+			handler.post(processMic);
 	}
 
 	public void stopMic() {
@@ -88,6 +88,7 @@ public class MicShield extends ControllerParent<MicShield> {
 				handler.removeCallbacks(processMic);
 		}
 		MicSoundMeter.getInstance().stop();
+		frame = null;
 	}
 
 	public static interface MicEventHandler {

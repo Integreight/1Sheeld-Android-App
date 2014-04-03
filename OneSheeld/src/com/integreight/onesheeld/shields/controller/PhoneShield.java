@@ -106,6 +106,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 	public void reset() {
 		// TODO Auto-generated method stub
 		frame = null;
+		if(phoneListener != null && telephonyManager != null)
 		telephonyManager.listen(phoneListener, PhoneStateListener.LISTEN_NONE);
 	}
 

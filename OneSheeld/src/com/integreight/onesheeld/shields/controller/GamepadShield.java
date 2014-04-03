@@ -137,6 +137,6 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-
+		sf = null;
 	}
 }
