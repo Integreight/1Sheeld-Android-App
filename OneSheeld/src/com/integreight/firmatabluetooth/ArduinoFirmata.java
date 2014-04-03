@@ -67,9 +67,6 @@ public class ArduinoFirmata {
 	private final byte UART_BEGIN = (byte) 0x01;
 	private final byte UART_END = (byte) 0x00;
 
-	// public final char STX = (byte)0x02;
-	// public final char ETX = (byte)0x03;
-
 	Handler uiThreadHandler;
 
 	boolean isUartInit = false;
@@ -137,10 +134,10 @@ public class ArduinoFirmata {
 	private BluetoothService bluetoothService;
 	private Context context;
 
-	public String getBoardVersion() {
-		return String.valueOf(majorVersion) + "."
-				+ String.valueOf(minorVersion);
-	}
+//	public String getBoardVersion() {
+//		return String.valueOf(majorVersion) + "."
+//				+ String.valueOf(minorVersion);
+//	}
 
 	public int getBTState() {
 		return bluetoothService.getState();
@@ -367,8 +364,7 @@ public class ArduinoFirmata {
 						
 						if (sysexCommand == FIRMWARE_VERSION_QUERY) {
 							if (sysexData.length >= 2) {
-								minorVersion = sysexData[0];
-								majorVersion = sysexData[1];
+								setVersion(sysexData[1], sysexData[0]);
 								for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
 									handler.onVersionReceived(minorVersion,
 											majorVersion);
