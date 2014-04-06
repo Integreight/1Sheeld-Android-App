@@ -390,7 +390,7 @@ public class ArduinoFirmata {
 //						}
 						if (sysexCommand == BLUETOOTH_RESET) {
 							if(!isBootloader){
-							sysex(BLUETOOTH_RESET, new byte[]{});
+							sysex(BLUETOOTH_RESET, new byte[]{0x01});
 							close();
 							}
 						}
