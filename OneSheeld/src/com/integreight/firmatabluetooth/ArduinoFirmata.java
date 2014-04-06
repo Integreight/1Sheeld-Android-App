@@ -394,7 +394,7 @@ public class ArduinoFirmata {
 					sysexBytesRead++;
 				}
 			}
-		} else if (waitForData > 0 && inputData < 128) {
+		} else if (waitForData > 0 && (int)(inputData&0xFF) < 128) {
 			waitForData--;
 			storedInputData[waitForData] = inputData;
 			if (executeMultiByteCommand != 0 && waitForData == 0) {
@@ -408,12 +408,12 @@ public class ArduinoFirmata {
 							+ storedInputData[1]);
 					break;
 				case REPORT_VERSION:
-					setVersion(storedInputData[1], storedInputData[0]);
+					setVersion(storedInputData[0], storedInputData[1]);
 					break;
 				}
 			}
 		} else {
-			if (inputData < 0xF0) {
+			if ((int)(inputData&0xFF) < 0xF0) {
 				command = (byte) (inputData & 0xF0);
 				multiByteChannel = (byte) (inputData & 0x0F);
 			} else {
@@ -570,6 +570,7 @@ public class ArduinoFirmata {
 	private void initFirmata(final BluetoothDevice device) {
 		stopBuffersThreads();
 		clearAllBuffers();
+		resetProcessInput();
 		// if (bluetoothBufferListeningThread == null ||
 		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
