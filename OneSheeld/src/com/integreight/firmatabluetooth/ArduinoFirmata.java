@@ -78,6 +78,18 @@ public class ArduinoFirmata {
 	public void resetMicro(){
 		sysex(RESET_MICRO, new byte[]{});
 	}
+	
+	public boolean isVersionQueried(){
+		return isVersionQueried;
+	}
+	
+	public int getMajorVersion(){
+		return majorVersion;
+	}
+
+	public int getMinorVersion(){
+		return minorVersion;
+	}
 
 	// public static final int MESSAGE_DEVICE_NAME =
 	// BluetoothService.MESSAGE_DEVICE_NAME;
@@ -131,6 +143,7 @@ public class ArduinoFirmata {
 			0, 0, 0, 0, 0, 0 };
 	private int majorVersion = 0;
 	private int minorVersion = 0;
+	private boolean isVersionQueried=false;
 	private BluetoothService bluetoothService;
 	private Context context;
 
@@ -335,6 +348,10 @@ public class ArduinoFirmata {
 	private void setVersion(int majorVersion, int minorVersion) {
 		this.majorVersion = majorVersion;
 		this.minorVersion = minorVersion;
+		for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
+			handler.onVersionReceived(minorVersion,
+					majorVersion);
+		}
 	}
 
 	private void processInput(byte inputData) {
@@ -409,6 +426,7 @@ public class ArduinoFirmata {
 					break;
 				case REPORT_VERSION:
 					setVersion(storedInputData[0], storedInputData[1]);
+					isVersionQueried=true;
 					break;
 				}
 			}
@@ -571,6 +589,7 @@ public class ArduinoFirmata {
 		stopBuffersThreads();
 		clearAllBuffers();
 		resetProcessInput();
+		isVersionQueried=false;
 		// if (bluetoothBufferListeningThread == null ||
 		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
