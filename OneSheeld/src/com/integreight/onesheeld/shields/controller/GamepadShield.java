@@ -47,8 +47,8 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		if (columnPincolumnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					columnPincolumnPin.microHardwarePin, ArduinoFirmata.HIGH);
-			buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		}
+		buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
 		getApplication().getAppFirmata().sendShieldFrame(sf);
@@ -62,8 +62,8 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		if (columnPin != null) {
 			getApplication().getAppFirmata().digitalWrite(
 					columnPin.microHardwarePin, ArduinoFirmata.LOW);
-			buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		}
+		buttonByte = BitsUtils.resetBit(buttonByte, pinId);
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
 		getApplication().getAppFirmata().sendShieldFrame(sf);
