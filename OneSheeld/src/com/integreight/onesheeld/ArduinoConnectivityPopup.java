@@ -1,5 +1,8 @@
 package com.integreight.onesheeld;
 
+import java.util.Enumeration;
+import java.util.Hashtable;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -29,6 +32,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -39,11 +43,13 @@ public class ArduinoConnectivityPopup extends Dialog {
 	private Activity activity;
 	private float scale;
 	private boolean isConnecting = false;
+	private Hashtable<String, BluetoothDevice> foundDevicesTable;
 
 	public ArduinoConnectivityPopup(Activity context) {
 		super(context, android.R.style.Theme_Translucent_NoTitleBar);
 		this.activity = context;
 		scale = activity.getResources().getDisplayMetrics().density;
+		foundDevicesTable = new Hashtable<String, BluetoothDevice>();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -271,41 +277,71 @@ public class ArduinoConnectivityPopup extends Dialog {
 		transactionSlogan.setBackgroundColor(color);
 	}
 
-	private void scanDevices() {
-
-		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
-		devicesList.removeAllViews();
-		backPressed = false;
-		found = 0;
-		// Register for broadcasts when a device is discovered
+	private void initTimeOut() {
 		if (lockerTimeOut != null)
 			lockerTimeOut.stopTimer();
 		lockerTimeOut = new TimeOut(10, new TimeOut.TimeoutHandler() {
 
 			@Override
 			public void onTimeout() {
-				if (found == 0) {
-					if (mBtAdapter.isDiscovering()) {
-						mBtAdapter.cancelDiscovery();
+				if (!mBtAdapter.isDiscovering()) {
+					if (foundDevicesTable.size() == 0) {
+						loading.post(new Runnable() {
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+
+								setRetryButtonReady(activity.getResources()
+										.getString(R.string.none_found),
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View v) {
+												scanDevices();
+											}
+										});
+							}
+						});
+					} else {
+						loading.post(new Runnable() {
+
+							@Override
+							public void run() {
+								// TODO Auto-generated method stub
+								devicesList.removeAllViews();
+								Enumeration<String> enumKey = foundDevicesTable
+										.keys();
+								while (enumKey.hasMoreElements()) {
+									String key = enumKey.nextElement();
+									BluetoothDevice device = foundDevicesTable
+											.get(key);
+									addFoundDevice(
+											device.getName() != null
+													&& device.getName()
+															.length() > 0 ? device
+													.getName() : device
+													.getAddress(),
+											key,
+											device.getBondState() == BluetoothDevice.BOND_BONDED);
+								}
+								foundDevicesTable.clear();
+								if (devicesList.getChildCount() == 0) {
+									setRetryButtonReady(activity.getResources()
+											.getString(R.string.none_found),
+											new View.OnClickListener() {
+
+												@Override
+												public void onClick(View v) {
+													scanDevices();
+												}
+											});
+								}
+							}
+						});
 					}
-					loading.post(new Runnable() {
-
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-
-							setRetryButtonReady(activity.getResources()
-									.getString(R.string.none_found),
-									new View.OnClickListener() {
-
-										@Override
-										public void onClick(View v) {
-											scanDevices();
-										}
-									});
-						}
-					});
-				}
+				} else
+					initTimeOut();
 			}
 
 			@Override
@@ -314,6 +350,17 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 			}
 		});
+	}
+
+	private void scanDevices() {
+
+		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
+		devicesList.removeAllViews();
+		backPressed = false;
+		// found = 0;
+		foundDevicesTable = new Hashtable<String, BluetoothDevice>();
+		// Register for broadcasts when a device is discovered
+		initTimeOut();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(BluetoothDevice.ACTION_FOUND);
 		filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
@@ -387,7 +434,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 	/**
 	 * Start device discover with the BluetoothAdapter
 	 */
-	private void doDiscovery() {
+	private synchronized void doDiscovery() {
 		if (isTrue)
 			Log.d(TAG, "doDiscovery()");
 		// If we're already discovering, stop it
@@ -403,7 +450,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 			boolean isPaired) {
 		if (name == null)
 			name = "";
-		if (name.trim().length() > 0 && name.toLowerCase().contains("1sheeld")
+		if (name.trim().length() > 0
+				&& (name.toLowerCase().contains("1sheeld") || address
+						.equals(name))
 				&& devicesList.findViewWithTag(address) == null) {
 			if (((OneSheeldApplication) activity.getApplication())
 					.getLastConnectedDevice() != null
@@ -449,14 +498,13 @@ public class ArduinoConnectivityPopup extends Dialog {
 						activity.getResources().getString(
 								R.string.selectYourDevice), COLOR.YELLOW);
 			}
-			found += 1;
-			lockerTimeOut.resetTimer();
+			// found += 1;
 		}
 	}
 
 	// The BroadcastReceiver that listens for discovered devices and
 	// changes the title when discovery is finished
-	private int found = 0;
+	// private int found = 0;
 	Handler delayingHandler = new Handler();
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
@@ -470,14 +518,10 @@ public class ArduinoConnectivityPopup extends Dialog {
 				// Get the BluetoothDevice object from the Intent
 				BluetoothDevice device = intent
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				// If it's already paired, skip it, because it's been listed
-				// already
-				// if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+				lockerTimeOut.resetTimer();
+				foundDevicesTable.put(device.getAddress(), device);
 				addFoundDevice(device.getName(), device.getAddress(),
 						device.getBondState() == BluetoothDevice.BOND_BONDED);
-				// }
-				// When discovery is finished, change the Activity title
-
 			}
 		}
 	};

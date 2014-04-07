@@ -72,7 +72,7 @@ public class BluetoothService {
 	// }
 
 	// Unique UUID for this application
-	private static final UUID MY_UUID = UUID
+	public static final UUID MY_UUID = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 	// Member fields
@@ -424,7 +424,7 @@ public class BluetoothService {
 						handler.onDataReceived(buffer, bytes);
 					}
 				} catch (IOException e) {
-					//e.printStackTrace();
+					// e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
 					connectionLost();

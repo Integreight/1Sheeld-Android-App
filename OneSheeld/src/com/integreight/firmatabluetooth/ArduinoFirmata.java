@@ -77,9 +77,9 @@ public class ArduinoFirmata {
 	public boolean isUartInit() {
 		return isUartInit;
 	}
-	
-	public void resetMicro(){
-		sysex(RESET_MICRO, new byte[]{});
+
+	public void resetMicro() {
+		sysex(RESET_MICRO, new byte[] {});
 	}
 
 	// public static final int MESSAGE_DEVICE_NAME =
@@ -364,7 +364,7 @@ public class ArduinoFirmata {
 								uartBuffer.add(b);
 							}
 						}
-						
+
 						if (sysexCommand == FIRMWARE_VERSION_QUERY) {
 							if (sysexData.length >= 2) {
 								minorVersion = sysexData[0];
@@ -376,9 +376,9 @@ public class ArduinoFirmata {
 							}
 						}
 						if (sysexCommand == BLUETOOTH_RESET) {
-							if(!isBootloader){
-							sysex(BLUETOOTH_RESET, new byte[]{});
-							close();
+							if (!isBootloader) {
+								sysex(BLUETOOTH_RESET, new byte[] {});
+								close();
 							}
 						}
 
@@ -455,7 +455,7 @@ public class ArduinoFirmata {
 	}
 
 	public synchronized void sendShieldFrame(ShieldFrame frame) {
-		if (!isUartInit||isBootloader)
+		if (!isUartInit || isBootloader)
 			return;
 		byte[] frameBytes = frame.getAllFrameAsBytes();
 		printFrameToLog(frameBytes);
@@ -534,14 +534,9 @@ public class ArduinoFirmata {
 		@Override
 		public void onStateChanged(final int state, final boolean isManually) {
 			// TODO Auto-generated method stub
-			uiThreadHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					if (state == BluetoothService.STATE_NONE) {
-						onClose(isManually);
-					}
-				}
-			});
+			if (state == BluetoothService.STATE_NONE) {
+				onClose(isManually);
+			}
 		}
 
 		@Override

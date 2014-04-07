@@ -23,7 +23,7 @@ import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData;
 
 public class ConnectingPinsView extends Fragment {
 	private static ConnectingPinsView thisInstance;
-	TextView show;
+	// TextView show;
 	private int selectedPin = 0;
 	private ArrayList<LinearLayout> pinsSubContainers = new ArrayList<LinearLayout>();
 	private View view;
@@ -58,9 +58,9 @@ public class ConnectingPinsView extends Fragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		if (isInflated) {
-			show = (TextView) getView().findViewById(R.id.show);
-		}
+		// if (isInflated) {
+		// show = (TextView) getView().findViewById(R.id.show);
+		// }
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -68,6 +68,8 @@ public class ConnectingPinsView extends Fragment {
 
 	public void reset(final ControllerParent<?> controller,
 			final OnPinSelectionListener listner) {
+		final TextView show = (TextView) getView().findViewById(R.id.show);
+		pinsSubContainers = new ArrayList<LinearLayout>();
 		selectedPin = 0;
 		selectedPinName = "";
 		show.setText("");
