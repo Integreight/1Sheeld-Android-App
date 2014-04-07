@@ -41,7 +41,7 @@ public class ArduinoFirmata {
 	public static final int A4 = 17;
 	public static final int A5 = 18;
 
-	public static byte arduinoLibraryVersion;
+	public static int arduinoLibraryVersion=-1;
 
 	private final char MAX_DATA_BYTES = 4096;
 	private final char MAX_OUTPUT_BYTES = 32;
@@ -91,6 +91,9 @@ public class ArduinoFirmata {
 		return minorVersion;
 	}
 
+	public int getArduinoLibraryVersion(){
+		return arduinoLibraryVersion;
+	}
 	// public static final int MESSAGE_DEVICE_NAME =
 	// BluetoothService.MESSAGE_DEVICE_NAME;
 	private CopyOnWriteArrayList<ArduinoFirmataEventHandler> eventHandlers;
