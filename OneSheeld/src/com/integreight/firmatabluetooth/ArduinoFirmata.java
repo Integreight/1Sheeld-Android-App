@@ -652,8 +652,7 @@ public class ArduinoFirmata {
 				try {
 					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
 						;
-
-					arduinoLibraryVersion = readByteFromUartBuffer();
+					int tempArduinoLibVersion = readByteFromUartBuffer();
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
 					for (UIShield shield : UIShield.values()) {
@@ -685,7 +684,7 @@ public class ArduinoFirmata {
 						uartBuffer.clear();
 						continue;
 					}
-
+					arduinoLibraryVersion = tempArduinoLibVersion;
 					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
 					}
