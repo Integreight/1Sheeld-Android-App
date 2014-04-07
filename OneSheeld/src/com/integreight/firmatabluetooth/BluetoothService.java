@@ -27,6 +27,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 /**
@@ -385,6 +387,7 @@ public class BluetoothService {
 		private final BluetoothSocket mmSocket;
 		private final InputStream mmInStream;
 		private final OutputStream mmOutStream;
+		Handler handler;
 
 		public ConnectedThread(BluetoothSocket socket) {
 			Log.d(TAG, "create ConnectedThread");
@@ -398,7 +401,7 @@ public class BluetoothService {
 				tmpOut = socket.getOutputStream();
 			} catch (IOException e) {
 				Log.e(TAG, "temp sockets not created", e);
-				//e.printStackTrace();
+				// e.printStackTrace();
 			}
 
 			mmInStream = tmpIn;
@@ -407,6 +410,9 @@ public class BluetoothService {
 
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
+			Looper.prepare();
+			handler = new Handler();
+
 			byte[] buffer = new byte[1024];
 			int bytes;
 
@@ -439,22 +445,32 @@ public class BluetoothService {
 		 * @param buffer
 		 *            The bytes to write
 		 */
-		public synchronized void write(byte[] buffer) {
-			try {
-				mmOutStream.write(buffer);
+		public synchronized void write(final byte[] buffer) {
 
-				// Share the sent message back to the UI Activity
-				// mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE, -1,
-				// -1, buffer)
-				// .sendToTarget();
-				for (BluetoothServiceHandler handler : handlers) {
-					handler.onDataWritten(buffer);
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						mmOutStream.write(buffer);
+
+						// Share the sent message back to the UI Activity
+						// mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE,
+						// -1,
+						// -1, buffer)
+						// .sendToTarget();
+						for (BluetoothServiceHandler handler : handlers) {
+							handler.onDataWritten(buffer);
+						}
+
+					} catch (IOException e) {
+						connectionLost();
+						Log.e(TAG, "Exception during write", e);
+					}
 				}
+			});
 
-			} catch (IOException e) {
-				connectionLost();
-				Log.e(TAG, "Exception during write", e);
-			}
 		}
 
 		public void cancel() {

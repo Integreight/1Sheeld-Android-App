@@ -370,29 +370,11 @@ public class ArduinoFirmata {
 								uartBuffer.add(b);
 							}
 						}
-<<<<<<< HEAD
 
-						if (sysexCommand == FIRMWARE_VERSION_QUERY) {
-							if (sysexData.length >= 2) {
-								minorVersion = sysexData[0];
-								majorVersion = sysexData[1];
-								for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
-									handler.onVersionReceived(minorVersion,
-											majorVersion);
-								}
-							}
-						}
-						if (sysexCommand == BLUETOOTH_RESET) {
-							if (!isBootloader) {
-								sysex(BLUETOOTH_RESET, new byte[] {});
-								close();
-=======
-						
 						if (sysexCommand == BLUETOOTH_RESET) {
 							if(!isBootloader){
 							sysex(BLUETOOTH_RESET, new byte[]{0x01});
 							close();
->>>>>>> FETCH_HEAD
 							}
 						}
 
