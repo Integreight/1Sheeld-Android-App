@@ -94,8 +94,7 @@ public class ArduinoFirmata {
 	public int getArduinoLibraryVersion(){
 		return arduinoLibraryVersion;
 	}
-	// public static final int MESSAGE_DEVICE_NAME =
-	// BluetoothService.MESSAGE_DEVICE_NAME;
+
 	private CopyOnWriteArrayList<ArduinoFirmataEventHandler> eventHandlers;
 	private CopyOnWriteArrayList<ArduinoFirmataDataHandler> dataHandlers;
 	private CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler> frameHandlers;
@@ -150,10 +149,6 @@ public class ArduinoFirmata {
 	private BluetoothService bluetoothService;
 	private Context context;
 
-//	public String getBoardVersion() {
-//		return String.valueOf(majorVersion) + "."
-//				+ String.valueOf(minorVersion);
-//	}
 
 	public int getBTState() {
 		return bluetoothService.getState();
@@ -207,17 +202,12 @@ public class ArduinoFirmata {
 	}
 
 	public boolean close() {
-		// clearAllHandlers();
 		clearArduinoFirmataDataHandlers();
 		clearArduinoFirmataShieldFrameHandlers();
 		stopBuffersThreads();
 		if (bluetoothService != null && isOpen())
 			bluetoothService.stopConnection();
 
-		// for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-		// eventHandler.onClose();
-		// }
-		// this.bluetoothService = null;
 		return true;
 	}
 
@@ -238,7 +228,6 @@ public class ArduinoFirmata {
 	}
 
 	public void write(byte writeData) {
-		// byte[] _writeData = {(byte)writeData};
 		if (isOpen())
 			bluetoothService.write(writeData);
 	}
@@ -382,15 +371,6 @@ public class ArduinoFirmata {
 							}
 						}
 						
-//						if (sysexCommand == FIRMWARE_VERSION_QUERY) {
-//							if (sysexData.length >= 2) {
-//								setVersion(sysexData[1], sysexData[0]);
-//								for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
-//									handler.onVersionReceived(minorVersion,
-//											majorVersion);
-//								}
-//							}
-//						}
 						if (sysexCommand == BLUETOOTH_RESET) {
 							if(!isBootloader){
 							sysex(BLUETOOTH_RESET, new byte[]{0x01});
@@ -543,7 +523,6 @@ public class ArduinoFirmata {
 			// TODO Auto-generated method stub
 			for (int i = 0; i < length; i++) {
 				bluetoothBuffer.add(bytes[i]);
-				// processInput(bytes[i]);
 			}
 
 		}
@@ -593,14 +572,8 @@ public class ArduinoFirmata {
 		clearAllBuffers();
 		resetProcessInput();
 		isVersionQueried=false;
-		// if (bluetoothBufferListeningThread == null ||
-		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
 		uartListeningThread = new UartListeningThread();
-		// else {
-		// uartListeningThread.isRunning = true;
-		// uartListeningThread.start();
-		// }
 		enableReporting();
 		setAllPinsAsInput();
 		initUart();
