@@ -41,7 +41,7 @@ public class ArduinoFirmata {
 	public static final int A4 = 17;
 	public static final int A5 = 18;
 
-	public static byte arduinoLibraryVersion;
+	public static int arduinoLibraryVersion=-1;
 
 	private final char MAX_DATA_BYTES = 4096;
 	private final char MAX_OUTPUT_BYTES = 32;
@@ -74,9 +74,9 @@ public class ArduinoFirmata {
 	public boolean isUartInit() {
 		return isUartInit;
 	}
-	
-	public void resetMicro(){
-		sysex(RESET_MICRO, new byte[]{});
+
+	public void resetMicro() {
+		sysex(RESET_MICRO, new byte[] {});
 	}
 	
 	public boolean isVersionQueried(){
@@ -91,8 +91,10 @@ public class ArduinoFirmata {
 		return minorVersion;
 	}
 
-	// public static final int MESSAGE_DEVICE_NAME =
-	// BluetoothService.MESSAGE_DEVICE_NAME;
+	public int getArduinoLibraryVersion(){
+		return arduinoLibraryVersion;
+	}
+
 	private CopyOnWriteArrayList<ArduinoFirmataEventHandler> eventHandlers;
 	private CopyOnWriteArrayList<ArduinoFirmataDataHandler> dataHandlers;
 	private CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler> frameHandlers;
@@ -147,10 +149,6 @@ public class ArduinoFirmata {
 	private BluetoothService bluetoothService;
 	private Context context;
 
-//	public String getBoardVersion() {
-//		return String.valueOf(majorVersion) + "."
-//				+ String.valueOf(minorVersion);
-//	}
 
 	public int getBTState() {
 		return bluetoothService.getState();
@@ -204,17 +202,12 @@ public class ArduinoFirmata {
 	}
 
 	public boolean close() {
-		// clearAllHandlers();
 		clearArduinoFirmataDataHandlers();
 		clearArduinoFirmataShieldFrameHandlers();
 		stopBuffersThreads();
 		if (bluetoothService != null && isOpen())
 			bluetoothService.stopConnection();
 
-		// for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-		// eventHandler.onClose();
-		// }
-		// this.bluetoothService = null;
 		return true;
 	}
 
@@ -235,7 +228,6 @@ public class ArduinoFirmata {
 	}
 
 	public void write(byte writeData) {
-		// byte[] _writeData = {(byte)writeData};
 		if (isOpen())
 			bluetoothService.write(writeData);
 	}
@@ -378,19 +370,10 @@ public class ArduinoFirmata {
 								uartBuffer.add(b);
 							}
 						}
-						
-//						if (sysexCommand == FIRMWARE_VERSION_QUERY) {
-//							if (sysexData.length >= 2) {
-//								setVersion(sysexData[1], sysexData[0]);
-//								for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
-//									handler.onVersionReceived(minorVersion,
-//											majorVersion);
-//								}
-//							}
-//						}
+
 						if (sysexCommand == BLUETOOTH_RESET) {
 							if(!isBootloader){
-							sysex(BLUETOOTH_RESET, new byte[]{});
+							sysex(BLUETOOTH_RESET, new byte[]{0x01});
 							close();
 							}
 						}
@@ -469,7 +452,7 @@ public class ArduinoFirmata {
 	}
 
 	public synchronized void sendShieldFrame(ShieldFrame frame) {
-		if (!isUartInit||isBootloader)
+		if (!isUartInit || isBootloader)
 			return;
 		byte[] frameBytes = frame.getAllFrameAsBytes();
 		printFrameToLog(frameBytes);
@@ -540,7 +523,6 @@ public class ArduinoFirmata {
 			// TODO Auto-generated method stub
 			for (int i = 0; i < length; i++) {
 				bluetoothBuffer.add(bytes[i]);
-				// processInput(bytes[i]);
 			}
 
 		}
@@ -548,14 +530,9 @@ public class ArduinoFirmata {
 		@Override
 		public void onStateChanged(final int state, final boolean isManually) {
 			// TODO Auto-generated method stub
-			uiThreadHandler.post(new Runnable() {
-				@Override
-				public void run() {
-					if (state == BluetoothService.STATE_NONE) {
-						onClose(isManually);
-					}
-				}
-			});
+			if (state == BluetoothService.STATE_NONE) {
+				onClose(isManually);
+			}
 		}
 
 		@Override
@@ -590,14 +567,8 @@ public class ArduinoFirmata {
 		clearAllBuffers();
 		resetProcessInput();
 		isVersionQueried=false;
-		// if (bluetoothBufferListeningThread == null ||
-		// bluetoothBufferListeningThread.isInterrupted())
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
 		uartListeningThread = new UartListeningThread();
-		// else {
-		// uartListeningThread.isRunning = true;
-		// uartListeningThread.start();
-		// }
 		enableReporting();
 		setAllPinsAsInput();
 		initUart();
@@ -676,8 +647,7 @@ public class ArduinoFirmata {
 				try {
 					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
 						;
-
-					arduinoLibraryVersion = readByteFromUartBuffer();
+					int tempArduinoLibVersion = readByteFromUartBuffer();
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
 					for (UIShield shield : UIShield.values()) {
@@ -709,7 +679,7 @@ public class ArduinoFirmata {
 						uartBuffer.clear();
 						continue;
 					}
-
+					arduinoLibraryVersion = tempArduinoLibVersion;
 					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
 					}

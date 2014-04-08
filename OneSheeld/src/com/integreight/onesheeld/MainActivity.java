@@ -60,6 +60,7 @@ public class MainActivity extends FragmentActivity {
 							.getAppFirmata().close())
 						;
 				}
+				stopService();
 				new Thread(new Runnable() {
 
 					@Override
@@ -120,6 +121,13 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void handleMessage(Message msg) {
 					if (connectionLost) {
+						runOnUiThread(new Runnable() {
+							public void run() {
+								if (!ArduinoConnectivityPopup.isOpened)
+									new ArduinoConnectivityPopup(
+											MainActivity.this).show();
+							}
+						});
 						if (getSupportFragmentManager()
 								.getBackStackEntryCount() > 1) {
 							getSupportFragmentManager().beginTransaction()
@@ -128,9 +136,6 @@ public class MainActivity extends FragmentActivity {
 							getSupportFragmentManager()
 									.executePendingTransactions();
 						}
-						if (!ArduinoConnectivityPopup.isOpened)
-							new ArduinoConnectivityPopup(MainActivity.this)
-									.show();
 					}
 					connectionLost = false;
 					super.handleMessage(msg);

@@ -27,6 +27,8 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 /**
@@ -72,7 +74,7 @@ public class BluetoothService {
 	// }
 
 	// Unique UUID for this application
-	private static final UUID MY_UUID = UUID
+	public static final UUID MY_UUID = UUID
 			.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
 	// Member fields
@@ -385,6 +387,8 @@ public class BluetoothService {
 		private final BluetoothSocket mmSocket;
 		private final InputStream mmInStream;
 		private final OutputStream mmOutStream;
+		Handler writeHandler;
+		Looper writeHandlerLooper;
 
 		public ConnectedThread(BluetoothSocket socket) {
 			Log.d(TAG, "create ConnectedThread");
@@ -398,7 +402,7 @@ public class BluetoothService {
 				tmpOut = socket.getOutputStream();
 			} catch (IOException e) {
 				Log.e(TAG, "temp sockets not created", e);
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 
 			mmInStream = tmpIn;
@@ -407,6 +411,10 @@ public class BluetoothService {
 
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
+			Looper.prepare();
+			writeHandlerLooper=Looper.myLooper();
+			writeHandler = new Handler();
+			Looper.loop();
 			byte[] buffer = new byte[1024];
 			int bytes;
 
@@ -424,7 +432,7 @@ public class BluetoothService {
 						handler.onDataReceived(buffer, bytes);
 					}
 				} catch (IOException e) {
-					//e.printStackTrace();
+					// e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
 					connectionLost();
@@ -439,21 +447,33 @@ public class BluetoothService {
 		 * @param buffer
 		 *            The bytes to write
 		 */
-		public synchronized void write(byte[] buffer) {
-			try {
-				mmOutStream.write(buffer);
+		public synchronized void write(final byte[] buffer) {
 
-				// Share the sent message back to the UI Activity
-				// mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE, -1,
-				// -1, buffer)
-				// .sendToTarget();
-				for (BluetoothServiceHandler handler : handlers) {
-					handler.onDataWritten(buffer);
+			writeHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					try {
+						mmOutStream.write(buffer);
+
+						// Share the sent message back to the UI Activity
+						// mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE,
+						// -1,
+						// -1, buffer)
+						// .sendToTarget();
+						for (BluetoothServiceHandler handler : handlers) {
+							handler.onDataWritten(buffer);
+						}
+
+					} catch (IOException e) {
+						writeHandlerLooper.quit();
+						connectionLost();
+						Log.e(TAG, "Exception during write", e);
+					}
 				}
+			});
 
-			} catch (IOException e) {
-				Log.e(TAG, "Exception during write", e);
-			}
 		}
 
 		public void cancel() {

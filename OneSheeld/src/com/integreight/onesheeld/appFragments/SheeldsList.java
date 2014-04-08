@@ -240,6 +240,8 @@ public class SheeldsList extends Fragment {
 			}
 		}
 
+		// Handler resetHandler = new Handler();
+
 		@Override
 		public void onClose(boolean closedManually) {
 			arduinoConnected = false;
@@ -266,6 +268,14 @@ public class SheeldsList extends Fragment {
 					}
 				}
 			}
+			// new Thread(new Runnable() {
+			//
+			// @Override
+			// public void run() {
+			// resetHandler.post(new Runnable() {
+			//
+			// @Override
+			// public void run() {
 			Enumeration<String> enumKey = ((OneSheeldApplication) getActivity()
 					.getApplication()).getRunningShields().keys();
 			while (enumKey.hasMoreElements()) {
@@ -275,6 +285,10 @@ public class SheeldsList extends Fragment {
 				((OneSheeldApplication) getActivity().getApplication())
 						.getRunningShields().remove(key);
 			}
+			// }
+			// });
+			// }
+			// }).start();
 		}
 	};
 
