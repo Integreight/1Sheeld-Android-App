@@ -373,7 +373,7 @@ public class BluetoothService {
 			connected(mmSocket, mmDevice);
 		}
 
-		public void cancel() {
+		public synchronized void cancel() {
 			try {
 				closeSocket(mmSocket);
 			} catch (IOException e) {
@@ -415,19 +415,20 @@ public class BluetoothService {
 
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
-			LooperThread=new Thread(new Runnable() {
-				
+			LooperThread = new Thread(new Runnable() {
+
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
 					Looper.prepare();
-					writeHandlerLooper=Looper.myLooper();
+					writeHandlerLooper = Looper.myLooper();
 					writeHandler = new Handler();
 					Looper.loop();
 				}
 			});
 			LooperThread.start();
-			while(!LooperThread.isAlive());
+			while (!LooperThread.isAlive())
+				;
 			byte[] buffer = new byte[1024];
 			int bytes;
 
@@ -461,7 +462,8 @@ public class BluetoothService {
 		 *            The bytes to write
 		 */
 		public synchronized void write(final byte[] buffer) {
-			if(writeHandler==null)return;
+			if (writeHandler == null)
+				return;
 			writeHandler.post(new Runnable() {
 
 				@Override
@@ -489,7 +491,7 @@ public class BluetoothService {
 
 		}
 
-		public void cancel() {
+		public synchronized void cancel() {
 			try {
 				closeSocket(mmSocket);
 			} catch (IOException e) {
