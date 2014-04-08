@@ -20,8 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -66,7 +66,7 @@ public class BluetoothService {
 	// public static final String DEVICE_NAME = "device_name";
 	// public static final String TOAST = "toast";
 
-	private List<BluetoothServiceHandler> handlers;
+	private CopyOnWriteArrayList<BluetoothServiceHandler> handlers;
 
 	// public void setBluetoothServiceCallback(BluetoothServiceHandler
 	// btCallBack){
@@ -106,7 +106,7 @@ public class BluetoothService {
 	public BluetoothService(Context context) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
-		this.handlers = new ArrayList<BluetoothServiceHandler>();
+		this.handlers = new CopyOnWriteArrayList<BluetoothServiceHandler>();
 
 	}
 
