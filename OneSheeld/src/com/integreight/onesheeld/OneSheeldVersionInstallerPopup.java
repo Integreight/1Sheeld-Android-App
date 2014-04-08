@@ -193,6 +193,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onCancel(DialogInterface dialog) {
 				isOpened = false;
+				firmata.returnAppToNormal();
 			}
 		});
 		super.onCreate(savedInstanceState);
@@ -203,6 +204,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 		isOpened = true;
 		firmata = ((OneSheeldApplication) activity.getApplication())
 				.getAppFirmata();
+		firmata.prepareAppForSendingFirmware();
 		final Handler handler = new Handler();
 		jodem = new Jodem(firmata.getBTService(),
 				new Jodem.JodemEventHandler() {
@@ -216,7 +218,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						firmata.returnAppToNormal();
+						//firmata.returnAppToNormal();
 						firmata.enableReporting();
 						firmata.setAllPinsAsInput();
 						handler.post(new Runnable() {
@@ -269,7 +271,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								txButton.setEnabled(true);
 								textView.setText(error);
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
-								firmata.returnAppToNormal();
+								//firmata.returnAppToNormal();
 								firmata.enableReporting();
 								firmata.setAllPinsAsInput();
 							}
@@ -290,7 +292,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								txButton.setEnabled(true);
 								textView.setText("Timout Happened");
 								OneSheeldVersionInstallerPopup.this.setCancelable(true);
-								firmata.returnAppToNormal();
+								//firmata.returnAppToNormal();
 								firmata.enableReporting();
 								firmata.setAllPinsAsInput();
 							}
