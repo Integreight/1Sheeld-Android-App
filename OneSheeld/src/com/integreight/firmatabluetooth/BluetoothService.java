@@ -389,6 +389,7 @@ public class BluetoothService {
 		private final OutputStream mmOutStream;
 		Handler writeHandler;
 		Looper writeHandlerLooper;
+		Thread LooperThread;
 
 		public ConnectedThread(BluetoothSocket socket) {
 			Log.d(TAG, "create ConnectedThread");
@@ -411,10 +412,19 @@ public class BluetoothService {
 
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
-			writeHandlerLooper = Looper.myLooper();
-			Looper.prepare();
-			writeHandler = new Handler();
-			Looper.loop();
+			LooperThread=new Thread(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					Looper.prepare();
+					writeHandlerLooper=Looper.myLooper();
+					writeHandler = new Handler();
+					Looper.loop();
+				}
+			});
+			LooperThread.start();
+			while(!LooperThread.isAlive());
 			byte[] buffer = new byte[1024];
 			int bytes;
 
@@ -448,7 +458,7 @@ public class BluetoothService {
 		 *            The bytes to write
 		 */
 		public synchronized void write(final byte[] buffer) {
-
+			if(writeHandler==null)return;
 			writeHandler.post(new Runnable() {
 
 				@Override

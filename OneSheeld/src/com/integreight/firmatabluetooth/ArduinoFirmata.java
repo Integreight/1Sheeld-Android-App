@@ -505,10 +505,18 @@ public class ArduinoFirmata {
 		return bluetoothService;
 	}
 
-	private void onClose(boolean isManually) {
-		for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-			if (eventHandler != null)
-				eventHandler.onClose(isManually);
+	private void onClose(final boolean isManually) {
+		for (final ArduinoFirmataEventHandler eventHandler : eventHandlers) {
+			uiThreadHandler.post(new Runnable() {
+				
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
+					if (eventHandler != null)
+						eventHandler.onClose(isManually);
+				}
+			});
+			
 		}
 	}
 
