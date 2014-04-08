@@ -115,6 +115,9 @@ public class BluetoothService {
 			handlers.add(handler);
 	}
 
+	public synchronized void closeSocket(BluetoothSocket socket) throws IOException{
+			socket.close();
+	}
 	/**
 	 * Set the current state of the chat connection
 	 * 
@@ -350,7 +353,7 @@ public class BluetoothService {
 			} catch (IOException e) {
 				// Close the socket
 				try {
-					mmSocket.close();
+					closeSocket(mmSocket);
 				} catch (IOException e2) {
 					Log.e(TAG,
 							"unable to close() socket during connection failure",
@@ -372,7 +375,7 @@ public class BluetoothService {
 
 		public void cancel() {
 			try {
-				mmSocket.close();
+				closeSocket(mmSocket);
 			} catch (IOException e) {
 				Log.e(TAG, "close() of connect socket failed", e);
 			}
@@ -488,7 +491,7 @@ public class BluetoothService {
 
 		public void cancel() {
 			try {
-				mmSocket.close();
+				closeSocket(mmSocket);
 			} catch (IOException e) {
 				Log.e(TAG, "close() of connect socket failed", e);
 			}
