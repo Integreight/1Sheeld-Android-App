@@ -167,6 +167,7 @@ public class Jodem {
 	private boolean sendFile(byte[] fileArray, int length, int retry) throws InterruptedException{
 		buffer.clear();
 		ByteArrayInputStream stream=new ByteArrayInputStream(fileArray,0,length);
+		if(timeout!=null)timeout.stopTimer();
 		timeout=new TimeOut(3, timeoutHandler);
 		while(readByteFromBuffer()!=NAK);
 		write(KEY);
