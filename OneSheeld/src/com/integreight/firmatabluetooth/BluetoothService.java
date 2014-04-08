@@ -387,7 +387,8 @@ public class BluetoothService {
 		private final BluetoothSocket mmSocket;
 		private final InputStream mmInStream;
 		private final OutputStream mmOutStream;
-		Handler handler;
+		Handler writeHandler;
+		Looper writeHandlerLooper;
 
 		public ConnectedThread(BluetoothSocket socket) {
 			Log.d(TAG, "create ConnectedThread");
@@ -411,8 +412,9 @@ public class BluetoothService {
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
 			Looper.prepare();
-			handler = new Handler();
-
+			writeHandlerLooper=Looper.myLooper();
+			writeHandler = new Handler();
+			Looper.loop();
 			byte[] buffer = new byte[1024];
 			int bytes;
 
@@ -447,7 +449,7 @@ public class BluetoothService {
 		 */
 		public synchronized void write(final byte[] buffer) {
 
-			handler.post(new Runnable() {
+			writeHandler.post(new Runnable() {
 
 				@Override
 				public void run() {
@@ -465,6 +467,7 @@ public class BluetoothService {
 						}
 
 					} catch (IOException e) {
+						writeHandlerLooper.quit();
 						connectionLost();
 						Log.e(TAG, "Exception during write", e);
 					}
