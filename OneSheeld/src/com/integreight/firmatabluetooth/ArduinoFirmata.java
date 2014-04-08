@@ -67,6 +67,8 @@ public class ArduinoFirmata {
 	private final byte UART_BEGIN = (byte) 0x01;
 	private final byte UART_END = (byte) 0x00;
 
+	private int sysexBytesCount = 0;
+
 	Handler uiThreadHandler;
 
 	boolean isUartInit = false;
@@ -438,6 +440,38 @@ public class ArduinoFirmata {
 		}
 	}
 
+	private void resetBluetoothSysex(byte input) {
+		switch (sysexBytesCount) {
+		case 0:
+			if (input != START_SYSEX) {
+				sysexBytesCount = 0;
+				return;
+			} else
+				sysexBytesCount++;
+			break;
+		case 1:
+			if (input != BLUETOOTH_RESET) {
+				sysexBytesCount = 0;
+				return;
+			} else
+				sysexBytesCount++;
+			break;
+		case 2:
+			if (input != END_SYSEX) {
+				sysexBytesCount = 0;
+				return;
+			} else
+				sysex(BLUETOOTH_RESET, new byte[] { 0x00 });
+			sysexBytesCount = 0;
+			break;
+
+		default:
+			sysexBytesCount = 0;
+			return;
+		}
+
+	}
+
 	private void printFrameToLog(byte[] frame) {
 		String s = "";
 		for (byte b : frame) {
@@ -715,13 +749,19 @@ public class ArduinoFirmata {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			byte input;
 			while (!this.isInterrupted()) {
-				if (!isBootloader)
-					try {
-						processInput(readByteFromBluetoothBuffer());
-					} catch (InterruptedException e) {
-						return;
+
+				try {
+					input = readByteFromBluetoothBuffer();
+					if (!isBootloader)
+						processInput(input);
+					else {
+						resetBluetoothSysex(input);
 					}
+				} catch (InterruptedException e) {
+					return;
+				}
 
 			}
 		}
