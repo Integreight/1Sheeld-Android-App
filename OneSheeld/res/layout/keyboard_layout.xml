@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/hebrwKeyboardView"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_below="@+id/xsubLayout"
+    android:orientation="vertical"
+    android:src="@drawable/shield_fragment_background"
+    android:visibility="visible" >
+
+    <TableLayout
+        android:layout_width="wrap_content"
+        android:layout_height="300sp"
+        android:layout_alignParentBottom="true"
+        android:clipChildren="true"
+        android:orientation="vertical" >
+
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="300sp"
+            android:padding="0sp" >
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:padding="0sp" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="45sp"
+                    android:baselineAligned="true"
+                    android:fitsSystemWindows="true" >
+
+                    <Button
+                        android:id="@+id/xQ"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:padding="0sp"
+                        android:tag="Q"
+                        android:text="Q"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xW"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="left"
+                        android:padding="0sp"
+                        android:soundEffectsEnabled="true"
+                        android:tag="W"
+                        android:text="W"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xE"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="left"
+                        android:fitsSystemWindows="true"
+                        android:padding="0sp"
+                        android:soundEffectsEnabled="true"
+                        android:tag="E"
+                        android:text="E"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xR"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="R"
+                        android:text="R"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xT"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="T"
+                        android:text="T"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xY"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="y"
+                        android:text="Y"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xU"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="U"
+                        android:text="U"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xI"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="I"
+                        android:text="I"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xO"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="O"
+                        android:text="O"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xP"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="P"
+                        android:text="P"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="10dp" >
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="45sp" >
+
+                    <Button
+                        android:id="@+id/xA"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="A"
+                        android:text="A"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xS"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xA"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="S"
+                        android:text="S"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xD"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xS"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="D"
+                        android:text="D"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xF"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xD"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="F"
+                        android:text="F"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xG"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xF"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="G"
+                        android:text="G"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xH"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xG"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="H"
+                        android:text="H"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xJ"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xH"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="J"
+                        android:text="J"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xK"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xJ"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="K"
+                        android:text="K"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xL"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_alignWithParentIfMissing="true"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_toRightOf="@id/xK"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="L"
+                        android:text="L"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="fill_vertical"
+                android:layout_marginLeft="20dp"
+                android:fitsSystemWindows="true"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="45sp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/xZ"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="Z"
+                        android:text="Z"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xX"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="X"
+                        android:text="X"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xC"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="C"
+                        android:text="C"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xV"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="V"
+                        android:text="V"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xB"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="B"
+                        android:text="B"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xN"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="N"
+                        android:text="N"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xM"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="M"
+                        android:text="M"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xBack"
+                        android:layout_width="33sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/back_high"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="back"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_marginLeft="15dp"
+                android:fitsSystemWindows="true"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="45sp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="bottom"
+                    android:orientation="horizontal" >
+
+                    <Button
+                        android:id="@+id/xChange"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="right"
+                        android:background="@drawable/change"
+                        android:fitsSystemWindows="true"
+                        android:paddingLeft="35sp"
+                        android:soundEffectsEnabled="true"
+                        android:tag="upper"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xSpace"
+                        android:layout_width="75sp"
+                        android:layout_height="fill_parent"
+                        android:layout_marginLeft="20dp"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag=" "
+                        android:text="|_____|"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/xS6"
+                        android:layout_width="30sp"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="î"
+                        android:text="î"
+                        android:textColor="#000"
+                        android:textStyle="bold"
+                        android:visibility="invisible" />
+
+                    <Button
+                        android:id="@+id/xNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="fill_parent"
+                        android:fitsSystemWindows="true"
+                        android:soundEffectsEnabled="true"
+                        android:tag="num"
+                        android:text="12#"
+                        android:textColor="#000"
+                        android:textStyle="bold" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+    </TableLayout>
+
+</RelativeLayout>

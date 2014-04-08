@@ -25,7 +25,7 @@ public class MicShield extends ControllerParent<MicShield> {
 		public void run() {
 			// Do work with the MIC values.
 			double amplitude = MicSoundMeter.getInstance().getAmplitudeEMA();
-			if (!Double.isInfinite(amplitude)) {
+			if (!Double.isInfinite(amplitude) && amplitude != 0) {
 				ampl = amplitude;
 				Log.d("MIC", "Amp = " + ampl);
 				frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);

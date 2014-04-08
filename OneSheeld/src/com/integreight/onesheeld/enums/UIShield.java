@@ -122,7 +122,7 @@ public enum UIShield {
 			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x21, "Keyboard", 0xffd95342,
 			R.drawable.shields_list_gravity_symbol, false,
-			KeyboardShield.class, false);
+			KeyboardShield.class);
 
 	private byte id;
 	private String name;

@@ -6,7 +6,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.integreight.onesheeld.R;
@@ -16,7 +15,6 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment> {
 	EditText editText;
 	Editable mytext;
-	Button done;
 	private KeyboardEventHandler eventHandler;
 
 	@Override
@@ -48,7 +46,6 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment> {
 		editText = (EditText) getView().findViewById(R.id.keyboard_myEdit_txt);
 		editText.setMaxLines(Integer.MAX_VALUE);
 		editText.setSingleLine(false);
-		done = (Button) getView().findViewById(R.id.keyboard_done_bt);
 
 		editText.addTextChangedListener(new TextWatcher() {
 
@@ -69,17 +66,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment> {
 
 			}
 		});
-		done.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				if (mytext.length() > 0) {
-					if (eventHandler != null)
-						eventHandler.onDonePressed(mytext);
-
-				}
-			}
-		});
 	}
 
 	public void setKeyboardEventHandler(

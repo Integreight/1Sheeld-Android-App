@@ -56,9 +56,11 @@ public class MicSoundMeter {
 	}
 
 	public double getAmplitude() {
-		if (mRecorder != null)
-			return (mRecorder.getMaxAmplitude());
-		else
+		if (mRecorder != null) {
+			double maxAmp = 0;
+			maxAmp = mRecorder.getMaxAmplitude();
+			return maxAmp;
+		} else
 			return 0;
 
 	}
@@ -67,6 +69,8 @@ public class MicSoundMeter {
 	public double getAmplitudeEMA() {
 		double amp = getAmplitude();
 		// mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+		if (amp == 0)
+			return 0;
 
 		mEMA = (20.0 * Math.log10(amp / POWER_REFERENCE));
 		return (mEMA - 100.0);
