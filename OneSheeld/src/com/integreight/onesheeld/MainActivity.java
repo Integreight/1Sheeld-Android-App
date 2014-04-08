@@ -121,9 +121,13 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void handleMessage(Message msg) {
 					if (connectionLost) {
-						if (!ArduinoConnectivityPopup.isOpened)
-							new ArduinoConnectivityPopup(MainActivity.this)
-									.show();
+						runOnUiThread(new Runnable() {
+							public void run() {
+								if (!ArduinoConnectivityPopup.isOpened)
+									new ArduinoConnectivityPopup(
+											MainActivity.this).show();
+							}
+						});
 						if (getSupportFragmentManager()
 								.getBackStackEntryCount() > 1) {
 							getSupportFragmentManager().beginTransaction()

@@ -32,7 +32,6 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;

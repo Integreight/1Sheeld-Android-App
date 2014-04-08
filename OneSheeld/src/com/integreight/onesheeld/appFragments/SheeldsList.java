@@ -240,7 +240,7 @@ public class SheeldsList extends Fragment {
 			}
 		}
 
-		Handler resetHandler = new Handler();
+		// Handler resetHandler = new Handler();
 
 		@Override
 		public void onClose(boolean closedManually) {
