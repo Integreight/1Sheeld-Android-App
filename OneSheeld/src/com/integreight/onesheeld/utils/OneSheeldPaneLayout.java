@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.shields.controller;
+package com.integreight.onesheeld.utils;
 
 import android.content.Context;
 import android.support.v4.widget.SlidingPaneLayout;

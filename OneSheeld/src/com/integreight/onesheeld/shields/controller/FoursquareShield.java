@@ -24,6 +24,7 @@ import android.os.Bundle;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareDialogError;
@@ -33,7 +34,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	private FoursquareEventHandler eventHandler;
-	private static final byte FOURSQUARE_COMMAND = (byte) 0x1B;
+	// private static final byte FOURSQUARE_COMMAND = (byte) 0x1B;
 	private static final byte CHECKIN_METHOD_ID = (byte) 0x01;
 	Foursquare foursquare;
 	String clintID = "Z5G4T1LGIAM4TLW3JVQH2DDKOTLN5XM1UG3W4V4LJ1VK2SX4";
@@ -91,7 +92,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		if (frame.getShieldId() == FOURSQUARE_COMMAND) {
+		if (frame.getShieldId() == UIShield.FOURSQUARE_SHIELD.getId()) {
 			if (isFoursquareLoggedInAlready())
 				if (frame.getFunctionId() == CHECKIN_METHOD_ID) {
 					placeID = frame.getArgumentAsString(0);

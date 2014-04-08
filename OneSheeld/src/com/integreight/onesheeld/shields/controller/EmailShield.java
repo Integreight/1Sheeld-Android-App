@@ -8,6 +8,7 @@ import android.util.Base64;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.GMailSender;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.SecurePreferences;
@@ -15,7 +16,6 @@ import com.integreight.onesheeld.utils.SecurePreferences;
 public class EmailShield extends ControllerParent<EmailShield> {
 
 	private EmailEventHandler eventHandler;
-	private static final byte EMAIL_COMMAND = (byte) 0x1E;
 	private static final byte SEND_METHOD_ID = (byte) 0x01;
 	private static SharedPreferences mSharedPreferences;
 	private static final String PREF_EMAIL_SHIELD_USER_LOGIN = "user_login_status";
@@ -63,7 +63,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		if (frame.getShieldId() == EMAIL_COMMAND) {
+		if (frame.getShieldId() == UIShield.EMAIL_SHIELD.getId()) {
 			if (frame.getFunctionId() == SEND_METHOD_ID) {
 				if (isLoggedIn()) {
 					// retrieve user name and password from sharedPref...

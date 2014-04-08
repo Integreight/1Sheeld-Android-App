@@ -16,7 +16,6 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
 	// private PhoneEventHandler eventHandler;
-	private static final byte PHONE_COMMAND = (byte) 0x20;
 	private static final byte CALL_METHOD_ID = (byte) 0x01;
 	private PhoneCallStateListener phoneListener;
 	private TelephonyManager telephonyManager;
@@ -42,7 +41,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		if (frame.getShieldId() == PHONE_COMMAND) {
+		if (frame.getShieldId() == UIShield.PHONE_SHIELD.getId()) {
 			String phone_number = frame.getArgumentAsString(0);
 
 			switch (frame.getFunctionId()) {

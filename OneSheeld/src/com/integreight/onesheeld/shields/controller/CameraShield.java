@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.TakePicture;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -11,7 +12,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 public class CameraShield extends ControllerParent<CameraShield> implements
 		CameraFragmentHandler {
 	// private CameraEventHandler eventHandler;
-	private static final byte CAMERA_COMMAND = (byte) 0x15;
+	// private static final byte CAMERA_COMMAND = (byte) 0x15;
 	private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
 	private static final byte FLASH_METHOD_ID = (byte) 0x02;
 	private static String FLASH_MODE;
@@ -39,7 +40,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 
-		if (frame.getShieldId() == CAMERA_COMMAND) {
+		if (frame.getShieldId() == UIShield.CAMERA_SHIELD.getId()) {
 
 			// String userId = frame.getArgumentAsString(0);
 

@@ -9,12 +9,12 @@ import android.net.Uri;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SkypeShield extends ControllerParent<SkypeShield> {
 
 	private SkypeEventHandler eventHandler;
-	private static final byte SKYPE_COMMAND = (byte) 0x1F;
 	private static final byte CALL_METHOD_ID = (byte) 0x01;
 	private static final byte VIDEO_METHOD_ID = (byte) 0x02;
 	private static final byte CHAT_METHOD_ID = (byte) 0x03;
@@ -22,6 +22,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 	public SkypeShield() {
 		super();
 	}
+
 	@Override
 	public ControllerParent<SkypeShield> setTag(String tag) {
 		return super.setTag(tag);
@@ -51,7 +52,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
-		if (frame.getShieldId() == SKYPE_COMMAND) {
+		if (frame.getShieldId() == UIShield.SKYPE_SHIELD.getId()) {
 			/*
 			 * if (frame.getFunctionId() == CALL_METHOD_ID) { String user =
 			 * frame.getArgumentAsString(0); if (eventHandler != null)
@@ -184,9 +185,10 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 		}
 		return (true);
 	}
+
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
