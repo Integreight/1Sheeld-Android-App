@@ -310,7 +310,27 @@ public class ArduinoConnectivityPopup extends Dialog {
 							@Override
 							public void run() {
 								// TODO Auto-generated method stub
-								devicesList.removeAllViews();
+								// devicesList.removeAllViews();
+								for (int i = 0; i < devicesList.getChildCount(); i++) {
+									OneShieldTextView deviceView = (OneShieldTextView) devicesList
+											.getChildAt(i);
+									BluetoothDevice btDevice = foundDevicesTable
+											.get(deviceView.getTag());
+									if (btDevice != null) {
+										if (btDevice.getName().toLowerCase()
+												.contains("1sheeld")) {
+											deviceView
+													.setText(foundDevicesTable
+															.get(deviceView
+																	.getTag())
+															.getName());
+										} else {
+											devicesList.removeView(deviceView);
+										}
+										foundDevicesTable.remove(deviceView
+												.getTag());
+									}
+								}
 								Enumeration<String> enumKey = foundDevicesTable
 										.keys();
 								while (enumKey.hasMoreElements()) {
