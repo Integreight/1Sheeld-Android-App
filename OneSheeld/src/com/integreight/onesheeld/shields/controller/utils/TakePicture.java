@@ -178,14 +178,16 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				mCamera.stopPreview();
-				// release the camera
-				mCamera.release();
+				if (mCamera != null) {
+					mCamera.stopPreview();
+					// release the camera
+					mCamera.release();
+				}
 				Toast.makeText(getApplicationContext(),
 						"Your Picture has been taken !", Toast.LENGTH_LONG)
 						.show();
 
-				finish();
+				TakePicture.this.finish();
 
 			}
 		};

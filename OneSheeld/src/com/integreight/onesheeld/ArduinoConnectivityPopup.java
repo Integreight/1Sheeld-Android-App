@@ -132,7 +132,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 				if (mBtAdapter != null) {
 					mBtAdapter.cancelDiscovery();
 				}
-
+				((OneSheeldApplication) activity.getApplication())
+						.getAppFirmata().removeEventHandler(
+								connectivityFirmataHandler);
 				// Unregister broadcast listeners
 				try {
 					activity.unregisterReceiver(mReceiver);
@@ -370,39 +372,46 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 		@Override
 		public void onError(String errorMessage) {
-			isConnecting = false;
-			setRetryButtonReady(
-					activity.getResources().getString(R.string.notConnected),
-					new View.OnClickListener() {
+			if (isOpened) {
+				isConnecting = false;
+				setRetryButtonReady(
+						activity.getResources()
+								.getString(R.string.notConnected),
+						new View.OnClickListener() {
 
-						@Override
-						public void onClick(View arg0) {
-							scanDevices();
-						}
-					});
-
+							@Override
+							public void onClick(View arg0) {
+								scanDevices();
+							}
+						});
+			}
 		}
 
 		@Override
 		public void onConnect() {
-			isConnecting = false;
-			cancel();
+			if (isOpened) {
+				isConnecting = false;
+				cancel();
+			}
 			// Toast.makeText(activity, "Connected, finish", Toast.LENGTH_LONG)
 			// .show();
 		}
 
 		@Override
 		public void onClose(boolean closedManually) {
-			isConnecting = false;
-			setRetryButtonReady(
-					activity.getResources().getString(R.string.notConnected),
-					new View.OnClickListener() {
+			if (isOpened) {
+				isConnecting = false;
+				setRetryButtonReady(
+						activity.getResources()
+								.getString(R.string.notConnected),
+						new View.OnClickListener() {
 
-						@Override
-						public void onClick(View arg0) {
-							scanDevices();
-						}
-					});
+							@Override
+							public void onClick(View arg0) {
+								scanDevices();
+							}
+						});
+			}
 
 		}
 	};

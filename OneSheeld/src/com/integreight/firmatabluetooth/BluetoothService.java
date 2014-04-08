@@ -411,8 +411,8 @@ public class BluetoothService {
 
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
+			writeHandlerLooper = Looper.myLooper();
 			Looper.prepare();
-			writeHandlerLooper=Looper.myLooper();
 			writeHandler = new Handler();
 			Looper.loop();
 			byte[] buffer = new byte[1024];
