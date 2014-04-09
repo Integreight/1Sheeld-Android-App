@@ -185,7 +185,7 @@
 
                     <Button
                         android:id="@+id/xS"
-                        android:layout_width="30sp"
+                        android:layout_width="33sp"
                         android:layout_height="fill_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -452,7 +452,7 @@
                         android:background="@drawable/back_high"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
-                        android:tag="back"
+                        android:tag="\b\b\b"
                         android:textColor="#000"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -546,13 +546,13 @@
 
                     <Button
                         android:id="@+id/xDone"
-                        android:layout_width="40sp"
+                        android:layout_width="75sp"
                         android:layout_height="fill_parent"
                         android:layout_gravity="right"
-                        android:background="@drawable/hide_high"
+                        android:background="@drawable/keyboard_enter_key_bg"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
-                        android:tag="done"
+                        android:tag="\r\n"
                         android:textColor="#000"
                         android:textStyle="bold" />
                 </LinearLayout>

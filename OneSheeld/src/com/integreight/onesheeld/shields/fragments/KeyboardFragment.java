@@ -18,9 +18,8 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 		implements OnClickListener {
-	private EditText mEt; // Edit Text boxes
-	private Button mBSpace, mBdone, mBack, mBChange, mNum;
-	private boolean isEdit = false, isEdit1 = true;
+	private Button mBSpace, mBenter, mBack, mBChange, mNum;
+	private boolean isEdit1 = true;
 	private String mUpper = "upper", mLower = "lower";
 	private int w, mWindowWidth;
 	private String sL[] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
@@ -128,7 +127,9 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	}
 
 	public static interface KeyboardEventHandler {
-		void onDonePressed(Editable myText);
+		void onKeyPressed(String myString);
+
+		void onEnterOrbspacepressed(char myChar);
 	}
 
 	@Override
@@ -144,22 +145,47 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 				changeCapitalTags();
 			}
 
-		} else if (v != mBdone && v != mBack && v != mBChange && v != mNum) {
+		} else if (v != mBenter && v != mBack && v != mBChange && v != mNum) {
 			addText(v);
 
-		} else if (v == mBdone) {
+		} else if (v == mBenter) {
+			// represent Enter button and send frame
+			int ascii = (int) '\n';
+			Log.d("KeyBoard", "char::ASCII =" + ascii);
+			addTextEnter('\n');
 
 		} else if (v == mBack) {
-			isBack(v);
+			// represent backspace button and send frame
+			// addTextBSpace("\b");
+			int ascii = (int) '\b';
+			Log.d("KeyBoard", "char::ASCII =" + ascii);
+			addTextBSpace('\b');
+
 		} else if (v == mNum) {
 			String nTag = (String) mNum.getTag();
 			if (nTag.equals("num")) {
+				// show unused characters
+				mB[26].setVisibility(Button.VISIBLE);
+				mB[27].setVisibility(Button.VISIBLE);
+				mB[28].setVisibility(Button.VISIBLE);
+				mB[29].setVisibility(Button.VISIBLE);
+				mB[30].setVisibility(Button.VISIBLE);
+				mB[31].setVisibility(Button.VISIBLE);
+
 				changeSyNuLetters();
 				changeSyNuTags();
 				mBChange.setVisibility(Button.INVISIBLE);
 
 			}
 			if (nTag.equals("ABC")) {
+				// hidden unused characters
+				mB[26].setVisibility(Button.INVISIBLE);
+				mB[27].setVisibility(Button.INVISIBLE);
+				mB[28].setVisibility(Button.INVISIBLE);
+				mB[29].setVisibility(Button.INVISIBLE);
+				mB[30].setVisibility(Button.INVISIBLE);
+				mB[31].setVisibility(Button.INVISIBLE);
+
 				changeCapitalLetters();
 				changeCapitalTags();
 			}
@@ -175,50 +201,31 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	}
 
 	private void addText(View v) {
-		if (isEdit == true) {
-			String b = "";
-			b = (String) v.getTag();
-			if (b != null) {
-				// adding text in Edittext
-				mEt.append(b);
-
-			}
-		}
-
 		if (isEdit1 == true) {
 			String b = "";
 			b = (String) v.getTag();
 			if (b != null) {
 				// adding text in Edittext
-				mEt1.append(b);
+				// mEt.append(b);
+				Log.d("KeyBoard", "char =" + b);
+				int ascii = (int) b.charAt(0);
+				Log.d("KeyBoard", "char::ASCII =" + ascii);
+
+				eventHandler.onKeyPressed(b);
 
 			}
-
 		}
 
 	}
 
-	private void isBack(View v) {
-		if (isEdit == true) {
-			CharSequence cc = mEt.getText();
-			if (cc != null && cc.length() > 0) {
-				{
-					mEt.setText("");
-					mEt.append(cc.subSequence(0, cc.length() - 1));
-				}
+	private void addTextEnter(char enterText) {
+		eventHandler.onEnterOrbspacepressed(enterText);
 
-			}
-		}
+	}
 
-		if (isEdit1 == true) {
-			CharSequence cc = mEt1.getText();
-			if (cc != null && cc.length() > 0) {
-				{
-					mEt1.setText("");
-					mEt1.append(cc.subSequence(0, cc.length() - 1));
-				}
-			}
-		}
+	private void addTextBSpace(char bspaceText) {
+		eventHandler.onEnterOrbspacepressed(bspaceText);
+
 	}
 
 	private void changeSmallLetters() {
@@ -354,8 +361,8 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
 		mB[31].setHeight(50);
 		mB[31].setWidth(w);
-		mBdone.setWidth(w + (w / 1));
-		mBdone.setHeight(50);
+		mBenter.setWidth(w + (w / 1));
+		mBenter.setHeight(50);
 
 	}
 
@@ -398,17 +405,25 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 		mB[30] = (Button) getView().findViewById(R.id.xS5);
 		mB[31] = (Button) getView().findViewById(R.id.xS6);
 		mBSpace = (Button) getView().findViewById(R.id.xSpace);
-		mBdone = (Button) getView().findViewById(R.id.xDone);
+		mBenter = (Button) getView().findViewById(R.id.xDone);
 		mBChange = (Button) getView().findViewById(R.id.xChange);
 		mBack = (Button) getView().findViewById(R.id.xBack);
 		mNum = (Button) getView().findViewById(R.id.xNum);
 		for (int i = 0; i < mB.length; i++)
 			mB[i].setOnClickListener(this);
 		mBSpace.setOnClickListener(this);
-		mBdone.setOnClickListener(this);
+		mBenter.setOnClickListener(this);
 		mBack.setOnClickListener(this);
 		mBChange.setOnClickListener(this);
 		mNum.setOnClickListener(this);
+
+		// Hidden unused characters
+		mB[26].setVisibility(Button.INVISIBLE);
+		mB[27].setVisibility(Button.INVISIBLE);
+		mB[28].setVisibility(Button.INVISIBLE);
+		mB[29].setVisibility(Button.INVISIBLE);
+		mB[30].setVisibility(Button.INVISIBLE);
+		mB[31].setVisibility(Button.INVISIBLE);
 
 	}
 

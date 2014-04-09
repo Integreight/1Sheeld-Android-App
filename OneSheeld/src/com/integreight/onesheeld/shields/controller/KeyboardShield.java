@@ -10,7 +10,7 @@ import com.integreight.onesheeld.utils.ControllerParent;
 
 public class KeyboardShield extends ControllerParent<KeyboardShield> {
 	private ShieldFrame frame;
-	private static final byte CLOCK_VALUE = (byte) 0x01;
+	private static final byte KEYBOARD_VALUE = (byte) 0x01;
 
 	@Override
 	public ControllerParent<KeyboardShield> setTag(String tag) {
@@ -30,20 +30,35 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
 	private KeyboardEventHandler keyboardEventHandler = new KeyboardEventHandler() {
 
 		@Override
-		public void onDonePressed(Editable myText) {
-			if (myText.length() > 0) {
+		public void onKeyPressed(String myText) {
+
+			if (isNotNullNotEmpty(myText)) {
 				for (int i = 0; i < myText.length(); i++) {
 
 					frame = new ShieldFrame(UIShield.KEYBOARD_SHIELD.getId(),
-							CLOCK_VALUE);
-					frame.addCharArgument(myText.charAt(i));
+							KEYBOARD_VALUE);
+					frame.addCharArgument(myText.charAt(0));
 					activity.getThisApplication().getAppFirmata()
 							.sendShieldFrame(frame);
 
 				}
 			}
 		}
+
+		@Override
+		public void onEnterOrbspacepressed(char myChar) {
+			frame = new ShieldFrame(UIShield.KEYBOARD_SHIELD.getId(),
+					KEYBOARD_VALUE);
+			frame.addCharArgument(myChar);
+			activity.getThisApplication().getAppFirmata()
+					.sendShieldFrame(frame);
+
+		}
 	};
+
+	public static boolean isNotNullNotEmpty(final String string) {
+		return string != null && !string.isEmpty();
+	}
 
 	public KeyboardEventHandler getKeyboardEventHandler() {
 		return keyboardEventHandler;
