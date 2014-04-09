@@ -204,7 +204,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 		isOpened = true;
 		firmata = ((OneSheeldApplication) activity.getApplication())
 				.getAppFirmata();
-		firmata.prepareAppForSendingFirmware();
+		firmata.enableBootloaderMode();
 		final Handler handler = new Handler();
 		jodem = new Jodem(firmata.getBTService(),
 				new Jodem.JodemEventHandler() {

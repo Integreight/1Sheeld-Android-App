@@ -448,7 +448,7 @@ public class BluetoothService {
 					// e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
-					writeHandlerLooper.quit();
+					if(writeHandlerLooper!=null)writeHandlerLooper.quit();
 					connectionLost();
 					break;
 				}
@@ -482,7 +482,7 @@ public class BluetoothService {
 						}
 
 					} catch (IOException e) {
-						writeHandlerLooper.quit();
+						if(writeHandlerLooper!=null)writeHandlerLooper.quit();
 						connectionLost();
 						Log.e(TAG, "Exception during write", e);
 					}
