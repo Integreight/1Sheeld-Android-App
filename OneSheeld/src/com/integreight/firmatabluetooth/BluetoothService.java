@@ -448,6 +448,7 @@ public class BluetoothService {
 					// e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
+					writeHandlerLooper.quit();
 					connectionLost();
 					break;
 				}
