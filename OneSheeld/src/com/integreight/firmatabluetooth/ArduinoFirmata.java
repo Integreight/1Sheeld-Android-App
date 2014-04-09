@@ -137,7 +137,18 @@ public class ArduinoFirmata {
 		if (handler != null && !versionQueryHandlers.contains(handler))
 			versionQueryHandlers.add(handler);
 	}
+	
+	public void enableBootloaderMode(){
+		isBootloader=true;
+	}
+	
+	public void disableBootloaderMode(){
+		isBootloader=false;
+	}
 
+	public boolean isBootloaderMode(){
+		return isBootloader;
+	}
 	private int waitForData = 0;
 	private byte executeMultiByteCommand = 0;
 	private byte multiByteChannel = 0;
@@ -509,11 +520,11 @@ public class ArduinoFirmata {
 		muteFirmata();
 		clearAllBuffers();
 		resetProcessInput();
-		isBootloader = true;
+		enableBootloaderMode();
 	}
 
 	public void returnAppToNormal() {
-		isBootloader = false;
+		disableBootloaderMode();
 		clearAllBuffers();
 		unMuteFirmata();
 	}
