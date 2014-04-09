@@ -73,10 +73,10 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 	}
 
 	public static enum Pin {
-		UP_ARROW(0, "Up Arrow"), RIGHT_ARROW(1, "Right Arrow"), DOWN_ARROW(2,
-				"Down Arrow"), LEFT_ARROW(3, "Left Arrow"), YELLOW_BUTTON(4,
-				"Yellow Button"), RED_BUTTON(5, "Red Button"), GREEN_BUTTON(6,
-				"Green Button"), BLUE_BUTTON(7, "Blue Button");
+		UP_ARROW(4, "Up Arrow"), RIGHT_ARROW(7, "Right Arrow"), DOWN_ARROW(5,
+				"Down Arrow"), LEFT_ARROW(6, "Left Arrow"), YELLOW_BUTTON(0,
+				"Yellow Button"), RED_BUTTON(1, "Red Button"), GREEN_BUTTON(2,
+				"Green Button"), BLUE_BUTTON(3, "Blue Button");
 
 		String name;
 		int id;
