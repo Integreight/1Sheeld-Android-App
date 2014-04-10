@@ -130,7 +130,7 @@ public class OneSheeldVersionInstallerPopupTesting extends Dialog {
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
 				firmata.resetMicro();
-				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_pulsein_rxtx), 4);
+				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_china), 4);
 				textView.setText("Press reset now!");
 			}
 		});
@@ -148,7 +148,7 @@ public class OneSheeldVersionInstallerPopupTesting extends Dialog {
 				txButton.setEnabled(false);
 				progressBar.setProgress(0);
 				firmata.resetMicro();
-				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_usa_with_reset), 4);
+				jodem.send(activity.getResources().openRawResource(R.raw.atmega_firmata_usa), 4);
 				textView.setText("Press reset now!");
 			}
 		});
