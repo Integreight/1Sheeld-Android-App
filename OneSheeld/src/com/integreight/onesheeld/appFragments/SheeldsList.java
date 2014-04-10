@@ -27,7 +27,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
-import com.integreight.onesheeld.OneSheeldVersionInstallerPopup;
+import com.integreight.onesheeld.OneSheeldVersionInstallerPopupTesting;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
@@ -342,8 +342,8 @@ public class SheeldsList extends Fragment {
 			launchShieldsOperationActivity();
 			return true;
 		case R.id.open_bootloader_popup:
-			if (!OneSheeldVersionInstallerPopup.isOpened)
-				new OneSheeldVersionInstallerPopup(getActivity()).show();
+			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
+				new OneSheeldVersionInstallerPopupTesting(getActivity()).show();
 			return true;
 		case R.id.action_settings:
 			((OneSheeldApplication) getActivity().getApplication())

@@ -20,7 +20,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-public class OneSheeldVersionInstallerPopup extends Dialog {
+public class OneSheeldVersionInstallerPopupTesting extends Dialog {
 	private Activity activity;
 	ArduinoFirmata firmata;
 	Button firmataButton;
@@ -33,7 +33,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 	TextView textView;
 	AsyncHttpClient httpClient;
 
-	public OneSheeldVersionInstallerPopup(Activity context) {
+	public OneSheeldVersionInstallerPopupTesting(Activity context) {
 		super(context, android.R.style.Theme_Black);
 		this.activity = context;
 	}
@@ -76,7 +76,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								@Override
 								public void onSuccess(byte[] binaryData) {
 									// TODO Auto-generated method stub
-									OneSheeldVersionInstallerPopup.this.setCancelable(false);
+									OneSheeldVersionInstallerPopupTesting.this.setCancelable(false);
 									firmata.prepareAppForSendingFirmware();
 									firmata.resetMicro();
 									jodem.send(binaryData, 4);
@@ -121,7 +121,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				OneSheeldVersionInstallerPopupTesting.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
 				firmatarxtxButton.setEnabled(false);
@@ -139,7 +139,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				OneSheeldVersionInstallerPopupTesting.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
 				firmatarxtxButton.setEnabled(false);
@@ -157,7 +157,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				OneSheeldVersionInstallerPopupTesting.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
 				firmataButton.setEnabled(false);
 				firmatarxtxButton.setEnabled(false);
@@ -175,7 +175,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				OneSheeldVersionInstallerPopup.this.setCancelable(false);
+				OneSheeldVersionInstallerPopupTesting.this.setCancelable(false);
 				firmata.prepareAppForSendingFirmware();
 				firmatarxtxButton.setEnabled(false);
 				firmatausaButton.setEnabled(false);
@@ -231,7 +231,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								firmatausaButton.setEnabled(true);
 								rxButton.setEnabled(true);
 								txButton.setEnabled(true);
-								OneSheeldVersionInstallerPopup.this.setCancelable(true);
+								OneSheeldVersionInstallerPopupTesting.this.setCancelable(true);
 							}
 						});
 
@@ -270,7 +270,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								rxButton.setEnabled(true);
 								txButton.setEnabled(true);
 								textView.setText(error);
-								OneSheeldVersionInstallerPopup.this.setCancelable(true);
+								OneSheeldVersionInstallerPopupTesting.this.setCancelable(true);
 								//firmata.returnAppToNormal();
 								firmata.enableReporting();
 								firmata.setAllPinsAsInput();
@@ -291,7 +291,7 @@ public class OneSheeldVersionInstallerPopup extends Dialog {
 								rxButton.setEnabled(true);
 								txButton.setEnabled(true);
 								textView.setText("Timout Happened");
-								OneSheeldVersionInstallerPopup.this.setCancelable(true);
+								OneSheeldVersionInstallerPopupTesting.this.setCancelable(true);
 								//firmata.returnAppToNormal();
 								firmata.enableReporting();
 								firmata.setAllPinsAsInput();
