@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,7 +19,6 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	TextView amplitude_value;
-	Button stop_mic_bt, start_mic_bt;
 	ImageView myBox;
 	int leftMargin;
 	int topMargin;
@@ -65,27 +63,28 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		micLayout.bringToFront();
 		params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
 		// params.gravity = Gravity.BOTTOM;
-		start_mic_bt = (Button) getActivity().findViewById(R.id.start_mic);
-		stop_mic_bt = (Button) getActivity().findViewById(R.id.stop_mic);
+		getView().findViewById(R.id.start_mic).setOnClickListener(
+				new View.OnClickListener() {
 
-		start_mic_bt.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
 
-			@Override
-			public void onClick(View v) {
+						((MicShield) getApplication().getRunningShields().get(
+								getControllerTag())).startMic();
 
-				((MicShield) getApplication().getRunningShields().get(
-						getControllerTag())).startMic();
-			}
-		});
-		stop_mic_bt.setOnClickListener(new View.OnClickListener() {
+					}
+				});
+		getView().findViewById(R.id.stop_mic).setOnClickListener(
+				new View.OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
+					@Override
+					public void onClick(View v) {
 
-				((MicShield) getApplication().getRunningShields().get(
-						getControllerTag())).stopMic();
-			}
-		});
+						((MicShield) getApplication().getRunningShields().get(
+								getControllerTag())).stopMic();
+
+					}
+				});
 
 	}
 

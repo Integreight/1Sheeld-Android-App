@@ -18,7 +18,7 @@ public class GSMLocationupdates implements LocationListener {
 	public void updateLocation() {
 		if (locManager != null) {
 			locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-					5000, 2, this);
+					0, 0, this);
 			/*
 			 * Location location = locManager
 			 * .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
