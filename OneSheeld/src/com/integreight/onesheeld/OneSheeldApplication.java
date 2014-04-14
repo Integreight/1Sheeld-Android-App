@@ -3,6 +3,8 @@ package com.integreight.onesheeld;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -10,9 +12,12 @@ import android.graphics.Typeface;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.HttpRequest;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 /**
  * @author SaadRoid
@@ -29,6 +34,7 @@ public class OneSheeldApplication extends Application {
 	private ConnectionDetector connectionHandler;
 	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
 	public Typeface appFont;
+	public int latestMajorVersion = -1, latestMinorVersion = -1;
 
 	@Override
 	public void onCreate() {
@@ -80,6 +86,14 @@ public class OneSheeldApplication extends Application {
 
 	public void setAppFirmata(ArduinoFirmata appFirmata) {
 		this.appFirmata = appFirmata;
+		if (appFirmata != null)
+			appFirmata.addVersionQueryHandler(new ArduinoVersionQueryHandler() {
+
+				@Override
+				public void onVersionReceived(int minorVersion, int majorVersion) {
+
+				}
+			});
 	}
 
 	public void addServiceEventHandler(

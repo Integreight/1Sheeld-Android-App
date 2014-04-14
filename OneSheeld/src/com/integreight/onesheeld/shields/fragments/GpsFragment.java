@@ -109,6 +109,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		super.onResume();
 		((GpsShield) getApplication().getRunningShields().get(
 				getControllerTag())).setGpsEventHandler(gpsEventHandler);
+		((GpsShield) getApplication().getRunningShields().get(
+				getControllerTag())).startGps();
 
 	}
 

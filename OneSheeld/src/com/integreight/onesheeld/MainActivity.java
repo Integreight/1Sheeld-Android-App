@@ -3,6 +3,9 @@ package com.integreight.onesheeld;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -23,7 +26,9 @@ import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
@@ -86,6 +91,27 @@ public class MainActivity extends FragmentActivity {
 				}).start();
 			}
 		});
+		HttpRequest.getInstance().get(
+				"http://www.1sheeld.com/api/firmware.json",
+				new JsonHttpResponseHandler() {
+					@Override
+					public void onSuccess(JSONObject response) {
+						try {
+							System.err.println(response);
+							((OneSheeldApplication) getApplication()).latestMajorVersion = Integer
+									.parseInt(response.getString("major"));
+							((OneSheeldApplication) getApplication()).latestMinorVersion = Integer
+									.parseInt(response.getString("minor"));
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						super.onSuccess(response);
+					}
+				});
 	}
 
 	@Override

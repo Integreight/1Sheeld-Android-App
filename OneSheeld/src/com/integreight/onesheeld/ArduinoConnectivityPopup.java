@@ -512,12 +512,39 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 					@Override
 					public void onClick(View v) {
-						backPressed = false;
-						if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
-								.isChecked())
-							((OneSheeldApplication) activity.getApplication())
-									.setLastConnectedDevice(address);
-						startService(address);
+						if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+							backPressed = false;
+							if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
+									.isChecked())
+								((OneSheeldApplication) activity
+										.getApplication())
+										.setLastConnectedDevice(address);
+							startService(address);
+						} else {
+							if (mBtAdapter != null
+									&& mBtAdapter.isDiscovering())
+								mBtAdapter.cancelDiscovery();
+							if (lockerTimeOut != null)
+								lockerTimeOut.stopTimer();
+							((MainActivity) activity)
+									.setOnConnectToBluetooth(new onConnectedToBluetooth() {
+
+										@Override
+										public void onConnect() {
+											backPressed = false;
+											if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
+													.isChecked())
+												((OneSheeldApplication) activity
+														.getApplication())
+														.setLastConnectedDevice(address);
+											startService(address);
+										}
+									});
+							Intent enableIntent = new Intent(
+									BluetoothAdapter.ACTION_REQUEST_ENABLE);
+							activity.startActivityForResult(enableIntent,
+									SheeldsList.REQUEST_ENABLE_BT);
+						}
 					}
 				});
 				devicesList.addView(item);
