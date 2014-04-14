@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.GMailSender;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.SecurePreferences;
 
@@ -75,7 +77,16 @@ public class EmailShield extends ControllerParent<EmailShield> {
 					if (eventHandler != null)
 						eventHandler.onEmailsent(email_send_to, subject);
 					// sendMailUsingJavaAPI(email_send_to, subject, body);
-					sendGmail(email_send_to, subject, body);
+					// check Internet connection
+					if (ConnectionDetector
+							.isConnectingToInternet(getApplication()
+									.getApplicationContext()))
+						sendGmail(email_send_to, subject, body);
+					else
+						Toast.makeText(
+								getApplication().getApplicationContext(),
+								"Please check your Internet connection and try again.",
+								Toast.LENGTH_SHORT).show();
 				}
 			}
 		}

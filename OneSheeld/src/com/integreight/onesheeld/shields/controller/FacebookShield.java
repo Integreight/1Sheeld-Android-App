@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
@@ -23,6 +24,7 @@ import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.EventHandler;
 
@@ -288,7 +290,15 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			lastPost = frame.getArgumentAsString(0);
 			if (isFacebookLoggedInAlready())
 				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
-					publishStory(lastPost);
+					if (ConnectionDetector
+							.isConnectingToInternet(getApplication()
+									.getApplicationContext()))
+						publishStory(lastPost);
+					else
+						Toast.makeText(
+								getApplication().getApplicationContext(),
+								"Please check your Internet connection and try again.",
+								Toast.LENGTH_SHORT).show();
 		}
 
 	}

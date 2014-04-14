@@ -15,6 +15,7 @@ import com.facebook.Session;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
@@ -182,9 +183,14 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	}
 
 	private void loginToFacebook() {
+		if (ConnectionDetector.isConnectingToInternet(getActivity()))
 
-		((FacebookShield) getApplication().getRunningShields().get(
-				getControllerTag())).loginToFacebook();
+			((FacebookShield) getApplication().getRunningShields().get(
+					getControllerTag())).loginToFacebook();
+		else
+			Toast.makeText(getApplication().getApplicationContext(),
+					"Please check your Internet connection and try again.",
+					Toast.LENGTH_SHORT).show();
 		// getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
 	}
 

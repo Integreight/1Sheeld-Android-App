@@ -39,7 +39,7 @@ public class OneSheeldApplication extends Application {
 	@Override
 	public void onCreate() {
 		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
-		setConnectionHandler(new ConnectionDetector(getApplicationContext()));
+		setConnectionHandler(new ConnectionDetector());
 		appFont = Typeface.createFromAsset(getAssets(), "light.otf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
 		super.onCreate();

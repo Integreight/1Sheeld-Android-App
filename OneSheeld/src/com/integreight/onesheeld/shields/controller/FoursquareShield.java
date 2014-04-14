@@ -21,6 +21,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
@@ -29,6 +30,7 @@ import com.integreight.onesheeld.shields.controller.utils.Foursquare;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareDialogError;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareError;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
@@ -97,8 +99,16 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 				if (frame.getFunctionId() == CHECKIN_METHOD_ID) {
 					placeID = frame.getArgumentAsString(0);
 					message = frame.getArgumentAsString(1);
-					ConnectFour connectFour = new ConnectFour();
-					connectFour.execute("");
+					if (ConnectionDetector
+							.isConnectingToInternet(getApplication()
+									.getApplicationContext())) {
+						ConnectFour connectFour = new ConnectFour();
+						connectFour.execute("");
+					} else
+						Toast.makeText(
+								getApplication().getApplicationContext(),
+								"Please check your Internet connection and try again.",
+								Toast.LENGTH_SHORT).show();
 				}
 		}
 	}

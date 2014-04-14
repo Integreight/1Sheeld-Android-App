@@ -12,10 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 
 public class GmailSinginPopup extends Dialog {
 	private AlertDialog.Builder builder;
@@ -114,9 +116,16 @@ public class GmailSinginPopup extends Dialog {
 				} else if (password.equals("") || password.contains(" ")
 						|| password.length() < 8) {
 					invalide_password_tx.setVisibility(View.VISIBLE);
-				} else
-					// Check Auth then call isUsernameValide..
-					new checkAuthenticationGamil().execute();
+				} else {
+					if (ConnectionDetector.isConnectingToInternet(activity))
+						// Check Auth then call isUsernameValide..
+						new checkAuthenticationGamil().execute();
+					else
+						Toast.makeText(
+								activity.getApplicationContext(),
+								"Please check your Internet connection and try again.",
+								Toast.LENGTH_SHORT).show();
+				}
 			}
 		});
 		cancel_bt.setOnClickListener(new View.OnClickListener() {
