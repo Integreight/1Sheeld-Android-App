@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.OneSheeldVersionInstallerPopupTesting;
@@ -171,8 +172,8 @@ public class SheeldsList extends Fragment {
 
 					@Override
 					public void onClick(View arg0) {
-						for (int i = 0; i < UIShield.values().length; i++) {
-							UIShield.getPosition(i + 1)
+						for (UIShield shield : UIShield.valuesFiltered()) {
+							UIShield.valueOf(shield.name())
 									.setMainActivitySelection(true);
 						}
 						searchBox.setText("");
@@ -184,8 +185,8 @@ public class SheeldsList extends Fragment {
 
 					@Override
 					public void onClick(View arg0) {
-						for (int i = 0; i < UIShield.values().length; i++) {
-							UIShield.getPosition(i + 1)
+						for (UIShield shield : UIShield.valuesFiltered()) {
+							UIShield.valueOf(shield.name())
 									.setMainActivitySelection(false);
 						}
 						searchBox.setText("");
@@ -343,7 +344,7 @@ public class SheeldsList extends Fragment {
 			return true;
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
-				new OneSheeldVersionInstallerPopupTesting(getActivity()).show();
+				new FirmwareUpdatingPopup(getActivity()).show();
 			return true;
 		case R.id.action_settings:
 			((OneSheeldApplication) getActivity().getApplication())

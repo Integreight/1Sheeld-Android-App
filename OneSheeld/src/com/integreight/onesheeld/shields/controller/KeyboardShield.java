@@ -1,7 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-import android.text.Editable;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
