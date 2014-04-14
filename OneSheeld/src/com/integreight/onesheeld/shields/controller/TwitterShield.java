@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -20,6 +21,7 @@ import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListner;
 import com.integreight.onesheeld.utils.AlertDialogManager;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class TwitterShield extends ControllerParent<TwitterShield> {
@@ -178,8 +180,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 									TwitterAuthorization.TWITTER_USER_NAME);
 							editor.putBoolean(PREF_KEY_TWITTER_LOGIN, true);
 							if (eventHandler != null)
-							eventHandler
-									.onTwitterLoggedIn(TwitterAuthorization.TWITTER_USER_NAME);
+								eventHandler
+										.onTwitterLoggedIn(TwitterAuthorization.TWITTER_USER_NAME);
 							// Commit the edits!
 							editor.commit();
 
@@ -241,9 +243,17 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			lastTweet = frame.getArgumentAsString(0);
 			if (isTwitterLoggedInAlready())
 				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
-					tweet(lastTweet);
-					if (eventHandler != null)
-						eventHandler.onRecieveTweet(lastTweet);
+					if (ConnectionDetector
+							.isConnectingToInternet(getApplication()
+									.getApplicationContext())) {
+						tweet(lastTweet);
+						if (eventHandler != null)
+							eventHandler.onRecieveTweet(lastTweet);
+					} else
+						Toast.makeText(
+								getApplication().getApplicationContext(),
+								"Please check your Internet connection and try again.",
+								Toast.LENGTH_SHORT).show();
 				}
 		}
 	}

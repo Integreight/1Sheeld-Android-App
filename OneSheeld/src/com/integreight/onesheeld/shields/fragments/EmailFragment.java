@@ -17,6 +17,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.SecurePreferences;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
@@ -72,8 +73,15 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
 			@Override
 			public void onClick(View v) {
-				// show dialog of registration then call add account method
-				new GmailSinginPopup(getActivity(), emailEventHandler).show();
+				if (ConnectionDetector.isConnectingToInternet(getActivity()))
+					// show dialog of registration then call add account method
+					new GmailSinginPopup(getActivity(), emailEventHandler)
+							.show();
+				else
+					Toast.makeText(
+							getApplication().getApplicationContext(),
+							"Please check your Internet connection and try again.",
+							Toast.LENGTH_SHORT).show();
 			}
 		});
 

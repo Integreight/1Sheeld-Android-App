@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield.TwitterEventHandler;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
@@ -167,8 +168,13 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			logoutFromTwitter();
 			return true;
 		case R.id.login_to_twitter_menuitem:
-			((TwitterShield) getApplication().getRunningShields().get(
-					getControllerTag())).login();
+			if (ConnectionDetector.isConnectingToInternet(getActivity()))
+				((TwitterShield) getApplication().getRunningShields().get(
+						getControllerTag())).login();
+			else
+				Toast.makeText(getApplication().getApplicationContext(),
+						"Please check your Internet connection and try again.",
+						Toast.LENGTH_SHORT).show();
 			// buttonToLoggedIn();
 			return true;
 		}

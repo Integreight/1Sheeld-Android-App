@@ -17,6 +17,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield.FoursquareEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.ForsquareUtil;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class FoursquareFragment extends
@@ -75,8 +76,14 @@ public class FoursquareFragment extends
 			@Override
 			public void onClick(View v) {
 				// start login to foursquare
-				((FoursquareShield) getApplication().getRunningShields().get(
-						getControllerTag())).loginToFoursquare();
+				if (ConnectionDetector.isConnectingToInternet(getActivity()))
+					((FoursquareShield) getApplication().getRunningShields()
+							.get(getControllerTag())).loginToFoursquare();
+				else
+					Toast.makeText(
+							getApplication().getApplicationContext(),
+							"Please check your Internet connection and try again.",
+							Toast.LENGTH_SHORT).show();
 			}
 		});
 		logout.setOnClickListener(new View.OnClickListener() {

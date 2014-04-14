@@ -14,4 +14,13 @@
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
 
+    <ImageView
+        android:id="@+id/skype_logo"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_margin="20dp"
+        android:src="@drawable/skype_logo" />
+
 </RelativeLayout>

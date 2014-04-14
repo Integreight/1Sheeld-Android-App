@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SkypeShield extends ControllerParent<SkypeShield> {
@@ -60,21 +62,26 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 			 */
 			String userId = frame.getArgumentAsString(0);
 			Log.d("Skype_User_ID ", userId);
+			if (ConnectionDetector.isConnectingToInternet(getApplication()
+					.getApplicationContext())) {
+				switch (frame.getFunctionId()) {
+				case CALL_METHOD_ID:
+					callSkypeID(userId);
+					break;
+				case VIDEO_METHOD_ID:
+					videoCallSkypeID(userId);
+					break;
+				case CHAT_METHOD_ID:
+					chatSkypeID(userId);
+					break;
 
-			switch (frame.getFunctionId()) {
-			case CALL_METHOD_ID:
-				callSkypeID(userId);
-				break;
-			case VIDEO_METHOD_ID:
-				videoCallSkypeID(userId);
-				break;
-			case CHAT_METHOD_ID:
-				chatSkypeID(userId);
-				break;
-
-			default:
-				break;
-			}
+				default:
+					break;
+				}
+			} else
+				Toast.makeText(getApplication().getApplicationContext(),
+						"Please check your Internet connection and try again.",
+						Toast.LENGTH_SHORT).show();
 		}
 
 	}

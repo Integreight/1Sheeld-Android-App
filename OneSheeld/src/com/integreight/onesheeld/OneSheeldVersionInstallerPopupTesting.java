@@ -70,9 +70,9 @@ public class OneSheeldVersionInstallerPopupTesting extends Dialog {
 					public void onSuccess(JSONObject response) {
 						// TODO Auto-generated method stub
 						try {
-							Log.d("bootloader",response.get("url").toString());
+							Log.d("bootloader",response.get("url_china").toString());
 							textView.setText("Downloading...");
-							httpClient.get(response.get("url").toString(),new BinaryHttpResponseHandler(new String[]{"application/octet-stream","text/plain"}){
+							httpClient.get(response.get("url_china").toString(),new BinaryHttpResponseHandler(new String[]{"application/octet-stream","text/plain"}){
 								@Override
 								public void onSuccess(byte[] binaryData) {
 									// TODO Auto-generated method stub
