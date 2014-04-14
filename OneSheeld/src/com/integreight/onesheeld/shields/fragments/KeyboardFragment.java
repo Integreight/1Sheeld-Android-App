@@ -1,8 +1,12 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import android.graphics.Point;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -367,8 +371,23 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	}
 
 	private void setKeys() {
-		mWindowWidth = getActivity().getWindowManager().getDefaultDisplay()
-				.getWidth(); // getting
+		try {
+			DisplayMetrics displaymetrics = new DisplayMetrics();
+			getActivity().getWindow().getWindowManager().getDefaultDisplay()
+					.getMetrics(displaymetrics);
+			mWindowWidth = displaymetrics.widthPixels;
+		} catch (Exception ignored) {
+		}
+		// includes window decorations (statusbar bar/menu bar)
+		if (Build.VERSION.SDK_INT >= 17)
+			try {
+				Point realSize = new Point();
+				Display.class.getMethod("getRealSize", Point.class).invoke(
+						getActivity().getWindow().getWindowManager()
+								.getDefaultDisplay(), realSize);
+				mWindowWidth = realSize.x;
+			} catch (Exception ignored) {
+			} // getting
 		// window
 		// height
 		// getting ids from xml files

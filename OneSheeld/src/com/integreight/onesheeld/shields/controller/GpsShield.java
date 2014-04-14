@@ -3,13 +3,13 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -19,6 +19,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.GSMLocationupdates.SendFrameHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -190,8 +191,9 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		if (errorDialog != null) {
 			ErrorDialogFragment errorFragment = new ErrorDialogFragment();
 			errorFragment.setDialog(errorDialog);
-			errorFragment
-					.show(getActivity().getFragmentManager(), "Gps Sheeld");
+			errorFragment.show(
+					((MainActivity) getActivity()).getSupportFragmentManager(),
+					"Gps Sheeld");
 		}
 	}
 

@@ -3,8 +3,6 @@ package com.integreight.onesheeld;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -12,12 +10,9 @@ import android.graphics.Typeface;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.HttpRequest;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 /**
  * @author SaadRoid
@@ -27,6 +22,8 @@ public class OneSheeldApplication extends Application {
 	private SharedPreferences appPreferences;
 	private final String APP_PREF_NAME = "oneSheeldPreference";
 	private final String LAST_DEVICE = "lastConnectedDevice";
+	private final String MAJOR_VERSION = "majorVersion";
+	private final String MINOR_VERSION = "minorVersion";
 	private final String BUZZER_SOUND_KEY = "buzerSound";
 	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
@@ -34,7 +31,6 @@ public class OneSheeldApplication extends Application {
 	private ConnectionDetector connectionHandler;
 	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
 	public Typeface appFont;
-	public int latestMajorVersion = -1, latestMinorVersion = -1;
 
 	@Override
 	public void onCreate() {
@@ -62,6 +58,22 @@ public class OneSheeldApplication extends Application {
 				.commit();
 	}
 
+	public int getMajorVersion() {
+		return appPreferences.getInt(MAJOR_VERSION, -1);
+	}
+
+	public void setMajorVersion(int majorVersion) {
+		appPreferences.edit().putInt(MAJOR_VERSION, majorVersion).commit();
+	}
+
+	public int getMinorVersion() {
+		return appPreferences.getInt(MINOR_VERSION, -1);
+	}
+
+	public void setMinorVersion(int minorVersion) {
+		appPreferences.edit().putInt(MINOR_VERSION, minorVersion).commit();
+	}
+
 	public void setBuzzerSound(String uri) {
 		appPreferences.edit().putString(BUZZER_SOUND_KEY, uri).commit();
 	}
@@ -86,14 +98,6 @@ public class OneSheeldApplication extends Application {
 
 	public void setAppFirmata(ArduinoFirmata appFirmata) {
 		this.appFirmata = appFirmata;
-		if (appFirmata != null)
-			appFirmata.addVersionQueryHandler(new ArduinoVersionQueryHandler() {
-
-				@Override
-				public void onVersionReceived(int minorVersion, int majorVersion) {
-
-				}
-			});
 	}
 
 	public void addServiceEventHandler(

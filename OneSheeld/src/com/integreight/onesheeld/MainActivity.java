@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
 
+import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -91,17 +92,44 @@ public class MainActivity extends FragmentActivity {
 				}).start();
 			}
 		});
+		if (getThisApplication().getAppFirmata() != null) {
+			getThisApplication().getAppFirmata().addVersionQueryHandler(
+					new ArduinoVersionQueryHandler() {
+
+						@Override
+						public void onVersionReceived(int minorVersion,
+								int majorVersion) {
+
+						}
+					});
+		}
 		HttpRequest.getInstance().get(
 				"http://www.1sheeld.com/api/firmware.json",
 				new JsonHttpResponseHandler() {
+
+					@Override
+					public void onFinish() {
+						// TODO Auto-generated method stub
+						super.onFinish();
+					}
+
+					@Override
+					@Deprecated
+					public void onFailure(Throwable error) {
+						// TODO Auto-generated method stub
+						super.onFailure(error);
+					}
+
 					@Override
 					public void onSuccess(JSONObject response) {
 						try {
 							System.err.println(response);
-							((OneSheeldApplication) getApplication()).latestMajorVersion = Integer
-									.parseInt(response.getString("major"));
-							((OneSheeldApplication) getApplication()).latestMinorVersion = Integer
-									.parseInt(response.getString("minor"));
+							((OneSheeldApplication) getApplication())
+									.setMajorVersion(Integer.parseInt(response
+											.getString("major")));
+							((OneSheeldApplication) getApplication())
+									.setMinorVersion(Integer.parseInt(response
+											.getString("minor")));
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();

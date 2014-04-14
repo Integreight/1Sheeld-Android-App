@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="30dp"
+    android:background="@color/black"
+    android:orientation="vertical" >
+
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="14sp" />
+
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/msg"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:gravity="center_vertical|left"
+        android:padding="5dp"
+        android:textColor="@color/white"
+        android:textSize="13sp" />
+
+    <LinearLayout
+        android:id="@+id/actionsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:padding="5dp" >
+    </LinearLayout>
+
+</LinearLayout>

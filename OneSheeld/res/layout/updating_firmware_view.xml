@@ -30,7 +30,7 @@
             android:background="@drawable/circle_button_selector"
             android:gravity="center"
             android:padding="3dp"
-            android:text="@string/scan"
+            android:text="@string/upgrad"
             android:textColor="@drawable/white_black_text_selector"
             android:textSize="22sp"
             android:typeface="sans" />
@@ -41,7 +41,8 @@
             android:layout_width="110dp"
             android:layout_height="110dp"
             android:layout_centerInParent="true"
-            android:indeterminateDrawable="@drawable/my_progress_indeterminate" >
+            android:indeterminateDrawable="@drawable/my_progress_indeterminate"
+            android:visibility="invisible" >
         </ProgressBar>
     </RelativeLayout>
 
@@ -58,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="@string/searching"
+            android:text="@string/upgradeFirmata"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:typeface="sans" />

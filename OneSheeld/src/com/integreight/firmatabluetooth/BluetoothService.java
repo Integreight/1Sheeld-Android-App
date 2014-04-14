@@ -315,7 +315,7 @@ public class BluetoothService {
 			// given BluetoothDevice
 			try {
 				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
-
+ 
 				// Method m = device.getClass().getMethod("createRfcommSocket",
 				// new Class[] {int.class});
 				// tmp = (BluetoothSocket) m.invoke(device, 1);
