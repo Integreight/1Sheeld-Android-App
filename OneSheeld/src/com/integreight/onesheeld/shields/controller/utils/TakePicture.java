@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
@@ -125,74 +126,75 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	@Override
 	public void surfaceChanged(SurfaceHolder arg0, int arg1, int arg2, int arg3) {
 		// get camera parameters
-		parameters = mCamera.getParameters();
-		if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
-			FLASH_MODE = "auto";
-		}
-		parameters.setFlashMode(FLASH_MODE);
-
-		// set camera parameters
-		mCamera.setParameters(parameters);
-		mCamera.startPreview();
-
-		// sets what code should be executed after the picture is taken
-		Camera.PictureCallback mCall = new Camera.PictureCallback() {
-			@Override
-			public void onPictureTaken(byte[] data, Camera camera) {
-				// decode the data obtained by the camera into a Bitmap
-				Log.d("ImageTakin", "Done");
-
-				bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
-				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-				bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-
-				File imagesFolder = new File(
-						Environment.getExternalStorageDirectory(), "OneSheeld");
-				imagesFolder.mkdirs(); // <----
-				File image = new File(imagesFolder, System.currentTimeMillis()
-						+ ".jpg");
-
-				// write the bytes in file
-				try {
-					fo = new FileOutputStream(image);
-				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				try {
-					fo.write(bytes.toByteArray());
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				// remember close de FileOutput
-				try {
-					fo.close();
-					sendBroadcast(new Intent(
-							Intent.ACTION_MEDIA_MOUNTED,
-							Uri.parse("file://"
-									+ Environment.getExternalStorageDirectory())));
-
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				if (mCamera != null) {
-					mCamera.stopPreview();
-					// release the camera
-					mCamera.release();
-				}
-				Toast.makeText(getApplicationContext(),
-						"Your Picture has been taken !", Toast.LENGTH_LONG)
-						.show();
-
-				TakePicture.this.finish();
-
+		if (mCamera != null) {
+			parameters = mCamera.getParameters();
+			if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
+				FLASH_MODE = "auto";
 			}
-		};
+			parameters.setFlashMode(FLASH_MODE);
 
-		mCamera.takePicture(null, null, mCall);
+			// set camera parameters
+			mCamera.setParameters(parameters);
+			mCamera.startPreview();
+
+			// sets what code should be executed after the picture is taken
+			Camera.PictureCallback mCall = new Camera.PictureCallback() {
+				@Override
+				public void onPictureTaken(byte[] data, Camera camera) {
+					// decode the data obtained by the camera into a Bitmap
+					Log.d("ImageTakin", "Done");
+
+					bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+					ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+					if (bmp != null)
+						bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+
+					File imagesFolder = new File(
+							Environment.getExternalStorageDirectory(),
+							"OneSheeld");
+					imagesFolder.mkdirs(); // <----
+					File image = new File(imagesFolder,
+							System.currentTimeMillis() + ".jpg");
+
+					// write the bytes in file
+					try {
+						fo = new FileOutputStream(image);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+					}
+					try {
+						fo.write(bytes.toByteArray());
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+					}
+
+					// remember close de FileOutput
+					try {
+						fo.close();
+						sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+								Uri.parse("file://"
+										+ Environment
+												.getExternalStorageDirectory())));
+
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+					}
+					if (mCamera != null) {
+						mCamera.stopPreview();
+						// release the camera
+						mCamera.release();
+					}
+					Toast.makeText(getApplicationContext(),
+							"Your Picture has been taken !", Toast.LENGTH_LONG)
+							.show();
+
+					TakePicture.this.finish();
+
+				}
+			};
+
+			mCamera.takePicture(null, null, mCall);
+		}
 	}
 
 	@Override
@@ -200,6 +202,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 		// The Surface has been created, acquire the camera and tell it where
 		// to draw the preview.
 		if (isFrontCamRequest) {
+
 			// set flash 0ff
 			FLASH_MODE = "off";
 			// only for gingerbread and newer versions
@@ -209,12 +212,11 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 					mCamera.setPreviewDisplay(holder);
 
 				} catch (IOException exception) {
-					mCamera.release();
 					mCamera = null;
 					Toast.makeText(getApplicationContext(),
 							"API dosen't support front camera",
 							Toast.LENGTH_LONG).show();
-					finish();
+					TakePicture.this.finish();
 				}
 			} else {
 				if (checkFrontCamera(getApplicationContext())) {
@@ -223,12 +225,11 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 						mCamera.setPreviewDisplay(holder);
 
 					} catch (IOException exception) {
-						mCamera.release();
 						mCamera = null;
 						Toast.makeText(getApplicationContext(),
 								"API dosen't support front camera",
 								Toast.LENGTH_LONG).show();
-						finish();
+						TakePicture.this.finish();
 					}
 				}/*
 				 * else { // API dosen't support front camera or no front camera
@@ -247,8 +248,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 			try {
 				mCamera.setPreviewDisplay(holder);
 
-			} catch (IOException exception) {
-				mCamera.release();
+			} catch (Exception exception) {
 				mCamera = null;
 			}
 		}
@@ -285,6 +285,16 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 			}
 		}
 		return cam;
+	}
+
+	@Override
+	protected void onDestroy() {
+		Intent intent = new Intent("custom-event-name");
+		// You can also include some extra data.
+		intent.putExtra("message", "This is my message!");
+		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+
+		super.onDestroy();
 	}
 
 }
