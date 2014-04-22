@@ -15,13 +15,12 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
 import android.net.Uri;
-import android.os.Build;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
@@ -29,7 +28,6 @@ public class CameraService extends Service {
 
 	// Camera variables
 	// a surface holder
-	private SurfaceHolder sHolder;
 	// a variable to control the camera
 	private Camera mCamera;
 	// the camera parameters
@@ -39,6 +37,7 @@ public class CameraService extends Service {
 	private String FLASH_MODE;
 	private boolean isFrontCamRequest = false;
 	private Camera.Size pictureSize;
+	SurfaceView sv;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -60,9 +59,11 @@ public class CameraService extends Service {
 				} catch (RuntimeException e) {
 					Log.e("Camera",
 							"Camera failed to open: " + e.getLocalizedMessage());
-					Toast.makeText(getApplicationContext(),
-							"Front Camera failed to open", Toast.LENGTH_LONG)
-							.show();
+					/*
+					 * Toast.makeText(getApplicationContext(),
+					 * "Front Camera failed to open", Toast.LENGTH_LONG)
+					 * .show();
+					 */
 				}
 			}
 		}
@@ -112,19 +113,60 @@ public class CameraService extends Service {
 		}
 	}
 
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
+	private class TakeImage extends AsyncTask<Intent, Void, Integer> {
+		int result;
+
+		@Override
+		protected Integer doInBackground(Intent... params) {
+			result = takeImage(params[0]);
+			return result;
+		}
+
+		@Override
+		protected void onPostExecute(Integer result) {
+			switch (result) {
+			case 1:
+
+				Toast.makeText(getApplicationContext(),
+						"Your Device dosen't have Front Camera !",
+						Toast.LENGTH_LONG).show();
+
+				break;
+			case 2:
+				Toast.makeText(getApplicationContext(),
+						"Your Device dosen't have a Camera !",
+						Toast.LENGTH_LONG).show();
+				break;
+			case 3:
+				Toast.makeText(getApplicationContext(),
+						"API dosen't support front camera", Toast.LENGTH_LONG)
+						.show();
+				break;
+			case 4:
+
+				Toast.makeText(getApplicationContext(),
+						"Your Picture has been taken !", Toast.LENGTH_LONG)
+						.show();
+				break;
+
+			default:
+				break;
+			}
+			super.onPostExecute(result);
+		}
+	}
+
+	private int takeImage(Intent intent) {
 
 		if (checkCameraHardware(getApplicationContext())) {
 			Bundle extras = intent.getExtras();
-			if (extras != null)
-			{
-			String flash_mode = extras.getString("FLASH");
-			FLASH_MODE = flash_mode;
+			if (extras != null) {
+				String flash_mode = extras.getString("FLASH");
+				FLASH_MODE = flash_mode;
 
-			boolean front_cam_req = extras.getBoolean("Front_Request");
-			isFrontCamRequest = front_cam_req;
-		}
+				boolean front_cam_req = extras.getBoolean("Front_Request");
+				isFrontCamRequest = front_cam_req;
+			}
 
 			if (isFrontCamRequest) {
 
@@ -133,11 +175,15 @@ public class CameraService extends Service {
 				// only for gingerbread and newer versions
 				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
 					mCamera = openFrontFacingCameraGingerbread();
-					SurfaceView sv = new SurfaceView(
-							getApplicationContext());
-					try {
-						
-						mCamera.setPreviewDisplay(sv.getHolder());
+					if (mCamera != null) {
+
+						try {
+							mCamera.setPreviewDisplay(sv.getHolder());
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							stopSelf();
+							return 3;
+						}
 						parameters = mCamera.getParameters();
 						parameters.setFlashMode(FLASH_MODE);
 						pictureSize = getBiggesttPictureSize(parameters);
@@ -148,28 +194,33 @@ public class CameraService extends Service {
 						mCamera.setParameters(parameters);
 						mCamera.startPreview();
 						mCamera.takePicture(null, null, mCall);
+						return 4;
 
-					} catch (IOException exception) {
+					} else {
 						mCamera = null;
-						Toast.makeText(getApplicationContext(),
-								"API dosen't support front camera",
-								Toast.LENGTH_LONG).show();
 						stopSelf();
+						return 1;
 					}
-					sHolder = sv.getHolder();
-					// tells Android that this surface will have its data constantly
-					// replaced
-					if (Build.VERSION.SDK_INT < 11)
-
-						sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+					/*
+					 * sHolder = sv.getHolder(); // tells Android that this
+					 * surface will have its data // constantly // replaced if
+					 * (Build.VERSION.SDK_INT < 11)
+					 * 
+					 * sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
+					 */
 				} else {
 					if (checkFrontCamera(getApplicationContext())) {
 						mCamera = openFrontFacingCameraGingerbread();
-						SurfaceView sv = new SurfaceView(
-								getApplicationContext());
-						try {
 
-							mCamera.setPreviewDisplay(sv.getHolder());
+						if (mCamera != null) {
+
+							try {
+								mCamera.setPreviewDisplay(sv.getHolder());
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								stopSelf();
+								return 3;
+							}
 							parameters = mCamera.getParameters();
 							parameters.setFlashMode(FLASH_MODE);
 							pictureSize = getBiggesttPictureSize(parameters);
@@ -180,38 +231,39 @@ public class CameraService extends Service {
 							mCamera.setParameters(parameters);
 							mCamera.startPreview();
 							mCamera.takePicture(null, null, mCall);
+							return 4;
 
-						} catch (IOException exception) {
+						} else {
 							mCamera = null;
-							Toast.makeText(getApplicationContext(),
-									"API dosen't support front camera",
-									Toast.LENGTH_LONG).show();
+							/*
+							 * Toast.makeText(getApplicationContext(),
+							 * "API dosen't support front camera",
+							 * Toast.LENGTH_LONG).show();
+							 */
 							stopSelf();
+							return 1;
 						}
 						// Get a surface
-						sHolder = sv.getHolder();
-						// tells Android that this surface will have its data
-						// constantly
-						// replaced
-						if (Build.VERSION.SDK_INT < 11)
-
-							sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+						/*
+						 * sHolder = sv.getHolder(); // tells Android that this
+						 * surface will have its data // constantly // replaced
+						 * if (Build.VERSION.SDK_INT < 11)
+						 * 
+						 * sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS
+						 * );
+						 */
 					}
 
 				}
 
 			} else {
 
-				if (mCamera != null)
-				{
+				if (mCamera != null) {
 					mCamera.stopPreview();
-				   mCamera.release();
+					mCamera.release();
 					mCamera = Camera.open();
-				}
-				else
+				} else
 					mCamera = getCameraInstance();
-
-				SurfaceView sv = new SurfaceView(getApplicationContext());
 
 				try {
 					mCamera.setPreviewDisplay(sv.getHolder());
@@ -225,6 +277,7 @@ public class CameraService extends Service {
 					mCamera.setParameters(parameters);
 					mCamera.startPreview();
 					mCamera.takePicture(null, null, mCall);
+					return 4;
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
@@ -232,29 +285,42 @@ public class CameraService extends Service {
 				}
 
 				// Get a surface
-				sHolder = sv.getHolder();
-				// tells Android that this surface will have its data constantly
-				// replaced
-				if (Build.VERSION.SDK_INT < 11)
-
-					sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+				/*
+				 * sHolder = sv.getHolder(); // tells Android that this surface
+				 * will have its data constantly // replaced if
+				 * (Build.VERSION.SDK_INT < 11)
+				 * 
+				 * sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+				 */
 
 			}
 
 		} else {
 			// display in long period of time
-			Toast.makeText(getApplicationContext(),
-					"Your Device dosen't have a Camera !", Toast.LENGTH_LONG)
-					.show();
+			/*
+			 * Toast.makeText(getApplicationContext(),
+			 * "Your Device dosen't have a Camera !", Toast.LENGTH_LONG)
+			 * .show();
+			 */
+			return 2;
 
 		}
+		return 0;
 
-
-		//return super.onStartCommand(intent, flags, startId);
-	return 0;
+		// return super.onStartCommand(intent, flags, startId);
 
 	}
+
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		sv = new SurfaceView(getApplicationContext());
+
+		new TakeImage().execute(intent);
+		return 0;
+	}
+
 	Camera.PictureCallback mCall = new Camera.PictureCallback() {
+
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// decode the data obtained by the camera into a Bitmap
@@ -299,8 +365,11 @@ public class CameraService extends Service {
 				// release the camera
 				mCamera.release();
 			}
-			Toast.makeText(getApplicationContext(),
-					"Your Picture has been taken !", Toast.LENGTH_LONG).show();
+			/*
+			 * Toast.makeText(getApplicationContext(),
+			 * "Your Picture has been taken !", Toast.LENGTH_LONG).show();
+			 */
+			com.integreight.onesheeld.Log.d("Camera", "Image Taken !");
 			if (bmp != null) {
 				bmp.recycle();
 				bmp = null;
@@ -310,7 +379,7 @@ public class CameraService extends Service {
 			stopSelf();
 		}
 	};
-	
+
 	@Override
 	public IBinder onBind(Intent intent) {
 		return null;
