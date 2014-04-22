@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -50,6 +51,7 @@ import com.integreight.onesheeld.shields.fragments.SmsFragment;
 import com.integreight.onesheeld.shields.fragments.TemperatureFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
+import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SelectedShieldsListFragment extends ListFragment {
@@ -188,16 +190,32 @@ public class SelectedShieldsListFragment extends ListFragment {
 		return UIShieldAdapter.getItem(position);
 	}
 
+	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		setListAdapter(UIShieldAdapter);
 	}
 
+	@Override
+	public void onViewCreated(View view, Bundle savedInstanceState) {
+
+		getListView().setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				return !((AppSlidingLeftMenu) getActivity().findViewById(
+						R.id.sliding_pane_layout)).isOpen();
+			}
+		});
+		super.onViewCreated(view, savedInstanceState);
+	}
+
+	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		Fragment newContent = null;
 		newContent = getShieldFragment(position);
-		getActivity().setTitle(
-				UIShieldAdapter.getItem(position).getName() + " Shield");
+		// getActivity().setTitle(
+		// UIShieldAdapter.getItem(position).getName() + " Shield");
 		if (newContent != null)
 			switchFragment(newContent);
 	}

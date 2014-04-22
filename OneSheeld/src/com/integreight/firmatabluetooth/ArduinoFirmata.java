@@ -18,8 +18,8 @@ public class ArduinoFirmata {
 	public final static String VERSION = "0.2.0";
 	public final static String TAG = "ArduinoFirmata";
 
-	LinkedBlockingQueue<Byte> uartBuffer = new LinkedBlockingQueue<Byte>();
-	LinkedBlockingQueue<Byte> bluetoothBuffer = new LinkedBlockingQueue<Byte>();
+	LinkedBlockingQueue<Byte> uartBuffer;
+	LinkedBlockingQueue<Byte> bluetoothBuffer;
 	UartListeningThread uartListeningThread;
 	BluetoothBufferListeningThread bluetoothBufferListeningThread;
 	boolean isBootloader = false;
@@ -137,18 +137,19 @@ public class ArduinoFirmata {
 		if (handler != null && !versionQueryHandlers.contains(handler))
 			versionQueryHandlers.add(handler);
 	}
-	
-	public void enableBootloaderMode(){
-		isBootloader=true;
-	}
-	
-	public void disableBootloaderMode(){
-		isBootloader=false;
+
+	public void enableBootloaderMode() {
+		isBootloader = true;
 	}
 
-	public boolean isBootloaderMode(){
+	public void disableBootloaderMode() {
+		isBootloader = false;
+	}
+
+	public boolean isBootloaderMode() {
 		return isBootloader;
 	}
+
 	private int waitForData = 0;
 	private byte executeMultiByteCommand = 0;
 	private byte multiByteChannel = 0;
@@ -166,6 +167,7 @@ public class ArduinoFirmata {
 	private boolean isVersionQueried = false;
 	private BluetoothService bluetoothService;
 	private Context context;
+	private boolean isBluetoothBufferWaiting;
 
 	public int getBTState() {
 		return bluetoothService.getState();
@@ -181,6 +183,8 @@ public class ArduinoFirmata {
 	}
 
 	public ArduinoFirmata(Context context) {
+		uartBuffer = new LinkedBlockingQueue<Byte>();
+		bluetoothBuffer = new LinkedBlockingQueue<Byte>();
 		bluetoothService = new BluetoothService(context);
 		eventHandlers = new CopyOnWriteArrayList<ArduinoFirmataEventHandler>();
 		dataHandlers = new CopyOnWriteArrayList<ArduinoFirmataDataHandler>();
@@ -425,6 +429,8 @@ public class ArduinoFirmata {
 					break;
 				case REPORT_VERSION:
 					setVersion(storedInputData[0], storedInputData[1]);
+					Log.d("oll", storedInputData[0] + "     "
+							+ storedInputData[1]);
 					isVersionQueried = true;
 					break;
 				}
@@ -553,7 +559,7 @@ public class ArduinoFirmata {
 	private void onClose(final boolean isManually) {
 		for (final ArduinoFirmataEventHandler eventHandler : eventHandlers) {
 			uiThreadHandler.post(new Runnable() {
-				
+
 				@Override
 				public void run() {
 					// TODO Auto-generated method stub
@@ -561,7 +567,7 @@ public class ArduinoFirmata {
 						eventHandler.onClose(isManually);
 				}
 			});
-			
+
 		}
 	}
 
@@ -619,22 +625,26 @@ public class ArduinoFirmata {
 	};
 
 	private void initFirmata(final BluetoothDevice device) {
+		isBluetoothBufferWaiting = false;
 		stopBuffersThreads();
 		clearAllBuffers();
 		resetProcessInput();
 		isVersionQueried = false;
 		bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
 		uartListeningThread = new UartListeningThread();
-		enableReporting();
-		setAllPinsAsInput();
-		initUart();
-		queryVersion();
+		while (!isBluetoothBufferWaiting)
+			;
+
 		uiThreadHandler.post(new Runnable() {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
 
 				onConnect();
+				enableReporting();
+				setAllPinsAsInput();
+				initUart();
+				queryVersion();
 				String mConnectedDeviceName = device.getName();
 				Toast.makeText(context, "Connected to " + mConnectedDeviceName,
 						Toast.LENGTH_SHORT).show();
@@ -647,6 +657,7 @@ public class ArduinoFirmata {
 	}
 
 	private byte readByteFromBluetoothBuffer() throws InterruptedException {
+		isBluetoothBufferWaiting = true;
 		return bluetoothBuffer.take().byteValue();
 	}
 

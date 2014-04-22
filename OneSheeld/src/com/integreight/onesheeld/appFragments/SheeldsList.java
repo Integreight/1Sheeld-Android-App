@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.appFragments;
 
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -154,7 +153,7 @@ public class SheeldsList extends Fragment {
 	private void initView() {
 		shieldsListView = (ListViewReversed) getView().findViewById(
 				R.id.sheeldsList);
-		shieldsUIList = Arrays.asList(UIShield.values());
+		shieldsUIList = UIShield.valuesFiltered();
 		// shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(getActivity());
 		shieldsListView.setAdapter(adapter);
@@ -344,7 +343,7 @@ public class SheeldsList extends Fragment {
 			return true;
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
-				new OneSheeldVersionInstallerPopupTesting(getActivity()).show();
+				new FirmwareUpdatingPopup((MainActivity) getActivity()).show();
 			return true;
 		case R.id.action_settings:
 			((OneSheeldApplication) getActivity().getApplication())

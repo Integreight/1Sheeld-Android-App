@@ -3,9 +3,6 @@ package com.integreight.onesheeld;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -27,9 +24,8 @@ import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.integreight.onesheeld.utils.HttpRequest;
+import com.integreight.onesheeld.utils.ValidationPopup;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
-import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
@@ -94,53 +90,96 @@ public class MainActivity extends FragmentActivity {
 		});
 		if (getThisApplication().getAppFirmata() != null) {
 			getThisApplication().getAppFirmata().addVersionQueryHandler(
-					new ArduinoVersionQueryHandler() {
-
-						@Override
-						public void onVersionReceived(int minorVersion,
-								int majorVersion) {
-
-						}
-					});
+					versionChangingHandler);
 		}
-		HttpRequest.getInstance().get(
-				"http://www.1sheeld.com/api/firmware.json",
-				new JsonHttpResponseHandler() {
-
-					@Override
-					public void onFinish() {
-						// TODO Auto-generated method stub
-						super.onFinish();
-					}
-
-					@Override
-					@Deprecated
-					public void onFailure(Throwable error) {
-						// TODO Auto-generated method stub
-						super.onFailure(error);
-					}
-
-					@Override
-					public void onSuccess(JSONObject response) {
-						try {
-							System.err.println(response);
-							((OneSheeldApplication) getApplication())
-									.setMajorVersion(Integer.parseInt(response
-											.getString("major")));
-							((OneSheeldApplication) getApplication())
-									.setMinorVersion(Integer.parseInt(response
-											.getString("minor")));
-						} catch (NumberFormatException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						super.onSuccess(response);
-					}
-				});
+		// ValidationPopup popub = new ValidationPopup(MainActivity.this,
+		// "Firmware Upgrading", "There's a new version for your 1Sheeld",
+		// new ValidationPopup.ValidationAction("Now",
+		// new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// new FirmwareUpdatingPopup(MainActivity.this)
+		// .show();
+		// }
+		// }, true), new ValidationPopup.ValidationAction(
+		// "Not Now", new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View v) {
+		// // TODO Auto-generated method stub
+		//
+		// }
+		// }, true));
+		// popub.show();
 	}
+
+	Handler versionHandling = new Handler();
+	ArduinoVersionQueryHandler versionChangingHandler = new ArduinoVersionQueryHandler() {
+		ValidationPopup popub;
+
+		@Override
+		public void onVersionReceived(final int minorVersion,
+				final int majorVersion) {
+			versionHandling.post(new Runnable() {
+
+				@Override
+				public void run() {
+					Log.d("Onesheeld", minorVersion + "     " + majorVersion);
+					if (majorVersion == getThisApplication().getMajorVersion()
+							&& minorVersion != getThisApplication()
+									.getMinorVersion()) {
+						popub = new ValidationPopup(MainActivity.this,
+								"Firmware Upgrading",
+								"There's a new version for your 1Sheeld",
+								new ValidationPopup.ValidationAction("Now",
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View v) {
+												new FirmwareUpdatingPopup(
+														MainActivity.this)
+														.show();
+											}
+										}, true),
+								new ValidationPopup.ValidationAction("Not Now",
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View v) {
+												// TODO Auto-generated method
+												// stub
+
+											}
+										}, true));
+						if (!isFinishing())
+							popub.show();
+					} else if (majorVersion != getThisApplication()
+							.getMajorVersion()
+							&& minorVersion != getThisApplication()
+									.getMinorVersion()) {
+						popub = new ValidationPopup(
+								MainActivity.this,
+								"Firmware Upgrading",
+								"Your 1Sheeld is not valid yet, There's a new version ready!",
+								new ValidationPopup.ValidationAction("Start",
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View v) {
+												new FirmwareUpdatingPopup(
+														MainActivity.this)
+														.show();
+											}
+										}, true));
+						// if (!isFinishing())
+						// popub.show();
+					}
+				}
+			});
+
+		}
+	};
 
 	@Override
 	protected void onResume() {

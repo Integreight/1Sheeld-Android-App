@@ -3,6 +3,9 @@ package com.integreight.onesheeld;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.bluetooth.BluetoothAdapter;
@@ -35,8 +38,10 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.TimeOut;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class ArduinoConnectivityPopup extends Dialog {
 	private Activity activity;
@@ -129,7 +134,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 			public void onCancel(DialogInterface dialog) {
 				isOpened = false;
 				// Make sure we're not doing discovery anymore
-				if (mBtAdapter != null) {
+				if (mBtAdapter != null && mBtAdapter.isDiscovering()) {
 					mBtAdapter.cancelDiscovery();
 				}
 				((OneSheeldApplication) activity.getApplication())
@@ -194,6 +199,38 @@ public class ArduinoConnectivityPopup extends Dialog {
 							scanDevices();
 							doDiscovery();
 						}
+					}
+				});
+		HttpRequest.getInstance().get(
+				"http://www.1sheeld.com/api/firmware.json",
+				new JsonHttpResponseHandler() {
+
+					@Override
+					public void onFinish() {
+						// TODO Auto-generated method stub
+						super.onFinish();
+					}
+
+					@Override
+					public void onSuccess(JSONObject response) {
+						try {
+							System.err.println(response);
+							((OneSheeldApplication) activity.getApplication())
+									.setMajorVersion(Integer.parseInt(response
+											.getString("major")));
+							((OneSheeldApplication) activity.getApplication())
+									.setMinorVersion(Integer.parseInt(response
+											.getString("minor")));
+							((OneSheeldApplication) activity.getApplication())
+									.setVersionWebResult(response.toString());
+						} catch (NumberFormatException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						super.onSuccess(response);
 					}
 				});
 		super.onCreate(savedInstanceState);
