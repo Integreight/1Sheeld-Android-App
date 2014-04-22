@@ -14,6 +14,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.controller.utils.CameraService;
 import com.integreight.onesheeld.shields.controller.utils.TakePicture;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -53,11 +54,12 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	private void sendCaptureImageIntent(CameraCapture camCapture) {
 		if (camCapture != null) {
 			if (!camCapture.isTaken()) {
-				Intent translucent = new Intent(getApplication(),
-						TakePicture.class);
-				translucent.putExtra("FLASH", camCapture.getFlash());
-				translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				getApplication().startActivity(translucent);
+				Intent intent = new Intent(getApplication()
+						.getApplicationContext(), CameraService.class);
+				intent.putExtra("FLASH", camCapture.getFlash());
+
+				getApplication().getApplicationContext().startService(intent);
+
 				camCapture.setTaken();
 			}
 		}
@@ -66,11 +68,11 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	private void sendFrontCaptureImageIntent(CameraCapture camCapture) {
 		if (camCapture != null) {
 			if (!camCapture.isTaken()) {
-				Intent front_translucent = new Intent(getApplication(),
-						TakePicture.class);
+				Intent front_translucent = new Intent(getApplication()
+						.getApplicationContext(), CameraService.class);
 				front_translucent.putExtra("Front_Request", true);
-				front_translucent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				getApplication().startActivity(front_translucent);
+				getApplication().getApplicationContext().startService(
+						front_translucent);
 				camCapture.setTaken();
 			}
 		}
@@ -124,6 +126,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				break;
 
 			case CAPTURE_METHOD_ID:
+
 				numberOfFrames++;
 				Log.d("Camera", "Frames number = " + numberOfFrames);
 				CameraCapture camCapture = new CameraCapture(FLASH_MODE, false);
@@ -131,6 +134,13 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 					sendCaptureImageIntent(camCapture);
 				}
 				cameraCaptureQueue.add(camCapture);
+
+				/*
+				 * getApplication().getApplicationContext().startService( new
+				 * Intent(getApplication().getApplicationContext(),
+				 * CameraService.class));
+				 */
+
 				break;
 			case FRONT_CAPTURE:
 				numberOfFrames++;
