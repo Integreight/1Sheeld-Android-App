@@ -52,7 +52,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	public View getView(final int position, View convertView,
 			final ViewGroup parent) {
 		View row = convertView;
-		// if (shield.isReleasable()) {
 		Holder holder = null;
 		if (row == null) {
 
@@ -63,8 +62,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					.findViewById(R.id.shield_list_item_name_textview);
 			holder.icon = (ImageView) row
 					.findViewById(R.id.shield_list_item_symbol_imageview);
-			// holder.selectionButton = (ToggleButton) row
-			// .findViewById(R.id.shield_list_item_selection_toggle_button);
 			holder.selectionCircle = (ImageView) row
 					.findViewById(R.id.shield_list_item_selection_circle_imageview);
 			holder.blackUpperLayer = (ImageView) row
@@ -81,26 +78,22 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		Integer imageId = shield.getItemBackgroundColor();
 
 		holder.name.setText(name);
+		if (holder.icon.getDrawingCache() != null) {
+			holder.icon.getDrawingCache().recycle();
+		}
+		holder.icon.setImageBitmap(null);
+		holder.icon.setImageDrawable(null);
 		holder.icon.setBackgroundResource(iconId);
 
 		row.setBackgroundColor(imageId);
 
 		if (shield.isMainActivitySelection()) {
-			// holder.selectionButton.setChecked(true);
-			// tempHolder.selectionButton.setVisibility(View.VISIBLE);
 			tempHolder.selectionCircle.setVisibility(View.VISIBLE);
 			tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
 		} else {
-			// holder.selectionButton.setChecked(false);
-			// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 			tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
 			tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
 		}
-		// RelativeLayout.LayoutParams head_params =
-		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
-		// head_params.setMargins(0, -20, 0, 0); //substitute parameters for
-		// left, top, right, bottom
-		// row.setLayoutParams(head_params);
 		holder.container.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -121,7 +114,8 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					type.setActivity(activity).setTag(shield.name());
+					if (type != null)
+						type.setActivity(activity).setTag(shield.name());
 				} else {
 					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
@@ -133,22 +127,12 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 				}
 			}
 		});
-		// row.setLayoutParams(new AbsListView.LayoutParams(
-		// AbsListView.LayoutParams.MATCH_PARENT,
-		// AbsListView.LayoutParams.WRAP_CONTENT));
-		// } else {
-		// View v = new View(activity);
-		// v.setLayoutParams(new AbsListView.LayoutParams(0, 0));
-		// return v;
-		// }
 		return row;
 	}
 
 	public void updateList(List<UIShield> shieldsList) {
 		if (shieldsList != null) {
 			this.shieldList = shieldsList;
-			// else
-			// shieldList = new ArrayList<UIShield>();
 			notifyDataSetChanged();
 		}
 	}
@@ -160,9 +144,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	}
 
 	public void reset() {
-		// for (UIShield item : shieldList) {
-		// item.setMainActivitySelection(false);
-		// }
 		shieldList = UIShield.valuesFiltered();
 		applyToControllerTable();
 		notifyDataSetChanged();

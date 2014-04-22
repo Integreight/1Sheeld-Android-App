@@ -343,8 +343,7 @@ public class SheeldsList extends Fragment {
 			return true;
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
-				new OneSheeldVersionInstallerPopupTesting(
-						(MainActivity) getActivity()).show();
+				new FirmwareUpdatingPopup((MainActivity) getActivity()).show();
 			return true;
 		case R.id.action_settings:
 			((OneSheeldApplication) getActivity().getApplication())

@@ -342,6 +342,7 @@ public class BluetoothService {
 				// tmp = (BluetoothSocket) m.invoke(device, 1);
 			} catch (IOException e) {
 				Log.e(TAG, "create() failed", e);
+				return;
 			}
 		}
 
@@ -352,11 +353,10 @@ public class BluetoothService {
 			// Always cancel discovery because it will slow down a connection
 			while (mAdapter.isDiscovering())
 				mAdapter.cancelDiscovery();
-
+			if (mAdapter != null)
+				mAdapter.cancelDiscovery();
 			// Make a connection to the BluetoothSocket
 			try {
-				// This is a blocking call and will only return on a
-				// successful connection or an exception
 				mmSocket.connect();
 			} catch (IOException e) {
 				e.printStackTrace();

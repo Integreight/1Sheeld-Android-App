@@ -68,6 +68,11 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 		UIShield shield = shieldList.get(position);
 		Integer iconId = shield.getSymbolId();
 		Integer imageId = shield.getItemBackgroundColor();
+		if (holder.symbol.getDrawingCache() != null) {
+			holder.symbol.getDrawingCache().recycle();
+		}
+		holder.symbol.setImageBitmap(null);
+		holder.symbol.setImageDrawable(null);
 		holder.symbol.setBackgroundResource(iconId);
 
 		row.setBackgroundColor(imageId);
@@ -77,23 +82,6 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 		} else {
 			holder.selectionCircle.setVisibility(View.INVISIBLE);
 		}
-		// RelativeLayout.LayoutParams head_params =
-		// (RelativeLayout.LayoutParams)((RelativeLayout)row).getLayoutParams();
-		// head_params.setMargins(0, -20, 0, 0); //substitute parameters for
-		// left, top, right, bottom
-		// row.setLayoutParams(head_params);
-
-		// row.setOnClickListener(new OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// //iv.animate();
-		// // String url = data.get(position).getUrl();
-		// // Intent intent = new Intent(context, Tutorial3Activity.class);
-		// // intent.putExtra("itemId", data.get(position).getId());
-		// // context.startActivity(intent);
-		// }
-		// });
 		return row;
 	}
 
