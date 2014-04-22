@@ -114,9 +114,17 @@ public class BluetoothService {
 			handlers.add(handler);
 	}
 
-	public synchronized void closeSocket(BluetoothSocket socket) throws IOException{
-			socket.close();
+	public synchronized void closeSocket(BluetoothSocket socket)
+			throws IOException {
+		// try {
+		// Thread.sleep(1000);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		socket.close();
 	}
+
 	/**
 	 * Set the current state of the chat connection
 	 * 
@@ -304,37 +312,37 @@ public class BluetoothService {
 	 * fails.
 	 */
 	private class ConnectThread extends Thread {
-		private final BluetoothSocket mmSocket;
+		private BluetoothSocket mmSocket = null;
 		private final BluetoothDevice mmDevice;
 
 		public ConnectThread(BluetoothDevice device) {
 			mmDevice = device;
-			BluetoothSocket tmp = null;
+			if (mmSocket != null) {
+				try {
+					while (mmSocket.isConnected()) {
+						try {
+							mmSocket.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
 			try {
-				tmp = device.createRfcommSocketToServiceRecord(MY_UUID);
- 
+				mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+
 				// Method m = device.getClass().getMethod("createRfcommSocket",
 				// new Class[] {int.class});
 				// tmp = (BluetoothSocket) m.invoke(device, 1);
 			} catch (IOException e) {
 				Log.e(TAG, "create() failed", e);
 			}
-			// catch (NoSuchMethodException e) {
-			// // TODO: handle exception
-			// Log.e(TAG,"create() failed", e);
-			// }
-			// catch (InvocationTargetException e) {
-			// // TODO: handle exception
-			// Log.e(TAG,"create() failed", e);
-			// }
-			// catch (IllegalAccessException e) {
-			// // TODO: handle exception
-			// Log.e(TAG,"create() failed", e);
-			// }
-			mmSocket = tmp;
 		}
 
 		public void run() {
@@ -342,7 +350,8 @@ public class BluetoothService {
 			setName("ConnectThread");
 
 			// Always cancel discovery because it will slow down a connection
-			mAdapter.cancelDiscovery();
+			while (mAdapter.isDiscovering())
+				mAdapter.cancelDiscovery();
 
 			// Make a connection to the BluetoothSocket
 			try {
@@ -350,6 +359,7 @@ public class BluetoothService {
 				// successful connection or an exception
 				mmSocket.connect();
 			} catch (IOException e) {
+				e.printStackTrace();
 				// Close the socket
 				try {
 					closeSocket(mmSocket);
@@ -448,7 +458,8 @@ public class BluetoothService {
 					// e.printStackTrace();
 					Log.e(TAG, "disconnected", e);
 					// if(!closedManually)
-					if(writeHandlerLooper!=null)writeHandlerLooper.quit();
+					if (writeHandlerLooper != null)
+						writeHandlerLooper.quit();
 					connectionLost();
 					break;
 				}
@@ -482,7 +493,8 @@ public class BluetoothService {
 						}
 
 					} catch (IOException e) {
-						if(writeHandlerLooper!=null)writeHandlerLooper.quit();
+						if (writeHandlerLooper != null)
+							writeHandlerLooper.quit();
 						connectionLost();
 						Log.e(TAG, "Exception during write", e);
 					}

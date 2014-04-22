@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.integreight.onesheeld"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#C1000000"
@@ -34,6 +35,24 @@
             android:textColor="@drawable/white_black_text_selector"
             android:textSize="22sp"
             android:typeface="sans" />
+
+        <com.integreight.onesheeld.utils.OneShieldTextView
+            android:id="@+id/progressTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:visibility="invisible" />
+
+        <com.integreight.onesheeld.utils.customviews.CircularProgressBar
+            android:id="@+id/progressDownloading"
+            style="@style/Widget.ProgressBar.Holo.CircularProgressBar"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible"
+            app:progressColor="@color/white" />
 
         <ProgressBar
             android:id="@+id/progressUpdating"

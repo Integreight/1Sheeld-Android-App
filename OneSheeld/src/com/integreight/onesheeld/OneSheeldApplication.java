@@ -24,6 +24,7 @@ public class OneSheeldApplication extends Application {
 	private final String LAST_DEVICE = "lastConnectedDevice";
 	private final String MAJOR_VERSION = "majorVersion";
 	private final String MINOR_VERSION = "minorVersion";
+	private final String VERSION_WEB_RESULT = "versionWebResult";
 	private final String BUZZER_SOUND_KEY = "buzerSound";
 	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
@@ -72,6 +73,14 @@ public class OneSheeldApplication extends Application {
 
 	public void setMinorVersion(int minorVersion) {
 		appPreferences.edit().putInt(MINOR_VERSION, minorVersion).commit();
+	}
+
+	public void setVersionWebResult(String json) {
+		appPreferences.edit().putString(VERSION_WEB_RESULT, json).commit();
+	}
+
+	public String getVersionWebResult() {
+		return appPreferences.getString(VERSION_WEB_RESULT, null);
 	}
 
 	public void setBuzzerSound(String uri) {

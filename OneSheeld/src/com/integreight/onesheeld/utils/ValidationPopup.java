@@ -16,7 +16,7 @@ public class ValidationPopup extends Dialog {
 
 	public ValidationPopup(MainActivity activity, String title, String msg,
 			ValidationAction... actions) {
-		super(activity, android.R.style.Theme_Black_NoTitleBar);
+		super(activity, android.R.style.Theme_Translucent_NoTitleBar);
 		this.msg = msg;
 		this.actions = actions;
 		this.title = title;
