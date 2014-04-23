@@ -34,6 +34,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	private boolean mUpdatesRequested;
 	private Location lastLocation;
 	private ShieldFrame frame;
+	private LocationManager manager;
 	private static final int SERVICE_VERSION_UPDATE_REQUIRED = 2,
 			SERVICE_MISSING = 1, SERVICE_DISABLED = 3, CANCELED = 13,
 			SUCCESS = 0;
@@ -53,7 +54,14 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mLocationClient = new LocationClient(getActivity()
 				.getApplicationContext(), this, this);
 		mUpdatesRequested = false;
-		startGps();
+		manager = (LocationManager) getApplication().getSystemService(
+				Context.LOCATION_SERVICE);
+		// check if Google play services available, no dialog displayed
+		if (isGoogleplayServicesAvailableNoDialogs()) {
+			if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+				startGps();
+		}
+
 		return super.setTag(tag);
 	}
 
@@ -93,24 +101,26 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mLocationRequest.setFastestInterval(PERIOD);
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		// check Internet connection
-		final LocationManager manager = (LocationManager) getApplication()
-				.getSystemService(Context.LOCATION_SERVICE);
 
+		mLocationClient = new LocationClient(getActivity()
+				.getApplicationContext(), this, this);
+		if (mLocationClient != null)
+			mLocationClient.connect();
+
+	}
+
+	public void isGooglePlayServicesAvailableWithDialog() {
 		// checking if Google play services exist or not.
-		if (isGooglrServicesAvailable()) {
+		if (isGooglePlayServicesAvailable()) {
 			if (!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
 				buildAlertMessageNoGps();
 			} else {
-				mLocationClient = new LocationClient(getActivity()
-						.getApplicationContext(), this, this);
-				if (mLocationClient != null)
-					mLocationClient.connect();
+				startGps();
 			}
 
 		} else
 			Log.d("Gps",
-					"Google Play services was not available for some reason");
-
+					"Google Play services was not available for some reasons");
 	}
 
 	private void buildAlertMessageNoGps() {
@@ -197,7 +207,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		}
 	}
 
-	private boolean isGooglrServicesAvailable() {
+	private boolean isGooglePlayServicesAvailable() {
 
 		// Check that Google Play services is available
 		int resultCode = GooglePlayServicesUtil
@@ -218,6 +228,34 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 			return false;
 		case CANCELED:
 			showErrorDialog(CANCELED);
+			return false;
+
+		}
+		return false;
+
+	}
+
+	private boolean isGoogleplayServicesAvailableNoDialogs() {
+
+		// Check that Google Play services is available
+		int resultCode = GooglePlayServicesUtil
+				.isGooglePlayServicesAvailable(getActivity()
+						.getApplicationContext());
+
+		switch (resultCode) {
+		case SUCCESS:
+			return true;
+		case SERVICE_DISABLED:
+			// showErrorDialog(SERVICE_DISABLED);
+			return false;
+		case SERVICE_MISSING:
+			// showErrorDialog(SERVICE_MISSING);
+			return false;
+		case SERVICE_VERSION_UPDATE_REQUIRED:
+			// showErrorDialog(SERVICE_VERSION_UPDATE_REQUIRED);
+			return false;
+		case CANCELED:
+			// showErrorDialog(CANCELED);
 			return false;
 
 		}
