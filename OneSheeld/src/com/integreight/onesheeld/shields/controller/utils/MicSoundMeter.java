@@ -47,18 +47,21 @@ public class MicSoundMeter {
 		if (mRecorder != null) {
 			try {
 				mRecorder.stop();
+				mRecorder.release();
+				mRecorder = null;
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			mRecorder.release();
-			mRecorder = null;
 		}
 	}
 
 	public double getAmplitude() {
 		if (mRecorder != null) {
 			double maxAmp = 0;
-			maxAmp = mRecorder.getMaxAmplitude();
+			try {
+				maxAmp = mRecorder.getMaxAmplitude();
+			} catch (Exception e) {
+			}
 			return maxAmp;
 		} else
 			return 0;

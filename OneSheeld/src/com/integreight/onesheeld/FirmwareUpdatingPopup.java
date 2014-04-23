@@ -33,11 +33,13 @@ public class FirmwareUpdatingPopup extends Dialog {
 	Jodem jodem;
 	private Handler uIHandler = new Handler();
 	private boolean isFailed = false;
+	private boolean isChinese = false;
 
-	public FirmwareUpdatingPopup(final MainActivity activity) {
+	public FirmwareUpdatingPopup(final MainActivity activity, boolean isChinese) {
 		super(activity, android.R.style.Theme_Translucent_NoTitleBar);
 		this.activity = activity;
 		final Handler handler = new Handler();
+		this.isChinese = isChinese;
 		jodem = new Jodem(activity.getThisApplication().getAppFirmata()
 				.getBTService(), new Jodem.JodemEventHandler() {
 
@@ -224,8 +226,8 @@ public class FirmwareUpdatingPopup extends Dialog {
 			try {
 				HttpRequest.getInstance().get(
 						new JSONObject(activity.getThisApplication()
-								.getVersionWebResult()).get("url_china")
-								.toString(),
+								.getVersionWebResult()).get(
+								isChinese ? "url_china" : "url").toString(),
 						new BinaryHttpResponseHandler(new String[] {
 								"application/octet-stream", "text/plain" }) {
 							@Override

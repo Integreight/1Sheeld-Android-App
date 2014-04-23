@@ -218,24 +218,34 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	}
 
 	public void resetThis() {
-		if (matchedShieldPins != null)
-			matchedShieldPins.clear();
-		isALive = false;
-		if (shieldPins != null && shieldPins.length > 0) {
-			for (ArduinoPin pin : Arrays.asList(ArduinoPin.values())) {
-				for (int i = 0; i < shieldPins.length; i++) {
-					if (pin.connectedPins.size() == 0)
-						break;
-					pin.connectedPins.remove(((T) this).getClass().getName()
-							+ shieldPins[i]);
+		activity.backgroundThreadHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+
+				if (matchedShieldPins != null)
+					matchedShieldPins.clear();
+				isALive = false;
+				if (shieldPins != null && shieldPins.length > 0) {
+					for (ArduinoPin pin : Arrays.asList(ArduinoPin.values())) {
+						for (int i = 0; i < shieldPins.length; i++) {
+							if (pin.connectedPins.size() == 0)
+								break;
+							pin.connectedPins
+									.remove(((T) ControllerParent.this)
+											.getClass().getName()
+											+ shieldPins[i]);
+						}
+					}
 				}
+				((T) ControllerParent.this).reset();
+				getApplication().getAppFirmata().removeDataHandler(
+						arduinoFirmataDataHandler);
+				getApplication().getAppFirmata().removeShieldFrameHandler(
+						arduinoFirmataShieldFrameHandler);
 			}
-		}
-		((T) this).reset();
-		getApplication().getAppFirmata().removeDataHandler(
-				arduinoFirmataDataHandler);
-		getApplication().getAppFirmata().removeShieldFrameHandler(
-				arduinoFirmataShieldFrameHandler);
+		});
 	}
 
 	public abstract void reset();

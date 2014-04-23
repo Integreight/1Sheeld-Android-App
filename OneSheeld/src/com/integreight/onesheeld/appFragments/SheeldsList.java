@@ -49,13 +49,10 @@ public class SheeldsList extends Fragment {
 	private MenuItem goToShieldsOperationActionButton;
 
 	private static final String TAG = "ShieldsList";
-	// private static final boolean D = true;
 
 	public static final int REQUEST_CONNECT_DEVICE = 1;
 	public static final int REQUEST_ENABLE_BT = 3;
 	private static boolean arduinoConnected;
-
-	// private BluetoothAdapter mBluetoothAdapter = null;
 
 	public static SheeldsList getInstance() {
 		if (thisInstance == null) {
@@ -240,8 +237,6 @@ public class SheeldsList extends Fragment {
 			}
 		}
 
-		// Handler resetHandler = new Handler();
-
 		@Override
 		public void onClose(boolean closedManually) {
 			arduinoConnected = false;
@@ -268,14 +263,6 @@ public class SheeldsList extends Fragment {
 					}
 				}
 			}
-			// new Thread(new Runnable() {
-			//
-			// @Override
-			// public void run() {
-			// resetHandler.post(new Runnable() {
-			//
-			// @Override
-			// public void run() {
 			Enumeration<String> enumKey = ((OneSheeldApplication) getActivity()
 					.getApplication()).getRunningShields().keys();
 			while (enumKey.hasMoreElements()) {
@@ -285,10 +272,6 @@ public class SheeldsList extends Fragment {
 				((OneSheeldApplication) getActivity().getApplication())
 						.getRunningShields().remove(key);
 			}
-			// }
-			// });
-			// }
-			// }).start();
 		}
 	};
 
@@ -343,7 +326,13 @@ public class SheeldsList extends Fragment {
 			return true;
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
-				new FirmwareUpdatingPopup((MainActivity) getActivity()).show();
+				new FirmwareUpdatingPopup((MainActivity) getActivity(), false)
+						.show();
+			return true;
+		case R.id.open_bootloader_popup_china:
+			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
+				new FirmwareUpdatingPopup((MainActivity) getActivity(), true)
+						.show();
 			return true;
 		case R.id.action_settings:
 			((OneSheeldApplication) getActivity().getApplication())
