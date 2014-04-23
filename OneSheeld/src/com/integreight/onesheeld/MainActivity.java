@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -43,6 +44,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(arg0);
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
+		initLooperThread();
 		// set the Behind View
 		// setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
@@ -114,6 +116,34 @@ public class MainActivity extends FragmentActivity {
 		// popub.show();
 	}
 
+	private Thread looperThread;
+	public Handler backgroundThreadHandler;
+	private Looper backgroundHandlerLooper;
+
+	private void stopLooperThread() {
+		if (looperThread != null && looperThread.isAlive()) {
+			looperThread.interrupt();
+			backgroundHandlerLooper.quit();
+			looperThread = null;
+		}
+	}
+
+	private void initLooperThread() {
+		stopLooperThread();
+		looperThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Looper.prepare();
+				backgroundHandlerLooper = Looper.myLooper();
+				backgroundThreadHandler = new Handler();
+				Looper.loop();
+			}
+		});
+		looperThread.start();
+	}
+
 	Handler versionHandling = new Handler();
 	ArduinoVersionQueryHandler versionChangingHandler = new ArduinoVersionQueryHandler() {
 		ValidationPopup popub;
@@ -138,8 +168,8 @@ public class MainActivity extends FragmentActivity {
 											@Override
 											public void onClick(View v) {
 												new FirmwareUpdatingPopup(
-														MainActivity.this)
-														.show();
+														MainActivity.this,
+														false).show();
 											}
 										}, true),
 								new ValidationPopup.ValidationAction("Not Now",
@@ -168,8 +198,8 @@ public class MainActivity extends FragmentActivity {
 											@Override
 											public void onClick(View v) {
 												new FirmwareUpdatingPopup(
-														MainActivity.this)
-														.show();
+														MainActivity.this,
+														false).show();
 											}
 										}, true));
 						// if (!isFinishing())
@@ -307,6 +337,7 @@ public class MainActivity extends FragmentActivity {
 		// if (isMyServiceRunning())
 		ArduinoConnectivityPopup.isOpened = false;
 		stopService();
+		stopLooperThread();
 		// isBoundService = false;
 		super.onDestroy();
 	}

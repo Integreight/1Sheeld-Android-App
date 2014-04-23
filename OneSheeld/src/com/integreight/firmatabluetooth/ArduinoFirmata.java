@@ -720,7 +720,7 @@ public class ArduinoFirmata {
 					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
 						;
 					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
-					ShieldFrameTimeout=new TimeOut(5);
+					ShieldFrameTimeout=new TimeOut(1);
 					int tempArduinoLibVersion = readByteFromUartBuffer();
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
