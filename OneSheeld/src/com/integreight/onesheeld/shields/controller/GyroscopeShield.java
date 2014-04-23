@@ -111,7 +111,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 			if (!isHandlerLive && mGyroscope != null) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mGyroscope,
-						SensorManager.SENSOR_DELAY_NORMAL);
+						SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 

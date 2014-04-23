@@ -76,20 +76,18 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
+
 		if (flag && (oldInput != event.values[0] || isFirstTime)) {
 			isFirstTime = false;
-			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(),
+			frame = new ShieldFrame(UIShield.TEMPERATURE_SHIELD.getId(),
 					TEMPERATURE_VALUE);
 			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
 			Log.d("Sensor Data of X", event.values[0] + "");
 			if (eventHandler != null)
 				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
-
 			//
 			flag = false;
 		}
@@ -104,7 +102,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				handler = new Handler();
 				if (mTemperature != null)
 					mSensorManager.registerListener(this, mTemperature,
-							SensorManager.SENSOR_DELAY_NORMAL);
+							SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);

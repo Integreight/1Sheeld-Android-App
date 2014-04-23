@@ -111,7 +111,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			if (!isHandlerLive && mGravity != null) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mGravity,
-						SensorManager.SENSOR_DELAY_NORMAL);
+						SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);

@@ -113,7 +113,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 			if (!isHandlerLive) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mMagnetometer,
-						SensorManager.SENSOR_DELAY_NORMAL);
+						SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);

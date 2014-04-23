@@ -86,7 +86,6 @@ public class LightShield extends ControllerParent<LightShield> implements
 			if (eventHandler != null)
 				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 			//
-			oldInput = event.values[0];
 			flag = false;
 		}
 	}
@@ -99,7 +98,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 			if (!isHandlerLive) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mLight,
-						SensorManager.SENSOR_DELAY_NORMAL);
+						SensorManager.SENSOR_DELAY_GAME);
 				if (processSensors != null)
 					handler.post(processSensors);
 				if (eventHandler != null)

@@ -114,7 +114,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 				handler = new Handler();
 				if (mAccelerometer != null)
 					mSensorManager.registerListener(this, mAccelerometer,
-							SensorManager.SENSOR_DELAY_NORMAL);
+							SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);

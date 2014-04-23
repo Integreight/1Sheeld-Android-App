@@ -113,7 +113,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 				handler = new Handler();
 				if (mOrientation != null)
 					mSensorManager.registerListener(this, mOrientation,
-							SensorManager.SENSOR_DELAY_NORMAL);
+							SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);

@@ -35,7 +35,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			flag = true;
 			// The Runnable is posted to run again here:
 			if (handler != null)
-			handler.postDelayed(this, PERIOD);
+				handler.postDelayed(this, PERIOD);
 		}
 	};
 
@@ -74,7 +74,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
+
 		if (flag && (oldInput != event.values[0] || isFirstTime)) {
 			isFirstTime = false;
 			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(),
@@ -84,11 +84,9 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			frame.addIntegerArgument(2, false, Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
 			Log.d("Sensor Data of X", event.values[0] + "");
 			if (eventHandler != null)
 				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
-
 			//
 			flag = false;
 		}
@@ -103,7 +101,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 				handler = new Handler();
 				if (mPressure != null)
 					mSensorManager.registerListener(this, mPressure,
-							SensorManager.SENSOR_DELAY_NORMAL);
+							SensorManager.SENSOR_DELAY_GAME);
 				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
@@ -128,7 +126,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			mSensorManager.unregisterListener(this, mPressure);
 			mSensorManager.unregisterListener(this);
 			if (processSensors != null)
-			handler.removeCallbacks(processSensors);
+				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 			frame = null;

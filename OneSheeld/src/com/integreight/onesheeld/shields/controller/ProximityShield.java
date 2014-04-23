@@ -74,7 +74,9 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		// TODO Auto-generated method stub
+		Log.d("Sensor Data of X", event.values[0] + "");
+		if (eventHandler != null)
+			eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 		if (flag && (oldInput != event.values[0] || isFirstTime)) {
 			isFirstTime = false;
 			frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(),
@@ -83,10 +85,6 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			activity.getThisApplication().getAppFirmata()
 					.sendShieldFrame(frame);
-
-			Log.d("Sensor Data of X", event.values[0] + "");
-			if (eventHandler != null)
-				eventHandler.onSensorValueChangedFloat(event.values[0] + "");
 
 			//
 			flag = false;
@@ -101,7 +99,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 			if (!isHandlerLive) {
 				handler = new Handler();
 				mSensorManager.registerListener(this, mProximity,
-						SensorManager.SENSOR_DELAY_NORMAL);
+						SensorManager.SENSOR_DELAY_GAME);
 				if (processSensors != null)
 					handler.post(processSensors);
 				if (eventHandler != null)
