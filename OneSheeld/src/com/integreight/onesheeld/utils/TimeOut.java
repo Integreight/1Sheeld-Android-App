@@ -51,7 +51,7 @@ public class TimeOut extends Thread {
 			do {
 
 				Thread.sleep(1000);
-				if(handler!=null)handler.onTick(secondsLeft);
+				if(handler!=null&&secondsLeft!=0)handler.onTick(secondsLeft);
 				secondsLeft--;
 			} while (secondsLeft >= 0);
 			isTimeout=true;

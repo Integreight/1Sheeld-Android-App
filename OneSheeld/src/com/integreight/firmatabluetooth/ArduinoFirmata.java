@@ -720,7 +720,7 @@ public class ArduinoFirmata {
 					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
 						;
 					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
-					ShieldFrameTimeout=new TimeOut(1);
+					ShieldFrameTimeout=new TimeOut(5);
 					int tempArduinoLibVersion = readByteFromUartBuffer();
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
@@ -729,6 +729,7 @@ public class ArduinoFirmata {
 							found = true;
 					}
 					if (!found) {
+						if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
 						continue;
 					}
@@ -740,6 +741,7 @@ public class ArduinoFirmata {
 					for (int i = 0; i < argumentsNumber; i++) {
 						int length = readByteFromUartBuffer() & 0xff;
 						if (length <= 0) {
+							if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 							uartBuffer.clear();
 							continue;
 						}
@@ -750,6 +752,7 @@ public class ArduinoFirmata {
 						frame.addArgument(data);
 					}
 					if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
+						if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
 						continue;
 					}
@@ -762,7 +765,9 @@ public class ArduinoFirmata {
 					return;
 				}
 				catch (ShieldFrameNotComplete e) {
-					uartBuffer.clear();
+					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+					ShieldFrameTimeout=null;
+					//uartBuffer.clear();
 					continue;
 				}
 			}
