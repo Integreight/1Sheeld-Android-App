@@ -155,7 +155,8 @@ public class Key extends Button {
 		final float x = event.getX();
 		final float y = event.getY();
 
-		if (action == MotionEvent.ACTION_DOWN) {
+		switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		case MotionEvent.ACTION_POINTER_DOWN:
 			dragging = true;
 			outOfBounds = false;
 			Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
@@ -164,18 +165,61 @@ public class Key extends Button {
 			beginDrag();
 
 			return hitFeedback();
-		} else // MOVE or UP
-		{
+		case MotionEvent.ACTION_POINTER_UP:
+			endDrag();
+			Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+			if (eventListener != null)
+				eventListener.onReleased(this);
+			dragging = false;
+			break;
+		case MotionEvent.ACTION_MOVE:
 			updateDrag(x, y);
+			break;
+		case MotionEvent.ACTION_DOWN:
+			dragging = true;
+			outOfBounds = false;
+			Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
+			if (eventListener != null)
+				eventListener.onPressed(this);
+			beginDrag();
 
-			if (action == MotionEvent.ACTION_UP) {
-				endDrag();
-				Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
-				if (eventListener != null)
-					eventListener.onReleased(this);
-				dragging = false;
-			}
+			return hitFeedback();
+		case MotionEvent.ACTION_UP:
+			endDrag();
+			Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+			if (eventListener != null)
+				eventListener.onReleased(this);
+			dragging = false;
+			break;
+		default:
+			endDrag();
+			Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+			if (eventListener != null)
+				eventListener.onReleased(this);
+			dragging = false;
+			break;
 		}
+		// if (action == MotionEvent.ACTION_DOWN) {
+		// dragging = true;
+		// outOfBounds = false;
+		// Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
+		// if (eventListener != null)
+		// eventListener.onPressed(this);
+		// beginDrag();
+		//
+		// return hitFeedback();
+		// } else // MOVE or UP
+		// {
+		// updateDrag(x, y);
+		//
+		// if (action == MotionEvent.ACTION_UP) {
+		// endDrag();
+		// Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+		// if (eventListener != null)
+		// eventListener.onReleased(this);
+		// dragging = false;
+		// }
+		// }
 
 		return true;
 	}
