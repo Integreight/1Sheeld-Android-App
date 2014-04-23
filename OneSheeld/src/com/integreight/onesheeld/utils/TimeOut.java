@@ -3,6 +3,7 @@ package com.integreight.onesheeld.utils;
 
 public class TimeOut extends Thread {
 
+	boolean isTimeout;
 	public interface TimeoutHandler {
 		void onTimeout();
 
@@ -14,14 +15,25 @@ public class TimeOut extends Thread {
 	TimeoutHandler handler;
 
 	public TimeOut(int seconds, TimeoutHandler handler) {
+		isTimeout=false;
 		this.totalSeconds = seconds;
 		this.handler = handler;
+		stopTimer();
+		start();
+	}
+	public TimeOut(int seconds) {
+		isTimeout=false;
+		this.totalSeconds = seconds;
 		stopTimer();
 		start();
 	}
 	
 	public void resetTimer(){
 		secondsLeft=totalSeconds;
+	}
+	
+	public boolean isTimeout(){
+		return isTimeout;
 	}
 
 	public void stopTimer(){
@@ -39,10 +51,11 @@ public class TimeOut extends Thread {
 			do {
 
 				Thread.sleep(1000);
-				handler.onTick(secondsLeft);
+				if(handler!=null&&secondsLeft!=0)handler.onTick(secondsLeft);
 				secondsLeft--;
 			} while (secondsLeft >= 0);
-			handler.onTimeout();
+			isTimeout=true;
+			if(handler!=null)handler.onTimeout();
 		} catch (InterruptedException e) {
 			return;
 		}

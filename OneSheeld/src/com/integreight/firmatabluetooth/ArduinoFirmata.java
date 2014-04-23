@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ArrayUtils;
+import com.integreight.onesheeld.utils.TimeOut;
 
 public class ArduinoFirmata {
 	public final static String VERSION = "0.2.0";
@@ -22,6 +23,7 @@ public class ArduinoFirmata {
 	LinkedBlockingQueue<Byte> bluetoothBuffer;
 	UartListeningThread uartListeningThread;
 	BluetoothBufferListeningThread bluetoothBufferListeningThread;
+	TimeOut ShieldFrameTimeout;
 	boolean isBootloader = false;
 
 	public static final byte INPUT = 0;
@@ -652,8 +654,11 @@ public class ArduinoFirmata {
 		});
 	}
 
-	private byte readByteFromUartBuffer() throws InterruptedException {
-		return uartBuffer.take().byteValue();
+	private byte readByteFromUartBuffer() throws InterruptedException, ShieldFrameNotComplete {
+		if(ShieldFrameTimeout!=null&&ShieldFrameTimeout.isTimeout())throw new ShieldFrameNotComplete();
+		byte temp= uartBuffer.take().byteValue();
+		if(ShieldFrameTimeout!=null)ShieldFrameTimeout.resetTimer();
+		return temp;
 	}
 
 	private byte readByteFromBluetoothBuffer() throws InterruptedException {
@@ -714,6 +719,8 @@ public class ArduinoFirmata {
 				try {
 					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
 						;
+					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+					ShieldFrameTimeout=new TimeOut(1);
 					int tempArduinoLibVersion = readByteFromUartBuffer();
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
@@ -722,6 +729,7 @@ public class ArduinoFirmata {
 							found = true;
 					}
 					if (!found) {
+						if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
 						continue;
 					}
@@ -733,6 +741,7 @@ public class ArduinoFirmata {
 					for (int i = 0; i < argumentsNumber; i++) {
 						int length = readByteFromUartBuffer() & 0xff;
 						if (length <= 0) {
+							if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 							uartBuffer.clear();
 							continue;
 						}
@@ -743,9 +752,11 @@ public class ArduinoFirmata {
 						frame.addArgument(data);
 					}
 					if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
+						if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
 						continue;
 					}
+					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
 					arduinoLibraryVersion = tempArduinoLibVersion;
 					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
@@ -753,8 +764,23 @@ public class ArduinoFirmata {
 				} catch (InterruptedException e) {
 					return;
 				}
+				catch (ShieldFrameNotComplete e) {
+					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+					ShieldFrameTimeout=null;
+					//uartBuffer.clear();
+					continue;
+				}
 			}
 		}
+	}
+	
+	private class ShieldFrameNotComplete extends Exception{
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		
 	}
 
 	private class BluetoothBufferListeningThread extends Thread {

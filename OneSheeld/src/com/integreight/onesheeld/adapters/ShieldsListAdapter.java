@@ -105,25 +105,41 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					// tempHolder.selectionButton.setVisibility(View.VISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
-					try {
-						type = shield.getShieldType().newInstance();
-					} catch (java.lang.InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (type != null)
-						type.setActivity(activity).setTag(shield.name());
+					activity.backgroundThreadHandler.post(new Runnable() {
+
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+
+							try {
+								type = shield.getShieldType().newInstance();
+							} catch (java.lang.InstantiationException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (type != null)
+								type.setActivity(activity)
+										.setTag(shield.name());
+						}
+					});
 				} else {
 					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
-					if (app.getRunningShields().get(shield.name()) != null) {
-						app.getRunningShields().get(shield.name()).resetThis();
-						app.getRunningShields().remove(shield.name());
-					}
+					activity.backgroundThreadHandler.post(new Runnable() {
+
+						@Override
+						public void run() {
+							if (app.getRunningShields().get(shield.name()) != null) {
+								app.getRunningShields().get(shield.name())
+										.resetThis();
+								app.getRunningShields().remove(shield.name());
+							}
+						}
+					});
 				}
 			}
 		});
@@ -152,48 +168,38 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	Handler handler = new Handler();
 
 	public void applyToControllerTable() {
-		new Thread(new Runnable() {
 
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
+		for (final UIShield shield : shieldList) {
+			activity.backgroundThreadHandler.post(new Runnable() {
 
-				for (final UIShield shield : shieldList) {
-					handler.post(new Runnable() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
 
-						@Override
-						public void run() {
-							// TODO Auto-generated method stub
-
-							if (shield.isMainActivitySelection()
-									&& shield.getShieldType() != null) {
-								if (app.getRunningShields().get(shield.name()) == null) {
-									try {
-										type = shield.getShieldType()
-												.newInstance();
-									} catch (java.lang.InstantiationException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									} catch (IllegalAccessException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}
-									type.setActivity(activity).setTag(
-											shield.name());
-								}
-							} else {
-								if (app.getRunningShields().get(shield.name()) != null) {
-									app.getRunningShields().get(shield.name())
-											.resetThis();
-									app.getRunningShields().remove(
-											shield.name());
-								}
+					if (shield.isMainActivitySelection()
+							&& shield.getShieldType() != null) {
+						if (app.getRunningShields().get(shield.name()) == null) {
+							try {
+								type = shield.getShieldType().newInstance();
+							} catch (java.lang.InstantiationException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
 							}
+							type.setActivity(activity).setTag(shield.name());
 						}
-					});
+					} else {
+						if (app.getRunningShields().get(shield.name()) != null) {
+							app.getRunningShields().get(shield.name())
+									.resetThis();
+							app.getRunningShields().remove(shield.name());
+						}
+					}
 				}
-			}
-		}).start();
+			});
+		}
 	}
 
 	static class Holder {
