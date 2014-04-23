@@ -45,6 +45,7 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	private Parameters parameters;
 	private String FLASH_MODE;
 	private boolean isFrontCamRequest = false;
+	private Camera.Size pictureSize;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings("deprecation")
@@ -132,9 +133,13 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 				FLASH_MODE = "auto";
 			}
 			parameters.setFlashMode(FLASH_MODE);
-
+			pictureSize = getBiggesttPictureSize(parameters);
+			if (pictureSize != null)
+				parameters
+						.setPictureSize(pictureSize.width, pictureSize.height);
 			// set camera parameters
 			mCamera.setParameters(parameters);
+
 			mCamera.startPreview();
 
 			// sets what code should be executed after the picture is taken
@@ -147,12 +152,13 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 					bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 					ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 					if (bmp != null)
-						bmp.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+						bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
 
 					File imagesFolder = new File(
 							Environment.getExternalStorageDirectory(),
 							"OneSheeld");
-					imagesFolder.mkdirs(); // <----
+					if (!imagesFolder.exists())
+						imagesFolder.mkdirs(); // <----
 					File image = new File(imagesFolder,
 							System.currentTimeMillis() + ".jpg");
 
@@ -187,7 +193,11 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 					Toast.makeText(getApplicationContext(),
 							"Your Picture has been taken !", Toast.LENGTH_LONG)
 							.show();
-
+					if (bmp != null) {
+						bmp.recycle();
+						bmp = null;
+						System.gc();
+					}
 					TakePicture.this.finish();
 
 				}
@@ -295,6 +305,25 @@ public class TakePicture extends Activity implements SurfaceHolder.Callback {
 		LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
 		super.onDestroy();
+	}
+
+	private Camera.Size getBiggesttPictureSize(Camera.Parameters parameters) {
+		Camera.Size result = null;
+
+		for (Camera.Size size : parameters.getSupportedPictureSizes()) {
+			if (result == null) {
+				result = size;
+			} else {
+				int resultArea = result.width * result.height;
+				int newArea = size.width * size.height;
+
+				if (newArea > resultArea) {
+					result = size;
+				}
+			}
+		}
+
+		return (result);
 	}
 
 }

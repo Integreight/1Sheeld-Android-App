@@ -126,6 +126,10 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+          <service
+            android:name="com.integreight.onesheeld.shields.controller.utils.CameraService"
+            android:label="My Service" >
+        </service>
     </application>
 
 </manifest>
