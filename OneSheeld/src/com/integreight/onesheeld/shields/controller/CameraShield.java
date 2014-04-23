@@ -24,7 +24,10 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	// private static final byte CAMERA_COMMAND = (byte) 0x15;
 	private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
 	private static final byte FLASH_METHOD_ID = (byte) 0x02;
+	private static final byte QUALITY_METHOD_ID = (byte) 0x04;
 	private static String FLASH_MODE;
+	private static int QUALITY_MODE = 0;
+
 	private static final byte FRONT_CAPTURE = (byte) 0x03;
 	private Queue<CameraCapture> cameraCaptureQueue;
 	int numberOfFrames = 0;
@@ -56,6 +59,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				Intent intent = new Intent(getApplication()
 						.getApplicationContext(), CameraService.class);
 				intent.putExtra("FLASH", camCapture.getFlash());
+				intent.putExtra("Quality_Mode", camCapture.getQuality());
 
 				getApplication().getApplicationContext().startService(intent);
 
@@ -70,6 +74,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				Intent front_translucent = new Intent(getApplication()
 						.getApplicationContext(), CameraService.class);
 				front_translucent.putExtra("Front_Request", true);
+				front_translucent.putExtra("Quality_Mode",
+						camCapture.getQuality());
 				getApplication().getApplicationContext().startService(
 						front_translucent);
 				camCapture.setTaken();
@@ -107,6 +113,24 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 			// String userId = frame.getArgumentAsString(0);
 
 			switch (frame.getFunctionId()) {
+			case QUALITY_METHOD_ID:
+				byte quality_mode = frame.getArgument(0)[0];
+				switch (quality_mode) {
+				case 0:
+					QUALITY_MODE = 40;
+					break;
+				case 1:
+					QUALITY_MODE = 70;
+					break;
+				case 2:
+					QUALITY_MODE = 100;
+					break;
+
+				default:
+					break;
+				}
+				break;
+
 			case FLASH_METHOD_ID:
 				byte flash_mode = frame.getArgument(0)[0];
 				switch (flash_mode) {
@@ -128,7 +152,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 				numberOfFrames++;
 				Log.d("Camera", "Frames number = " + numberOfFrames);
-				CameraCapture camCapture = new CameraCapture(FLASH_MODE, false);
+				CameraCapture camCapture = new CameraCapture(FLASH_MODE, false,
+						QUALITY_MODE);
 				if (cameraCaptureQueue.isEmpty()) {
 					sendCaptureImageIntent(camCapture);
 				}
@@ -145,7 +170,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				numberOfFrames++;
 				Log.d("Camera", "Frames number front = " + numberOfFrames);
 				CameraCapture frontCamCapture = new CameraCapture(FLASH_MODE,
-						true);
+						true, QUALITY_MODE);
 				if (cameraCaptureQueue.isEmpty()) {
 					sendFrontCaptureImageIntent(frontCamCapture);
 				}
@@ -184,11 +209,18 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		private String flash;
 		private boolean isTaken;
 		private boolean isFrontCamera;
+		private int mquality;
 
-		public CameraCapture(String flash, boolean isFront) {
+		public CameraCapture(String flash, boolean isFront, int quality) {
 			this.flash = flash;
 			isTaken = false;
 			isFrontCamera = isFront;
+			mquality = quality;
+		}
+
+		public int getQuality() {
+			return mquality;
+
 		}
 
 		public String getFlash() {

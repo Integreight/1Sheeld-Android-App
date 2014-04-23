@@ -35,6 +35,7 @@ public class CameraService extends Service {
 	private Bitmap bmp;
 	FileOutputStream fo;
 	private String FLASH_MODE;
+	private int QUALITY_MODE = 0;
 	private boolean isFrontCamRequest = false;
 	private Camera.Size pictureSize;
 	SurfaceView sv;
@@ -166,6 +167,9 @@ public class CameraService extends Service {
 
 				boolean front_cam_req = extras.getBoolean("Front_Request");
 				isFrontCamRequest = front_cam_req;
+
+				int quality_mode = extras.getInt("Quality_Mode");
+				QUALITY_MODE = quality_mode;
 			}
 
 			if (isFrontCamRequest) {
@@ -328,8 +332,10 @@ public class CameraService extends Service {
 
 			bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-			if (bmp != null)
-				bmp.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+			if (bmp != null && QUALITY_MODE == 0)
+				bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
+			if (bmp != null && QUALITY_MODE != 0)
+				bmp.compress(Bitmap.CompressFormat.JPEG, QUALITY_MODE, bytes);
 
 			File imagesFolder = new File(
 					Environment.getExternalStorageDirectory(), "OneSheeld");
