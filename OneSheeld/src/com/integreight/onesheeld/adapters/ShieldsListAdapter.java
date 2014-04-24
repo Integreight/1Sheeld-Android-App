@@ -105,10 +105,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					// tempHolder.selectionButton.setVisibility(View.VISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.VISIBLE);
 					tempHolder.blackUpperLayer.setVisibility(View.INVISIBLE);
-					activity.backgroundThreadHandler.post(new Runnable() {
-
-						@Override
-						public void run() {
+//					activity.backgroundThreadHandler.post(new Runnable() {
+//
+//						@Override
+//						public void run() {
 							// TODO Auto-generated method stub
 
 							try {
@@ -123,8 +123,8 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 							if (type != null)
 								type.setActivity(activity)
 										.setTag(shield.name());
-						}
-					});
+//						}
+//					});
 				} else {
 					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
@@ -170,10 +170,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	public void applyToControllerTable() {
 
 		for (final UIShield shield : shieldList) {
-			activity.backgroundThreadHandler.post(new Runnable() {
-
-				@Override
-				public void run() {
+//			activity.backgroundThreadHandler.post(new Runnable() {
+//
+//				@Override
+//				public void run() {
 					// TODO Auto-generated method stub
 
 					if (shield.isMainActivitySelection()
@@ -197,8 +197,8 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 							app.getRunningShields().remove(shield.name());
 						}
 					}
-				}
-			});
+			// }
+			// });
 		}
 	}
 
