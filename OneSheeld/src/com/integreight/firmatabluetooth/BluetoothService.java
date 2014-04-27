@@ -41,6 +41,7 @@ public class BluetoothService {
 	private static final String TAG = "BluetoothService";
 	private static final boolean D = true;
 	public static String EXTRA_DEVICE_ADDRESS = "device_address";
+	private BluetoothDevice mmDevice;
 
 	public static interface BluetoothServiceHandler {
 		void onDataReceived(byte[] bytes, int length);
@@ -220,10 +221,10 @@ public class BluetoothService {
 		// bundle.putString(BluetoothService.DEVICE_NAME, device.getName());
 		// msg.setData(bundle);
 		// mHandler.sendMessage(msg);
-		setState(STATE_CONNECTED);
-		for (BluetoothServiceHandler handler : handlers) {
-			handler.onConnected(device);
-		}
+//		setState(STATE_CONNECTED);
+//		for (BluetoothServiceHandler handler : handlers) {
+//			handler.onConnected(device);
+//		}
 	}
 
 	/**
@@ -241,7 +242,7 @@ public class BluetoothService {
 			mConnectedThread.cancel();
 			mConnectedThread = null;
 		}
-
+		mmDevice=null;
 		setState(STATE_NONE);
 	}
 
@@ -313,7 +314,7 @@ public class BluetoothService {
 	 */
 	private class ConnectThread extends Thread {
 		private BluetoothSocket mmSocket = null;
-		private final BluetoothDevice mmDevice;
+//		private final BluetoothDevice mmDevice;
 
 		public ConnectThread(BluetoothDevice device) {
 			mmDevice = device;
@@ -438,6 +439,10 @@ public class BluetoothService {
 			LooperThread.start();
 			while (!LooperThread.isAlive())
 				;
+			setState(STATE_CONNECTED);
+			for (BluetoothServiceHandler handler : handlers) {
+				handler.onConnected(mmDevice);
+			}
 			byte[] buffer = new byte[1024];
 			int bytes;
 

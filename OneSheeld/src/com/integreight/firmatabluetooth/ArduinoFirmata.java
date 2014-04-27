@@ -641,12 +641,11 @@ public class ArduinoFirmata {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-
-				onConnect();
 				enableReporting();
 				setAllPinsAsInput();
 				initUart();
 				queryVersion();
+				onConnect();
 				String mConnectedDeviceName = device.getName();
 				Toast.makeText(context, "Connected to " + mConnectedDeviceName,
 						Toast.LENGTH_SHORT).show();
