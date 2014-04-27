@@ -203,7 +203,7 @@ public class Jodem {
 					cancel = 1;
 			}
 			else{
-				onError("send ERROR expected NAK/CRC, got "+readChar);
+				onError("Send error, expected a respose, got another one");
 			}
 
 			error_count += 1;
@@ -270,7 +270,7 @@ public class Jodem {
 							//// excessive amounts of retransmissions requested,
 							//// abort transfer
 							abort(2);
-							onError("excessive NAKs, transfer aborted");
+							onError("Many errors happened, upgrading aborted!");
 							return false;
 						}
 					// return to loop and resend
@@ -278,7 +278,7 @@ public class Jodem {
 				}
 				//  // protocol error
 				abort(2);
-				onError("protocol error");
+				onError("Protocol Error, upgrading aborted!");
 				return false;
 			}
 			// // keep track of sequence
@@ -300,7 +300,7 @@ public class Jodem {
 				error_count += 1;
 				if (error_count >= retry){
 					abort(2);
-					onError("EOT was not ACKd, transfer aborted");
+					onError("Final response not received, transfer aborted!");
 					return false;
 				}
 			}
