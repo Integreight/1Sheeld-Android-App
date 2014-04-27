@@ -63,7 +63,6 @@ public class Key extends Button {
 			}
 		}
 		a.recycle();
-
 	}
 
 	public int getRow() {
@@ -129,7 +128,7 @@ public class Key extends Button {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		final int action = event.getAction();
+		// final int action = event.getAction();
 
 		// switch (action) {
 		// case MotionEvent.ACTION_DOWN:
@@ -239,16 +238,11 @@ public class Key extends Button {
 	@SuppressWarnings("deprecation")
 	@SuppressLint("NewApi")
 	public static void setKeyColor(Button key, Drawable bg) {
-		// GradientDrawable background = (GradientDrawable) key.getBackground();
-		//
-		// background.setColorFilter(new LightingColorFilter(color, 0));
 		if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
 			key.setBackgroundDrawable(bg);
 		} else {
 			key.setBackground(bg);
 		}
-
-		// key.setTextColor(bg);
 	}
 
 	public static interface KeyTouchEventListener {
