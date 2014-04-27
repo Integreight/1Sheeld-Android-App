@@ -169,7 +169,11 @@ public class Jodem {
 		ByteArrayInputStream stream=new ByteArrayInputStream(fileArray,0,length);
 		if(timeout!=null)timeout.stopTimer();
 		timeout=new TimeOut(3, timeoutHandler);
-		while(readByteFromBuffer()!=NAK);
+		if(readByteFromBuffer()!=NAK){
+			abort(2);
+			onError("1Sheeld didn't request the key!");
+			return false;
+		}
 		write(KEY);
 		int packet_size = 128;
 
