@@ -170,6 +170,7 @@ public class ArduinoFirmata {
 	private BluetoothService bluetoothService;
 	private Context context;
 	private boolean isBluetoothBufferWaiting;
+	private boolean isUartBufferWaiting;
 
 	public int getBTState() {
 		return bluetoothService.getState();
@@ -628,6 +629,7 @@ public class ArduinoFirmata {
 
 	private void initFirmata(final BluetoothDevice device) {
 		isBluetoothBufferWaiting = false;
+		isUartBufferWaiting=false;
 		stopBuffersThreads();
 		clearAllBuffers();
 		resetProcessInput();
@@ -636,6 +638,7 @@ public class ArduinoFirmata {
 		uartListeningThread = new UartListeningThread();
 		while (!isBluetoothBufferWaiting)
 			;
+		while(!isUartBufferWaiting);
 
 		uiThreadHandler.post(new Runnable() {
 			@Override
@@ -655,6 +658,7 @@ public class ArduinoFirmata {
 
 	private byte readByteFromUartBuffer() throws InterruptedException, ShieldFrameNotComplete {
 		if(ShieldFrameTimeout!=null&&ShieldFrameTimeout.isTimeout())throw new ShieldFrameNotComplete();
+		isUartBufferWaiting=true;
 		byte temp= uartBuffer.take().byteValue();
 		if(ShieldFrameTimeout!=null)ShieldFrameTimeout.resetTimer();
 		return temp;
