@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -68,6 +70,18 @@ public class ShieldsOperations extends BaseContainerFragment {
 		// sm.setFadeDegree(0.35f);
 		// sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		myActivity.enableMenu();
+		((CheckBox) getView().findViewById(R.id.isMenuOpening))
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton arg0,
+							boolean arg1) {
+						if (arg1) {
+							myActivity.disableMenu();
+						} else
+							myActivity.enableMenu();
+					}
+				});
 		new Handler().postDelayed(new Runnable() {
 
 			@Override

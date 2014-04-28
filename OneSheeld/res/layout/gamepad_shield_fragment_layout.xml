@@ -15,7 +15,7 @@
         android:scaleType="fitXY"
         android:src="@drawable/shield_fragment_background" />
 
-    <RelativeLayout
+    <com.integreight.onesheeld.utils.MutitouchKeysContainer
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_centerHorizontal="true"
@@ -116,6 +116,6 @@
                 key:normalbackground="@drawable/gamepad_shield_normal_red_button"
                 key:pressedbackground="@drawable/gamepad_shield_pressed_red_button" />
         </RelativeLayout>
-    </RelativeLayout>
+    </com.integreight.onesheeld.utils.MutitouchKeysContainer>
 
 </RelativeLayout>

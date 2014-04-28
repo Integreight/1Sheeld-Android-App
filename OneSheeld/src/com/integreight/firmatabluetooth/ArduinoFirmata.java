@@ -587,7 +587,10 @@ public class ArduinoFirmata {
 		public void onDataReceived(byte[] bytes, int length) {
 			// TODO Auto-generated method stub
 			for (int i = 0; i < length; i++) {
-				bluetoothBuffer.add(bytes[i]);
+				if (i < bytes.length)
+					bluetoothBuffer.add(bytes[i]);
+				else
+					break;
 			}
 
 		}
@@ -629,7 +632,7 @@ public class ArduinoFirmata {
 
 	private void initFirmata(final BluetoothDevice device) {
 		isBluetoothBufferWaiting = false;
-		isUartBufferWaiting=false;
+		isUartBufferWaiting = false;
 		stopBuffersThreads();
 		clearAllBuffers();
 		resetProcessInput();
@@ -638,7 +641,8 @@ public class ArduinoFirmata {
 		uartListeningThread = new UartListeningThread();
 		while (!isBluetoothBufferWaiting)
 			;
-		while(!isUartBufferWaiting);
+		while (!isUartBufferWaiting)
+			;
 
 		uiThreadHandler.post(new Runnable() {
 			@Override
@@ -649,18 +653,22 @@ public class ArduinoFirmata {
 				initUart();
 				queryVersion();
 				onConnect();
-				String mConnectedDeviceName = device.getName();
-				Toast.makeText(context, "Connected to " + mConnectedDeviceName,
-						Toast.LENGTH_SHORT).show();
+				// String mConnectedDeviceName = device.getName();
+				// Toast.makeText(context, "Connected to " +
+				// mConnectedDeviceName,
+				// Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
 
-	private byte readByteFromUartBuffer() throws InterruptedException, ShieldFrameNotComplete {
-		if(ShieldFrameTimeout!=null&&ShieldFrameTimeout.isTimeout())throw new ShieldFrameNotComplete();
-		isUartBufferWaiting=true;
-		byte temp= uartBuffer.take().byteValue();
-		if(ShieldFrameTimeout!=null)ShieldFrameTimeout.resetTimer();
+	private byte readByteFromUartBuffer() throws InterruptedException,
+			ShieldFrameNotComplete {
+		if (ShieldFrameTimeout != null && ShieldFrameTimeout.isTimeout())
+			throw new ShieldFrameNotComplete();
+		isUartBufferWaiting = true;
+		byte temp = uartBuffer.take().byteValue();
+		if (ShieldFrameTimeout != null)
+			ShieldFrameTimeout.resetTimer();
 		return temp;
 	}
 
@@ -722,8 +730,9 @@ public class ArduinoFirmata {
 				try {
 					while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
 						;
-					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
-					ShieldFrameTimeout=new TimeOut(1);
+					if (ShieldFrameTimeout != null)
+						ShieldFrameTimeout.stopTimer();
+					ShieldFrameTimeout = new TimeOut(1);
 					int tempArduinoLibVersion = readByteFromUartBuffer();
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
@@ -732,7 +741,8 @@ public class ArduinoFirmata {
 							found = true;
 					}
 					if (!found) {
-						if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+						if (ShieldFrameTimeout != null)
+							ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
 						continue;
 					}
@@ -744,7 +754,8 @@ public class ArduinoFirmata {
 					for (int i = 0; i < argumentsNumber; i++) {
 						int length = readByteFromUartBuffer() & 0xff;
 						if (length <= 0) {
-							if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+							if (ShieldFrameTimeout != null)
+								ShieldFrameTimeout.stopTimer();
 							uartBuffer.clear();
 							continue;
 						}
@@ -755,35 +766,37 @@ public class ArduinoFirmata {
 						frame.addArgument(data);
 					}
 					if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
-						if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+						if (ShieldFrameTimeout != null)
+							ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
 						continue;
 					}
-					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
+					if (ShieldFrameTimeout != null)
+						ShieldFrameTimeout.stopTimer();
 					arduinoLibraryVersion = tempArduinoLibVersion;
 					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
 					}
 				} catch (InterruptedException e) {
 					return;
-				}
-				catch (ShieldFrameNotComplete e) {
-					if(ShieldFrameTimeout!=null)ShieldFrameTimeout.stopTimer();
-					ShieldFrameTimeout=null;
-					//uartBuffer.clear();
+				} catch (ShieldFrameNotComplete e) {
+					if (ShieldFrameTimeout != null)
+						ShieldFrameTimeout.stopTimer();
+					ShieldFrameTimeout = null;
+					// uartBuffer.clear();
 					continue;
 				}
 			}
 		}
 	}
-	
-	private class ShieldFrameNotComplete extends Exception{
+
+	private class ShieldFrameNotComplete extends Exception {
 
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		
+
 	}
 
 	private class BluetoothBufferListeningThread extends Thread {

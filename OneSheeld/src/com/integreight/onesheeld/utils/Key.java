@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -24,8 +23,21 @@ public class Key extends Button {
 	private int column;
 	KeyTouchEventListener eventListener;
 
-	public void setEventListener(KeyTouchEventListener eventListener) {
-		this.eventListener = eventListener;
+	public void setEventListener(final KeyTouchEventListener eventListener) {
+		this.eventListener = new KeyTouchEventListener() {
+
+			@Override
+			public void onReleased(Key k) {
+				endDrag();
+				eventListener.onReleased(k);
+			}
+
+			@Override
+			public void onPressed(Key k) {
+				beginDrag();
+				eventListener.onPressed(k);
+			}
+		};
 	}
 
 	public Key(Context context, AttributeSet attrs, int defStyle) {
@@ -90,32 +102,32 @@ public class Key extends Button {
 		return dragging;
 	}
 
-	private boolean hitFeedback() {
-		return true;
-	}
+	// private boolean hitFeedback() {
+	// return true;
+	// }
 
 	private void beginDrag() {
 		setKeyColor(this, pressedBackground);
 	}
 
-	private void updateDrag(float x, float y) {
-		final boolean inside = getBackground().getBounds().contains((int) x,
-				(int) y);
-
-		if (inside == outOfBounds) {
-			Drawable color;
-
-			if (inside) {
-				color = pressedBackground;
-			} else {
-				color = normalBackground;
-			}
-
-			setKeyColor(this, color);
-
-			outOfBounds = !inside;
-		}
-	}
+	// private void updateDrag(float x, float y) {
+	// final boolean inside = getBackground().getBounds().contains((int) x,
+	// (int) y);
+	//
+	// if (inside == outOfBounds) {
+	// Drawable color;
+	//
+	// if (inside) {
+	// color = pressedBackground;
+	// } else {
+	// color = normalBackground;
+	// }
+	//
+	// setKeyColor(this, color);
+	//
+	// outOfBounds = !inside;
+	// }
+	// }
 
 	private void endDrag() {
 		if (!outOfBounds) {
@@ -128,77 +140,34 @@ public class Key extends Button {
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
-		// final int action = event.getAction();
-
-		// switch (action) {
-		// case MotionEvent.ACTION_DOWN:
+		// // final int action = event.getAction();
 		//
-		// break;
+		// // switch (action) {
+		// // case MotionEvent.ACTION_DOWN:
+		// //
+		// // break;
+		// //
+		// // case MotionEvent.ACTION_MOVE:
+		// // case MotionEvent.ACTION_UP:
+		// //
+		// // if (dragging) {
+		// //
+		// // break;
+		// // }
+		// //
+		// //
+		// //
+		// // // fall through
+		// //
+		// // default:
+		// // return super.onTouchEvent(event);
+		// // }
 		//
-		// case MotionEvent.ACTION_MOVE:
-		// case MotionEvent.ACTION_UP:
+		// final float x = event.getX();
+		// final float y = event.getY();
 		//
-		// if (dragging) {
-		//
-		// break;
-		// }
-		//
-		//
-		//
-		// // fall through
-		//
-		// default:
-		// return super.onTouchEvent(event);
-		// }
-
-		final float x = event.getX();
-		final float y = event.getY();
-
-		switch (event.getAction() & MotionEvent.ACTION_MASK) {
-		case MotionEvent.ACTION_POINTER_DOWN:
-			dragging = true;
-			outOfBounds = false;
-			Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
-			if (eventListener != null)
-				eventListener.onPressed(this);
-			beginDrag();
-
-			return hitFeedback();
-		case MotionEvent.ACTION_POINTER_UP:
-			endDrag();
-			Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
-			if (eventListener != null)
-				eventListener.onReleased(this);
-			dragging = false;
-			break;
-		case MotionEvent.ACTION_MOVE:
-			updateDrag(x, y);
-			break;
-		case MotionEvent.ACTION_DOWN:
-			dragging = true;
-			outOfBounds = false;
-			Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
-			if (eventListener != null)
-				eventListener.onPressed(this);
-			beginDrag();
-
-			return hitFeedback();
-		case MotionEvent.ACTION_UP:
-			endDrag();
-			Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
-			if (eventListener != null)
-				eventListener.onReleased(this);
-			dragging = false;
-			break;
-		default:
-			endDrag();
-			Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
-			if (eventListener != null)
-				eventListener.onReleased(this);
-			dragging = false;
-			break;
-		}
-		// if (action == MotionEvent.ACTION_DOWN) {
+		// switch (event.getAction() & MotionEvent.ACTION_MASK) {
+		// case MotionEvent.ACTION_POINTER_DOWN:
 		// dragging = true;
 		// outOfBounds = false;
 		// Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
@@ -207,20 +176,63 @@ public class Key extends Button {
 		// beginDrag();
 		//
 		// return hitFeedback();
-		// } else // MOVE or UP
-		// {
-		// updateDrag(x, y);
-		//
-		// if (action == MotionEvent.ACTION_UP) {
+		// case MotionEvent.ACTION_POINTER_UP:
 		// endDrag();
 		// Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
 		// if (eventListener != null)
 		// eventListener.onReleased(this);
 		// dragging = false;
+		// break;
+		// case MotionEvent.ACTION_MOVE:
+		// updateDrag(x, y);
+		// break;
+		// case MotionEvent.ACTION_DOWN:
+		// dragging = true;
+		// outOfBounds = false;
+		// Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
+		// if (eventListener != null)
+		// eventListener.onPressed(this);
+		// beginDrag();
+		//
+		// return hitFeedback();
+		// case MotionEvent.ACTION_UP:
+		// endDrag();
+		// Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+		// if (eventListener != null)
+		// eventListener.onReleased(this);
+		// dragging = false;
+		// break;
+		// default:
+		// endDrag();
+		// Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+		// if (eventListener != null)
+		// eventListener.onReleased(this);
+		// dragging = false;
+		// break;
 		// }
-		// }
+		// // if (action == MotionEvent.ACTION_DOWN) {
+		// // dragging = true;
+		// // outOfBounds = false;
+		// // Log.d("Keypad", "DOWN=Row: " + row + ", Column: " + column);
+		// // if (eventListener != null)
+		// // eventListener.onPressed(this);
+		// // beginDrag();
+		// //
+		// // return hitFeedback();
+		// // } else // MOVE or UP
+		// // {
+		// // updateDrag(x, y);
+		// //
+		// // if (action == MotionEvent.ACTION_UP) {
+		// // endDrag();
+		// // Log.d("Keypad", "UP=Row: " + row + ", Column: " + column);
+		// // if (eventListener != null)
+		// // eventListener.onReleased(this);
+		// // dragging = false;
+		// // }
+		// // }
 
-		return true;
+		return false;
 	}
 
 	static final int fadeDuration = 500;
