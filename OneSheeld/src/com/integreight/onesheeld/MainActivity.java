@@ -182,8 +182,8 @@ public class MainActivity extends FragmentActivity {
 
 											}
 										}, true));
-						if (!isFinishing())
-							popub.show();
+						// if (!isFinishing())
+						// popub.show();
 					} else if (majorVersion != getThisApplication()
 							.getMajorVersion()
 							&& minorVersion != getThisApplication()
@@ -202,8 +202,8 @@ public class MainActivity extends FragmentActivity {
 														false).show();
 											}
 										}, true));
-						if (!isFinishing())
-						 popub.show();
+						// if (!isFinishing())
+						// popub.show();
 					}
 				}
 			});
