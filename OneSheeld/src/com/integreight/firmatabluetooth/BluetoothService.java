@@ -297,20 +297,6 @@ public class BluetoothService {
 
 		public ConnectThread(BluetoothDevice device) {
 			mmDevice = device;
-			if (mmSocket != null) {
-				try {
-					while (mmSocket.isConnected()) {
-						try {
-							mmSocket.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
 
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
