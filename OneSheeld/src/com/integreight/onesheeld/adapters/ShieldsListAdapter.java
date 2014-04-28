@@ -28,6 +28,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	LayoutInflater inflater;
 	ControllerParent<?> type = null;
 	OneSheeldApplication app;
+	private Handler uiHandler;
 
 	public ShieldsListAdapter(Activity a) {
 		this.activity = (MainActivity) a;
@@ -35,6 +36,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		inflater = (LayoutInflater) activity
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		app = (OneSheeldApplication) activity.getApplication();
+		uiHandler = new Handler();
 	}
 
 	public int getCount() {
@@ -103,73 +105,95 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 						.isMainActivitySelection());
 				if (shield.isMainActivitySelection()
 						&& shield.getShieldType() != null) {
-
-					try {
-						type = shield.getShieldType().newInstance();
-					} catch (java.lang.InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					final SelectionAction selectionAction = new SelectionAction() {
+					activity.backgroundThreadHandler.post(new Runnable() {
 
 						@Override
-						public void onSuccess() {
-							// tempHolder.selectionButton.setVisibility(View.VISIBLE);
-							tempHolder.selectionCircle
-									.setVisibility(View.VISIBLE);
-							tempHolder.blackUpperLayer
-									.setVisibility(View.INVISIBLE);
-							// activity.backgroundThreadHandler.post(new
-							// Runnable() {
-							//
-							// @Override
-							// public void run() {
+						public void run() {
 							// TODO Auto-generated method stub
-							shield.setMainActivitySelection(true);
-						}
+							try {
+								type = shield.getShieldType().newInstance();
+							} catch (java.lang.InstantiationException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							final SelectionAction selectionAction = new SelectionAction() {
 
-						@Override
-						public void onFailure() {
-							shield.setMainActivitySelection(false);
-							tempHolder.selectionCircle
-									.setVisibility(View.INVISIBLE);
-							tempHolder.blackUpperLayer
-									.setVisibility(View.VISIBLE);
-							activity.backgroundThreadHandler
-									.post(new Runnable() {
+								@Override
+								public void onSuccess() {
+									// tempHolder.selectionButton.setVisibility(View.VISIBLE);
+									uiHandler.post(new Runnable() {
 
 										@Override
 										public void run() {
-											if (app.getRunningShields().get(
-													shield.name()) != null) {
-												app.getRunningShields()
-														.get(shield.name())
-														.resetThis();
-												app.getRunningShields().remove(
-														shield.name());
-											}
+											tempHolder.selectionCircle
+													.setVisibility(View.VISIBLE);
+											tempHolder.blackUpperLayer
+													.setVisibility(View.INVISIBLE);
 										}
 									});
+									shield.setMainActivitySelection(true);
+								}
+
+								@Override
+								public void onFailure() {
+									shield.setMainActivitySelection(false);
+									uiHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											tempHolder.selectionCircle
+													.setVisibility(View.INVISIBLE);
+											tempHolder.blackUpperLayer
+													.setVisibility(View.VISIBLE);
+										}
+									});
+									activity.backgroundThreadHandler
+											.post(new Runnable() {
+
+												@Override
+												public void run() {
+													if (app.getRunningShields()
+															.get(shield.name()) != null) {
+														app.getRunningShields()
+																.get(shield
+																		.name())
+																.resetThis();
+														app.getRunningShields()
+																.remove(shield
+																		.name());
+													}
+												}
+											});
+								}
+							};
+							if (type != null) {
+								if (shield.isInvalidatable()) {
+									type.setActivity(activity)
+											.setTag(shield.name())
+											.invalidate(selectionAction, true);
+								} else {
+									selectionAction.onSuccess();
+									type.setActivity(activity).setTag(
+											shield.name());
+								}
+							}
 						}
-					};
-					if (type != null) {
-						if (shield.isInvalidatable()) {
-							type.setActivity(activity).setTag(shield.name())
-									.invalidate(selectionAction, true);
-						} else {
-							selectionAction.onSuccess();
-							type.setActivity(activity).setTag(shield.name());
-						}
-					}
-					// }
-					// });
+					});
 				} else {
 					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
-					tempHolder.selectionCircle.setVisibility(View.INVISIBLE);
-					tempHolder.blackUpperLayer.setVisibility(View.VISIBLE);
+					uiHandler.post(new Runnable() {
+
+						@Override
+						public void run() {
+							tempHolder.selectionCircle
+									.setVisibility(View.INVISIBLE);
+							tempHolder.blackUpperLayer
+									.setVisibility(View.VISIBLE);
+						}
+					});
 					activity.backgroundThreadHandler.post(new Runnable() {
 
 						@Override
@@ -212,59 +236,65 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		int i = 0;
 		for (final UIShield shield : shieldList) {
 			final int x = i;
-			// activity.backgroundThreadHandler.post(new Runnable() {
-			//
-			// @Override
-			// public void run() {
-			// TODO Auto-generated method stub
+			activity.backgroundThreadHandler.post(new Runnable() {
 
-			if (shield.isMainActivitySelection()
-					&& shield.getShieldType() != null) {
-				if (app.getRunningShields().get(shield.name()) == null) {
-					SelectionAction selectionAction = new SelectionAction() {
+				@Override
+				public void run() {
+					// TODO Auto-generated method stub
 
-						@Override
-						public void onSuccess() {
-						}
+					if (shield.isMainActivitySelection()
+							&& shield.getShieldType() != null) {
+						if (app.getRunningShields().get(shield.name()) == null) {
+							SelectionAction selectionAction = new SelectionAction() {
 
-						@Override
-						public void onFailure() {
-							shieldList.get(x).setMainActivitySelection(false);
-							UIShield.valueOf(shield.name())
-									.setMainActivitySelection(false);
-							if (app.getRunningShields().get(shield.name()) != null) {
-								app.getRunningShields().get(shield.name())
-										.resetThis();
-								app.getRunningShields().remove(shield.name());
+								@Override
+								public void onSuccess() {
+								}
+
+								@Override
+								public void onFailure() {
+									shieldList.get(x).setMainActivitySelection(
+											false);
+									UIShield.valueOf(shield.name())
+											.setMainActivitySelection(false);
+									if (app.getRunningShields().get(
+											shield.name()) != null) {
+										app.getRunningShields()
+												.get(shield.name()).resetThis();
+										app.getRunningShields().remove(
+												shield.name());
+									}
+								}
+							};
+							try {
+								type = shield.getShieldType().newInstance();
+							} catch (java.lang.InstantiationException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (IllegalAccessException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							if (type != null) {
+								if (shield.isInvalidatable()) {
+									type.setActivity(activity)
+											.setTag(shield.name())
+											.invalidate(selectionAction, false);
+								} else {
+									type.setActivity(activity).setTag(
+											shield.name());
+								}
 							}
 						}
-					};
-					try {
-						type = shield.getShieldType().newInstance();
-					} catch (java.lang.InstantiationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					if (type != null) {
-						if (shield.isInvalidatable()) {
-							type.setActivity(activity).setTag(shield.name())
-									.invalidate(selectionAction, false);
-						} else {
-							type.setActivity(activity).setTag(shield.name());
+					} else {
+						if (app.getRunningShields().get(shield.name()) != null) {
+							app.getRunningShields().get(shield.name())
+									.resetThis();
+							app.getRunningShields().remove(shield.name());
 						}
 					}
 				}
-			} else {
-				if (app.getRunningShields().get(shield.name()) != null) {
-					app.getRunningShields().get(shield.name()).resetThis();
-					app.getRunningShields().remove(shield.name());
-				}
-			}
-			// }
-			// });
+			});
 			i++;
 		}
 	}

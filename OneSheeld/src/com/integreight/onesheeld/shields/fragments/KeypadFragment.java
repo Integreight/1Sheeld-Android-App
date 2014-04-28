@@ -93,8 +93,8 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	}
 
 	private void initializeKeysEventHandler(ViewGroup viewGroup) {
-		ViewGroup keypad = (ViewGroup) ((ViewGroup) viewGroup.getChildAt(0))
-				.getChildAt(1);
+		ViewGroup keypad = (ViewGroup) getView().findViewById(
+				R.id.keysContainer);
 		for (int i = 0; i < keypad.getChildCount(); i++) {
 			ViewGroup keypadRow = (ViewGroup) keypad.getChildAt(i);
 			for (int j = 0; j < keypadRow.getChildCount(); j++) {
