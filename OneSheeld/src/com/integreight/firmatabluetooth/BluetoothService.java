@@ -118,12 +118,6 @@ public class BluetoothService {
 
 	public synchronized void closeSocket(BluetoothSocket socket)
 			throws IOException {
-		// try {
-		// Thread.sleep(1000);
-		// } catch (InterruptedException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 		socket.close();
 	}
 
@@ -214,18 +208,6 @@ public class BluetoothService {
 		// Start the thread to manage the connection and perform transmissions
 		mConnectedThread = new ConnectedThread(socket);
 		mConnectedThread.start();
-
-		// Send the name of the connected device back to the UI Activity
-		// Message msg =
-		// mHandler.obtainMessage(BluetoothService.MESSAGE_DEVICE_NAME);
-		// Bundle bundle = new Bundle();
-		// bundle.putString(BluetoothService.DEVICE_NAME, device.getName());
-		// msg.setData(bundle);
-		// mHandler.sendMessage(msg);
-//		setState(STATE_CONNECTED);
-//		for (BluetoothServiceHandler handler : handlers) {
-//			handler.onConnected(device);
-//		}
 	}
 
 	/**
@@ -243,7 +225,7 @@ public class BluetoothService {
 			mConnectedThread.cancel();
 			mConnectedThread = null;
 		}
-		mmDevice=null;
+		mmDevice = null;
 		setState(STATE_NONE);
 	}
 
@@ -289,12 +271,6 @@ public class BluetoothService {
 	 * Indicate that the connection attempt failed and notify the UI Activity.
 	 */
 	private void connectionFailed() {
-		// Send a failure message back to the Activity
-		// Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
-		// Bundle bundle = new Bundle();
-		// bundle.putString(BluetoothService.TOAST, "Unable to connect device");
-		// msg.setData(bundle);
-		// mHandler.sendMessage(msg);
 		for (BluetoothServiceHandler handler : handlers) {
 			handler.onError("Unable to connect device");
 		}
@@ -305,14 +281,6 @@ public class BluetoothService {
 	 * Indicate that the connection was lost and notify the UI Activity.
 	 */
 	private void connectionLost() {
-		// Send a failure message back to the Activity
-		// Message msg = mHandler.obtainMessage(BluetoothService.MESSAGE_TOAST);
-		// Bundle bundle = new Bundle();
-		// bundle.putString(BluetoothService.TOAST,
-		// "Device connection was lost");
-		// msg.setData(bundle);
-		// mHandler.sendMessage(msg);
-		// if(callback!=null)callback.onError("Device connection was lost");
 		stop();
 	}
 
@@ -323,7 +291,8 @@ public class BluetoothService {
 	 */
 	private class ConnectThread extends Thread {
 		private BluetoothSocket mmSocket = null;
-//		private final BluetoothDevice mmDevice;
+
+		// private final BluetoothDevice mmDevice;
 
 		public ConnectThread(BluetoothDevice device) {
 			mmDevice = device;
@@ -346,10 +315,6 @@ public class BluetoothService {
 			// given BluetoothDevice
 			try {
 				mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
-
-				// Method m = device.getClass().getMethod("createRfcommSocket",
-				// new Class[] {int.class});
-				// tmp = (BluetoothSocket) m.invoke(device, 1);
 			} catch (IOException e) {
 				// Log.e(TAG, "create() failed", e);
 				try {
@@ -467,11 +432,6 @@ public class BluetoothService {
 				try {
 					// Read from the InputStream
 					bytes = mmInStream.read(buffer, 0, buffer.length);
-
-					// Send the obtained bytes to the UI Activity
-					// mHandler.obtainMessage(BluetoothService.MESSAGE_READ,
-					// bytes, -1, buffer)
-					// .sendToTarget();
 					for (BluetoothServiceHandler handler : handlers) {
 						handler.onDataReceived(buffer, bytes);
 					}
@@ -503,12 +463,6 @@ public class BluetoothService {
 					// TODO Auto-generated method stub
 					try {
 						mmOutStream.write(buffer);
-
-						// Share the sent message back to the UI Activity
-						// mHandler.obtainMessage(BluetoothService.MESSAGE_WRITE,
-						// -1,
-						// -1, buffer)
-						// .sendToTarget();
 						for (BluetoothServiceHandler handler : handlers) {
 							handler.onDataWritten(buffer);
 						}
