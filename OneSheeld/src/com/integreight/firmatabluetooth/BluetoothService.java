@@ -19,6 +19,7 @@ package com.integreight.firmatabluetooth;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -251,6 +252,14 @@ public class BluetoothService {
 		stop();
 	}
 
+	private synchronized BluetoothSocket getRfcommSocketByReflection() throws Exception{
+		if(mmDevice==null)return null;
+		Method m = mmDevice.getClass().getMethod("createRfcommSocket",
+					new Class[] { int.class });
+		
+
+		return (BluetoothSocket) m.invoke(mmDevice, 1);
+	}
 	/**
 	 * Write to the ConnectedThread in an unsynchronized manner
 	 * 
@@ -342,8 +351,15 @@ public class BluetoothService {
 				// new Class[] {int.class});
 				// tmp = (BluetoothSocket) m.invoke(device, 1);
 			} catch (IOException e) {
-				Log.e(TAG, "create() failed", e);
-				return;
+				// Log.e(TAG, "create() failed", e);
+				try {
+					mmSocket = getRfcommSocketByReflection();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					return;
+				}
+
 			}
 		}
 
@@ -363,15 +379,13 @@ public class BluetoothService {
 				e.printStackTrace();
 				// Close the socket
 				try {
-					closeSocket(mmSocket);
-				} catch (IOException e2) {
-					Log.e(TAG,
-							"unable to close() socket during connection failure",
-							e2);
+					mmSocket = getRfcommSocketByReflection();
+					mmSocket.connect();
+				} catch (Exception e1) {
+					connectionFailed();
+					return;
 				}
-				// if(!closedManually)
-				connectionFailed();
-				return;
+
 			}
 
 			// Reset the ConnectThread because we're done
@@ -425,6 +439,8 @@ public class BluetoothService {
 
 		public void run() {
 			Log.i(TAG, "BEGIN mConnectedThread");
+			if (mmDevice == null)
+				return;
 			LooperThread = new Thread(new Runnable() {
 
 				@Override
