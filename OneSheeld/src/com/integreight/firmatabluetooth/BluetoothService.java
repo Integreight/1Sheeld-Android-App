@@ -218,7 +218,7 @@ public class BluetoothService {
 			Log.d(TAG, "stop");
 		if (mConnectThread != null) {
 			mConnectThread.cancel();
-			mConnectedThread.interrupt();
+			mConnectThread.interrupt();
 			mConnectThread = null;
 		}
 
