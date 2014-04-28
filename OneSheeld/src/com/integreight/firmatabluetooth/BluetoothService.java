@@ -118,7 +118,7 @@ public class BluetoothService {
 
 	public synchronized void closeSocket(BluetoothSocket socket)
 			throws IOException {
-		socket.close();
+		if(socket!=null)socket.close();
 	}
 
 	/**
