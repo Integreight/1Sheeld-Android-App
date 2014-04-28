@@ -38,6 +38,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 	@Override
 	public void onStart() {
+		uiHandler = new Handler();
 		if (getApplication().getRunningShields().get(getControllerTag()) != null)
 			getApplication().getRunningShields().get(getControllerTag())
 					.setHasForgroundView(true);
@@ -94,6 +95,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		if (getApplication().getRunningShields().get(getControllerTag()) != null)
 			getApplication().getRunningShields().get(getControllerTag())
 					.setHasForgroundView(false);
+		uiHandler.removeCallbacksAndMessages(null);
 		super.onStop();
 	}
 

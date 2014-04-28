@@ -91,14 +91,21 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	private MicEventHandler micEventHandler = new MicEventHandler() {
 
 		@Override
-		public void getAmplitude(Double value) {
+		public void getAmplitude(final Double value) {
 
 			if (canChangeUI()) {
 				// set data to UI
-				amplitude_value.setText(value + "");
-				params.height = (int) (((value) * 4) * scale + .5f);
-				params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
-				myBox.requestLayout();
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						amplitude_value.setText(value + "");
+						params.height = (int) (((value) * 4) * scale + .5f);
+						params.width = RelativeLayout.LayoutParams.MATCH_PARENT;
+						myBox.requestLayout();
+					}
+				});
 			}
 		}
 	};
