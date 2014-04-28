@@ -49,12 +49,20 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	@Override
 	public ControllerParent<TemperatureShield> setTag(String tag) {
 
+		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<TemperatureShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mTemperature = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-		registerSensorListener();
-		return super.setTag(tag);
+		registerSensorListener(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public void setTemperatureEventHandler(TemperatureEventHandler eventHandler) {
@@ -95,7 +103,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	}
 
 	// Register a listener for the sensor.
-	public void registerSensorListener() {
+	public void registerSensorListener(boolean isToastable) {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
@@ -107,12 +115,20 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
+				if (selectionAction != null) {
+					selectionAction.onSuccess();
+				}
 			} else {
 				Log.d("Your Sensor is registered", "Temperature");
 			}
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Temperature");
+			if (selectionAction != null) {
+				selectionAction.onFailure();
+			}
+			if (isToastable)
+				activity.showToast("Not Available");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

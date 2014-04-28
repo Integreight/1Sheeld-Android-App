@@ -64,7 +64,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((ProximityShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 				distance_float.setVisibility(View.VISIBLE);
 				distance_byte.setVisibility(View.VISIBLE);
 

@@ -65,7 +65,7 @@ public class TemperatureFragment extends
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((TemperatureShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 				temperature_float.setVisibility(View.VISIBLE);
 				temperature_byte.setVisibility(View.VISIBLE);
 

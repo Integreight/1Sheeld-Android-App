@@ -252,7 +252,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 						if (shield.isInvalidatable()) {
 							type.setActivity(activity).setTag(shield.name())
 									.invalidate(selectionAction, false);
-							selectionAction.onFailure();
 						} else {
 							type.setActivity(activity).setTag(shield.name());
 						}

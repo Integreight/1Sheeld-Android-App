@@ -63,7 +63,7 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((GyroscopeShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 
 			}
 		});
