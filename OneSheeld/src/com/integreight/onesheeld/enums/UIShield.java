@@ -60,7 +60,7 @@ public enum UIShield {
 			false, LcdShield.class, false), MAGNETOMETER_SHIELD((byte) 0x0A,
 			"Magnetometer", 0xff40039f,
 			R.drawable.shields_list_magnetometer_symbol, false,
-			MagnetometerShield.class), PUSHBUTTON_SHIELD((byte) 0x03,
+			MagnetometerShield.class, 1), PUSHBUTTON_SHIELD((byte) 0x03,
 			"Push Button", 0xffb97547,
 			R.drawable.shields_list_push_button_symbol, false,
 			PushButtonShield.class), TOGGLEBUTTON_SHIELD((byte) 0x04,
@@ -69,7 +69,7 @@ public enum UIShield {
 			ToggleButtonShield.class), ACCELEROMETER_SHIELD((byte) 0x0B,
 			"Accelerometer", 0xff266a5d,
 			R.drawable.shields_list_accelerometer_symbol, false,
-			AccelerometerShield.class), FACEBOOK_SHIELD((byte) 0x19,
+			AccelerometerShield.class, 1), FACEBOOK_SHIELD((byte) 0x19,
 			"Facebook", 0xff039dc0, R.drawable.shields_list_facebook_symbol,
 			false, FacebookShield.class), TWITTER_SHIELD((byte) 0x1A,
 			"Twitter", 0xffa14c4c, R.drawable.shields_list_twitter_symbol,
@@ -86,26 +86,26 @@ public enum UIShield {
 			R.drawable.shields_list_musicplayer_symbol, false,
 			MusicShield.class), GYROSCOPE_SHIELD((byte) 0x0E, "Gyroscope",
 			0xff4c84e9, R.drawable.shields_list_gyroscope_symbol, false,
-			GyroscopeShield.class), FLASHLIGHT_SHIELD((byte) 0x05,
+			GyroscopeShield.class, 1), FLASHLIGHT_SHIELD((byte) 0x05,
 			"Flashlight", 0xff0b4c8d,
 			R.drawable.shields_list_flashlight_symbol, false,
 			EmptyShield.class, false), SKYPE_SHIELD((byte) 0x1F, "Skype",
 			0xff08c473, R.drawable.shields_list_skype_symbol, false,
 			SkypeShield.class), PROXIMITY_SHIELD((byte) 0x13, "Proximity",
 			0xff543c8d, R.drawable.shields_list_proximity_symbol, false,
-			ProximityShield.class), GRAVITY_SHIELD((byte) 0x14, "Gravity",
+			ProximityShield.class, 1), GRAVITY_SHIELD((byte) 0x14, "Gravity",
 			0xffd95342, R.drawable.shields_list_gravity_symbol, false,
-			GravityShield.class), ORIENTATION_SHIELD((byte) 0x0F,
+			GravityShield.class, 1), ORIENTATION_SHIELD((byte) 0x0F,
 			"Orientation", 0xff58844f,
 			R.drawable.shields_list_orientation_symbol, false,
-			OrientationShield.class), LIGHT_SHIELD((byte) 0x10, "Light",
+			OrientationShield.class, 1), LIGHT_SHIELD((byte) 0x10, "Light",
 			0xff8b268d, R.drawable.shields_list_light_sensor_symbol, false,
-			LightShield.class), PRESSURE_SHIELD((byte) 0x11, "Pressure",
+			LightShield.class, 1), PRESSURE_SHIELD((byte) 0x11, "Pressure",
 			0xff67584d, R.drawable.shields_list_pressure_symbol, false,
-			PressureShield.class), TEMPERATURE_SHIELD((byte) 0x12,
+			PressureShield.class, 1), TEMPERATURE_SHIELD((byte) 0x12,
 			"Temperature", 0xff999f45,
 			R.drawable.shields_list_temperature_symbol, false,
-			TemperatureShield.class), CAMERA_SHIELD((byte) 0x15, "Camera",
+			TemperatureShield.class, 1), CAMERA_SHIELD((byte) 0x15, "Camera",
 			0xff6d0347, R.drawable.shields_list_camera_symbol, false,
 			CameraShield.class), PHONE_SHIELD((byte) 0x20, "Phone", 0xffe9bd03,
 			R.drawable.shields_list_email_symbol, false, PhoneShield.class), NFC(
@@ -121,8 +121,7 @@ public enum UIShield {
 			(byte) 0x21, "Clock", 0xffd95342,
 			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x22, "Keyboard", 0xffd95342,
-			R.drawable.shields_list_gravity_symbol, false,
-			KeyboardShield.class);
+			R.drawable.shields_list_gravity_symbol, false, KeyboardShield.class);
 
 	private byte id;
 	private String name;
@@ -132,6 +131,7 @@ public enum UIShield {
 	private static UIShield shieldsActivitySelection;
 	private static boolean isConnected = false;
 	private boolean isReleasable = true;
+	private int isInvalidatable = 0;
 	private Class<? extends ControllerParent<?>> shieldType;
 
 	public int getSymbolId() {
@@ -140,6 +140,10 @@ public enum UIShield {
 
 	public boolean isReleasable() {
 		return isReleasable;
+	}
+
+	public boolean isInvalidatable() {
+		return isInvalidatable == 1;
 	}
 
 	// public int getMainBWImageStripId() {
@@ -190,6 +194,18 @@ public enum UIShield {
 
 	private UIShield(byte id, String name, int mainImageStripId, int symbolId,
 			boolean mainActivitySelection,
+			Class<? extends ControllerParent<?>> shieldType, int isInvalidatable) {
+		this.id = id;
+		this.name = name;
+		this.itemBackgroundColor = mainImageStripId;
+		this.symbolId = symbolId;
+		this.mainActivitySelection = mainActivitySelection;
+		this.shieldType = shieldType;
+		this.isInvalidatable = isInvalidatable;
+	}
+
+	private UIShield(byte id, String name, int mainImageStripId, int symbolId,
+			boolean mainActivitySelection,
 			Class<? extends ControllerParent<?>> shieldType,
 			boolean isReleasable) {
 		this.id = id;
@@ -199,6 +215,20 @@ public enum UIShield {
 		this.mainActivitySelection = mainActivitySelection;
 		this.shieldType = shieldType;
 		this.isReleasable = isReleasable;
+	}
+
+	private UIShield(byte id, String name, int mainImageStripId, int symbolId,
+			boolean mainActivitySelection,
+			Class<? extends ControllerParent<?>> shieldType,
+			boolean isReleasable, int isInvalidatable) {
+		this.id = id;
+		this.name = name;
+		this.itemBackgroundColor = mainImageStripId;
+		this.symbolId = symbolId;
+		this.mainActivitySelection = mainActivitySelection;
+		this.shieldType = shieldType;
+		this.isReleasable = isReleasable;
+		this.isInvalidatable = isInvalidatable;
 	}
 
 	public byte getId() {

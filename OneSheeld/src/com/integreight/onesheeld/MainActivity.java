@@ -425,4 +425,8 @@ public class MainActivity extends FragmentActivity {
 		super.onStop();
 	}
 
+	public void showToast(String msg) {
+		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+
 }

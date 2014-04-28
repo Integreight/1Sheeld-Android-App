@@ -30,6 +30,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 					"A0", "A1", "A2", "A3", "A4", "A5" },
 			{ "3", "5", "6", "9", "10", "11" } };
 	public String[] shieldPins = new String[] {};
+	public SelectionAction selectionAction;
 
 	public ControllerParent() {
 		// TODO Auto-generated constructor stub
@@ -205,6 +206,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		return this;
 	}
 
+	public ControllerParent<T> invalidate(SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
+		return this;
+	}
+
 	public void CommitInstanceTotable() {
 		// getApplication().getRunningShields().put(tag, this);
 	}
@@ -252,6 +259,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	public String[] getRequiredPinsNames() {
 		return requiredPinsNames[requiredPinsIndex];
+	}
+
+	public static interface SelectionAction {
+		public void onSuccess();
+
+		public void onFailure();
 	}
 
 }
