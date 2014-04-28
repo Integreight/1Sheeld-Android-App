@@ -62,7 +62,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((LightShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 				light_float.setVisibility(View.VISIBLE);
 				light_byte.setVisibility(View.VISIBLE);
 

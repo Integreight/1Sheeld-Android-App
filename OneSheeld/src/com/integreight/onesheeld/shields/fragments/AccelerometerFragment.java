@@ -66,7 +66,7 @@ public class AccelerometerFragment extends
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((AccelerometerShield) getApplication().getRunningShields()
-						.get(getControllerTag())).registerSensorListener();
+						.get(getControllerTag())).registerSensorListener(true);
 
 			}
 		});

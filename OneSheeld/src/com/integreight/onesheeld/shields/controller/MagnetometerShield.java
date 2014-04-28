@@ -48,12 +48,20 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 	@Override
 	public ControllerParent<MagnetometerShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<MagnetometerShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mMagnetometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-		registerSensorListener();
-		return super.setTag(tag);
+		registerSensorListener(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public void setMagnetometerEventHandler(
@@ -107,7 +115,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	}
 
 	// Register a listener for the sensor.
-	public void registerSensorListener() {
+	public void registerSensorListener(boolean isToastable) {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
@@ -118,12 +126,18 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
+				if (selectionAction != null)
+					selectionAction.onSuccess();
 			} else {
 				Log.d("Your Sensor is registered", "Magnetometer");
 			}
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Magnetometer");
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastable)
+				activity.showToast("Device dos't have Sensor");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

@@ -64,7 +64,7 @@ public class OrientationFragment extends
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((OrientationShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 
 			}
 		});

@@ -64,7 +64,7 @@ public class MagnetometerFragment extends
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((MagnetometerShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 
 			}
 		});

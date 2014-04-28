@@ -48,12 +48,20 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 	@Override
 	public ControllerParent<AccelerometerShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<AccelerometerShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mAccelerometer = mSensorManager
 				.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		registerSensorListener();
-		return super.setTag(tag);
+		registerSensorListener(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public void setAccelerometerEventHandler(
@@ -107,7 +115,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 	}
 
 	// Register a listener for the sensor.
-	public void registerSensorListener() {
+	public void registerSensorListener(boolean isToastable) {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
@@ -119,12 +127,19 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
+				if (selectionAction != null)
+					selectionAction.onSuccess();
 			} else {
 				Log.d("Your Sensor is registered", "Accelerometer");
 			}
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Accelerometer");
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastable)
+				activity.showToast("Device dos't have Sensor");
+
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

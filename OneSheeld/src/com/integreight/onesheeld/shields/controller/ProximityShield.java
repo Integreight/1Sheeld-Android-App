@@ -125,7 +125,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 				selectionAction.onFailure();
 			}
 			if (isToastable) {
-				activity.showToast("Not Available");
+				activity.showToast("Device dos't have Sensor");
 			}
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);

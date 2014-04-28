@@ -63,7 +63,7 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((GravityShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 
 			}
 		});

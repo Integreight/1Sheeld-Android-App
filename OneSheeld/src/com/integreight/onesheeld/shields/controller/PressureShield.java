@@ -48,11 +48,19 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 	@Override
 	public ControllerParent<PressureShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<PressureShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mPressure = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-		registerSensorListener();
-		return super.setTag(tag);
+		registerSensorListener(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public void setPressureEventHandler(PressureEventHandler eventHandler) {
@@ -94,7 +102,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 	}
 
 	// Register a listener for the sensor.
-	public void registerSensorListener() {
+	public void registerSensorListener(boolean isToastable) {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
@@ -106,12 +114,19 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
+				if (selectionAction != null)
+					selectionAction.onSuccess();
 			} else {
 				Log.d("Your Sensor is registered", "Pressure");
 			}
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Pressure");
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastable)
+				activity.showToast("Device dos't have Sensor");
+
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

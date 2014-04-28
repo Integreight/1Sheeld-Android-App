@@ -65,7 +65,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				((PressureShield) getApplication().getRunningShields().get(
-						getControllerTag())).registerSensorListener();
+						getControllerTag())).registerSensorListener(true);
 				pressure_float.setVisibility(View.VISIBLE);
 				pressure_byte.setVisibility(View.VISIBLE);
 

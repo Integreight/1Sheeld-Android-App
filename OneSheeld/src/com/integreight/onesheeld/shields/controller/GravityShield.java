@@ -48,11 +48,19 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	@Override
 	public ControllerParent<GravityShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<GravityShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-		registerSensorListener();
-		return super.setTag(tag);
+		registerSensorListener(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public void setGravityEventHandler(GravityEventHandler eventHandler) {
@@ -105,7 +113,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 	}
 
 	// Register a listener for the sensor.
-	public void registerSensorListener() {
+	public void registerSensorListener(boolean isToastabel) {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive && mGravity != null) {
@@ -116,12 +124,18 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
+				if (selectionAction != null)
+					selectionAction.onSuccess();
 			} else {
 				Log.d("Your Sensor is registered", "Gravity");
 			}
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Gravity");
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastabel)
+				activity.showToast("Device dos't have Sensor");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

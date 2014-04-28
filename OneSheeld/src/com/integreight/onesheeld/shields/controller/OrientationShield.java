@@ -49,11 +49,19 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 	@SuppressWarnings("deprecation")
 	@Override
 	public ControllerParent<OrientationShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<OrientationShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
 				Context.SENSOR_SERVICE);
 		mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-		registerSensorListener();
-		return super.setTag(tag);
+		registerSensorListener(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public void setOrientationEventHandler(OrientationEventHandler eventHandler) {
@@ -106,7 +114,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 
 	// Register a listener for the sensor.
 	@SuppressWarnings("deprecation")
-	public void registerSensorListener() {
+	public void registerSensorListener(boolean isToastable) {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
@@ -118,12 +126,18 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
+				if (selectionAction != null)
+					selectionAction.onSuccess();
 			} else {
 				Log.d("Your Sensor is registered", "Orientation");
 			}
 		} else {
 			// Failure! No sensor.
 			Log.d("Device dos't have Sensor ", "Orientation");
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastable)
+				activity.showToast("Device dos't have Sensor");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 
