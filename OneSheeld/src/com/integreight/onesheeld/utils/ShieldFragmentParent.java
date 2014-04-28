@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.utils;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -19,6 +20,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		extends Fragment {
 	private String controllerTag = "";
 	public boolean hasSettings = false;
+	public Handler uiHandler = new Handler();
 
 	public MainActivity getAppActivity() {
 		return (MainActivity) super.getActivity();
