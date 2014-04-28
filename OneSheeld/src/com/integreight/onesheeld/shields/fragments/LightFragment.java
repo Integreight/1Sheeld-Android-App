@@ -87,38 +87,66 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	private LightEventHandler lightEventHandler = new LightEventHandler() {
 
 		@Override
-		public void onSensorValueChangedFloat(String value) {
+		public void onSensorValueChangedFloat(final String value) {
 			// TODO Auto-generated method stub
 
 			if (canChangeUI()) {
-				light_float.setVisibility(View.VISIBLE);
-				light_float.setText("Light in float = " + value);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						light_float.setVisibility(View.VISIBLE);
+						light_float.setText("Light in float = " + value);
+					}
+				});
+
 			}
 
 		}
 
 		@Override
-		public void onSensorValueChangedByte(String value) {
-			// TODO Auto-generated method stub
-			light_byte.setVisibility(View.VISIBLE);
-			light_byte.setText("Light in Byte = " + value);
+		public void onSensorValueChangedByte(final String value) {
+
+			// set data to UI
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					light_byte.setVisibility(View.VISIBLE);
+					light_byte.setText("Light in Byte = " + value);
+				}
+			});
 
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				if (!hasSensor) {
-					devicehasSensor.setText("Your Device not have The Sensor");
-					Toast.makeText(getActivity(),
-							"Device dosen't have This Sensor !",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					light_float.setVisibility(View.VISIBLE);
-					light_byte.setVisibility(View.VISIBLE);
-					stoplistening_bt.setVisibility(View.VISIBLE);
-				}
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						if (!hasSensor) {
+							// devicehasSensor.setText("Your Device not have The Sensor");
+							Toast.makeText(getActivity(),
+									"Device dosen't have This Sensor !",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							light_float.setVisibility(View.VISIBLE);
+							light_byte.setVisibility(View.VISIBLE);
+							stoplistening_bt.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+
 			}
 		}
 	};

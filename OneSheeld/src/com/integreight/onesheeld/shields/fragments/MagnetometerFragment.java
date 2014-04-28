@@ -85,28 +85,51 @@ public class MagnetometerFragment extends
 	private MagnetometerEventHandler magnetometerEventHandler = new MagnetometerEventHandler() {
 
 		@Override
-		public void onSensorValueChangedFloat(float[] value) {
+		public void onSensorValueChangedFloat(final float[] value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				x.setText("X = " + value[0]);
-				y.setText("Y = " + value[1]);
-				z.setText("Z = " + value[2]);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+
+						x.setText("X = " + value[0]);
+						y.setText("Y = " + value[1]);
+						z.setText("Z = " + value[2]);
+					}
+				});
+
 			}
 
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				if (!hasSensor) {
-					devicehasSensor.setText("Your Device not have The Sensor");
-					Toast.makeText(getActivity(),
-							"Device dosen't have This Sensor !",
-							Toast.LENGTH_SHORT).show();
-				} else {
 
-				}
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+
+						if (!hasSensor) {
+							devicehasSensor
+									.setText("Your Device not have The Sensor");
+							Toast.makeText(getActivity(),
+									"Device dosen't have This Sensor !",
+									Toast.LENGTH_SHORT).show();
+						} else {
+
+						}
+					}
+				});
+
 			}
 
 		}

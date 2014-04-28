@@ -90,39 +90,73 @@ public class TemperatureFragment extends
 	private TemperatureEventHandler temperatureEventHandler = new TemperatureEventHandler() {
 
 		@Override
-		public void onSensorValueChangedFloat(String value) {
+		public void onSensorValueChangedFloat(final String value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				temperature_float.setVisibility(View.VISIBLE);
-				temperature_float.setText("temperature in float = " + value);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						temperature_float.setVisibility(View.VISIBLE);
+						temperature_float.setText("temperature in float = "
+								+ value);
+					}
+				});
+
 			}
 
 		}
 
 		@Override
-		public void onSensorValueChangedByte(String value) {
+		public void onSensorValueChangedByte(final String value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				temperature_byte.setVisibility(View.VISIBLE);
-				temperature_byte.setText("temperature in Byte = " + value);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+
+						temperature_byte.setVisibility(View.VISIBLE);
+						temperature_byte.setText("temperature in Byte = "
+								+ value);
+					}
+				});
+
 			}
 
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				if (!hasSensor) {
-					devicehasSensor.setText("Your Device not have The Sensor");
-					Toast.makeText(getActivity(),
-							"Device dosen't have This Sensor !",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					temperature_float.setVisibility(View.VISIBLE);
-					temperature_byte.setVisibility(View.VISIBLE);
-					stoplistening_bt.setVisibility(View.VISIBLE);
-				}
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						if (!hasSensor) {
+							devicehasSensor
+									.setText("Your Device not have The Sensor");
+							Toast.makeText(getActivity(),
+									"Device dosen't have This Sensor !",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							temperature_float.setVisibility(View.VISIBLE);
+							temperature_byte.setVisibility(View.VISIBLE);
+							stoplistening_bt.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+
 			}
 		}
 	};

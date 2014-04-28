@@ -85,12 +85,22 @@ public class OrientationFragment extends
 	private OrientationEventHandler orientationEventHandler = new OrientationEventHandler() {
 
 		@Override
-		public void onSensorValueChangedFloat(float[] value) {
+		public void onSensorValueChangedFloat(final float[] value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				x.setText("X = " + value[0]);
-				y.setText("Y = " + value[1]);
-				z.setText("Z = " + value[2]);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						x.setText("X = " + value[0]);
+						y.setText("Y = " + value[1]);
+						z.setText("Z = " + value[2]);
+					}
+				});
+
 			}
 		}
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,29 +85,47 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 	private GravityEventHandler gravityEventHandler = new GravityEventHandler() {
 
 		@Override
-		public void onSensorValueChangedFloat(float[] value) {
+		public void onSensorValueChangedFloat(final float[] value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				x.setText("X = " + value[0]);
-				y.setText("Y = " + value[1]);
-				z.setText("Z = " + value[2]);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						x.setText("X = " + value[0]);
+						y.setText("Y = " + value[1]);
+						z.setText("Z = " + value[2]);
+					}
+				});
+
 			}
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {
-			// TODO Auto-generated method stub
-
-			// TODO Auto-generated method stub
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 			if (canChangeUI()) {
-				if (!hasSensor) {
-					devicehasSensor.setText("Your Device not have The Sensor");
-					Toast.makeText(getActivity(),
-							"Device dosen't have This Sensor !",
-							Toast.LENGTH_SHORT).show();
-				} else {
 
-				}
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						if (!hasSensor) {
+							devicehasSensor
+									.setText("Your Device not have The Sensor");
+							Toast.makeText(getActivity(),
+									"Device dosen't have This Sensor !",
+									Toast.LENGTH_SHORT).show();
+						} else {
+
+						}
+					}
+				});
+
 			}
 
 		}

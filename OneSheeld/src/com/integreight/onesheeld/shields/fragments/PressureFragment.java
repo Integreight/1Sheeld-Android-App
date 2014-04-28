@@ -76,9 +76,9 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
 				((PressureShield) getApplication().getRunningShields().get(
 						getControllerTag())).unegisterSensorListener();
+
 				pressure_float.setVisibility(View.INVISIBLE);
 				pressure_byte.setVisibility(View.INVISIBLE);
 
@@ -90,39 +90,71 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 	private PressureEventHandler pressureEventHandler = new PressureEventHandler() {
 
 		@Override
-		public void onSensorValueChangedFloat(String value) {
+		public void onSensorValueChangedFloat(final String value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				pressure_float.setVisibility(View.VISIBLE);
-				pressure_float.setText("Pressure in float = " + value);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						pressure_float.setVisibility(View.VISIBLE);
+						pressure_float.setText("Pressure in float = " + value);
+					}
+				});
+
 			}
 
 		}
 
 		@Override
-		public void onSensorValueChangedByte(String value) {
+		public void onSensorValueChangedByte(final String value) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				pressure_byte.setVisibility(View.VISIBLE);
-				pressure_byte.setText("Pressure in Byte = " + value);
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						pressure_byte.setVisibility(View.VISIBLE);
+						pressure_byte.setText("Pressure in Byte = " + value);
+					}
+				});
+
 			}
 
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				if (!hasSensor) {
-					devicehasSensor.setText("Your Device not have The Sensor");
-					Toast.makeText(getActivity(),
-							"Device dosen't have This Sensor !",
-							Toast.LENGTH_SHORT).show();
-				} else {
-					pressure_float.setVisibility(View.VISIBLE);
-					pressure_byte.setVisibility(View.VISIBLE);
-					stoplistening_bt.setVisibility(View.VISIBLE);
-				}
+
+				// set data to UI
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+
+						if (!hasSensor) {
+							devicehasSensor
+									.setText("Your Device not have The Sensor");
+							Toast.makeText(getActivity(),
+									"Device dosen't have This Sensor !",
+									Toast.LENGTH_SHORT).show();
+						} else {
+							pressure_float.setVisibility(View.VISIBLE);
+							pressure_byte.setVisibility(View.VISIBLE);
+							stoplistening_bt.setVisibility(View.VISIBLE);
+						}
+					}
+				});
+
 			}
 		}
 	};
