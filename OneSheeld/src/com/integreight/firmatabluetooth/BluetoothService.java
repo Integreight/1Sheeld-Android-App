@@ -218,6 +218,7 @@ public class BluetoothService {
 			Log.d(TAG, "stop");
 		if (mConnectThread != null) {
 			mConnectThread.cancel();
+			mConnectedThread.interrupt();
 			mConnectThread = null;
 		}
 
@@ -339,13 +340,33 @@ public class BluetoothService {
 				mAdapter.cancelDiscovery();
 			// Make a connection to the BluetoothSocket
 			try {
+				if(Thread.currentThread().isInterrupted()){
+					connectionFailed();
+					return;
+				}
 				mmSocket.connect();
+				if(Thread.currentThread().isInterrupted()){
+					connectionFailed();
+					return;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				// Close the socket
 				try {
+					if(Thread.currentThread().isInterrupted()){
+						connectionFailed();
+						return;
+					}
 					mmSocket = getRfcommSocketByReflection();
+					if(Thread.currentThread().isInterrupted()){
+						connectionFailed();
+						return;
+					}
 					mmSocket.connect();
+					if(Thread.currentThread().isInterrupted()){
+						connectionFailed();
+						return;
+					}
 				} catch (Exception e1) {
 					connectionFailed();
 					return;
