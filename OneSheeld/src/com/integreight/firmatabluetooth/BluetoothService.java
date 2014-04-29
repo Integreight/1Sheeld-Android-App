@@ -223,7 +223,6 @@ public class BluetoothService {
 			mConnectThread.interrupt();
 			mConnectThread = null;
 		}
-
 		if (mConnectedThread != null) {
 			mConnectedThread.cancel();
 			mConnectedThread = null;
@@ -308,7 +307,7 @@ public class BluetoothService {
 				// Log.e(TAG, "create() failed", e);
 				try {
 					mmSocket = getRfcommSocketByReflection();
-				} catch (Exception e1) {
+				} catch (Exception e1) {	
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					return;
@@ -330,13 +329,13 @@ public class BluetoothService {
 			try {
 				if(Thread.currentThread().isInterrupted()){
 					cancel();
-					connectionFailed();
+//					connectionFailed();
 					return;
 				}
 				mmSocket.connect();
 				if(Thread.currentThread().isInterrupted()){
 					cancel();
-					connectionFailed();
+//					connectionFailed();
 					return;
 				}
 			} catch (IOException e) {
@@ -345,19 +344,19 @@ public class BluetoothService {
 				try {
 					if(Thread.currentThread().isInterrupted()){
 						cancel();
-						connectionFailed();
+//						connectionFailed();
 						return;
 					}
 					mmSocket = getRfcommSocketByReflection();
 					if(Thread.currentThread().isInterrupted()){
 						cancel();
-						connectionFailed();
+//						connectionFailed();
 						return;
 					}
 					mmSocket.connect();
 					if(Thread.currentThread().isInterrupted()){
 						cancel();
-						connectionFailed();
+//						connectionFailed();
 						return;
 					}
 				} catch (Exception e1) {
