@@ -176,7 +176,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 		@Override
 		public void onNewShieldFrameReceived(final ShieldFrame frame) {
-			if (isALive && frame != null)
+			if (isALive && frame != null && matchedShieldPins.size() == 0)
 				actionHandler.post(new Runnable() {
 
 					@Override

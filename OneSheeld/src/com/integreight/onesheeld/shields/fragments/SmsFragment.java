@@ -65,12 +65,19 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	private SmsEventHandler smsEventHandler = new SmsEventHandler() {
 
 		@Override
-		public void onSmsSent(String smsNumber, String smsText) {
+		public void onSmsSent(final String smsNumber, final String smsText) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				smsTextTextView.setText(smsText);
-				Toast.makeText(getActivity(), "SMS Sent!", Toast.LENGTH_LONG)
-						.show();
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						smsTextTextView.setText(smsText);
+						Toast.makeText(getActivity(), "SMS Sent!",
+								Toast.LENGTH_LONG).show();
+					}
+				});
 			}
 
 		}

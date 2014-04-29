@@ -77,10 +77,18 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 	private LedEventHandler ledEventHandler = new LedEventHandler() {
 
 		@Override
-		public void onLedChange(boolean isLedOn) {
+		public void onLedChange(final boolean isLedOn) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
-				toggleLed(isLedOn);
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						toggleLed(isLedOn);
+					}
+				});
+			}
 
 		}
 	};

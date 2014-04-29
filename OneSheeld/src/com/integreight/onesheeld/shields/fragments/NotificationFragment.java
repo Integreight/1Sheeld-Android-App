@@ -54,10 +54,18 @@ public class NotificationFragment extends
 	private NotificationEventHandler notificationEventHandler = new NotificationEventHandler() {
 
 		@Override
-		public void onNotificationReceive(String notificationText) {
+		public void onNotificationReceive(final String notificationText) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
-				notificationTextTextView.setText(notificationText);
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						notificationTextTextView.setText(notificationText);
+					}
+				});
+			}
 
 		}
 	};

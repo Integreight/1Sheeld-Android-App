@@ -62,9 +62,9 @@ public class MutitouchKeysContainer extends RelativeLayout {
 	private synchronized void down(int x, int y) {
 		PinData item = getTouhedIndex(x, y, childrenRects);
 		if (item.index != -1 && !pressedRects.contains(item)) {
-			item.key.eventListener.onPressed(item.key);
 			System.out.println(item.tag + "    Pressed");
 			pressedRects.add(item);
+			item.key.eventListener.onPressed(item.key);
 		}
 	}
 

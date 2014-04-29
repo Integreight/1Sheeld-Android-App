@@ -100,23 +100,38 @@ public class FoursquareFragment extends
 	FoursquareEventHandler foursquareEventHandler = new FoursquareEventHandler() {
 
 		@Override
-		public void onPlaceCheckin(String placeName) {
+		public void onPlaceCheckin(final String placeName) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				lastCheckin.setText(placeName);
-				Toast.makeText(getActivity(), "Your Last place Checkin !",
-						Toast.LENGTH_SHORT).show();
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						lastCheckin.setText(placeName);
+						Toast.makeText(getActivity(),
+								"Your Last place Checkin !", Toast.LENGTH_SHORT)
+								.show();
+					}
+				});
 			}
 		}
 
 		@Override
-		public void onForsquareLoggedIn(String user) {
+		public void onForsquareLoggedIn(final String user) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				login.setVisibility(View.INVISIBLE);
-				logout.setVisibility(View.VISIBLE);
-				userName.setVisibility(View.VISIBLE);
-				userName.setText(user);
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						login.setVisibility(View.INVISIBLE);
+						logout.setVisibility(View.VISIBLE);
+						userName.setVisibility(View.VISIBLE);
+						userName.setText(user);
+					}
+				});
 			}
 		}
 
@@ -133,9 +148,16 @@ public class FoursquareFragment extends
 		}
 
 		@Override
-		public void setLastPlaceCheckin(String placeName) {
+		public void setLastPlaceCheckin(final String placeName) {
 			if (canChangeUI()) {
-				lastCheckin.setText(placeName);
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						lastCheckin.setText(placeName);
+					}
+				});
 			}
 		}
 

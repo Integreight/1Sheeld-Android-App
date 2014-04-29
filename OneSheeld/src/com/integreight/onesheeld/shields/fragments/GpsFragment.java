@@ -78,17 +78,33 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	private GpsEventHandler gpsEventHandler = new GpsEventHandler() {
 
 		@Override
-		public void onLatChanged(String lat) {
+		public void onLatChanged(final String lat) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
-				Latit.setText(lat);
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						Latit.setText(lat);
+					}
+				});
+			}
 		}
 
 		@Override
-		public void onLangChanged(String lang) {
+		public void onLangChanged(final String lang) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
-				Longit.setText(lang);
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						Longit.setText(lang);
+					}
+				});
+			}
 
 		}
 	};

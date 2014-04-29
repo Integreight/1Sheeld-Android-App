@@ -78,12 +78,19 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	private FacebookEventHandler facebookEventHandler = new FacebookEventHandler() {
 
 		@Override
-		public void onRecievePost(String post) {
+		public void onRecievePost(final String post) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				lastPostTextView.setText(post);
-				Toast.makeText(getActivity(), "Posted on your wall!",
-						Toast.LENGTH_SHORT).show();
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						lastPostTextView.setText(post);
+						Toast.makeText(getActivity(), "Posted on your wall!",
+								Toast.LENGTH_SHORT).show();
+					}
+				});
 			}
 		}
 
