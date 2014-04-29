@@ -46,9 +46,16 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	private ClockEventHandler clockEventHandler = new ClockEventHandler() {
 
 		@Override
-		public void onTimeChanged(String Time) {
+		public void onTimeChanged(final String time) {
 			if (canChangeUI()) {
-				time_tx.setText(Time);
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						time_tx.setText(time);
+					}
+				});
 			}
 
 		}

@@ -102,10 +102,18 @@ public class SevenSegmentFragment extends
 	private SevenSegmentsEventHandler sevenSegmentsEventHandler = new SevenSegmentsEventHandler() {
 
 		@Override
-		public void onSegmentsChange(Hashtable<String, Boolean> segmentsStatus) {
+		public void onSegmentsChange(
+				final Hashtable<String, Boolean> segmentsStatus) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
-				refreshSegments(segmentsStatus);
+			if (canChangeUI()) {
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						refreshSegments(segmentsStatus);
+					}
+				});
+			}
 
 		}
 	};

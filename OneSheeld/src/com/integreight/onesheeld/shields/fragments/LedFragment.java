@@ -77,20 +77,28 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 	private LedEventHandler ledEventHandler = new LedEventHandler() {
 
 		@Override
-		public void onLedChange(boolean isLedOn) {
+		public void onLedChange(final boolean isLedOn) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
+			if (canChangeUI()) {
 				toggleLed(isLedOn);
+			}
 
 		}
 	};
 
-	private void toggleLed(boolean isOn) {
-		if (isOn) {
-			ledImage.setImageResource(R.drawable.led_shield_led_on);
-		} else {
-			ledImage.setImageResource(R.drawable.led_shield_led_off);
-		}
+	private void toggleLed(final boolean isOn) {
+		uiHandler.removeCallbacksAndMessages(null);
+		uiHandler.post(new Runnable() {
+
+			@Override
+			public void run() {
+				if (isOn) {
+					ledImage.setImageResource(R.drawable.led_shield_led_on);
+				} else {
+					ledImage.setImageResource(R.drawable.led_shield_led_off);
+				}
+			}
+		});
 	}
 
 	// private void intializeFirmata(ArduinoFirmata firmata, int connectedPin){

@@ -57,18 +57,27 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	private LcdEventHandler lcdEventHandler = new LcdEventHandler() {
 
 		@Override
-		public void onTextChange(String[] text) {
+		public void onTextChange(final String[] text) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
-				lcdTextView.setText(extractTextFromLcdShield());
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						lcdTextView.setText(extractTextFromLcdShield());
+					}
+				});
+			}
 			// Toast.makeText(activity, text, Toast.LENGTH_SHORT).show();
 		}
 
 		@Override
-		public void onLcdError(String error) {
+		public void onLcdError(final String error) {
 			// TODO Auto-generated method stub
-			if (canChangeUI())
+			if (canChangeUI()) {
 				Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT).show();
+			}
 		}
 	};
 

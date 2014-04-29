@@ -1,8 +1,5 @@
 package com.integreight.onesheeld;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -19,16 +16,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
+import com.bugsense.trace.ExceptionCallback;
 import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.ValidationPopup;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
-public class MainActivity extends FragmentActivity {
+public class MainActivity extends FragmentActivity implements ExceptionCallback {
 	// private final String TAG = "MainActivity";
 	// private boolean isBoundService = false;
 	private AppSlidingLeftMenu appSlidingMenu;
@@ -43,6 +41,8 @@ public class MainActivity extends FragmentActivity {
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
+		BugSenseHandler.setExceptionCallback(this);
+		BugSenseHandler.initAndStartSession(MainActivity.this, "91b582a0");
 		setContentView(R.layout.one_sheeld_main);
 		initLooperThread();
 		// set the Behind View
@@ -50,46 +50,14 @@ public class MainActivity extends FragmentActivity {
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true, false);
 		resetSlidingMenu();
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-
-			@Override
-			public void uncaughtException(Thread arg0, final Throwable arg1) {
-				arg1.printStackTrace();
-				ArduinoConnectivityPopup.isOpened = false;
-				// stopService(new Intent(getApplicationContext(),
-				// OneSheeldService.class));
-				moveTaskToBack(true);
-				if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
-					while (!((OneSheeldApplication) getApplication())
-							.getAppFirmata().close())
-						;
-				}
-				stopService();
-				new Thread(new Runnable() {
-
-					@Override
-					public void run() {
-						StringWriter sw = new StringWriter();
-						arg1.printStackTrace(new PrintWriter(sw));
-						String exceptionAsString = sw.toString();
-						GmailSinginPopup.sendReportMail(
-								"ahmed.ebnsaad@gmail.com",
-								"egydroid@gmail.com", arg1.getMessage(),
-								exceptionAsString != null ? exceptionAsString
-										: "", "knginekehna");
-						Intent in = new Intent(getIntent());
-						PendingIntent intent = PendingIntent
-								.getActivity(getBaseContext(), 0, in,
-										getIntent().getFlags());
-
-						AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-						mgr.set(AlarmManager.RTC,
-								System.currentTimeMillis() + 1000, intent);
-						System.exit(0);
-					}
-				}).start();
-			}
-		});
+		// Thread.setDefaultUncaughtExceptionHandler(new
+		// Thread.UncaughtExceptionHandler() {
+		//
+		// @Override
+		// public void uncaughtException(Thread arg0, final Throwable arg1) {
+		//
+		// }
+		// });
 		if (getThisApplication().getAppFirmata() != null) {
 			getThisApplication().getAppFirmata().addVersionQueryHandler(
 					versionChangingHandler);
@@ -427,6 +395,45 @@ public class MainActivity extends FragmentActivity {
 
 	public void showToast(String msg) {
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+
+	@Override
+	public void lastBreath(final Exception arg0) {
+		// TODO Auto-generated method stub
+		arg0.printStackTrace();
+		ArduinoConnectivityPopup.isOpened = false;
+		// stopService(new Intent(getApplicationContext(),
+		// OneSheeldService.class));
+		moveTaskToBack(true);
+		if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
+			while (!((OneSheeldApplication) getApplication()).getAppFirmata()
+					.close())
+				;
+		}
+		stopService();
+		// new Thread(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// Intent in = new Intent(getIntent());
+		// PendingIntent intent = PendingIntent
+		// .getActivity(getBaseContext(), 0, in,
+		// getIntent().getFlags());
+		//
+		// AlarmManager mgr = (AlarmManager)
+		// getSystemService(Context.ALARM_SERVICE);
+		// mgr.set(AlarmManager.RTC,
+		// System.currentTimeMillis() + 5000, intent);
+		// try {
+		// Thread.sleep(1500);
+		// } catch (InterruptedException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+		// System.exit(0);
+		// }
+		// }).start();
+
 	}
 
 }

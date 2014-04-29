@@ -128,14 +128,19 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		}
 
 		@Override
-		public void onEmailsent(String email_send_to, String subject_text) {
+		public void onEmailsent(final String email_send_to,
+				final String subject_text) {
 			if (canChangeUI()) {
-				sendTo.setText(email_send_to);
-				subject.setText(subject_text);
-			} else {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
 
+					@Override
+					public void run() {
+						sendTo.setText(email_send_to);
+						subject.setText(subject_text);
+					}
+				});
 			}
-
 		}
 
 		@Override

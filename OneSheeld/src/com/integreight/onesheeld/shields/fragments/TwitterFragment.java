@@ -61,7 +61,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 		public void onRecieveTweet(final String tweet) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				lastTweetTextView.post(new Runnable() {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -77,7 +78,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 		public void onTwitterLoggedIn(final String userName) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				getActivity().runOnUiThread(new Runnable() {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -92,8 +94,9 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 		public void onTwitterError(final String error) {
 			// TODO Auto-generated method stub
 
-			if (canChangeUI())
-				getActivity().runOnUiThread(new Runnable() {
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -103,6 +106,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 					}
 				});
+			}
 
 		}
 

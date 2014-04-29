@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
@@ -84,8 +85,12 @@ public class LedShield extends ControllerParent<LedShield> {
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
-
+		if (frame.getShieldId() == UIShield.LED_SHIELD.getId()) {
+			if (eventHandler != null) {
+				eventHandler.onLedChange(frame.getFunctionId() == 0x01
+						&& frame.getArgument(0)[0] == 0x1);
+			}
+		}
 	}
 
 	@Override
