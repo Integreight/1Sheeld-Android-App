@@ -2,7 +2,12 @@ package com.integreight.onesheeld.shields.controller.utils;
 
 import java.io.IOException;
 
+import android.app.Activity;
+import android.content.Context;
 import android.media.MediaRecorder;
+import android.widget.Toast;
+
+import com.integreight.onesheeld.Log;
 
 public class MicSoundMeter {
 	// static final private double EMA_FILTER = 0.6;
@@ -11,6 +16,9 @@ public class MicSoundMeter {
 	private MediaRecorder mRecorder = null;
 	private double mEMA = 0.0;
 	private static MicSoundMeter thisInstance;
+	boolean isCanceled = false;
+	boolean isRecording = false;
+	boolean initialStart = true;
 
 	private MicSoundMeter() {
 		// TODO Auto-generated constructor stub
@@ -23,32 +31,42 @@ public class MicSoundMeter {
 	}
 
 	public void start() {
-		if (mRecorder == null) {
+		if (isCanceled | initialStart) {
+			initialStart = false;
+			isCanceled = false;
+			isRecording = false;
 			mRecorder = new MediaRecorder();
 			mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 			mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
 			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 			mRecorder.setOutputFile("/dev/null");
 			try {
+
 				mRecorder.prepare();
+				mRecorder.start();
+				mEMA = 0.0;
+				isRecording = true;
 			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
 			}
-			mRecorder.start();
-			mEMA = 0.0;
+
+		} else {
+			Log.d("Mic", "Not Started");
 		}
 	}
 
 	public void stop() {
 		if (mRecorder != null) {
 			try {
-				mRecorder.stop();
-				mRecorder.release();
-				mRecorder = null;
+				if (isRecording) {
+					mRecorder.stop();
+					mRecorder.reset();
+					mRecorder.release();
+					mRecorder = null;
+					isCanceled = true;
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
