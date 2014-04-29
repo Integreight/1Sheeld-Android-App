@@ -127,7 +127,10 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		((MicShield) getApplication().getRunningShields().get(
 				getControllerTag())).setMicEventHandler(micEventHandler);
 		((MicShield) getApplication().getRunningShields().get(
+				getControllerTag())).startMic();
+		((MicShield) getApplication().getRunningShields().get(
 				getControllerTag())).doOnResume();
+
 		super.onResume();
 	}
 
