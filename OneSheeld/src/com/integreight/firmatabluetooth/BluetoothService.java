@@ -329,11 +329,13 @@ public class BluetoothService {
 			// Make a connection to the BluetoothSocket
 			try {
 				if(Thread.currentThread().isInterrupted()){
+					cancel();
 					connectionFailed();
 					return;
 				}
 				mmSocket.connect();
 				if(Thread.currentThread().isInterrupted()){
+					cancel();
 					connectionFailed();
 					return;
 				}
@@ -342,16 +344,19 @@ public class BluetoothService {
 				// Close the socket
 				try {
 					if(Thread.currentThread().isInterrupted()){
+						cancel();
 						connectionFailed();
 						return;
 					}
 					mmSocket = getRfcommSocketByReflection();
 					if(Thread.currentThread().isInterrupted()){
+						cancel();
 						connectionFailed();
 						return;
 					}
 					mmSocket.connect();
 					if(Thread.currentThread().isInterrupted()){
+						cancel();
 						connectionFailed();
 						return;
 					}
@@ -369,6 +374,11 @@ public class BluetoothService {
 
 			// Start the connected thread
 			connected(mmSocket, mmDevice);
+			if(Thread.currentThread().isInterrupted()){
+				cancel();
+				connectionFailed();
+				return;
+			}
 		}
 
 		public synchronized void cancel() {
