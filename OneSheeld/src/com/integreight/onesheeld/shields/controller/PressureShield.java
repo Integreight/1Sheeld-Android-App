@@ -144,7 +144,6 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
-			frame = null;
 		}
 	}
 

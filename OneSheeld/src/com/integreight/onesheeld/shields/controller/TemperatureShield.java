@@ -147,7 +147,6 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
-			frame = null;
 		}
 	}
 

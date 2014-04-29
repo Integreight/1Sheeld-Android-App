@@ -155,7 +155,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 			mLocationClient.removeLocationUpdates(this);
 			mLocationClient.disconnect();
 		}
-		frame = null;
 		// After disconnect() is called, the client is considered "dead".
 	}
 

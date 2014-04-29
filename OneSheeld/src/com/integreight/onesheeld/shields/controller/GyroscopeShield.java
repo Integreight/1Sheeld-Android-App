@@ -155,7 +155,6 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 		}
-		frame = null;
 	}
 
 	public static interface GyroscopeEventHandler {

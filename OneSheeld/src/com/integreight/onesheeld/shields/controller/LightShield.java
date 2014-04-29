@@ -141,8 +141,6 @@ public class LightShield extends ControllerParent<LightShield> implements
 				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
-			frame = null;
-
 		}
 	}
 
