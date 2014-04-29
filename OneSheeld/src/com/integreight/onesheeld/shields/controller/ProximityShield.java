@@ -144,7 +144,6 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 				handler.removeCallbacks(processSensors);
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
-			frame = null;
 		}
 	}
 

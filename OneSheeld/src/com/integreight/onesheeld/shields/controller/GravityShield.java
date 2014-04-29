@@ -154,7 +154,6 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			handler.removeCallbacksAndMessages(null);
 			isHandlerLive = false;
 		}
-		frame = null;
 	}
 
 	public static interface GravityEventHandler {

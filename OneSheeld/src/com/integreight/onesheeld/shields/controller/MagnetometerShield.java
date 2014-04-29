@@ -170,8 +170,6 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	public void reset() {
 		// TODO Auto-generated method stub
 		this.unegisterSensorListener();
-		frame = null;
-
 	}
 
 }
