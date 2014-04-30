@@ -51,7 +51,7 @@ public enum UIShield {
 			SevenSegmentShield.class), BUZZER_SHIELD((byte) 0x08, "Buzzer",
 			0xffe93f03, R.drawable.shields_list_buzzer_symbol, false,
 			SpeakerShield.class), MIC_SHIELD((byte) 0x18, "Mic", 0xff0362c0,
-			R.drawable.shields_list_mic_symbol, false, MicShield.class), KEYPAD_SHIELD(
+			R.drawable.shields_list_mic_symbol, false, MicShield.class, 1), KEYPAD_SHIELD(
 			(byte) 0x09, "Keypad", 0xff03c0ae,
 			R.drawable.shields_list_keypad_symbol, false, KeypadShield.class), SLIDER_SHIELD(
 			(byte) 0x01, "Sliders", 0xffc0034c,

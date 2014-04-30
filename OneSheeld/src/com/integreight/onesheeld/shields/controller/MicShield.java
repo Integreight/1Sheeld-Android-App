@@ -60,8 +60,16 @@ public class MicShield extends ControllerParent<MicShield> {
 
 	@Override
 	public ControllerParent<MicShield> setTag(String tag) {
-		startMic();
 		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<MicShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
+		startMic(isToastable);
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	@Override
@@ -75,11 +83,21 @@ public class MicShield extends ControllerParent<MicShield> {
 		stopMic();
 	}
 
-	public void startMic() {
-		MicSoundMeter.getInstance().start();
-		handler = new Handler();
-		if (processMic != null)
-			handler.post(processMic);
+	public void startMic(boolean isToastable) {
+		boolean isRecording = MicSoundMeter.getInstance().start();
+
+		if (!isRecording) {
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastable)
+				activity.showToast("Please restart your MIC Sheeld again");
+
+		} else {
+			handler = new Handler();
+			if (processMic != null)
+				handler.post(processMic);
+		}
+
 	}
 
 	public void stopMic() {

@@ -2,10 +2,7 @@ package com.integreight.onesheeld.shields.controller.utils;
 
 import java.io.IOException;
 
-import android.app.Activity;
-import android.content.Context;
 import android.media.MediaRecorder;
-import android.widget.Toast;
 
 import com.integreight.onesheeld.Log;
 
@@ -30,7 +27,7 @@ public class MicSoundMeter {
 		return thisInstance;
 	}
 
-	public void start() {
+	public boolean start() {
 		if (isCanceled | initialStart) {
 			initialStart = false;
 			isCanceled = false;
@@ -54,7 +51,9 @@ public class MicSoundMeter {
 
 		} else {
 			Log.d("Mic", "Not Started");
+			return false;
 		}
+		return true;
 	}
 
 	public void stop() {
