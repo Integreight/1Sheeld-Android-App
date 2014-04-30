@@ -130,6 +130,11 @@
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraService"
             android:label="My Service" >
         </service>
+
+
+    
+
+    <meta-data android:name="com.crashlytics.ApiKey" android:value="64d505421ef6fa71772afc4b19b259643e53e1f1"/>
     </application>
 
 </manifest>
