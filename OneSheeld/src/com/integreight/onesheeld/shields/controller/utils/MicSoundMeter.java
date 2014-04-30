@@ -43,17 +43,17 @@ public class MicSoundMeter {
 				mRecorder.start();
 				mEMA = 0.0;
 				isRecording = true;
+				return true;
 			} catch (IllegalStateException e) {
-
+				return false;
 			} catch (IOException e) {
-
+				return false;
 			}
 
 		} else {
 			Log.d("Mic", "Not Started");
 			return false;
 		}
-		return true;
 	}
 
 	public void stop() {

@@ -18,6 +18,9 @@ public class MicShield extends ControllerParent<MicShield> {
 	boolean isResumed = false;
 	private ShieldFrame frame;
 	public static final byte MIC_VALUE = 0x01;
+	boolean initialRequest = true;
+	boolean Success = true;
+
 	// private int counter = 0;
 
 	private final Runnable processMic = new Runnable() {
@@ -26,6 +29,7 @@ public class MicShield extends ControllerParent<MicShield> {
 			// Do work with the MIC values.
 			double amplitude = MicSoundMeter.getInstance().getAmplitudeEMA();
 			if (!Double.isInfinite(amplitude) && amplitude != 0) {
+				initialRequest = false;
 				ampl = amplitude;
 				Log.d("MIC", "Amp = " + ampl);
 				frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);
@@ -39,6 +43,12 @@ public class MicShield extends ControllerParent<MicShield> {
 						eventHandler.getAmplitude(ampl);
 				// counter = 0;
 				// }
+
+			} else {
+				if (selectionAction != null && !initialRequest) {
+					Success = false;
+					selectionAction.onFailure();
+				}
 
 			}
 			// The Runnable is posted to run again here:
@@ -87,15 +97,28 @@ public class MicShield extends ControllerParent<MicShield> {
 		boolean isRecording = MicSoundMeter.getInstance().start();
 
 		if (!isRecording) {
-			if (selectionAction != null)
-				selectionAction.onFailure();
+			Success = false;
+			new Handler().postDelayed(new Runnable() {
+
+				@Override
+				public void run() {
+					if (selectionAction != null)
+						selectionAction.onFailure();
+
+				}
+			}, 1000);
 			if (isToastable)
-				activity.showToast("Please restart your MIC Sheeld again");
+				activity.showToast("Restart your MIC Sheeld ");
 
 		} else {
 			handler = new Handler();
+			if (selectionAction != null) {
+				if (Success)
+					selectionAction.onSuccess();
+			}
 			if (processMic != null)
 				handler.post(processMic);
+
 		}
 
 	}
