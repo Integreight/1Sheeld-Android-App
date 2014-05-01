@@ -204,4 +204,26 @@ public class FoursquareFragment extends
 		lastCheckin.setText("");
 	}
 
+	@Override
+	public void onResume() {
+		// if user logged in set data
+		if (((FoursquareShield) getApplication().getRunningShields().get(
+				getControllerTag())).isFoursquareLoggedInAlready()) {
+			userName.setVisibility(View.VISIBLE);
+			logout.setVisibility(View.VISIBLE);
+			login.setVisibility(View.INVISIBLE);
+
+			String name = mSharedPreferences.getString(
+					"PREF_FourSquare_UserName", "");
+			String lastcheck = mSharedPreferences.getString(
+					"PREF_FourSquare_LastPlace", "");
+
+			userName.setText(name);
+			lastCheckin.setText(lastcheck);
+		} else {
+			login.setVisibility(View.VISIBLE);
+			logout.setVisibility(View.INVISIBLE);
+		}
+		super.onResume();
+	}
 }
