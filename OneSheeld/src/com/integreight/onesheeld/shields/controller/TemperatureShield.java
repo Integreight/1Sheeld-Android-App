@@ -1,11 +1,13 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Handler;
 import android.util.Log;
 
@@ -26,6 +28,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	boolean isHandlerLive = false;
 	float oldInput = 0;
 	boolean isFirstTime = true;
+	int temperatureSensor;
 
 	private final Runnable processSensors = new Runnable() {
 		@Override
@@ -103,8 +106,17 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	}
 
 	// Register a listener for the sensor.
+	@SuppressLint("InlinedApi")
+	@SuppressWarnings("deprecation")
 	public void registerSensorListener(boolean isToastable) {
-		if (mSensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE) != null) {
+		// IF API = 14 or higher use TYPE_AMBIENT_TEMPERATURE otherwise use
+		// TYPE_TEMPERATURE !
+
+		if (Build.VERSION.SDK_INT < 14)
+			temperatureSensor = Sensor.TYPE_TEMPERATURE;
+		else
+			temperatureSensor = Sensor.TYPE_AMBIENT_TEMPERATURE;
+		if (mSensorManager.getDefaultSensor(temperatureSensor) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
 				handler = new Handler();

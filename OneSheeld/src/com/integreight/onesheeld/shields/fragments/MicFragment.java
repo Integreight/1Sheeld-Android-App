@@ -70,7 +70,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 					public void onClick(View v) {
 
 						((MicShield) getApplication().getRunningShields().get(
-								getControllerTag())).startMic();
+								getControllerTag())).startMic(false);
 
 					}
 				});
@@ -127,7 +127,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		((MicShield) getApplication().getRunningShields().get(
 				getControllerTag())).setMicEventHandler(micEventHandler);
 		((MicShield) getApplication().getRunningShields().get(
-				getControllerTag())).startMic();
+				getControllerTag())).startMic(false);
 		((MicShield) getApplication().getRunningShields().get(
 				getControllerTag())).doOnResume();
 

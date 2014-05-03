@@ -32,3 +32,5 @@ proguard/
 project.properties
 .DS_Store
 Thumbs.db
+
+com_crashlytics_export_strings.xml
