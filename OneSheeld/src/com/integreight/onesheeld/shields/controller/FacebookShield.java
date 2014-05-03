@@ -113,7 +113,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	public void loginToFacebook() {
 		Session session = Session.getActiveSession();
-		if (session != null && !session.isOpened()) {
+		if (session != null && session.isClosed()) {
 			session.openForRead(new Session.OpenRequest(fragment)
 					.setCallback(statusCallback));
 		} else {
@@ -123,9 +123,9 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	}
 
 	public void logoutFromFacebook() {
-		Session session = Session.getActiveSession();
-		if (!session.isClosed()) {
-			session.closeAndClearTokenInformation();
+		if (!Session.getActiveSession().isClosed()) {
+			Session.getActiveSession().close();
+			// Session.getActiveSession().closeAndClearTokenInformation();
 		}
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_FACEBOOK_USERNAME);

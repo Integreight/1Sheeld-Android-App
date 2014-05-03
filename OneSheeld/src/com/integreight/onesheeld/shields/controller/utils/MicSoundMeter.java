@@ -38,7 +38,6 @@ public class MicSoundMeter {
 			mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 			mRecorder.setOutputFile("/dev/null");
 			try {
-
 				mRecorder.prepare();
 				mRecorder.start();
 				mEMA = 0.0;

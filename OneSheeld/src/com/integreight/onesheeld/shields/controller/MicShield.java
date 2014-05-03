@@ -44,13 +44,14 @@ public class MicShield extends ControllerParent<MicShield> {
 				// counter = 0;
 				// }
 
-			} else {
-				if (selectionAction != null && !initialRequest) {
-					Success = false;
-					selectionAction.onFailure();
-				}
-
 			}
+			// else {
+			// if (selectionAction != null && !initialRequest) {
+			// Success = false;
+			// selectionAction.onFailure();
+			// }
+			//
+			// }
 			// The Runnable is posted to run again here:
 			if (handler != null)
 				handler.postDelayed(this, PERIOD);
@@ -96,30 +97,30 @@ public class MicShield extends ControllerParent<MicShield> {
 	public void startMic(boolean isToastable) {
 		boolean isRecording = MicSoundMeter.getInstance().start();
 
-		if (!isRecording) {
-			Success = false;
-			new Handler().postDelayed(new Runnable() {
-
-				@Override
-				public void run() {
-					if (selectionAction != null)
-						selectionAction.onFailure();
-
-				}
-			}, 1000);
-			if (isToastable)
-				activity.showToast("Restart your MIC Sheeld ");
-
-		} else {
-			handler = new Handler();
-			if (selectionAction != null) {
-				if (Success)
-					selectionAction.onSuccess();
-			}
-			if (processMic != null)
-				handler.post(processMic);
-
+		// if (!isRecording) {
+		// Success = false;
+		// new Handler().post(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		// if (selectionAction != null)
+		// selectionAction.onFailure();
+		//
+		// }
+		// });
+		// if (isToastable)
+		// activity.showToast("Restart your MIC Sheeld ");
+		//
+		// } else {
+		handler = new Handler();
+		if (selectionAction != null) {
+			if (Success)
+				selectionAction.onSuccess();
 		}
+		if (processMic != null)
+			handler.post(processMic);
+
+		// }
 
 	}
 

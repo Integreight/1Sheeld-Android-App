@@ -68,7 +68,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 					@Override
 					public void onClick(View v) {
-
+						invalidateController();
 						((MicShield) getApplication().getRunningShields().get(
 								getControllerTag())).startMic(false);
 
@@ -79,7 +79,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 					@Override
 					public void onClick(View v) {
-
+						invalidateController();
 						((MicShield) getApplication().getRunningShields().get(
 								getControllerTag())).stopMic();
 
@@ -110,7 +110,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		}
 	};
 
-	private void initializeFirmata() {
+	private void invalidateController() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
 					new MicShield(getActivity(), getControllerTag()));
@@ -119,11 +119,12 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	}
 
 	public void doOnServiceConnected() {
-		initializeFirmata();
+		invalidateController();
 	};
 
 	@Override
 	public void onResume() {
+		invalidateController();
 		((MicShield) getApplication().getRunningShields().get(
 				getControllerTag())).setMicEventHandler(micEventHandler);
 		((MicShield) getApplication().getRunningShields().get(

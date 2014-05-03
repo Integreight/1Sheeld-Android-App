@@ -112,6 +112,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	};
 
 	public boolean canChangeUI() {
+		if (uiHandler == null)
+			uiHandler = new Handler();
 		return (getActivity() != null && getApplication().getRunningShields()
 				.get(getControllerTag()).isHasForgroundView());
 	}

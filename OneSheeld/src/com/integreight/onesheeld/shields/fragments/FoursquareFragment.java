@@ -54,6 +54,7 @@ public class FoursquareFragment extends
 
 		Log.d("Foursquare Sheeld::OnActivityCreated()", "");
 		// if user logged in set data
+		initializeFirmata();
 		if (((FoursquareShield) getApplication().getRunningShields().get(
 				getControllerTag())).isFoursquareLoggedInAlready()) {
 			userName.setVisibility(View.VISIBLE);
@@ -174,7 +175,7 @@ public class FoursquareFragment extends
 		super.onStop();
 	}
 
-	private void initializeFirmata(ArduinoFirmata firmata) {
+	private void initializeFirmata() {
 
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
@@ -187,7 +188,7 @@ public class FoursquareFragment extends
 
 	@Override
 	public void doOnServiceConnected() {
-		initializeFirmata(getApplication().getAppFirmata());
+		initializeFirmata();
 	}
 
 	private void removeFoursquareData() {

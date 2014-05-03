@@ -1,9 +1,6 @@
 package com.integreight.onesheeld;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +14,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.Session;
 import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
@@ -48,46 +46,49 @@ public class MainActivity extends FragmentActivity {
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true, false);
 		resetSlidingMenu();
-//		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//
-//			@Override
-//			public void uncaughtException(Thread arg0, final Throwable arg1) {
-//				arg1.printStackTrace();
-//				ArduinoConnectivityPopup.isOpened = false;
-//				// stopService(new Intent(getApplicationContext(),
-//				// OneSheeldService.class));
-//				moveTaskToBack(true);
-//				if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
-//					while (!((OneSheeldApplication) getApplication())
-//							.getAppFirmata().close())
-//						;
-//				}
-//				stopService();
-////				new Thread(new Runnable() {
-////
-////					@Override
-////					public void run() {
-//////						StringWriter sw = new StringWriter();
-//////						arg1.printStackTrace(new PrintWriter(sw));
-//////						String exceptionAsString = sw.toString();
-//////						GmailSinginPopup.sendReportMail(
-//////								"ahmed.ebnsaad@gmail.com",
-//////								"egydroid@gmail.com", arg1.getMessage(),
-//////								exceptionAsString != null ? exceptionAsString
-//////										: "", "knginekehna");
-//////						Intent in = new Intent(getIntent());
-//////						PendingIntent intent = PendingIntent
-//////								.getActivity(getBaseContext(), 0, in,
-//////										getIntent().getFlags());
-//////
-//////						AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-//////						mgr.set(AlarmManager.RTC,
-//////								System.currentTimeMillis() + 1000, intent);
-//////						System.exit(0);
-////					}
-////				}).start();
-//			}
-//		});
+		// Thread.setDefaultUncaughtExceptionHandler(new
+		// Thread.UncaughtExceptionHandler() {
+		//
+		// @Override
+		// public void uncaughtException(Thread arg0, final Throwable arg1) {
+		// arg1.printStackTrace();
+		// ArduinoConnectivityPopup.isOpened = false;
+		// // stopService(new Intent(getApplicationContext(),
+		// // OneSheeldService.class));
+		// moveTaskToBack(true);
+		// if (((OneSheeldApplication) getApplication()).getAppFirmata() !=
+		// null) {
+		// while (!((OneSheeldApplication) getApplication())
+		// .getAppFirmata().close())
+		// ;
+		// }
+		// stopService();
+		// // new Thread(new Runnable() {
+		// //
+		// // @Override
+		// // public void run() {
+		// //// StringWriter sw = new StringWriter();
+		// //// arg1.printStackTrace(new PrintWriter(sw));
+		// //// String exceptionAsString = sw.toString();
+		// //// GmailSinginPopup.sendReportMail(
+		// //// "ahmed.ebnsaad@gmail.com",
+		// //// "egydroid@gmail.com", arg1.getMessage(),
+		// //// exceptionAsString != null ? exceptionAsString
+		// //// : "", "knginekehna");
+		// //// Intent in = new Intent(getIntent());
+		// //// PendingIntent intent = PendingIntent
+		// //// .getActivity(getBaseContext(), 0, in,
+		// //// getIntent().getFlags());
+		// ////
+		// //// AlarmManager mgr = (AlarmManager)
+		// getSystemService(Context.ALARM_SERVICE);
+		// //// mgr.set(AlarmManager.RTC,
+		// //// System.currentTimeMillis() + 1000, intent);
+		// //// System.exit(0);
+		// // }
+		// // }).start();
+		// }
+		// });
 		if (getThisApplication().getAppFirmata() != null) {
 			getThisApplication().getAppFirmata().addVersionQueryHandler(
 					versionChangingHandler);
@@ -407,6 +408,9 @@ public class MainActivity extends FragmentActivity {
 						&& ArduinoConnectivityPopup.isOpened)
 					onConnectToBlueTooth.onConnect();
 			}
+			break;
+		default:
+			break;
 		}
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -426,6 +430,5 @@ public class MainActivity extends FragmentActivity {
 	public void showToast(String msg) {
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
-
 
 }
