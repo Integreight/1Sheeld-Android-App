@@ -309,7 +309,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 	@Override
 	public void onDestroy() {
 		mContent = null;
-		((MainActivity) getActivity()).enableMenu();
 		super.onDestroy();
 	}
 

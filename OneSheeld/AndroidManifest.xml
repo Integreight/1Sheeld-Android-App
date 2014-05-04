@@ -41,6 +41,7 @@
     <uses-feature
         android:name="android.hardware.camera.flash"
         android:required="false" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name="com.integreight.onesheeld.OneSheeldApplication"

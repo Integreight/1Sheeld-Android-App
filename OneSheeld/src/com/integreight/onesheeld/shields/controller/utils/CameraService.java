@@ -14,10 +14,13 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -114,6 +117,8 @@ public class CameraService extends Service {
 		}
 	}
 
+	Handler handler = new Handler();
+
 	private class TakeImage extends AsyncTask<Intent, Void, Integer> {
 		int result;
 
@@ -197,7 +202,13 @@ public class CameraService extends Service {
 						// set camera parameters
 						mCamera.setParameters(parameters);
 						mCamera.startPreview();
-						mCamera.takePicture(null, null, mCall);
+						handler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								mCamera.takePicture(null, null, mCall);
+							}
+						});
 						return 4;
 
 					} else {
@@ -329,12 +340,14 @@ public class CameraService extends Service {
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// decode the data obtained by the camera into a Bitmap
 			Log.d("ImageTakin", "Done");
-
+			if (bmp != null)
+				bmp.recycle();
+			System.gc();
 			bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			if (bmp != null && QUALITY_MODE == 0)
 				bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
-			if (bmp != null && QUALITY_MODE != 0)
+			else if (bmp != null && QUALITY_MODE != 0)
 				bmp.compress(Bitmap.CompressFormat.JPEG, QUALITY_MODE, bytes);
 
 			File imagesFolder = new File(
@@ -348,23 +361,44 @@ public class CameraService extends Service {
 			try {
 				fo = new FileOutputStream(image);
 			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 			try {
 				fo.write(bytes.toByteArray());
 			} catch (IOException e) {
+				e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 
 			// remember close de FileOutput
 			try {
 				fo.close();
-				sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
-						Uri.parse("file://"
-								+ Environment.getExternalStorageDirectory())));
+				if (Build.VERSION.SDK_INT < 19)
+					sendBroadcast(new Intent(
+							Intent.ACTION_MEDIA_MOUNTED,
+							Uri.parse("file://"
+									+ Environment.getExternalStorageDirectory())));
+				else {
+					MediaScannerConnection
+							.scanFile(
+									getApplicationContext(),
+									new String[] { image.toString() },
+									null,
+									new MediaScannerConnection.OnScanCompletedListener() {
+										public void onScanCompleted(
+												String path, Uri uri) {
+											Log.i("ExternalStorage", "Scanned "
+													+ path + ":");
+											Log.i("ExternalStorage", "-> uri="
+													+ uri);
+										}
+									});
+				}
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 			if (mCamera != null) {
 				mCamera.stopPreview();
