@@ -81,8 +81,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		public void onLatChanged(final String lat) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				Latit.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -96,8 +95,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		public void onLangChanged(final String lang) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				Longit.post(new Runnable() {
 
 					@Override
 					public void run() {
