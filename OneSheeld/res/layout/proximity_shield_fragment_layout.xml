@@ -44,6 +44,7 @@
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
         android:textColor="@color/white"
+        android:text="Distance will be here !"
        />
 
     <TextView
