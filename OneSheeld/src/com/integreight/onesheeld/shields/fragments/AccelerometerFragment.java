@@ -88,26 +88,39 @@ public class AccelerometerFragment extends
 
 		@Override
 		public void onSensorValueChangedFloat(final float[] value) {
+
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
 
 				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				x.post(new Runnable() {
 
 					@Override
 					public void run() {
 						x.setText("X = " + value[0]);
-						y.setText("Y = " + value[1]);
-						z.setText("Z = " + value[2]);
 					}
 				});
+				y.post(new Runnable() {
 
+					@Override
+					public void run() {
+						y.setText("Y = " + value[1]);
+					}
+				});
+				z.post(new Runnable() {
+
+					@Override
+					public void run() {
+						z.setText("Z = " + value[2]);
+
+					}
+				});
 			}
+
 		}
 
 		@Override
-		public void isDeviceHasSensor(final Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {/*
 
 			if (canChangeUI()) {
 
@@ -131,7 +144,7 @@ public class AccelerometerFragment extends
 
 			}
 
-		}
+		*/}
 	};
 
 	private void initializeFirmata() {
