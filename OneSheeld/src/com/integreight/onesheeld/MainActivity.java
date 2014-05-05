@@ -1,5 +1,18 @@
 package com.integreight.onesheeld;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -102,33 +115,106 @@ public class MainActivity extends FragmentActivity {
 						;
 				}
 				stopService();
-				 new Thread(new Runnable() {
-				
-				 @Override
-				 public void run() {
-				 // StringWriter sw = new StringWriter();
-				 // arg1.printStackTrace(new PrintWriter(sw));
-				 // String exceptionAsString = sw.toString();
-				 // GmailSinginPopup.sendReportMail(
-				 // "ahmed.ebnsaad@gmail.com",
-				 // "egydroid@gmail.com", arg1.getMessage(),
-				 // exceptionAsString != null ? exceptionAsString
-				 // : "", "knginekehna");
-				  Intent in = new Intent(getIntent());
-				  PendingIntent intent = PendingIntent
-				  .getActivity(getBaseContext(), 0, in,
-				  getIntent().getFlags());
-				 
-				  AlarmManager mgr =
-				 (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-				  mgr.set(AlarmManager.RTC,
-				  System.currentTimeMillis() + 1000, intent);
-				  System.exit(0);
-				 }
-				 }).start();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						tryToSendNotificationsToAdmins(arg1);
+						Intent in = new Intent(getIntent());
+						PendingIntent intent = PendingIntent
+								.getActivity(getBaseContext(), 0, in,
+										getIntent().getFlags());
+
+						AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+						mgr.set(AlarmManager.RTC,
+								System.currentTimeMillis() + 1000, intent);
+						System.exit(0);
+					}
+				}).start();
 			}
 		});
 		Crashlytics.start(this);
+	}
+
+	public void tryToSendNotificationsToAdmins(Throwable arg1) {
+		try {
+			// Get Exception Details
+			StackTraceElement[] stackTraceElement = arg1.getStackTrace();
+
+			String fileName = "";
+			String methodName = "";
+			String className = arg1.getClass().getSimpleName();
+			int lineNumber = 0;
+
+			String packageName = MainActivity.this.getApplicationInfo().packageName;
+			for (int i = 0; i < stackTraceElement.length; i++) {
+				if (stackTraceElement[i].getClassName().startsWith(packageName)) {
+					fileName = stackTraceElement[i].getFileName();
+					methodName = stackTraceElement[i].getMethodName();
+					lineNumber = stackTraceElement[i].getLineNumber();
+					break;
+				}
+			}
+
+			String url = "http://api.instapush.im/v1/post";
+			HttpClient httpclient = new DefaultHttpClient();
+			HttpPost httppost = new HttpPost(url);
+			httppost.addHeader("Content-Type", "application/json");
+			httppost.addHeader("x-instapush-appid", "53627f8ca4c48a291a1de9af");
+			httppost.addHeader("x-instapush-appsecret",
+					"93df7ea24ebf96a9f13f5b5bbb9c7eb9");
+			JSONObject instaPushObject = new JSONObject();
+			instaPushObject.put("event", "app_crash");
+			JSONObject instaPushTrackers = new JSONObject();
+			instaPushTrackers.put("exception_name", className);
+			instaPushTrackers.put("class_name", fileName);
+			instaPushTrackers.put("method_name", methodName);
+			instaPushTrackers.put("line_number", lineNumber);
+			instaPushObject.put("trackers", instaPushTrackers);
+			StringEntity entity = new StringEntity(instaPushObject.toString());
+			httppost.setEntity(entity);
+			// Execute the request
+			HttpResponse response;
+
+			response = httpclient.execute(httppost);
+			HttpEntity entity1 = response.getEntity();
+			if (entity1 != null) {
+				InputStream instream = entity1.getContent();
+				String result = convertStreamToString(instream);
+				Log.d("InstaPush", result);
+				instream.close();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private static String convertStreamToString(InputStream is) {
+		/*
+		 * To convert the InputStream to String we use the
+		 * BufferedReader.readLine() method. We iterate until the BufferedReader
+		 * return null which means there's no more data to read. Each line will
+		 * appended to a StringBuilder and returned as String.
+		 */
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		StringBuilder sb = new StringBuilder();
+
+		String line = null;
+		try {
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "\n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return sb.toString();
 	}
 
 	private void initLooperThread() {
