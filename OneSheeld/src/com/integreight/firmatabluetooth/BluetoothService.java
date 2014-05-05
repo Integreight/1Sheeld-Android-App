@@ -118,7 +118,8 @@ public class BluetoothService {
 
 	public synchronized void closeSocket(BluetoothSocket socket)
 			throws IOException {
-		if(socket!=null)socket.close();
+		if (socket != null)
+			socket.close();
 	}
 
 	/**
@@ -160,13 +161,13 @@ public class BluetoothService {
 			Log.d(TAG, "connect to: " + device);
 		closedManually = false;
 		// Cancel any thread attempting to make a connection
-		//if (mState == STATE_CONNECTING) {
-			if (mConnectThread != null) {
-				mConnectThread.cancel();
-				mConnectThread.interrupt();
-				mConnectThread = null;
-			}
-		//}
+		// if (mState == STATE_CONNECTING) {
+		if (mConnectThread != null) {
+			mConnectThread.cancel();
+			mConnectThread.interrupt();
+			mConnectThread = null;
+		}
+		// }
 
 		// Cancel any thread currently running a connection
 		if (mConnectedThread != null) {
@@ -236,14 +237,16 @@ public class BluetoothService {
 		stop();
 	}
 
-	private synchronized BluetoothSocket getRfcommSocketByReflection() throws Exception{
-		if(mmDevice==null)return null;
+	private synchronized BluetoothSocket getRfcommSocketByReflection()
+			throws Exception {
+		if (mmDevice == null)
+			return null;
 		Method m = mmDevice.getClass().getMethod("createRfcommSocket",
-					new Class[] { int.class });
-		
+				new Class[] { int.class });
 
 		return (BluetoothSocket) m.invoke(mmDevice, 1);
 	}
+
 	/**
 	 * Write to the ConnectedThread in an unsynchronized manner
 	 * 
@@ -302,12 +305,13 @@ public class BluetoothService {
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
 			try {
-				mmSocket = device.createRfcommSocketToServiceRecord(MY_UUID);
+				mmSocket = device
+						.createInsecureRfcommSocketToServiceRecord(MY_UUID);
 			} catch (IOException e) {
 				// Log.e(TAG, "create() failed", e);
 				try {
 					mmSocket = getRfcommSocketByReflection();
-				} catch (Exception e1) {	
+				} catch (Exception e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 					return;
@@ -327,36 +331,36 @@ public class BluetoothService {
 				mAdapter.cancelDiscovery();
 			// Make a connection to the BluetoothSocket
 			try {
-				if(Thread.currentThread().isInterrupted()){
+				if (Thread.currentThread().isInterrupted()) {
 					cancel();
-//					connectionFailed();
+					// connectionFailed();
 					return;
 				}
 				mmSocket.connect();
-				if(Thread.currentThread().isInterrupted()){
+				if (Thread.currentThread().isInterrupted()) {
 					cancel();
-//					connectionFailed();
+					// connectionFailed();
 					return;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				// Close the socket
 				try {
-					if(Thread.currentThread().isInterrupted()){
+					if (Thread.currentThread().isInterrupted()) {
 						cancel();
-//						connectionFailed();
+						// connectionFailed();
 						return;
 					}
 					mmSocket = getRfcommSocketByReflection();
-					if(Thread.currentThread().isInterrupted()){
+					if (Thread.currentThread().isInterrupted()) {
 						cancel();
-//						connectionFailed();
+						// connectionFailed();
 						return;
 					}
 					mmSocket.connect();
-					if(Thread.currentThread().isInterrupted()){
+					if (Thread.currentThread().isInterrupted()) {
 						cancel();
-//						connectionFailed();
+						// connectionFailed();
 						return;
 					}
 				} catch (Exception e1) {
@@ -373,7 +377,7 @@ public class BluetoothService {
 
 			// Start the connected thread
 			connected(mmSocket, mmDevice);
-			if(Thread.currentThread().isInterrupted()){
+			if (Thread.currentThread().isInterrupted()) {
 				cancel();
 				connectionFailed();
 				return;

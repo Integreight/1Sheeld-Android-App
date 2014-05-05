@@ -123,9 +123,15 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	}
 
 	public void logoutFromFacebook() {
-		if (!Session.getActiveSession().isClosed()) {
-			Session.getActiveSession().close();
-			// Session.getActiveSession().closeAndClearTokenInformation();
+
+		if (Session.getActiveSession() != null
+				&& !Session.getActiveSession().isClosed()) {
+			// Session.getActiveSession().close();
+			Session.getActiveSession().closeAndClearTokenInformation();
+		} else {
+			Session ses = new Session(activity);
+			Session.setActiveSession(ses);
+			ses.closeAndClearTokenInformation();
 		}
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_FACEBOOK_USERNAME);

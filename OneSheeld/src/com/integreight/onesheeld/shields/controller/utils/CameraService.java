@@ -202,13 +202,7 @@ public class CameraService extends Service {
 						// set camera parameters
 						mCamera.setParameters(parameters);
 						mCamera.startPreview();
-						handler.post(new Runnable() {
-
-							@Override
-							public void run() {
-								mCamera.takePicture(null, null, mCall);
-							}
-						});
+						mCamera.takePicture(null, null, mCall);
 						return 4;
 
 					} else {

@@ -117,7 +117,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 								e.printStackTrace();
 							} catch (IllegalAccessException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace();
+								e.printStackTrace(	);
 							}
 							final SelectionAction selectionAction = new SelectionAction() {
 
