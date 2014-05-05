@@ -90,22 +90,33 @@ public class OrientationFragment extends
 			if (canChangeUI()) {
 
 				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				x.post(new Runnable() {
 
 					@Override
 					public void run() {
 						x.setText("X = " + value[0]);
-						y.setText("Y = " + value[1]);
-						z.setText("Z = " + value[2]);
 					}
 				});
+				y.post(new Runnable() {
 
+					@Override
+					public void run() {
+						y.setText("Y = " + value[1]);
+					}
+				});
+				z.post(new Runnable() {
+
+					@Override
+					public void run() {
+						z.setText("Z = " + value[2]);
+
+					}
+				});
 			}
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {
+		public void isDeviceHasSensor(Boolean hasSensor) {/*
 			// TODO Auto-generated method stub
 
 			// TODO Auto-generated method stub
@@ -120,7 +131,7 @@ public class OrientationFragment extends
 				}
 			}
 
-		}
+		*/}
 	};
 
 	private void initializeFirmata() {

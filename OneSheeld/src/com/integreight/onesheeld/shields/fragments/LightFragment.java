@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
@@ -93,8 +92,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 			if (canChangeUI()) {
 
 				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				light_float.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -111,8 +109,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 		public void onSensorValueChangedByte(final String value) {
 
 			// set data to UI
-			uiHandler.removeCallbacksAndMessages(null);
-			uiHandler.post(new Runnable() {
+			light_byte.post(new Runnable() {
 
 				@Override
 				public void run() {
@@ -124,7 +121,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 		}
 
 		@Override
-		public void isDeviceHasSensor(final Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {/*
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
 
@@ -148,7 +145,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 				});
 
 			}
-		}
+		*/}
 	};
 
 	private void initializeFirmata() {

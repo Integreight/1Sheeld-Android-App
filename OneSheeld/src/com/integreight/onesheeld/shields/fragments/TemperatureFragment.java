@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
@@ -95,8 +94,7 @@ public class TemperatureFragment extends
 			if (canChangeUI()) {
 
 				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				temperature_float.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -116,8 +114,7 @@ public class TemperatureFragment extends
 			if (canChangeUI()) {
 
 				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				temperature_byte.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -133,7 +130,7 @@ public class TemperatureFragment extends
 		}
 
 		@Override
-		public void isDeviceHasSensor(final Boolean hasSensor) {
+		public void isDeviceHasSensor(final Boolean hasSensor) {/*
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
 
@@ -158,7 +155,7 @@ public class TemperatureFragment extends
 				});
 
 			}
-		}
+		*/}
 	};
 
 	private void initializeFirmata() {
