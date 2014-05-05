@@ -102,30 +102,29 @@ public class MainActivity extends FragmentActivity {
 						;
 				}
 				stopService();
-				 new Thread(new Runnable() {
-				
-				 @Override
-				 public void run() {
-				 // StringWriter sw = new StringWriter();
-				 // arg1.printStackTrace(new PrintWriter(sw));
-				 // String exceptionAsString = sw.toString();
-				 // GmailSinginPopup.sendReportMail(
-				 // "ahmed.ebnsaad@gmail.com",
-				 // "egydroid@gmail.com", arg1.getMessage(),
-				 // exceptionAsString != null ? exceptionAsString
-				 // : "", "knginekehna");
-				  Intent in = new Intent(getIntent());
-				  PendingIntent intent = PendingIntent
-				  .getActivity(getBaseContext(), 0, in,
-				  getIntent().getFlags());
-				 
-				  AlarmManager mgr =
-				 (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-				  mgr.set(AlarmManager.RTC,
-				  System.currentTimeMillis() + 1000, intent);
-				  System.exit(0);
-				 }
-				 }).start();
+				new Thread(new Runnable() {
+
+					@Override
+					public void run() {
+						// StringWriter sw = new StringWriter();
+						// arg1.printStackTrace(new PrintWriter(sw));
+						// String exceptionAsString = sw.toString();
+						// GmailSinginPopup.sendReportMail(
+						// "ahmed.ebnsaad@gmail.com",
+						// "egydroid@gmail.com", arg1.getMessage(),
+						// exceptionAsString != null ? exceptionAsString
+						// : "", "knginekehna");
+						Intent in = new Intent(getIntent());
+						PendingIntent intent = PendingIntent
+								.getActivity(getBaseContext(), 0, in,
+										getIntent().getFlags());
+
+						AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+						mgr.set(AlarmManager.RTC,
+								System.currentTimeMillis() + 1000, intent);
+						System.exit(0);
+					}
+				}).start();
 			}
 		});
 		Crashlytics.start(this);

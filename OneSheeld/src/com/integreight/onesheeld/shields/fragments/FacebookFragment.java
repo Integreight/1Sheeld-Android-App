@@ -121,7 +121,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 						// TODO Auto-generated method stub
 						Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
 								.show();
-						buttonToLoggedIn();
+						// buttonToLoggedIn();
 						// getAppActivity()
 						// .setSupportProgressBarIndeterminateVisibility(
 						// false);
