@@ -357,7 +357,7 @@ public class MainActivity extends FragmentActivity {
 		return backOnConnectionLostHandler;
 	}
 
-	public class BackOnconnectionLostHandler extends Handler {
+	public static class BackOnconnectionLostHandler extends Handler {
 		public boolean canInvokeOnCloseConnection = true,
 				connectionLost = false;
 	}
