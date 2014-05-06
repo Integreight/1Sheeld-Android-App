@@ -140,7 +140,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				selectionAction.onFailure();
 			}
 			if (isToastable)
-				activity.showToast("Device dos't have Sensor");
+				activity.showToast("Device doesn't have Sensor");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 
