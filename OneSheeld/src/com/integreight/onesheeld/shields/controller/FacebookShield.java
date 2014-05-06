@@ -113,20 +113,27 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	public void loginToFacebook() {
 		Session session = Session.getActiveSession();
-		if (session != null && session.isClosed()) {
+		if (session == null) {
+			Session.openActiveSession(activity, fragment, true, statusCallback);
+		} else if (!session.isOpened()) {
 			session.openForRead(new Session.OpenRequest(fragment)
 					.setCallback(statusCallback));
-		} else {
-			Session.openActiveSession(activity, fragment, true, statusCallback);
 		}
 		CommitInstanceTotable();
 	}
 
 	public void logoutFromFacebook() {
-		if (!Session.getActiveSession().isClosed()) {
-			Session.getActiveSession().close();
-			// Session.getActiveSession().closeAndClearTokenInformation();
+
+		if (Session.getActiveSession() != null
+				&& !Session.getActiveSession().isClosed()) {
+			// Session.getActiveSession().close();
+			Session.getActiveSession().closeAndClearTokenInformation();
+		} else {
+			Session ses = new Session(activity);
+			Session.setActiveSession(ses);
+			ses.closeAndClearTokenInformation();
 		}
+		Session.setActiveSession(null);
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_FACEBOOK_USERNAME);
 		e.commit();
@@ -162,7 +169,8 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	public boolean isFacebookLoggedInAlready() {
 		// TODO Auto-generated method stub
 		if (Session.getActiveSession() != null)
-			return Session.getActiveSession().isOpened();
+			return Session.getActiveSession().isOpened()
+					&& getUsername().length() > 0;
 		else
 			return false;
 	}
@@ -173,6 +181,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 				Exception exception) {
 			if (exception != null && eventHandler != null) {
 				exception.printStackTrace();
+				logoutFromFacebook();
 				eventHandler.onFacebookError(exception.getMessage());
 			}
 			if (session.isOpened()) {

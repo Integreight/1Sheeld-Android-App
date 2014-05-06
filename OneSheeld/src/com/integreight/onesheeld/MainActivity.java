@@ -87,7 +87,7 @@ public class MainActivity extends FragmentActivity {
 		// popub.show();
 	}
 
-	private Thread looperThread;
+	public Thread looperThread;
 	public Handler backgroundThreadHandler;
 	private Looper backgroundHandlerLooper;
 
@@ -97,6 +97,22 @@ public class MainActivity extends FragmentActivity {
 			backgroundHandlerLooper.quit();
 			looperThread = null;
 		}
+	}
+
+	public void initLooperThread() {
+		stopLooperThread();
+		looperThread = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				Looper.prepare();
+				backgroundHandlerLooper = Looper.myLooper();
+				backgroundThreadHandler = new Handler();
+				Looper.loop();
+			}
+		});
+		looperThread.start();
 	}
 
 	private void initCrashlyticsAndUncaughtThreadHandler() {
@@ -215,22 +231,6 @@ public class MainActivity extends FragmentActivity {
 			}
 		}
 		return sb.toString();
-	}
-
-	private void initLooperThread() {
-		stopLooperThread();
-		looperThread = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO Auto-generated method stub
-				Looper.prepare();
-				backgroundHandlerLooper = Looper.myLooper();
-				backgroundThreadHandler = new Handler();
-				Looper.loop();
-			}
-		});
-		looperThread.start();
 	}
 
 	Handler versionHandling = new Handler();
@@ -357,7 +357,7 @@ public class MainActivity extends FragmentActivity {
 		return backOnConnectionLostHandler;
 	}
 
-	public class BackOnconnectionLostHandler extends Handler {
+	public static class BackOnconnectionLostHandler extends Handler {
 		public boolean canInvokeOnCloseConnection = true,
 				connectionLost = false;
 	}
