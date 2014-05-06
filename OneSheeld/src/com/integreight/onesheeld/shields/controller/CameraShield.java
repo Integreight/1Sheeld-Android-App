@@ -14,6 +14,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraService;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -57,7 +58,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		if (camCapture != null) {
 			if (!camCapture.isTaken()) {
 				Intent intent = new Intent(getApplication()
-						.getApplicationContext(), CameraService.class);
+						.getApplicationContext(), CameraHeadService.class);
 				intent.putExtra("FLASH", camCapture.getFlash());
 				intent.putExtra("Quality_Mode", camCapture.getQuality());
 
@@ -72,7 +73,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		if (camCapture != null) {
 			if (!camCapture.isTaken()) {
 				Intent front_translucent = new Intent(getApplication()
-						.getApplicationContext(), CameraService.class);
+						.getApplicationContext(), CameraHeadService.class);
 				front_translucent.putExtra("Front_Request", true);
 				front_translucent.putExtra("Quality_Mode",
 						camCapture.getQuality());
