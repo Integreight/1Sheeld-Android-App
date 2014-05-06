@@ -240,37 +240,42 @@ public class SheeldsList extends Fragment {
 		@Override
 		public void onClose(boolean closedManually) {
 			arduinoConnected = false;
-			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
-			if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
-					|| ((MainActivity) getActivity()).isForground)
-				((MainActivity) getActivity()).getOnConnectionLostHandler()
-						.sendEmptyMessage(0);
-			else {
-				List<Fragment> frags = getActivity()
-						.getSupportFragmentManager().getFragments();
-				for (Fragment frag : frags) {
-					if (frag != null
-							&& !frag.getClass().getName()
-									.equals(SheeldsList.class.getName())
-							&& !frag.getClass().getName()
-									.equals(ShieldsOperations.class.getName())) {
-						FragmentTransaction ft = getActivity()
-								.getSupportFragmentManager().beginTransaction();
-						ft.setCustomAnimations(0, 0, 0, 0);
-						frag.onDestroy();
-						ft.remove(frag);
-						ft.commitAllowingStateLoss();
+			if (getActivity() != null) {
+				((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
+				if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
+						|| ((MainActivity) getActivity()).isForground)
+					((MainActivity) getActivity()).getOnConnectionLostHandler()
+							.sendEmptyMessage(0);
+				else {
+					List<Fragment> frags = getActivity()
+							.getSupportFragmentManager().getFragments();
+					for (Fragment frag : frags) {
+						if (frag != null
+								&& !frag.getClass().getName()
+										.equals(SheeldsList.class.getName())
+								&& !frag.getClass()
+										.getName()
+										.equals(ShieldsOperations.class
+												.getName())) {
+							FragmentTransaction ft = getActivity()
+									.getSupportFragmentManager()
+									.beginTransaction();
+							ft.setCustomAnimations(0, 0, 0, 0);
+							frag.onDestroy();
+							ft.remove(frag);
+							ft.commitAllowingStateLoss();
+						}
 					}
 				}
-			}
-			Enumeration<String> enumKey = ((OneSheeldApplication) getActivity()
-					.getApplication()).getRunningShields().keys();
-			while (enumKey.hasMoreElements()) {
-				String key = enumKey.nextElement();
-				((OneSheeldApplication) getActivity().getApplication())
-						.getRunningShields().get(key).resetThis();
-				((OneSheeldApplication) getActivity().getApplication())
-						.getRunningShields().remove(key);
+				Enumeration<String> enumKey = ((OneSheeldApplication) getActivity()
+						.getApplication()).getRunningShields().keys();
+				while (enumKey.hasMoreElements()) {
+					String key = enumKey.nextElement();
+					((OneSheeldApplication) getActivity().getApplication())
+							.getRunningShields().get(key).resetThis();
+					((OneSheeldApplication) getActivity().getApplication())
+							.getRunningShields().remove(key);
+				}
 			}
 		}
 	};
