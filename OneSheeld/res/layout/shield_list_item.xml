@@ -6,28 +6,13 @@
     android:background="#03d203"
     android:clickable="true" >
 
-    <ToggleButton
-        android:id="@+id/shield_list_item_selection_toggle_button"
-        android:layout_width="0dp"
-        android:layout_height="25dp"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
-        android:background="@drawable/shields_activity_check_mark"
-        android:checked="false"
-        android:clickable="false"
-        android:focusable="false"
-        android:textOff=""
-        android:textOn=""
-        android:visibility="invisible" />
-
     <ImageView
         android:id="@+id/shield_list_item_selection_circle_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/shield_list_item_symbol_imageview"
         android:layout_centerVertical="true"
-        android:layout_marginRight="-5dp"
+        android:layout_marginRight="-6dp"
         android:contentDescription="@string/app_name"
         android:src="@drawable/shields_list_strip_selector_circle"
         android:visibility="invisible" />
@@ -51,13 +36,13 @@
 
     <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/shield_list_item_name_textview"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="20dp"
         android:layout_marginRight="35dp"
         android:layout_toLeftOf="@+id/shield_list_item_selection_circle_imageview"
-        android:layout_toRightOf="@id/shield_list_item_selection_toggle_button"
+        android:gravity="left|center_vertical"
         android:text="Bluetooth"
         android:textColor="#fffad7"
         android:textSize="@dimen/shield_name_size" />
