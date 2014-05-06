@@ -225,6 +225,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	}
 
 	public void resetThis() {
+		if (!activity.looperThread.isAlive()
+				|| activity.looperThread.isInterrupted())
+			activity.initLooperThread();
 		activity.backgroundThreadHandler.post(new Runnable() {
 
 			@Override

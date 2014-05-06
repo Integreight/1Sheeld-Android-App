@@ -105,6 +105,9 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 						.isMainActivitySelection());
 				if (shield.isMainActivitySelection()
 						&& shield.getShieldType() != null) {
+					if (!activity.looperThread.isAlive()
+							|| activity.looperThread.isInterrupted())
+						activity.initLooperThread();
 					activity.backgroundThreadHandler.post(new Runnable() {
 
 						@Override
@@ -117,7 +120,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 								e.printStackTrace();
 							} catch (IllegalAccessException e) {
 								// TODO Auto-generated catch block
-								e.printStackTrace(	);
+								e.printStackTrace();
 							}
 							final SelectionAction selectionAction = new SelectionAction() {
 
@@ -150,6 +153,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 													.setVisibility(View.VISIBLE);
 										}
 									});
+									if (!activity.looperThread.isAlive()
+											|| activity.looperThread
+													.isInterrupted())
+										activity.initLooperThread();
 									activity.backgroundThreadHandler
 											.post(new Runnable() {
 
@@ -236,6 +243,9 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		int i = 0;
 		for (final UIShield shield : shieldList) {
 			final int x = i;
+			if (!activity.looperThread.isAlive()
+					|| activity.looperThread.isInterrupted())
+				activity.initLooperThread();
 			activity.backgroundThreadHandler.post(new Runnable() {
 
 				@Override
