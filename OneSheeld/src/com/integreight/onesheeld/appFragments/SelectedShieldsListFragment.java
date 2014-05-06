@@ -212,17 +212,22 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
-		Fragment newContent = null;
-		newContent = getShieldFragment(position);
+		ShieldFragmentParent<?> newContent = getShieldFragment(position);
 		// getActivity().setTitle(
 		// UIShieldAdapter.getItem(position).getName() + " Shield");
 		if (newContent != null)
 			switchFragment(newContent);
 	}
 
-	private void switchFragment(Fragment fragment) {
-		((MainActivity) getActivity()).replaceCurrentFragment(
-				R.id.shieldsContainerFrame, fragment, "", false, false);
-		((MainActivity) getActivity()).closeMenu();
+	private void switchFragment(final ShieldFragmentParent<?> fragment) {
+		getListView().post(new Runnable() {
+			@Override
+			public void run() {
+				((MainActivity) getActivity()).replaceCurrentFragment(
+						R.id.shieldsContainerFrame, fragment,
+						fragment.getControllerTag(), false, false);
+				((MainActivity) getActivity()).closeMenu();
+			}
+		});
 	}
 }

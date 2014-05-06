@@ -104,18 +104,25 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	}
 
 	public String getControllerTag() {
-		return controllerTag;
+		return controllerTag == null ? getTag() : controllerTag;
 	}
 
 	public void setControllerTag(String controllerTag) {
 		this.controllerTag = controllerTag;
-	};
+	}
+
+	@Override
+	public void onLowMemory() {
+		// TODO Auto-generated method stub
+		super.onLowMemory();
+	}
 
 	public boolean canChangeUI() {
 		if (uiHandler == null)
 			uiHandler = new Handler();
-		return (getActivity() != null && getApplication().getRunningShields()
-				.get(getControllerTag()).isHasForgroundView());
+		return (getActivity() != null && getControllerTag() != null && getApplication()
+				.getRunningShields().get(getControllerTag())
+				.isHasForgroundView());
 	}
 
 	@Override

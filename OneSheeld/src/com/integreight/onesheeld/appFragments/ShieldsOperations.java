@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -222,7 +223,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 		}
 		((MainActivity) getActivity()).getOnConnectionLostHandler()
 				.sendEmptyMessage(0);
-
 		super.onStart();
 
 		// bindFirmataService();

@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.view.View;
 
+import com.crashlytics.android.Crashlytics;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -181,9 +182,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 					@Override
 					public void run() {
-						((T) ControllerParent.this)
-								.onNewShieldFrameReceived(frame);
-						CommitInstanceTotable();
+						try {
+							((T) ControllerParent.this)
+									.onNewShieldFrameReceived(frame);
+						} catch (NullPointerException e) {
+							Crashlytics.logException(e);
+						}
 					}
 				});
 		}
