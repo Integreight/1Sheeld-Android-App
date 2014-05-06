@@ -19,7 +19,7 @@ public class MicShield extends ControllerParent<MicShield> {
 	private ShieldFrame frame;
 	public static final byte MIC_VALUE = 0x01;
 	boolean initialRequest = true;
-	boolean Success = true;
+	boolean success = true;
 
 	// private int counter = 0;
 
@@ -95,10 +95,9 @@ public class MicShield extends ControllerParent<MicShield> {
 	}
 
 	public void startMic(boolean isToastable) {
-		boolean isRecording = MicSoundMeter.getInstance().start();
-
-		// if (!isRecording) {
-		// Success = false;
+		final boolean isRecording = MicSoundMeter.getInstance().start();
+		if (!isRecording)
+			success = false;
 		// new Handler().post(new Runnable() {
 		//
 		// @Override
@@ -114,7 +113,7 @@ public class MicShield extends ControllerParent<MicShield> {
 		// } else {
 		handler = new Handler();
 		if (selectionAction != null) {
-			if (Success)
+			if (success)
 				selectionAction.onSuccess();
 		}
 		if (processMic != null)
@@ -139,7 +138,6 @@ public class MicShield extends ControllerParent<MicShield> {
 	public void setMicEventHandler(MicEventHandler micEventHandler) {
 		this.eventHandler = micEventHandler;
 		CommitInstanceTotable();
-
 	}
 
 }

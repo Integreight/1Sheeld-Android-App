@@ -103,15 +103,27 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 			public void onClick(View v) {
 				shield.setMainActivitySelection(!shield
 						.isMainActivitySelection());
-				if (shield.isMainActivitySelection()
-						&& shield.getShieldType() != null) {
-					if (!activity.looperThread.isAlive()
-							|| activity.looperThread.isInterrupted())
-						activity.initLooperThread();
-					activity.backgroundThreadHandler.post(new Runnable() {
+				if (!activity.looperThread.isAlive()
+						|| activity.looperThread.isInterrupted())
+					activity.initLooperThread();
+				activity.backgroundThreadHandler
+						.removeCallbacksAndMessages(null);
+				activity.backgroundThreadHandler.post(new Runnable() {
 
-						@Override
-						public void run() {
+					@Override
+					public void run() {
+						if (shield.isMainActivitySelection()
+								&& shield.getShieldType() != null) {
+							// uiHandler.post(new Runnable() {
+							//
+							// @Override
+							// public void run() {
+							// tempHolder.selectionCircle
+							// .setVisibility(View.VISIBLE);
+							// tempHolder.blackUpperLayer
+							// .setVisibility(View.INVISIBLE);
+							// }
+							// });
 							// TODO Auto-generated method stub
 							try {
 								type = shield.getShieldType().newInstance();
@@ -127,6 +139,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 								@Override
 								public void onSuccess() {
 									// tempHolder.selectionButton.setVisibility(View.VISIBLE);
+									uiHandler.removeCallbacksAndMessages(null);
 									uiHandler.post(new Runnable() {
 
 										@Override
@@ -143,6 +156,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 								@Override
 								public void onFailure() {
 									shield.setMainActivitySelection(false);
+									uiHandler.removeCallbacksAndMessages(null);
 									uiHandler.post(new Runnable() {
 
 										@Override
@@ -153,27 +167,24 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 													.setVisibility(View.VISIBLE);
 										}
 									});
-									if (!activity.looperThread.isAlive()
-											|| activity.looperThread
-													.isInterrupted())
-										activity.initLooperThread();
-									activity.backgroundThreadHandler
-											.post(new Runnable() {
-
-												@Override
-												public void run() {
-													if (app.getRunningShields()
-															.get(shield.name()) != null) {
-														app.getRunningShields()
-																.get(shield
-																		.name())
-																.resetThis();
-														app.getRunningShields()
-																.remove(shield
-																		.name());
-													}
-												}
-											});
+									// if (!activity.looperThread.isAlive()
+									// || activity.looperThread
+									// .isInterrupted())
+									// activity.initLooperThread();
+									// activity.backgroundThreadHandler
+									// .post(new Runnable() {
+									//
+									// @Override
+									// public void run() {
+									if (app.getRunningShields().get(
+											shield.name()) != null) {
+										app.getRunningShields()
+												.get(shield.name()).resetThis();
+										app.getRunningShields().remove(
+												shield.name());
+									}
+									// }
+									// });
 								}
 							};
 							if (type != null) {
@@ -187,32 +198,34 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 											shield.name());
 								}
 							}
-						}
-					});
-				} else {
-					// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
-					uiHandler.post(new Runnable() {
+						} else {
+							// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
+							uiHandler.removeCallbacksAndMessages(null);
+							uiHandler.post(new Runnable() {
 
-						@Override
-						public void run() {
-							tempHolder.selectionCircle
-									.setVisibility(View.INVISIBLE);
-							tempHolder.blackUpperLayer
-									.setVisibility(View.VISIBLE);
-						}
-					});
-					activity.backgroundThreadHandler.post(new Runnable() {
-
-						@Override
-						public void run() {
+								@Override
+								public void run() {
+									tempHolder.selectionCircle
+											.setVisibility(View.INVISIBLE);
+									tempHolder.blackUpperLayer
+											.setVisibility(View.VISIBLE);
+								}
+							});
+							// activity.backgroundThreadHandler.post(new
+							// Runnable() {
+							//
+							// @Override
+							// public void run() {
 							if (app.getRunningShields().get(shield.name()) != null) {
 								app.getRunningShields().get(shield.name())
 										.resetThis();
 								app.getRunningShields().remove(shield.name());
 							}
+							// }
+							// });
 						}
-					});
-				}
+					}
+				});
 			}
 		});
 		return row;

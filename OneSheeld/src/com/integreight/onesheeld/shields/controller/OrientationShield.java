@@ -46,12 +46,12 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 		super(activity, tag);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public ControllerParent<OrientationShield> setTag(String tag) {
 		return super.setTag(tag);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public ControllerParent<OrientationShield> invalidate(
 			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,

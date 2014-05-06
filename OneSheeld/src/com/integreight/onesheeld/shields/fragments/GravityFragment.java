@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
@@ -116,29 +115,43 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 
 		@Override
 		public void isDeviceHasSensor(final Boolean hasSensor) {/*
-			if (canChangeUI()) {
-
-				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
-
-					@Override
-					public void run() {
-						if (!hasSensor) {
-							devicehasSensor
-									.setText("Your Device not have The Sensor");
-							Toast.makeText(getActivity(),
-									"Device dosen't have This Sensor !",
-									Toast.LENGTH_SHORT).show();
-						} else {
-
-						}
-					}
-				});
-
-			}
-
-		*/}
+																 * if
+																 * (canChangeUI
+																 * ()) {
+																 * 
+																 * // set data
+																 * to UI
+																 * uiHandler.
+																 * removeCallbacksAndMessages
+																 * (null);
+																 * uiHandler
+																 * .post(new
+																 * Runnable() {
+																 * 
+																 * @Override
+																 * public void
+																 * run() { if
+																 * (!hasSensor)
+																 * {
+																 * devicehasSensor
+																 * .setText(
+																 * "Your Device not have The Sensor"
+																 * );
+																 * Toast.makeText
+																 * (
+																 * getActivity()
+																 * ,
+																 * "Device dosen't have This Sensor !"
+																 * , Toast.
+																 * LENGTH_SHORT
+																 * ).show(); }
+																 * else {
+																 * 
+																 * } } });
+																 * 
+																 * }
+																 */
+		}
 	};
 
 	private void initializeFirmata() {
