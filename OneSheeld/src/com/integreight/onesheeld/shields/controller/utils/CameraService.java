@@ -119,50 +119,20 @@ public class CameraService extends Service {
 
 	Handler handler = new Handler();
 
-	private class TakeImage extends AsyncTask<Intent, Void, Integer> {
-		int result;
+	private class TakeImage extends AsyncTask<Intent, Void, Void> {
 
 		@Override
-		protected Integer doInBackground(Intent... params) {
-			result = takeImage(params[0]);
-			return result;
+		protected Void doInBackground(Intent... params) {
+			takeImage(params[0]);
+			return null;
 		}
 
 		@Override
-		protected void onPostExecute(Integer result) {
-			switch (result) {
-			case 1:
-
-				Toast.makeText(getApplicationContext(),
-						"Your Device dosen't have Front Camera !",
-						Toast.LENGTH_LONG).show();
-
-				break;
-			case 2:
-				Toast.makeText(getApplicationContext(),
-						"Your Device dosen't have a Camera !",
-						Toast.LENGTH_LONG).show();
-				break;
-			case 3:
-				Toast.makeText(getApplicationContext(),
-						"API dosen't support front camera", Toast.LENGTH_LONG)
-						.show();
-				break;
-			case 4:
-
-				Toast.makeText(getApplicationContext(),
-						"Your Picture has been taken !", Toast.LENGTH_LONG)
-						.show();
-				break;
-
-			default:
-				break;
-			}
-			super.onPostExecute(result);
+		protected void onPostExecute(Void result) {
 		}
 	}
 
-	private int takeImage(Intent intent) {
+	private void takeImage(Intent intent) {
 
 		if (checkCameraHardware(getApplicationContext())) {
 			Bundle extras = intent.getExtras();
@@ -189,9 +159,17 @@ public class CameraService extends Service {
 						try {
 							mCamera.setPreviewDisplay(sv.getHolder());
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
+							handler.post(new Runnable() {
+
+								@Override
+								public void run() {
+									Toast.makeText(getApplicationContext(),
+											"API dosen't support front camera",
+											Toast.LENGTH_LONG).show();
+								}
+							});
+
 							stopSelf();
-							return 3;
 						}
 						parameters = mCamera.getParameters();
 						parameters.setFlashMode(FLASH_MODE);
@@ -206,15 +184,26 @@ public class CameraService extends Service {
 
 							@Override
 							public void run() {
+								mCamera.startPreview();
 								mCamera.takePicture(null, null, mCall);
 							}
 						});
-						return 4;
+						// return 4;
 
 					} else {
 						mCamera = null;
+						handler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								Toast.makeText(
+										getApplicationContext(),
+										"Your Device dosen't have Front Camera !",
+										Toast.LENGTH_LONG).show();
+							}
+						});
+
 						stopSelf();
-						return 1;
 					}
 					/*
 					 * sHolder = sv.getHolder(); // tells Android that this
@@ -232,9 +221,18 @@ public class CameraService extends Service {
 							try {
 								mCamera.setPreviewDisplay(sv.getHolder());
 							} catch (IOException e) {
-								// TODO Auto-generated catch block
+								handler.post(new Runnable() {
+
+									@Override
+									public void run() {
+										Toast.makeText(
+												getApplicationContext(),
+												"API dosen't support front camera",
+												Toast.LENGTH_LONG).show();
+									}
+								});
+
 								stopSelf();
-								return 3;
 							}
 							parameters = mCamera.getParameters();
 							parameters.setFlashMode(FLASH_MODE);
@@ -246,7 +244,7 @@ public class CameraService extends Service {
 							mCamera.setParameters(parameters);
 							mCamera.startPreview();
 							mCamera.takePicture(null, null, mCall);
-							return 4;
+							// return 4;
 
 						} else {
 							mCamera = null;
@@ -255,8 +253,20 @@ public class CameraService extends Service {
 							 * "API dosen't support front camera",
 							 * Toast.LENGTH_LONG).show();
 							 */
+							handler.post(new Runnable() {
+
+								@Override
+								public void run() {
+									Toast.makeText(
+											getApplicationContext(),
+											"Your Device dosen't have Front Camera !",
+											Toast.LENGTH_LONG).show();
+
+								}
+							});
+
 							stopSelf();
-							return 1;
+
 						}
 						// Get a surface
 						/*
@@ -281,24 +291,36 @@ public class CameraService extends Service {
 					mCamera = getCameraInstance();
 
 				try {
-					mCamera.setPreviewDisplay(sv.getHolder());
-					parameters = mCamera.getParameters();
-					if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
-						FLASH_MODE = "auto";
-					}
-					parameters.setFlashMode(FLASH_MODE);
+					if (mCamera != null) {
+						mCamera.setPreviewDisplay(sv.getHolder());
+						parameters = mCamera.getParameters();
+						if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
+							FLASH_MODE = "auto";
+						}
+						parameters.setFlashMode(FLASH_MODE);
 
-					// set camera parameters
-					mCamera.setParameters(parameters);
-					mCamera.startPreview();
-					mCamera.takePicture(null, null, mCall);
-					return 4;
+						// set camera parameters
+						mCamera.setParameters(parameters);
+						mCamera.startPreview();
+						mCamera.takePicture(null, null, mCall);
+					} else {
+						handler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								Toast.makeText(getApplicationContext(),
+										"Camera is unavailable !",
+										Toast.LENGTH_LONG).show();
+							}
+						});
+
+					}
+					// return 4;
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
 				// Get a surface
 				/*
 				 * sHolder = sv.getHolder(); // tells Android that this surface
@@ -317,10 +339,17 @@ public class CameraService extends Service {
 			 * "Your Device dosen't have a Camera !", Toast.LENGTH_LONG)
 			 * .show();
 			 */
-			return 2;
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast.makeText(getApplicationContext(),
+							"Your Device dosen't have a Camera !",
+							Toast.LENGTH_LONG).show();
+				}
+			});
 
 		}
-		return 0;
 
 		// return super.onStartCommand(intent, flags, startId);
 
@@ -416,6 +445,15 @@ public class CameraService extends Service {
 				System.gc();
 			}
 			mCamera = null;
+			handler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					Toast.makeText(getApplicationContext(),
+							"Your Picture has been taken !", Toast.LENGTH_SHORT)
+							.show();
+				}
+			});
 			stopSelf();
 		}
 	};
