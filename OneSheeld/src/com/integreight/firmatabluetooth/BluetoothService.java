@@ -27,6 +27,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -247,6 +248,16 @@ public class BluetoothService {
 		return (BluetoothSocket) m.invoke(mmDevice, 1);
 	}
 
+	private synchronized BluetoothSocket getInsecureRfcommSocketByReflection()
+			throws Exception {
+		if (mmDevice == null)
+			return null;
+		Method m = mmDevice.getClass().getMethod("createInsecureRfcommSocket",
+				new Class[] { int.class });
+
+		return (BluetoothSocket) m.invoke(mmDevice, 1);
+	}
+
 	/**
 	 * Write to the ConnectedThread in an unsynchronized manner
 	 * 
@@ -305,18 +316,28 @@ public class BluetoothService {
 			// Get a BluetoothSocket for a connection with the
 			// given BluetoothDevice
 			try {
-				mmSocket = device
-						.createInsecureRfcommSocketToServiceRecord(MY_UUID);
-			} catch (IOException e) {
-				// Log.e(TAG, "create() failed", e);
-				try {
-					mmSocket = getRfcommSocketByReflection();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					return;
+				if (Build.VERSION.SDK_INT < 10) {
+					mmSocket = getInsecureRfcommSocketByReflection();
+				} else {
+					mmSocket = device
+							.createInsecureRfcommSocketToServiceRecord(MY_UUID);
 				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				try {
+					mmSocket = device
+							.createRfcommSocketToServiceRecord(MY_UUID);
+				} catch (IOException e1) {
+					// Log.e(TAG, "create() failed", e);
+					try {
+						mmSocket = getRfcommSocketByReflection();
+					} catch (Exception e2) {
+						// TODO Auto-generated catch block
+						e2.printStackTrace();
+						return;
+					}
 
+				}
 			}
 		}
 
@@ -343,15 +364,18 @@ public class BluetoothService {
 					return;
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
-				// Close the socket
+
 				try {
 					if (Thread.currentThread().isInterrupted()) {
 						cancel();
 						// connectionFailed();
 						return;
 					}
-					mmSocket = getRfcommSocketByReflection();
+					if (Build.VERSION.SDK_INT >= 10)
+						mmSocket = getInsecureRfcommSocketByReflection();
+					else
+						mmSocket = mmDevice
+								.createRfcommSocketToServiceRecord(MY_UUID);
 					if (Thread.currentThread().isInterrupted()) {
 						cancel();
 						// connectionFailed();
@@ -364,8 +388,58 @@ public class BluetoothService {
 						return;
 					}
 				} catch (Exception e1) {
-					connectionFailed();
-					return;
+
+					try {
+						if (Thread.currentThread().isInterrupted()) {
+							cancel();
+							// connectionFailed();
+							return;
+						}
+						if (Build.VERSION.SDK_INT >= 10)
+							mmSocket = mmDevice
+									.createRfcommSocketToServiceRecord(MY_UUID);
+						else
+							mmSocket = getRfcommSocketByReflection();
+						if (Thread.currentThread().isInterrupted()) {
+							cancel();
+							// connectionFailed();
+							return;
+						}
+						mmSocket.connect();
+						if (Thread.currentThread().isInterrupted()) {
+							cancel();
+							// connectionFailed();
+							return;
+						}
+					} catch (Exception e2) {
+						if (Build.VERSION.SDK_INT >= 10) {
+							try {
+								if (Thread.currentThread().isInterrupted()) {
+									cancel();
+									// connectionFailed();
+									return;
+								}
+								mmSocket = getRfcommSocketByReflection();
+								if (Thread.currentThread().isInterrupted()) {
+									cancel();
+									// connectionFailed();
+									return;
+								}
+								mmSocket.connect();
+								if (Thread.currentThread().isInterrupted()) {
+									cancel();
+									// connectionFailed();
+									return;
+								}
+							} catch (Exception e5) {
+								connectionFailed();
+								return;
+							}
+						} else {
+							connectionFailed();
+							return;
+						}
+					}
 				}
 
 			}
