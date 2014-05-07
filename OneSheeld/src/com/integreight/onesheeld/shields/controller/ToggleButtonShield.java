@@ -39,14 +39,13 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 	public void setButton(boolean isButtonOn) {
 		if (connectedPin != -1) {
 			this.isButtonOn = isButtonOn;
-			activity.getThisApplication().getAppFirmata()
-					.digitalWrite(connectedPin, isButtonOn);
+			digitalWrite(connectedPin, isButtonOn);
 		}
 		toggle = isButtonOn ? BitsUtils.setBit(toggle, 1) : BitsUtils.resetBit(
 				toggle, 1);
 		sf = new ShieldFrame(UIShield.TOGGLEBUTTON_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(toggle);
-		getApplication().getAppFirmata().sendShieldFrame(sf);
+		sendShieldFrame(sf);
 		CommitInstanceTotable();
 	}
 

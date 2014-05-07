@@ -214,9 +214,10 @@ public class ShieldsOperations extends BaseContainerFragment {
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView,
 							boolean isChecked) {
-						((OneSheeldApplication) getActivity().getApplication())
-								.getRunningShields().get(
-										MainActivity.currentShieldTag).isInteractive = isChecked;
+						if (MainActivity.currentShieldTag != null)
+							((OneSheeldApplication) getActivity()
+									.getApplication()).getRunningShields().get(
+									MainActivity.currentShieldTag).isInteractive = isChecked;
 					}
 				});
 	}

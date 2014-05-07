@@ -37,8 +37,7 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
 					frame = new ShieldFrame(UIShield.KEYBOARD_SHIELD.getId(),
 							KEYBOARD_VALUE);
 					frame.addCharArgument(myText.charAt(0));
-					activity.getThisApplication().getAppFirmata()
-							.sendShieldFrame(frame);
+					sendShieldFrame(frame);
 
 				}
 			}
@@ -49,8 +48,7 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
 			frame = new ShieldFrame(UIShield.KEYBOARD_SHIELD.getId(),
 					KEYBOARD_VALUE);
 			frame.addCharArgument(myChar);
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 
 		}
 	};

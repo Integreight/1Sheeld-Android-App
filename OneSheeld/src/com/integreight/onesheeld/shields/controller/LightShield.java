@@ -87,8 +87,7 @@ public class LightShield extends ControllerParent<LightShield> implements
 			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
 			oldInput = event.values[0];
 			frame.addIntegerArgument(3, false, Math.round(event.values[0]));
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 
 			Log.d("Sensor Data of X", event.values[0] + "");
 			if (eventHandler != null)

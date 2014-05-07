@@ -45,20 +45,18 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 	public void setRowAndColumn(int row, int column) {
 		ArduinoPin columnPin = matchedShieldPins.get("Column " + column);
 		if (columnPin != null) {
-			getApplication().getAppFirmata().digitalWrite(
-					columnPin.microHardwarePin, ArduinoFirmata.HIGH);
+			digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.HIGH);
 		}
 		columnByte = BitsUtils.setBit(columnByte, column);
 		ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
 		if (rowPin != null) {
-			getApplication().getAppFirmata().digitalWrite(
-					rowPin.microHardwarePin, ArduinoFirmata.HIGH);
+			digitalWrite(rowPin.microHardwarePin, ArduinoFirmata.HIGH);
 		}
 		rowByte = BitsUtils.setBit(rowByte, row);
 		sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(rowByte);
 		sf.addByteArgument(columnByte);
-		getApplication().getAppFirmata().sendShieldFrame(sf);
+		sendShieldFrame(sf);
 		// getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
 		// new char[] { row, column });
 		CommitInstanceTotable();
@@ -67,20 +65,18 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 	public void resetRowAndColumn(int row, int column) {
 		ArduinoPin columnPin = matchedShieldPins.get("Column " + column);
 		if (columnPin != null) {
-			getApplication().getAppFirmata().digitalWrite(
-					columnPin.microHardwarePin, ArduinoFirmata.LOW);
+			digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.LOW);
 		}
 		columnByte = BitsUtils.resetBit(columnByte, column);
 		ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
 		if (rowPin != null) {
-			getApplication().getAppFirmata().digitalWrite(
-					rowPin.microHardwarePin, ArduinoFirmata.LOW);
+			digitalWrite(rowPin.microHardwarePin, ArduinoFirmata.LOW);
 		}
 		rowByte = BitsUtils.resetBit(rowByte, row);
 		sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(rowByte);
 		sf.addByteArgument(columnByte);
-		getApplication().getAppFirmata().sendShieldFrame(sf);
+		sendShieldFrame(sf);
 		CommitInstanceTotable();
 	}
 

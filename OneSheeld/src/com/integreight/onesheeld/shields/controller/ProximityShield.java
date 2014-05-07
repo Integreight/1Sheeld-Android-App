@@ -91,8 +91,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 					PROXIMITY_VALUE);
 			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 
 			//
 			flag = false;

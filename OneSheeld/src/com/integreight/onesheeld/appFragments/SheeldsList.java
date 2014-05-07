@@ -100,6 +100,7 @@ public class SheeldsList extends Fragment {
 
 	@Override
 	public void onResume() {
+		MainActivity.currentShieldTag = null;
 		((MainActivity) getActivity()).disableMenu();
 		new Handler().postDelayed(new Runnable() {
 

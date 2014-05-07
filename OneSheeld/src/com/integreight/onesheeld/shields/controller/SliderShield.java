@@ -37,11 +37,11 @@ public class SliderShield extends ControllerParent<SliderShield> {
 
 	public void setSliderValue(int sliderValue) {
 		this.sliderValue = sliderValue;
-		getApplication().getAppFirmata().analogWrite(connectedPin, sliderValue);
+		analogWrite(connectedPin, sliderValue);
 		sValue = (byte) sliderValue;
 		sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(sValue);
-		getApplication().getAppFirmata().sendShieldFrame(sf);
+		sendShieldFrame(sf);
 		CommitInstanceTotable();
 
 	}

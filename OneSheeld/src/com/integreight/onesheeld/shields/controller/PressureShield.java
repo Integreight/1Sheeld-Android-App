@@ -90,8 +90,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addIntegerArgument(2, false, Math.round(event.values[0]));
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 			Log.d("Sensor Data of X", event.values[0] + "");
 			if (eventHandler != null)
 				eventHandler.onSensorValueChangedFloat(event.values[0] + "");

@@ -45,13 +45,13 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 	public void setPinToHigh(String pinName, int pinId) {
 		ArduinoPin columnPincolumnPin = matchedShieldPins.get(pinName);
 		if (columnPincolumnPin != null) {
-			getApplication().getAppFirmata().digitalWrite(
-					columnPincolumnPin.microHardwarePin, ArduinoFirmata.HIGH);
+			digitalWrite(columnPincolumnPin.microHardwarePin,
+					ArduinoFirmata.HIGH);
 		}
 		buttonByte = BitsUtils.setBit(buttonByte, pinId);
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
-		getApplication().getAppFirmata().sendShieldFrame(sf);
+		sendShieldFrame(sf);
 		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
 	}
@@ -60,13 +60,12 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		ArduinoPin columnPin = matchedShieldPins.get(pinName);
 
 		if (columnPin != null) {
-			getApplication().getAppFirmata().digitalWrite(
-					columnPin.microHardwarePin, ArduinoFirmata.LOW);
+			digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.LOW);
 		}
 		buttonByte = BitsUtils.resetBit(buttonByte, pinId);
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
-		getApplication().getAppFirmata().sendShieldFrame(sf);
+		sendShieldFrame(sf);
 		CommitInstanceTotable();
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
 		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});

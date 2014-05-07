@@ -265,6 +265,24 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		});
 	}
 
+	public void sendShieldFrame(ShieldFrame frame) {
+		if (isInteractive)
+			activity.getThisApplication().getAppFirmata()
+					.sendShieldFrame(frame);
+	}
+
+	public void digitalWrite(int pin, boolean value) {
+		if (isInteractive)
+			activity.getThisApplication().getAppFirmata()
+					.digitalWrite(pin, value);
+	}
+
+	public void analogWrite(int pin, int value) {
+		if (isInteractive)
+			activity.getThisApplication().getAppFirmata()
+					.analogWrite(pin, value);
+	}
+
 	public abstract void reset();
 
 	public String[] getRequiredPinsNames() {
