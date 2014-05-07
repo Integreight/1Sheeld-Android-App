@@ -15,7 +15,6 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
-import com.integreight.onesheeld.shields.controller.utils.CameraService;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
 
@@ -40,6 +39,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 			// Get extra data included in the Intent
 			String message = intent.getStringExtra("message");
 			Log.d("receiver", "Got message: " + message);
+			Log.d("receiver",
+					"cameraCaptureQueue size = " + cameraCaptureQueue.size());
 
 			while (cameraCaptureQueue.peek() != null
 					&& cameraCaptureQueue.peek().isTaken())
@@ -85,8 +86,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	}
 
 	public CameraShield() {
-		UIHandler = new Handler();
-		cameraCaptureQueue = new LinkedList<CameraShield.CameraCapture>();
+		
 	}
 
 	public CameraShield(Activity activity, String tag) {
@@ -98,6 +98,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		LocalBroadcastManager.getInstance(
 				getApplication().getApplicationContext()).registerReceiver(
 				mMessageReceiver, new IntentFilter("custom-event-name"));
+		UIHandler = new Handler();
+		cameraCaptureQueue = new LinkedList<CameraShield.CameraCapture>();
 		return super.setTag(tag);
 	}
 
@@ -155,7 +157,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				Log.d("Camera", "Frames number = " + numberOfFrames);
 				CameraCapture camCapture = new CameraCapture(FLASH_MODE, false,
 						QUALITY_MODE);
-				if (cameraCaptureQueue.isEmpty()) {
+				if (cameraCaptureQueue.size() == 0
+						| cameraCaptureQueue.isEmpty()) {
 					sendCaptureImageIntent(camCapture);
 				}
 				cameraCaptureQueue.add(camCapture);
@@ -172,7 +175,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				Log.d("Camera", "Frames number front = " + numberOfFrames);
 				CameraCapture frontCamCapture = new CameraCapture(FLASH_MODE,
 						true, QUALITY_MODE);
-				if (cameraCaptureQueue.isEmpty()) {
+				if (cameraCaptureQueue.size() == 0
+						| cameraCaptureQueue.isEmpty()) {
 					sendFrontCaptureImageIntent(frontCamCapture);
 				}
 				cameraCaptureQueue.add(frontCamCapture);
@@ -180,7 +184,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 			default:
 				break;
-			}
+			}			
 		}
 
 	}
