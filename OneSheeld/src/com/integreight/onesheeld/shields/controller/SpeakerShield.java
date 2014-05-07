@@ -13,6 +13,8 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
+	private final String VOLUME_PREF_KEY = "buzzerVolume";
+	private final int MAX_VOLUME = 100;
 	private SpeakerEventHandler eventHandler;
 	private static final byte BUZZER_ON = (byte) 0x01;
 	private static final byte BUZZER_OFF = (byte) 0x00;
@@ -105,6 +107,9 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 		if (mp == null) {
 			if (uri == null) {
 				mp = new MediaPlayer();
+				final float volume = (float) (1 - (Math.log(MAX_VOLUME
+						- getBuzzerVolume()) / Math.log(MAX_VOLUME)));
+				mp.setVolume(volume, volume);
 				try {
 					mp.setDataSource(activity.getAssets()
 							.openFd("buzzer_sound.mp3").getFileDescriptor());
@@ -129,6 +134,9 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 				}
 			} else {
 				mp = new MediaPlayer();
+				final float volume = (float) (1 - (Math.log(MAX_VOLUME
+						- getBuzzerVolume()) / Math.log(MAX_VOLUME)));
+				mp.setVolume(volume, volume);
 				if (uri != null)
 					try {
 						mp = MediaPlayer.create(activity, Uri.parse(uri));
@@ -210,5 +218,23 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 			mp.release();
 		}
 		mp = null;
+	}
+
+	public int getBuzzerVolume() {
+		return getApplication().getAppPreferences().getInt(VOLUME_PREF_KEY, 50);
+	}
+
+	public synchronized void setBuzzerVolume(int vol) {
+		getApplication().getAppPreferences().edit()
+				.putInt(VOLUME_PREF_KEY, vol).commit();
+		final float volume = (float) (1 - (Math.log(MAX_VOLUME - vol) / Math
+				.log(MAX_VOLUME)));
+		if (mp != null) {
+			try {
+				mp.setVolume(volume, volume);
+			} catch (IllegalStateException e) {
+
+			}
+		}
 	}
 }

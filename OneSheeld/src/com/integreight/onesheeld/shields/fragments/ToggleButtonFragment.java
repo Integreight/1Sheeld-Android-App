@@ -7,13 +7,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.ToggleButton;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
+import com.integreight.onesheeld.utils.OneShieldToggleButton;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
@@ -21,7 +21,7 @@ import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelec
 public class ToggleButtonFragment extends
 		ShieldFragmentParent<ToggleButtonFragment> {
 
-	ToggleButton toggleButtonButton;
+	OneShieldToggleButton toggleButtonButton;
 	Button connectButton;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,7 +30,7 @@ public class ToggleButtonFragment extends
 		View v = inflater
 				.inflate(R.layout.toggle_button_shield_fragment_layout,
 						container, false);
-		toggleButtonButton = (ToggleButton) v
+		toggleButtonButton = (OneShieldToggleButton) v
 				.findViewById(R.id.toggle_button_shield_button_toggle_button);
 		if ((ToggleButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) == null) {

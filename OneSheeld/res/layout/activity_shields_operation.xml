@@ -2,21 +2,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fffad7"
-    tools:context=".ShieldsOperationActivity" >
+    android:background="@color/offWhite"
+    android:clickable="true" >
+
+    <ImageView
+        android:id="@+id/speaker_fragment_background_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_margin="20dp"
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY"
+        android:src="@drawable/shield_fragment_background" />
 
     <FrameLayout
         android:id="@+id/shieldsContainerFrame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        android:layout_margin="20dp" >
     </FrameLayout>
 
     <CheckBox
         android:id="@+id/isMenuOpening"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="10dp" />
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="25dp"
+        android:background="@drawable/shield_docking_checkbox_selelctor"
+        android:button="@null" />
+
+    <ToggleButton
+        android:id="@+id/shieldStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="25dp"
+        android:background="@drawable/shield_status_toggle_selelctor"
+        android:checked="true"
+        android:textOff=""
+        android:textOn="" />
 
     <com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer
         xmlns:my="http://schemas.android.com/apk/res/com.integreight.onesheeld"

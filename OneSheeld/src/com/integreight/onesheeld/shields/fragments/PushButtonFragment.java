@@ -14,6 +14,7 @@ import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.OneShieldButton;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
@@ -23,6 +24,8 @@ public class PushButtonFragment extends
 
 	Button connectButton;
 	Rect rect;
+	AppSlidingLeftMenu menu;
+	OneShieldButton push;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -35,10 +38,10 @@ public class PushButtonFragment extends
 					new PushButtonShield(getActivity(), getControllerTag()));
 		}
 
-		final Button push = (Button) v
+		push = (OneShieldButton) v
 				.findViewById(R.id.push_button_shield_button_push_button);
-		final AppSlidingLeftMenu menu = (AppSlidingLeftMenu) getActivity()
-				.findViewById(R.id.sliding_pane_layout);
+		menu = (AppSlidingLeftMenu) getActivity().findViewById(
+				R.id.sliding_pane_layout);
 		push.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
@@ -51,64 +54,35 @@ public class PushButtonFragment extends
 						|| arg1.getAction() == MotionEvent.ACTION_MOVE) {
 					if (rect.contains((int) arg1.getX() + rect.left,
 							(int) arg1.getY() + rect.top)) {
-						((PushButtonShield) getApplication()
-								.getRunningShields().get(getControllerTag()))
-								.setButton(true);
-						menu.setCanSlide(false);
+						on(arg1);
 					} else {
-						((PushButtonShield) getApplication()
-								.getRunningShields().get(getControllerTag()))
-								.setButton(false);
-						menu.setCanSlide(true);
+						off(arg1);
 					}
 					return true;
 				} else if (arg1.getAction() == MotionEvent.ACTION_UP) {
-					((PushButtonShield) getApplication().getRunningShields()
-							.get(getControllerTag())).setButton(false);
-					menu.setCanSlide(false);
+					off(arg1);
 					return true;
 				}
 				return false;
 			}
 		});
-		v.findViewById(R.id.pushContainer).setOnTouchListener(
-				new View.OnTouchListener() {
-
-					@Override
-					public boolean onTouch(View v, MotionEvent event) {
-						if (rect == null) {
-							rect = new Rect(push.getLeft(), push.getTop(), push
-									.getRight(), push.getBottom());
-						}
-						if (event.getAction() == MotionEvent.ACTION_DOWN
-								|| event.getAction() == MotionEvent.ACTION_MOVE) {
-							if (rect.contains((int) event.getX(),
-									(int) event.getY())) {
-								((PushButtonShield) getApplication()
-										.getRunningShields().get(
-												getControllerTag()))
-										.setButton(true);
-								menu.setCanSlide(false);
-							} else {
-								((PushButtonShield) getApplication()
-										.getRunningShields().get(
-												getControllerTag()))
-										.setButton(false);
-								menu.setCanSlide(true);
-							}
-							return true;
-						} else if (event.getAction() == MotionEvent.ACTION_UP) {
-							((PushButtonShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag())).setButton(false);
-							menu.setCanSlide(true);
-							return true;
-						}
-						return false;
-					}
-				});
 		return v;
 
+	}
+
+	private void on(MotionEvent event) {
+		if (event.getAction() == MotionEvent.ACTION_DOWN)
+			((PushButtonShield) getApplication().getRunningShields().get(
+					getControllerTag())).setButton(true);
+		push.setBackgroundResource(R.drawable.button_shield_green);
+		menu.setCanSlide(false);
+	}
+
+	private void off(MotionEvent event) {
+		((PushButtonShield) getApplication().getRunningShields().get(
+				getControllerTag())).setButton(false);
+		push.setBackgroundResource(R.drawable.button_shield_red);
+		menu.setCanSlide(true);
 	}
 
 	@Override

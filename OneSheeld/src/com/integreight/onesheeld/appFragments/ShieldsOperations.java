@@ -19,7 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -208,6 +208,17 @@ public class ShieldsOperations extends BaseContainerFragment {
 		// mFrag = (ListFragment) this.getSupportFragmentManager()
 		// .findFragmentById(R.id.menu_frame);
 		// }
+		((ToggleButton) getView().findViewById(R.id.shieldStatus))
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						((OneSheeldApplication) getActivity().getApplication())
+								.getRunningShields().get(
+										MainActivity.currentShieldTag).isInteractive = isChecked;
+					}
+				});
 	}
 
 	@Override

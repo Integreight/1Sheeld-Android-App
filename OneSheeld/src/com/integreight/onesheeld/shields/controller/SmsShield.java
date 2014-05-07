@@ -96,7 +96,6 @@ public class SmsShield extends ControllerParent<SmsShield> {
 			lastSmsText = smsText;
 			if (frame.getFunctionId() == SEND_SMS_METHOD_ID) {
 				sendSms(smsNumber, smsText);
-
 			}
 
 		}

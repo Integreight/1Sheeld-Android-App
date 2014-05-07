@@ -32,6 +32,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 			{ "3", "5", "6", "9", "10", "11" } };
 	public String[] shieldPins = new String[] {};
 	public SelectionAction selectionAction;
+	public boolean isInteractive = true;
 
 	public ControllerParent() {
 		// TODO Auto-generated constructor stub
@@ -132,8 +133,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 							@Override
 							public void run() {
-								((T) ControllerParent.this).onSysex(command,
-										data);
+								if (isInteractive)
+									((T) ControllerParent.this).onSysex(
+											command, data);
 							}
 						});
 				}
@@ -152,7 +154,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 		@Override
 		public void onDigital(final int portNumber, final int portData) {
-			if (isALive) {
+			if (isALive && isInteractive) {
 				onDigitalActionHandler.removeCallbacks(onDigitalRunnable);
 				this.portData = portData;
 				this.portNumber = portNumber;
@@ -162,7 +164,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 		@Override
 		public void onAnalog(final int pin, final int value) {
-			if (isALive)
+			if (isALive && isInteractive)
 				actionHandler.post(new Runnable() {
 
 					@Override
@@ -183,8 +185,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 					@Override
 					public void run() {
 						try {
-							((T) ControllerParent.this)
-									.onNewShieldFrameReceived(frame);
+							if (isInteractive)
+								((T) ControllerParent.this)
+										.onNewShieldFrameReceived(frame);
 						} catch (NullPointerException e) {
 							Crashlytics.logException(e);
 						}

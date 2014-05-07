@@ -103,8 +103,9 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 			public void onClick(View v) {
 				shield.setMainActivitySelection(!shield
 						.isMainActivitySelection());
-				if (!activity.looperThread.isAlive()
-						|| activity.looperThread.isInterrupted())
+				if (activity.looperThread == null
+						|| (!activity.looperThread.isAlive() || activity.looperThread
+								.isInterrupted()))
 					activity.initLooperThread();
 				activity.backgroundThreadHandler
 						.removeCallbacksAndMessages(null);
@@ -256,8 +257,9 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		int i = 0;
 		for (final UIShield shield : shieldList) {
 			final int x = i;
-			if (!activity.looperThread.isAlive()
-					|| activity.looperThread.isInterrupted())
+			if (activity.looperThread == null
+					|| (!activity.looperThread.isAlive() || activity.looperThread
+							.isInterrupted()))
 				activity.initLooperThread();
 			activity.backgroundThreadHandler.post(new Runnable() {
 

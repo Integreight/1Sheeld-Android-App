@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ToggleButton;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
@@ -115,6 +116,15 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public void onLowMemory() {
 		// TODO Auto-generated method stub
 		super.onLowMemory();
+	}
+
+	@Override
+	public void onResume() {
+		MainActivity.currentShieldTag = getControllerTag();
+		((ToggleButton) getActivity().findViewById(R.id.shieldStatus))
+				.setChecked(getApplication().getRunningShields().get(
+						getControllerTag()).isInteractive);
+		super.onResume();
 	}
 
 	public boolean canChangeUI() {
