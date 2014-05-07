@@ -114,6 +114,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		if (frame.getShieldId() == UIShield.CAMERA_SHIELD.getId()) {
 
 			// String userId = frame.getArgumentAsString(0);
+			Log.d("OnNewFrame",
+					"cameraCaptureQueue size = " + cameraCaptureQueue.size());
 
 			switch (frame.getFunctionId()) {
 			case QUALITY_METHOD_ID:
