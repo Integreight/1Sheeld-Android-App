@@ -34,8 +34,7 @@ public class MicShield extends ControllerParent<MicShield> {
 				Log.d("MIC", "Amp = " + ampl);
 				frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);
 				frame.addByteArgument((byte) Math.round(ampl));
-				activity.getThisApplication().getAppFirmata()
-						.sendShieldFrame(frame);
+				sendShieldFrame(frame);
 
 				// if (counter == 5) {
 				if (isResumed)
