@@ -13,9 +13,9 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import twitter4j.internal.org.json.JSONException;
-import twitter4j.internal.org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
