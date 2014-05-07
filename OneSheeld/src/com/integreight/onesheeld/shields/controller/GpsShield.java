@@ -318,7 +318,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		float lang = (float) myLocation.getLongitude();// getRadians(myLocation.getLongitude());
 		frame.addFloatArgument(lat);
 		frame.addFloatArgument(lang);
-		activity.getThisApplication().getAppFirmata().sendShieldFrame(frame);
+		sendShieldFrame(frame);
 
 	}
 

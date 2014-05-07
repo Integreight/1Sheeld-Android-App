@@ -3,17 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    android:padding="20dp" >
-
-    <ImageView
-        android:id="@+id/keyboard_fragment_background_imageview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/shield_fragment_background" />
+    android:orientation="vertical" >
 
     <EditText
         android:id="@+id/keyboard_myEdit_txt"

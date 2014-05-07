@@ -38,8 +38,7 @@ public class ClockShield extends
 
 			if (frame != null && calendar != null) {
 				frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
-				activity.getThisApplication().getAppFirmata()
-						.sendShieldFrame(frame);
+				sendShieldFrame(frame);
 				if (eventHandler != null)
 					eventHandler.onTimeChanged(""
 							+ calendar.get(Calendar.HOUR_OF_DAY) + ":"
@@ -86,8 +85,7 @@ public class ClockShield extends
 				frame.addByteArgument((byte) day);
 				frame.addByteArgument((byte) month);
 				frame.addByteArgument((byte) year);
-				activity.getThisApplication().getAppFirmata()
-						.sendShieldFrame(frame);
+				sendShieldFrame(frame);
 				if (eventHandler != null)
 					eventHandler.onTimeChanged(hour + ":" + minutes + ":"
 							+ seconds);
@@ -169,9 +167,7 @@ public class ClockShield extends
 							.get(Calendar.DAY_OF_MONTH));
 					frame.addByteArgument((byte) calendar.get(Calendar.MONTH));
 					frame.addByteArgument((byte) calendar.get(Calendar.YEAR));
-
-					activity.getThisApplication().getAppFirmata()
-							.sendShieldFrame(frame);
+					sendShieldFrame(frame);
 				}
 			} else if (hour != calendar.get(Calendar.HOUR_OF_DAY)
 					&& day != calendar.get(Calendar.DAY_OF_MONTH)
@@ -185,9 +181,7 @@ public class ClockShield extends
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.DAY_OF_MONTH));
 					frame.addByteArgument((byte) calendar.get(Calendar.MONTH));
-
-					activity.getThisApplication().getAppFirmata()
-							.sendShieldFrame(frame);
+					sendShieldFrame(frame);
 				}
 
 			} else if (hour != calendar.get(Calendar.HOUR_OF_DAY)
@@ -200,9 +194,7 @@ public class ClockShield extends
 							.get(Calendar.HOUR_OF_DAY));
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.DAY_OF_MONTH));
-
-					activity.getThisApplication().getAppFirmata()
-							.sendShieldFrame(frame);
+					sendShieldFrame(frame);
 
 				}
 
@@ -213,9 +205,7 @@ public class ClockShield extends
 					frame.addByteArgument((byte) calendar.get(Calendar.MINUTE));
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.HOUR_OF_DAY));
-
-					activity.getThisApplication().getAppFirmata()
-							.sendShieldFrame(frame);
+					sendShieldFrame(frame);
 
 				}
 
@@ -224,9 +214,7 @@ public class ClockShield extends
 				if (frame != null) {
 					frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
 					frame.addByteArgument((byte) calendar.get(Calendar.MINUTE));
-
-					activity.getThisApplication().getAppFirmata()
-							.sendShieldFrame(frame);
+					sendShieldFrame(frame);
 				}
 			}
 			setTime();

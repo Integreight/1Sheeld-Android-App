@@ -97,8 +97,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);
 			frame.addFloatArgument(event.values[2]);
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 			if (eventHandler != null)
 				eventHandler.onSensorValueChangedFloat(event.values);
 

@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#fffad7" >
-
-    <ImageView
-        android:id="@+id/foursquare_fragment_background_imageview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="20dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/shield_fragment_background" />
+    android:layout_height="match_parent" >
 
     <Button
         android:id="@+id/foursquare_shiled_login_bt"

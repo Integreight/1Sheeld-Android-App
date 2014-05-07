@@ -96,7 +96,6 @@ public class SmsShield extends ControllerParent<SmsShield> {
 			lastSmsText = smsText;
 			if (frame.getFunctionId() == SEND_SMS_METHOD_ID) {
 				sendSms(smsNumber, smsText);
-
 			}
 
 		}
@@ -114,8 +113,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
 			frame.addStringArgument(sms_body);
 
 			Log.d("Fram", frame.getArgumentAsString(1));
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 		}
 
 		@Override

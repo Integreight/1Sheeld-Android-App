@@ -44,6 +44,7 @@ public class MainActivity extends FragmentActivity {
 	private AppSlidingLeftMenu appSlidingMenu;
 	public boolean isForground = false;
 	private onConnectedToBluetooth onConnectToBlueTooth = null;
+	public static String currentShieldTag = null;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();

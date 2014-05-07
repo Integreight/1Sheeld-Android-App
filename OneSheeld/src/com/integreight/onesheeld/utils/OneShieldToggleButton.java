@@ -1,14 +1,14 @@
 package com.integreight.onesheeld.utils;
 
-import com.integreight.onesheeld.OneSheeldApplication;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.widget.Button;
+import android.widget.ToggleButton;
 
-public class OneShieldButton extends Button {
-	public OneShieldButton(Context context) {
+import com.integreight.onesheeld.OneSheeldApplication;
+
+public class OneShieldToggleButton extends ToggleButton {
+	public OneShieldToggleButton(Context context) {
 		super(context);
 		setTypeface(
 				((OneSheeldApplication) context.getApplicationContext()).appFont,
@@ -17,7 +17,7 @@ public class OneShieldButton extends Button {
 						: Typeface.NORMAL);
 	}
 
-	public OneShieldButton(Context context, AttributeSet attrs) {
+	public OneShieldToggleButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setTypeface(
 				((OneSheeldApplication) context.getApplicationContext()).appFont,

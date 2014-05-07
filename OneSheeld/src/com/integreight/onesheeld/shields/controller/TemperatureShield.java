@@ -94,8 +94,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 					TEMPERATURE_VALUE);
 			oldInput = event.values[0];
 			frame.addByteArgument((byte) Math.round(event.values[0]));
-			activity.getThisApplication().getAppFirmata()
-					.sendShieldFrame(frame);
+			sendShieldFrame(frame);
 			Log.d("Sensor Data of X", event.values[0] + "");
 			if (eventHandler != null)
 				eventHandler.onSensorValueChangedFloat(event.values[0] + "");

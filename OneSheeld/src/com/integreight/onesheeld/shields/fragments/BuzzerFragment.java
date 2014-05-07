@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.Log;
@@ -17,6 +19,15 @@ import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
+	private final int[] levelsResources = new int[] {
+			R.drawable.buzzer_shield_0_volume,
+			R.drawable.buzzer_shield_25_volume,
+			R.drawable.buzzer_shield_50_volume,
+			R.drawable.buzzer_shield_75_volume,
+			R.drawable.buzzer_shield_100_volume };
+	private ImageView buzzerSpeaker;
+	private Button increaseBtn, decreaseBtn;
+	private int currLevel = 0;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -59,7 +70,57 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 					}
 				});
+		buzzerSpeaker = (ImageView) getView().findViewById(
+				R.id.speaker_shield_imageview);
+		buzzerSpeaker
+				.setBackgroundResource(getBuzzerVolumeResource(((SpeakerShield) getApplication()
+						.getRunningShields().get(getControllerTag()))
+						.getBuzzerVolume()));
+		increaseBtn = (Button) getView().findViewById(R.id.increaseBtn);
+		decreaseBtn = (Button) getView().findViewById(R.id.decreaseBtn);
+		increaseBtn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				int buzVol = ((SpeakerShield) getApplication()
+						.getRunningShields().get(getControllerTag()))
+						.getBuzzerVolume();
+				if (buzVol < 100) {
+					buzVol = buzVol + 25;
+					((SpeakerShield) getApplication().getRunningShields().get(
+							getControllerTag())).setBuzzerVolume(buzVol);
+					buzzerSpeaker
+							.setBackgroundResource(getBuzzerVolumeResource(((SpeakerShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).getBuzzerVolume()));
+				}
+			}
+		});
+		decreaseBtn.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				int buzVol = ((SpeakerShield) getApplication()
+						.getRunningShields().get(getControllerTag()))
+						.getBuzzerVolume();
+				if (buzVol > 0) {
+					buzVol = buzVol - 25;
+					((SpeakerShield) getApplication().getRunningShields().get(
+							getControllerTag())).setBuzzerVolume(buzVol);
+					buzzerSpeaker
+							.setBackgroundResource(getBuzzerVolumeResource(((SpeakerShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).getBuzzerVolume()));
+				}
+			}
+		});
 		super.onStart();
+	}
+
+	private int getBuzzerVolumeResource(float volume) {
+		currLevel = volume == 0 ? 0 : volume == 25 ? 1 : volume == 50 ? 2
+				: volume == 75 ? 3 : volume == 100 ? 4 : currLevel;
+		return levelsResources[currLevel];
 	}
 
 	@Override

@@ -5,24 +5,14 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <ImageView
-        android:id="@+id/clock_fragment_background_imageview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_margin="20dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/shield_fragment_background" />
-
     <TextView
         android:id="@+id/time_txt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time" 
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:text="Time"
+        android:textColor="@android:color/white"
+        android:textSize="20sp" />
 
 </RelativeLayout>
