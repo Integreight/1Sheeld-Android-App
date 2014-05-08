@@ -463,7 +463,6 @@ public class CameraHeadService extends Service implements
 			}
 			if (mCamera != null) {
 				mCamera.stopPreview();
-				mCamera.setPreviewCallback(null);
 				mCamera.release();
 				mCamera = null;
 			}
@@ -477,7 +476,7 @@ public class CameraHeadService extends Service implements
 				bmp = null;
 				System.gc();
 			}
-
+			mCamera = null;
 			handler.post(new Runnable() {
 
 				@Override
@@ -510,7 +509,6 @@ public class CameraHeadService extends Service implements
 	public void onDestroy() {
 		if (mCamera != null) {
 			mCamera.stopPreview();
-			mCamera.setPreviewCallback(null);
 			mCamera.release();
 			mCamera = null;
 		}
@@ -542,7 +540,6 @@ public class CameraHeadService extends Service implements
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		if (mCamera != null) {
 			mCamera.stopPreview();
-			mCamera.setPreviewCallback(null);
 			mCamera.release();
 			mCamera = null;
 		}
