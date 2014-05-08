@@ -107,12 +107,13 @@ public enum UIShield {
 			R.drawable.shields_list_temperature_symbol, false,
 			TemperatureShield.class, 1), CAMERA_SHIELD((byte) 0x15, "Camera",
 			0xff6d0347, R.drawable.shields_list_camera_symbol, false,
-			CameraShield.class), PHONE_SHIELD((byte) 0x20, "Phone", 0xffe9bd03,
-			R.drawable.shields_list_email_symbol, false, PhoneShield.class), NFC(
-			(byte) 0x20, "NFC", 0xff127303, R.drawable.shields_list_nfc_symbol,
-			false, EmptyShield.class, false), WIFI((byte) 0x20, "WIFI",
-			0xff08bbb2, R.drawable.shields_list_wifi_symbol, false,
-			EmptyShield.class, false), GSM((byte) 0x20, "GSM", 0xff5a0303,
+			CameraShield.class, 1), PHONE_SHIELD((byte) 0x20, "Phone",
+			0xffe9bd03, R.drawable.shields_list_email_symbol, false,
+			PhoneShield.class), NFC((byte) 0x20, "NFC", 0xff127303,
+			R.drawable.shields_list_nfc_symbol, false, EmptyShield.class, false), WIFI(
+			(byte) 0x20, "WIFI", 0xff08bbb2,
+			R.drawable.shields_list_wifi_symbol, false, EmptyShield.class,
+			false), GSM((byte) 0x20, "GSM", 0xff5a0303,
 			R.drawable.shields_list_gsm_symbol, false, EmptyShield.class, false), GLCD(
 			(byte) 0x20, "GLCD", 0xff988564,
 			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class, false), EMAIL_SHIELD(

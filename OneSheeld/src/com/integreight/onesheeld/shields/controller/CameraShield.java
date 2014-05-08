@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 
@@ -86,7 +87,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	}
 
 	public CameraShield() {
-		
+
 	}
 
 	public CameraShield(Activity activity, String tag) {
@@ -103,6 +104,36 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		return super.setTag(tag);
 	}
 
+	@Override
+	public ControllerParent<CameraShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
+		if (!checkCameraHardware(getApplication().getApplicationContext())) {
+			if (selectionAction != null)
+				selectionAction.onFailure();
+			if (isToastable)
+				activity.showToast("Device doesn't have Camera");
+		} else {
+			if (selectionAction != null)
+				selectionAction.onSuccess();
+
+		}
+		return super.invalidate(selectionAction, isToastable);
+	}
+
+	/** Check if this device has a camera */
+	private boolean checkCameraHardware(Context context) {
+		if (context.getPackageManager().hasSystemFeature(
+				PackageManager.FEATURE_CAMERA)) {
+			// this device has a camera
+			return true;
+		} else {
+			// no camera on this device
+			return false;
+		}
+	}
+
 	public void setCameraEventHandler(CameraEventHandler eventHandler) {
 		// this.eventHandler = eventHandler;
 		CommitInstanceTotable();
@@ -114,8 +145,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 		if (frame.getShieldId() == UIShield.CAMERA_SHIELD.getId()) {
 
 			// String userId = frame.getArgumentAsString(0);
-			Log.d("OnNewFrame",
-					"cameraCaptureQueue size = " + cameraCaptureQueue.size());
+			Log.d("OnNewFrame", "cameraCaptureQueue size = "
+					+ cameraCaptureQueue.size());
 
 			switch (frame.getFunctionId()) {
 			case QUALITY_METHOD_ID:
@@ -186,7 +217,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 			default:
 				break;
-			}			
+			}
 		}
 
 	}
