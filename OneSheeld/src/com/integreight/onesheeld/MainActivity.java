@@ -28,7 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
-
+	
 import com.crashlytics.android.Crashlytics;
 import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
@@ -344,7 +344,8 @@ public class MainActivity extends FragmentActivity {
 						if (getSupportFragmentManager()
 								.getBackStackEntryCount() > 1) {
 							getSupportFragmentManager().beginTransaction()
-									.setCustomAnimations(0, 0, 0, 0).commit();
+									.setCustomAnimations(0, 0, 0, 0)
+									.commitAllowingStateLoss();
 							getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 							getSupportFragmentManager()
 									.executePendingTransactions();

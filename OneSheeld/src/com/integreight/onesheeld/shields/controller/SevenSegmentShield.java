@@ -65,6 +65,9 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
 	}
 
 	private synchronized void updateSegmentsStatusFromFirmata() {
+		for (Entry<String, Boolean> entry : pinsStatus.entrySet()) {
+			pinsStatus.put(entry.getKey(), false);
+		}
 		for (Entry<String, ArduinoPin> entry : matchedShieldPins.entrySet()) {
 			pinsStatus.put(entry.getKey(), getApplication().getAppFirmata()
 					.digitalRead(entry.getValue().microHardwarePin));

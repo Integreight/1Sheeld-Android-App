@@ -76,8 +76,18 @@ public class SevenSegmentFragment extends
 									.setConnected(new ArduinoConnectedPin(
 											pin.microHardwarePin,
 											ArduinoFirmata.INPUT));
+							refreshSegments(((SevenSegmentShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).refreshSegments());
 						}
 
+					}
+
+					@Override
+					public void onUnSelect(ArduinoPin pin) {
+						refreshSegments(((SevenSegmentShield) getApplication()
+								.getRunningShields().get(getControllerTag()))
+								.refreshSegments());
 					}
 				});
 		super.onStart();
@@ -119,49 +129,49 @@ public class SevenSegmentFragment extends
 	};
 
 	private void refreshSegments(Hashtable<String, Boolean> segmentsStatus) {
-		if (segmentsStatus.get("  A  ")) {
+		if (segmentsStatus.get("  A  ") != null && segmentsStatus.get("  A  ")) {
 			aSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			aSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
 
-		if (segmentsStatus.get("  B  ")) {
+		if (segmentsStatus.get("  B  ") != null && segmentsStatus.get("  B  ")) {
 			bSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			bSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get("  C  ")) {
+		if (segmentsStatus.get("  C  ") != null && segmentsStatus.get("  C  ")) {
 			cSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			cSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get("  D  ")) {
+		if (segmentsStatus.get("  D  ") != null && segmentsStatus.get("  D  ")) {
 			dSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			dSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
 
-		if (segmentsStatus.get("  E  ")) {
+		if (segmentsStatus.get("  E  ") != null && segmentsStatus.get("  E  ")) {
 			eSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			eSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get("  F  ")) {
+		if (segmentsStatus.get("  F  ") != null && segmentsStatus.get("  F  ")) {
 			fSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
 		} else {
 			fSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
 		}
 
-		if (segmentsStatus.get("  G  ")) {
+		if (segmentsStatus.get("  G  ") != null && segmentsStatus.get("  G  ")) {
 			gSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
 		} else {
 			gSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
 		}
 
-		if (segmentsStatus.get(" DOT ")) {
+		if (segmentsStatus.get(" DOT ") != null && segmentsStatus.get(" DOT ")) {
 			dotSegment.setImageResource(R.drawable.seventsegment_on_dot_image);
 		} else {
 			dotSegment.setImageResource(R.drawable.seventsegment_off_dot_image);

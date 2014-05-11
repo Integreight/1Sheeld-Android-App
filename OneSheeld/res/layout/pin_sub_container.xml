@@ -13,7 +13,7 @@
         android:clickable="true"
         android:gravity="center"
         android:padding="7dp"
-        android:textColor="#B1ffffff"
+        android:textColor="@color/textColorOnDark"
         android:textSize="18sp" />
 
     <com.integreight.onesheeld.utils.OneShieldTextView
@@ -21,7 +21,7 @@
         android:layout_height="33dp"
         android:gravity="center"
         android:padding="7dp"
-        android:textColor="#B1ffffff"
+        android:textColor="@color/textColorOnDark"
         android:textSize="18sp" />
 
 </LinearLayout>

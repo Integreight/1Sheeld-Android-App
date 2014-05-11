@@ -19,6 +19,7 @@ import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.onGetPinsView;
+import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData.TYPE;
 
 public class PinsColumnContainer extends RelativeLayout {
 	public int currentIndex = -1;
@@ -81,28 +82,31 @@ public class PinsColumnContainer extends RelativeLayout {
 
 	private int getType(PinView v) {
 		int type = PinData.TYPE.NOT_CONNECTED_AND_ENABLED;
-		String tag = v.getTag().toString().startsWith("_") ? v.getTag()
-				.toString().substring(1) : v.getTag().toString();
-		if (isPinEnabled(tag) == false)
-			return PinData.TYPE.DISABLED;
-		Hashtable<String, Boolean> table = ArduinoPin.valueOf(v.getTag()
-				.toString()).connectedPins;
-		Enumeration<String> enumKey = table.keys();
-		while (enumKey.hasMoreElements()) {
-			String key = enumKey.nextElement();
-			if (!key.startsWith(controller.getClass().getName())) {
-				type = PinData.TYPE.CONNECTED_OUT;
+		if (v.getTag() != null) {
+			String tag = v.getTag().toString().startsWith("_") ? v.getTag()
+					.toString().substring(1) : v.getTag().toString();
+			if (isPinEnabled(tag) == false)
+				return PinData.TYPE.DISABLED;
+			Hashtable<String, Boolean> table = ArduinoPin.valueOf(v.getTag()
+					.toString()).connectedPins;
+			Enumeration<String> enumKey = table.keys();
+			while (enumKey.hasMoreElements()) {
+				String key = enumKey.nextElement();
+				if (!key.startsWith(controller.getClass().getName())) {
+					type = PinData.TYPE.CONNECTED_OUT;
+				}
 			}
-		}
-		enumKey = controller.matchedShieldPins.keys();
-		while (enumKey.hasMoreElements()) {
-			String key = enumKey.nextElement();
-			if (controller.matchedShieldPins.get(key) != null
-					&& controller.matchedShieldPins.get(key) == ArduinoPin
-							.valueOf(v.getTag().toString())) {
-				return PinData.TYPE.CONNECTED_HERE;
+			enumKey = controller.matchedShieldPins.keys();
+			while (enumKey.hasMoreElements()) {
+				String key = enumKey.nextElement();
+				if (controller.matchedShieldPins.get(key) != null
+						&& controller.matchedShieldPins.get(key) == ArduinoPin
+								.valueOf(v.getTag().toString())) {
+					return PinData.TYPE.CONNECTED_HERE;
+				}
 			}
-		}
+		} else
+			type = TYPE.DUMMY;
 		return type;
 	}
 
@@ -115,21 +119,28 @@ public class PinsColumnContainer extends RelativeLayout {
 			if (vg.getChildAt(i) instanceof PinView) {
 				PinView v = (PinView) vg.getChildAt(i);
 				int type = getType(v);
-				v.setBackgroundResource(type);
-				childrenRects.add(new PinData(((String) v.getTag()), new Rect(
-						concatenatedLeft
-								+ vg.getLeft()
-								- (extraHorizontalSpace * (!v.getTag()
-										.toString().startsWith("_") ? 2 : 1))
-								+ v.getLeft(), concatenatedTop + vg.getTop()
-								+ v.getTop() - extraVerticalSpace,
-						concatenatedTop
-								+ vg.getLeft()
-								+ v.getRight()
-								+ (extraHorizontalSpace * (v.getTag()
-										.toString().startsWith("_") ? 2 : 2)),
-						concatenatedTop + vg.getTop() + v.getBottom()
-								+ extraVerticalSpace), i, type));
+				if (type != TYPE.DUMMY) {
+					v.setBackgroundResource(type);
+					childrenRects.add(new PinData(((String) v.getTag()),
+							new Rect(
+									concatenatedLeft
+											+ vg.getLeft()
+											- (extraHorizontalSpace * (!v
+													.getTag().toString()
+													.startsWith("_") ? 2 : 1))
+											+ v.getLeft(), concatenatedTop
+											+ vg.getTop() + v.getTop()
+											- extraVerticalSpace,
+									concatenatedTop
+											+ vg.getLeft()
+											+ v.getRight()
+											+ (extraHorizontalSpace * (v
+													.getTag().toString()
+													.startsWith("_") ? 2 : 2)),
+									concatenatedTop + vg.getTop()
+											+ v.getBottom()
+											+ extraVerticalSpace), i, type));
+				}
 			} else if (vg.getChildAt(i) instanceof ViewGroup) {
 				loadRects((ViewGroup) vg.getChildAt(i));
 			}
@@ -227,6 +238,7 @@ public class PinsColumnContainer extends RelativeLayout {
 			public final static int CONNECTED_OUT = R.drawable.arduino_orange_pin;
 			public final static int NOT_CONNECTED_AND_ENABLED = R.drawable.arduino_default_pin;
 			public final static int DISABLED = R.drawable.arduino_red_pin;
+			public final static int DUMMY = R.drawable.arduino_dummy_pin;
 		}
 
 	}

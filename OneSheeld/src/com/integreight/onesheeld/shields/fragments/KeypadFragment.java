@@ -75,6 +75,11 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 						}
 
 					}
+
+					@Override
+					public void onUnSelect(ArduinoPin pin) {
+
+					}
 				});
 		super.onStart();
 	}

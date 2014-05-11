@@ -59,6 +59,12 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 						}
 
 					}
+
+					@Override
+					public void onUnSelect(ArduinoPin pin) {
+						// TODO Auto-generated method stub
+
+					}
 				}); // TODO Auto-generated method stub
 		super.onStart();
 	}

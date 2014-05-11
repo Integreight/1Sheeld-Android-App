@@ -87,6 +87,10 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 						}
 
 					}
+
+					@Override
+					public void onUnSelect(ArduinoPin pin) {
+					}
 				}); // TODO Auto-generated method stub
 
 		super.onStart();

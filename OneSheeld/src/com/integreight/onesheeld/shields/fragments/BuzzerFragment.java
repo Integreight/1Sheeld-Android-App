@@ -69,6 +69,12 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 						}
 
 					}
+
+					@Override
+					public void onUnSelect(ArduinoPin pin) {
+						((SpeakerShield) getApplication().getRunningShields()
+								.get(getControllerTag())).stopBuzzer();
+					}
 				});
 		buzzerSpeaker = (ImageView) getView().findViewById(
 				R.id.speaker_shield_imageview);

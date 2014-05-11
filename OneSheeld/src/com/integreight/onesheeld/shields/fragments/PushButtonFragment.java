@@ -103,6 +103,10 @@ public class PushButtonFragment extends
 						}
 
 					}
+
+					@Override
+					public void onUnSelect(ArduinoPin pin) {
+					}
 				});
 		super.onStart();
 

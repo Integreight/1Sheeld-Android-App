@@ -1,10 +1,5 @@
 package com.integreight.onesheeld.appFragments;
 
-import java.io.FileDescriptor;
-import java.io.IOException;
-
-import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +28,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 	private static ShieldsOperations thisInstance;
 	protected SelectedShieldsListFragment mFrag;
 	private Fragment mContent;
-	private MediaPlayer mp;
 
 	public static ShieldsOperations getInstance() {
 		if (thisInstance == null) {
@@ -64,12 +58,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 				.beginTransaction()
 				.replace(R.id.pinsViewContainer,
 						ConnectingPinsView.getInstance()).commit();
-		// SlidingMenu sm = ((MainActivity) getActivity()).getSlidingMenu();
-		// sm.setShadowWidthRes(R.dimen.shadow_width);
-		// sm.setShadowDrawable(R.drawable.shadow);
-		// sm.setBehindWidth(150);
-		// sm.setFadeDegree(0.35f);
-		// sm.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 		myActivity.enableMenu();
 		((CheckBox) getView().findViewById(R.id.isMenuOpening))
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -90,9 +78,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 				myActivity.openMenu();
 			}
 		}, 500);
-		// getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-		// myActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		// myActivity.getSupportActionBar().setHomeButtonEnabled(true);
 
 		if (savedInstanceState == null) {
 			FragmentTransaction t = myActivity.getSupportFragmentManager()
@@ -115,8 +100,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 					.beginTransaction()
 					.replace(R.id.shieldsContainerFrame, mContent).commit();
 		}
-		// myActivity.replaceCurrentFragment(R.id.pinsViewContainer,
-		// ConnectingPinsView.getInstance(), "", false, false);
 		final MultiDirectionSlidingDrawer pinsSlidingView = (MultiDirectionSlidingDrawer) getView()
 				.findViewById(R.id.pinsViewSlidingView);
 		final MultiDirectionSlidingDrawer settingsSlidingView = (MultiDirectionSlidingDrawer) getView()
@@ -144,7 +127,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onDrawerClosed() {
-						if (!settingsSlidingView.isOpened())
+						if (!settingsSlidingView.isOpened()
+								&& !((CheckBox) getView().findViewById(
+										R.id.isMenuOpening)).isChecked())
 							myActivity.enableMenu();
 					}
 				});
@@ -180,7 +165,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onDrawerClosed() {
-						if (!pinsSlidingView.isOpened())
+						if (!pinsSlidingView.isOpened()
+								&& !((CheckBox) getView().findViewById(
+										R.id.isMenuOpening)).isChecked())
 							myActivity.enableMenu();
 					}
 				});
@@ -192,22 +179,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 				return settingsSlidingView.isOpened();
 			}
 		});
-		// if (savedInstanceState != null)
-		// mContent = myActivity.getSupportFragmentManager().getFragment(
-		// savedInstanceState, "mContent");
-
-		// // set the Behind View
-		// setBehindContentView(R.layout.menu_frame);
-		// if (savedInstanceState == null) {
-		// FragmentTransaction t = this.getSupportFragmentManager()
-		// .beginTransaction();
-		// mFrag = new SelectedShieldsListFragment();
-		// t.replace(R.id.menu_frame, mFrag);
-		// t.commit();
-		// } else {
-		// mFrag = (ListFragment) this.getSupportFragmentManager()
-		// .findFragmentById(R.id.menu_frame);
-		// }
 		((ToggleButton) getView().findViewById(R.id.shieldStatus))
 				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -237,9 +208,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 				.sendEmptyMessage(0);
 		super.onStart();
 
-		// bindFirmataService();
-		// DisplayMetrics metr=getResources().getDisplayMetrics();
-
 	}
 
 	@Override
@@ -252,15 +220,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
-			// NavUtils.navigateUpFromSameTask(this);
-			// ((MainActivity) getActivity()).toggle();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -268,9 +227,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-		// ((MainActivity)
-		// getActivity()).getSupportFragmentManager().putFragment(
-		// outState, "mContent", mContent);
 	}
 
 	public void switchContent(Fragment fragment) {
@@ -279,43 +235,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 				.beginTransaction()
 				.replace(R.id.appTransitionsContainer, fragment).commit();
 		// ((MainActivity) getActivity()).getSlidingMenu().showContent();
-	}
-
-	// public void toggleLed(View v){
-	// // ((LedFragment)mContent).toggleLed(v);
-	// }
-
-	// public static interface OneSheeldServiceHandler {
-	// void onServiceConnected(ArduinoFirmata firmata);
-	//
-	// void onServiceDisconnected();
-	// }
-
-	public void playSound(int soundResourceId) {
-		if (mp == null)
-			mp = MediaPlayer.create(getActivity(), soundResourceId);
-		if (mp.isPlaying()) {
-			Resources res = getResources();
-			AssetFileDescriptor afd = res.openRawResourceFd(soundResourceId);
-			FileDescriptor fd = afd.getFileDescriptor();
-			mp.reset();
-			try {
-				mp.setDataSource(fd);
-				mp.prepare();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalStateException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			mp.start();
-		} else
-			mp.start();
 	}
 
 	@Override

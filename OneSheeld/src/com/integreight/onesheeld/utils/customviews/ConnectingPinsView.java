@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
@@ -94,8 +96,7 @@ public class ConnectingPinsView extends Fragment {
 
 					@Override
 					public void focusOnThisChild(int childIndex, String tag) {
-						show.setVisibility(tag.length() > 0 ? View.VISIBLE
-								: View.INVISIBLE);
+						show.setVisibility(View.VISIBLE);
 						show.setText(tag.startsWith("_") ? tag.substring(1)
 								: tag);
 					}
@@ -131,8 +132,16 @@ public class ConnectingPinsView extends Fragment {
 													.getName() + shieldPinName))
 								prevArduinoPin.connectedPins.remove(controller
 										.getClass().getName() + shieldPinName);
+							// ((OneSheeldApplication) getActivity()
+							// .getApplication())
+							// .getAppFirmata()
+							// .digitalWrite(
+							// controller.matchedShieldPins
+							// .get(controller.shieldPins[selectedPin]).microHardwarePin,
+							// ArduinoFirmata.LOW);
 							controller.matchedShieldPins
 									.remove(controller.shieldPins[selectedPin]);
+							listner.onUnSelect(prevArduinoPin);
 							listner.onSelect(null);
 						}
 						((OneShieldTextView) pinsSubContainers.get(selectedPin)
@@ -246,6 +255,8 @@ public class ConnectingPinsView extends Fragment {
 
 	public static interface OnPinSelectionListener {
 		public void onSelect(ArduinoPin pin);
+
+		public void onUnSelect(ArduinoPin pin);
 	}
 
 	public static interface onGetPinsView {
