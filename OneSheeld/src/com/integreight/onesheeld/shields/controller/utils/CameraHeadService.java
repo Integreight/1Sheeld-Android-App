@@ -53,6 +53,7 @@ public class CameraHeadService extends Service implements
 	public Intent cameraIntent;
 
 	/** Called when the activity is first created. */
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		super.onCreate();
