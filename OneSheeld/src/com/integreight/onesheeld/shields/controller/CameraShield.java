@@ -1,7 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -63,10 +63,9 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 						.getApplicationContext(), CameraHeadService.class);
 				intent.putExtra("FLASH", camCapture.getFlash());
 				intent.putExtra("Quality_Mode", camCapture.getQuality());
-
-				getApplication().getApplicationContext().startService(intent);
-
 				camCapture.setTaken();
+				getApplication().getApplicationContext().startService(intent);
+				Log.d("ImageTakin", "OnTakeBack()");
 			}
 		}
 	}
@@ -79,9 +78,9 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				front_translucent.putExtra("Front_Request", true);
 				front_translucent.putExtra("Quality_Mode",
 						camCapture.getQuality());
+				camCapture.setTaken();
 				getApplication().getApplicationContext().startService(
 						front_translucent);
-				camCapture.setTaken();
 			}
 		}
 	}
@@ -100,7 +99,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 				getApplication().getApplicationContext()).registerReceiver(
 				mMessageReceiver, new IntentFilter("custom-event-name"));
 		UIHandler = new Handler();
-		cameraCaptureQueue = new LinkedList<CameraShield.CameraCapture>();
+		cameraCaptureQueue = new ConcurrentLinkedQueue<CameraShield.CameraCapture>();
 		return super.setTag(tag);
 	}
 

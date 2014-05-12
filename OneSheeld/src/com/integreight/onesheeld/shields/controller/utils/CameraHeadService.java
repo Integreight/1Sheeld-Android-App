@@ -9,6 +9,8 @@ import java.io.IOException;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -51,37 +53,15 @@ public class CameraHeadService extends Service implements
 	private WindowManager windowManager;
 	WindowManager.LayoutParams params;
 	public Intent cameraIntent;
+	SharedPreferences pref;
+	Editor editor;
+	int width = 0, height = 0;
 
 	/** Called when the activity is first created. */
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		super.onCreate();
-
-		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
-		params = new WindowManager.LayoutParams(
-				WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.WRAP_CONTENT,
-				WindowManager.LayoutParams.TYPE_PHONE,
-				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-				PixelFormat.TRANSLUCENT);
-
-		params.gravity = Gravity.TOP | Gravity.LEFT;
-		params.width = 1;
-		params.height = 1;
-		params.x = 0;
-		params.y = 0;
-		sv = new SurfaceView(getApplicationContext());
-
-		windowManager.addView(sv, params);
-		sHolder = sv.getHolder();
-		sHolder.addCallback(this);
-
-		// tells Android that this surface will have its data constantly
-		// replaced
-		if (Build.VERSION.SDK_INT < 11)
-			sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
 	}
 
@@ -111,6 +91,29 @@ public class CameraHeadService extends Service implements
 			}
 		}
 		return cam;
+	}
+
+	private void setBiggeestPictureSize() {
+		// get biggest picture size
+		width = pref.getInt("Picture_Width", 0);
+		height = pref.getInt("Picture_height", 0);
+
+		if (width == 0 | height == 0) {
+			pictureSize = getBiggesttPictureSize(parameters);
+			if (pictureSize != null)
+				parameters
+						.setPictureSize(pictureSize.width, pictureSize.height);
+			// save width and height in sharedprefrences
+			width = pictureSize.width;
+			height = pictureSize.height;
+			editor.putInt("Picture_Width", width);
+			editor.putInt("Picture_height", height);
+			editor.commit();
+
+		} else {
+			if (pictureSize != null)
+				parameters.setPictureSize(width, height);
+		}
 	}
 
 	private Camera.Size getBiggesttPictureSize(Camera.Parameters parameters) {
@@ -213,10 +216,9 @@ public class CameraHeadService extends Service implements
 						}
 						parameters = mCamera.getParameters();
 						parameters.setFlashMode(FLASH_MODE);
-						pictureSize = getBiggesttPictureSize(parameters);
-						if (pictureSize != null)
-							parameters.setPictureSize(pictureSize.width,
-									pictureSize.height);
+						// set biggest picture
+						setBiggeestPictureSize();
+
 						// set camera parameters
 						mCamera.setParameters(parameters);
 						mCamera.startPreview();
@@ -270,10 +272,10 @@ public class CameraHeadService extends Service implements
 							}
 							parameters = mCamera.getParameters();
 							parameters.setFlashMode(FLASH_MODE);
-							pictureSize = getBiggesttPictureSize(parameters);
-							if (pictureSize != null)
-								parameters.setPictureSize(pictureSize.width,
-										pictureSize.height);
+
+							// set biggest picture
+							setBiggeestPictureSize();
+
 							// set camera parameters
 							mCamera.setParameters(parameters);
 							mCamera.startPreview();
@@ -332,10 +334,13 @@ public class CameraHeadService extends Service implements
 							FLASH_MODE = "auto";
 						}
 						parameters.setFlashMode(FLASH_MODE);
+						// set biggest picture
+						setBiggeestPictureSize();
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
 						mCamera.startPreview();
+						Log.d("ImageTakin", "OnTake()");
 						mCamera.takePicture(null, null, mCall);
 					} else {
 						handler.post(new Runnable() {
@@ -393,7 +398,35 @@ public class CameraHeadService extends Service implements
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// sv = new SurfaceView(getApplicationContext());
 		cameraIntent = intent;
-		return 0;
+		Log.d("ImageTakin", "StartCommand()");
+		pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+		editor = pref.edit();
+
+		windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
+		params = new WindowManager.LayoutParams(
+				WindowManager.LayoutParams.WRAP_CONTENT,
+				WindowManager.LayoutParams.WRAP_CONTENT,
+				WindowManager.LayoutParams.TYPE_PHONE,
+				WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+				PixelFormat.TRANSLUCENT);
+
+		params.gravity = Gravity.TOP | Gravity.LEFT;
+		params.width = 1;
+		params.height = 1;
+		params.x = 0;
+		params.y = 0;
+		sv = new SurfaceView(getApplicationContext());
+
+		windowManager.addView(sv, params);
+		sHolder = sv.getHolder();
+		sHolder.addCallback(this);
+
+		// tells Android that this surface will have its data constantly
+		// replaced
+		if (Build.VERSION.SDK_INT < 11)
+			sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+		return 1;
 	}
 
 	Camera.PictureCallback mCall = new Camera.PictureCallback() {
