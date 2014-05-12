@@ -129,6 +129,17 @@ public class SheeldsList extends Fragment {
 						launchShieldsOperationActivity();
 					}
 				});
+		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
+		((OneSheeldApplication) getActivity().getApplication())
+				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
+		if (((OneSheeldApplication) getActivity().getApplication())
+				.getAppFirmata() == null
+				|| (((OneSheeldApplication) getActivity().getApplication())
+						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
+						.getApplication()).getAppFirmata().isOpen())) {
+			if (!ArduinoConnectivityPopup.isOpened)
+				new ArduinoConnectivityPopup(getActivity()).show();
+		}
 		super.onResume();
 	}
 
@@ -283,17 +294,6 @@ public class SheeldsList extends Fragment {
 
 	@Override
 	public void onStart() {
-		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
-		((OneSheeldApplication) getActivity().getApplication())
-				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
-		if (((OneSheeldApplication) getActivity().getApplication())
-				.getAppFirmata() == null
-				|| (((OneSheeldApplication) getActivity().getApplication())
-						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
-						.getApplication()).getAppFirmata().isOpen())) {
-			if (!ArduinoConnectivityPopup.isOpened)
-				new ArduinoConnectivityPopup(getActivity()).show();
-		}
 		super.onStart();
 	}
 

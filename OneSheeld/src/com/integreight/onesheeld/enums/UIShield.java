@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.enums;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.integreight.onesheeld.R;
@@ -40,7 +42,6 @@ import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public enum UIShield {
-
 	LED_SHIELD((byte) 0x02, "LED", 0xff03d203,
 			R.drawable.shields_list_led_symbol, false, LedShield.class), NOTIFICATION_SHIELD(
 			(byte) 0x06, "Notification", 0xffd4d903,
@@ -123,10 +124,17 @@ public enum UIShield {
 			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x22, "Keyboard", 0xffd95342,
 			R.drawable.shields_list_gravity_symbol, false, KeyboardShield.class);
-
+	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
+			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
+			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
+			0xff039dc0, 0xffa14c4c, 0xff658f08, 0xff061179, 0xffa10b07,
+			0xffdb7f40, 0xffb950e9, 0xff4c84e9, 0xff0b4c8d, 0xff08c473,
+			0xff543c8d, 0xffd95342, 0xff58844f, 0xff8b268d, 0xff67584d,
+			0xff999f45, 0xff6d0347, 0xffe9bd03, 0xff127303, 0xff08bbb2,
+			0xff5a0303, 0xff988564, 0xffd95342, 0xffd95342, 0xffd95342 };
 	private byte id;
 	private String name;
-	private int itemBackgroundColor;
+	public int itemBackgroundColor;
 	private int symbolId;
 	private boolean mainActivitySelection;
 	private static UIShield shieldsActivitySelection;
@@ -134,6 +142,7 @@ public enum UIShield {
 	private boolean isReleasable = true;
 	private int isInvalidatable = 0;
 	private Class<? extends ControllerParent<?>> shieldType;
+	public int position = 0;
 
 	public int getSymbolId() {
 		return symbolId;
@@ -324,15 +333,31 @@ public enum UIShield {
 		UIShield.isConnected = isConnected;
 	}
 
-	public static List<UIShield> valuesFiltered() {
+	public static synchronized List<UIShield> valuesFiltered() {
 		UIShield[] vals = values();
 		List<UIShield> valsFiltered = new ArrayList<UIShield>();
 		for (int i = 0; i < vals.length; i++) {
 			UIShield cur = vals[i];
-			if (cur.isReleasable)
+			if (cur.isReleasable) {
+				cur.position = valsFiltered.size();
 				valsFiltered.add(cur);
+			}
 		}
+		Collections.sort(valsFiltered, new Comparator<UIShield>() {
+
+			@Override
+			public int compare(UIShield lhs, UIShield rhs) {
+				return lhs.getName().compareToIgnoreCase(rhs.getName());
+			}
+		});
 		vals = null;
-		return valsFiltered;
+		final ArrayList<UIShield> ret = new ArrayList<UIShield>();
+		for (UIShield uiShield : valsFiltered) {
+			uiShield.itemBackgroundColor = colors[ret.size()];
+			ret.add(uiShield);
+		}
+		valsFiltered.clear();
+		valsFiltered = null;
+		return ret;
 	}
 }

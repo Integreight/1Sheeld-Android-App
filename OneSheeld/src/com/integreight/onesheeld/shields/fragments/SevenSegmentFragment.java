@@ -102,9 +102,10 @@ public class SevenSegmentFragment extends
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		((SevenSegmentShield) getApplication().getRunningShields().get(
-				getControllerTag()))
-				.setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
+		if (getControllerTag() != null)
+			((SevenSegmentShield) getApplication().getRunningShields().get(
+					getControllerTag()))
+					.setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
 		super.onActivityCreated(savedInstanceState);
 
 	}

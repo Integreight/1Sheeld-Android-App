@@ -1,7 +1,6 @@
 package com.integreight.onesheeld.adapters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import android.app.Activity;
@@ -23,7 +22,7 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 	public SelectedShieldsListAdapter(Activity a) {
 		this.activity = a;
 		this.shieldList = new ArrayList<UIShield>();
-		List<UIShield> tempShieldsList = Arrays.asList(UIShield.values());
+		List<UIShield> tempShieldsList = UIShield.valuesFiltered();
 		for (UIShield shield : tempShieldsList) {
 			if (shield.isMainActivitySelection())
 				this.shieldList.add(shield);

@@ -109,7 +109,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	}
 
 	public String getControllerTag() {
-		return controllerTag == null ? getTag() : controllerTag;
+		controllerTag = (controllerTag == null ? getTag() : controllerTag);
+		return controllerTag;
 	}
 
 	public void setControllerTag(String controllerTag) {

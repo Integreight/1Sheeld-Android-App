@@ -28,7 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.Toast;
-	
+
 import com.crashlytics.android.Crashlytics;
 import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
@@ -508,14 +508,24 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	protected void onStart() {
+	protected void onResumeFragments() {
 		isForground = true;
+		super.onResumeFragments();
+	}
+
+	@Override
+	protected void onPause() {
+		isForground = false;
+		super.onPause();
+	}
+
+	@Override
+	protected void onStart() {
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-		isForground = false;
 		super.onStop();
 	}
 

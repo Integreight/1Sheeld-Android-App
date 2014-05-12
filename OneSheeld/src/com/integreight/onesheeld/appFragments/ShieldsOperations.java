@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.appFragments;
 
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -195,17 +194,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	@Override
 	public void onStart() {
-		((CheckBox) getView().findViewById(R.id.isMenuOpening))
-				.setChecked(false);
-		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
-		if (((OneSheeldApplication) getActivity().getApplication())
-				.getAppFirmata() == null
-				|| !((OneSheeldApplication) getActivity().getApplication())
-						.getAppFirmata().isOpen()) {
-			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
-		}
-		((MainActivity) getActivity()).getOnConnectionLostHandler()
-				.sendEmptyMessage(0);
 		super.onStart();
 
 	}
@@ -245,7 +233,17 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	@Override
 	public void onResume() {
-		// getSherlockActivity().getSupportActionBar().hide();
+		((CheckBox) getView().findViewById(R.id.isMenuOpening))
+				.setChecked(false);
+		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
+		if (((OneSheeldApplication) getActivity().getApplication())
+				.getAppFirmata() == null
+				|| !((OneSheeldApplication) getActivity().getApplication())
+						.getAppFirmata().isOpen()) {
+			((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
+		}
+		((MainActivity) getActivity()).getOnConnectionLostHandler()
+				.sendEmptyMessage(0);
 		super.onResume();
 	}
 }
