@@ -112,7 +112,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 			if (selectionAction != null)
 				selectionAction.onFailure();
 			if (isToastable)
-				activity.showToast("Device doesn't have Camera");
+				activity.showToast("Camera is unavailable, maybe it's used by another application !");
 		} else {
 			if (selectionAction != null)
 				selectionAction.onSuccess();
