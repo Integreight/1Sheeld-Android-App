@@ -88,7 +88,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(),
 					PRESSURE_VALUE);
 			oldInput = event.values[0];
-			frame.addByteArgument((byte) Math.round(event.values[0]));
+			//frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addIntegerArgument(2, false, Math.round(event.values[0]));
 			sendShieldFrame(frame);
 			Log.d("Sensor Data of X", event.values[0] + "");

@@ -84,7 +84,9 @@ public class ClockShield extends
 				frame.addByteArgument((byte) hour);
 				frame.addByteArgument((byte) day);
 				frame.addByteArgument((byte) month);
-				frame.addByteArgument((byte) year);
+				frame.addIntegerArgument(2, false, Math.round(year));
+
+				// frame.addByteArgument((byte) year);
 				sendShieldFrame(frame);
 				if (eventHandler != null)
 					eventHandler.onTimeChanged(hour + ":" + minutes + ":"
@@ -114,7 +116,7 @@ public class ClockShield extends
 		minutes = calendar.get(Calendar.MINUTE);
 		hour = calendar.get(Calendar.HOUR_OF_DAY);
 		day = calendar.get(Calendar.DAY_OF_MONTH);
-		month = calendar.get(Calendar.MONTH);
+		month = (calendar.get(Calendar.MONTH) + 1);
 		year = calendar.get(Calendar.YEAR);
 	}
 
@@ -149,13 +151,13 @@ public class ClockShield extends
 							+ calendar.get(Calendar.MINUTE) + " "
 							+ calendar.get(Calendar.HOUR_OF_DAY) + " "
 							+ calendar.get(Calendar.DAY_OF_MONTH) + " "
-							+ calendar.get(Calendar.MONTH) + " "
+							+ (calendar.get(Calendar.MONTH) + 1) + " "
 							+ calendar.get(Calendar.YEAR));
 
 			// compare between the old and new hour&&day and send new frame
 			if (hour != calendar.get(Calendar.HOUR_OF_DAY)
 					&& day != calendar.get(Calendar.DAY_OF_MONTH)
-					&& month != calendar.get(Calendar.MONTH)
+					&& month != (calendar.get(Calendar.MONTH) + 1)
 					&& year != calendar.get(Calendar.YEAR)) {
 				// send frame year + month + day + hour + min + sec
 				if (frame != null) {
@@ -165,13 +167,13 @@ public class ClockShield extends
 							.get(Calendar.HOUR_OF_DAY));
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.DAY_OF_MONTH));
-					frame.addByteArgument((byte) calendar.get(Calendar.MONTH));
+					frame.addByteArgument((byte) (calendar.get(Calendar.MONTH) + 1));
 					frame.addByteArgument((byte) calendar.get(Calendar.YEAR));
 					sendShieldFrame(frame);
 				}
 			} else if (hour != calendar.get(Calendar.HOUR_OF_DAY)
 					&& day != calendar.get(Calendar.DAY_OF_MONTH)
-					&& month != calendar.get(Calendar.MONTH)) {
+					&& month != (calendar.get(Calendar.MONTH) + 1)) {
 				// send frame month + day + hour + min + sec
 				if (frame != null) {
 					frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
@@ -180,7 +182,7 @@ public class ClockShield extends
 							.get(Calendar.HOUR_OF_DAY));
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.DAY_OF_MONTH));
-					frame.addByteArgument((byte) calendar.get(Calendar.MONTH));
+					frame.addByteArgument((byte) (calendar.get(Calendar.MONTH) + 1));
 					sendShieldFrame(frame);
 				}
 
