@@ -63,6 +63,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 						.getApplicationContext(), CameraHeadService.class);
 				intent.putExtra("FLASH", camCapture.getFlash());
 				intent.putExtra("Quality_Mode", camCapture.getQuality());
+				intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
 				camCapture.setTaken();
 				getApplication().getApplicationContext().startService(intent);
 				Log.d("ImageTakin", "OnTakeBack()");

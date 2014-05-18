@@ -58,7 +58,6 @@ public class CameraHeadService extends Service implements
 	int width = 0, height = 0;
 
 	/** Called when the activity is first created. */
-	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -174,7 +173,7 @@ public class CameraHeadService extends Service implements
 		}
 	}
 
-	private void takeImage(Intent intent) {
+	private synchronized void takeImage(Intent intent) {
 
 		if (checkCameraHardware(getApplicationContext())) {
 			Bundle extras = intent.getExtras();
@@ -394,6 +393,7 @@ public class CameraHeadService extends Service implements
 
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		// sv = new SurfaceView(getApplicationContext());
