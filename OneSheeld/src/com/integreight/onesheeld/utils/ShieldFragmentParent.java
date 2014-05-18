@@ -39,7 +39,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 	@Override
 	public void onStart() {
-		MainActivity.currentShieldTag = getControllerTag();
 		((ToggleButton) getActivity().findViewById(R.id.shieldStatus))
 				.setChecked(getApplication().getRunningShields().get(
 						getControllerTag()).isInteractive);
@@ -125,6 +124,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 	@Override
 	public void onResume() {
+		MainActivity.currentShieldTag = getControllerTag();
 		super.onResume();
 	}
 

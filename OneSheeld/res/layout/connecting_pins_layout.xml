@@ -4,27 +4,47 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
 
-    <HorizontalScrollView
+    <LinearLayout
         android:id="@+id/scrollingPins"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="22dp"
         android:layout_marginRight="22dp"
         android:layout_marginTop="10dp"
-        android:background="@color/transparent"
-        android:fillViewport="true"
-        android:scrollbarThumbHorizontal="@drawable/transparent" >
+        android:gravity="center"
+        android:orientation="horizontal" >
 
-        <LinearLayout
-            android:id="@+id/requiredPinsContainer"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
-        </LinearLayout>
-    </HorizontalScrollView>
+            android:background="@drawable/arduino_pins_view_left_arrow" />
+
+        <HorizontalScrollView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:fillViewport="true"
+            android:scrollbarThumbHorizontal="@drawable/transparent" >
+
+            <LinearLayout
+                android:id="@+id/requiredPinsContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/arduino_pins_view_right_arrow" />
+    </LinearLayout>
 
     <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/show"
