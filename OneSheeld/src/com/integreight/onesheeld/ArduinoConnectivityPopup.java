@@ -20,7 +20,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -31,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
@@ -54,23 +54,17 @@ public class ArduinoConnectivityPopup extends Dialog {
 		this.activity = context;
 		scale = activity.getResources().getDisplayMetrics().density;
 		foundDevicesTable = new Hashtable<String, BluetoothDevice>();
-		// TODO Auto-generated constructor stub
 	}
-
-	private static final String TAG = "DeviceListActivity";
-	private static final boolean isTrue = true;
 
 	// Return Intent extra
 	public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
 	// Member fields
 	private BluetoothAdapter mBtAdapter;
-	// private ArrayAdapter<String> mNewDevicesArrayAdapter;
 	private RelativeLayout deviceListCont;
 	private LinearLayout devicesList;
 	private ProgressBar loading;
 	private Button scanOrTryAgain;
-	// private boolean isScanButton = true;
 	private OneShieldTextView statusText;
 	private RelativeLayout transactionSlogan;
 	public static boolean isOpened = false, backPressed = false;
@@ -176,15 +170,22 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 										@Override
 										public void onConnect() {
-											backPressed = false;
-											showProgress();
-											changeSlogan(
-													activity.getResources()
-															.getString(
-																	R.string.searching),
-													COLOR.RED);
-											scanDevices();
-											doDiscovery();
+											addingDevicesHandler
+													.post(new Runnable() {
+
+														@Override
+														public void run() {
+															backPressed = false;
+															showProgress();
+															changeSlogan(
+																	activity.getResources()
+																			.getString(
+																					R.string.searching),
+																	COLOR.RED);
+															scanDevices();
+															doDiscovery();
+														}
+													});
 										}
 									});
 							Intent enableIntent = new Intent(
@@ -259,13 +260,21 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 								@Override
 								public void onConnect() {
-									backPressed = false;
-									showProgress();
-									changeSlogan(activity.getResources()
-											.getString(R.string.searching),
-											COLOR.RED);
-									scanDevices();
-									doDiscovery();
+									addingDevicesHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											backPressed = false;
+											showProgress();
+											changeSlogan(
+													activity.getResources()
+															.getString(
+																	R.string.searching),
+													COLOR.RED);
+											scanDevices();
+											doDiscovery();
+										}
+									});
 								}
 							});
 					Intent enableIntent = new Intent(
@@ -368,20 +377,26 @@ public class ArduinoConnectivityPopup extends Dialog {
 												.getTag());
 									}
 								}
-								Enumeration<String> enumKey = foundDevicesTable
+								final Enumeration<String> enumKey = foundDevicesTable
 										.keys();
 								while (enumKey.hasMoreElements()) {
-									String key = enumKey.nextElement();
-									BluetoothDevice device = foundDevicesTable
-											.get(key);
-									addFoundDevice(
-											device.getName() != null
-													&& device.getName()
-															.length() > 0 ? device
-													.getName() : device
-													.getAddress(),
-											key,
-											device.getBondState() == BluetoothDevice.BOND_BONDED);
+									addingDevicesHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											String key = enumKey.nextElement();
+											BluetoothDevice device = foundDevicesTable
+													.get(key);
+											addFoundDevice(
+													device.getName() != null
+															&& device.getName()
+																	.length() > 0 ? device
+															.getName() : device
+															.getAddress(),
+													key,
+													device.getBondState() == BluetoothDevice.BOND_BONDED);
+										}
+									});
 								}
 								foundDevicesTable.clear();
 								if (devicesList.getChildCount() == 0) {
@@ -415,7 +430,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
 		devicesList.removeAllViews();
 		backPressed = false;
-		// found = 0;
 		foundDevicesTable = new Hashtable<String, BluetoothDevice>();
 		// Register for broadcasts when a device is discovered
 		initTimeOut();
@@ -450,8 +464,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 				isConnecting = false;
 				cancel();
 			}
-			// Toast.makeText(activity, "Connected, finish", Toast.LENGTH_LONG)
-			// .show();
 		}
 
 		@Override
@@ -500,8 +512,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 	 * Start device discover with the BluetoothAdapter
 	 */
 	private synchronized void doDiscovery() {
-		if (isTrue)
-			Log.d(TAG, "doDiscovery()");
 		// If we're already discovering, stop it
 		if (mBtAdapter.isDiscovering()) {
 			mBtAdapter.cancelDiscovery();
@@ -590,30 +600,36 @@ public class ArduinoConnectivityPopup extends Dialog {
 						activity.getResources().getString(
 								R.string.selectYourDevice), COLOR.YELLOW);
 			}
-			// found += 1;
 		}
 	}
 
 	// The BroadcastReceiver that listens for discovered devices and
 	// changes the title when discovery is finished
-	// private int found = 0;
-	Handler delayingHandler = new Handler();
+	Handler addingDevicesHandler = new Handler();
 	private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
-		public void onReceive(Context context, Intent intent) {
+		public void onReceive(Context context, final Intent intent) {
 			String action = intent.getAction();
 
 			// When discovery finds a device
 			if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action))
 				scanDevices();
 			if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-				// Get the BluetoothDevice object from the Intent
-				BluetoothDevice device = intent
-						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-				lockerTimeOut.resetTimer();
-				foundDevicesTable.put(device.getAddress(), device);
-				addFoundDevice(device.getName(), device.getAddress(),
-						device.getBondState() == BluetoothDevice.BOND_BONDED);
+				addingDevicesHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// Get the BluetoothDevice object from the Intent
+						BluetoothDevice device = intent
+								.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+						lockerTimeOut.resetTimer();
+						foundDevicesTable.put(device.getAddress(), device);
+						addFoundDevice(
+								device.getName(),
+								device.getAddress(),
+								device.getBondState() == BluetoothDevice.BOND_BONDED);
+					}
+				});
 			}
 		}
 	};

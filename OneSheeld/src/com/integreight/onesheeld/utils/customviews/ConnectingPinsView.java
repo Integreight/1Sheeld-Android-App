@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -186,8 +185,9 @@ public class ConnectingPinsView extends Fragment {
 				// -
 				// .5f);
 				selectedPin = 0;
-				HorizontalScrollView scrollingPins = (HorizontalScrollView) getView()
-						.findViewById(R.id.scrollingPins);
+				// HorizontalScrollView scrollingPins = (HorizontalScrollView)
+				// getView()
+				// .findViewById(R.id.scrollingPins);
 				for (int i = 0; i < controller.shieldPins.length; i++) {
 					LinearLayout pinSubContainer = (LinearLayout) getActivity()
 							.getLayoutInflater().inflate(
@@ -245,7 +245,7 @@ public class ConnectingPinsView extends Fragment {
 					});
 					pinsContainer.addView(pinSubContainer);
 					pinsSubContainers.add(pinSubContainer);
-					scrollingPins.invalidate();
+					// scrollingPins.invalidate();
 				}
 			}
 		});
