@@ -2,33 +2,70 @@ package com.integreight.onesheeld.utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 
 import com.integreight.onesheeld.R;
 
 public class ListViewReversed extends ListView {
 
-	int lastMotionY = 0;
-	RelativeLayout.LayoutParams params;
-	int maxMargin = 0;
-	View header;
+	OnScrollListener onScroll;
+	int mLastFirstVisibleItem = 0;
+	boolean isScrollingDown = false;
+	int oneHundredDp = 0;
 
 	public ListViewReversed(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		LinearLayout searchArea = (LinearLayout) ((LayoutInflater) context
+		ViewGroup searchArea = (ViewGroup) ((LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(
-				R.layout.shields_list_search_area, this, false);
+				R.layout.transparent_shields_list_search_area, this, false);
 		addHeaderView(searchArea);
-		// maxMargin = (int) (100 * getResources().getDisplayMetrics().density -
-		// .5f);
-		// params = (android.widget.RelativeLayout.LayoutParams)
-		// getLayoutParams();
-		// setBackgroundColor(Color.TRANSPARENT);
+		searchArea.removeAllViews();
+		oneHundredDp = (int) (100 * context.getResources().getDisplayMetrics().density + .5f);
+		setOnScrollListener(new AbsListView.OnScrollListener() {
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+
+				final ListView lw = ListViewReversed.this;
+
+				if (view.getId() == lw.getId() && onScroll != null) {
+					final int currentFirstVisibleItem = lw
+							.getFirstVisiblePosition();
+					if (currentFirstVisibleItem > mLastFirstVisibleItem) {
+						// onScroll.onDown();
+						isScrollingDown = true;
+						Log.i("a", "scrolling down...");
+					} else if (currentFirstVisibleItem < mLastFirstVisibleItem) {
+						// onScroll.onUp();
+						isScrollingDown = false;
+						Log.i("a", "scrolling up...");
+					}
+					mLastFirstVisibleItem = currentFirstVisibleItem;
+				}
+			}
+
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				if (scrollState == 0) {
+					lastOffSet = verticalOffset;
+					if (onScroll != null) {
+						if (isScrollingDown)
+							onScroll.onDown();
+						else
+							onScroll.onUp();
+					}
+				}
+
+			}
+		});
 		// TODO Auto-generated constructor stub
+	}
+
+	public void setOnScroll(OnScrollListener onScroll) {
+		this.onScroll = onScroll;
 	}
 
 	// @Override
@@ -81,4 +118,22 @@ public class ListViewReversed extends ListView {
 	// return super.dispatchTouchEvent(ev);
 	// }
 	// }
+	private int lastOffSet = 0, verticalOffset = 0;
+
+	@Override
+	protected void onScrollChanged(int l, int t, int oldl, int oldt) {
+		verticalOffset = computeVerticalScrollOffset();
+		if (onScroll != null)
+			onScroll.translate(lastOffSet - verticalOffset);
+		System.out.println((lastOffSet - verticalOffset) + "  **");
+		super.onScrollChanged(l, t, oldl, oldt);
+	}
+
+	public static interface OnScrollListener {
+		public void onUp();
+
+		public void onDown();
+
+		public void translate(int topMargin);
+	}
 }

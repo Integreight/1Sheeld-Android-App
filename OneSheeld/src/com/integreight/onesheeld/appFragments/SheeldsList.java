@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -73,8 +74,8 @@ public class SheeldsList extends Fragment {
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			if (shieldsListView != null)
-				shieldsListView.setSelection(1);
+			// if (shieldsListView != null)
+			// shieldsListView.setSelection(1);
 		}
 		return v;
 	}
@@ -85,13 +86,12 @@ public class SheeldsList extends Fragment {
 
 			@Override
 			public void run() {
-				if (getActivity() != null) {
+				if (getActivity() != null
+						&& v.findViewById(R.id.searchArea) != null) {
 					InputMethodManager imm = (InputMethodManager) getActivity()
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(
-							((OneShieldEditText) shieldsListView
-									.findViewById(R.id.searchArea))
-									.getWindowToken(), 0);
+					imm.hideSoftInputFromWindow(((OneShieldEditText) v
+							.findViewById(R.id.searchArea)).getWindowToken(), 0);
 				}
 			}
 		});
@@ -157,7 +157,10 @@ public class SheeldsList extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
-	Handler searchActionHandler = new Handler();
+	// Handler searchActionHandler = new Handler();
+	// int targetMargin = 0;
+	// private boolean isExpanding = false;
+	boolean isAnimating = false;
 
 	private void initView() {
 		shieldsListView = (ListViewReversed) getView().findViewById(
@@ -166,16 +169,134 @@ public class SheeldsList extends Fragment {
 		// shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(getActivity());
 		shieldsListView.setAdapter(adapter);
+		final int oneHudredDP = (int) (100 * getResources().getDisplayMetrics().density - .5f);
+		final int seventyFiveDB = (int) (75 * getResources()
+				.getDisplayMetrics().density - .5f);
+		final int listHeight = (seventyFiveDB * shieldsUIList.size())
+				+ oneHudredDP;
+		final View searchAreaContainer = getView().findViewById(
+				R.id.shieldSearchAreaContainer);
+		final RelativeLayout.LayoutParams searchAreaParams = (RelativeLayout.LayoutParams) searchAreaContainer
+				.getLayoutParams();
+		// final Animation translate = new Animation() {
+		// @Override
+		// protected void applyTransformation(float interpolatedTime,
+		// Transformation t) {
+		// searchAreaParams.topMargin = (int) (targetMargin * interpolatedTime);
+		// searchAreaContainer.requestLayout();
+		// super.applyTransformation(interpolatedTime, t);
+		// if (interpolatedTime < 1.0f) {
+		// if (isExpanding) {
+		// searchAreaParams.topMargin = (int) (targetMargin * interpolatedTime);
+		// } else {
+		// searchAreaParams.topMargin = (int) (targetMargin * (1 -
+		// interpolatedTime));
+		// }
+		// searchAreaContainer.requestLayout();
+		// } else {
+		// if (isExpanding) {
+		// searchAreaParams.topMargin = 0;
+		// } else {
+		// searchAreaParams.topMargin = -1 * oneHudredDP;
+		// }
+		// searchAreaContainer.requestLayout();
+		// }
+		// }
+		// };
+		// translate.setDuration(200);
 		// if (isInflated)
-		shieldsListView.setSelection(1);
+		// shieldsListView.setSelection(1);
 		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
 		shieldsListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		shieldsListView.setDrawingCacheEnabled(true);
-		final OneShieldEditText searchBox = (OneShieldEditText) shieldsListView
+		shieldsListView.setOnScroll(new ListViewReversed.OnScrollListener() {
+
+			@Override
+			public void onUp() {
+				// Animation anim = new TranslateAnimation(0, 0,
+				// searchAreaParams.topMargin, 0);
+				// anim.setDuration(300);
+				// anim.setAnimationListener(new Animation.AnimationListener() {
+				//
+				// @Override
+				// public void onAnimationStart(Animation animation) {
+				// isAnimating = true;
+				// }
+				//
+				// @Override
+				// public void onAnimationRepeat(Animation animation) {
+				// // TODO Auto-generated method stub
+				//
+				// }
+				//
+				// @Override
+				// public void onAnimationEnd(Animation animation) {
+				searchAreaParams.topMargin = 0;
+				searchAreaContainer.requestLayout();
+				// isAnimating = false;
+				// }
+				// });
+				// if (searchAreaParams.topMargin < 0)
+				// searchAreaContainer.startAnimation(anim);
+			}
+
+			@Override
+			public void onDown() {
+				// Animation anim = new TranslateAnimation(0, 0,
+				// searchAreaParams.topMargin, -1 * oneHudredDP);
+				// anim.setDuration(300);
+				// anim.setAnimationListener(new Animation.AnimationListener() {
+				//
+				// @Override
+				// public void onAnimationStart(Animation animation) {
+				// isAnimating = true;
+				// }
+				//
+				// @Override
+				// public void onAnimationRepeat(Animation animation) {
+				// // TODO Auto-generated method stub
+				//
+				// }
+				//
+				// @Override
+				// public void onAnimationEnd(Animation animation) {
+				searchAreaParams.topMargin = -1 * oneHudredDP;
+				searchAreaContainer.requestLayout();
+				// isAnimating = false;
+				// }
+				// });
+				// if (searchAreaParams.topMargin > -1 * oneHudredDP)
+				// searchAreaContainer.startAnimation(anim);
+			}
+
+			@Override
+			public void translate(int topMargin) {
+				topMargin = (int) ((topMargin * oneHudredDP * 5 / listHeight));
+				if (topMargin <= 0) {
+					// if (topMargin * -1 <= oneHudredDP) {
+					searchAreaParams.topMargin = topMargin;
+					searchAreaContainer.requestLayout();
+					// }
+				} else {
+					topMargin = topMargin - oneHudredDP;
+					if (topMargin <= 0) {
+						searchAreaParams.topMargin = topMargin;
+						// else
+						// searchAreaParams.topMargin = 0;
+						// searchAreaParams.topMargin = 0;
+						// searchAreaContainer.requestLayout();
+						// searchAreaParams.topMargin = 0;
+						searchAreaContainer.requestLayout();
+						//
+					}
+				}
+			}
+		});
+		final OneShieldEditText searchBox = (OneShieldEditText) getView()
 				.findViewById(R.id.searchArea);
 		searchBox.setAdapter(adapter);
 		searchBox.setDropDownHeight(0);
-		shieldsListView.findViewById(R.id.selectAll).setOnClickListener(
+		getView().findViewById(R.id.selectAll).setOnClickListener(
 				new View.OnClickListener() {
 
 					@Override
@@ -188,7 +309,7 @@ public class SheeldsList extends Fragment {
 						adapter.selectAll();
 					}
 				});
-		shieldsListView.findViewById(R.id.reset).setOnClickListener(
+		getView().findViewById(R.id.reset).setOnClickListener(
 				new View.OnClickListener() {
 
 					@Override
