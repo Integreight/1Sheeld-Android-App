@@ -17,10 +17,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
@@ -35,20 +36,20 @@ import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.ListViewReversed;
 import com.integreight.onesheeld.utils.OneShieldEditText;
+import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
 
 public class SheeldsList extends Fragment {
 	View v;
 	boolean isInflated = false;
-	private ListViewReversed shieldsListView;
+	private ListView mListView;
 	private static SheeldsList thisInstance;
 	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
 	private MenuItem bluetoothSearchActionButton;
 	private MenuItem bluetoothDisconnectActionButton;
 	private MenuItem goToShieldsOperationActionButton;
-
+	OneShieldEditText searchBox;
 	private static final String TAG = "ShieldsList";
 
 	public static final int REQUEST_CONNECT_DEVICE = 1;
@@ -66,16 +67,19 @@ public class SheeldsList extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		isInflated = (v == null);
-		if (v == null)
-			v = inflater.inflate(R.layout.app_sheelds_list, container, false);
-		else {
+		if (v == null) {
+
+			QuickReturnHeaderHelper helper = new QuickReturnHeaderHelper(
+					getActivity(), R.layout.app_sheelds_list,
+					R.layout.shields_list_search_area);
+			v = helper.createView();
+			mListView = (ListView) v.findViewById(android.R.id.list);
+		} else {
 			try {
 				((ViewGroup) v.getParent()).removeView(v);
 			} catch (Exception e) {
 				// TODO: handle exception
 			}
-			// if (shieldsListView != null)
-			// shieldsListView.setSelection(1);
 		}
 		return v;
 	}
@@ -86,12 +90,10 @@ public class SheeldsList extends Fragment {
 
 			@Override
 			public void run() {
-				if (getActivity() != null
-						&& v.findViewById(R.id.searchArea) != null) {
+				if (getActivity() != null && searchBox != null) {
 					InputMethodManager imm = (InputMethodManager) getActivity()
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
-					imm.hideSoftInputFromWindow(((OneShieldEditText) v
-							.findViewById(R.id.searchArea)).getWindowToken(), 0);
+					imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
 				}
 			}
 		});
@@ -157,150 +159,29 @@ public class SheeldsList extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
-	// Handler searchActionHandler = new Handler();
-	// int targetMargin = 0;
-	// private boolean isExpanding = false;
-	boolean isAnimating = false;
+	int lastTranslate = 0;
 
 	private void initView() {
-		shieldsListView = (ListViewReversed) getView().findViewById(
-				R.id.sheeldsList);
+		// mListView.addHeaderView(mHeader);
 		shieldsUIList = UIShield.valuesFiltered();
-		// shieldsListView.setEnabled(false);
 		adapter = new ShieldsListAdapter(getActivity());
-		shieldsListView.setAdapter(adapter);
-		final int oneHudredDP = (int) (100 * getResources().getDisplayMetrics().density - .5f);
-		final int seventyFiveDB = (int) (75 * getResources()
-				.getDisplayMetrics().density - .5f);
-		final int listHeight = (seventyFiveDB * shieldsUIList.size())
-				+ oneHudredDP;
-		final View searchAreaContainer = getView().findViewById(
-				R.id.shieldSearchAreaContainer);
-		final RelativeLayout.LayoutParams searchAreaParams = (RelativeLayout.LayoutParams) searchAreaContainer
-				.getLayoutParams();
-		// final Animation translate = new Animation() {
-		// @Override
-		// protected void applyTransformation(float interpolatedTime,
-		// Transformation t) {
-		// searchAreaParams.topMargin = (int) (targetMargin * interpolatedTime);
-		// searchAreaContainer.requestLayout();
-		// super.applyTransformation(interpolatedTime, t);
-		// if (interpolatedTime < 1.0f) {
-		// if (isExpanding) {
-		// searchAreaParams.topMargin = (int) (targetMargin * interpolatedTime);
-		// } else {
-		// searchAreaParams.topMargin = (int) (targetMargin * (1 -
-		// interpolatedTime));
-		// }
-		// searchAreaContainer.requestLayout();
-		// } else {
-		// if (isExpanding) {
-		// searchAreaParams.topMargin = 0;
-		// } else {
-		// searchAreaParams.topMargin = -1 * oneHudredDP;
-		// }
-		// searchAreaContainer.requestLayout();
-		// }
-		// }
-		// };
-		// translate.setDuration(200);
-		// if (isInflated)
-		// shieldsListView.setSelection(1);
-		shieldsListView.setCacheColorHint(Color.TRANSPARENT);
-		shieldsListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
-		shieldsListView.setDrawingCacheEnabled(true);
-		shieldsListView.setOnScroll(new ListViewReversed.OnScrollListener() {
-
-			@Override
-			public void onUp() {
-				// Animation anim = new TranslateAnimation(0, 0,
-				// searchAreaParams.topMargin, 0);
-				// anim.setDuration(300);
-				// anim.setAnimationListener(new Animation.AnimationListener() {
-				//
-				// @Override
-				// public void onAnimationStart(Animation animation) {
-				// isAnimating = true;
-				// }
-				//
-				// @Override
-				// public void onAnimationRepeat(Animation animation) {
-				// // TODO Auto-generated method stub
-				//
-				// }
-				//
-				// @Override
-				// public void onAnimationEnd(Animation animation) {
-				searchAreaParams.topMargin = 0;
-				searchAreaContainer.requestLayout();
-				// isAnimating = false;
-				// }
-				// });
-				// if (searchAreaParams.topMargin < 0)
-				// searchAreaContainer.startAnimation(anim);
-			}
-
-			@Override
-			public void onDown() {
-				// Animation anim = new TranslateAnimation(0, 0,
-				// searchAreaParams.topMargin, -1 * oneHudredDP);
-				// anim.setDuration(300);
-				// anim.setAnimationListener(new Animation.AnimationListener() {
-				//
-				// @Override
-				// public void onAnimationStart(Animation animation) {
-				// isAnimating = true;
-				// }
-				//
-				// @Override
-				// public void onAnimationRepeat(Animation animation) {
-				// // TODO Auto-generated method stub
-				//
-				// }
-				//
-				// @Override
-				// public void onAnimationEnd(Animation animation) {
-				searchAreaParams.topMargin = -1 * oneHudredDP;
-				searchAreaContainer.requestLayout();
-				// isAnimating = false;
-				// }
-				// });
-				// if (searchAreaParams.topMargin > -1 * oneHudredDP)
-				// searchAreaContainer.startAnimation(anim);
-			}
-
-			@Override
-			public void translate(int topMargin) {
-				topMargin = (int) ((topMargin * oneHudredDP * 5 / listHeight));
-				if (topMargin <= 0) {
-					// if (topMargin * -1 <= oneHudredDP) {
-					searchAreaParams.topMargin = topMargin;
-					searchAreaContainer.requestLayout();
-					// }
-				} else {
-					topMargin = topMargin - oneHudredDP;
-					if (topMargin <= 0) {
-						searchAreaParams.topMargin = topMargin;
-						// else
-						// searchAreaParams.topMargin = 0;
-						// searchAreaParams.topMargin = 0;
-						// searchAreaContainer.requestLayout();
-						// searchAreaParams.topMargin = 0;
-						searchAreaContainer.requestLayout();
-						//
-					}
-				}
-			}
-		});
-		final OneShieldEditText searchBox = (OneShieldEditText) getView()
-				.findViewById(R.id.searchArea);
+		mListView.setAdapter(adapter);
+		// mListView.setSelection(1);
+		mListView.setCacheColorHint(Color.TRANSPARENT);
+		mListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
+		mListView.setDrawingCacheEnabled(true);
+		searchBox = (OneShieldEditText) v.findViewById(R.id.searchArea);
 		searchBox.setAdapter(adapter);
 		searchBox.setDropDownHeight(0);
-		getView().findViewById(R.id.selectAll).setOnClickListener(
+		v.findViewById(R.id.selectAll).setOnClickListener(
 				new View.OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
+						InputMethodManager imm = (InputMethodManager) getActivity()
+								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
+								0);
 						for (UIShield shield : UIShield.valuesFiltered()) {
 							UIShield.valueOf(shield.name())
 									.setMainActivitySelection(true);
@@ -309,11 +190,15 @@ public class SheeldsList extends Fragment {
 						adapter.selectAll();
 					}
 				});
-		getView().findViewById(R.id.reset).setOnClickListener(
+		v.findViewById(R.id.reset).setOnClickListener(
 				new View.OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
+						InputMethodManager imm = (InputMethodManager) getActivity()
+								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
+								0);
 						for (UIShield shield : UIShield.valuesFiltered()) {
 							UIShield.valueOf(shield.name())
 									.setMainActivitySelection(false);
@@ -322,6 +207,16 @@ public class SheeldsList extends Fragment {
 						adapter.reset();
 					}
 				});
+		mListView.setOnTouchListener(new View.OnTouchListener() {
+
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				InputMethodManager imm = (InputMethodManager) getActivity()
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
+				return false;
+			}
+		});
 	}
 
 	private void disconnectService() {

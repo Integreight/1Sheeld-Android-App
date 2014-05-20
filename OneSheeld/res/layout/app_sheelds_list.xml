@@ -1,22 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/contentFrame"
+<ListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/list"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-
-    <com.integreight.onesheeld.utils.ListViewReversed
-        android:id="@+id/sheeldsList"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:cacheColorHint="@color/transparent"
-        android:divider="@drawable/transparent"
-        android:fadeScrollbars="false"
-        android:fadingEdge="none"
-        android:scrollbarThumbVertical="@drawable/transparent"
-        tools:context=".MainActivity" >
-    </com.integreight.onesheeld.utils.ListViewReversed>
-
-</RelativeLayout>
+    android:layout_height="match_parent"
+    android:cacheColorHint="@color/transparent"
+    android:divider="@color/transparent"
+    android:dividerHeight="0dp"
+    android:fadingEdge="none" />

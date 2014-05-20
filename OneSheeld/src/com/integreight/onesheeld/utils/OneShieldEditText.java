@@ -1,11 +1,11 @@
 package com.integreight.onesheeld.utils;
 
-import com.integreight.onesheeld.OneSheeldApplication;
-
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.AutoCompleteTextView;
+
+import com.integreight.onesheeld.OneSheeldApplication;
 
 public class OneShieldEditText extends AutoCompleteTextView {
 
@@ -17,5 +17,14 @@ public class OneShieldEditText extends AutoCompleteTextView {
 						.getStyle() == Typeface.BOLD ? Typeface.BOLD
 						: Typeface.NORMAL);
 	}
+
+	// @Override
+	// public boolean onKeyPreIme(int keyCode, KeyEvent event) {
+	// if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
+	// && event.getAction() == KeyEvent.ACTION_UP) {
+	// clearFocus();
+	// }
+	// return super.dispatchKeyEvent(event);
+	// }
 
 }
