@@ -5,7 +5,7 @@
     android:versionCode="2"
     android:versionName="1.0" >
 
-    <uses-sdk android:minSdkVersion="8" />
+    <uses-sdk android:minSdkVersion="9" />
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -113,7 +113,7 @@
                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                 - The BroadcastReceiver requires permissions not available to Locale
-                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
+                - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.FIRE_SETTING
         -->
         <receiver
             android:name="com.integreight.onesheeld.plugin.FireReceiver"
@@ -140,6 +140,9 @@
             android:singleUser="true" >
         </service>
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.crashlytics.ApiKey"
             android:value="64d505421ef6fa71772afc4b19b259643e53e1f1" />
