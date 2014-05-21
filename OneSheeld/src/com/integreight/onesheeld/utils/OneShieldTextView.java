@@ -16,6 +16,11 @@ public class OneShieldTextView extends TextView {
 				getTypeface() == null ? Typeface.NORMAL : getTypeface()
 						.getStyle() == Typeface.BOLD ? Typeface.BOLD
 						: Typeface.NORMAL);
+		setPadding(getPaddingLeft(),
+				getPaddingTop()
+						- ((int) (1.5 * context.getResources()
+								.getDisplayMetrics().density + .5f)),
+				getPaddingRight(), getBottom());
 	}
 
 }

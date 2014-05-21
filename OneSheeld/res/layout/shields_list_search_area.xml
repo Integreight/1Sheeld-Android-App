@@ -19,7 +19,7 @@
             android:layout_weight="1"
             android:background="@drawable/search_area_buttons_selector"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="@string/selectAll"
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />
@@ -32,7 +32,7 @@
             android:layout_weight="1"
             android:background="@drawable/search_area_buttons_selector"
             android:gravity="center"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="@string/reset"
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />

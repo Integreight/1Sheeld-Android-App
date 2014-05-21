@@ -51,8 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:background="#D8000000"
-        android:gravity="center"
-        android:padding="10dp"
+        android:gravity="center_horizontal|center_vertical"
         android:textColor="@color/textColorOnDark"
         android:textSize="60sp"
         android:visibility="invisible" />

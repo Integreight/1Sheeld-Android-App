@@ -37,7 +37,7 @@ public class OneSheeldApplication extends Application {
 	public void onCreate() {
 		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
 		setConnectionHandler(new ConnectionDetector());
-		appFont = Typeface.createFromAsset(getAssets(), "light.otf");
+		appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
 		super.onCreate();
 	}

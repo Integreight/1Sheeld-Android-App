@@ -324,6 +324,8 @@ public class ArduinoConnectivityPopup extends Dialog {
 		transactionSlogan.setBackgroundColor(color);
 	}
 
+	Handler tempHandler = new Handler();
+
 	private void initTimeOut() {
 		if (lockerTimeOut != null)
 			lockerTimeOut.stopTimer();
@@ -379,22 +381,26 @@ public class ArduinoConnectivityPopup extends Dialog {
 								}
 								final Enumeration<String> enumKey = foundDevicesTable
 										.keys();
+								addingDevicesHandler
+										.removeCallbacksAndMessages(null);
 								while (enumKey.hasMoreElements()) {
-									addingDevicesHandler.post(new Runnable() {
+									final String key = enumKey.nextElement();
+									tempHandler.post(new Runnable() {
 
 										@Override
 										public void run() {
-											String key = enumKey.nextElement();
 											BluetoothDevice device = foundDevicesTable
 													.get(key);
-											addFoundDevice(
-													device.getName() != null
-															&& device.getName()
-																	.length() > 0 ? device
-															.getName() : device
-															.getAddress(),
-													key,
-													device.getBondState() == BluetoothDevice.BOND_BONDED);
+											if (device != null)
+												addFoundDevice(
+														device.getName() != null
+																&& device
+																		.getName()
+																		.length() > 0 ? device
+																.getName()
+																: device.getAddress(),
+														key,
+														device.getBondState() == BluetoothDevice.BOND_BONDED);
 										}
 									});
 								}

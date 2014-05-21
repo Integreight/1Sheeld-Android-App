@@ -287,9 +287,11 @@ public class MainActivity extends FragmentActivity {
 
 											@Override
 											public void onClick(View v) {
-												new FirmwareUpdatingPopup(
+												FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
 														MainActivity.this,
-														false).show();
+														false);
+												fup.setCancelable(false);
+												fup.show();
 											}
 										}, true));
 						// if (!isFinishing())

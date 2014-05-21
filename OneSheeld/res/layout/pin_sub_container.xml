@@ -12,7 +12,8 @@
         android:background="#00000000"
         android:clickable="true"
         android:gravity="center"
-        android:padding="7dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
         android:textColor="@color/textColorOnDark"
         android:textSize="18sp" />
 
@@ -20,7 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:gravity="center"
-        android:padding="7dp"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
         android:textColor="@color/textColorOnDark"
         android:textSize="18sp" />
 

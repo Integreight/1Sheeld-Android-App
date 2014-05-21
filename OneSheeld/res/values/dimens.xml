@@ -12,6 +12,6 @@
 
     <dimen name="key_label">32dp</dimen>
     <dimen name="pinViewDimen">8dp</dimen>
-    <dimen name="pinNameTextSize">9sp</dimen>
+    <dimen name="pinNameTextSize">8sp</dimen>
 
 </resources>
