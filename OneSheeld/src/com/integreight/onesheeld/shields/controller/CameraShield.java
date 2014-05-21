@@ -236,6 +236,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	public void reset() {
 		LocalBroadcastManager.getInstance(getApplication()).unregisterReceiver(
 				mMessageReceiver);
+		cameraCaptureQueue = null;
+
 	}
 
 	@Override
