@@ -118,11 +118,11 @@ public enum UIShield {
 			R.drawable.shields_list_gsm_symbol, false, EmptyShield.class, false), GLCD(
 			(byte) 0x20, "GLCD", 0xff988564,
 			R.drawable.shields_list_lcd_symbol, false, EmptyShield.class, false), EMAIL_SHIELD(
-			(byte) 0x1E, "Email", 0xffd95342,
-			R.drawable.shields_list_gravity_symbol, false, EmailShield.class), CLOCK_SHIELD(
-			(byte) 0x21, "Clock", 0xffd95342,
+			(byte) 0x1E, "Email", 0xff114540,
+			R.drawable.shields_list_email_symbol, false, EmailShield.class), CLOCK_SHIELD(
+			(byte) 0x21, "Clock", 0xffc45527,
 			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
-			(byte) 0x22, "Keyboard", 0xffd95342,
+			(byte) 0x22, "Keyboard", 0xffde1f26,
 			R.drawable.shields_list_gravity_symbol, false, KeyboardShield.class);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
@@ -131,7 +131,7 @@ public enum UIShield {
 			0xffdb7f40, 0xffb950e9, 0xff4c84e9, 0xff0b4c8d, 0xff08c473,
 			0xff543c8d, 0xffd95342, 0xff58844f, 0xff8b268d, 0xff67584d,
 			0xff999f45, 0xff6d0347, 0xffe9bd03, 0xff127303, 0xff08bbb2,
-			0xff5a0303, 0xff988564, 0xffd95342, 0xffd95342, 0xffd95342 };
+			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26 };
 	private byte id;
 	private String name;
 	public int itemBackgroundColor;

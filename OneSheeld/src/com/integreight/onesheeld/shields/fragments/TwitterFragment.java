@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,14 +15,15 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield.TwitterEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
-	TextView lastTweetTextView;
-	TextView userNameTextView;
-	MenuItem twitterLogin;
-	MenuItem twitterLogout;
+	LinearLayout lastTweetTextContainer;
+	OneShieldTextView userNameTextView;
+	Button twitterLogin;
+	Button twitterLogout;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -35,6 +39,37 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	public void onStart() {
 
 		initializeFirmata();
+
+		if (((TwitterShield) getApplication().getRunningShields().get(
+				getControllerTag())) != null
+				&& ((TwitterShield) getApplication().getRunningShields().get(
+						getControllerTag())).isTwitterLoggedInAlready()) {
+			buttonToLoggedIn();
+		} else {
+			buttonToLoggedOut();
+		}
+		twitterLogin.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				if (ConnectionDetector.isConnectingToInternet(getActivity()))
+					((TwitterShield) getApplication().getRunningShields().get(
+							getControllerTag())).login();
+				else
+					Toast.makeText(
+							getApplication().getApplicationContext(),
+							"Please check your Internet connection and try again.",
+							Toast.LENGTH_SHORT).show();
+
+			}
+		});
+		twitterLogout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				logoutFromTwitter();
+			}
+		});
 		super.onStart();
 
 	}
@@ -47,10 +82,12 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		lastTweetTextView = (TextView) getView().findViewById(
-				R.id.twitter_shield_last_tweet_textview);
-		userNameTextView = (TextView) getView().findViewById(
+		lastTweetTextContainer = (LinearLayout) getView().findViewById(
+				R.id.tweetsCont);
+		userNameTextView = (OneShieldTextView) getView().findViewById(
 				R.id.twitter_shield_username_textview);
+		twitterLogin = (Button) getView().findViewById(R.id.login);
+		twitterLogout = (Button) getView().findViewById(R.id.logout);
 		super.onActivityCreated(savedInstanceState);
 
 	}
@@ -66,7 +103,14 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 					@Override
 					public void run() {
-						lastTweetTextView.setText(tweet);
+						OneShieldTextView tweetItem = (OneShieldTextView) getActivity()
+								.getLayoutInflater().inflate(
+										R.layout.tweet_item,
+										lastTweetTextContainer, false);
+						tweetItem.setText(tweet);
+						lastTweetTextContainer.addView(tweetItem);
+						((ScrollView) lastTweetTextContainer.getParent())
+								.invalidate();
 						Toast.makeText(getActivity(), "Tweet posted!",
 								Toast.LENGTH_SHORT).show();
 					}
@@ -131,9 +175,19 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			userNameTextView.setText("Logged in as: @"
 					+ ((TwitterShield) getApplication().getRunningShields()
 							.get(getControllerTag())).getUsername());
+			twitterLogout.setVisibility(View.VISIBLE);
+			twitterLogin.setVisibility(View.INVISIBLE);
+			lastTweetTextContainer.setVisibility(View.VISIBLE);
+			lastTweetTextContainer.removeAllViews();
+			getView().invalidate();
 		} else {
 			userNameTextView.setVisibility(View.INVISIBLE);
 			userNameTextView.setText("");
+			twitterLogout.setVisibility(View.INVISIBLE);
+			twitterLogin.setVisibility(View.VISIBLE);
+			lastTweetTextContainer.setVisibility(View.INVISIBLE);
+			lastTweetTextContainer.removeAllViews();
+			getView().invalidate();
 		}
 	}
 
@@ -149,39 +203,11 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	public void onCreateOptionsMenu(android.view.Menu menu,
 			android.view.MenuInflater inflater) {
 		// TODO Auto-generated method stub
-		inflater.inflate(R.menu.twitter_shield_menu, menu);
-		twitterLogin = (MenuItem) menu.findItem(R.id.login_to_twitter_menuitem);
-		twitterLogout = (MenuItem) menu
-				.findItem(R.id.logout_from_twitter_menuitem);
-
-		if (((TwitterShield) getApplication().getRunningShields().get(
-				getControllerTag())) != null
-				&& ((TwitterShield) getApplication().getRunningShields().get(
-						getControllerTag())).isTwitterLoggedInAlready()) {
-			buttonToLoggedIn();
-		} else {
-			buttonToLoggedOut();
-		}
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(android.view.MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.logout_from_twitter_menuitem:
-			logoutFromTwitter();
-			return true;
-		case R.id.login_to_twitter_menuitem:
-			if (ConnectionDetector.isConnectingToInternet(getActivity()))
-				((TwitterShield) getApplication().getRunningShields().get(
-						getControllerTag())).login();
-			else
-				Toast.makeText(getApplication().getApplicationContext(),
-						"Please check your Internet connection and try again.",
-						Toast.LENGTH_SHORT).show();
-			// buttonToLoggedIn();
-			return true;
-		}
 		return super.onOptionsItemSelected(item);
 	}
 
@@ -201,23 +227,37 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	}
 
 	private void buttonToLoggedOut() {
-		if (twitterLogout != null)
-			twitterLogout.setVisible(false);
-		if (twitterLogin != null)
-			twitterLogin.setVisible(true);
-		if (userNameTextView != null)
+		if (twitterLogout != null) {
+			twitterLogout.setVisibility(View.INVISIBLE);
+		}
+		if (twitterLogin != null) {
+			twitterLogin.setVisibility(View.VISIBLE);
+		}
+		if (userNameTextView != null) {
 			userNameTextView.setVisibility(View.INVISIBLE);
+		}
+		if (lastTweetTextContainer != null) {
+			lastTweetTextContainer.setVisibility(View.INVISIBLE);
+			lastTweetTextContainer.removeAllViews();
+		}
+		getView().invalidate();
 	}
 
 	private void buttonToLoggedIn() {
-		if (twitterLogin != null) {
-			twitterLogin.setVisible(false);
-		}
 		if (twitterLogout != null) {
-			twitterLogout.setVisible(true);
+			twitterLogout.setVisibility(View.VISIBLE);
 		}
-		if (userNameTextView != null)
+		if (twitterLogin != null) {
+			twitterLogin.setVisibility(View.INVISIBLE);
+		}
+		if (userNameTextView != null) {
 			userNameTextView.setVisibility(View.VISIBLE);
+		}
+		if (lastTweetTextContainer != null) {
+			lastTweetTextContainer.setVisibility(View.VISIBLE);
+			lastTweetTextContainer.removeAllViews();
+		}
+		getView().invalidate();
 	}
 
 	@Override

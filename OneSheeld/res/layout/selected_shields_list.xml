@@ -3,8 +3,9 @@
     android:id="@android:id/list"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#fffad7"
-    android:cacheColorHint="@android:color/transparent"
+    android:background="@color/superDarkGray"
+    android:cacheColorHint="@color/transparent"
     android:divider="@drawable/transparent"
     android:fadeScrollbars="false"
-    android:fadingEdge="none" />
+    android:fadingEdge="none"
+    android:paddingTop="2dp" />

@@ -131,6 +131,32 @@ public class SheeldsList extends Fragment {
 						launchShieldsOperationActivity();
 					}
 				});
+		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
+				.getChildAt(1).setBackgroundResource(
+						R.drawable.shields_list_shields_operation_button);
+		((ViewGroup) getActivity().findViewById(R.id.cancelConnection))
+				.getChildAt(1).setBackgroundResource(
+						R.drawable.bluetooth_disconnect_button);
+
+		getActivity().findViewById(R.id.cancelConnection).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						if (getActivity().getSupportFragmentManager()
+								.getBackStackEntryCount() > 1) {
+							getActivity().getSupportFragmentManager()
+									.popBackStack();
+							getActivity().getSupportFragmentManager()
+									.executePendingTransactions();
+						}
+						((MainActivity) getActivity()).stopService();
+						if (!ArduinoConnectivityPopup.isOpened) {
+							ArduinoConnectivityPopup.isOpened = true;
+							new ArduinoConnectivityPopup(getActivity()).show();
+						}
+					}
+				});
 		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);

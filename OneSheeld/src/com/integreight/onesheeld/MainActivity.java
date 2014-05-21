@@ -305,25 +305,6 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onResume() {
-		findViewById(R.id.cancelConnection).setOnClickListener(
-				new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						if (getSupportFragmentManager()
-								.getBackStackEntryCount() > 1) {
-							getSupportFragmentManager().popBackStack();
-							getSupportFragmentManager()
-									.executePendingTransactions();
-						}
-						stopService();
-						if (!ArduinoConnectivityPopup.isOpened) {
-							ArduinoConnectivityPopup.isOpened = true;
-							new ArduinoConnectivityPopup(MainActivity.this)
-									.show();
-						}
-					}
-				});
 		super.onResume();
 	}
 

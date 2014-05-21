@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ToggleButton;
 
+import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -244,6 +245,40 @@ public class ShieldsOperations extends BaseContainerFragment {
 		}
 		((MainActivity) getActivity()).getOnConnectionLostHandler()
 				.sendEmptyMessage(0);
+
+		getActivity().findViewById(R.id.getAvailableDevices)
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						if (getActivity().getSupportFragmentManager()
+								.getBackStackEntryCount() > 1) {
+							getActivity().getSupportFragmentManager()
+									.popBackStack();
+							getActivity().getSupportFragmentManager()
+									.executePendingTransactions();
+						}
+						((MainActivity) getActivity()).stopService();
+						if (!ArduinoConnectivityPopup.isOpened) {
+							ArduinoConnectivityPopup.isOpened = true;
+							new ArduinoConnectivityPopup(getActivity()).show();
+						}
+					}
+				});
+		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
+				.getChildAt(1).setBackgroundResource(
+						R.drawable.bluetooth_disconnect_button);
+		((ViewGroup) getActivity().findViewById(R.id.cancelConnection))
+				.getChildAt(1).setBackgroundResource(R.drawable.back_button);
+
+		getActivity().findViewById(R.id.cancelConnection).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						getActivity().onBackPressed();
+					}
+				});
 		super.onResume();
 	}
 }

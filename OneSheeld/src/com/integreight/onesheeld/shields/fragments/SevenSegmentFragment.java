@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
@@ -35,7 +36,7 @@ public class SevenSegmentFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.sevensegment_shield_fragment_layout,
+		View v = inflater.inflate(R.layout.sevensegment_shield_fragment_view,
 				container, false);
 		aSegment = (ImageView) v
 				.findViewById(R.id.sevensegment_shield_a_segment_imageview);
@@ -63,6 +64,25 @@ public class SevenSegmentFragment extends
 			refreshSegments(((SevenSegmentShield) getApplication()
 					.getRunningShields().get(getControllerTag()))
 					.refreshSegments());
+		LinearLayout colorChooseCont = (LinearLayout) getView().findViewById(
+				R.id.colorsContainer);
+		for (int i = 0; i < colorChooseCont.getChildCount(); i++) {
+			final int x = i;
+			colorChooseCont.getChildAt(x).setOnClickListener(
+					new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							colorIndx = x;
+							if (getApplication().getRunningShields().get(
+									getControllerTag()) != null)
+								refreshSegments(((SevenSegmentShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag()))
+										.refreshSegments());
+						}
+					});
+		}
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {
@@ -128,54 +148,69 @@ public class SevenSegmentFragment extends
 
 		}
 	};
+	private int colorIndx = 0;
+	private int[] vertical = new int[] {
+			R.drawable.seven_segments_vertical_segment_red,
+			R.drawable.seven_segments_vertical_segment_green,
+			R.drawable.seven_segments_vertical_segment_yellow,
+			R.drawable.seven_segments_vertical_segment_blue };
+	private int[] hor = new int[] {
+			R.drawable.seven_segments_horizontal_segment_red,
+			R.drawable.seven_segments_horizontal_segment_green,
+			R.drawable.seven_segments_horizontal_segment_yellow,
+			R.drawable.seven_segments_horizontal_segment_blue };
+	private int[] dot = new int[] { R.drawable.seven_segments_dot_red,
+			R.drawable.seven_segments_dot_green,
+			R.drawable.seven_segments_dot_yellow,
+			R.drawable.seven_segments_dot_blue };
 
 	private void refreshSegments(Hashtable<String, Boolean> segmentsStatus) {
 		if (segmentsStatus.get("  A  ") != null && segmentsStatus.get("  A  ")) {
-			aSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
+			aSegment.setImageResource(hor[colorIndx]);
 		} else {
-			aSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
+			aSegment.setImageResource(R.drawable.seven_segments_horizontal_segment_gray);
 		}
 
 		if (segmentsStatus.get("  B  ") != null && segmentsStatus.get("  B  ")) {
-			bSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
+			bSegment.setImageResource(vertical[colorIndx]);
 		} else {
-			bSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
+			bSegment.setImageResource(R.drawable.seven_segments_vertical_segment_gray);
 		}
 
 		if (segmentsStatus.get("  C  ") != null && segmentsStatus.get("  C  ")) {
-			cSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
+			cSegment.setImageResource(vertical[colorIndx]);
 		} else {
-			cSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
+			cSegment.setImageResource(R.drawable.seven_segments_vertical_segment_gray);
 		}
 
 		if (segmentsStatus.get("  D  ") != null && segmentsStatus.get("  D  ")) {
-			dSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
+			dSegment.setImageResource(hor[colorIndx]);
 		} else {
-			dSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
+			dSegment.setImageResource(R.drawable.seven_segments_horizontal_segment_gray);
 		}
 
 		if (segmentsStatus.get("  E  ") != null && segmentsStatus.get("  E  ")) {
-			eSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
+			eSegment.setImageResource(vertical[colorIndx]);
 		} else {
-			eSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
+			eSegment.setImageResource(R.drawable.seven_segments_vertical_segment_gray);
 		}
 
 		if (segmentsStatus.get("  F  ") != null && segmentsStatus.get("  F  ")) {
-			fSegment.setImageResource(R.drawable.seventsegment_on_vertical_image);
+			fSegment.setImageResource(vertical[colorIndx]);
 		} else {
-			fSegment.setImageResource(R.drawable.seventsegment_off_vertical_image);
+			fSegment.setImageResource(R.drawable.seven_segments_vertical_segment_gray);
 		}
 
 		if (segmentsStatus.get("  G  ") != null && segmentsStatus.get("  G  ")) {
-			gSegment.setImageResource(R.drawable.seventsegment_on_horizontal_image);
+			gSegment.setImageResource(hor[colorIndx]);
 		} else {
-			gSegment.setImageResource(R.drawable.seventsegment_off_horizontal_image);
+			gSegment.setImageResource(R.drawable.seven_segments_horizontal_segment_gray);
 		}
 
 		if (segmentsStatus.get(" DOT ") != null && segmentsStatus.get(" DOT ")) {
-			dotSegment.setImageResource(R.drawable.seventsegment_on_dot_image);
+			dotSegment.setImageResource(dot[colorIndx]);
 		} else {
-			dotSegment.setImageResource(R.drawable.seventsegment_off_dot_image);
+			dotSegment.setImageResource(R.drawable.seven_segments_dot_gray);
 		}
 
 	}

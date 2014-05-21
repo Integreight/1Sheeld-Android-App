@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/offWhite"
+    android:background="@color/superDarkGray"
     android:clickable="true" >
 
     <ImageView
@@ -10,16 +10,22 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:layout_margin="10dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/curved_back_layer"
         android:contentDescription="@string/app_name"
-        android:scaleType="fitXY"
-        android:src="@drawable/shield_fragment_background" />
+        android:scaleType="fitXY" />
 
     <FrameLayout
         android:id="@+id/shieldsContainerFrame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp" >
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp" >
     </FrameLayout>
 
     <CheckBox
@@ -28,7 +34,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:layout_margin="15dp"
+        android:layout_marginBottom="25dp"
+        android:layout_marginLeft="15dp"
         android:background="@drawable/shield_docking_checkbox_selelctor"
         android:button="@null" />
 
@@ -36,9 +43,10 @@
         android:id="@+id/shieldStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_margin="15dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="25dp"
         android:background="@drawable/shield_status_toggle_selelctor"
         android:checked="true"
         android:textOff=""

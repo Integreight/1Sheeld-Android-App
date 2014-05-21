@@ -8,6 +8,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,14 +19,15 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
-	TextView lastPostTextView;
+	LinearLayout lastPostTextCont;
 	TextView userNameTextView;
-	MenuItem facebookLogin;
-	MenuItem facebookLogout;
+	Button facebookLogin;
+	Button facebookLogout;
 	Bundle savedInstanceState;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -41,6 +45,21 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	@Override
 	public void onStart() {
 		initializeFirmata();
+		checkLogin();
+		facebookLogin.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				loginToFacebook();
+			}
+		});
+		facebookLogout.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				logoutFromFacebook();
+			}
+		});
 		super.onStart();
 	}
 
@@ -67,11 +86,12 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		lastPostTextView = (TextView) getView().findViewById(
-				R.id.facebook_shield_last_post_textview);
+		lastPostTextCont = (LinearLayout) getView()
+				.findViewById(R.id.postsCont);
 		userNameTextView = (TextView) getView().findViewById(
 				R.id.facebook_shield_username_textview);
-
+		facebookLogin = (Button) getView().findViewById(R.id.login);
+		facebookLogout = (Button) getView().findViewById(R.id.logout);
 	}
 
 	private FacebookEventHandler facebookEventHandler = new FacebookEventHandler() {
@@ -85,7 +105,14 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 					@Override
 					public void run() {
-						lastPostTextView.setText(post);
+						OneShieldTextView posty = (OneShieldTextView) getActivity()
+								.getLayoutInflater().inflate(
+										R.layout.facebook_post_item,
+										lastPostTextCont, false);
+						posty.setText(post);
+						lastPostTextCont.addView(posty);
+						((ScrollView) lastPostTextCont.getParent())
+								.invalidate();
 						Toast.makeText(getActivity(), "Posted on your wall!",
 								Toast.LENGTH_SHORT).show();
 					}
@@ -159,11 +186,6 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		// TODO Auto-generated method stub
-		inflater.inflate(R.menu.facebook_shield_menu, menu);
-		facebookLogin = (MenuItem) menu
-				.findItem(R.id.login_to_facebook_menuitem);
-		facebookLogout = (MenuItem) menu
-				.findItem(R.id.logout_from_facebook_menuitem);
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -202,20 +224,28 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 	private void buttonToLoggedOut() {
 		if (facebookLogout != null)
-			facebookLogout.setVisible(false);
+			facebookLogout.setVisibility(View.INVISIBLE);
 		if (facebookLogin != null)
-			facebookLogin.setVisible(true);
+			facebookLogin.setVisibility(View.VISIBLE);
 		if (userNameTextView != null)
 			userNameTextView.setVisibility(View.INVISIBLE);
+		if (lastPostTextCont != null) {
+			lastPostTextCont.removeAllViews();
+			lastPostTextCont.setVisibility(View.INVISIBLE);
+		}
 	}
 
 	private void buttonToLoggedIn() {
 		if (facebookLogin != null)
-			facebookLogin.setVisible(false);
+			facebookLogin.setVisibility(View.INVISIBLE);
 		if (facebookLogout != null)
-			facebookLogout.setVisible(true);
+			facebookLogout.setVisibility(View.VISIBLE);
 		if (userNameTextView != null)
 			userNameTextView.setVisibility(View.VISIBLE);
+		if (lastPostTextCont != null) {
+			lastPostTextCont.removeAllViews();
+			lastPostTextCont.setVisibility(View.VISIBLE);
+		}
 		userNameTextView.setText("Logged in as: "
 				+ ((FacebookShield) getApplication().getRunningShields().get(
 						getControllerTag())).getUsername());

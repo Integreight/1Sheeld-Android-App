@@ -1,36 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="10dp" >
 
     <ImageView
         android:id="@+id/facebook_shield_logo_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/facebook_shield_facebook_logo" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/facebook_shield_screen_logo" />
 
-    <TextView
-        android:id="@+id/facebook_shield_last_post_textview"
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/facebook_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/facebook_shield_logo_imageview"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="Your last post will be here!"
-        android:textColor="@color/white" />
+        android:layout_marginTop="10dp"
+        android:textColor="@color/offWhite"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/facebook_shield_username_textview"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/facebook_shield_username_textview"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:minHeight="100dp"
+        android:visibility="visible" >
+
+        <LinearLayout
+            android:id="@+id/postsCont"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
+
+    <com.integreight.onesheeld.utils.OneShieldButton
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/facebook_shield_logo_imageview"
+        android:layout_below="@id/facebook_shield_username_textview"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:text="Logged in as: Islam Mustafa"
-        android:textColor="@color/white"
-        android:visibility="invisible" />
+        android:layout_marginTop="20dp"
+        android:background="@drawable/social_shields_login" />
+
+    <Button
+        android:id="@+id/logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/social_shields_logout" />
 
 </RelativeLayout>
