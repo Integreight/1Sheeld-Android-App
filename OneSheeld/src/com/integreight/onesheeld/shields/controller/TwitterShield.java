@@ -67,7 +67,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public TwitterShield() {
 		super();
-		startListeningOnAKeyword("testingarduino");
+		startListeningOnAKeyword("1sheeld");
 	}
 
 	@Override
