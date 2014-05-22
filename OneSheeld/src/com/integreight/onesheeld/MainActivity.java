@@ -41,7 +41,7 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
 	// private boolean isBoundService = false;
-	private AppSlidingLeftMenu appSlidingMenu;
+	public AppSlidingLeftMenu appSlidingMenu;
 	public boolean isForground = false;
 	private onConnectedToBluetooth onConnectToBlueTooth = null;
 	public static String currentShieldTag = null;

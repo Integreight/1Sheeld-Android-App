@@ -245,26 +245,34 @@ public class ShieldsOperations extends BaseContainerFragment {
 		}
 		((MainActivity) getActivity()).getOnConnectionLostHandler()
 				.sendEmptyMessage(0);
+		((MainActivity) getActivity()).closeMenu();
+		new Handler().postDelayed(new Runnable() {
 
-		getActivity().findViewById(R.id.getAvailableDevices)
-				.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void run() {
+				getActivity().findViewById(R.id.getAvailableDevices)
+						.setOnClickListener(new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						if (getActivity().getSupportFragmentManager()
-								.getBackStackEntryCount() > 1) {
-							getActivity().getSupportFragmentManager()
-									.popBackStack();
-							getActivity().getSupportFragmentManager()
-									.executePendingTransactions();
-						}
-						((MainActivity) getActivity()).stopService();
-						if (!ArduinoConnectivityPopup.isOpened) {
-							ArduinoConnectivityPopup.isOpened = true;
-							new ArduinoConnectivityPopup(getActivity()).show();
-						}
-					}
-				});
+							@Override
+							public void onClick(View v) {
+								((MainActivity) getActivity()).closeMenu();
+								if (getActivity().getSupportFragmentManager()
+										.getBackStackEntryCount() > 1) {
+									getActivity().getSupportFragmentManager()
+											.popBackStack();
+									getActivity().getSupportFragmentManager()
+											.executePendingTransactions();
+								}
+								((MainActivity) getActivity()).stopService();
+								if (!ArduinoConnectivityPopup.isOpened) {
+									ArduinoConnectivityPopup.isOpened = true;
+									new ArduinoConnectivityPopup(getActivity())
+											.show();
+								}
+							}
+						});
+			}
+		}, 500);
 		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.bluetooth_disconnect_button);
@@ -276,7 +284,22 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onClick(View v) {
+						boolean isMenuClosed = ((MainActivity) getActivity()).appSlidingMenu != null
+								&& !((MainActivity) getActivity()).appSlidingMenu
+										.isOpen();
 						getActivity().onBackPressed();
+						if (isMenuClosed)
+							getActivity().findViewById(R.id.cancelConnection)
+									.setOnClickListener(
+											new View.OnClickListener() {
+
+												@Override
+												public void onClick(View v) {
+													// TODO Auto-generated
+													// method stub
+
+												}
+											});
 					}
 				});
 		super.onResume();

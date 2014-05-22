@@ -3,6 +3,7 @@ package com.integreight.onesheeld.appFragments;
 import java.util.Enumeration;
 import java.util.List;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
@@ -101,6 +102,12 @@ public class SheeldsList extends Fragment {
 	}
 
 	@Override
+	public void onAttach(Activity activity) {
+		// TODO Auto-generated method stub
+		super.onAttach(activity);
+	}
+
+	@Override
 	public void onResume() {
 		MainActivity.currentShieldTag = null;
 		((MainActivity) getActivity()).disableMenu();
@@ -129,6 +136,15 @@ public class SheeldsList extends Fragment {
 					@Override
 					public void onClick(View v) {
 						launchShieldsOperationActivity();
+						getActivity().findViewById(R.id.getAvailableDevices)
+								.setOnClickListener(new View.OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										// TODO Auto-generated method stub
+
+									}
+								});
 					}
 				});
 		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
@@ -137,26 +153,34 @@ public class SheeldsList extends Fragment {
 		((ViewGroup) getActivity().findViewById(R.id.cancelConnection))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.bluetooth_disconnect_button);
+		new Handler().postDelayed(new Runnable() {
 
-		getActivity().findViewById(R.id.cancelConnection).setOnClickListener(
-				new View.OnClickListener() {
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
 
-					@Override
-					public void onClick(View v) {
-						if (getActivity().getSupportFragmentManager()
-								.getBackStackEntryCount() > 1) {
-							getActivity().getSupportFragmentManager()
-									.popBackStack();
-							getActivity().getSupportFragmentManager()
-									.executePendingTransactions();
-						}
-						((MainActivity) getActivity()).stopService();
-						if (!ArduinoConnectivityPopup.isOpened) {
-							ArduinoConnectivityPopup.isOpened = true;
-							new ArduinoConnectivityPopup(getActivity()).show();
-						}
-					}
-				});
+				getActivity().findViewById(R.id.cancelConnection)
+						.setOnClickListener(new View.OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								if (getActivity().getSupportFragmentManager()
+										.getBackStackEntryCount() > 1) {
+									getActivity().getSupportFragmentManager()
+											.popBackStack();
+									getActivity().getSupportFragmentManager()
+											.executePendingTransactions();
+								}
+								((MainActivity) getActivity()).stopService();
+								if (!ArduinoConnectivityPopup.isOpened) {
+									ArduinoConnectivityPopup.isOpened = true;
+									new ArduinoConnectivityPopup(getActivity())
+											.show();
+								}
+							}
+						});
+			}
+		}, 500);
 		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);

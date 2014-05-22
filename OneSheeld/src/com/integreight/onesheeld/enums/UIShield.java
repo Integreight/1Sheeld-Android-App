@@ -109,7 +109,7 @@ public enum UIShield {
 			TemperatureShield.class, 1), CAMERA_SHIELD((byte) 0x15, "Camera",
 			0xff6d0347, R.drawable.shields_list_camera_symbol, false,
 			CameraShield.class, 1), PHONE_SHIELD((byte) 0x20, "Phone",
-			0xffe9bd03, R.drawable.shields_list_email_symbol, false,
+			0xffe9bd03, R.drawable.shields_list_keypad_symbol, false,
 			PhoneShield.class), NFC((byte) 0x20, "NFC", 0xff127303,
 			R.drawable.shields_list_nfc_symbol, false, EmptyShield.class, false), WIFI(
 			(byte) 0x20, "WIFI", 0xff08bbb2,
