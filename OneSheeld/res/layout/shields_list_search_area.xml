@@ -42,10 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="65dp" >
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
         <com.integreight.onesheeld.utils.OneShieldEditText
             android:id="@+id/searchArea"
             android:layout_width="match_parent"
@@ -61,6 +57,15 @@
             android:singleLine="true"
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/clearBox"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="25dp"
+            android:background="@drawable/action_cancel" />
     </RelativeLayout>
 
 </LinearLayout>

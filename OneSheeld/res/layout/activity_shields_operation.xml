@@ -111,9 +111,8 @@
             android:id="@+id/pinsFixedHandler"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#D9000000"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/connect_button" />
+            android:background="@drawable/connect_button"
+            android:contentDescription="@string/app_name" />
 
         <ImageView
             android:id="@+id/settingsFixedHandler"

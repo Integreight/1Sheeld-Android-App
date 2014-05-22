@@ -51,6 +51,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	MultiDirectionSlidingDrawer pinsSlidingView;
+	MultiDirectionSlidingDrawer settingsSlidingView;
+
 	private void initView(Bundle savedInstanceState) {
 		final MainActivity myActivity = (MainActivity) getActivity();
 		myActivity
@@ -100,9 +103,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 					.beginTransaction()
 					.replace(R.id.shieldsContainerFrame, mContent).commit();
 		}
-		final MultiDirectionSlidingDrawer pinsSlidingView = (MultiDirectionSlidingDrawer) getView()
-				.findViewById(R.id.pinsViewSlidingView);
-		final MultiDirectionSlidingDrawer settingsSlidingView = (MultiDirectionSlidingDrawer) getView()
+		pinsSlidingView = (MultiDirectionSlidingDrawer) getView().findViewById(
+				R.id.pinsViewSlidingView);
+		settingsSlidingView = (MultiDirectionSlidingDrawer) getView()
 				.findViewById(R.id.settingsSlidingView);
 		getView().findViewById(R.id.pinsFixedHandler).setOnClickListener(
 				new View.OnClickListener() {
@@ -284,11 +287,14 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void onClick(View v) {
-						boolean isMenuClosed = ((MainActivity) getActivity()).appSlidingMenu != null
-								&& !((MainActivity) getActivity()).appSlidingMenu
-										.isOpen();
+						boolean isMenuOpened = (((MainActivity) getActivity()).appSlidingMenu != null && ((MainActivity) getActivity()).appSlidingMenu
+								.isOpen())
+								|| (settingsSlidingView != null && settingsSlidingView
+										.isOpened())
+								|| (pinsSlidingView != null && pinsSlidingView
+										.isOpened());
 						getActivity().onBackPressed();
-						if (isMenuClosed)
+						if (!isMenuOpened)
 							getActivity().findViewById(R.id.cancelConnection)
 									.setOnClickListener(
 											new View.OnClickListener() {

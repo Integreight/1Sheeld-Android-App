@@ -257,6 +257,18 @@ public class SheeldsList extends Fragment {
 						adapter.reset();
 					}
 				});
+		v.findViewById(R.id.clearBox).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						InputMethodManager imm = (InputMethodManager) getActivity()
+								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
+								0);
+						searchBox.setText("");
+					}
+				});
 		mListView.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override
