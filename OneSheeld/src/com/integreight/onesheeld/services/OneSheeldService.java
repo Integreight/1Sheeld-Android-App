@@ -16,6 +16,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.Fields;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.firmatabluetooth.BluetoothService;

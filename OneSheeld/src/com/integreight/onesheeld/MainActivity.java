@@ -30,6 +30,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
@@ -409,6 +411,9 @@ public class MainActivity extends FragmentActivity {
 	protected void onDestroy() {
 		// isBoundService = OneSheeldService.isBound;
 		// if (isMyServiceRunning())
+		getThisApplication().getGaTracker().send(
+				MapBuilder.createEvent("App lifecycle",
+						"Finished the app manually", "", 0L).build());
 		ArduinoConnectivityPopup.isOpened = false;
 		stopService();
 		stopLooperThread();
@@ -504,11 +509,13 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
+		EasyTracker.getInstance(this).activityStart(this);
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
+		EasyTracker.getInstance(this).activityStop(this);
 		super.onStop();
 	}
 
