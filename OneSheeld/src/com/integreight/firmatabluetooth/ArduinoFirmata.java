@@ -751,9 +751,17 @@ public class ArduinoFirmata {
 					ShieldFrame frame = new ShieldFrame(shieldId, instanceId,
 							functionId);
 					int argumentsNumber = readByteFromUartBuffer();
+					int argumentsNumberVerification = (255-(readByteFromUartBuffer()&0xFF));
+					if(argumentsNumber!=argumentsNumberVerification){
+						if (ShieldFrameTimeout != null)
+							ShieldFrameTimeout.stopTimer();
+						uartBuffer.clear();
+						continue;
+					}
 					for (int i = 0; i < argumentsNumber; i++) {
 						int length = readByteFromUartBuffer() & 0xff;
-						if (length <= 0) {
+						int lengthVerification = (255-(readByteFromUartBuffer()&0xFF));
+						if(length!=lengthVerification||length <= 0){
 							if (ShieldFrameTimeout != null)
 								ShieldFrameTimeout.stopTimer();
 							uartBuffer.clear();

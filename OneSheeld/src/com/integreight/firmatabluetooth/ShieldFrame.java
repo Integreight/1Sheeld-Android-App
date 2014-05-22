@@ -108,20 +108,22 @@ public class ShieldFrame {
 		for (byte[] argument : arguments) {
 			totalSizeOfArguments+=argument.length;
 		}
-		int frameSize=6+arguments.size()+totalSizeOfArguments;
+		int frameSize=7+arguments.size()*2+totalSizeOfArguments;//6:start, shield id, instance id, function id, size, size complement, end
 		byte[] data=new byte[frameSize];
 		data[0]=START_OF_FRAME;
 		data[1]=shieldId;
 		data[2]=instanceId;
 		data[3]=functionId;
 		data[4]=(byte)arguments.size();
+		data[5]=(byte)(255-arguments.size());
 		
-		for (int i = 0,j=5; i < arguments.size(); i++) {
+		for (int i = 0,j=6; i < arguments.size(); i++) {
 			data[j]=(byte)arguments.get(i).length;
+			data[j+1]=(byte)(255-arguments.get(i).length);
 			for (int k = 0; k < arguments.get(i).length; k++) {
-				data[j+k+1]=arguments.get(i)[k];
+				data[j+k+2]=arguments.get(i)[k];
 			}
-			j+=arguments.get(i).length+1;
+			j+=arguments.get(i).length+2;
 		}
 		data[frameSize-1]=END_OF_FRAME;
 		return data;
