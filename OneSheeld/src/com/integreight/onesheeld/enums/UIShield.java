@@ -121,7 +121,7 @@ public enum UIShield {
 			(byte) 0x1E, "Email", 0xff114540,
 			R.drawable.shields_list_email_symbol, false, EmailShield.class), CLOCK_SHIELD(
 			(byte) 0x21, "Clock", 0xffc45527,
-			R.drawable.shields_list_gravity_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
+			R.drawable.shields_list_clock_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x22, "Keyboard", 0xffde1f26,
 			R.drawable.shields_list_gravity_symbol, false, KeyboardShield.class);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
