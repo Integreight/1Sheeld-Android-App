@@ -115,6 +115,13 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 	// Register a listener for the sensor.
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mMagnetometer == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mMagnetometer = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {

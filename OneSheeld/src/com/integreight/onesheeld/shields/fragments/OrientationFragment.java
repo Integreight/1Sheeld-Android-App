@@ -32,6 +32,8 @@ public class OrientationFragment extends
 	@Override
 	public void onStart() {
 		super.onStart();
+		((OrientationShield) getApplication().getRunningShields().get(
+				getControllerTag())).registerSensorListener(true);
 
 	}
 
@@ -116,21 +118,28 @@ public class OrientationFragment extends
 
 		@Override
 		public void isDeviceHasSensor(Boolean hasSensor) {/*
-			// TODO Auto-generated method stub
-
-			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				if (!hasSensor) {
-					devicehasSensor.setText("Your Device not have The Sensor");
-					Toast.makeText(getActivity(),
-							"Device dosen't have This Sensor !",
-							Toast.LENGTH_SHORT).show();
-				} else {
-
-				}
-			}
-
-		*/}
+														 * // TODO
+														 * Auto-generated method
+														 * stub
+														 * 
+														 * // TODO
+														 * Auto-generated method
+														 * stub if
+														 * (canChangeUI()) { if
+														 * (!hasSensor) {
+														 * devicehasSensor
+														 * .setText(
+														 * "Your Device not have The Sensor"
+														 * ); Toast.makeText(
+														 * getActivity(),
+														 * "Device dosen't have This Sensor !"
+														 * ,
+														 * Toast.LENGTH_SHORT).
+														 * show(); } else {
+														 * 
+														 * } }
+														 */
+		}
 	};
 
 	private void initializeFirmata() {

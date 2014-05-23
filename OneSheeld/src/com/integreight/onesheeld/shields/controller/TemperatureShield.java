@@ -108,6 +108,13 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	@SuppressLint("InlinedApi")
 	@SuppressWarnings("deprecation")
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mTemperature == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mTemperature = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		// IF API = 14 or higher use TYPE_AMBIENT_TEMPERATURE otherwise use
 		// TYPE_TEMPERATURE !
 

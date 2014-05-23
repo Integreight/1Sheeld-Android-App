@@ -114,6 +114,13 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 	// Register a listener for the sensor.
 	@SuppressWarnings("deprecation")
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mOrientation == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mOrientation = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {

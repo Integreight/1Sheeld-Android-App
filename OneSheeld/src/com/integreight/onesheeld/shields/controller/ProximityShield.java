@@ -97,6 +97,13 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 	// Register a listener for the sensor.
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mProximity == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mProximity = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {

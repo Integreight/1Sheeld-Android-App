@@ -88,7 +88,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			frame = new ShieldFrame(UIShield.PRESSURE_SHIELD.getId(),
 					PRESSURE_VALUE);
 			oldInput = event.values[0];
-			//frame.addByteArgument((byte) Math.round(event.values[0]));
+			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addIntegerArgument(2, false, Math.round(event.values[0]));
 			sendShieldFrame(frame);
 			Log.d("Sensor Data of X", event.values[0] + "");
@@ -102,6 +102,13 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 	// Register a listener for the sensor.
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mPressure == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mPressure = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {

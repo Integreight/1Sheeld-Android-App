@@ -31,6 +31,8 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
+		((GravityShield) getApplication().getRunningShields().get(
+				getControllerTag())).registerSensorListener(true);
 
 	}
 

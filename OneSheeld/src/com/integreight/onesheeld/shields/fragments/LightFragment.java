@@ -31,6 +31,8 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
+		((LightShield) getApplication().getRunningShields().get(
+				getControllerTag())).registerSensorListener(true);
 
 	}
 
@@ -122,30 +124,59 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
 		@Override
 		public void isDeviceHasSensor(final Boolean hasSensor) {/*
-			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-
-				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
-
-					@Override
-					public void run() {
-						if (!hasSensor) {
-							// devicehasSensor.setText("Your Device not have The Sensor");
-							Toast.makeText(getActivity(),
-									"Device dosen't have This Sensor !",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							light_float.setVisibility(View.VISIBLE);
-							light_byte.setVisibility(View.VISIBLE);
-							stoplistening_bt.setVisibility(View.VISIBLE);
-						}
-					}
-				});
-
-			}
-		*/}
+																 * // TODO
+																 * Auto-generated
+																 * method stub
+																 * if
+																 * (canChangeUI
+																 * ()) {
+																 * 
+																 * // set data
+																 * to UI
+																 * uiHandler.
+																 * removeCallbacksAndMessages
+																 * (null);
+																 * uiHandler
+																 * .post(new
+																 * Runnable() {
+																 * 
+																 * @Override
+																 * public void
+																 * run() { if
+																 * (!hasSensor)
+																 * { //
+																 * devicehasSensor
+																 * .setText(
+																 * "Your Device not have The Sensor"
+																 * );
+																 * Toast.makeText
+																 * (
+																 * getActivity()
+																 * ,
+																 * "Device dosen't have This Sensor !"
+																 * , Toast.
+																 * LENGTH_SHORT
+																 * ).show(); }
+																 * else {
+																 * light_float
+																 * .setVisibility
+																 * (
+																 * View.VISIBLE)
+																 * ; light_byte.
+																 * setVisibility
+																 * (
+																 * View.VISIBLE)
+																 * ;
+																 * stoplistening_bt
+																 * .
+																 * setVisibility
+																 * (
+																 * View.VISIBLE)
+																 * ; } } });
+																 * 
+																 * }
+																 */
+		}
 	};
 
 	private void initializeFirmata() {
