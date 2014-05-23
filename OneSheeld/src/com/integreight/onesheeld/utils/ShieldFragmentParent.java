@@ -9,6 +9,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ToggleButton;
 
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -125,6 +127,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		((ToggleButton) getActivity().findViewById(R.id.shieldStatus))
 				.setChecked(getApplication().getRunningShields().get(
 						getControllerTag()).isInteractive);
+		getApplication().getGaTracker().send(
+				MapBuilder.createAppView()
+						.set(Fields.SCREEN_NAME, getControllerTag()).build());
 		super.onResume();
 	}
 

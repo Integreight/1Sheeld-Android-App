@@ -51,15 +51,15 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 		super.onActivityCreated(savedInstanceState);
 		smsTextContainer = (LinearLayout) getView().findViewById(
 				R.id.sms_shield_text_container);
-		sendSMS = (Button) getView().findViewById(R.id.sendMessage);
-		sendSMS.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View arg0) {
-				((SmsShield) getApplication().getRunningShields().get(
-						getControllerTag())).sendSmsToArduino();
-			}
-		});
+		// sendSMS = (Button) getView().findViewById(R.id.sendMessage);
+		// sendSMS.setOnClickListener(new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View arg0) {
+		// ((SmsShield) getApplication().getRunningShields().get(
+		// getControllerTag())).sendSmsToArduino();
+		// }
+		// });
 
 	}
 

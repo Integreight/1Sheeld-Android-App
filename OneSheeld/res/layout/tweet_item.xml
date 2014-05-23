@@ -2,10 +2,11 @@
 <com.integreight.onesheeld.utils.OneShieldTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:drawableLeft="@drawable/shields_list_twitter_symbol"
+    android:drawableLeft="@drawable/green_circle"
     android:drawablePadding="10dp"
     android:gravity="center"
-    android:padding="5dp"
+    android:padding="7dp"
+    android:singleLine="true"
     android:textColor="@color/offWhite"
     android:textSize="14sp"
     android:textStyle="bold" />

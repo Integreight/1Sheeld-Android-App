@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.Fields;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.FirmwareUpdatingPopup;
@@ -321,6 +322,8 @@ public class SheeldsList extends Fragment {
 		public void onConnect() {
 			Log.e(TAG, "- ARDUINO CONNECTED -");
 			if (isOneSheeldServiceRunning()) {
+				((OneSheeldApplication) getActivity().getApplication())
+						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
 				arduinoConnected = true;
 				if (adapter != null)
 					adapter.applyToControllerTable();
@@ -331,6 +334,8 @@ public class SheeldsList extends Fragment {
 		public void onClose(boolean closedManually) {
 			arduinoConnected = false;
 			if (getActivity() != null) {
+				((OneSheeldApplication) getActivity().getApplication())
+						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
 				((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
 				if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
 						|| ((MainActivity) getActivity()).isForground)
