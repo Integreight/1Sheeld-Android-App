@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -210,12 +212,18 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		if (getApplication().getRunningShields().get(tag) == null)
 			getApplication().getRunningShields().put(tag, this);
 		getApplication().getAppFirmata().initUart();
+		getApplication().getGaTracker().send(
+				MapBuilder.createEvent(Fields.EVENT_ACTION, "start", "", null)
+						.set(getTag(), "start").build());
 		return this;
 	}
 
 	public ControllerParent<T> invalidate(SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
+		getApplication().getGaTracker().send(
+				MapBuilder.createEvent(Fields.EVENT_ACTION, "start", "", null)
+						.set(getTag(), "start").build());
 		return this;
 	}
 
@@ -263,6 +271,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 						arduinoFirmataShieldFrameHandler);
 			}
 		});
+		getApplication().getGaTracker().send(
+				MapBuilder.createEvent(Fields.EVENT_ACTION, "end", "", null)
+						.set(getTag(), "end").build());
 	}
 
 	public void sendShieldFrame(ShieldFrame frame) {
