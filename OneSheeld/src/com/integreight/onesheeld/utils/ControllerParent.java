@@ -222,8 +222,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		getApplication().getGaTracker().send(
-				MapBuilder.createEvent(Fields.EVENT_ACTION, "start", "", null)
-						.set(getTag(), "start").build());
+				MapBuilder
+						.createEvent("Controller Tracker", "start", getTag(),
+								null).set(getTag(), "start").build());
 		return this;
 	}
 
@@ -272,8 +273,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 			}
 		});
 		getApplication().getGaTracker().send(
-				MapBuilder.createEvent(Fields.EVENT_ACTION, "end", "", null)
-						.set(getTag(), "end").build());
+				MapBuilder
+						.createEvent("Controller Tracker", "end", getTag(),
+								null).set(getTag(), "end").build());
 	}
 
 	public void sendShieldFrame(ShieldFrame frame) {
