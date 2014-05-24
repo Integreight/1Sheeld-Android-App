@@ -102,7 +102,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mProximity = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
 			// Success! There's sensor.

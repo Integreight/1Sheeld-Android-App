@@ -107,7 +107,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mPressure = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null) {
 			// Success! There's sensor.

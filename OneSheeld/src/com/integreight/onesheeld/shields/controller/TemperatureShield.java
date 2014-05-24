@@ -113,7 +113,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mTemperature = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
 		}
 		// IF API = 14 or higher use TYPE_AMBIENT_TEMPERATURE otherwise use
 		// TYPE_TEMPERATURE !

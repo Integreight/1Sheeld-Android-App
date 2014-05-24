@@ -118,7 +118,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mGyroscope = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
 			// Success! There's sensor.

@@ -120,7 +120,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mMagnetometer = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
 			// Success! There's sensor.

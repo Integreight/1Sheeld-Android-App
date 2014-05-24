@@ -119,7 +119,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mOrientation = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_ORIENTATION);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION) != null) {
 			// Success! There's sensor.

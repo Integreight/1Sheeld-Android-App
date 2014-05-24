@@ -118,7 +118,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
 			mGravity = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+					.getDefaultSensor(Sensor.TYPE_GRAVITY);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
 			// Success! There's sensor.
