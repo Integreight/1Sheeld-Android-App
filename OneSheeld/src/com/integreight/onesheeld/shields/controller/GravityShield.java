@@ -113,6 +113,13 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	// Register a listener for the sensor.
 	public void registerSensorListener(boolean isToastabel) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mGravity == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mGravity = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive && mGravity != null) {

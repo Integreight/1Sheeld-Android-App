@@ -115,6 +115,13 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
 	// Register a listener for the sensor.
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mAccelerometer == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mAccelerometer = mSensorManager
+					.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {

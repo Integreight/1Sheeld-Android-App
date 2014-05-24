@@ -31,6 +31,8 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
+		((ProximityShield) getApplication().getRunningShields().get(
+				getControllerTag())).registerSensorListener(true);
 
 	}
 
@@ -130,32 +132,64 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 
 		@Override
 		public void isDeviceHasSensor(final Boolean hasSensor) {/*
-			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-
-				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
-
-					@Override
-					public void run() {
-
-						if (!hasSensor) {
-							devicehasSensor
-									.setText("Your Device not have The Sensor");
-							Toast.makeText(getActivity(),
-									"Device dosen't have This Sensor !",
-									Toast.LENGTH_SHORT).show();
-						} else {
-							distance_float.setVisibility(View.VISIBLE);
-							distance_byte.setVisibility(View.VISIBLE);
-							stoplistening_bt.setVisibility(View.VISIBLE);
-						}
-					}
-				});
-
-			}
-		*/}
+																 * // TODO
+																 * Auto-generated
+																 * method stub
+																 * if
+																 * (canChangeUI
+																 * ()) {
+																 * 
+																 * // set data
+																 * to UI
+																 * uiHandler.
+																 * removeCallbacksAndMessages
+																 * (null);
+																 * uiHandler
+																 * .post(new
+																 * Runnable() {
+																 * 
+																 * @Override
+																 * public void
+																 * run() {
+																 * 
+																 * if
+																 * (!hasSensor)
+																 * {
+																 * devicehasSensor
+																 * .setText(
+																 * "Your Device not have The Sensor"
+																 * );
+																 * Toast.makeText
+																 * (
+																 * getActivity()
+																 * ,
+																 * "Device dosen't have This Sensor !"
+																 * , Toast.
+																 * LENGTH_SHORT
+																 * ).show(); }
+																 * else {
+																 * distance_float
+																 * .
+																 * setVisibility
+																 * (
+																 * View.VISIBLE)
+																 * ;
+																 * distance_byte
+																 * .
+																 * setVisibility
+																 * (
+																 * View.VISIBLE)
+																 * ;
+																 * stoplistening_bt
+																 * .
+																 * setVisibility
+																 * (
+																 * View.VISIBLE)
+																 * ; } } });
+																 * 
+																 * }
+																 */
+		}
 	};
 
 	private void initializeFirmata() {

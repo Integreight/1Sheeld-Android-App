@@ -99,6 +99,12 @@ public class LightShield extends ControllerParent<LightShield> implements
 
 	// Register a listener for the sensor.
 	public void registerSensorListener(boolean isToastable) {
+		// check on mSensorManager and sensor != null
+		if (mSensorManager == null | mLight == null) {
+			mSensorManager = (SensorManager) getApplication().getSystemService(
+					Context.SENSOR_SERVICE);
+			mLight = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT) != null
 				&& mLight != null) {
 			// Success! There's sensor.
