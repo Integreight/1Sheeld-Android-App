@@ -137,15 +137,6 @@ public class SheeldsList extends Fragment {
 					@Override
 					public void onClick(View v) {
 						launchShieldsOperationActivity();
-						getActivity().findViewById(R.id.getAvailableDevices)
-								.setOnClickListener(new View.OnClickListener() {
-
-									@Override
-									public void onClick(View v) {
-										// TODO Auto-generated method stub
-
-									}
-								});
 					}
 				});
 		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
@@ -295,10 +286,21 @@ public class SheeldsList extends Fragment {
 			Toast.makeText(getActivity(), "Select at least 1 shield",
 					Toast.LENGTH_LONG).show();
 			return;
+		} else {
+			((MainActivity) getActivity()).replaceCurrentFragment(
+					R.id.appTransitionsContainer,
+					ShieldsOperations.getInstance(),
+					ShieldsOperations.class.getName(), true, true);
+			getActivity().findViewById(R.id.getAvailableDevices)
+					.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+
+						}
+					});
 		}
-		((MainActivity) getActivity()).replaceCurrentFragment(
-				R.id.appTransitionsContainer, ShieldsOperations.getInstance(),
-				ShieldsOperations.class.getName(), true, true);
 	}
 
 	ArduinoFirmataEventHandler sheeldsFirmataHandler = new ArduinoFirmataEventHandler() {

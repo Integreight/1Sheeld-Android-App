@@ -296,8 +296,8 @@ public class MainActivity extends FragmentActivity {
 												fup.show();
 											}
 										}, true));
-						// if (!isFinishing())
-						// popub.show();
+						if (!isFinishing())
+							popub.show();
 					}
 				}
 			});

@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.google.analytics.tracking.android.Fields;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.Jodem;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.HttpRequest;
@@ -34,6 +36,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 	private Handler uIHandler = new Handler();
 	private boolean isFailed = false;
 	private boolean isChinese = false;
+	private final String TRACKER_CATG = "Firmware Upgrade";
 
 	public FirmwareUpdatingPopup(final MainActivity activity, boolean isChinese) {
 		super(activity, android.R.style.Theme_Translucent_NoTitleBar);
@@ -74,6 +77,11 @@ public class FirmwareUpdatingPopup extends Dialog {
 						changeSlogan("Upgrade Firmware", COLOR.BLUE);
 					}
 				}, 1500);
+				activity.getThisApplication()
+						.getGaTracker()
+						.send(MapBuilder.createEvent(TRACKER_CATG,
+								"Installed the firmware update successfully",
+								"", null).build());
 
 			}
 
@@ -108,6 +116,13 @@ public class FirmwareUpdatingPopup extends Dialog {
 								.enableReporting();
 						activity.getThisApplication().getAppFirmata()
 								.setAllPinsAsInput();
+						activity.getThisApplication()
+								.getGaTracker()
+								.send(MapBuilder
+										.createEvent(
+												TRACKER_CATG,
+												"Failed to install the firmware version",
+												"", null).build());
 					}
 				});
 			}
@@ -133,6 +148,10 @@ public class FirmwareUpdatingPopup extends Dialog {
 
 			}
 		});
+		activity.getThisApplication()
+				.getGaTracker()
+				.send(MapBuilder.createAppView()
+						.set(Fields.SCREEN_NAME, "Firmware Upgrade").build());
 		// TODO Auto-generated constructor stub
 	}
 
@@ -205,6 +224,11 @@ public class FirmwareUpdatingPopup extends Dialog {
 							((OneSheeldApplication) activity.getApplication())
 									.setVersionWebResult(response.toString());
 							downloadFirmware();
+							activity.getThisApplication()
+									.getGaTracker()
+									.send(MapBuilder.createEvent(TRACKER_CATG,
+											"Got the server version", "", null)
+											.build());
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -250,6 +274,13 @@ public class FirmwareUpdatingPopup extends Dialog {
 											COLOR.BLUE);
 
 								// progressBar.setProgress(0);
+								activity.getThisApplication()
+										.getGaTracker()
+										.send(MapBuilder
+												.createEvent(
+														TRACKER_CATG,
+														"Downloaded the firmware update",
+														"", null).build());
 								super.onSuccess(binaryData);
 							}
 
@@ -260,6 +291,14 @@ public class FirmwareUpdatingPopup extends Dialog {
 								changeSlogan("Error Downloading!", COLOR.RED);
 								setUpgrade();
 								Log.d("bootloader", statusCode + "");
+								activity.getThisApplication()
+										.getGaTracker()
+										.send(MapBuilder
+												.createEvent(
+														TRACKER_CATG,
+														"Failed to download the firmware update",
+														statusCode + "", null)
+												.build());
 								super.onFailure(statusCode, headers,
 										binaryData, error);
 							}
