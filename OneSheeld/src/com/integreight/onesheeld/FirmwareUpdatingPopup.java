@@ -212,6 +212,16 @@ public class FirmwareUpdatingPopup extends Dialog {
 					}
 
 					@Override
+					public void onFailure(int statusCode, Header[] headers,
+							String responseBody, Throwable e) {
+						((OneSheeldApplication) activity.getApplication())
+								.setMajorVersion(-1);
+						((OneSheeldApplication) activity.getApplication())
+								.setMinorVersion(-1);
+						super.onFailure(statusCode, headers, responseBody, e);
+					}
+
+					@Override
 					public void onSuccess(JSONObject response) {
 						try {
 							System.err.println(response);

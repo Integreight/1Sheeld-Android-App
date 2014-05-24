@@ -248,56 +248,61 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void run() {
 					Log.d("Onesheeld", minorVersion + "     " + majorVersion);
-					if (majorVersion == getThisApplication().getMajorVersion()
-							&& minorVersion != getThisApplication()
-									.getMinorVersion()) {
-						popub = new ValidationPopup(MainActivity.this,
-								"Firmware Upgrading",
-								"There's a new version for your 1Sheeld",
-								new ValidationPopup.ValidationAction("Now",
-										new View.OnClickListener() {
+					if (getThisApplication().getMinorVersion() != -1
+							&& getThisApplication().getMajorVersion() != -1) {
+						if (majorVersion == getThisApplication()
+								.getMajorVersion()
+								&& minorVersion != getThisApplication()
+										.getMinorVersion()) {
+							popub = new ValidationPopup(MainActivity.this,
+									"Firmware Upgrading",
+									"There's a new version for your 1Sheeld",
+									new ValidationPopup.ValidationAction("Now",
+											new View.OnClickListener() {
 
-											@Override
-											public void onClick(View v) {
-												new FirmwareUpdatingPopup(
-														MainActivity.this,
-														false).show();
-											}
-										}, true),
-								new ValidationPopup.ValidationAction("Not Now",
-										new View.OnClickListener() {
+												@Override
+												public void onClick(View v) {
+													new FirmwareUpdatingPopup(
+															MainActivity.this,
+															false).show();
+												}
+											}, true),
+									new ValidationPopup.ValidationAction(
+											"Not Now",
+											new View.OnClickListener() {
 
-											@Override
-											public void onClick(View v) {
-												// TODO Auto-generated method
-												// stub
+												@Override
+												public void onClick(View v) {
+													// TODO Auto-generated
+													// method
+													// stub
 
-											}
-										}, true));
-						if (!isFinishing())
-							popub.show();
-					} else if (majorVersion != getThisApplication()
-							.getMajorVersion()
-							&& minorVersion != getThisApplication()
-									.getMinorVersion()) {
-						popub = new ValidationPopup(
-								MainActivity.this,
-								"Firmware Upgrading",
-								"Your 1Sheeld is not valid yet, There's a new version ready!",
-								new ValidationPopup.ValidationAction("Start",
-										new View.OnClickListener() {
+												}
+											}, true));
+							if (!isFinishing())
+								popub.show();
+						} else if (majorVersion != getThisApplication()
+								.getMajorVersion()) {
+							popub = new ValidationPopup(
+									MainActivity.this,
+									"Firmware Upgrading",
+									"Your 1Sheeld is not valid yet, There's a new version ready!",
+									new ValidationPopup.ValidationAction(
+											"Start",
+											new View.OnClickListener() {
 
-											@Override
-											public void onClick(View v) {
-												FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
-														MainActivity.this,
-														false);
-												fup.setCancelable(false);
-												fup.show();
-											}
-										}, true));
-						if (!isFinishing())
-							popub.show();
+												@Override
+												public void onClick(View v) {
+													FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
+															MainActivity.this,
+															false);
+													fup.setCancelable(false);
+													fup.show();
+												}
+											}, true));
+							if (!isFinishing())
+								popub.show();
+						}
 					}
 				}
 			});

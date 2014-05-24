@@ -3,48 +3,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
+    <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/gmail_shield_subject_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:text=""
         android:textColor="@color/white" />
+
+    <ImageView
+        android:id="@+id/gmail_shield_logo_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/email_shield_screen_logo"
+        android:contentDescription="@string/app_name" />
 
     <Button
         android:id="@+id/login_gmail_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/gmail_shield_subject_textview"
+        android:layout_below="@+id/gmail_shield_logo_imageview"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Login with your Gmail Account"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/social_shields_login"
         android:visibility="invisible" />
 
     <Button
         android:id="@+id/logout_gmail_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/login_gmail_bt"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="Logout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/social_shields_logout"
         android:visibility="invisible" />
 
-    <ImageView
-        android:id="@+id/gmail_shield_logo_imageview"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="150dp"
-        android:padding="10dp"
-        android:src="@drawable/gmail_shiled_gmail_logo" />
-
-    <TextView
+    <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/gmail_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +56,7 @@
         android:textColor="@color/white"
         android:visibility="invisible" />
 
-    <TextView
+    <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/gmail_shield_sendto_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

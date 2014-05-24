@@ -3,6 +3,7 @@ package com.integreight.onesheeld;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -208,8 +209,17 @@ public class ArduinoConnectivityPopup extends Dialog {
 
 					@Override
 					public void onFinish() {
-						// TODO Auto-generated method stub
 						super.onFinish();
+					}
+
+					@Override
+					public void onFailure(int arg0, Header[] arg1, byte[] arg2,
+							Throwable arg3) {
+						((OneSheeldApplication) activity.getApplication())
+								.setMajorVersion(-1);
+						((OneSheeldApplication) activity.getApplication())
+								.setMinorVersion(-1);
+						super.onFailure(arg0, arg1, arg2, arg3);
 					}
 
 					@Override
