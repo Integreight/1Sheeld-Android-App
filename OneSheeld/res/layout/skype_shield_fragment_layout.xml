@@ -5,11 +5,11 @@
 
     <ImageView
         android:id="@+id/skype_logo"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_margin="20dp"
-        android:src="@drawable/skype_logo" />
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/skype_shield_screen_logo" />
 
 </RelativeLayout>

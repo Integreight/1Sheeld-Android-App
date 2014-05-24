@@ -3,14 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <TextView
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="40dp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/slider_circular_background" />
+
     <com.integreight.onesheeld.utils.VerticalSeekBar
         android:id="@+id/slider_fragment_seekbar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignTop="@+id/slider_fragment_background_imageview"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="50dp"
         android:layout_marginTop="50dp"
-        android:enabled="false" />
+        android:enabled="false"
+        android:progressDrawable="@drawable/slider_progress"
+        android:thumb="@drawable/slider_shield_handle" />
 
 </RelativeLayout>
