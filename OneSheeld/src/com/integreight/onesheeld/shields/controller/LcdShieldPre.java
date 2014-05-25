@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.utils.ControllerParent;
 
-public class LcdShield extends ControllerParent<LcdShield> {
+public class LcdShieldPre extends ControllerParent<LcdShieldPre> {
 	private static LcdEventHandler eventHandler;
 	// private Activity activity;
 	private static short rows = 2;
@@ -43,11 +43,11 @@ public class LcdShield extends ControllerParent<LcdShield> {
 		return lcdText;
 	}
 
-	public LcdShield() {
+	public LcdShieldPre() {
 		super();
 	}
 
-	public LcdShield(Activity activity, String tag) {
+	public LcdShieldPre(Activity activity, String tag) {
 		super(activity, tag);
 		// this.activity = activity;
 		rawText = new char[rows][columns];
@@ -56,7 +56,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 	}
 
 	@Override
-	public ControllerParent<LcdShield> setTag(String tag) {
+	public ControllerParent<LcdShieldPre> setTag(String tag) {
 		rawText = new char[rows][columns];
 		lcdText = new String[rows];
 		resetPins();
@@ -78,7 +78,7 @@ public class LcdShield extends ControllerParent<LcdShield> {
 	}
 
 	public void setLcdEventHandler(LcdEventHandler eventHandler) {
-		LcdShield.eventHandler = eventHandler;
+		LcdShieldPre.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
 
