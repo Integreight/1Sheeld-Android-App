@@ -101,8 +101,7 @@ public class TemperatureFragment extends
 					@Override
 					public void run() {
 						temperature_float.setVisibility(View.VISIBLE);
-						temperature_float.setText("temperature in float = "
-								+ value);
+						temperature_float.setText("" + value);
 					}
 				});
 
