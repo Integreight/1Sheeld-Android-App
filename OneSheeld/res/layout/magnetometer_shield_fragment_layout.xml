@@ -11,9 +11,10 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Start Sensor Listening" />
+        android:text="Start Sensor Listening"
+        android:visibility="invisible" />
 
-    <TextView
+    <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/device_not_has_sensor_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,48 +26,181 @@
         android:textColor="@color/white"
         android:visibility="invisible" />
 
-    <TextView
-        android:id="@+id/x_value_txt"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/start_listener_bt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white" />
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/y_value_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/x_value_txt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gyroscope_shield_screen_logo"
+            android:contentDescription="@string/app_name" />
 
-    <TextView
-        android:id="@+id/z_value_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/y_value_txt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:baselineAligned="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sensor_x_circle"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.integreight.onesheeld.utils.OneShieldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
+                        android:gravity="center"
+                        android:text="X"
+                        android:textColor="@color/offWhite"
+                        android:textSize="55sp" />
+                </RelativeLayout>
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:id="@+id/x_value_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:maxLength="6"
+                    android:singleLine="true"
+                    android:textColor="@color/offWhite"
+                    android:textSize="28sp" />
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="cm"
+                    android:textColor="@color/offWhite"
+                    android:textSize="25sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sensor_y_circle"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.integreight.onesheeld.utils.OneShieldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/sensor_ycoor_top_margin"
+                        android:gravity="center"
+                        android:text="Y"
+                        android:textColor="@color/offWhite"
+                        android:textSize="55sp" />
+                </RelativeLayout>
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:id="@+id/y_value_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:maxLength="6"
+                    android:singleLine="true"
+                    android:textColor="@color/offWhite"
+                    android:textSize="28sp" />
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="cm"
+                    android:textColor="@color/offWhite"
+                    android:textSize="25sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <RelativeLayout
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:background="@drawable/sensor_z_circle"
+                    android:gravity="center_horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <com.integreight.onesheeld.utils.OneShieldTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
+                        android:gravity="center"
+                        android:text="Z"
+                        android:textColor="@color/offWhite"
+                        android:textSize="55sp" />
+                </RelativeLayout>
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:id="@+id/z_value_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:maxLength="6"
+                    android:singleLine="true"
+                    android:textColor="@color/offWhite"
+                    android:textSize="28sp" />
+
+                <com.integreight.onesheeld.utils.OneShieldTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="cm"
+                    android:textColor="@color/offWhite"
+                    android:textSize="25sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
 
     <Button
         android:id="@+id/stop_listener_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/z_value_txt"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Stop Sensor Listening" />
+        android:text="Stop Sensor Listening"
+        android:visibility="invisible" />
 
 </RelativeLayout>

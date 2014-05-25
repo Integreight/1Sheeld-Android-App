@@ -20,6 +20,10 @@
 
     <include
         android:id="@+id/xKeyBoard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="50dp"
         layout="@layout/keyboard_layout" >
     </include>
 

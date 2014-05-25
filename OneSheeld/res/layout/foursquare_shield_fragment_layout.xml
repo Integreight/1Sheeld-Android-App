@@ -3,50 +3,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <ImageView
+        android:id="@+id/fsLogo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/foursquare_shield_screen_logo"
+        android:contentDescription="@string/app_name" />
+
     <Button
         android:id="@+id/foursquare_shiled_login_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/fsLogo"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="Login with your Foursquare Account"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/social_shields_login"
         android:visibility="invisible" />
 
     <Button
         android:id="@+id/foursquare_shiled_logout_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/foursquare_shiled_login_bt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="Logout"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="10dp"
+        android:background="@drawable/social_shields_logout"
         android:visibility="invisible" />
 
-    <TextView
+    <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/foursquare_shield_last_checkin_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/foursquare_shiled_logout_bt"
+        android:layout_below="@+id/fsLogo"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="15dp"
+        android:drawableLeft="@drawable/green_circle"
+        android:drawablePadding="10dp"
         android:text="Your last checkin will be here!"
-        android:textColor="@color/white" />
+        android:textColor="@color/offWhite"
+        android:textSize="15sp"
+        android:visibility="invisible" />
 
-    <TextView
+    <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/foursquare_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/foursquare_shield_last_checkin_textview"
+        android:layout_above="@id/fsLogo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="128dp"
-        android:text="Logged in as: Islam Mustafa"
-        android:textColor="@color/white"
+        android:textColor="@color/offWhite"
+        android:textSize="15sp"
         android:visibility="invisible" />
 
 </RelativeLayout>
