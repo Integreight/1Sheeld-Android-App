@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ToggleButton;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.Fields;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
@@ -108,6 +109,10 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
 	public String getControllerTag() {
 		controllerTag = (controllerTag == null ? getTag() : controllerTag);
+		if (controllerTag == null)
+			Crashlytics
+					.log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
+							.getClass().getName() : "");
 		return controllerTag;
 	}
 
@@ -130,6 +135,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		getApplication().getGaTracker().send(
 				MapBuilder.createAppView()
 						.set(Fields.SCREEN_NAME, getControllerTag()).build());
+		Crashlytics.setString("Current View", getTag());
 		super.onResume();
 	}
 

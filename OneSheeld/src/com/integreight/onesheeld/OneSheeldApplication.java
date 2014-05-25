@@ -213,13 +213,13 @@ public class OneSheeldApplication extends Application {
 
 	@Override
 	public void onLowMemory() {
-		// TODO Auto-generated method stub
+
 		super.onLowMemory();
 	}
 
 	@Override
 	public void onTrimMemory(int level) {
-		// TODO Auto-generated method stub
+
 		super.onTrimMemory(level);
 	}
 	// public ArduinoFirmataEventHandler

@@ -95,21 +95,21 @@ public class OrientationFragment extends
 
 					@Override
 					public void run() {
-						x.setText("X = " + value[0]);
+						x.setText("" + value[0]);
 					}
 				});
 				y.post(new Runnable() {
 
 					@Override
 					public void run() {
-						y.setText("Y = " + value[1]);
+						y.setText("" + value[1]);
 					}
 				});
 				z.post(new Runnable() {
 
 					@Override
 					public void run() {
-						z.setText("Z = " + value[2]);
+						z.setText("" + value[2]);
 
 					}
 				});

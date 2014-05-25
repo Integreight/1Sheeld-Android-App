@@ -340,6 +340,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		foursquare.authorize(getActivity(),
 				new FoursquareAuthenDialogListener());
 	}
+	
 
 	@Override
 	public void reset() {

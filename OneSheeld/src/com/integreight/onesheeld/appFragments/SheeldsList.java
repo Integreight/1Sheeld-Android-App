@@ -25,6 +25,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.Fields;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
@@ -184,6 +185,7 @@ public class SheeldsList extends Fragment {
 			if (!ArduinoConnectivityPopup.isOpened)
 				new ArduinoConnectivityPopup(getActivity()).show();
 		}
+		Crashlytics.setString("Current View", "Shields List");
 		super.onResume();
 	}
 

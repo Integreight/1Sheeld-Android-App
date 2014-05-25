@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -14,6 +15,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -503,12 +506,56 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onResumeFragments() {
 		isForground = true;
+		Crashlytics.setString("isBackground", "No");
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+				List<RunningAppProcessInfo> appProcesses = activityManager
+						.getRunningAppProcesses();
+				String apps = "";
+				for (int i = 0; i < appProcesses.size(); i++) {
+					Log.d("Executed app", "Application executed : "
+							+ appProcesses.get(i).processName + "\t\t ID: "
+							+ appProcesses.get(i).pid + "");
+					apps += appProcesses.get(i).processName + "\n";
+				}
+				Crashlytics.setString("Running apps", apps);
+			}
+		}).start();
 		super.onResumeFragments();
 	}
+
+	long pausingTime = 0;
 
 	@Override
 	protected void onPause() {
 		isForground = false;
+		pausingTime = System.currentTimeMillis();
+		Crashlytics
+				.setString(
+						"isBackground",
+						"since "
+								+ ((System.currentTimeMillis() - pausingTime) / (1000 * 60 * 60))
+								+ " hours");
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+				List<RunningAppProcessInfo> appProcesses = activityManager
+						.getRunningAppProcesses();
+				String apps = "";
+				for (int i = 0; i < appProcesses.size(); i++) {
+					Log.d("Executed app", "Application executed : "
+							+ appProcesses.get(i).processName + "\t\t ID: "
+							+ appProcesses.get(i).pid + "");
+					apps += appProcesses.get(i).processName + "  ||||||  ";
+				}
+				Crashlytics.setString("Running apps", apps);
+			}
+		}).start();
 		super.onPause();
 	}
 
