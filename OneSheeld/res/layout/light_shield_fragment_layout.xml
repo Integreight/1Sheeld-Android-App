@@ -45,7 +45,7 @@
             android:layout_marginTop="20dp"
             android:background="@drawable/light_sensor_value_square"
             android:gravity="center"
-            android:minWidth="130dp"
+            android:minWidth="150dp"
             android:orientation="vertical"
             android:paddingBottom="10dp"
             android:paddingLeft="20dp"

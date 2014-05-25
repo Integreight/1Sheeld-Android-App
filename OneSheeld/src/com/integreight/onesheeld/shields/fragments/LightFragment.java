@@ -99,7 +99,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 					@Override
 					public void run() {
 						light_float.setVisibility(View.VISIBLE);
-						light_float.setText("Light in float = " + value);
+						light_float.setText("" + value);
 					}
 				});
 

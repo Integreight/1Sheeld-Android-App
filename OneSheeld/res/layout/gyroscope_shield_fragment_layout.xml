@@ -36,7 +36,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/gyroscope_shield_screen_logo"
+            android:background="@drawable/accelerometer_shield_screen_logo"
             android:contentDescription="@string/app_name" />
 
         <LinearLayout
@@ -69,7 +69,7 @@
                     <com.integreight.onesheeld.utils.OneShieldTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-7dp"
+                        android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
                         android:gravity="center"
                         android:text="X"
                         android:textColor="@color/offWhite"
@@ -116,7 +116,7 @@
                     <com.integreight.onesheeld.utils.OneShieldTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-6dp"
+                        android:layout_marginTop="@dimen/sensor_ycoor_top_margin"
                         android:gravity="center"
                         android:text="Y"
                         android:textColor="@color/offWhite"
@@ -163,7 +163,7 @@
                     <com.integreight.onesheeld.utils.OneShieldTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="-7dp"
+                        android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
                         android:gravity="center"
                         android:text="Z"
                         android:textColor="@color/offWhite"

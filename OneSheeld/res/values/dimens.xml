@@ -13,5 +13,7 @@
     <dimen name="key_label">32dp</dimen>
     <dimen name="pinViewDimen">8dp</dimen>
     <dimen name="pinNameTextSize">8sp</dimen>
+    <dimen name="sensor_xcoor_top_margin">0dp</dimen>
+    <dimen name="sensor_ycoor_top_margin">0dp</dimen>
 
 </resources>
