@@ -11,7 +11,6 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Start Sensor Listening"
         android:visibility="invisible" />
 
     <com.integreight.onesheeld.utils.OneShieldTextView
@@ -71,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
                         android:gravity="center"
-                        android:text="X"
+                        android:text="@string/x"
                         android:textColor="@color/offWhite"
                         android:textSize="55sp" />
                 </RelativeLayout>
@@ -91,7 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="cm"
+                    android:text="@string/cm"
                     android:textColor="@color/offWhite"
                     android:textSize="25sp" />
             </LinearLayout>
@@ -118,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_ycoor_top_margin"
                         android:gravity="center"
-                        android:text="Y"
+                        android:text="@string/y"
                         android:textColor="@color/offWhite"
                         android:textSize="55sp" />
                 </RelativeLayout>
@@ -138,7 +137,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="cm"
+                    android:text="@string/cm"
                     android:textColor="@color/offWhite"
                     android:textSize="25sp" />
             </LinearLayout>
@@ -165,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
                         android:gravity="center"
-                        android:text="Z"
+                        android:text="@string/z"
                         android:textColor="@color/offWhite"
                         android:textSize="55sp" />
                 </RelativeLayout>
@@ -185,7 +184,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="cm"
+                    android:text="@string/cm"
                     android:textColor="@color/offWhite"
                     android:textSize="25sp" />
             </LinearLayout>
@@ -200,7 +199,6 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Stop Sensor Listening"
         android:visibility="invisible" />
 
 </RelativeLayout>

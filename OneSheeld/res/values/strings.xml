@@ -57,5 +57,15 @@
     <string name="upgradeFirmata">Upgrade Firmware</string>
     <string name="upgrad">Upgrade</string>
     <string name="loading">Loading...</string>
+    <!-- text in sensors -->
+    <string name="x">X</string>
+    <string name="y">Y</string>
+    <string name="z">Z</string>
+    <string name="cm">cm</string>
+    <!-- Arduino connecting pins -->
+    
+    
+    <string name="buzzer_tone">Press Required Tone</string>
+    <string name="time_clock">Time</string>
 
 </resources>
