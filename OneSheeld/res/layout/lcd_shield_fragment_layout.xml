@@ -3,32 +3,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <RelativeLayout
+    <TextView
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@id/verticalContainer"
+        android:layout_alignLeft="@id/verticalContainer"
+        android:layout_alignRight="@id/verticalContainer"
+        android:layout_alignTop="@id/verticalContainer" />
+
+    <LinearLayout
+        android:id="@+id/verticalContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="150dp" >
-
-        <ImageView
-            android:id="@+id/lcd_shield_lcd_imageview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/lcd_background" />
-
-        <com.integreight.onesheeld.utils.VerticalTextView
-            android:id="@+id/lcd_shield_text_textview"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignTop="@+id/lcd_shield_lcd_imageview"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"
-            android:layout_marginLeft="150dp"
-            android:layout_marginRight="150dp"
-            android:layout_marginTop="50dp"
-            android:textSize="32sp" />
-    </RelativeLayout>
+        android:layout_centerInParent="true"
+        android:background="@drawable/lcd_shield_background"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="35dp"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:paddingTop="35dp" >
+    </LinearLayout>
 
 </RelativeLayout>
