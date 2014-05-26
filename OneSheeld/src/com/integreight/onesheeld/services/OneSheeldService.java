@@ -13,7 +13,7 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import com.integreight.onesheeld.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;

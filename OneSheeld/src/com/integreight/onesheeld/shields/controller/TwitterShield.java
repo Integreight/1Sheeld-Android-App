@@ -19,7 +19,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
+import com.integreight.onesheeld.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;

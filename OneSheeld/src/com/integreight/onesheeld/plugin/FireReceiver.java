@@ -17,7 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
+import com.integreight.onesheeld.Log;
 
 import com.integreight.onesheeld.services.OneSheeldService;
 

@@ -2,7 +2,7 @@ package com.integreight.onesheeld.shields.controller.utils;
 
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
+import com.integreight.onesheeld.Log;
 
 public class PhoneCallStateListener extends PhoneStateListener {
 	private PhoneRingingEventHandler eventHandler;

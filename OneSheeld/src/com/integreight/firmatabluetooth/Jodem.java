@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.bluetooth.BluetoothDevice;
-import android.util.Log;
+import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
 import com.integreight.onesheeld.utils.TimeOut;

@@ -3,7 +3,7 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 import android.content.IntentFilter;
 import android.telephony.SmsManager;
-import android.util.Log;
+import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
