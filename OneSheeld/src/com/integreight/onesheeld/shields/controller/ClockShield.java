@@ -26,6 +26,7 @@ public class ClockShield extends
 	private IntentFilter intentFilter;
 	Handler handler;
 	int PERIOD = 1000;
+	boolean isClockBegin = false;
 
 	private final Runnable updateClockSeconds = new Runnable() {
 		Calendar calendar;
@@ -37,8 +38,10 @@ public class ClockShield extends
 			calendar = Calendar.getInstance();
 
 			if (frame != null && calendar != null) {
-				frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
-				sendShieldFrame(frame);
+				if (isClockBegin) {
+					frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
+					sendShieldFrame(frame);
+				}
 				String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
 				String min = calendar.get(Calendar.MINUTE) + "";
 				String sec = calendar.get(Calendar.SECOND) + "";
@@ -64,6 +67,10 @@ public class ClockShield extends
 		intentFilter.addAction(Intent.ACTION_TIME_TICK);
 		getActivity().registerReceiver(m_timeChangedReceiver, intentFilter);
 
+		handler = new Handler();
+		if (updateClockSeconds != null)
+			handler.post(updateClockSeconds);
+
 		return super.setTag(tag);
 	}
 
@@ -79,6 +86,7 @@ public class ClockShield extends
 	public void onNewShieldFrameReceived(ShieldFrame clock_frame) {
 
 		if (clock_frame.getShieldId() == CLOCK_COMMAND) {
+			isClockBegin = true;
 			frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
 
 			if (frame != null) {
@@ -179,7 +187,8 @@ public class ClockShield extends
 							.get(Calendar.DAY_OF_MONTH));
 					frame.addByteArgument((byte) (calendar.get(Calendar.MONTH) + 1));
 					frame.addByteArgument((byte) calendar.get(Calendar.YEAR));
-					sendShieldFrame(frame);
+					if (isClockBegin)
+						sendShieldFrame(frame);
 				}
 			} else if (hour != calendar.get(Calendar.HOUR_OF_DAY)
 					&& day != calendar.get(Calendar.DAY_OF_MONTH)
@@ -193,7 +202,8 @@ public class ClockShield extends
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.DAY_OF_MONTH));
 					frame.addByteArgument((byte) (calendar.get(Calendar.MONTH) + 1));
-					sendShieldFrame(frame);
+					if (isClockBegin)
+						sendShieldFrame(frame);
 				}
 
 			} else if (hour != calendar.get(Calendar.HOUR_OF_DAY)
@@ -217,7 +227,8 @@ public class ClockShield extends
 					frame.addByteArgument((byte) calendar.get(Calendar.MINUTE));
 					frame.addByteArgument((byte) calendar
 							.get(Calendar.HOUR_OF_DAY));
-					sendShieldFrame(frame);
+					if (isClockBegin)
+						sendShieldFrame(frame);
 
 				}
 
@@ -226,7 +237,8 @@ public class ClockShield extends
 				if (frame != null) {
 					frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
 					frame.addByteArgument((byte) calendar.get(Calendar.MINUTE));
-					sendShieldFrame(frame);
+					if (isClockBegin)
+						sendShieldFrame(frame);
 				}
 			}
 			setTime();
