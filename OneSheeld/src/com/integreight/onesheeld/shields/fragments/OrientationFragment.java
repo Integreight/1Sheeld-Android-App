@@ -23,7 +23,7 @@ public class OrientationFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.gravity_shield_fragment_layout,
+		View v = inflater.inflate(R.layout.orientation_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;

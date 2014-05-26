@@ -39,11 +39,15 @@ public class ClockShield extends
 			if (frame != null && calendar != null) {
 				frame.addByteArgument((byte) calendar.get(Calendar.SECOND));
 				sendShieldFrame(frame);
+				String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
+				String min = calendar.get(Calendar.MINUTE) + "";
+				String sec = calendar.get(Calendar.SECOND) + "";
 				if (eventHandler != null)
 					eventHandler.onTimeChanged(""
-							+ calendar.get(Calendar.HOUR_OF_DAY) + ":"
-							+ calendar.get(Calendar.MINUTE) + ":"
-							+ calendar.get(Calendar.SECOND) + "");
+							+ (hour.length() == 1 ? "0" + hour : hour) + ":"
+							+ (min.length() == 1 ? "0" + min : min) + ":"
+							+ (sec.length() == 1 ? "0" + sec : sec) + "",
+							calendar.get(Calendar.AM_PM) == Calendar.AM);
 			}
 			calendar = null;
 			frame = null;
@@ -88,9 +92,15 @@ public class ClockShield extends
 
 				// frame.addByteArgument((byte) year);
 				sendShieldFrame(frame);
+				String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
+				String min = calendar.get(Calendar.MINUTE) + "";
+				String sec = calendar.get(Calendar.SECOND) + "";
 				if (eventHandler != null)
-					eventHandler.onTimeChanged(hour + ":" + minutes + ":"
-							+ seconds);
+					eventHandler.onTimeChanged(""
+							+ (hour.length() == 1 ? "0" + hour : hour) + ":"
+							+ (min.length() == 1 ? "0" + min : min) + ":"
+							+ (sec.length() == 1 ? "0" + sec : sec) + "",
+							calendar.get(Calendar.AM_PM) == Calendar.AM);
 
 				handler = new Handler();
 				if (updateClockSeconds != null)
@@ -107,7 +117,7 @@ public class ClockShield extends
 	}
 
 	public static interface ClockEventHandler {
-		void onTimeChanged(String Time);
+		void onTimeChanged(String Time, boolean isAM);
 	}
 
 	private void setTime() {
@@ -220,9 +230,15 @@ public class ClockShield extends
 				}
 			}
 			setTime();
+			String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
+			String min = calendar.get(Calendar.MINUTE) + "";
+			String sec = calendar.get(Calendar.SECOND) + "";
 			if (eventHandler != null)
-				eventHandler.onTimeChanged("" + hour + ":" + minutes + ":"
-						+ seconds + "");
+				eventHandler.onTimeChanged(
+						"" + (hour.length() == 1 ? "0" + hour : hour) + ":"
+								+ (min.length() == 1 ? "0" + min : min) + ":"
+								+ (sec.length() == 1 ? "0" + sec : sec) + "",
+						calendar.get(Calendar.AM_PM) == Calendar.AM);
 
 			calendar = null;
 			frame = null;

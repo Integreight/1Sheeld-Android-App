@@ -46,13 +46,15 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	private ClockEventHandler clockEventHandler = new ClockEventHandler() {
 
 		@Override
-		public void onTimeChanged(final String time) {
+		public void onTimeChanged(final String time, final boolean isAM) {
 			if (canChangeUI()) {
 				uiHandler.removeCallbacksAndMessages(null);
 				uiHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
+						time_tx.setBackgroundResource(isAM ? R.drawable.clock_time_rounded_am
+								: R.drawable.clock_time_rounded_pm);
 						time_tx.setText(time);
 					}
 				});

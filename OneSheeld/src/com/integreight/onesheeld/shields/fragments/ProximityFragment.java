@@ -102,7 +102,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 					public void run() {
 
 						distance_float.setVisibility(View.VISIBLE);
-						distance_float.setText("Distance in float = " + value);
+						distance_float.setText("" + value);
 					}
 				});
 

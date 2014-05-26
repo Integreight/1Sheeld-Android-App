@@ -96,7 +96,7 @@ public enum UIShield {
 			0xff543c8d, R.drawable.shields_list_proximity_symbol, false,
 			ProximityShield.class, 1), GRAVITY_SHIELD((byte) 0x14, "Gravity",
 			0xffd95342, R.drawable.shields_list_gravity_symbol, false,
-			GravityShield.class, 0), ORIENTATION_SHIELD((byte) 0x0F,
+			GravityShield.class, 1), ORIENTATION_SHIELD((byte) 0x0F,
 			"Orientation", 0xff58844f,
 			R.drawable.shields_list_orientation_symbol, false,
 			OrientationShield.class, 1), LIGHT_SHIELD((byte) 0x10, "Light",

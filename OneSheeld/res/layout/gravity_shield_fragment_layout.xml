@@ -36,7 +36,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/gyroscope_shield_screen_logo"
+            android:background="@drawable/gravity_shield_screen_logo"
             android:contentDescription="@string/app_name" />
 
         <LinearLayout

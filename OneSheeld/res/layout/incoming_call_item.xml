@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.integreight.onesheeld.utils.OneShieldTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:drawableLeft="@drawable/red_circle"
+    android:drawablePadding="10dp"
+    android:gravity="center_vertical|left"
+    android:padding="7dp"
+    android:singleLine="true"
+    android:textColor="@color/offWhite"
+    android:textSize="16sp"
+    android:textStyle="bold" />
