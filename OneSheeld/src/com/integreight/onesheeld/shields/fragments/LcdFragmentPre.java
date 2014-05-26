@@ -10,8 +10,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.shields.controller.LcdShield;
-import com.integreight.onesheeld.shields.controller.LcdShield.LcdEventHandler;
+import com.integreight.onesheeld.shields.controller.LcdShieldd;
+import com.integreight.onesheeld.shields.controller.LcdShieldd.LcdEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
@@ -109,8 +109,8 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 	private void initializeFirmata() {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new LcdShield(getActivity(), getControllerTag()));
-		((LcdShield) getApplication().getRunningShields().get(
+					new LcdShieldd(getActivity(), getControllerTag()));
+		((LcdShieldd) getApplication().getRunningShields().get(
 				getControllerTag())).setLcdEventHandler(lcdEventHandler);
 	}
 
