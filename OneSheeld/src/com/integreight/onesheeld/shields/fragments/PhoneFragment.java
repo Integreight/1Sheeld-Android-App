@@ -1,17 +1,20 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.PhoneShield;
 import com.integreight.onesheeld.shields.controller.PhoneShield.PhoneEventHandler;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
+	LinearLayout callsLogContainer;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,8 +41,10 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		Log.d("PhoneFragment::OnActivityCreated()", "");
-
+		((PhoneShield) getApplication().getRunningShields().get(
+				getControllerTag())).setPhoneEventHandler(phoneEventHandler);
+		callsLogContainer = (LinearLayout) getView().findViewById(
+				R.id.callsCont);
 	}
 
 	private PhoneEventHandler phoneEventHandler = new PhoneEventHandler() {
@@ -51,9 +56,41 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 		}
 
 		@Override
-		public void OnCall(String phone_number) {
-			// TODO Auto-generated method stub
+		public void OnCall(final String phone_number) {
+			if (canChangeUI()) {
+				uiHandler.post(new Runnable() {
 
+					@Override
+					public void run() {
+						OneShieldTextView call = (OneShieldTextView) getActivity()
+								.getLayoutInflater().inflate(
+										R.layout.outgoing_call_item,
+										callsLogContainer, false);
+						call.setText(Html.fromHtml("<b>Call</b> to ")
+								.toString() + phone_number);
+						callsLogContainer.addView(call);
+					}
+				});
+			}
+		}
+
+		@Override
+		public void onReceiveACall(final String phoneNumber) {
+			if (canChangeUI()) {
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						OneShieldTextView call = (OneShieldTextView) getActivity()
+								.getLayoutInflater().inflate(
+										R.layout.incoming_call_item,
+										callsLogContainer, false);
+						call.setText(Html.fromHtml("<b>Call</b> from ")
+								.toString() + phoneNumber);
+						callsLogContainer.addView(call);
+					}
+				});
+			}
 		}
 	};
 

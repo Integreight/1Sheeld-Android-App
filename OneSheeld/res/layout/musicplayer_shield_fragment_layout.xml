@@ -1,17 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/arduino_conn_gray_bg"
+    android:gravity="center" >
 
-    <ImageView
-        android:id="@+id/notification_shield_logo_imageview"
+    <TextView
+        android:id="@+id/center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/notification_fragment_background_imageview"
+        android:layout_centerInParent="true" />
+
+    <ImageView
+        android:id="@+id/music_shield_logo_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/center"
         android:layout_centerHorizontal="true"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/musicplayer_shield_screen_logo" />
+
+    <ImageView
+        android:id="@+id/playingBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/music_shield_logo_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/musicplayer_pause_symbol"
+        android:contentDescription="@string/app_name" />
+
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/playingStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playingBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="Paused"
+        android:textColor="@color/offWhite"
+        android:textSize="14sp" />
+
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/playingMusic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playingStatus"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="10dp"
+        android:singleLine="true"
+        android:text="Music file name"
+        android:textColor="@color/offWhite"
+        android:textSize="14sp" />
+
+    <SeekBar
+        android:id="@+id/seekBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/playingMusic"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginTop="80dp"
-        android:src="@drawable/fake_music_player_shield" />
+        android:layout_marginTop="15dp"
+        android:background="@drawable/music_seek_bg"
+        android:max="100"
+        android:progressDrawable="@drawable/slider_progress"
+        android:thumb="@drawable/music_seek_thumb" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/seekBar"
+        android:layout_alignLeft="@id/seekBar"
+        android:layout_alignRight="@id/seekBar"
+        android:layout_alignTop="@id/seekBar"
+        android:clickable="true" />
 
 </RelativeLayout>

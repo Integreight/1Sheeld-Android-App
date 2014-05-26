@@ -85,7 +85,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 
 					@Override
 					public void run() {
-						Latit.setText(lat);
+						Latit.setText("Latitude\n" + lat);
 					}
 				});
 			}
@@ -99,7 +99,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 
 					@Override
 					public void run() {
-						Longit.setText(lang);
+						Longit.setText("Longitude\n" + lang);
 					}
 				});
 			}

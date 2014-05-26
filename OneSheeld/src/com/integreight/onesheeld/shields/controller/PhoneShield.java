@@ -15,7 +15,7 @@ import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
-	// private PhoneEventHandler eventHandler;
+	private PhoneEventHandler eventHandler;
 	private static final byte CALL_METHOD_ID = (byte) 0x01;
 	private PhoneCallStateListener phoneListener;
 	private TelephonyManager telephonyManager;
@@ -56,21 +56,33 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 	}
 
 	public void setPhoneEventHandler(PhoneEventHandler eventHandler) {
-		// this.eventHandler = eventHandler;
+		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
 
 	public static interface PhoneEventHandler {
 		void OnCall(String phone_number);
 
+		void onReceiveACall(String phoneNumber);
+
 		void isRinging(boolean isRinging);
 	}
 
 	private void call(String phoneNumber) {
-		Intent callIntent = new Intent(Intent.ACTION_CALL);
-		callIntent.setData(Uri.parse("tel:" + phoneNumber));
-		callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-		getApplication().startActivity(callIntent);
+		try {
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+			callIntent.setData(Uri.parse("tel:" + phoneNumber));
+			callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			callIntent.setPackage("com.android.phone");
+			getApplication().startActivity(callIntent);
+		} catch (Exception e) {
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+			callIntent.setData(Uri.parse("tel:" + phoneNumber));
+			callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			getApplication().startActivity(callIntent);
+		}
+		if (eventHandler != null)
+			eventHandler.OnCall(phoneNumber);
 		// Set Handlers to update UI..
 	}
 
@@ -83,6 +95,8 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 			frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x02);
 			frame.addStringArgument(phoneNumber);
 			sendShieldFrame(frame);
+			if (eventHandler != null)
+				eventHandler.onReceiveACall(phoneNumber);
 		}
 
 		@Override

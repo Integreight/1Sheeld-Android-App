@@ -215,6 +215,21 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		getApplication().getGaTracker().send(
 				MapBuilder.createEvent(Fields.EVENT_ACTION, "start", "", null)
 						.set(getTag(), "start").build());
+		Crashlytics
+				.setString(
+						"Number of running shields",
+						getApplication().getRunningShields() == null
+								|| getApplication().getRunningShields().size() == 0 ? "No Running Shields"
+								: ""
+										+ getApplication().getRunningShields()
+												.size());
+		Crashlytics
+				.setString(
+						"Running Shields",
+						getApplication().getRunningShields() != null
+								&& getApplication().getRunningShields().size() > 0 ? getApplication()
+								.getRunningShields().keySet().toString()
+								: "No Running Shields");
 		return this;
 	}
 
@@ -225,6 +240,21 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				MapBuilder
 						.createEvent("Controller Tracker", "start", getTag(),
 								null).set(getTag(), "start").build());
+		Crashlytics
+				.setString(
+						"Number of running shields",
+						getApplication().getRunningShields() == null
+								|| getApplication().getRunningShields().size() == 0 ? "No Running Shields"
+								: ""
+										+ getApplication().getRunningShields()
+												.size());
+		Crashlytics
+				.setString(
+						"Running Shields",
+						getApplication().getRunningShields() != null
+								&& getApplication().getRunningShields().size() > 0 ? getApplication()
+								.getRunningShields().keySet().toString()
+								: "No Running Shields");
 		return this;
 	}
 
@@ -276,6 +306,21 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				MapBuilder
 						.createEvent("Controller Tracker", "end", getTag(),
 								null).set(getTag(), "end").build());
+		Crashlytics
+				.setString(
+						"Number of running shields",
+						getApplication().getRunningShields() == null
+								|| getApplication().getRunningShields().size() == 0 ? "No Running Shields"
+								: ""
+										+ getApplication().getRunningShields()
+												.size());
+		Crashlytics
+				.setString(
+						"Running Shields",
+						getApplication().getRunningShields() != null
+								&& getApplication().getRunningShields().size() > 0 ? getApplication()
+								.getRunningShields().keySet().toString()
+								: "No Running Shields");
 	}
 
 	public void sendShieldFrame(ShieldFrame frame) {

@@ -101,7 +101,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 					@Override
 					public void run() {
 						pressure_float.setVisibility(View.VISIBLE);
-						pressure_float.setText("Pressure in float = " + value);
+						pressure_float.setText("" + value);
 					}
 				});
 

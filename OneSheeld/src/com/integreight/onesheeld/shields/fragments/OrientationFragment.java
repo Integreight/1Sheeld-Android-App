@@ -23,7 +23,7 @@ public class OrientationFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.gravity_shield_fragment_layout,
+		View v = inflater.inflate(R.layout.orientation_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -95,21 +95,21 @@ public class OrientationFragment extends
 
 					@Override
 					public void run() {
-						x.setText("X = " + value[0]);
+						x.setText("" + value[0]);
 					}
 				});
 				y.post(new Runnable() {
 
 					@Override
 					public void run() {
-						y.setText("Y = " + value[1]);
+						y.setText("" + value[1]);
 					}
 				});
 				z.post(new Runnable() {
 
 					@Override
 					public void run() {
-						z.setText("Z = " + value[2]);
+						z.setText("" + value[2]);
 
 					}
 				});

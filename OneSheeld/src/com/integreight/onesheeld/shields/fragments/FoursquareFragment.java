@@ -166,7 +166,6 @@ public class FoursquareFragment extends
 	@Override
 	public void onStart() {
 		super.onStart();
-
 	}
 
 	@Override
