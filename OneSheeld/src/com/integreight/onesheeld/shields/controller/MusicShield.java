@@ -13,9 +13,11 @@ import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.database.MusicPlaylist;
 
 public class MusicShield extends ControllerParent<MusicShield> {
-	private MediaPlayer mediaPlayer;
+	public MediaPlayer mediaPlayer;
+	public String musicFileName = "";
 	private ArrayList<PlaylistItem> mediaFiles = new ArrayList<PlaylistItem>();
 	private int currentIndex = 0;
+	private MusicEventHandler eventHandler;
 
 	private static class METHOD {
 		public static byte PLAY = 0x02;
@@ -46,6 +48,10 @@ public class MusicShield extends ControllerParent<MusicShield> {
 		return super.setTag(tag);
 	}
 
+	public void setEventHandler(MusicEventHandler eventHandler) {
+		this.eventHandler = eventHandler;
+	}
+
 	private void init() {
 		try {
 			if (currentIndex < mediaFiles.size() && currentIndex >= 0) {
@@ -66,14 +72,18 @@ public class MusicShield extends ControllerParent<MusicShield> {
 					init();
 				}
 			}
+			musicFileName = mediaFiles.get(currentIndex).name;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			MusicPlaylist db = new MusicPlaylist(activity);
-			db.openToWrite();
-			db.delete(mediaFiles.get(currentIndex).id);
-			mediaFiles = db.getPlaylist();
-			db.close();
+			try {
+				MusicPlaylist db = new MusicPlaylist(activity);
+				db.openToWrite();
+				db.delete(mediaFiles.get(currentIndex).id);
+				mediaFiles = db.getPlaylist();
+				db.close();
+			} catch (Exception e1) {
+			}
 		}
 	}
 
@@ -142,23 +152,51 @@ public class MusicShield extends ControllerParent<MusicShield> {
 				stop();
 			} else if (frame.getFunctionId() == METHOD.PLAY) {
 				play();
+				if (eventHandler != null) {
+					eventHandler.play();
+					eventHandler.setMusicName(musicFileName);
+				}
 			} else if (frame.getFunctionId() == METHOD.PAUSE) {
 				pause();
-			} else if (frame.getFunctionId() == METHOD.NEXT)
+				if (eventHandler != null) {
+					eventHandler.pause();
+					eventHandler.setMusicName(musicFileName);
+				}
+			} else if (frame.getFunctionId() == METHOD.NEXT) {
 				next();
-			else if (frame.getFunctionId() == METHOD.PREV)
+				if (eventHandler != null) {
+					eventHandler.play();
+					eventHandler.setMusicName(musicFileName);
+					eventHandler.seekTo(0);
+				}
+			} else if (frame.getFunctionId() == METHOD.PREV) {
 				prev();
-			else if (frame.getFunctionId() == METHOD.SEEK_FORWARD) {
+				if (eventHandler != null) {
+					eventHandler.play();
+					eventHandler.setMusicName(musicFileName);
+					eventHandler.seekTo(0);
+				}
+			} else if (frame.getFunctionId() == METHOD.SEEK_FORWARD) {
 				if (mediaPlayer != null) {
 					int pos = (int) (((int) frame.getArgument(0)[0])
 							* mediaPlayer.getDuration() / 100);
 					seekTo(pos + mediaPlayer.getCurrentPosition());
+					if (eventHandler != null) {
+						eventHandler.play();
+						eventHandler.setMusicName(musicFileName);
+						eventHandler.seekTo(mediaPlayer.getCurrentPosition());
+					}
 				}
 			} else if (frame.getFunctionId() == METHOD.SEEK_BACKWARD) {
 				if (mediaPlayer != null) {
 					int pos = (int) (((int) frame.getArgument(0)[0])
 							* mediaPlayer.getDuration() / 100);
 					seekTo(mediaPlayer.getCurrentPosition() - pos);
+					if (eventHandler != null) {
+						eventHandler.play();
+						eventHandler.setMusicName(musicFileName);
+						eventHandler.seekTo(mediaPlayer.getCurrentPosition());
+					}
 				}
 			} else if (frame.getFunctionId() == METHOD.VOLUME) {
 				if (mediaPlayer != null) {
@@ -169,9 +207,24 @@ public class MusicShield extends ControllerParent<MusicShield> {
 				if (mediaPlayer != null) {
 					int pos = ((int) frame.getArgument(0)[0]);
 					seekTo(pos);
+					if (eventHandler != null) {
+						eventHandler.play();
+						eventHandler.setMusicName(musicFileName);
+						eventHandler.seekTo(mediaPlayer.getCurrentPosition());
+					}
 				}
 			}
 		}
+	}
+
+	public interface MusicEventHandler {
+		public void play();
+
+		public void pause();
+
+		public void seekTo(int pos);
+
+		public void setMusicName(String name);
 	}
 
 	@Override

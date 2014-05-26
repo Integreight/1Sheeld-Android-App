@@ -4,14 +4,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.controller.MusicShield;
+import com.integreight.onesheeld.shields.controller.MusicShield.MusicEventHandler;
 import com.integreight.onesheeld.shields.fragments.settings.MusicShieldSettings;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MusicPlayerFragment extends
 		ShieldFragmentParent<MusicPlayerFragment> {
+	SeekBar seekBar;
+	TextView musicFileName, playingStatus;
+	ImageView playingBtn;
+	Thread seekBarTracker;
+	private boolean isTracking = false;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -28,25 +38,144 @@ public class MusicPlayerFragment extends
 				.replace(R.id.settingsViewContainer,
 						MusicShieldSettings.getInstance()).commit();
 		hasSettings = true;
+		startTracking();
 		super.onStart();
+	}
+
+	private void stopTracking() {
+		if (seekBarTracker != null && seekBarTracker.isAlive()) {
+			isTracking = false;
+			seekBarTracker.interrupt();
+			seekBarTracker = null;
+		}
+	}
+
+	private void startTracking() {
+		stopTracking();
+		isTracking = true;
+		seekBarTracker = new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				while (isTracking) {
+					if ((MusicShield) getApplication().getRunningShields().get(
+							getControllerTag()) != null) {
+						seekBar.setMax(((MusicShield) getApplication()
+								.getRunningShields().get(getControllerTag())).mediaPlayer
+								.getDuration());
+						seekBar.setProgress(((MusicShield) getApplication()
+								.getRunningShields().get(getControllerTag())).mediaPlayer
+								.getCurrentPosition());
+					}
+					try {
+						Thread.sleep(100);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						break;
+					}
+
+				}
+			}
+		});
+		seekBarTracker.start();
 	}
 
 	@Override
 	public void onResume() {
+		MusicShield control = (MusicShield) getApplication()
+				.getRunningShields().get(getControllerTag());
+		if (control != null) {
+			((MusicShield) getApplication().getRunningShields().get(
+					getControllerTag())).setEventHandler(eventHandler);
+			control = (MusicShield) getApplication().getRunningShields().get(
+					getControllerTag());
+			if (control.mediaPlayer != null) {
+				eventHandler.seekTo(control.mediaPlayer.getCurrentPosition()
+						* 100 / control.mediaPlayer.getDuration());
+				eventHandler.setMusicName(control.musicFileName);
+				if (control.mediaPlayer.isPlaying())
+					eventHandler.play();
+				else
+					eventHandler.pause();
+			} else {
+				eventHandler.seekTo(0);
+				eventHandler.pause();
+				eventHandler.setMusicName("Music file name");
+			}
+		}
 		super.onResume();
 	}
 
 	@Override
 	public void onStop() {
+		stopTracking();
 		super.onStop();
 	}
 
+	MusicEventHandler eventHandler = new MusicEventHandler() {
+
+		@Override
+		public void setMusicName(final String name) {
+			if (canChangeUI())
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						musicFileName.setText(name);
+					}
+				});
+		}
+
+		@Override
+		public void seekTo(final int pos) {
+			if (canChangeUI())
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						seekBar.setMax(((MusicShield) getApplication()
+								.getRunningShields().get(getControllerTag())).mediaPlayer
+								.getDuration());
+						seekBar.setProgress(pos);
+					}
+				});
+		}
+
+		@Override
+		public void play() {
+			if (canChangeUI())
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						playingBtn
+								.setBackgroundResource(R.drawable.musicplayer_play_symbol);
+						playingStatus.setText("Playing");
+					}
+				});
+		}
+
+		@Override
+		public void pause() {
+			if (canChangeUI())
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						playingBtn
+								.setBackgroundResource(R.drawable.musicplayer_pause_symbol);
+						playingStatus.setText("Paused");
+					}
+				});
+		}
+	};
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// ((MusicShield) getApplication().getRunningShields().get(
-		// getControllerTag())).togglePlayOrPause();
-		// ((MusicShield) getApplication().getRunningShields().get(
-		// getControllerTag())).seekTo(50,true);
 		super.onActivityCreated(savedInstanceState);
+		musicFileName = (TextView) getView().findViewById(R.id.playingMusic);
+		seekBar = (SeekBar) getView().findViewById(R.id.seekBar);
+		playingBtn = (ImageView) getView().findViewById(R.id.playingBtn);
+		playingStatus = (TextView) getView().findViewById(R.id.playingStatus);
 	}
 }
