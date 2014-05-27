@@ -141,7 +141,7 @@ public class MainActivity extends FragmentActivity {
 
 					@Override
 					public void run() {
-						tryToSendNotificationsToAdmins(arg1);
+						//tryToSendNotificationsToAdmins(arg1);
 						Intent in = new Intent(getIntent());
 						PendingIntent intent = PendingIntent
 								.getActivity(getBaseContext(), 0, in,
