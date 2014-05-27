@@ -62,9 +62,13 @@
     <string name="y">Y</string>
     <string name="z">Z</string>
     <string name="cm">cm</string>
+    <string name="ms2">m/s2</string>
+    <string name="rads">rad/s</string>
+    <string name="lx">lx</string>
+    <string name="ut">uT</string>
+    <string name="hpa">hPa</string>
     <!-- Arduino connecting pins -->
-    
-    
+
     <string name="buzzer_tone">Press Required Tone</string>
     <string name="time_clock">Time</string>
 

@@ -7,13 +7,11 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import com.integreight.onesheeld.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -30,11 +28,11 @@ import com.google.analytics.tracking.android.Fields;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.FirmwareUpdatingPopup;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.OneSheeldVersionInstallerPopupTesting;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -49,15 +47,11 @@ public class SheeldsList extends Fragment {
 	private static SheeldsList thisInstance;
 	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
-	private MenuItem bluetoothSearchActionButton;
-	private MenuItem bluetoothDisconnectActionButton;
-	private MenuItem goToShieldsOperationActionButton;
 	OneShieldEditText searchBox;
 	private static final String TAG = "ShieldsList";
 
 	public static final int REQUEST_CONNECT_DEVICE = 1;
 	public static final int REQUEST_ENABLE_BT = 3;
-	private static boolean arduinoConnected;
 
 	public static SheeldsList getInstance() {
 		if (thisInstance == null) {
@@ -275,14 +269,6 @@ public class SheeldsList extends Fragment {
 		});
 	}
 
-	private void disconnectService() {
-		if (isOneSheeldServiceRunning()) {
-			((MainActivity) getActivity()).stopService();
-			if (!ArduinoConnectivityPopup.isOpened)
-				new ArduinoConnectivityPopup(getActivity()).show();
-		}
-	}
-
 	private void launchShieldsOperationActivity() {
 		if (!isAnyShieldsSelected()) {
 			Toast.makeText(getActivity(), "Select at least 1 shield",
@@ -311,7 +297,6 @@ public class SheeldsList extends Fragment {
 		public void onError(String errorMessage) {
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
-			arduinoConnected = false;
 			if (getActivity().getSupportFragmentManager()
 					.getBackStackEntryCount() > 1) {
 				getActivity().getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -328,7 +313,6 @@ public class SheeldsList extends Fragment {
 			if (isOneSheeldServiceRunning()) {
 				((OneSheeldApplication) getActivity().getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
-				arduinoConnected = true;
 				if (adapter != null)
 					adapter.applyToControllerTable();
 			}
@@ -336,7 +320,6 @@ public class SheeldsList extends Fragment {
 
 		@Override
 		public void onClose(boolean closedManually) {
-			arduinoConnected = false;
 			if (getActivity() != null) {
 				((OneSheeldApplication) getActivity().getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
@@ -388,43 +371,14 @@ public class SheeldsList extends Fragment {
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflate) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		inflate.inflate(R.menu.main, menu);
-		bluetoothSearchActionButton = (MenuItem) menu
-				.findItem(R.id.main_activity_action_search);
-		bluetoothDisconnectActionButton = (MenuItem) menu
-				.findItem(R.id.main_activity_action_disconnect);
-		goToShieldsOperationActionButton = (MenuItem) menu
-				.findItem(R.id.main_activity_action_forward);
-
-		if (!arduinoConnected || !isOneSheeldServiceRunning())
-			changeActionIconsToDisconnected();
-		else
-			changeActionIconsToConnected();
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent serverIntent = null;
 		switch (item.getItemId()) {
-		case R.id.main_activity_action_search:
-			// Launch the DeviceListActivity to see devices and do scan
-
-			serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-			startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE);
-			return true;
-		case R.id.main_activity_action_disconnect:
-			disconnectService();
-			return true;
-		case R.id.main_activity_action_forward:
-			launchShieldsOperationActivity();
-			return true;
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
 				new FirmwareUpdatingPopup((MainActivity) getActivity(), false)
-						.show();
-			return true;
-		case R.id.open_bootloader_popup_china:
-			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
-				new FirmwareUpdatingPopup((MainActivity) getActivity(), true)
 						.show();
 			return true;
 		case R.id.action_settings:
@@ -479,23 +433,5 @@ public class SheeldsList extends Fragment {
 		if (i > 0)
 			return true;
 		return false;
-	}
-
-	private void changeActionIconsToConnected() {
-		if (bluetoothSearchActionButton != null)
-			bluetoothSearchActionButton.setVisible(false);
-		if (bluetoothDisconnectActionButton != null)
-			bluetoothDisconnectActionButton.setVisible(true);
-		if (goToShieldsOperationActionButton != null)
-			goToShieldsOperationActionButton.setVisible(true);
-	}
-
-	private void changeActionIconsToDisconnected() {
-		if (bluetoothSearchActionButton != null)
-			bluetoothSearchActionButton.setVisible(true);
-		if (bluetoothDisconnectActionButton != null)
-			bluetoothDisconnectActionButton.setVisible(false);
-		if (goToShieldsOperationActionButton != null)
-			goToShieldsOperationActionButton.setVisible(false);
 	}
 }
