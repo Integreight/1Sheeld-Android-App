@@ -3,7 +3,7 @@
 
     <item
         android:id="@android:id/background"
-        android:drawable="@drawable/apptheme_scrubber_track_holo_black"/>
+        android:drawable="@drawable/apptheme_scrubber_track_holo_offwhite"/>
     <item android:id="@android:id/secondaryProgress">
         <scale
             android:drawable="@drawable/apptheme_scrubber_secondary_holo"

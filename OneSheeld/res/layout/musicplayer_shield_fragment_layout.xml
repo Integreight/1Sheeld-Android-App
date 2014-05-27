@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/arduino_conn_gray_bg"
     android:gravity="center" >
 
     <ImageView
@@ -60,7 +59,9 @@
         android:layout_marginTop="15dp"
         android:background="@drawable/music_seek_bg"
         android:max="100"
-        android:progressDrawable="@drawable/slider_progress"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:progressDrawable="@drawable/seek_progress"
         android:thumb="@drawable/music_seek_thumb" />
 
     <TextView

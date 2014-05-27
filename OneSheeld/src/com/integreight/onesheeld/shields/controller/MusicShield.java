@@ -201,7 +201,9 @@ public class MusicShield extends ControllerParent<MusicShield> {
 			} else if (frame.getFunctionId() == METHOD.VOLUME) {
 				if (mediaPlayer != null) {
 					int pos = ((int) frame.getArgument(0)[0]);
-					mediaPlayer.setVolume(pos / 10, pos / 10);
+					final float volume = (float) (1 - (Math.log(10 - pos) / Math
+							.log(10)));
+					mediaPlayer.setVolume(volume, volume);
 				}
 			} else if (frame.getFunctionId() == METHOD.SEEK) {
 				if (mediaPlayer != null) {
