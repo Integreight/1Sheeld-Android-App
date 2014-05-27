@@ -3,16 +3,16 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="shield_name_size">25sp</dimen>
+    <dimen name="shield_name_size">20sp</dimen>
     <dimen name="slidingmenu_offset">60dp</dimen>
     <dimen name="list_padding">10dp</dimen>
     <dimen name="shadow_width">15dp</dimen>
-    <dimen name="gamepad_blueButtonHeight">65dp</dimen>
-    <dimen name="gamepad_blueButtonWidth">30dp</dimen>
-    <dimen name="keyboard_btnWidth">31dp</dimen>
-    <dimen name="gamepad_circularButtonDimen">50dp</dimen>
-    <dimen name="gamepad_blueButtonDimen">140dp</dimen>
-    <dimen name="gamepad_circularButtonContDimen">135dp</dimen>
+    <dimen name="gamepad_blueButtonHeight">44dp</dimen>
+    <dimen name="gamepad_blueButtonWidth">25dp</dimen>
+    <dimen name="gamepad_circularButtonDimen">40dp</dimen>
+    <dimen name="keyboard_btnWidth">30dp</dimen>
+    <dimen name="gamepad_blueButtonDimen">130dp</dimen>
+    <dimen name="gamepad_circularButtonContDimen">120dp</dimen>
     <dimen name="gamepad_contMarginTop">0dp</dimen>
     <dimen name="gamepad_contMarginLeft">86.5dp</dimen>
 

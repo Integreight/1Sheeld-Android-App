@@ -31,7 +31,7 @@
 
                     <Button
                         android:id="@+id/xQ"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_margin="1dp"
                         android:background="@drawable/keyboard_five_raduis_bordered_selector"
@@ -43,7 +43,7 @@
 
                     <Button
                         android:id="@+id/xW"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="left"
                         android:layout_margin="1dp"
@@ -57,7 +57,7 @@
 
                     <Button
                         android:id="@+id/xE"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="left"
                         android:layout_margin="1dp"
@@ -132,7 +132,7 @@
 
                     <Button
                         android:id="@+id/xI"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="1dp"
@@ -147,7 +147,7 @@
 
                     <Button
                         android:id="@+id/xO"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="1dp"
@@ -162,7 +162,7 @@
 
                     <Button
                         android:id="@+id/xP"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="1dp"
@@ -187,7 +187,7 @@
 
                     <Button
                         android:id="@+id/xA"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
                         android:layout_alignWithParentIfMissing="true"
@@ -204,7 +204,7 @@
 
                     <Button
                         android:id="@+id/xS"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -221,7 +221,7 @@
 
                     <Button
                         android:id="@+id/xD"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -238,7 +238,7 @@
 
                     <Button
                         android:id="@+id/xF"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -255,7 +255,7 @@
 
                     <Button
                         android:id="@+id/xG"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -272,7 +272,7 @@
 
                     <Button
                         android:id="@+id/xH"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -289,7 +289,7 @@
 
                     <Button
                         android:id="@+id/xJ"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -323,7 +323,7 @@
 
                     <Button
                         android:id="@+id/xL"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -340,7 +340,7 @@
 
                     <Button
                         android:id="@+id/xS1"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -373,7 +373,7 @@
 
                     <Button
                         android:id="@+id/xS2"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -388,7 +388,7 @@
 
                     <Button
                         android:id="@+id/xZ"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -402,7 +402,7 @@
 
                     <Button
                         android:id="@+id/xX"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -416,7 +416,7 @@
 
                     <Button
                         android:id="@+id/xC"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -430,7 +430,7 @@
 
                     <Button
                         android:id="@+id/xV"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -444,7 +444,7 @@
 
                     <Button
                         android:id="@+id/xB"
-                        android:layout_width="33dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -458,7 +458,7 @@
 
                     <Button
                         android:id="@+id/xN"
-                        android:layout_width="33dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -472,7 +472,7 @@
 
                     <Button
                         android:id="@+id/xM"
-                        android:layout_width="33dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -486,7 +486,7 @@
 
                     <Button
                         android:id="@+id/xS3"
-                        android:layout_width="33dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -565,7 +565,7 @@
 
                     <Button
                         android:id="@+id/xS4"
-                        android:layout_width="33dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="right"
                         android:layout_margin="1dp"
@@ -593,7 +593,7 @@
 
                     <Button
                         android:id="@+id/xS5"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"
@@ -608,7 +608,7 @@
 
                     <Button
                         android:id="@+id/xS6"
-                        android:layout_width="30dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
                         android:layout_margin="1dp"

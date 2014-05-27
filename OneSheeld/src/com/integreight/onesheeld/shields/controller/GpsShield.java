@@ -61,7 +61,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 			if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
 				startGps();
 		}
-
 		return super.setTag(tag);
 	}
 
