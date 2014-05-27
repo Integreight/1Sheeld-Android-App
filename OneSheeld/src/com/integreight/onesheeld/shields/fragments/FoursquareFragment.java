@@ -103,8 +103,8 @@ public class FoursquareFragment extends
 		public void onPlaceCheckin(final String placeName) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				//uiHandler.removeCallbacksAndMessages(null);
+				lastCheckin.post(new Runnable() {
 
 					@Override
 					public void run() {
@@ -121,8 +121,8 @@ public class FoursquareFragment extends
 		public void onForsquareLoggedIn(final String user) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				//uiHandler.removeCallbacksAndMessages(null);
+				userName.post(new Runnable() {
 
 					@Override
 					public void run() {
