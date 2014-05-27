@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.MicShield;
 import com.integreight.onesheeld.shields.controller.MicShield.MicEventHandler;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
@@ -94,6 +95,9 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 					public void run() {
 						params.bottomMargin = (int) (value * stepValue);
 						soundLevelIndicator.requestLayout();
+						((OneShieldTextView) getView().findViewById(
+								R.id.micValue)).setText(String.valueOf(value)
+								.substring(0, 4) + " db");
 					}
 				});
 			}

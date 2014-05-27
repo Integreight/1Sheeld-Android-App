@@ -1,44 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <group android:menuCategory="container" >
-        <item
-            android:id="@+id/action_settings"
-            android:orderInCategory="100"
-            android:showAsAction="never"
-            android:title="@string/action_settings"/>
-        <item
-            android:id="@+id/open_bootloader_popup"
-            android:orderInCategory="100"
-            android:showAsAction="never"
-            android:title="@string/upgradeFirmata"/>
-        <item
-            android:id="@+id/open_bootloader_popup_china"
-            android:orderInCategory="100"
-            android:showAsAction="never"
-            android:title="@string/app_name"/>
-    </group>
-    <group android:menuCategory="container" >
-        <item
-            android:id="@+id/main_activity_action_search"
-            android:icon="@drawable/action_search"
-            android:orderInCategory="100"
-            android:showAsAction="always"
-            android:title="@string/search_for_bluetooth"/>
-        <item
-            android:id="@+id/main_activity_action_disconnect"
-            android:icon="@drawable/action_cancel"
-            android:orderInCategory="100"
-            android:showAsAction="always"
-            android:title="@string/disconnect_device"
-            android:visible="false"/>
-    </group>
-
     <item
-        android:id="@+id/main_activity_action_forward"
-        android:icon="@drawable/action_forward"
+        android:id="@+id/action_settings"
         android:orderInCategory="100"
-        android:showAsAction="always"
-        android:title="@string/go_to_shields_operation"
-        android:visible="false"/>
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+    <item
+        android:id="@+id/open_bootloader_popup"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/upgradeFirmata"/>
 
 </menu>
