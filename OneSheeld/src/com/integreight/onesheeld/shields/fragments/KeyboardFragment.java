@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -60,6 +61,13 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	public void onStop() {
 
 		super.onStop();
+	}
+
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+		getActivity().setRequestedOrientation(
+				ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		super.setUserVisibleHint(isVisibleToUser);
 	}
 
 	@Override
@@ -178,7 +186,8 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
 				changeSyNuLetters();
 				changeSyNuTags();
-				mBChange.setVisibility(Button.INVISIBLE);
+				((ViewGroup) mBChange.getParent())
+						.setVisibility(Button.INVISIBLE);
 
 			}
 			if (nTag.equals("ABC")) {
@@ -233,7 +242,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	}
 
 	private void changeSmallLetters() {
-		mBChange.setVisibility(Button.VISIBLE);
+		((ViewGroup) mBChange.getParent()).setVisibility(Button.VISIBLE);
 		for (int i = 0; i < sL.length; i++)
 			mB[i].setText(sL[i]);
 		mNum.setTag("12#");
@@ -247,7 +256,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	}
 
 	private void changeCapitalLetters() {
-		mBChange.setVisibility(Button.VISIBLE);
+		((ViewGroup) mBChange.getParent()).setVisibility(Button.VISIBLE);
 		for (int i = 0; i < cL.length; i++)
 			mB[i].setText(cL[i]);
 		mBChange.setTag("upper");
