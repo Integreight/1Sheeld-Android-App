@@ -20,7 +20,11 @@ public class AppSlidingLeftMenu extends SlidingPaneLayout {
 		// TODO Auto-generated method stub
 		// if (isNotDraggable)
 		// return true;
-		return canSlide ? super.onInterceptTouchEvent(arg0) : false;
+		try {
+			return canSlide ? super.onInterceptTouchEvent(arg0) : false;
+		} catch (Exception e) {
+			return false;
+		}
 	}
 
 	public boolean canSlide() {
