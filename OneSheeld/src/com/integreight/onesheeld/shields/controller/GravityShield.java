@@ -141,7 +141,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 			if (selectionAction != null)
 				selectionAction.onFailure();
 			if (isToastabel)
-				activity.showToast("Device doesn't have Sensor");
+				activity.showToast("Your device hardware does not support the sensor !");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

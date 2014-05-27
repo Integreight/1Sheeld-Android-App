@@ -142,7 +142,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 			if (selectionAction != null)
 				selectionAction.onFailure();
 			if (isToastable)
-				activity.showToast("Device doesn't have Sensor");
+				activity.showToast("Your device hardware does not support the sensor !");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 
