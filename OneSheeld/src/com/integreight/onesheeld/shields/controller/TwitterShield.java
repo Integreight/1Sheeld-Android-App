@@ -67,7 +67,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public TwitterShield() {
 		super();
-		startListeningOnAKeyword("1sheeld");
+		//startListeningOnAKeyword("1sheeld");
 	}
 
 	@Override
@@ -271,8 +271,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(TwitterAuthorization.CONSUMER_KEY);
 		cb.setOAuthConsumerSecret(TwitterAuthorization.CONSUMER_SECRET);
-		cb.setOAuthAccessToken("1608329586-rr9Ch5yYbTXXue2Vx9UWYdZ0ncTUVVeVgZXX1fH");
-		cb.setOAuthAccessTokenSecret("hVxouq3MhpYjnTIzZJuSsQDRYxm5sAdVsvacwtEh2Pe7n");
+		cb.setOAuthAccessToken("1608329586-6oJK4QJOPHT5fCwo7ckc9wZGEuaT1p6ZIQ5RBVH");
+		cb.setOAuthAccessTokenSecret("aRq7RsAp132UwHtO6Kr7ottM3f9i5wb58xTIGLZcElhoH");
 
 		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 		// twitterStream.s
@@ -342,7 +342,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		stopListeningOnAKeyword();
+		//stopListeningOnAKeyword();
 	}
 
 }
