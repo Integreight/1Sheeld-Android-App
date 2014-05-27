@@ -107,6 +107,13 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 			Log.d("Sensor Data of Y", event.values[1] + "");
 			Log.d("Sensor Data of Z", event.values[2] + "");
 
+			// calculate magnetic field value
+			float magnetic_field = (float) Math
+					.sqrt((event.values[0] * event.values[0])
+							+ (event.values[1] * event.values[1])
+							+ (event.values[2] * event.values[2]));
+			Log.d("Magnetic field value = ", magnetic_field + "");
+
 			//
 			flag = false;
 		}
