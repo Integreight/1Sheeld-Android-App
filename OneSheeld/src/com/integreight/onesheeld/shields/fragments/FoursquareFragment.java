@@ -57,6 +57,7 @@ public class FoursquareFragment extends
 		if (((FoursquareShield) getApplication().getRunningShields().get(
 				getControllerTag())).isFoursquareLoggedInAlready()) {
 			userName.setVisibility(View.VISIBLE);
+			lastCheckin.setVisibility(View.VISIBLE);
 			logout.setVisibility(View.VISIBLE);
 			login.setVisibility(View.INVISIBLE);
 
@@ -90,9 +91,9 @@ public class FoursquareFragment extends
 
 			@Override
 			public void onClick(View v) {
+				removeFoursquareData();
 				login.setVisibility(View.VISIBLE);
 				logout.setVisibility(View.INVISIBLE);
-				removeFoursquareData();
 			}
 		});
 	}
@@ -103,15 +104,12 @@ public class FoursquareFragment extends
 		public void onPlaceCheckin(final String placeName) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				//uiHandler.removeCallbacksAndMessages(null);
-				lastCheckin.post(new Runnable() {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
 						lastCheckin.setText(placeName);
-						Toast.makeText(getActivity(),
-								"Your Last place Checkin !", Toast.LENGTH_SHORT)
-								.show();
 					}
 				});
 			}
@@ -121,7 +119,7 @@ public class FoursquareFragment extends
 		public void onForsquareLoggedIn(final String user) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				//uiHandler.removeCallbacksAndMessages(null);
+				// uiHandler.removeCallbacksAndMessages(null);
 				userName.post(new Runnable() {
 
 					@Override
@@ -150,11 +148,12 @@ public class FoursquareFragment extends
 		@Override
 		public void setLastPlaceCheckin(final String placeName) {
 			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+				// uiHandler.removeCallbacksAndMessages(null);
+				lastCheckin.post(new Runnable() {
 
 					@Override
 					public void run() {
+						lastCheckin.setVisibility(View.VISIBLE);
 						lastCheckin.setText(placeName);
 					}
 				});
@@ -200,7 +199,7 @@ public class FoursquareFragment extends
 		login.setVisibility(View.VISIBLE);
 		logout.setVisibility(View.INVISIBLE);
 		userName.setVisibility(View.INVISIBLE);
-		lastCheckin.setText("");
+		lastCheckin.setVisibility(View.INVISIBLE);
 	}
 
 	@Override
@@ -212,13 +211,23 @@ public class FoursquareFragment extends
 			logout.setVisibility(View.VISIBLE);
 			login.setVisibility(View.INVISIBLE);
 
-			String name = mSharedPreferences.getString(
+			final String name = mSharedPreferences.getString(
 					"PREF_FourSquare_UserName", "");
-			String lastcheck = mSharedPreferences.getString(
+			final String lastcheck = mSharedPreferences.getString(
 					"PREF_FourSquare_LastPlace", "");
 
-			userName.setText(name);
-			lastCheckin.setText(lastcheck);
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						userName.setText(name);
+						lastCheckin.setText(lastcheck);
+					}
+				});
+			}
+
 		} else {
 			login.setVisibility(View.VISIBLE);
 			logout.setVisibility(View.INVISIBLE);
