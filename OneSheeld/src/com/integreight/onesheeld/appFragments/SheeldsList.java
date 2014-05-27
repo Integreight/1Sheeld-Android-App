@@ -173,7 +173,7 @@ public class SheeldsList extends Fragment {
 							}
 						});
 			}
-		}, 500);
+		}, 1000);
 		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) getActivity().getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);

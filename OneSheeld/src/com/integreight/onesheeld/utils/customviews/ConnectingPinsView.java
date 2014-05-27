@@ -58,7 +58,7 @@ public class ConnectingPinsView extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// if (isInflated) {
-		// show = (TextView) getView().findViewById(R.id.show);
+		// show = (TextView) view.findViewById(R.id.show);
 		// }
 		super.onActivityCreated(savedInstanceState);
 	}
@@ -67,7 +67,7 @@ public class ConnectingPinsView extends Fragment {
 
 	public void reset(final ControllerParent<?> controller,
 			final OnPinSelectionListener listner) {
-		final TextView show = (TextView) getView().findViewById(R.id.show);
+		final TextView show = (TextView) view.findViewById(R.id.show);
 		pinsSubContainers = new ArrayList<LinearLayout>();
 		selectedPin = 0;
 		selectedPinName = "";
@@ -76,10 +76,9 @@ public class ConnectingPinsView extends Fragment {
 		final int selectedColor = getResources().getColor(
 				R.color.arduinoPinsSelector);
 		final int unSelectedColor = 0x00000000;
-		final ImageView cursor = ((ImageView) getView().findViewById(
-				R.id.cursor));
+		final ImageView cursor = ((ImageView) view.findViewById(R.id.cursor));
 		cursor.setVisibility(View.INVISIBLE);
-		final PinsColumnContainer thisPinsContainer = ((PinsColumnContainer) getView()
+		final PinsColumnContainer thisPinsContainer = ((PinsColumnContainer) view
 				.findViewById(R.id.cont));
 		if (resettingHandler == null)
 			resettingHandler = new Handler();
@@ -177,7 +176,7 @@ public class ConnectingPinsView extends Fragment {
 					}
 				});
 				pinsSubContainers = new ArrayList<LinearLayout>();
-				LinearLayout pinsContainer = (LinearLayout) getView()
+				LinearLayout pinsContainer = (LinearLayout) view
 						.findViewById(R.id.requiredPinsContainer);
 				pinsContainer.removeAllViews();
 				// int pdng = (int) (2 *
@@ -186,7 +185,7 @@ public class ConnectingPinsView extends Fragment {
 				// .5f);
 				selectedPin = 0;
 				// HorizontalScrollView scrollingPins = (HorizontalScrollView)
-				// getView()
+				// view
 				// .findViewById(R.id.scrollingPins);
 				for (int i = 0; i < controller.shieldPins.length; i++) {
 					LinearLayout pinSubContainer = (LinearLayout) getActivity()

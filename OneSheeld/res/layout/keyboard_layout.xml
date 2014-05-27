@@ -3,558 +3,660 @@
     android:id="@+id/hebrwKeyboardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_alignParentBottom="true"
-    android:layout_below="@+id/xsubLayout"
-    android:layout_gravity="center_horizontal"
+    android:layout_gravity="center"
     android:orientation="vertical"
     android:visibility="visible" >
 
     <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="200sp"
-        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
         android:clipChildren="true"
         android:orientation="vertical" >
 
         <TableLayout
             android:layout_width="wrap_content"
-            android:layout_height="200sp"
+            android:layout_height="200dp"
             android:padding="0sp" >
 
             <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:padding="0sp" >
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="45sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:baselineAligned="true"
                     android:fitsSystemWindows="true" >
 
                     <Button
                         android:id="@+id/xQ"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:padding="0sp"
                         android:tag="Q"
                         android:text="Q"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xW"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="left"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:padding="0sp"
                         android:soundEffectsEnabled="true"
                         android:tag="W"
                         android:text="W"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xE"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="left"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:padding="0sp"
                         android:soundEffectsEnabled="true"
                         android:tag="E"
                         android:text="E"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xR"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="R"
                         android:text="R"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xT"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="T"
                         android:text="T"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xY"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="y"
                         android:text="Y"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xU"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="U"
                         android:text="U"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xI"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="I"
                         android:text="I"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xO"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="O"
                         android:text="O"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xP"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="P"
                         android:text="P"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
                 </LinearLayout>
             </TableRow>
 
             <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
 
                 <RelativeLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="45sp" >
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp" >
 
                     <Button
                         android:id="@+id/xA"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignParentLeft="true"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="A"
                         android:text="A"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xS"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xA"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="S"
                         android:text="S"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xD"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xS"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="D"
                         android:text="D"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xF"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xD"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="F"
                         android:text="F"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xG"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xF"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="G"
                         android:text="G"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xH"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xG"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="H"
                         android:text="H"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xJ"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xH"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="J"
                         android:text="J"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xK"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xJ"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="K"
                         android:text="K"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xL"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xK"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="L"
                         android:text="L"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xS1"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="31dp"
+                        android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
                         android:layout_toRightOf="@id/xL"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="ç"
                         android:text="ç"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold"
                         android:visibility="visible" />
                 </RelativeLayout>
             </TableRow>
 
             <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="fill_vertical"
                 android:fitsSystemWindows="true"
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="45sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:gravity="bottom"
                     android:orientation="horizontal" >
 
                     <Button
                         android:id="@+id/xS2"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="à"
                         android:text="à"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold"
                         android:visibility="visible" />
 
                     <Button
                         android:id="@+id/xZ"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="Z"
                         android:text="Z"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xX"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="X"
                         android:text="X"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xC"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="C"
                         android:text="C"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xV"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="V"
                         android:text="V"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xB"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="B"
                         android:text="B"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xN"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="N"
                         android:text="N"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xM"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="M"
                         android:text="M"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xS3"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="é"
                         android:text="é"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold"
                         android:visibility="visible" />
 
-                    <Button
-                        android:id="@+id/xBack"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="center_horizontal|center_vertical|center"
-                        android:background="@drawable/back_high"
-                        android:fitsSystemWindows="true"
-                        android:soundEffectsEnabled="true"
-                        android:tag="\b\b\b"
-                        android:textColor="#000"
-                        android:textStyle="bold" />
+                    <RelativeLayout
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent" >
+
+                        <Button
+                            android:id="@+id/xBack"
+                            android:layout_width="33dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_horizontal|center_vertical|center"
+                            android:layout_margin="1dp"
+                            android:background="@drawable/keyboard_ten_raduis_filled_selector"
+                            android:fitsSystemWindows="true"
+                            android:soundEffectsEnabled="true"
+                            android:tag="\b\b\b"
+                            android:textColor="@color/offWhite"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/keyboard_shield_backspace_button" />
+                    </RelativeLayout>
                 </LinearLayout>
             </TableRow>
 
             <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="45sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
                     android:gravity="bottom"
                     android:orientation="horizontal" >
 
-                    <Button
-                        android:id="@+id/xChange"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
+                        android:layout_height="match_parent"
                         android:layout_gravity="right"
-                        android:background="@drawable/change"
+                        android:layout_margin="1dp"
                         android:fitsSystemWindows="true"
-                        android:paddingLeft="35sp"
-                        android:soundEffectsEnabled="true"
-                        android:tag="upper"
-                        android:textColor="#000"
-                        android:textStyle="bold" />
+                        android:soundEffectsEnabled="true" >
+
+                        <Button
+                            android:id="@+id/xChange"
+                            android:layout_width="35dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/keyboard_ten_raduis_filled_selector"
+                            android:fitsSystemWindows="true"
+                            android:soundEffectsEnabled="true"
+                            android:tag="upper"
+                            android:textColor="@color/offWhite"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/keyboard_shield_shift_button" />
+                    </RelativeLayout>
 
                     <Button
                         android:id="@+id/xS4"
-                        android:layout_width="33sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="right"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="è"
                         android:text="è"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold"
                         android:visibility="visible" />
 
                     <Button
                         android:id="@+id/xSpace"
-                        android:layout_width="75sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="75dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_ten_raduis_filled_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag=" "
                         android:text="|_____|"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/xS5"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="û"
                         android:text="û"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold"
                         android:visibility="visible" />
 
                     <Button
                         android:id="@+id/xS6"
-                        android:layout_width="30sp"
-                        android:layout_height="fill_parent"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal|center_vertical|center"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_five_raduis_bordered_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="î"
                         android:text="î"
-                        android:textColor="#000"
+                        android:textColor="@color/offWhite"
                         android:textStyle="bold"
                         android:visibility="visible" />
 
                     <Button
                         android:id="@+id/xNum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
+                        android:layout_width="33dp"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp"
+                        android:background="@drawable/keyboard_ten_raduis_filled_selector"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
                         android:tag="num"
                         android:text="12#"
-                        android:textColor="#000"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
-                    <Button
-                        android:id="@+id/xDone"
-                        android:layout_width="75sp"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="right"
-                        android:background="@drawable/keyboard_enter_key_bg"
-                        android:fitsSystemWindows="true"
-                        android:soundEffectsEnabled="true"
-                        android:tag="\r\n"
-                        android:textColor="#000"
-                        android:textStyle="bold" />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_margin="1dp" >
+
+                        <Button
+                            android:id="@+id/xDone"
+                            android:layout_width="65dp"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="right"
+                            android:background="@drawable/keyboard_ten_raduis_filled_selector"
+                            android:fitsSystemWindows="true"
+                            android:soundEffectsEnabled="true"
+                            android:tag="\r\n"
+                            android:textColor="@color/offWhite"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:background="@drawable/keyboard_shield_enter_button" />
+                    </RelativeLayout>
                 </LinearLayout>
             </TableRow>
         </TableLayout>

@@ -5,17 +5,10 @@
     android:background="@color/arduino_conn_gray_bg"
     android:gravity="center" >
 
-    <TextView
-        android:id="@+id/center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
     <ImageView
         android:id="@+id/music_shield_logo_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/center"
         android:layout_centerHorizontal="true"
         android:contentDescription="@string/app_name"
         android:src="@drawable/musicplayer_shield_screen_logo" />
@@ -28,7 +21,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
         android:background="@drawable/musicplayer_pause_symbol"
-        android:contentDescription="@string/app_name" />
+        android:contentDescription="@string/app_name"
+        android:scaleType="fitXY" />
 
     <com.integreight.onesheeld.utils.OneShieldTextView
         android:id="@+id/playingStatus"

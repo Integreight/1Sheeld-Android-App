@@ -275,7 +275,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 							}
 						});
 			}
-		}, 500);
+		}, 1000);
 		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.bluetooth_disconnect_button);

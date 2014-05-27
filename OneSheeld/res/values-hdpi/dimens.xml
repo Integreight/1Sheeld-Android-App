@@ -12,8 +12,8 @@
     <dimen name="gamepad_circularButtonDimen">50dp</dimen>
     <dimen name="gamepad_blueButtonDimen">130dp</dimen>
     <dimen name="gamepad_circularButtonContDimen">140dp</dimen>
-    <dimen name="gamepad_contMarginTop">22dp</dimen>
-    <dimen name="gamepad_contMarginLeft">75dp</dimen>
+    <dimen name="gamepad_contMarginTop">14dp</dimen>
+    <dimen name="gamepad_contMarginLeft">86.5dp</dimen>
 
     <integer name="num_cols">1</integer>
 
