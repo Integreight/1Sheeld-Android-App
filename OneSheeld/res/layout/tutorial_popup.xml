@@ -20,12 +20,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:padding="10dip"
+            android:padding="10dp"
             app:fillColor="@color/white"
             app:pageColor="@color/transparent"
-            app:radius="7dp"
+            app:radius="5dp"
             app:strokeColor="@color/white"
-            app:strokeWidth="2dp" />
+            app:strokeWidth="1dp" />
     </LinearLayout>
 
     <RelativeLayout
