@@ -285,19 +285,24 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 		@Override
 		public void onFoursquareError(FoursquareError e) {
-			// TODO Auto-generated method stub
+			Toast.makeText(getApplication().getApplicationContext(),
+					"Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
+					.show();
 
 		}
 
 		@Override
 		public void onError(FoursquareDialogError e) {
-			// TODO Auto-generated method stub
+			Toast.makeText(getApplication().getApplicationContext(),
+					"Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
+					.show();
 
 		}
 
 		@Override
 		public void onCancel() {
-			// TODO Auto-generated method stub
+			Toast.makeText(getApplication().getApplicationContext(),
+					"Foursquare Login canceled ", Toast.LENGTH_SHORT).show();
 
 		}
 
@@ -340,7 +345,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		foursquare.authorize(getActivity(),
 				new FoursquareAuthenDialogListener());
 	}
-	
 
 	@Override
 	public void reset() {
