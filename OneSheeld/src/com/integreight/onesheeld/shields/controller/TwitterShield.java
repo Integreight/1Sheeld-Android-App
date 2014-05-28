@@ -135,7 +135,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				try {
 					twitter.updateStatus(st);
 				} catch (TwitterException e) {
-					Log.e("TAG", "TwitterShield::StatusUpdate::TwitterException", e);
+					Log.e("TAG",
+							"TwitterShield::StatusUpdate::TwitterException", e);
 				}
 
 			}
@@ -163,7 +164,9 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 								.getOAuthRequestToken(CALLBACKURL);
 						authUrl = requestToken.getAuthenticationURL();
 					} catch (TwitterException e) {
-						Log.e("TAG", "TwitterShield::requestToken::TwitterException", e);
+						Log.e("TAG",
+								"TwitterShield::requestToken::TwitterException",
+								e);
 					}
 					return null;
 				}
@@ -193,11 +196,19 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 						@Override
 						public void onError(String error) {
+							if (error != null && !error.isEmpty())
+								Toast.makeText(
+										getApplication()
+												.getApplicationContext(),
+										error, Toast.LENGTH_SHORT).show();
 						}
 
 						@Override
 						public void onCancel() {
-
+							Toast.makeText(
+									getApplication().getApplicationContext(),
+									"Twitter Login Canceled",
+									Toast.LENGTH_SHORT).show();
 						}
 					};
 					new Handler().post(new Runnable() {
