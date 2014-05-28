@@ -9,7 +9,7 @@
     <dimen name="shadow_width">15dp</dimen>
     <dimen name="gamepad_blueButtonHeight">65dp</dimen>
     <dimen name="gamepad_blueButtonWidth">30dp</dimen>
-    <dimen name="keyboard_btnWidth">31dp</dimen>
+    <dimen name="keyboard_btnWidth">30dp</dimen>
     <dimen name="gamepad_circularButtonDimen">50dp</dimen>
     <dimen name="gamepad_blueButtonDimen">140dp</dimen>
     <dimen name="gamepad_circularButtonContDimen">135dp</dimen>

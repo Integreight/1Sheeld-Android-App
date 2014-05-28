@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
@@ -102,8 +104,14 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void run() {
-						((OneShieldTextView) getActivity().findViewById(
-								R.id.shieldName))
+						TextView shieldName = (OneShieldTextView) getActivity()
+								.findViewById(R.id.shieldName);
+						shieldName
+								.setVisibility(((ShieldFragmentParent<?>) mContent).shieldName
+										.equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
+												.getName()) ? View.GONE
+										: View.VISIBLE);
+						shieldName
 								.setText(((ShieldFragmentParent<?>) mContent).shieldName);
 					}
 				});

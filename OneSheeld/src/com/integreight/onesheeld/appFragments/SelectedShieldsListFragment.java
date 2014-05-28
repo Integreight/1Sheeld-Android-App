@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
@@ -233,9 +234,13 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 						@Override
 						public void run() {
-							((OneShieldTextView) getActivity().findViewById(
-									R.id.shieldName))
-									.setText(fragment.shieldName);
+							TextView shieldName = (OneShieldTextView) getActivity()
+									.findViewById(R.id.shieldName);
+							shieldName.setVisibility(fragment.shieldName
+									.equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
+											.getName()) ? View.GONE
+									: View.VISIBLE);
+							shieldName.setText(fragment.shieldName);
 						}
 					});
 				} catch (Exception e) {
