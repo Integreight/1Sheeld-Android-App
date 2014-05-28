@@ -7,7 +7,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LcdShieldd extends ControllerParent<LcdShieldd> {
-	private static LcdEventHandler eventHandler;
+	// private static LcdEventHandler eventHandler;
 	// private Activity activity;
 	private static short rows = 2;
 	private static short columns = 16;
@@ -51,7 +51,7 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	}
 
 	public void setLcdEventHandler(LcdEventHandler eventHandler) {
-		LcdShieldd.eventHandler = eventHandler;
+		// LcdShieldd.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
 

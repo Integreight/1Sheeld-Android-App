@@ -75,14 +75,14 @@
         <item name="android:adjustViewBounds">true</item>
         <item name="progressColor">@color/circular_progress_default_progress</item>
         <item name="hasShadow">true</item>
-        <item name="strokeWidth">20</item>
+        <item name="strokeWidthC">20</item>
         <item name="titleColor">@color/circular_progress_default_title</item>
         <item name="subtitleColor">@color/circular_progress_default_subtitle</item>
     </style>
 
     <style name="Widget.ProgressBar.Holo.CircularProgressBar" parent="Widget.ProgressBar.CircularProgressBar">
         <item name="hasShadow">false</item>
-        <item name="strokeWidth">5</item>
+        <item name="strokeWidthC">5</item>
     </style>
 
 </resources>

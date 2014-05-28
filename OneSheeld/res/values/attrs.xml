@@ -32,7 +32,7 @@
         <attr name="titleColor" format="string" />
         <attr name="subtitle" format="string" />
         <attr name="subtitleColor" format="string" />
-        <attr name="strokeWidth" format="integer" />
+        <attr name="strokeWidthC" format="integer" />
     </declare-styleable>
 
 </resources>

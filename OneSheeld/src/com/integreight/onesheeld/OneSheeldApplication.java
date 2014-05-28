@@ -31,6 +31,8 @@ public class OneSheeldApplication extends Application {
 	private final String MINOR_VERSION = "minorVersion";
 	private final String VERSION_WEB_RESULT = "versionWebResult";
 	private final String BUZZER_SOUND_KEY = "buzerSound";
+	private final String TUTORIAL_SHOWN_TIME = "tutShownTime";
+	private final String SHOWTUTORIALS_AGAIN = "showTutAgain";
 	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	private ArduinoFirmata appFirmata;
@@ -155,6 +157,22 @@ public class OneSheeldApplication extends Application {
 
 	public String getBuzzerSound() {
 		return appPreferences.getString(BUZZER_SOUND_KEY, null);
+	}
+
+	public void setTutShownTimes(int times) {
+		appPreferences.edit().putInt(TUTORIAL_SHOWN_TIME, times).commit();
+	}
+
+	public int getTutShownTimes() {
+		return appPreferences.getInt(TUTORIAL_SHOWN_TIME, 0);
+	}
+
+	public void setShownTutAgain(boolean flag) {
+		appPreferences.edit().putBoolean(SHOWTUTORIALS_AGAIN, !flag).commit();
+	}
+
+	public boolean getShowTutAgain() {
+		return appPreferences.getBoolean(SHOWTUTORIALS_AGAIN, true);
 	}
 
 	public Hashtable<String, ControllerParent<?>> getRunningShields() {
