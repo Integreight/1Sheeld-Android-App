@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -41,8 +40,8 @@ public class TutorialLastFragment extends Fragment {
 						getActivity().finish();
 					}
 				});
-		((ViewGroup) cb.getParent())
-				.setOnClickListener(new View.OnClickListener() {
+		getView().findViewById(R.id.check).setOnClickListener(
+				new View.OnClickListener() {
 
 					@Override
 					public void onClick(View v) {

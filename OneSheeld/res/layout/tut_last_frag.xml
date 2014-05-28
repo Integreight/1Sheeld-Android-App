@@ -35,13 +35,25 @@
         android:gravity="center"
         android:orientation="horizontal" >
 
-        <ToggleButton
-            android:id="@+id/showAgain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tut_check_selecor"
-            android:textOff=""
-            android:textOn="" />
+        <RelativeLayout
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:background="@drawable/tut_unchecked"
+            android:gravity="center_vertical"
+            android:padding="2.5dp" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ToggleButton
+                android:id="@+id/showAgain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tut_check_selecor"
+                android:textOff=""
+                android:textOn="" />
+        </RelativeLayout>
 
         <com.integreight.onesheeld.utils.OneShieldTextView
             android:layout_width="wrap_content"
