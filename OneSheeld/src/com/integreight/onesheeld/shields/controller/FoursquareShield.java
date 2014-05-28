@@ -39,9 +39,9 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	// private static final byte FOURSQUARE_COMMAND = (byte) 0x1B;
 	private static final byte CHECKIN_METHOD_ID = (byte) 0x01;
 	Foursquare foursquare;
-	String clintID = "Z5G4T1LGIAM4TLW3JVQH2DDKOTLN5XM1UG3W4V4LJ1VK2SX4";
-	String clintSecret = "V2NLGZL3KRGZ42FUDTHY5D3EZG0TQXH0MD5M1ZHJVE25F2SD";
-	String redirectUrl = "https://www.foursquare.com";
+	String clientID = "SXCMMTAXT05AVQYQS5S3ZCOLEKCN5ZCDJKQYBAFJJUDJIEC0";
+	String clientSecret = "RQB3QEA2HLA0TQEM3XPOGJEJ4IHHK14LUMEOPI1BOIYFEHXA";
+	String redirectUrl = "http://www.1sheeld.com";
 	String placeID = "";
 	String message = "";
 
@@ -335,7 +335,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	}
 
 	public void loginToFoursquare() {
-		foursquare = new Foursquare(clintID, clintSecret, redirectUrl);
+		foursquare = new Foursquare(clientID, clientSecret, redirectUrl);
 
 		foursquare.authorize(getActivity(),
 				new FoursquareAuthenDialogListener());
