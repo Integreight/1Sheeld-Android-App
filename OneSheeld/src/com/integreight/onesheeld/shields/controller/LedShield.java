@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -96,6 +97,6 @@ public class LedShield extends ControllerParent<LedShield> {
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		System.out.println("Reset");
+		Log.sysOut("Reset");
 	}
 }

@@ -27,7 +27,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.EventHandler;
-
+import com.integreight.onesheeld.Log;
 public class FacebookShield extends ControllerParent<FacebookShield> {
 	private static FacebookEventHandler eventHandler;
 	private String lastPost;
@@ -262,7 +262,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					FacebookRequestError error = response.getError();
 					if (error != null) {
 						if (eventHandler != null) {
-							System.err.println("$#$#$ " + error);
+							Log.sysOut("$#$#$ " + error);
 							eventHandler.onFacebookError(error
 									.getErrorMessage());
 						}

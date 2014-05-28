@@ -2,6 +2,8 @@ package com.integreight.onesheeld.utils;
 
 import java.util.ArrayList;
 
+import com.integreight.onesheeld.Log;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -54,7 +56,7 @@ public class MultiTouchContainer extends RelativeLayout {
 				if (currentIndex != -1) {
 					key = childrenRects.get(currentIndex).key;
 					key.eventListener.onReleased(key);
-					System.out.println(key.getTag() + "   Release");
+					Log.sysOut(key.getTag() + "   Release");
 				}
 				currentIndex = item.index;
 				currentTag = item.tag;
