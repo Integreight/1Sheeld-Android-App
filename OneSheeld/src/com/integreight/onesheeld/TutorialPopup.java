@@ -19,7 +19,8 @@ public class TutorialPopup extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		MainActivity.thisInstance.finish();
+		if (!isMenu)
+			MainActivity.thisInstance.finish();
 		finish();
 		super.onBackPressed();
 	}
@@ -31,9 +32,13 @@ public class TutorialPopup extends FragmentActivity {
 		super.onDestroy();
 	}
 
+	boolean isMenu = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.tutorial_popup);
+		isMenu = getIntent().getExtras() != null
+				&& getIntent().getExtras().getBoolean("isMenu");
 		pager = (ViewPager) findViewById(R.id.mpager);
 		logoCont = (RelativeLayout) findViewById(R.id.upperLogoCont);
 		fadingLogo = (ImageView) findViewById(R.id.fadingLogo);

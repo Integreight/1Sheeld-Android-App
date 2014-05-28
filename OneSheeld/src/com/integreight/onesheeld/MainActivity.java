@@ -93,7 +93,7 @@ public class MainActivity extends FragmentActivity {
 		// }, true));
 		// popub.show();
 		if (getThisApplication().getShowTutAgain()
-				&& getThisApplication().getTutShownTimes() < 4)
+				&& getThisApplication().getTutShownTimes() < 6)
 			startActivity(new Intent(this, TutorialPopup.class));
 	}
 

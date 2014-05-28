@@ -394,7 +394,8 @@ public class SheeldsList extends Fragment {
 			return true;
 		case R.id.appTutorial:
 			getActivity().startActivity(
-					new Intent(getActivity(), TutorialPopup.class));
+					new Intent(getActivity(), TutorialPopup.class).putExtra(
+							"isMenu", true));
 			return true;
 		}
 
