@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -28,7 +27,8 @@ public class TutorialLastFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		final OneSheeldApplication app = (OneSheeldApplication) getActivity()
 				.getApplication();
-		((CheckBox) v.findViewById(R.id.showAgain)).setChecked(true);
+		final CheckBox cb = (CheckBox) v.findViewById(R.id.showAgain);
+		cb.setChecked(true);
 		v.findViewById(R.id.goBtn).setOnClickListener(
 				new View.OnClickListener() {
 
@@ -38,6 +38,15 @@ public class TutorialLastFragment extends Fragment {
 								.findViewById(R.id.showAgain)).isChecked());
 						app.setTutShownTimes(app.getTutShownTimes() + 1);
 						getActivity().finish();
+					}
+				});
+		((ViewGroup) cb.getParent())
+				.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						cb.setChecked(!((CheckBox) v
+								.findViewById(R.id.showAgain)).isChecked());
 					}
 				});
 		super.onActivityCreated(savedInstanceState);

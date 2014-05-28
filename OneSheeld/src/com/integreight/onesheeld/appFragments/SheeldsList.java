@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,6 +34,7 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.OneSheeldVersionInstallerPopupTesting;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.TutorialPopup;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -390,6 +392,10 @@ public class SheeldsList extends Fragment {
 			((OneSheeldApplication) getActivity().getApplication())
 					.setLastConnectedDevice(null);
 			return true;
+		case R.id.appTutorial:
+			getActivity().startActivity(
+					new Intent(getActivity(), TutorialPopup.class));
+			return true;
 		}
 
 		return false;
@@ -424,10 +430,14 @@ public class SheeldsList extends Fragment {
 						type = shield.getShieldType().newInstance();
 					} catch (java.lang.InstantiationException e) {
 						// TODO Auto-generated catch block
-						Log.e("TAG", "isAnyShieldsSelected()::InstantiationException", e);
+						Log.e("TAG",
+								"isAnyShieldsSelected()::InstantiationException",
+								e);
 					} catch (IllegalAccessException e) {
 						// TODO Auto-generated catch block
-						Log.e("TAG", "isAnyShieldsSelected()::IllegalAccessException", e);
+						Log.e("TAG",
+								"isAnyShieldsSelected()::IllegalAccessException",
+								e);
 					}
 					type.setActivity((MainActivity) getActivity()).setTag(
 							shield.name());
