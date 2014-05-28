@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.utils.database;
 
 import java.util.ArrayList;
+
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.model.PlaylistItem;
 import android.content.ContentValues;
 import android.content.Context;
@@ -81,7 +83,7 @@ public class MusicPlaylist {
 				cursor.moveToNext();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e("TAG", "Exception", e);
 		} finally {
 			cursor.close();
 		}

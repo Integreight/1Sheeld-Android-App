@@ -85,7 +85,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 					((OneSheeldApplication) activity.getApplication())
 							.getAppFirmata().getBTService().stopConnection();
 				} catch (Exception e) {
-					e.printStackTrace();
+					Log.e("TAG", "Exception", e);
 				}
 			}
 			setDevicesListReady();
@@ -139,7 +139,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 				try {
 					activity.unregisterReceiver(mReceiver);
 				} catch (Exception e) {
-					e.printStackTrace();
+					Log.e("TAG", "Exception", e);
 				}
 			}
 		});
@@ -163,7 +163,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 						try {
 							activity.unregisterReceiver(mReceiver);
 						} catch (Exception e) {
-							e.printStackTrace();
+							Log.e("TAG", "Exception", e);
 						}
 						if (!mBtAdapter.isEnabled()) {
 							((MainActivity) activity)
@@ -236,10 +236,10 @@ public class ArduinoConnectivityPopup extends Dialog {
 									.setVersionWebResult(response.toString());
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Log.e("TAG", "Exception", e);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Log.e("TAG", "Exception", e);
 						}
 						super.onSuccess(response);
 					}

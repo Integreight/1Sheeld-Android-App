@@ -208,7 +208,7 @@ public class MainActivity extends FragmentActivity {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e("TAG", "Exception", e);
 		}
 	}
 
@@ -228,12 +228,12 @@ public class MainActivity extends FragmentActivity {
 				sb.append(line + "\n");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e("TAG", "Exception", e);
 		} finally {
 			try {
 				is.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("TAG", "Exception", e);
 			}
 		}
 		return sb.toString();

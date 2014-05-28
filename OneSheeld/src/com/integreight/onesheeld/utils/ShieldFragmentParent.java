@@ -13,6 +13,7 @@ import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.Fields;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -54,10 +55,10 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 				type = shield.getShieldType().newInstance();
 			} catch (java.lang.InstantiationException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("TAG", "Exception", e);
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("TAG", "Exception", e);
 			}
 			if (type != null) {
 				type.setActivity(getAppActivity()).setTag(shield.name());

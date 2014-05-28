@@ -77,7 +77,7 @@ public final class ForsquareUtil {
 						+ URLEncoder.encode(parameters.getString(key), "UTF-8"));
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("TAG", "FoursquareUti::encodeUrl::UnsupportedEncodingException", e);
 			}
 		}
 		return sb.toString();
@@ -94,7 +94,7 @@ public final class ForsquareUtil {
 							URLDecoder.decode(v[1], "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("TAG", "FoursquareUti::decodeUrl::UnsupportedEncodingException", e);
 				}
 			}
 		}

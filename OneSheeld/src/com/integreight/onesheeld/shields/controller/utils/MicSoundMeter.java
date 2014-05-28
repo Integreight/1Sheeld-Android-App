@@ -66,7 +66,7 @@ public class MicSoundMeter {
 					isCanceled = true;
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Log.e("TAG", "stop MRecorder::Mic", e);
 			}
 		}
 	}

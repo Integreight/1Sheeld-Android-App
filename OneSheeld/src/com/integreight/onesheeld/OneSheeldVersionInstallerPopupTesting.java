@@ -145,7 +145,7 @@ public class OneSheeldVersionInstallerPopupTesting extends Dialog {
 													});
 								} catch (JSONException e) {
 									// TODO Auto-generated catch block
-									e.printStackTrace();
+									Log.e("TAG", "Exception", e);
 								}
 								super.onSuccess(response);
 							};
@@ -261,7 +261,7 @@ public class OneSheeldVersionInstallerPopupTesting extends Dialog {
 							Thread.sleep(2000);
 						} catch (InterruptedException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Log.e("TAG", "Exception", e);
 						}
 						// firmata.returnAppToNormal();
 						firmata.enableReporting();

@@ -200,13 +200,13 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 			}
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			Log.e("TAG", "Foursquare::getStringFromInputStream", e);
 		} finally {
 			if (br != null) {
 				try {
 					br.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					Log.e("TAG", "Foursquare::getStringFromInputStream", e);
 				}
 			}
 		}
@@ -231,10 +231,10 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 				Log.d("Foursquare-Main", aa);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("TAG", "Foursquare::ParseUserFoursquareData", e);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Log.e("TAG", "Foursquare::ParseUserFoursquareData", e);
 			}
 			return aa;
 		}
@@ -329,7 +329,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("TAG", "Foursquare::jsonParser", e);
 		}
 
 	}

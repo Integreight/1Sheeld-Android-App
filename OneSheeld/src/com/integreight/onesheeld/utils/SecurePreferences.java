@@ -13,6 +13,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.integreight.onesheeld.Log;
+
 public class SecurePreferences {
 	public static byte[] encrypt(byte[] raw, byte[] clear) {
 		SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
@@ -46,7 +48,7 @@ public class SecurePreferences {
 			decrypted = cipher.doFinal(encrypted);
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("TAG", "Exception", e);
 		} catch (NoSuchPaddingException e) {
 			// TODO Auto-generated catch block
 		} catch (InvalidKeyException e) {
@@ -67,7 +69,7 @@ public class SecurePreferences {
 				try {
 					byteArray = s.getBytes();
 				} catch (Exception e) {
-					e.printStackTrace();
+					Log.e("TAG", "Exception", e);
 				}
 			}
 		}
@@ -81,7 +83,7 @@ public class SecurePreferences {
 				try {
 					s = new String(byteArray, "UTF-8");
 				} catch (Exception e) {
-					e.printStackTrace();
+					Log.e("TAG", "Exception", e);
 				}
 			}
 		}
@@ -105,7 +107,7 @@ public class SecurePreferences {
 			e1.printStackTrace();
 		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Log.e("TAG", "Exception", e);
 		}
 		return key;
 	}

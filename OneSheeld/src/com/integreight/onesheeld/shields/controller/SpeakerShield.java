@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.utils.ControllerParent;
@@ -124,13 +125,13 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 					});
 				} catch (IllegalArgumentException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("TAG", "speaker::setVolume::setDataSource", e);
 				} catch (IllegalStateException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("TAG", "speaker::setVolume::setDataSource", e);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("TAG", "speaker::setVolume::setDataSource", e);
 				}
 			} else {
 				mp = new MediaPlayer();
@@ -146,21 +147,21 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 								activity,
 								"Can't play the current buzz! Please, replace it",
 								Toast.LENGTH_SHORT).show();
-						e.printStackTrace();
+						Log.e("TAG", "speaker::setVolume::setDataSource", e);
 					} catch (SecurityException e) {
 						Toast.makeText(
 								activity,
 								"Can't play the current buzz! Please, replace it",
 								Toast.LENGTH_SHORT).show();
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e("TAG", "speaker::setVolume::setDataSource", e);
 					} catch (IllegalStateException e) {
 						Toast.makeText(
 								activity,
 								"Can't play the current buzz! Please, replace it",
 								Toast.LENGTH_SHORT).show();
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e("TAG", "speaker::setVolume::setDataSource", e);
 					}
 			}
 		}

@@ -53,7 +53,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 					Thread.sleep(2000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("TAG", "Exception", e);
 				}
 				isFailed = false;
 				// activity.getThisApplication().getAppFirmata().returnAppToNormal();
@@ -241,10 +241,10 @@ public class FirmwareUpdatingPopup extends Dialog {
 											.build());
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Log.e("TAG", "Exception", e);
 						} catch (JSONException e) {
 							// TODO Auto-generated catch block
-							e.printStackTrace();
+							Log.e("TAG", "Exception", e);
 						}
 						super.onSuccess(response);
 					}
@@ -327,7 +327,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 							}
 						});
 			} catch (JSONException e) {
-				e.printStackTrace();
+				Log.e("TAG", "Exception", e);
 			}
 		} else
 			reloadData();

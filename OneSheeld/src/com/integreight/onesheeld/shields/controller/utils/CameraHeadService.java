@@ -357,7 +357,7 @@ public class CameraHeadService extends Service implements
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Log.e("TAG", "CmaraHeadService()::takePicture", e);
 				}
 				// Get a surface
 				/*
@@ -456,13 +456,13 @@ public class CameraHeadService extends Service implements
 			try {
 				fo = new FileOutputStream(image);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				Log.e("TAG", "FileNotFoundException", e);
 				// TODO Auto-generated catch block
 			}
 			try {
 				fo.write(bytes.toByteArray());
 			} catch (IOException e) {
-				e.printStackTrace();
+				Log.e("TAG", "fo.write::PictureTaken", e);
 				// TODO Auto-generated catch block
 			}
 

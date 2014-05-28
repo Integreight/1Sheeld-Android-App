@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.MusicShield;
@@ -70,7 +71,7 @@ public class MusicPlayerFragment extends
 					try {
 						Thread.sleep(100);
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Log.e("TAG", "MusicPlayer::seekBarTracker", e);
 						break;
 					}
 

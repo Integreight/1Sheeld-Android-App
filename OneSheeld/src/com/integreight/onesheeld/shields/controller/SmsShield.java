@@ -70,7 +70,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
 			if (eventHandler != null)
 				eventHandler.onSmsFail(e.getMessage());
 
-			e.printStackTrace();
+			Log.e("TAG", "sendSms::sendTextMessage", e);
 		}
 		CommitInstanceTotable();
 

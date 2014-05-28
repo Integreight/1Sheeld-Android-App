@@ -319,7 +319,7 @@ public class CameraService extends Service {
 
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					//e.printStackTrace();
 				}
 				// Get a surface
 				/*
@@ -390,13 +390,13 @@ public class CameraService extends Service {
 			try {
 				fo = new FileOutputStream(image);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 			try {
 				fo.write(bytes.toByteArray());
 			} catch (IOException e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				// TODO Auto-generated catch block
 			}
 
@@ -427,7 +427,7 @@ public class CameraService extends Service {
 
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				//e.printStackTrace();
 			}
 			if (mCamera != null) {
 				mCamera.stopPreview();

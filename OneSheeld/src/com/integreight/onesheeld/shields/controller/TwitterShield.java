@@ -17,6 +17,7 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
@@ -134,7 +135,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				try {
 					twitter.updateStatus(st);
 				} catch (TwitterException e) {
-					e.printStackTrace();
+					Log.e("TAG", "TwitterShield::StatusUpdate::TwitterException", e);
 				}
 
 			}
@@ -162,7 +163,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 								.getOAuthRequestToken(CALLBACKURL);
 						authUrl = requestToken.getAuthenticationURL();
 					} catch (TwitterException e) {
-						e.printStackTrace();
+						Log.e("TAG", "TwitterShield::requestToken::TwitterException", e);
 					}
 					return null;
 				}

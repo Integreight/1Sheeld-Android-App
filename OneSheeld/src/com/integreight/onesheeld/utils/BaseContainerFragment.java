@@ -26,7 +26,7 @@ public class BaseContainerFragment extends Fragment {
 			getChildFragmentManager().executePendingTransactions();
 			transaction.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			Log.e("TAG", "Exception", e);
 		}
 		Log.i("test", "pop fragment: "
 				+ getChildFragmentManager().getBackStackEntryCount());

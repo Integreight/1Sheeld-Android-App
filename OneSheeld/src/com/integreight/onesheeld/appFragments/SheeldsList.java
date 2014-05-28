@@ -419,10 +419,10 @@ public class SheeldsList extends Fragment {
 						type = shield.getShieldType().newInstance();
 					} catch (java.lang.InstantiationException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e("TAG", "isAnyShieldsSelected()::InstantiationException", e);
 					} catch (IllegalAccessException e) {
 						// TODO Auto-generated catch block
-						e.printStackTrace();
+						Log.e("TAG", "isAnyShieldsSelected()::IllegalAccessException", e);
 					}
 					type.setActivity((MainActivity) getActivity()).setTag(
 							shield.name());

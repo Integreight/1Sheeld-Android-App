@@ -323,7 +323,7 @@ public class BluetoothService {
 							.createInsecureRfcommSocketToServiceRecord(MY_UUID);
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				Log.e("TAG", "Blutooth Service ConnectThread()", e);
 				try {
 					mmSocket = device
 							.createRfcommSocketToServiceRecord(MY_UUID);
