@@ -6,7 +6,7 @@
         android:drawable="@drawable/apptheme_scrubber_track_holo_black"/>
     <item android:id="@android:id/secondaryProgress">
         <scale
-            android:drawable="@drawable/apptheme_scrubber_secondary_holo"
+            android:drawable="@drawable/apptheme_scrubber_track_holo_black"
             android:scaleWidth="100%" />
     </item>
     <item android:id="@android:id/progress">

@@ -28,15 +28,7 @@ public class TutorialLastFragment extends Fragment {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		final OneSheeldApplication app = (OneSheeldApplication) getActivity()
 				.getApplication();
-		((CheckBox) v.findViewById(R.id.showAgain))
-				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						app.setShownTutAgain(isChecked);
-					}
-				});
+		((CheckBox) v.findViewById(R.id.showAgain)).setChecked(true);
 		v.findViewById(R.id.goBtn).setOnClickListener(
 				new View.OnClickListener() {
 

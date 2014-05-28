@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:text="For more tutorials visit out website\n1Sheeld.com"
+        android:text="For more tutorials visit our website\n1Sheeld.com"
         android:textColor="@color/white"
         android:textSize="16sp" />
 

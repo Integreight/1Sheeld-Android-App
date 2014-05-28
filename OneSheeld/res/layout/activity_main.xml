@@ -23,25 +23,4 @@
         tools:context=".OneSheeldActivity" >
     </com.integreight.onesheeld.utils.ListViewReversed>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="#fffad7"
-        android:gravity="center" >
-
-        <ImageButton
-            android:id="@+id/main_activity_add_more_shields_button"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:contentDescription="@string/app_name"
-            android:onClick="addMoreShields"
-            android:scaleType="center"
-            android:src="@drawable/shields_activity_add_more_shields" />
-    </RelativeLayout>
-
 </RelativeLayout>
