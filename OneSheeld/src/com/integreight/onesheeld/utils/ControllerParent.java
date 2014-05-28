@@ -236,25 +236,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 	public ControllerParent<T> invalidate(SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
-		getApplication().getGaTracker().send(
-				MapBuilder
-						.createEvent("Controller Tracker", "start", getTag(),
-								null).set(getTag(), "start").build());
-		Crashlytics
-				.setString(
-						"Number of running shields",
-						getApplication().getRunningShields() == null
-								|| getApplication().getRunningShields().size() == 0 ? "No Running Shields"
-								: ""
-										+ getApplication().getRunningShields()
-												.size());
-		Crashlytics
-				.setString(
-						"Running Shields",
-						getApplication().getRunningShields() != null
-								&& getApplication().getRunningShields().size() > 0 ? getApplication()
-								.getRunningShields().keySet().toString()
-								: "No Running Shields");
 		return this;
 	}
 

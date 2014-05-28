@@ -55,6 +55,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 		return super.setTag(tag);
 	}
 
+	@SuppressLint("InlinedApi")
 	@Override
 	public ControllerParent<TemperatureShield> invalidate(
 			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
@@ -146,7 +147,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 				selectionAction.onFailure();
 			}
 			if (isToastable)
-				activity.showToast("Your device hardware does not support the sensor !");
+				activity.showToast("Device doesn't support this Sensor!");
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);
 

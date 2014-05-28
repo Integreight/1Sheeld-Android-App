@@ -1,15 +1,10 @@
 package com.integreight.onesheeld.shields.controller;
 
-import twitter4j.FilterQuery;
-import twitter4j.StallWarning;
-import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
-import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
@@ -19,7 +14,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Handler;
-import com.integreight.onesheeld.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -67,7 +61,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public TwitterShield() {
 		super();
-		//startListeningOnAKeyword("1sheeld");
+		// startListeningOnAKeyword("1sheeld");
 	}
 
 	@Override
@@ -267,82 +261,82 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		}
 	}
 
-	private void startListeningOnAKeyword(String keyword) {
-		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(TwitterAuthorization.CONSUMER_KEY);
-		cb.setOAuthConsumerSecret(TwitterAuthorization.CONSUMER_SECRET);
-		cb.setOAuthAccessToken("1608329586-6oJK4QJOPHT5fCwo7ckc9wZGEuaT1p6ZIQ5RBVH");
-		cb.setOAuthAccessTokenSecret("aRq7RsAp132UwHtO6Kr7ottM3f9i5wb58xTIGLZcElhoH");
-
-		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-		// twitterStream.s
-		twitterStream.clearListeners();
-		twitterStream.cleanUp();
-		FilterQuery query = new FilterQuery();
-		String[] keywords = new String[] { keyword };
-		query.track(keywords);
-
-		StatusListener listener = new StatusListener() {
-			public void onScrubGeo(long arg0, long arg1) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onStallWarning(StallWarning arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onStatus(twitter4j.Status arg0) {
-				// TODO Auto-generated method stub
-				Log.d("tweet", arg0.getText());
-				ShieldFrame frame = new ShieldFrame(
-						UIShield.TWITTER_SHIELD.getId(), (byte) 0x01);
-				frame.addStringArgument(arg0.getUser().getName());
-				frame.addStringArgument(arg0.getText());
-				activity.getThisApplication().getAppFirmata()
-						.sendShieldFrame(frame);
-			}
-
-			@Override
-			public void onException(Exception arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onDeletionNotice(StatusDeletionNotice arg0) {
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onTrackLimitationNotice(int arg0) {
-				// TODO Auto-generated method stub
-
-			}
-		};
-		twitterStream.addListener(listener);
-		// sample() method internally creates a thread which manipulates
-		// TwitterStream and calls these adequate listener methods continuously.
-		twitterStream.filter(query);
-		// twitterStream.sample();
-	}
-
-	private void stopListeningOnAKeyword() {
-		if (twitterStream == null)
-			return;
-		twitterStream.clearListeners();
-		twitterStream.cleanUp();
-		twitterStream = null;
-	}
+	// private void startListeningOnAKeyword(String keyword) {
+	// ConfigurationBuilder cb = new ConfigurationBuilder();
+	// cb.setOAuthConsumerKey(TwitterAuthorization.CONSUMER_KEY);
+	// cb.setOAuthConsumerSecret(TwitterAuthorization.CONSUMER_SECRET);
+	// cb.setOAuthAccessToken("1608329586-6oJK4QJOPHT5fCwo7ckc9wZGEuaT1p6ZIQ5RBVH");
+	// cb.setOAuthAccessTokenSecret("aRq7RsAp132UwHtO6Kr7ottM3f9i5wb58xTIGLZcElhoH");
+	//
+	// twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+	// // twitterStream.s
+	// twitterStream.clearListeners();
+	// twitterStream.cleanUp();
+	// FilterQuery query = new FilterQuery();
+	// String[] keywords = new String[] { keyword };
+	// query.track(keywords);
+	//
+	// StatusListener listener = new StatusListener() {
+	// public void onScrubGeo(long arg0, long arg1) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onStallWarning(StallWarning arg0) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onStatus(twitter4j.Status arg0) {
+	// // TODO Auto-generated method stub
+	// Log.d("tweet", arg0.getText());
+	// ShieldFrame frame = new ShieldFrame(
+	// UIShield.TWITTER_SHIELD.getId(), (byte) 0x01);
+	// frame.addStringArgument(arg0.getUser().getName());
+	// frame.addStringArgument(arg0.getText());
+	// activity.getThisApplication().getAppFirmata()
+	// .sendShieldFrame(frame);
+	// }
+	//
+	// @Override
+	// public void onException(Exception arg0) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onDeletionNotice(StatusDeletionNotice arg0) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	//
+	// @Override
+	// public void onTrackLimitationNotice(int arg0) {
+	// // TODO Auto-generated method stub
+	//
+	// }
+	// };
+	// twitterStream.addListener(listener);
+	// // sample() method internally creates a thread which manipulates
+	// // TwitterStream and calls these adequate listener methods continuously.
+	// twitterStream.filter(query);
+	// // twitterStream.sample();
+	// }
+	//
+	// private void stopListeningOnAKeyword() {
+	// if (twitterStream == null)
+	// return;
+	// twitterStream.clearListeners();
+	// twitterStream.cleanUp();
+	// twitterStream = null;
+	// }
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		//stopListeningOnAKeyword();
+		// stopListeningOnAKeyword();
 	}
 
 }

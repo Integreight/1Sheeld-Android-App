@@ -289,6 +289,14 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 										app.getRunningShields().remove(
 												shield.name());
 									}
+									uiHandler.removeCallbacksAndMessages(null);
+									uiHandler.post(new Runnable() {
+
+										@Override
+										public void run() {
+											notifyDataSetChanged();
+										}
+									});
 								}
 							};
 							try {

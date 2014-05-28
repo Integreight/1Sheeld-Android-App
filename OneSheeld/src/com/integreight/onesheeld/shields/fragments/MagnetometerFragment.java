@@ -15,7 +15,7 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MagnetometerFragment extends
 		ShieldFragmentParent<MagnetometerFragment> {
-	TextView x, y, z;
+	TextView x, y, z, mf;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
 
@@ -51,7 +51,7 @@ public class MagnetometerFragment extends
 		x = (TextView) getView().findViewById(R.id.x_value_txt);
 		y = (TextView) getView().findViewById(R.id.y_value_txt);
 		z = (TextView) getView().findViewById(R.id.z_value_txt);
-
+		mf = (TextView) getView().findViewById(R.id.mfValue);
 		devicehasSensor = (TextView) getView().findViewById(
 				R.id.device_not_has_sensor_text);
 		stoplistening_bt = (Button) getView().findViewById(
@@ -113,6 +113,21 @@ public class MagnetometerFragment extends
 						public void run() {
 							z.setText("" + value[2]);
 
+						}
+					});
+					mf.post(new Runnable() {
+
+						@Override
+						public void run() {
+							float magnetic_field = (float) Math
+									.sqrt((value[0] * value[0])
+											+ (value[1] * value[1])
+											+ (value[2] * value[2]));
+							mf.setText("Magnetic Field is "
+									+ String.valueOf(magnetic_field).substring(
+											0,
+											String.valueOf(magnetic_field)
+													.indexOf('.')) + " (uT)");
 						}
 					});
 				}

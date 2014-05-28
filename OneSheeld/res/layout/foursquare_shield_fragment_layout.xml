@@ -40,6 +40,7 @@
         android:layout_marginTop="15dp"
         android:drawableLeft="@drawable/green_circle"
         android:drawablePadding="10dp"
+        android:paddingTop="2dp"
         android:text="Your last checkin will be here!"
         android:textColor="@color/offWhite"
         android:textSize="15sp"
@@ -51,6 +52,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/fsLogo"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
         android:textColor="@color/offWhite"
         android:textSize="15sp"
         android:visibility="invisible" />
