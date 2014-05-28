@@ -145,27 +145,32 @@ public class SheeldsList extends Fragment {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
+				if (getActivity() != null
+						&& getActivity().findViewById(R.id.cancelConnection) != null)
+					getActivity().findViewById(R.id.cancelConnection)
+							.setOnClickListener(new View.OnClickListener() {
 
-				getActivity().findViewById(R.id.cancelConnection)
-						.setOnClickListener(new View.OnClickListener() {
-
-							@Override
-							public void onClick(View v) {
-								if (getActivity().getSupportFragmentManager()
-										.getBackStackEntryCount() > 1) {
-									getActivity().getSupportFragmentManager()
-											.popBackStack();
-									getActivity().getSupportFragmentManager()
-											.executePendingTransactions();
+								@Override
+								public void onClick(View v) {
+									if (getActivity()
+											.getSupportFragmentManager()
+											.getBackStackEntryCount() > 1) {
+										getActivity()
+												.getSupportFragmentManager()
+												.popBackStack();
+										getActivity()
+												.getSupportFragmentManager()
+												.executePendingTransactions();
+									}
+									((MainActivity) getActivity())
+											.stopService();
+									if (!ArduinoConnectivityPopup.isOpened) {
+										ArduinoConnectivityPopup.isOpened = true;
+										new ArduinoConnectivityPopup(
+												getActivity()).show();
+									}
 								}
-								((MainActivity) getActivity()).stopService();
-								if (!ArduinoConnectivityPopup.isOpened) {
-									ArduinoConnectivityPopup.isOpened = true;
-									new ArduinoConnectivityPopup(getActivity())
-											.show();
-								}
-							}
-						});
+							});
 			}
 		}, 1000);
 		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;

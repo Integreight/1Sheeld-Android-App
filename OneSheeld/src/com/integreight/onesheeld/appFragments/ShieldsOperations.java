@@ -267,27 +267,33 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 			@Override
 			public void run() {
-				getActivity().findViewById(R.id.getAvailableDevices)
-						.setOnClickListener(new View.OnClickListener() {
+				if (getActivity() != null
+						&& getActivity().findViewById(R.id.getAvailableDevices) != null)
+					getActivity().findViewById(R.id.getAvailableDevices)
+							.setOnClickListener(new View.OnClickListener() {
 
-							@Override
-							public void onClick(View v) {
-								((MainActivity) getActivity()).closeMenu();
-								if (getActivity().getSupportFragmentManager()
-										.getBackStackEntryCount() > 1) {
-									getActivity().getSupportFragmentManager()
-											.popBackStack();
-									getActivity().getSupportFragmentManager()
-											.executePendingTransactions();
+								@Override
+								public void onClick(View v) {
+									((MainActivity) getActivity()).closeMenu();
+									if (getActivity()
+											.getSupportFragmentManager()
+											.getBackStackEntryCount() > 1) {
+										getActivity()
+												.getSupportFragmentManager()
+												.popBackStack();
+										getActivity()
+												.getSupportFragmentManager()
+												.executePendingTransactions();
+									}
+									((MainActivity) getActivity())
+											.stopService();
+									if (!ArduinoConnectivityPopup.isOpened) {
+										ArduinoConnectivityPopup.isOpened = true;
+										new ArduinoConnectivityPopup(
+												getActivity()).show();
+									}
 								}
-								((MainActivity) getActivity()).stopService();
-								if (!ArduinoConnectivityPopup.isOpened) {
-									ArduinoConnectivityPopup.isOpened = true;
-									new ArduinoConnectivityPopup(getActivity())
-											.show();
-								}
-							}
-						});
+							});
 			}
 		}, 1000);
 		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))

@@ -129,7 +129,7 @@ public class CircularProgressBar extends ProgressBar {
 		if (t != null)
 			mSubTitle = t;
 
-		mStrokeWidth = a.getInt(R.styleable.CircularProgressBar_strokeWidth,
+		mStrokeWidth = a.getInt(R.styleable.CircularProgressBar_strokeWidthC,
 				STROKE_WIDTH);
 
 		a.recycle();

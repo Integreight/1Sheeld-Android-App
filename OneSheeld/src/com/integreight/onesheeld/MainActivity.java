@@ -50,6 +50,7 @@ public class MainActivity extends FragmentActivity {
 	public boolean isForground = false;
 	private onConnectedToBluetooth onConnectToBlueTooth = null;
 	public static String currentShieldTag = null;
+	public static MainActivity thisInstance;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -91,6 +92,9 @@ public class MainActivity extends FragmentActivity {
 		// }
 		// }, true));
 		// popub.show();
+		if (getThisApplication().getShowTutAgain()
+				&& getThisApplication().getTutShownTimes() < 4)
+			startActivity(new Intent(this, TutorialPopup.class));
 	}
 
 	public Thread looperThread;
@@ -141,7 +145,7 @@ public class MainActivity extends FragmentActivity {
 
 					@Override
 					public void run() {
-						//tryToSendNotificationsToAdmins(arg1);
+						// tryToSendNotificationsToAdmins(arg1);
 						Intent in = new Intent(getIntent());
 						PendingIntent intent = PendingIntent
 								.getActivity(getBaseContext(), 0, in,
@@ -150,6 +154,8 @@ public class MainActivity extends FragmentActivity {
 						AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 						mgr.set(AlarmManager.RTC,
 								System.currentTimeMillis() + 1000, intent);
+						getThisApplication().setTutShownTimes(
+								getThisApplication().getTutShownTimes() + 1);
 						System.exit(0);
 					}
 				}).start();
@@ -505,6 +511,7 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onResumeFragments() {
+		thisInstance = this;
 		isForground = true;
 		Crashlytics.setString("isBackground", "No");
 		new Thread(new Runnable() {
