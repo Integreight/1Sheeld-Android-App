@@ -20,6 +20,8 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
+import com.integreight.onesheeld.utils.OneShieldTextView;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
@@ -95,6 +97,18 @@ public class ShieldsOperations extends BaseContainerFragment {
 		}
 		if (mContent == null) {
 			mContent = mFrag.getShieldFragment(0);
+			try {
+				new Handler().post(new Runnable() {
+
+					@Override
+					public void run() {
+						((OneShieldTextView) getActivity().findViewById(
+								R.id.shieldName))
+								.setText(((ShieldFragmentParent<?>) mContent).shieldName);
+					}
+				});
+			} catch (Exception e) {
+			}
 			((MainActivity) getActivity()).setTitle(mFrag.getUIShield(0)
 					.getName() + " Shield");
 			// set the Above View

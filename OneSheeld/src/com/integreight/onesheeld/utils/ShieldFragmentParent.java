@@ -25,6 +25,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	private String controllerTag = "";
 	public boolean hasSettings = false;
 	public Handler uiHandler = new Handler();
+	public String shieldName = "";
 
 	public MainActivity getAppActivity() {
 		return (MainActivity) super.getActivity();

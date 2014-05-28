@@ -56,8 +56,8 @@
                 android:orientation="vertical" >
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/sensor_x_circle"
                     android:gravity="center_horizontal" >
 
@@ -72,7 +72,7 @@
                         android:gravity="center"
                         android:text="@string/x"
                         android:textColor="@color/offWhite"
-                        android:textSize="55sp" />
+                        android:textSize="42sp" />
                 </RelativeLayout>
 
                 <com.integreight.onesheeld.utils.OneShieldTextView
@@ -84,7 +84,7 @@
                     android:maxLength="5"
                     android:singleLine="true"
                     android:textColor="@color/offWhite"
-                    android:textSize="28sp" />
+                    android:textSize="24sp" />
 
                 <com.integreight.onesheeld.utils.OneShieldTextView
                     android:layout_width="wrap_content"
@@ -92,7 +92,7 @@
                     android:gravity="center"
                     android:text="@string/ms2"
                     android:textColor="@color/offWhite"
-                    android:textSize="25sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -103,8 +103,8 @@
                 android:orientation="vertical" >
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/sensor_y_circle"
                     android:gravity="center_horizontal" >
 
@@ -119,7 +119,7 @@
                         android:gravity="center"
                         android:text="@string/y"
                         android:textColor="@color/offWhite"
-                        android:textSize="55sp" />
+                        android:textSize="42sp" />
                 </RelativeLayout>
 
                 <com.integreight.onesheeld.utils.OneShieldTextView
@@ -131,7 +131,7 @@
                     android:maxLength="5"
                     android:singleLine="true"
                     android:textColor="@color/offWhite"
-                    android:textSize="28sp" />
+                    android:textSize="24sp" />
 
                 <com.integreight.onesheeld.utils.OneShieldTextView
                     android:layout_width="wrap_content"
@@ -139,7 +139,7 @@
                     android:gravity="center"
                     android:text="@string/ms2"
                     android:textColor="@color/offWhite"
-                    android:textSize="25sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -150,8 +150,8 @@
                 android:orientation="vertical" >
 
                 <RelativeLayout
-                    android:layout_width="60dp"
-                    android:layout_height="60dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/sensor_z_circle"
                     android:gravity="center_horizontal" >
 
@@ -166,7 +166,7 @@
                         android:gravity="center"
                         android:text="@string/z"
                         android:textColor="@color/offWhite"
-                        android:textSize="55sp" />
+                        android:textSize="42sp" />
                 </RelativeLayout>
 
                 <com.integreight.onesheeld.utils.OneShieldTextView
@@ -178,7 +178,7 @@
                     android:maxLength="5"
                     android:singleLine="true"
                     android:textColor="@color/offWhite"
-                    android:textSize="28sp" />
+                    android:textSize="24sp" />
 
                 <com.integreight.onesheeld.utils.OneShieldTextView
                     android:layout_width="wrap_content"
@@ -186,7 +186,7 @@
                     android:gravity="center"
                     android:text="@string/ms2"
                     android:textColor="@color/offWhite"
-                    android:textSize="25sp" />
+                    android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

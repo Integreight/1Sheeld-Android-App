@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -51,6 +52,7 @@ import com.integreight.onesheeld.shields.fragments.TemperatureFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SelectedShieldsListFragment extends ListFragment {
@@ -181,6 +183,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 	private ShieldFragmentParent<?> addToCreatedListAndReturn(
 			UIShield uiShield, ShieldFragmentParent<?> fragment) {
 		fragment.setControllerTag(uiShield.name());
+		fragment.shieldName = uiShield.getName();
 		creadtedShields.put(uiShield, fragment);
 		return fragment;
 	}
@@ -225,6 +228,18 @@ public class SelectedShieldsListFragment extends ListFragment {
 				((MainActivity) getActivity()).replaceCurrentFragment(
 						R.id.shieldsContainerFrame, fragment,
 						fragment.getControllerTag(), false, false);
+				try {
+					new Handler().post(new Runnable() {
+
+						@Override
+						public void run() {
+							((OneShieldTextView) getActivity().findViewById(
+									R.id.shieldName))
+									.setText(fragment.shieldName);
+						}
+					});
+				} catch (Exception e) {
+				}
 				((MainActivity) getActivity()).closeMenu();
 			}
 		});
