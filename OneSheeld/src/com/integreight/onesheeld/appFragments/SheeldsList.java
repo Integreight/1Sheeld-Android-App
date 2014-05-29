@@ -211,7 +211,7 @@ public class SheeldsList extends Fragment {
 		shieldsUIList = UIShield.valuesFiltered();
 		adapter = new ShieldsListAdapter(getActivity());
 		mListView.setAdapter(adapter);
-		// mListView.setSelection(1);
+		mListView.setSelection(1);
 		mListView.setCacheColorHint(Color.TRANSPARENT);
 		mListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		mListView.setDrawingCacheEnabled(true);
