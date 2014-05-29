@@ -5,6 +5,8 @@
         android:width="5dp"
         android:color="@color/offWhite" />
 
+    <solid android:color="@color/transparent" />
+
     <size
         android:height="20dp"
         android:width="20dp" />
