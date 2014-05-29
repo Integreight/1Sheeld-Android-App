@@ -151,6 +151,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	public void stopGps() {
 		mUpdatesRequested = false;
 		if (mLocationClient.isConnected()) {
+			mLocationClient.unregisterConnectionCallbacks(this);
 			mLocationClient.removeLocationUpdates(this);
 			mLocationClient.disconnect();
 		}
