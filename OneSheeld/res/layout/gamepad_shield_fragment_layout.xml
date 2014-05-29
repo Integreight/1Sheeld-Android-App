@@ -62,6 +62,7 @@
         android:layout_height="@dimen/gamepad_circularButtonContDimen"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:layout_marginBottom="@dimen/gamepad_contMarginTop"
         android:layout_marginLeft="@dimen/gamepad_contMarginLeft"
         android:layout_marginTop="25dp" >
 

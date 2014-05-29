@@ -3,12 +3,11 @@
     android:id="@+id/hebrwKeyboardView"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:orientation="vertical"
     android:visibility="visible" >
 
     <TableLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:clipChildren="true"
         android:orientation="vertical" >
@@ -19,15 +18,16 @@
             android:padding="0sp" >
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:padding="0sp" >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="45dp"
                     android:baselineAligned="true"
-                    android:fitsSystemWindows="true" >
+                    android:fitsSystemWindows="true"
+                    android:gravity="center_horizontal" >
 
                     <Button
                         android:id="@+id/xQ"
@@ -72,7 +72,7 @@
 
                     <Button
                         android:id="@+id/xR"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="1dp"
@@ -87,7 +87,7 @@
 
                     <Button
                         android:id="@+id/xT"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="1dp"
@@ -102,7 +102,7 @@
 
                     <Button
                         android:id="@+id/xY"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_margin="1dp"
@@ -117,7 +117,7 @@
 
                     <Button
                         android:id="@+id/xU"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="1dp"
@@ -178,12 +178,13 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent" >
 
                 <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="45dp" >
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:gravity="center_horizontal" >
 
                     <Button
                         android:id="@+id/xA"
@@ -306,7 +307,7 @@
 
                     <Button
                         android:id="@+id/xK"
-                        android:layout_width="31dp"
+                        android:layout_width="@dimen/keyboard_btnWidth"
                         android:layout_height="match_parent"
                         android:layout_alignWithParentIfMissing="true"
                         android:layout_centerHorizontal="true"
@@ -359,16 +360,16 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="fill_vertical"
                 android:fitsSystemWindows="true"
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:gravity="bottom"
+                    android:gravity="center_horizontal|bottom"
                     android:orientation="horizontal" >
 
                     <Button
@@ -526,15 +527,15 @@
             </TableRow>
 
             <TableRow
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:orientation="horizontal" >
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="45dp"
-                    android:gravity="bottom"
+                    android:gravity="bottom|center_horizontal"
                     android:orientation="horizontal" >
 
                     <RelativeLayout
