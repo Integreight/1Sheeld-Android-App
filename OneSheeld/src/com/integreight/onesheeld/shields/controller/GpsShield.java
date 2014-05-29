@@ -110,16 +110,21 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
 	public void isGooglePlayServicesAvailableWithDialog() {
 		// checking if Google play services exist or not.
-		if (isGooglePlayServicesAvailable()) {
-			if (!manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-				buildAlertMessageNoGps();
-			} else {
-				startGps();
-			}
+		if (mLocationClient != null && !mLocationClient.isConnected()) {
+			if (isGooglePlayServicesAvailable()) {
+				if (!manager
+						.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+					buildAlertMessageNoGps();
+				} else {
+					startGps();
+				}
 
-		} else
-			Log.d("Gps",
-					"Google Play services was not available for some reasons");
+			} else
+				Log.d("Gps",
+						"Google Play services was not available for some reasons");
+		} else {
+			startPeriodicUpdates();
+		}
 	}
 
 	private void buildAlertMessageNoGps() {

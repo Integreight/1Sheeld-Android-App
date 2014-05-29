@@ -29,9 +29,6 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
-		((GpsShield) getApplication().getRunningShields().get(
-				getControllerTag())).isGooglePlayServicesAvailableWithDialog();
-
 	}
 
 	@Override
@@ -126,6 +123,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		super.onResume();
 		((GpsShield) getApplication().getRunningShields().get(
 				getControllerTag())).setGpsEventHandler(gpsEventHandler);
+		((GpsShield) getApplication().getRunningShields().get(
+				getControllerTag())).isGooglePlayServicesAvailableWithDialog();
 
 	}
 
