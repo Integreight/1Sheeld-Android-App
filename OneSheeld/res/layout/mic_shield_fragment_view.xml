@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
 
     <TextView
         android:layout_width="wrap_content"
@@ -47,14 +49,6 @@
                 android:layout_height="match_parent"
                 android:layout_centerHorizontal="true"
                 android:background="#61000000" />
-
-            <com.integreight.onesheeld.utils.OneShieldTextView
-                android:id="@+id/micValue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textColor="@color/offWhite"
-                android:textSize="30sp" />
         </RelativeLayout>
 
         <TextView
@@ -72,4 +66,12 @@
             android:contentDescription="@string/app_name" />
     </RelativeLayout>
 
-</RelativeLayout>
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/micValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/offWhite"
+        android:textSize="33sp" />
+
+</LinearLayout>
