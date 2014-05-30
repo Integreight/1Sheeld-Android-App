@@ -40,6 +40,30 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 	}
 
 	@Override
+	public ControllerParent<PhoneShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
+		TelephonyManager tm = (TelephonyManager) getApplication()
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+			// No calling functionality
+			if (this.selectionAction != null) {
+				this.selectionAction.onFailure();
+				if (isToastable)
+					activity.showToast("Device doesn't support Calling functionality !");
+			}
+		} else {
+			// calling functionality
+			if (this.selectionAction != null) {
+				this.selectionAction.onSuccess();
+			}
+		}
+
+		return super.invalidate(selectionAction, isToastable);
+	}
+
+	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.PHONE_SHIELD.getId()) {
 			String phone_number = frame.getArgumentAsString(0);

@@ -82,7 +82,7 @@ public enum UIShield {
 			FoursquareShield.class), GPS_SHIELD((byte) 0x1C, "GPS", 0xffa10b07,
 			R.drawable.shields_list_gps_symbol, false, GpsShield.class), SMS_SHIELD(
 			(byte) 0x0D, "SMS", 0xffdb7f40, R.drawable.shields_list_sms_symbol,
-			false, SmsShield.class), MUSICPLAYER_SHIELD((byte) 0x1D,
+			false, SmsShield.class, 1), MUSICPLAYER_SHIELD((byte) 0x1D,
 			"Music Player", 0xffb950e9,
 			R.drawable.shields_list_musicplayer_symbol, false,
 			MusicShield.class), GYROSCOPE_SHIELD((byte) 0x0E, "Gyroscope",
@@ -110,7 +110,7 @@ public enum UIShield {
 			0xff6d0347, R.drawable.shields_list_camera_symbol, false,
 			CameraShield.class, 1), PHONE_SHIELD((byte) 0x20, "Phone",
 			0xffe9bd03, R.drawable.shields_list_phone_symbol, false,
-			PhoneShield.class), NFC((byte) 0x20, "NFC", 0xff127303,
+			PhoneShield.class, 1), NFC((byte) 0x20, "NFC", 0xff127303,
 			R.drawable.shields_list_nfc_symbol, false, EmptyShield.class, false), WIFI(
 			(byte) 0x20, "WIFI", 0xff08bbb2,
 			R.drawable.shields_list_wifi_symbol, false, EmptyShield.class,

@@ -1,8 +1,11 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.telephony.SmsManager;
+import android.telephony.TelephonyManager;
+
 import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -40,6 +43,30 @@ public class SmsShield extends ControllerParent<SmsShield> {
 			smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
 		getActivity().registerReceiver(smsListener, filter);
 		return super.setTag(tag);
+	}
+
+	@Override
+	public ControllerParent<SmsShield> invalidate(
+			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			boolean isToastable) {
+		this.selectionAction = selectionAction;
+		TelephonyManager tm = (TelephonyManager) getApplication()
+				.getSystemService(Context.TELEPHONY_SERVICE);
+		if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+			// No calling functionality
+			if (this.selectionAction != null) {
+				this.selectionAction.onFailure();
+				if (isToastable)
+					activity.showToast("Device doesn't support SMS functionality !");
+			}
+		} else {
+			// calling functionality
+			if (this.selectionAction != null) {
+				this.selectionAction.onSuccess();
+			}
+		}
+
+		return super.invalidate(selectionAction, isToastable);
 	}
 
 	public SmsShield(Activity activity, String tag) {
