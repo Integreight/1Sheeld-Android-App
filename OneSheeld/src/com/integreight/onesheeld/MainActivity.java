@@ -540,12 +540,11 @@ public class MainActivity extends FragmentActivity {
 	protected void onPause() {
 		isForground = false;
 		pausingTime = System.currentTimeMillis();
-		Crashlytics
-				.setString(
-						"isBackground",
-						"since "
-								+ ((System.currentTimeMillis() - pausingTime) / (1000 * 60 * 60))
-								+ " hours");
+		float hours = ((System.currentTimeMillis() - pausingTime) / (1000 * 60 * 60));
+		float minutes = ((System.currentTimeMillis() - pausingTime) / (1000 * 60));
+		float seconds = ((System.currentTimeMillis() - pausingTime) / (1000 * 60));
+		Crashlytics.setString("isBackground", "since " + hours + " hours - "
+				+ minutes + " minutes - " + seconds + " seocnds");
 		new Thread(new Runnable() {
 
 			@Override

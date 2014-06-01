@@ -113,17 +113,26 @@ public class SheeldsList extends Fragment {
 
 			@Override
 			public void run() {
-				List<Fragment> frags = getActivity()
-						.getSupportFragmentManager().getFragments();
-				for (Fragment frag : frags) {
-					if (frag != null
-							&& !frag.getClass().getName()
-									.equals(SheeldsList.class.getName())) {
-						FragmentTransaction ft = getActivity()
-								.getSupportFragmentManager().beginTransaction();
-						frag.onDestroy();
-						ft.remove(frag);
-						ft.commitAllowingStateLoss();
+				if (getActivity() != null
+						&& getActivity().getSupportFragmentManager() != null) {
+					List<Fragment> frags = getActivity()
+							.getSupportFragmentManager().getFragments();
+					for (Fragment frag : frags) {
+						if (frag != null
+								&& !frag.getClass().getName()
+										.equals(SheeldsList.class.getName())) {
+							if (getActivity() != null
+									&& getActivity() != null
+									&& getActivity()
+											.getSupportFragmentManager() != null) {
+								FragmentTransaction ft = getActivity()
+										.getSupportFragmentManager()
+										.beginTransaction();
+								frag.onDestroy();
+								ft.remove(frag);
+								ft.commitAllowingStateLoss();
+							}
+						}
 					}
 				}
 			}

@@ -31,14 +31,14 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
+		((GyroscopeShield) getApplication().getRunningShields().get(
+				getControllerTag())).registerSensorListener(true);
 
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		((GyroscopeShield) getApplication().getRunningShields().get(
-				getControllerTag())).registerSensorListener(true);
 	}
 
 	@Override

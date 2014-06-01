@@ -110,7 +110,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	}
 
 	public String getControllerTag() {
-		controllerTag = (controllerTag == null ? getTag() : controllerTag);
+		controllerTag = (controllerTag != null ? controllerTag
+				: (getArguments() != null && getArguments().getString("tag") != null) ? getArguments()
+						.getString("tag") : getTag());
 		if (controllerTag == null)
 			Crashlytics
 					.log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))

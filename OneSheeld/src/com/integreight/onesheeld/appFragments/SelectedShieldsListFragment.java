@@ -184,6 +184,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 	private ShieldFragmentParent<?> addToCreatedListAndReturn(
 			UIShield uiShield, ShieldFragmentParent<?> fragment) {
 		fragment.setControllerTag(uiShield.name());
+		Bundle b = new Bundle();
+		b.putString("tag", uiShield.name());
+		fragment.setArguments(b);
 		fragment.shieldName = uiShield.getName();
 		creadtedShields.put(uiShield, fragment);
 		return fragment;
