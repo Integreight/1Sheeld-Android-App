@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -78,7 +79,11 @@ public class MicShield extends ControllerParent<MicShield> {
 			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
-		startMic(isToastable);
+		if (activity.getPackageManager().hasSystemFeature(
+				PackageManager.FEATURE_MICROPHONE))
+			startMic(isToastable);
+		else
+			this.selectionAction.onFailure();
 		return super.invalidate(selectionAction, isToastable);
 	}
 
