@@ -110,7 +110,7 @@ public class CameraHeadService extends Service implements
 			editor.commit();
 
 		} else {
-			if (pictureSize != null)
+			//if (pictureSize != null)
 				parameters.setPictureSize(width, height);
 		}
 	}
