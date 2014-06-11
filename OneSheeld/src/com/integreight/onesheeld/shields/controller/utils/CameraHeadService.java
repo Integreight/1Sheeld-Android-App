@@ -92,7 +92,7 @@ public class CameraHeadService extends Service implements
 		return cam;
 	}
 
-	private void setBiggeestPictureSize() {
+	private void setBesttPictureResolution() {
 		// get biggest picture size
 		width = pref.getInt("Picture_Width", 0);
 		height = pref.getInt("Picture_height", 0);
@@ -216,7 +216,7 @@ public class CameraHeadService extends Service implements
 						parameters = mCamera.getParameters();
 						parameters.setFlashMode(FLASH_MODE);
 						// set biggest picture
-						setBiggeestPictureSize();
+						setBesttPictureResolution();
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
@@ -273,7 +273,7 @@ public class CameraHeadService extends Service implements
 							parameters.setFlashMode(FLASH_MODE);
 
 							// set biggest picture
-							setBiggeestPictureSize();
+							setBesttPictureResolution();
 
 							// set camera parameters
 							mCamera.setParameters(parameters);
@@ -334,7 +334,7 @@ public class CameraHeadService extends Service implements
 						}
 						parameters.setFlashMode(FLASH_MODE);
 						// set biggest picture
-						setBiggeestPictureSize();
+						setBesttPictureResolution();
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
