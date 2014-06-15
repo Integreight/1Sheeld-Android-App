@@ -7,12 +7,12 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LcdShieldd extends ControllerParent<LcdShieldd> {
-	// private static LcdEventHandler eventHandler;
+	private LcdEventHandler eventHandler;
 	// private Activity activity;
-	private static short rows = 2;
-	private static short columns = 16;
-	private char[][] chars;
-	private int currRowIndx = 0, currColIndx = 0;
+	public int rows = 2;
+	public int columns = 16;
+	public char[][] chars;
+	public int currRowIndx = 0, currColIndx = 0;
 	// Method ids
 	private static final byte PRINT = (byte) 0x11;
 	private static final byte BEGIN = (byte) 0x01;
@@ -51,14 +51,14 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	}
 
 	public void setLcdEventHandler(LcdEventHandler eventHandler) {
-		// LcdShieldd.eventHandler = eventHandler;
+		this.eventHandler = eventHandler;
 		CommitInstanceTotable();
 	}
 
 	public static interface LcdEventHandler {
 		public void setCursor(int x, int y);
 
-		public void write(char ch);
+		public void write(char ch, boolean moveCursor);
 
 		public void blink();
 
@@ -72,58 +72,77 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 
 		public void scrollDisplayLeft();
 
-		public void scrollDisplatRight();
+		public void scrollDisplayRight();
 
 		void onLcdError(String error);
 	}
 
 	private void processInput(ShieldFrame frame) {
-		switch (frame.getFunctionId()) {
-		case CLEAR:
+		if (eventHandler != null)
+			switch (frame.getFunctionId()) {
+			case CLEAR:
+				eventHandler.clear();
+				break;
+			case HOME:
+				eventHandler.setCursor(0, 0);
+				break;
+			case BLINK:
+				eventHandler.blink();
+				break;
+			case NO_BLINK:
+				eventHandler.noBlink();
+				break;
 
-			break;
-		case HOME:
+			case SCROLL_DISPLAY_LEFT:
+				eventHandler.scrollDisplayLeft();
+				break;
 
-			break;
-		case BLINK:
+			case SCROLL_DISPLAY_RIGHT:
+				eventHandler.scrollDisplayRight();
+				break;
 
-			break;
-		case NO_BLINK:
+			case BEGIN:
+				try {
+					eventHandler.setCursor((int) frame.getArgument(0)[0],
+							(int) frame.getArgument(1)[0]);
+				} catch (Exception e) {
+					e.printStackTrace();
+					// TODO: handle exception
+				}
+				break;
+			case SET_CURSOR:
+				try {
+					eventHandler.setCursor((int) frame.getArgument(0)[0],
+							(int) frame.getArgument(1)[0]);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				break;
+			case WRITE:
+				chars[currRowIndx][currRowIndx] = frame.getArgumentAsString(0)
+						.charAt(0);
+				eventHandler.write(frame.getArgumentAsString(0).charAt(0),
+						false);
+				break;
+			case PRINT:
+				String txt = frame.getArgumentAsString(0);
+				for (int i = 0; i < txt.length(); i++) {
+					chars[currRowIndx][currRowIndx] = txt.charAt(i);
+					eventHandler.write(txt.charAt(i), true);
+				}
+				break;
 
-			break;
+			case CURSOR:
+				eventHandler.cursor();
+				break;
 
-		case SCROLL_DISPLAY_LEFT:
+			case NO_CURSOR:
+				eventHandler.noCursor();
+				break;
 
-			break;
-
-		case SCROLL_DISPLAY_RIGHT:
-
-			break;
-
-		case BEGIN:
-
-			break;
-		case SET_CURSOR:
-
-			break;
-		case WRITE:
-
-			break;
-		case PRINT:
-
-			break;
-
-		case CURSOR:
-
-			break;
-
-		case NO_CURSOR:
-
-			break;
-
-		default:
-			break;
-		}
+			default:
+				break;
+			}
 	}
 
 	@Override

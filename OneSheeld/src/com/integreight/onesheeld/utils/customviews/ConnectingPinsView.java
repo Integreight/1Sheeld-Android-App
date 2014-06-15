@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
@@ -67,6 +68,13 @@ public class ConnectingPinsView extends Fragment {
 
 	public void reset(final ControllerParent<?> controller,
 			final OnPinSelectionListener listner) {
+		if (view == null) {
+			((MainActivity) getActivity())
+					.getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.pinsViewContainer,
+							ConnectingPinsView.getInstance()).commit();
+		}
 		final TextView show = (TextView) view.findViewById(R.id.show);
 		pinsSubContainers = new ArrayList<LinearLayout>();
 		selectedPin = 0;
