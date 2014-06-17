@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	OneShieldTextView userNameTextView;
 	Button twitterLogin;
 	Button twitterLogout;
-	private ProgressBar loading;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -88,7 +86,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				R.id.twitter_shield_username_textview);
 		twitterLogin = (Button) getView().findViewById(R.id.login);
 		twitterLogout = (Button) getView().findViewById(R.id.logout);
-		loading = (ProgressBar) getView().findViewById(R.id.progress);
 		super.onActivityCreated(savedInstanceState);
 
 	}
@@ -155,37 +152,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 		}
 
-		@Override
-		public void onDialogLoadProgress() {
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
-
-					@Override
-					public void run() {
-						loading.setVisibility(View.VISIBLE);
-
-					}
-				});
-			}
-
-		}
-
-		@Override
-		public void onDialogFinishProgress() {
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
-
-					@Override
-					public void run() {
-						loading.setVisibility(View.INVISIBLE);
-
-					}
-				});
-
-			}
-		}
 	};
 
 	private void initializeFirmata() {

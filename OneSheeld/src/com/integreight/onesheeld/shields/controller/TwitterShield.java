@@ -156,11 +156,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			twitter.setOAuthAccessToken(accestoken);
 		} else {
 			new AsyncTask<Void, Void, Void>() {
-				protected void onPreExecute() {
-					if (eventHandler != null)
-						eventHandler.onDialogLoadProgress();
-
-				};
 
 				@Override
 				protected Void doInBackground(Void... params) {
@@ -172,19 +167,12 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						Log.e("TAG",
 								"TwitterShield::requestToken::TwitterException",
 								e);
-
-						if (eventHandler != null)
-							eventHandler.onDialogFinishProgress();
-
 					}
 					return null;
 				}
 
 				@Override
 				protected void onPostExecute(Void result) {
-
-					if (eventHandler != null)
-						eventHandler.onDialogFinishProgress();
 
 					final TwitterDialogListner listener = new TwitterDialogListner() {
 						@Override
@@ -248,11 +236,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		void onTwitterLoggedIn(String userName);
 
 		void onTwitterError(String error);
-
-		void onDialogLoadProgress();
-
-		void onDialogFinishProgress();
-
 	}
 
 	public boolean isTwitterLoggedInAlready() {
