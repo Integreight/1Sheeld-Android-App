@@ -35,7 +35,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
-import com.integreight.firmatabluetooth.ArduinoVersionQueryHandler;
+import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -69,7 +69,7 @@ public class MainActivity extends FragmentActivity {
 				SheeldsList.getInstance(), "base", true, false);
 		resetSlidingMenu();
 		if (getThisApplication().getAppFirmata() != null) {
-			getThisApplication().getAppFirmata().addVersionQueryHandler(
+			getThisApplication().getAppFirmata().addFirmwareVersionQueryHandler(
 					versionChangingHandler);
 		}
 		// ValidationPopup popub = new ValidationPopup(MainActivity.this,
@@ -246,7 +246,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	Handler versionHandling = new Handler();
-	ArduinoVersionQueryHandler versionChangingHandler = new ArduinoVersionQueryHandler() {
+	FirmwareVersionQueryHandler versionChangingHandler = new FirmwareVersionQueryHandler() {
 		ValidationPopup popub;
 
 		@Override
