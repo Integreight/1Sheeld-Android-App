@@ -7,12 +7,31 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LcdShieldd extends ControllerParent<LcdShieldd> {
-	private LcdEventHandler eventHandler;
+	private LcdEventHandler eventHandler = new LcdEventHandler() {
+
+		@Override
+		public void updateLCD(char[] arrayToUpdate) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void noBlink() {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void blink() {
+			// TODO Auto-generated method stub
+
+		}
+	};
 	// private Activity activity;
 	public int rows = 2;
 	public int columns = 16;
-	public char[][] chars;
-	public int currRowIndx = 0, currColIndx = 0;
+	public char[] chars;
+	public int currIndx = 0;
 	// Method ids
 	private static final byte PRINT = (byte) 0x11;
 	private static final byte BEGIN = (byte) 0x01;
@@ -34,6 +53,8 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 
 	// private static final byte NO_AUTO_SCROLL = (byte) 0x0D;
 	// private static final byte AUTO_SCROLL = (byte) 0x0C;
+	public int lastScrollLeft = 0;
+	public boolean isBlinking = false;
 
 	public LcdShieldd() {
 		super();
@@ -41,12 +62,12 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 
 	public LcdShieldd(Activity activity, String tag) {
 		super(activity, tag);
-		setChars(new char[rows][columns]);
+		setChars(new char[rows * columns]);
 	}
 
 	@Override
 	public ControllerParent<LcdShieldd> setTag(String tag) {
-		setChars(new char[rows][columns]);
+		setChars(new char[columns * rows]);
 		return super.setTag(tag);
 	}
 
@@ -55,89 +76,149 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 		CommitInstanceTotable();
 	}
 
-	public static interface LcdEventHandler {
-		public void setCursor(int x, int y);
+	public void write(char ch) {
+		try {
+			chars[currIndx] = ch;
+			changeCursor(currIndx + 1);
+		} catch (IndexOutOfBoundsException e) {
+		}
+	}
 
-		public void write(char ch, boolean moveCursor);
+	public void changeCursor(int indx) {
+		currIndx = indx;
+	}
+
+	public void scrollDisplayLeft() {
+		lastScrollLeft += 1;
+		char[] tmp = new char[chars.length];
+		for (int i = 0; i < tmp.length; i++) {
+			try {
+				tmp[i] = chars[i + lastScrollLeft];
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		eventHandler.noBlink();
+		eventHandler.updateLCD(tmp);
+		if (isBlinking)
+			eventHandler.blink();
+	}
+
+	public void scrollDisplayRight() {
+		lastScrollLeft -= 1;
+		char[] tmp = new char[chars.length];
+		for (int i = 0; i < tmp.length; i++) {
+			try {
+				if (i >= lastScrollLeft * -1)
+					tmp[i] = chars[i + lastScrollLeft];
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		eventHandler.noBlink();
+		eventHandler.updateLCD(tmp);
+		if (isBlinking)
+			eventHandler.blink();
+	}
+
+	public static interface LcdEventHandler {
+		public void updateLCD(char[] arrayToUpdate);
 
 		public void blink();
 
 		public void noBlink();
-
-		public void cursor();
-
-		public void noCursor();
-
-		public void clear();
-
-		public void scrollDisplayLeft();
-
-		public void scrollDisplayRight();
-
-		void onLcdError(String error);
 	}
 
 	private void processInput(ShieldFrame frame) {
 		if (eventHandler != null)
 			switch (frame.getFunctionId()) {
 			case CLEAR:
-				eventHandler.clear();
+				eventHandler.noBlink();
+				lastScrollLeft = 0;
+				chars = new char[columns * rows];
+				eventHandler.updateLCD(chars);
+				changeCursor(0);
+				if (isBlinking)
+					eventHandler.blink();
 				break;
 			case HOME:
-				eventHandler.setCursor(0, 0);
+				eventHandler.noBlink();
+				changeCursor(0);
+				if (isBlinking)
+					eventHandler.blink();
 				break;
 			case BLINK:
 				eventHandler.blink();
+				isBlinking = true;
 				break;
 			case NO_BLINK:
 				eventHandler.noBlink();
+				isBlinking = false;
 				break;
 
 			case SCROLL_DISPLAY_LEFT:
-				eventHandler.scrollDisplayLeft();
+				eventHandler.noBlink();
+				scrollDisplayLeft();
+				eventHandler.blink();
 				break;
 
 			case SCROLL_DISPLAY_RIGHT:
-				eventHandler.scrollDisplayRight();
+				eventHandler.noBlink();
+				scrollDisplayRight();
+				if (isBlinking)
+					eventHandler.blink();
 				break;
 
 			case BEGIN:
-				try {
-					eventHandler.setCursor((int) frame.getArgument(0)[0],
-							(int) frame.getArgument(1)[0]);
-				} catch (Exception e) {
-					e.printStackTrace();
-					// TODO: handle exception
-				}
+				eventHandler.noBlink();
+				changeCursor(0);
+				if (isBlinking)
+					eventHandler.blink();
 				break;
 			case SET_CURSOR:
-				try {
-					eventHandler.setCursor((int) frame.getArgument(0)[0],
-							(int) frame.getArgument(1)[0]);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				eventHandler.noBlink();
+				int row = (int) frame.getArgument(0)[0];
+				int col = (int) frame.getArgument(1)[0];
+				changeCursor((row * columns) + col);
+				if (isBlinking)
+					eventHandler.blink();
 				break;
 			case WRITE:
-				chars[currRowIndx][currRowIndx] = frame.getArgumentAsString(0)
-						.charAt(0);
-				eventHandler.write(frame.getArgumentAsString(0).charAt(0),
-						false);
+				write(frame.getArgumentAsString(0).charAt(0));
+				eventHandler.updateLCD(chars);
 				break;
-			case PRINT:
+			case PRINT:// //
+				eventHandler.noBlink();
+				lastScrollLeft = 0;
+				chars = new char[columns * rows];
+				eventHandler.updateLCD(chars);
+				changeCursor(0);
+				if (isBlinking)
+					eventHandler.blink();
+				// /
+				eventHandler.noBlink();
+				lastScrollLeft = 0;
 				String txt = frame.getArgumentAsString(0);
 				for (int i = 0; i < txt.length(); i++) {
-					chars[currRowIndx][currRowIndx] = txt.charAt(i);
-					eventHandler.write(txt.charAt(i), true);
+					try {
+						chars[currIndx] = txt.charAt(i);
+						changeCursor(currIndx + 1);
+					} catch (Exception e) {
+					}
 				}
+				eventHandler.updateLCD(chars);
+				if (isBlinking)
+					eventHandler.blink();
 				break;
 
 			case CURSOR:
-				eventHandler.cursor();
+				eventHandler.blink();
+				isBlinking = true;
 				break;
 
 			case NO_CURSOR:
-				eventHandler.noCursor();
+				eventHandler.noBlink();
+				isBlinking = false;
 				break;
 
 			default:
@@ -157,27 +238,11 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 
 	}
 
-	public int getCurrColIndx() {
-		return currColIndx;
-	}
-
-	public void setCurrColIndx(int currColIndx) {
-		this.currColIndx = currColIndx;
-	}
-
-	public int getCurrRowIndx() {
-		return currRowIndx;
-	}
-
-	public void setCurrRowIndx(int currRowIndx) {
-		this.currRowIndx = currRowIndx;
-	}
-
-	public char[][] getChars() {
+	public char[] getChars() {
 		return chars;
 	}
 
-	public void setChars(char[][] chars) {
+	public void setChars(char[] chars) {
 		this.chars = chars;
 	}
 
