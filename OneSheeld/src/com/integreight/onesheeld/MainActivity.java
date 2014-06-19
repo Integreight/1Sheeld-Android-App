@@ -375,6 +375,13 @@ public class MainActivity extends FragmentActivity {
 				appSlidingMenu.closePane();
 			} else {
 				if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
+					findViewById(R.id.getAvailableDevices).setOnClickListener(
+							new View.OnClickListener() {
+
+								@Override
+								public void onClick(View v) {
+								}
+							});
 					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 					getSupportFragmentManager().executePendingTransactions();
 				} else

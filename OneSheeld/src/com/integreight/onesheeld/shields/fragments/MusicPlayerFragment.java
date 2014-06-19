@@ -62,8 +62,7 @@ public class MusicPlayerFragment extends
 					if ((MusicShield) getApplication().getRunningShields().get(
 							getControllerTag()) != null) {
 						seekBar.setMax(((MusicShield) getApplication()
-								.getRunningShields().get(getControllerTag())).mediaPlayer
-								.getDuration());
+								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaPlayer
 								.getCurrentPosition());
@@ -92,7 +91,7 @@ public class MusicPlayerFragment extends
 					getControllerTag());
 			if (control.mediaPlayer != null) {
 				eventHandler.seekTo(control.mediaPlayer.getCurrentPosition()
-						* 100 / control.mediaPlayer.getDuration());
+						* 100 / control.mediaDuration);
 				eventHandler.setMusicName(control.musicFileName);
 				if (control.mediaPlayer.isPlaying())
 					eventHandler.play();
@@ -135,8 +134,7 @@ public class MusicPlayerFragment extends
 					@Override
 					public void run() {
 						seekBar.setMax(((MusicShield) getApplication()
-								.getRunningShields().get(getControllerTag())).mediaPlayer
-								.getDuration());
+								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(pos);
 					}
 				});

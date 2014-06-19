@@ -42,6 +42,10 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		super.onActivityCreated(savedInstanceState);
 	}
 
+	public String getClassName() {
+		return ((T) this).getClass().getName();
+	}
+
 	@Override
 	public void onStart() {
 		uiHandler = new Handler();
@@ -110,9 +114,15 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	}
 
 	public String getControllerTag() {
-		controllerTag = (controllerTag != null ? controllerTag
-				: (getArguments() != null && getArguments().getString("tag") != null) ? getArguments()
-						.getString("tag") : getTag());
+		String tagFromApp = OneSheeldApplication.shieldsFragmentsTags
+				.get(((T) this).getClass().getName());
+		System.out.println("$%$%$%   " + ((T) this).getClass().getName()
+				+ "     " + tagFromApp + "     " + getActivity());
+		controllerTag = (tagFromApp != null ? tagFromApp
+				: controllerTag != null ? controllerTag
+						: (getArguments() != null && getArguments().getString(
+								"tag") != null) ? getArguments().getString(
+								"tag") : getTag());
 		if (controllerTag == null)
 			Crashlytics
 					.log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))

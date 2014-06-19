@@ -115,6 +115,14 @@ public class SheeldsList extends Fragment {
 			public void run() {
 				if (getActivity() != null
 						&& getActivity().getSupportFragmentManager() != null) {
+					getActivity().findViewById(R.id.getAvailableDevices)
+							.setOnClickListener(new View.OnClickListener() {
+
+								@Override
+								public void onClick(View v) {
+									launchShieldsOperationActivity();
+								}
+							});
 					List<Fragment> frags = getActivity()
 							.getSupportFragmentManager().getFragments();
 					for (Fragment frag : frags) {
@@ -137,14 +145,6 @@ public class SheeldsList extends Fragment {
 				}
 			}
 		}, 500);
-		getActivity().findViewById(R.id.getAvailableDevices)
-				.setOnClickListener(new View.OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						launchShieldsOperationActivity();
-					}
-				});
 		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.shields_list_shields_operation_button);

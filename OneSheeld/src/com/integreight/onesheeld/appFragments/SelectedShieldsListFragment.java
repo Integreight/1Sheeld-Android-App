@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
@@ -184,6 +185,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 	private ShieldFragmentParent<?> addToCreatedListAndReturn(
 			UIShield uiShield, ShieldFragmentParent<?> fragment) {
 		fragment.setControllerTag(uiShield.name());
+		OneSheeldApplication.shieldsFragmentsTags.put(fragment.getClassName(),
+				uiShield.name());
 		Bundle b = new Bundle();
 		b.putString("tag", uiShield.name());
 		fragment.setArguments(b);
