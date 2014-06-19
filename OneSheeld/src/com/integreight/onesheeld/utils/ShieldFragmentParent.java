@@ -87,6 +87,11 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 					});
 		} else
 			((T) ShieldFragmentParent.this).doOnServiceConnected();
+		System.out.println("DDSDSD   "
+				+ getActivity()
+				+ "    "
+				+ (getActivity() != null ? getActivity().findViewById(
+						R.id.settingsFixedHandler) : ""));
 		getActivity().findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);
 		getActivity()

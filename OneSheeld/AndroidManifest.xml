@@ -116,9 +116,11 @@
             tools:ignore="ExportedActivity" >
 
             <!-- this Intent filter allows the plug-in to be discovered by Locale -->
-            <intent-filter>
+            <!--
+                 <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
             </intent-filter>
+            -->
         </activity>
         <activity
             android:name="com.integreight.onesheeld.shields.controller.utils.TakePicture"

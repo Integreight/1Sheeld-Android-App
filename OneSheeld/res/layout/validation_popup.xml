@@ -15,14 +15,19 @@
         android:textColor="@color/white"
         android:textSize="14sp" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
-        android:id="@+id/msg"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center_vertical|left"
-        android:padding="5dp"
-        android:textColor="@color/white"
-        android:textSize="13sp" />
+        android:layout_height="wrap_content" >
+
+        <com.integreight.onesheeld.utils.OneShieldTextView
+            android:id="@+id/msg"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:gravity="center_vertical|left"
+            android:padding="5dp"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/actionsContainer"

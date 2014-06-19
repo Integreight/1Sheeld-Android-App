@@ -108,7 +108,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		if (lockerTimeOut != null)
 			lockerTimeOut.stopTimer();
 		backPressed = true;
-//		super.onBackPressed();
+		// super.onBackPressed();
 	}
 
 	@Override

@@ -12,6 +12,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -69,8 +70,8 @@ public class MainActivity extends FragmentActivity {
 				SheeldsList.getInstance(), "base", true, false);
 		resetSlidingMenu();
 		if (getThisApplication().getAppFirmata() != null) {
-			getThisApplication().getAppFirmata().addFirmwareVersionQueryHandler(
-					versionChangingHandler);
+			getThisApplication().getAppFirmata()
+					.addFirmwareVersionQueryHandler(versionChangingHandler);
 		}
 		// ValidationPopup popub = new ValidationPopup(MainActivity.this,
 		// "Firmware Upgrading", "There's a new version for your 1Sheeld",
@@ -263,9 +264,33 @@ public class MainActivity extends FragmentActivity {
 								.getMajorVersion()
 								&& minorVersion != getThisApplication()
 										.getMinorVersion()) {
+							String msg = "";
+							try {
+								JSONObject obj = new JSONObject(
+										((OneSheeldApplication) getApplication())
+												.getVersionWebResult());
+								try {
+									msg += obj.getString("name") + "\n";
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+								try {
+									msg += obj.getString("description") + "\n";
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+								try {
+									msg += "Release Date: "
+											+ obj.getString("date");
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
 							popub = new ValidationPopup(MainActivity.this,
-									"Firmware Upgrading",
-									"There's a new version for your 1Sheeld",
+									"Optional Firmware Upgrade", msg,
 									new ValidationPopup.ValidationAction("Now",
 											new View.OnClickListener() {
 
@@ -292,10 +317,33 @@ public class MainActivity extends FragmentActivity {
 								popub.show();
 						} else if (majorVersion != getThisApplication()
 								.getMajorVersion()) {
-							popub = new ValidationPopup(
-									MainActivity.this,
-									"Firmware Upgrading",
-									"Your 1Sheeld is not valid yet, There's a new version ready!",
+							String msg = "";
+							try {
+								JSONObject obj = new JSONObject(
+										((OneSheeldApplication) getApplication())
+												.getVersionWebResult());
+								try {
+									msg += obj.getString("name") + "\n";
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+								try {
+									msg += obj.getString("description") + "\n";
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+								try {
+									msg += "Release Date: "
+											+ obj.getString("date");
+								} catch (Exception e) {
+									// TODO: handle exception
+								}
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							popub = new ValidationPopup(MainActivity.this,
+									"Required Firmware Upgrade", msg,
 									new ValidationPopup.ValidationAction(
 											"Start",
 											new View.OnClickListener() {

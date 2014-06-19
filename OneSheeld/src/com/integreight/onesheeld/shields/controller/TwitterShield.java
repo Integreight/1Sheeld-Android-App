@@ -9,6 +9,7 @@ import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -156,6 +157,16 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			twitter.setOAuthAccessToken(accestoken);
 		} else {
 			new AsyncTask<Void, Void, Void>() {
+				ProgressDialog prog;
+
+				@Override
+				protected void onPreExecute() {
+					prog = new ProgressDialog(activity);
+					prog.setMessage("Please, Wait!");
+					prog.setCancelable(false);
+					prog.show();
+					super.onPreExecute();
+				};
 
 				@Override
 				protected Void doInBackground(Void... params) {
@@ -219,6 +230,10 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 									getActivity(), authUrl, twitter,
 									requestToken, listener);
 							mDialog.show();
+							if (prog != null) {
+								prog.dismiss();
+								prog.cancel();
+							}
 						}
 					});
 
