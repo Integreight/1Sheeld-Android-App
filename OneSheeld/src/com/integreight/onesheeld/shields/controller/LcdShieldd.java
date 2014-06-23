@@ -45,16 +45,17 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	private static final byte CURSOR = (byte) 0x07;
 	private static final byte SCROLL_DISPLAY_LEFT = (byte) 0x08;
 	private static final byte SCROLL_DISPLAY_RIGHT = (byte) 0x09;
-	// private static final byte LEFT_TO_RIGHT = (byte) 0x0A;
-	// private static final byte RIGHT_TO_LEFT = (byte) 0x0B;
+	private static final byte LEFT_TO_RIGHT = (byte) 0x0A;
+	private static final byte RIGHT_TO_LEFT = (byte) 0x0B;
 	// private static final byte CREATE_CHAR = (byte) 0x0F;
 	private static final byte SET_CURSOR = (byte) 0x0E;
 	private static final byte WRITE = (byte) 0x0F;
-
-	// private static final byte NO_AUTO_SCROLL = (byte) 0x0D;
-	// private static final byte AUTO_SCROLL = (byte) 0x0C;
+	private static final byte AUTO_SCROLL = (byte) 0x0C;
+	private static final byte NO_AUTO_SCROLL = (byte) 0x0D;
 	public int lastScrollLeft = 0;
 	public boolean isBlinking = false;
+	private boolean isAutoScroll = false;
+	private boolean isLeftToRight = true;
 
 	public LcdShieldd() {
 		super();
@@ -77,45 +78,71 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	}
 
 	public void write(char ch) {
-		try {
-			chars[currIndx] = ch;
-			changeCursor(currIndx + 1);
-		} catch (IndexOutOfBoundsException e) {
+		if (currIndx > -1 && currIndx < chars.length) {
+			// if (isLeftToRight) {
+			if (!isAutoScroll) {
+				chars[currIndx] = ch;
+				changeCursor(isLeftToRight ? currIndx + 1 : currIndx - 1);
+			} else {
+				final char[] tmp = chars;
+				for (int i = 0; i < currIndx; i++) {
+					if (i + 1 < tmp.length && i + 1 > -1)
+						chars[i] = tmp[i + 1];
+				}
+				if (currIndx - 1 > -1 && currIndx - 1 < chars.length)
+					chars[currIndx - 1] = ch;
+			}
+			// } else {
+			// if (!isAutoScroll) {
+			// chars[currIndx] = ch;
+			// changeCursor(currIndx - 1);
+			// } else {
+			// final char[] tmp = chars;
+			// for (int i = currIndx + 1; i < chars.length; i++) {
+			// if (i + 1 < tmp.length && i + 1 > -1)
+			// chars[i + 1] = tmp[i];
+			// }
+			// if (currIndx + 1 > -1 && currIndx + 1 < chars.length)
+			// chars[currIndx + 1] = ch;
+			// }
+			//
+			// }
 		}
 	}
 
 	public void changeCursor(int indx) {
-		currIndx = indx;
+		if (!isAutoScroll) {
+			if (eventHandler != null)
+				eventHandler.noBlink();
+			currIndx = indx;
+		}
 	}
 
-	public void scrollDisplayLeft() {
+	public synchronized void scrollDisplayLeft() {
 		lastScrollLeft += 1;
 		char[] tmp = new char[chars.length];
 		for (int i = 0; i < tmp.length; i++) {
-			try {
+			if (i + lastScrollLeft > -1 && i + lastScrollLeft < chars.length) {
 				tmp[i] = chars[i + lastScrollLeft];
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		eventHandler.noBlink();
+		changeCursor(currIndx - 1);
 		eventHandler.updateLCD(tmp);
 		if (isBlinking)
 			eventHandler.blink();
 	}
 
-	public void scrollDisplayRight() {
+	public synchronized void scrollDisplayRight() {
 		lastScrollLeft -= 1;
 		char[] tmp = new char[chars.length];
 		for (int i = 0; i < tmp.length; i++) {
-			try {
-				if (i >= lastScrollLeft * -1)
-					tmp[i] = chars[i + lastScrollLeft];
-			} catch (Exception e) {
-				e.printStackTrace();
+			if (i + lastScrollLeft > -1 && i + lastScrollLeft < chars.length) {
+				tmp[i] = chars[i + lastScrollLeft];
 			}
 		}
 		eventHandler.noBlink();
+		changeCursor(currIndx + 1);
 		eventHandler.updateLCD(tmp);
 		if (isBlinking)
 			eventHandler.blink();
@@ -130,100 +157,117 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	}
 
 	private void processInput(ShieldFrame frame) {
-		if (eventHandler != null)
-			switch (frame.getFunctionId()) {
-			case CLEAR:
+		switch (frame.getFunctionId()) {
+		case CLEAR:
+			if (eventHandler != null)
 				eventHandler.noBlink();
-				lastScrollLeft = 0;
-				chars = new char[columns * rows];
+			lastScrollLeft = 0;
+			chars = new char[columns * rows];
+			if (eventHandler != null)
 				eventHandler.updateLCD(chars);
-				changeCursor(0);
-				if (isBlinking)
-					eventHandler.blink();
-				break;
-			case HOME:
-				eventHandler.noBlink();
-				changeCursor(0);
-				if (isBlinking)
-					eventHandler.blink();
-				break;
-			case BLINK:
+			changeCursor(0);
+			if (isBlinking && eventHandler != null)
 				eventHandler.blink();
-				isBlinking = true;
-				break;
-			case NO_BLINK:
+			break;
+		case HOME:
+			if (eventHandler != null)
 				eventHandler.noBlink();
-				isBlinking = false;
-				break;
-
-			case SCROLL_DISPLAY_LEFT:
-				eventHandler.noBlink();
-				scrollDisplayLeft();
+			changeCursor(0);
+			if (isBlinking && eventHandler != null)
 				eventHandler.blink();
-				break;
-
-			case SCROLL_DISPLAY_RIGHT:
-				eventHandler.noBlink();
-				scrollDisplayRight();
-				if (isBlinking)
-					eventHandler.blink();
-				break;
-
-			case BEGIN:
-				eventHandler.noBlink();
-				changeCursor(0);
-				if (isBlinking)
-					eventHandler.blink();
-				break;
-			case SET_CURSOR:
-				eventHandler.noBlink();
-				int row = (int) frame.getArgument(0)[0];
-				int col = (int) frame.getArgument(1)[0];
-				changeCursor((row * columns) + col);
-				if (isBlinking)
-					eventHandler.blink();
-				break;
-			case WRITE:
-				write(frame.getArgumentAsString(0).charAt(0));
-				eventHandler.updateLCD(chars);
-				break;
-			case PRINT:// //
-				eventHandler.noBlink();
-				lastScrollLeft = 0;
-				chars = new char[columns * rows];
-				eventHandler.updateLCD(chars);
-				changeCursor(0);
-				if (isBlinking)
-					eventHandler.blink();
-				// /
-				eventHandler.noBlink();
-				lastScrollLeft = 0;
-				String txt = frame.getArgumentAsString(0);
-				for (int i = 0; i < txt.length(); i++) {
-					try {
-						chars[currIndx] = txt.charAt(i);
-						changeCursor(currIndx + 1);
-					} catch (Exception e) {
-					}
-				}
-				eventHandler.updateLCD(chars);
-				if (isBlinking)
-					eventHandler.blink();
-				break;
-
-			case CURSOR:
+			break;
+		case BLINK:
+			if (eventHandler != null)
 				eventHandler.blink();
-				isBlinking = true;
-				break;
-
-			case NO_CURSOR:
+			isBlinking = true;
+			break;
+		case NO_BLINK:
+			if (eventHandler != null)
 				eventHandler.noBlink();
-				isBlinking = false;
-				break;
+			isBlinking = false;
+			break;
 
-			default:
-				break;
+		case SCROLL_DISPLAY_LEFT:
+			scrollDisplayLeft();
+			break;
+
+		case SCROLL_DISPLAY_RIGHT:
+			scrollDisplayRight();
+			break;
+
+		case BEGIN:
+			if (eventHandler != null)
+				eventHandler.noBlink();
+			changeCursor(0);
+			if (isBlinking && eventHandler != null)
+				eventHandler.blink();
+			break;
+		case SET_CURSOR:
+			if (eventHandler != null)
+				eventHandler.noBlink();
+			int row = (int) frame.getArgument(0)[0];
+			int col = (int) frame.getArgument(1)[0];
+			changeCursor((row * columns) + col);
+			if (isBlinking && eventHandler != null)
+				eventHandler.blink();
+			break;
+		case WRITE:
+			write(frame.getArgumentAsString(0).charAt(0));
+			if (eventHandler != null) {
+				eventHandler.updateLCD(chars);
+				if (isBlinking)
+					eventHandler.blink();
 			}
+			break;
+		case PRINT:// //
+			// eventHandler.noBlink();
+			lastScrollLeft = 0;
+			// chars = new char[columns * rows];
+			// eventHandler.updateLCD(chars);
+			// changeCursor(0);
+			// if (isBlinking)
+			// eventHandler.blink();
+			// /
+			if (eventHandler != null)
+				eventHandler.noBlink();
+			lastScrollLeft = 0;
+			String txt = frame.getArgumentAsString(0);
+			for (int i = 0; i < txt.length(); i++) {
+				write(txt.charAt(i));
+			}
+			if (eventHandler != null) {
+				eventHandler.updateLCD(chars);
+				if (isBlinking)
+					eventHandler.blink();
+			}
+			break;
+
+		case CURSOR:
+			if (eventHandler != null)
+				eventHandler.blink();
+			isBlinking = true;
+			break;
+
+		case NO_CURSOR:
+			if (eventHandler != null)
+				eventHandler.noBlink();
+			isBlinking = false;
+			break;
+		case AUTO_SCROLL:
+			isAutoScroll = true;
+			break;
+		case NO_AUTO_SCROLL:
+			isAutoScroll = false;
+			break;
+		case LEFT_TO_RIGHT:
+			isLeftToRight = true;
+			break;
+		case RIGHT_TO_LEFT:
+			isLeftToRight = false;
+			break;
+		default:
+			break;
+		}
 	}
 
 	@Override

@@ -177,6 +177,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	}
 
 	private class SessionStatusCallback implements Session.StatusCallback {
+		@SuppressWarnings("unused")
 		@Override
 		public void call(final Session session, SessionState state,
 				Exception exception) {

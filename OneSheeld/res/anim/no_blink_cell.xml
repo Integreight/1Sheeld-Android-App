@@ -6,5 +6,5 @@
     android:fillEnabled="true"
     android:fromAlpha="1"
     android:interpolator="@android:anim/accelerate_interpolator"
-    android:toAlpha="1" />
+    android:toAlpha="-1" />
 
