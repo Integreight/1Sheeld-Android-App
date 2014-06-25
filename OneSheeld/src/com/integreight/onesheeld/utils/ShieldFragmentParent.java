@@ -121,8 +121,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public String getControllerTag() {
 		String tagFromApp = OneSheeldApplication.shieldsFragmentsTags
 				.get(((T) this).getClass().getName());
-		System.out.println("$%$%$%   " + ((T) this).getClass().getName()
-				+ "     " + tagFromApp + "     " + getActivity());
 		controllerTag = (tagFromApp != null ? tagFromApp
 				: controllerTag != null ? controllerTag
 						: (getArguments() != null && getArguments().getString(

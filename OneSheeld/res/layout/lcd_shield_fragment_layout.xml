@@ -18,10 +18,10 @@
         android:clickable="true"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingBottom="30dp"
-        android:paddingLeft="60dp"
-        android:paddingRight="60dp"
-        android:paddingTop="30dp" >
+        android:paddingBottom="@dimen/lcd_margin_top_bottom"
+        android:paddingLeft="@dimen/lcd_margin_left_right"
+        android:paddingRight="@dimen/lcd_margin_left_right"
+        android:paddingTop="@dimen/lcd_margin_top_bottom" >
     </LinearLayout>
 
 </RelativeLayout>

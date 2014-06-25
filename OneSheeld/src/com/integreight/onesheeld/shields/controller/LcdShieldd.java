@@ -3,30 +3,12 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
 
 public class LcdShieldd extends ControllerParent<LcdShieldd> {
-	private LcdEventHandler eventHandler = new LcdEventHandler() {
-
-		@Override
-		public void updateLCD(char[] arrayToUpdate) {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void noBlink() {
-			// TODO Auto-generated method stub
-
-		}
-
-		@Override
-		public void blink() {
-			// TODO Auto-generated method stub
-
-		}
-	};
+	private LcdEventHandler eventHandler;
 	// private Activity activity;
 	public int rows = 2;
 	public int columns = 16;
@@ -131,6 +113,7 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 		eventHandler.updateLCD(tmp);
 		if (isBlinking)
 			eventHandler.blink();
+		Log.d("LCD", (">>>>>>>  Left  " + lastScrollLeft));
 	}
 
 	public synchronized void scrollDisplayRight() {
@@ -146,6 +129,7 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 		eventHandler.updateLCD(tmp);
 		if (isBlinking)
 			eventHandler.blink();
+		Log.d("LCD", (">>>>>>>  Right  " + lastScrollLeft));
 	}
 
 	public static interface LcdEventHandler {
@@ -196,11 +180,11 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 			break;
 
 		case BEGIN:
-			if (eventHandler != null)
-				eventHandler.noBlink();
-			changeCursor(0);
-			if (isBlinking && eventHandler != null)
-				eventHandler.blink();
+			// if (eventHandler != null)
+			// eventHandler.noBlink();
+			// changeCursor(0);
+			// if (isBlinking && eventHandler != null)
+			// eventHandler.blink();
 			break;
 		case SET_CURSOR:
 			if (eventHandler != null)

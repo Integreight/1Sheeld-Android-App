@@ -90,7 +90,7 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 
 	public void draw(int initRow, int initCol, int rowsEnd, int columnsEnd) {
 		float scale = getResources().getDisplayMetrics().density;
-		int height = (int) (23 * scale + .5f);
+		int height = (int) (30 * scale + .5f);
 		int cellMargine = (int) (scale + .5f);
 		verticalContainer.removeAllViews();
 		Typeface tf = Typeface.createFromAsset(getActivity().getAssets(),
