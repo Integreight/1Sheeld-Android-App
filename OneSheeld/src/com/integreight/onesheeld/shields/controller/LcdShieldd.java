@@ -101,7 +101,7 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	}
 
 	public synchronized void scrollDisplayLeft() {
-		lastScrollLeft += 1;
+		lastScrollLeft = 1;
 		char[] tmp = new char[chars.length];
 		for (int i = 0; i < tmp.length; i++) {
 			if (i + lastScrollLeft > -1 && i + lastScrollLeft < chars.length) {
@@ -110,14 +110,15 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 		}
 		eventHandler.noBlink();
 		changeCursor(currIndx - 1);
-		eventHandler.updateLCD(tmp);
+		chars = tmp;
+		eventHandler.updateLCD(chars);
 		if (isBlinking)
 			eventHandler.blink();
 		Log.d("LCD", (">>>>>>>  Left  " + lastScrollLeft));
 	}
 
 	public synchronized void scrollDisplayRight() {
-		lastScrollLeft -= 1;
+		lastScrollLeft = -1;
 		char[] tmp = new char[chars.length];
 		for (int i = 0; i < tmp.length; i++) {
 			if (i + lastScrollLeft > -1 && i + lastScrollLeft < chars.length) {
@@ -126,7 +127,8 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 		}
 		eventHandler.noBlink();
 		changeCursor(currIndx + 1);
-		eventHandler.updateLCD(tmp);
+		chars = tmp;
+		eventHandler.updateLCD(chars);
 		if (isBlinking)
 			eventHandler.blink();
 		Log.d("LCD", (">>>>>>>  Right  " + lastScrollLeft));
