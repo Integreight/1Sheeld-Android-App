@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.plugin;
+package com.integreight.onesheeld.actionplugin;
 
 import android.content.Context;
 import android.content.Intent;
@@ -36,7 +36,7 @@ import com.integreight.onesheeld.R;
  * @see com.twofortyfouram.locale.Intent#ACTION_EDIT_SETTING
  * @see com.twofortyfouram.locale.Intent#EXTRA_BUNDLE
  */
-public final class EditActivity extends AbstractPluginActivity
+public final class ActionActivity extends AbstractPluginActivity
 {
 	private String[] pins={ "0","1", "2", "3", "4", "5", "6", "7", "8",
 			"9", "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
@@ -55,7 +55,7 @@ public final class EditActivity extends AbstractPluginActivity
         final Bundle localeBundle = getIntent().getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
         BundleScrubber.scrub(localeBundle);
 
-        setContentView(R.layout.plugin_edit_activity);
+        setContentView(R.layout.plugin_action_activity);
         pinsSpinner=(Spinner)findViewById(R.id.pins_spinner);
         outputSpinner=(Spinner)findViewById(R.id.output_spinner);
         
