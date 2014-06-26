@@ -2,7 +2,7 @@ package com.integreight.onesheeld;
 
 public class Log {
 	public static void d(String tag, String msg) {
-		 android.util.Log.d(tag, msg);
+//		 android.util.Log.d(tag, msg);
 	}
 
 	public static void i(String tag, String msg) {
@@ -10,8 +10,8 @@ public class Log {
 	}
 
 	public static void e(String tag, String msg, Throwable tr) {
-		tr.printStackTrace();
-		android.util.Log.d(tag, msg);
+		// tr.printStackTrace();
+		// android.util.Log.d(tag, msg);
 	}
 
 	public static void e(String tag, String msg) {

@@ -93,7 +93,7 @@ public class LcdShieldd extends ControllerParent<LcdShieldd> {
 	}
 
 	public void changeCursor(int indx) {
-		if (!isAutoScroll) {
+		if (!isAutoScroll && indx > -1 && indx < rows * columns) {
 			if (eventHandler != null)
 				eventHandler.noBlink();
 			currIndx = indx;
