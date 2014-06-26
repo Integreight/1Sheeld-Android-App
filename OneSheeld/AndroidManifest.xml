@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
     android:versionCode="140626"
-    android:versionName="1.003" >
+    android:versionName="1.0.3" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -119,7 +119,7 @@
             <!--
                  <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
+            </intent-filter>
             -->
         </activity>
         <activity
