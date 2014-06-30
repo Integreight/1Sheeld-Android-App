@@ -34,7 +34,7 @@ import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
 import com.integreight.onesheeld.shields.fragments.KeyboardFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
-import com.integreight.onesheeld.shields.fragments.LcdFragmentPre;
+import com.integreight.onesheeld.shields.fragments.LcdFragment;
 import com.integreight.onesheeld.shields.fragments.LedFragment;
 import com.integreight.onesheeld.shields.fragments.LightFragment;
 import com.integreight.onesheeld.shields.fragments.MagnetometerFragment;
@@ -91,7 +91,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 					new KeypadFragment());
 		case LCD_SHIELD:
 			return addToCreatedListAndReturn(UIShield.LCD_SHIELD,
-					new LcdFragmentPre());
+					new LcdFragment());
 		case MAGNETOMETER_SHIELD:
 			return addToCreatedListAndReturn(UIShield.MAGNETOMETER_SHIELD,
 					new MagnetometerFragment());

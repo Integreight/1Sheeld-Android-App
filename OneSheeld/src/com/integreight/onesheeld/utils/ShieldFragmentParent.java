@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.utils;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -27,13 +28,26 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public boolean hasSettings = false;
 	public Handler uiHandler = new Handler();
 	public String shieldName = "";
+	private MainActivity activity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		this.activity = (MainActivity) activity;
+		super.onAttach(activity);
+	}
+
+	@Override
+	public void onDetach() {
+		// activity = null;
+		super.onDetach();
+	}
 
 	public MainActivity getAppActivity() {
-		return (MainActivity) super.getActivity();
+		return activity;
 	}
 
 	public OneSheeldApplication getApplication() {
-		return getAppActivity().getThisApplication();
+		return activity.getThisApplication();
 	}
 
 	@Override

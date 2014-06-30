@@ -89,7 +89,7 @@ public class MusicPlayerFragment extends
 					getControllerTag())).setEventHandler(eventHandler);
 			control = (MusicShield) getApplication().getRunningShields().get(
 					getControllerTag());
-			if (control.mediaPlayer != null) {
+			if (control.mediaPlayer != null && control.mediaDuration > 0) {
 				eventHandler.seekTo(control.mediaPlayer.getCurrentPosition()
 						* 100 / control.mediaDuration);
 				eventHandler.setMusicName(control.musicFileName);

@@ -19,7 +19,7 @@ import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield;
 import com.integreight.onesheeld.shields.controller.KeyboardShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
-import com.integreight.onesheeld.shields.controller.LcdShieldd;
+import com.integreight.onesheeld.shields.controller.LcdShield;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
@@ -58,7 +58,7 @@ public enum UIShield {
 			(byte) 0x01, "Sliders", 0xffc0034c,
 			R.drawable.shields_list_slider_symbol, false, SliderShield.class), LCD_SHIELD(
 			(byte) 0x17, "LCD", 0xff99bd03, R.drawable.shields_list_lcd_symbol,
-			false, LcdShieldd.class, true), MAGNETOMETER_SHIELD((byte) 0x0A,
+			false, LcdShield.class, true), MAGNETOMETER_SHIELD((byte) 0x0A,
 			"Magnetometer", 0xff40039f,
 			R.drawable.shields_list_magnetometer_symbol, false,
 			MagnetometerShield.class, 1), PUSHBUTTON_SHIELD((byte) 0x03,
