@@ -75,7 +75,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 
 			if (canChangeUI()) {
 				if (!isHasCamera) {
-					Toast.makeText(getActivity(),
+					Toast.makeText(activity,
 							"Your Device doesn't have Camera",
 							Toast.LENGTH_SHORT).show();
 				}
@@ -85,7 +85,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 		@Override
 		public void OnPictureTaken() {
 			if (canChangeUI())
-				Toast.makeText(getActivity(),
+				Toast.makeText(activity,
 						"Your Camera has been Captured Image",
 						Toast.LENGTH_SHORT).show();
 		}
@@ -103,7 +103,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new CameraShield(getActivity(), getControllerTag()));
+					new CameraShield(activity, getControllerTag()));
 
 		}
 

@@ -165,7 +165,7 @@ public class AccelerometerFragment extends
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new AccelerometerShield(getActivity(), getControllerTag()));
+					new AccelerometerShield(activity, getControllerTag()));
 
 		}
 

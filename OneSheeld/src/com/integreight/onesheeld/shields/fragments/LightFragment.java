@@ -151,7 +151,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 																 * );
 																 * Toast.makeText
 																 * (
-																 * getActivity()
+																 * activity
 																 * ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
@@ -182,7 +182,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new LightShield(getActivity(), getControllerTag()));
+					new LightShield(activity, getControllerTag()));
 
 		}
 

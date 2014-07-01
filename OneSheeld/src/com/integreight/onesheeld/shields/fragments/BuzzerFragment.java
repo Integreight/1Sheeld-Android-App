@@ -41,7 +41,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	@Override
 	public void onStart() {
 		// hasSettings = true;
-		// ((MainActivity) getActivity())
+		// ((MainActivity) activity)
 		// .getSupportFragmentManager()
 		// .beginTransaction()
 		// .replace(R.id.settingsViewContainer,
@@ -155,7 +155,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new SpeakerShield(getActivity(), getControllerTag()));
+					new SpeakerShield(activity, getControllerTag()));
 		}
 
 	}

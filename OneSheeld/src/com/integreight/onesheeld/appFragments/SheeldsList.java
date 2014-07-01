@@ -51,7 +51,7 @@ public class SheeldsList extends Fragment {
 	private ShieldsListAdapter adapter;
 	OneShieldEditText searchBox;
 	private static final String TAG = "ShieldsList";
-
+	MainActivity activity;
 	public static final int REQUEST_CONNECT_DEVICE = 1;
 	public static final int REQUEST_ENABLE_BT = 3;
 
@@ -69,7 +69,7 @@ public class SheeldsList extends Fragment {
 		if (v == null) {
 
 			QuickReturnHeaderHelper helper = new QuickReturnHeaderHelper(
-					getActivity(), R.layout.app_sheelds_list,
+					activity, R.layout.app_sheelds_list,
 					R.layout.shields_list_search_area);
 			v = helper.createView();
 			mListView = (ListView) v.findViewById(android.R.id.list);
@@ -89,8 +89,8 @@ public class SheeldsList extends Fragment {
 
 			@Override
 			public void run() {
-				if (getActivity() != null && searchBox != null) {
-					InputMethodManager imm = (InputMethodManager) getActivity()
+				if (activity != null && searchBox != null) {
+					InputMethodManager imm = (InputMethodManager) activity
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
 				}
@@ -101,21 +101,21 @@ public class SheeldsList extends Fragment {
 
 	@Override
 	public void onAttach(Activity activity) {
-		// TODO Auto-generated method stub
+		this.activity = (MainActivity) activity;
 		super.onAttach(activity);
 	}
 
 	@Override
 	public void onResume() {
 		MainActivity.currentShieldTag = null;
-		((MainActivity) getActivity()).disableMenu();
+		activity.disableMenu();
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				if (getActivity() != null
-						&& getActivity().getSupportFragmentManager() != null) {
-					getActivity().findViewById(R.id.getAvailableDevices)
+				if (activity != null
+						&& activity.getSupportFragmentManager() != null) {
+					activity.findViewById(R.id.getAvailableDevices)
 							.setOnClickListener(new View.OnClickListener() {
 
 								@Override
@@ -123,17 +123,16 @@ public class SheeldsList extends Fragment {
 									launchShieldsOperationActivity();
 								}
 							});
-					List<Fragment> frags = getActivity()
-							.getSupportFragmentManager().getFragments();
+					List<Fragment> frags = activity.getSupportFragmentManager()
+							.getFragments();
 					for (Fragment frag : frags) {
 						if (frag != null
 								&& !frag.getClass().getName()
 										.equals(SheeldsList.class.getName())) {
-							if (getActivity() != null
-									&& getActivity() != null
-									&& getActivity()
-											.getSupportFragmentManager() != null) {
-								FragmentTransaction ft = getActivity()
+							if (activity != null
+									&& activity != null
+									&& activity.getSupportFragmentManager() != null) {
+								FragmentTransaction ft = activity
 										.getSupportFragmentManager()
 										.beginTransaction();
 								frag.onDestroy();
@@ -145,10 +144,10 @@ public class SheeldsList extends Fragment {
 				}
 			}
 		}, 500);
-		((ViewGroup) getActivity().findViewById(R.id.getAvailableDevices))
+		((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.shields_list_shields_operation_button);
-		((ViewGroup) getActivity().findViewById(R.id.cancelConnection))
+		((ViewGroup) activity.findViewById(R.id.cancelConnection))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.bluetooth_disconnect_button);
 		new Handler().postDelayed(new Runnable() {
@@ -156,44 +155,39 @@ public class SheeldsList extends Fragment {
 			@Override
 			public void run() {
 				// TODO Auto-generated method stub
-				if (getActivity() != null
-						&& getActivity().findViewById(R.id.cancelConnection) != null)
-					getActivity().findViewById(R.id.cancelConnection)
+				if (activity != null
+						&& activity.findViewById(R.id.cancelConnection) != null)
+					activity.findViewById(R.id.cancelConnection)
 							.setOnClickListener(new View.OnClickListener() {
 
 								@Override
 								public void onClick(View v) {
-									if (getActivity()
-											.getSupportFragmentManager()
+									if (activity.getSupportFragmentManager()
 											.getBackStackEntryCount() > 1) {
-										getActivity()
-												.getSupportFragmentManager()
+										activity.getSupportFragmentManager()
 												.popBackStack();
-										getActivity()
-												.getSupportFragmentManager()
+										activity.getSupportFragmentManager()
 												.executePendingTransactions();
 									}
-									((MainActivity) getActivity())
-											.stopService();
+									activity.stopService();
 									if (!ArduinoConnectivityPopup.isOpened) {
 										ArduinoConnectivityPopup.isOpened = true;
-										new ArduinoConnectivityPopup(
-												getActivity()).show();
+										new ArduinoConnectivityPopup(activity)
+												.show();
 									}
 								}
 							});
 			}
 		}, 1000);
-		((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
-		((OneSheeldApplication) getActivity().getApplication())
+		activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
+		((OneSheeldApplication) activity.getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
-		if (((OneSheeldApplication) getActivity().getApplication())
-				.getAppFirmata() == null
-				|| (((OneSheeldApplication) getActivity().getApplication())
-						.getAppFirmata() != null && !((OneSheeldApplication) getActivity()
+		if (((OneSheeldApplication) activity.getApplication()).getAppFirmata() == null
+				|| (((OneSheeldApplication) activity.getApplication())
+						.getAppFirmata() != null && !((OneSheeldApplication) activity
 						.getApplication()).getAppFirmata().isOpen())) {
 			if (!ArduinoConnectivityPopup.isOpened)
-				new ArduinoConnectivityPopup(getActivity()).show();
+				new ArduinoConnectivityPopup(activity).show();
 		}
 		Crashlytics.setString("Current View", "Shields List");
 		super.onResume();
@@ -218,7 +212,7 @@ public class SheeldsList extends Fragment {
 	private void initView() {
 		// mListView.addHeaderView(mHeader);
 		shieldsUIList = UIShield.valuesFiltered();
-		adapter = new ShieldsListAdapter(getActivity());
+		adapter = new ShieldsListAdapter(activity);
 		mListView.setAdapter(adapter);
 		mListView.setSelection(1);
 		mListView.setCacheColorHint(Color.TRANSPARENT);
@@ -232,7 +226,7 @@ public class SheeldsList extends Fragment {
 
 					@Override
 					public void onClick(View arg0) {
-						InputMethodManager imm = (InputMethodManager) getActivity()
+						InputMethodManager imm = (InputMethodManager) activity
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
@@ -249,7 +243,7 @@ public class SheeldsList extends Fragment {
 
 					@Override
 					public void onClick(View arg0) {
-						InputMethodManager imm = (InputMethodManager) getActivity()
+						InputMethodManager imm = (InputMethodManager) activity
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
@@ -266,7 +260,7 @@ public class SheeldsList extends Fragment {
 
 					@Override
 					public void onClick(View arg0) {
-						InputMethodManager imm = (InputMethodManager) getActivity()
+						InputMethodManager imm = (InputMethodManager) activity
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
@@ -277,7 +271,7 @@ public class SheeldsList extends Fragment {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				InputMethodManager imm = (InputMethodManager) getActivity()
+				InputMethodManager imm = (InputMethodManager) activity
 						.getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(searchBox.getWindowToken(), 0);
 				return false;
@@ -287,16 +281,15 @@ public class SheeldsList extends Fragment {
 
 	private void launchShieldsOperationActivity() {
 		if (!isAnyShieldsSelected()) {
-			Toast.makeText(getActivity(), "Select at least 1 shield",
+			Toast.makeText(activity, "Select at least 1 shield",
 					Toast.LENGTH_LONG).show();
 			return;
 		} else {
-			((MainActivity) getActivity()).replaceCurrentFragment(
-					R.id.appTransitionsContainer,
+			activity.replaceCurrentFragment(R.id.appTransitionsContainer,
 					ShieldsOperations.getInstance(),
 					ShieldsOperations.class.getName(), true, true);
-			getActivity().findViewById(R.id.getAvailableDevices)
-					.setOnClickListener(new View.OnClickListener() {
+			activity.findViewById(R.id.getAvailableDevices).setOnClickListener(
+					new View.OnClickListener() {
 
 						@Override
 						public void onClick(View v) {
@@ -313,21 +306,20 @@ public class SheeldsList extends Fragment {
 		public void onError(String errorMessage) {
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
-			if (getActivity().getSupportFragmentManager()
-					.getBackStackEntryCount() > 1) {
-				getActivity().getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-				getActivity().getSupportFragmentManager()
+			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
+				activity.getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				activity.getSupportFragmentManager()
 						.executePendingTransactions();
 			}
 			if (!ArduinoConnectivityPopup.isOpened)
-				new ArduinoConnectivityPopup(getActivity()).show();
+				new ArduinoConnectivityPopup(activity).show();
 		}
 
 		@Override
 		public void onConnect() {
 			Log.e(TAG, "- ARDUINO CONNECTED -");
 			if (isOneSheeldServiceRunning()) {
-				((OneSheeldApplication) getActivity().getApplication())
+				((OneSheeldApplication) activity.getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
 				if (adapter != null)
 					adapter.applyToControllerTable();
@@ -336,17 +328,16 @@ public class SheeldsList extends Fragment {
 
 		@Override
 		public void onClose(boolean closedManually) {
-			if (getActivity() != null) {
-				((OneSheeldApplication) getActivity().getApplication())
+			if (activity != null) {
+				((OneSheeldApplication) activity.getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
-				((MainActivity) getActivity()).getOnConnectionLostHandler().connectionLost = true;
-				if (((MainActivity) getActivity()).getOnConnectionLostHandler().canInvokeOnCloseConnection
-						|| ((MainActivity) getActivity()).isForground)
-					((MainActivity) getActivity()).getOnConnectionLostHandler()
-							.sendEmptyMessage(0);
+				activity.getOnConnectionLostHandler().connectionLost = true;
+				if (activity.getOnConnectionLostHandler().canInvokeOnCloseConnection
+						|| activity.isForground)
+					activity.getOnConnectionLostHandler().sendEmptyMessage(0);
 				else {
-					List<Fragment> frags = getActivity()
-							.getSupportFragmentManager().getFragments();
+					List<Fragment> frags = activity.getSupportFragmentManager()
+							.getFragments();
 					for (Fragment frag : frags) {
 						if (frag != null
 								&& !frag.getClass().getName()
@@ -355,7 +346,7 @@ public class SheeldsList extends Fragment {
 										.getName()
 										.equals(ShieldsOperations.class
 												.getName())) {
-							FragmentTransaction ft = getActivity()
+							FragmentTransaction ft = activity
 									.getSupportFragmentManager()
 									.beginTransaction();
 							ft.setCustomAnimations(0, 0, 0, 0);
@@ -365,13 +356,13 @@ public class SheeldsList extends Fragment {
 						}
 					}
 				}
-				Enumeration<String> enumKey = ((OneSheeldApplication) getActivity()
+				Enumeration<String> enumKey = ((OneSheeldApplication) activity
 						.getApplication()).getRunningShields().keys();
 				while (enumKey.hasMoreElements()) {
 					String key = enumKey.nextElement();
-					((OneSheeldApplication) getActivity().getApplication())
+					((OneSheeldApplication) activity.getApplication())
 							.getRunningShields().get(key).resetThis();
-					((OneSheeldApplication) getActivity().getApplication())
+					((OneSheeldApplication) activity.getApplication())
 							.getRunningShields().remove(key);
 				}
 			}
@@ -394,17 +385,16 @@ public class SheeldsList extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.open_bootloader_popup:
 			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
-				new FirmwareUpdatingPopup((MainActivity) getActivity(), false)
+				new FirmwareUpdatingPopup((MainActivity) activity, false)
 						.show();
 			return true;
 		case R.id.action_settings:
-			((OneSheeldApplication) getActivity().getApplication())
+			((OneSheeldApplication) activity.getApplication())
 					.setLastConnectedDevice(null);
 			return true;
 		case R.id.appTutorial:
-			getActivity().startActivity(
-					new Intent(getActivity(), TutorialPopup.class).putExtra(
-							"isMenu", true));
+			activity.startActivity(new Intent(activity, TutorialPopup.class)
+					.putExtra("isMenu", true));
 			return true;
 		}
 
@@ -412,8 +402,8 @@ public class SheeldsList extends Fragment {
 	}
 
 	private boolean isOneSheeldServiceRunning() {
-		if (getActivity() != null) {
-			ActivityManager manager = (ActivityManager) getActivity()
+		if (activity != null) {
+			ActivityManager manager = (ActivityManager) activity
 					.getSystemService(Context.ACTIVITY_SERVICE);
 			for (RunningServiceInfo service : manager
 					.getRunningServices(Integer.MAX_VALUE)) {
@@ -428,7 +418,7 @@ public class SheeldsList extends Fragment {
 
 	private boolean isAnyShieldsSelected() {
 		int i = 0;
-		OneSheeldApplication app = (OneSheeldApplication) getActivity()
+		OneSheeldApplication app = (OneSheeldApplication) activity
 				.getApplication();
 		// app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
 		for (UIShield shield : shieldsUIList) {
@@ -449,8 +439,7 @@ public class SheeldsList extends Fragment {
 								"isAnyShieldsSelected()::IllegalAccessException",
 								e);
 					}
-					type.setActivity((MainActivity) getActivity()).setTag(
-							shield.name());
+					type.setActivity(activity).setTag(shield.name());
 				}
 				i++;
 			}

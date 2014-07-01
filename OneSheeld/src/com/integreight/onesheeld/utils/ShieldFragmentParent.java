@@ -28,7 +28,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public boolean hasSettings = false;
 	public Handler uiHandler = new Handler();
 	public String shieldName = "";
-	private MainActivity activity;
+	public MainActivity activity;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -102,14 +102,13 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		} else
 			((T) ShieldFragmentParent.this).doOnServiceConnected();
 		System.out.println("DDSDSD   "
-				+ getActivity()
+				+ activity
 				+ "    "
-				+ (getActivity() != null ? getActivity().findViewById(
-						R.id.settingsFixedHandler) : ""));
-		getActivity().findViewById(R.id.settingsFixedHandler).setVisibility(
+				+ (activity != null ? activity
+						.findViewById(R.id.settingsFixedHandler) : ""));
+		activity.findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);
-		getActivity()
-				.findViewById(R.id.pinsFixedHandler)
+		activity.findViewById(R.id.pinsFixedHandler)
 				.setVisibility(
 						getApplication().getRunningShields().get(
 								getControllerTag()) == null
@@ -160,7 +159,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	@Override
 	public void onResume() {
 		MainActivity.currentShieldTag = getControllerTag();
-		((ToggleButton) getActivity().findViewById(R.id.shieldStatus))
+		((ToggleButton) activity.findViewById(R.id.shieldStatus))
 				.setChecked(getApplication().getRunningShields().get(
 						getControllerTag()).isInteractive);
 		getApplication().getGaTracker().send(

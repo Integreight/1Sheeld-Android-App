@@ -141,7 +141,7 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 																 * );
 																 * Toast.makeText
 																 * (
-																 * getActivity()
+																 * activity
 																 * ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
@@ -159,7 +159,7 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new GravityShield(getActivity(), getControllerTag()));
+					new GravityShield(activity, getControllerTag()));
 
 		}
 

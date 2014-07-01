@@ -77,7 +77,7 @@ public class FoursquareFragment extends
 			@Override
 			public void onClick(View v) {
 				// start login to foursquare
-				if (ConnectionDetector.isConnectingToInternet(getActivity()))
+				if (ConnectionDetector.isConnectingToInternet(activity))
 					((FoursquareShield) getApplication().getRunningShields()
 							.get(getControllerTag())).loginToFoursquare();
 				else
@@ -176,7 +176,7 @@ public class FoursquareFragment extends
 
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new FoursquareShield(getActivity(), getControllerTag()));
+					new FoursquareShield(activity, getControllerTag()));
 
 		((FoursquareShield) getApplication().getRunningShields().get(
 				getControllerTag()))

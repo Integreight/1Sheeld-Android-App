@@ -107,7 +107,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	private void invalidateController() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new MicShield(getActivity(), getControllerTag()));
+					new MicShield(activity, getControllerTag()));
 		}
 
 	}

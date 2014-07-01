@@ -9,7 +9,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.Log;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.MusicShield;
 import com.integreight.onesheeld.shields.controller.MusicShield.MusicEventHandler;
@@ -33,8 +32,7 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onStart() {
-		((MainActivity) getActivity())
-				.getSupportFragmentManager()
+		activity.getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.settingsViewContainer,
 						MusicShieldSettings.getInstance()).commit();
