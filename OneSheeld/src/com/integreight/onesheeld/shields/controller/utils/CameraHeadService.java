@@ -213,10 +213,11 @@ public class CameraHeadService extends Service implements
 
 							stopSelf();
 						}
-						parameters = mCamera.getParameters();
-						parameters.setFlashMode(FLASH_MODE);
-						// set biggest picture
-						setBesttPictureResolution();
+						Camera.Parameters parameters = mCamera.getParameters();  
+						pictureSize = getBiggesttPictureSize(parameters);
+						if (pictureSize != null)
+							parameters
+									.setPictureSize(pictureSize.width, pictureSize.height);
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
@@ -269,11 +270,11 @@ public class CameraHeadService extends Service implements
 
 								stopSelf();
 							}
-							parameters = mCamera.getParameters();
-							parameters.setFlashMode(FLASH_MODE);
-
-							// set biggest picture
-							setBesttPictureResolution();
+							Camera.Parameters parameters = mCamera.getParameters();  
+							pictureSize = getBiggesttPictureSize(parameters);
+							if (pictureSize != null)
+								parameters
+										.setPictureSize(pictureSize.width, pictureSize.height);
 
 							// set camera parameters
 							mCamera.setParameters(parameters);
