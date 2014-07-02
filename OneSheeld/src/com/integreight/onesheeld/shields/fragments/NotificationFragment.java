@@ -73,7 +73,7 @@ public class NotificationFragment extends
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new NotificationShield(getActivity(), getControllerTag()));
+					new NotificationShield(activity, getControllerTag()));
 		((NotificationShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setNotificationEventHandler(notificationEventHandler);

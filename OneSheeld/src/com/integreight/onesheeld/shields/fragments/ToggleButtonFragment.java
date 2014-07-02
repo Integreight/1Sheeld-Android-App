@@ -35,7 +35,7 @@ public class ToggleButtonFragment extends
 		if ((ToggleButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new ToggleButtonShield(getActivity(), getControllerTag()));
+					new ToggleButtonShield(activity, getControllerTag()));
 		}
 		toggleButtonButton
 				.setOnCheckedChangeListener(new OnCheckedChangeListener() {

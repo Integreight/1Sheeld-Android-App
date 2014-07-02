@@ -66,7 +66,7 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new ClockShield(getActivity(), getControllerTag()));
+					new ClockShield(activity, getControllerTag()));
 
 		}
 

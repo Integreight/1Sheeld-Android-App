@@ -159,7 +159,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 																 * );
 																 * Toast.makeText
 																 * (
-																 * getActivity()
+																 * activity
 																 * ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
@@ -193,7 +193,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new PressureShield(getActivity(), getControllerTag()));
+					new PressureShield(activity, getControllerTag()));
 
 		}
 

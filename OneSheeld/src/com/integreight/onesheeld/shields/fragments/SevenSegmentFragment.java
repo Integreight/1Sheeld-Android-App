@@ -218,7 +218,7 @@ public class SevenSegmentFragment extends
 	private void initializeFirmata(ArduinoFirmata firmata) {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new SevenSegmentShield(getActivity(), getControllerTag()));
+					new SevenSegmentShield(activity, getControllerTag()));
 
 	}
 

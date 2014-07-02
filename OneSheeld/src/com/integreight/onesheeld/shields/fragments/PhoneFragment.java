@@ -62,7 +62,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView call = (OneShieldTextView) getActivity()
+						OneShieldTextView call = (OneShieldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.outgoing_call_item,
 										callsLogContainer, false);
@@ -81,7 +81,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView call = (OneShieldTextView) getActivity()
+						OneShieldTextView call = (OneShieldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.incoming_call_item,
 										callsLogContainer, false);
@@ -97,7 +97,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new PhoneShield(getActivity(), getControllerTag()));
+					new PhoneShield(activity, getControllerTag()));
 			((PhoneShield) getApplication().getRunningShields().get(
 					getControllerTag()))
 					.setPhoneEventHandler(phoneEventHandler);

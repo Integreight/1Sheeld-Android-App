@@ -70,7 +70,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Session.getActiveSession().onActivityResult(getActivity(), requestCode,
+		Session.getActiveSession().onActivityResult(activity, requestCode,
 				resultCode, data);
 		super.onActivityResult(requestCode, resultCode, data);
 	}
@@ -105,7 +105,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView posty = (OneShieldTextView) getActivity()
+						OneShieldTextView posty = (OneShieldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.facebook_post_item,
 										lastPostTextCont, false);
@@ -113,7 +113,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 						lastPostTextCont.addView(posty);
 						((ScrollView) lastPostTextCont.getParent())
 								.invalidate();
-						Toast.makeText(getActivity(), "Posted on your wall!",
+						Toast.makeText(activity, "Posted on your wall!",
 								Toast.LENGTH_SHORT).show();
 					}
 				});
@@ -124,7 +124,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		public void onFacebookLoggedIn() {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				getActivity().runOnUiThread(new Runnable() {
+				activity.runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
@@ -141,12 +141,12 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		public void onFacebookError(final String error) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				getActivity().runOnUiThread(new Runnable() {
+				activity.runOnUiThread(new Runnable() {
 
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
+						Toast.makeText(activity, error, Toast.LENGTH_SHORT)
 								.show();
 						// buttonToLoggedIn();
 						// getAppActivity()
@@ -163,7 +163,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(
 					getControllerTag(),
-					new FacebookShield(getActivity(), getControllerTag(), this,
+					new FacebookShield(activity, getControllerTag(), this,
 							savedInstanceState));
 		((FacebookShield) getApplication().getRunningShields().get(
 				getControllerTag())).setShieldFragment(this);
@@ -211,7 +211,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	}
 
 	private void loginToFacebook() {
-		if (ConnectionDetector.isConnectingToInternet(getActivity()))
+		if (ConnectionDetector.isConnectingToInternet(activity))
 
 			((FacebookShield) getApplication().getRunningShields().get(
 					getControllerTag())).loginToFacebook();

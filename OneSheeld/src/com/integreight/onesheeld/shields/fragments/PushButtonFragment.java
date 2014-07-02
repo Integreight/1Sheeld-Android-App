@@ -35,12 +35,12 @@ public class PushButtonFragment extends
 		if ((PushButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new PushButtonShield(getActivity(), getControllerTag()));
+					new PushButtonShield(activity, getControllerTag()));
 		}
 
 		push = (OneShieldButton) v
 				.findViewById(R.id.push_button_shield_button_push_button);
-		menu = (AppSlidingLeftMenu) getActivity().findViewById(
+		menu = (AppSlidingLeftMenu) activity.findViewById(
 				R.id.sliding_pane_layout);
 		push.setOnTouchListener(new View.OnTouchListener() {
 

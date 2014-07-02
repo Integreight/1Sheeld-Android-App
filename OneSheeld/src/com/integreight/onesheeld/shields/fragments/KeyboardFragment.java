@@ -65,7 +65,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
-		getActivity().setRequestedOrientation(
+		activity.setRequestedOrientation(
 				ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		super.setUserVisibleHint(isVisibleToUser);
 	}
@@ -117,7 +117,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new KeyboardShield(getActivity(), getControllerTag()));
+					new KeyboardShield(activity, getControllerTag()));
 
 		}
 
@@ -208,7 +208,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	}
 
 	private void hideDefaultKeyboard() {
-		getActivity().getWindow().setSoftInputMode(
+		activity.getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 	}
@@ -382,7 +382,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	private void setKeys() {
 		try {
 			DisplayMetrics displaymetrics = new DisplayMetrics();
-			getActivity().getWindow().getWindowManager().getDefaultDisplay()
+			activity.getWindow().getWindowManager().getDefaultDisplay()
 					.getMetrics(displaymetrics);
 			mWindowWidth = displaymetrics.widthPixels;
 		} catch (Exception ignored) {
@@ -392,7 +392,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 			try {
 				Point realSize = new Point();
 				Display.class.getMethod("getRealSize", Point.class).invoke(
-						getActivity().getWindow().getWindowManager()
+						activity.getWindow().getWindowManager()
 								.getDefaultDisplay(), realSize);
 				mWindowWidth = realSize.x;
 			} catch (Exception ignored) {

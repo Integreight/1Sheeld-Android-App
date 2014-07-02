@@ -15,12 +15,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.shields.controller.LcdShieldd;
-import com.integreight.onesheeld.shields.controller.LcdShieldd.LcdEventHandler;
+import com.integreight.onesheeld.shields.controller.LcdShield;
+import com.integreight.onesheeld.shields.controller.LcdShield.LcdEventHandler;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.RotatingTextView;
 
-public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
+public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	View v;
 	private boolean drawn = false;
 
@@ -35,13 +35,13 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 
 				@Override
 				public void run() {
-					draw(0, 0, ((LcdShieldd) getApplication()
+					draw(0, 0, ((LcdShield) getApplication()
 							.getRunningShields().get(getControllerTag())).rows,
-							((LcdShieldd) getApplication().getRunningShields()
+							((LcdShield) getApplication().getRunningShields()
 									.get(getControllerTag())).columns);
 					drawn = true;
 				}
-			}, 700);
+			}, 0);
 		} else
 			try {
 				((ViewGroup) v.getParent()).removeView(v);
@@ -55,17 +55,17 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 	public void onStart() {
 		super.onStart();
 		uiHandler = new Handler();
-		((LcdShieldd) getApplication().getRunningShields().get(
+		((LcdShield) getApplication().getRunningShields().get(
 				getControllerTag())).setLcdEventHandler(lcdEventHandler);
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
 			public void run() {
-				redraw(((LcdShieldd) getApplication().getRunningShields().get(
+				redraw(((LcdShield) getApplication().getRunningShields().get(
 						getControllerTag())).chars);
 				drawn = true;
 			}
-		}, 700);
+		}, 0);
 	}
 
 	@Override
@@ -93,11 +93,11 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 		int height = (int) (30 * scale + .5f);
 		int cellMargine = (int) (scale + .5f);
 		verticalContainer.removeAllViews();
-		Typeface tf = Typeface.createFromAsset(getActivity().getAssets(),
+		Typeface tf = Typeface.createFromAsset(getAppActivity().getAssets(),
 				"lcd_font.ttf");
 		for (int i = initRow; i < rowsEnd; i++) {
-			RelativeLayout rowCont = new RelativeLayout(getActivity());
-			LinearLayout rowBG = new LinearLayout(getActivity());
+			RelativeLayout rowCont = new RelativeLayout(getAppActivity());
+			LinearLayout rowBG = new LinearLayout(getAppActivity());
 			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 					height, LinearLayout.LayoutParams.WRAP_CONTENT);
 			rowCont.setLayoutParams(params);
@@ -108,7 +108,7 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 			rowBG.setLayoutParams(paramsCh);
 			rowBG.setOrientation(LinearLayout.VERTICAL);
 			for (int j = initCol; j < columnsEnd; j++) {
-				RelativeLayout cellCont = new RelativeLayout(getActivity());
+				RelativeLayout cellCont = new RelativeLayout(getAppActivity());
 				LinearLayout.LayoutParams cellParams = new LinearLayout.LayoutParams(
 						height, LinearLayout.LayoutParams.MATCH_PARENT);
 				cellParams.weight = 1;
@@ -119,14 +119,14 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 				cellCont.setLayoutParams(cellParams);
 				RelativeLayout.LayoutParams childParams = new RelativeLayout.LayoutParams(
 						RelativeLayout.LayoutParams.MATCH_PARENT, height);
-				TextView bg = new TextView(getActivity());
+				TextView bg = new TextView(getAppActivity());
 				bg.setLayoutParams(childParams);
 				bg.setBackgroundColor(0x99000000);
 				RelativeLayout.LayoutParams curParams = new RelativeLayout.LayoutParams(
 						height / 10, height);
 				// curParams.topMargin = (int) (1 * scale + .5f);
 				// curParams.bottomMargin = (int) (1 * scale + .5f);
-				TextView cur = new TextView(getActivity());
+				TextView cur = new TextView(getAppActivity());
 				cur.setLayoutParams(curParams);
 				cur.setBackgroundColor(0xffffffff);
 				cur.setVisibility(View.GONE);
@@ -135,14 +135,14 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 				cellCont.setClickable(true);
 				rowBG.addView(cellCont);
 			}
-			LinearLayout rowTxt = new LinearLayout(getActivity());
+			LinearLayout rowTxt = new LinearLayout(getAppActivity());
 			RelativeLayout.LayoutParams paramsCh2 = new RelativeLayout.LayoutParams(
 					height, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			rowTxt.setLayoutParams(paramsCh2);
 			rowTxt.setOrientation(LinearLayout.VERTICAL);
 			for (int j = 0; j < columnsEnd; j++) {
-				RelativeLayout cellCont = new RelativeLayout(getActivity());
-				RotatingTextView cell = new RotatingTextView(getActivity());
+				RelativeLayout cellCont = new RelativeLayout(getAppActivity());
+				RotatingTextView cell = new RotatingTextView(getAppActivity());
 				cell.setTypeface(tf);
 				LinearLayout.LayoutParams cellParams = new LinearLayout.LayoutParams(
 						height, LinearLayout.LayoutParams.MATCH_PARENT);
@@ -175,30 +175,30 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 	}
 
 	private synchronized ViewGroup getCellContainerBG(int curIndx) {
-		int row = curIndx >= ((LcdShieldd) getApplication().getRunningShields()
+		int row = curIndx >= ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).columns ? 1 : 0;
-		int col = curIndx >= ((LcdShieldd) getApplication().getRunningShields()
+		int col = curIndx >= ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).columns ? curIndx
-				- ((LcdShieldd) getApplication().getRunningShields().get(
+				- ((LcdShield) getApplication().getRunningShields().get(
 						getControllerTag())).columns : curIndx;
 		return ((ViewGroup) ((ViewGroup) ((ViewGroup) verticalContainer
-				.getChildAt(((LcdShieldd) getApplication().getRunningShields()
+				.getChildAt(((LcdShield) getApplication().getRunningShields()
 						.get(getControllerTag())).rows - row - 1))
 				.getChildAt(0)).getChildAt(col));
 	}
 
-	public synchronized void noBlinkCell() {
-		for (int i = 0; i < ((LcdShieldd) getApplication().getRunningShields()
+	public synchronized void noCursor() {
+		for (int i = 0; i < ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).rows
-				* ((LcdShieldd) getApplication().getRunningShields().get(
+				* ((LcdShield) getApplication().getRunningShields().get(
 						getControllerTag())).columns; i++) {
 			final int currIndx = i;
 			if (currIndx > -1
-					&& currIndx < (((LcdShieldd) getApplication()
-							.getRunningShields().get(getControllerTag())).columns * ((LcdShieldd) getApplication()
+					&& currIndx < (((LcdShield) getApplication()
+							.getRunningShields().get(getControllerTag())).columns * ((LcdShield) getApplication()
 							.getRunningShields().get(getControllerTag())).rows)) {
 				getCellContainerBG(currIndx).getChildAt(1).startAnimation(
-						AnimationUtils.loadAnimation(getActivity(),
+						AnimationUtils.loadAnimation(getAppActivity(),
 								R.anim.no_blink_cell));
 				getCellContainerBG(currIndx).getChildAt(1).setVisibility(
 						View.INVISIBLE);
@@ -206,42 +206,60 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 		}
 	}
 
-	public synchronized void blinkCell() {
-		final int currIndx = ((LcdShieldd) getApplication().getRunningShields()
+	public synchronized void cursor() {
+		final int currIndx = ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).currIndx;
 		if (currIndx > -1
-				&& currIndx < ((LcdShieldd) getApplication()
-						.getRunningShields().get(getControllerTag())).columns
-						* ((LcdShieldd) getApplication().getRunningShields()
+				&& currIndx < ((LcdShield) getApplication().getRunningShields()
+						.get(getControllerTag())).columns
+						* ((LcdShield) getApplication().getRunningShields()
 								.get(getControllerTag())).rows) {
 			getCellContainerBG(currIndx).getChildAt(1).setVisibility(
 					View.VISIBLE);
 			getCellContainerBG(currIndx).getChildAt(1).startAnimation(
-					AnimationUtils.loadAnimation(getActivity(),
+					AnimationUtils.loadAnimation(getAppActivity(),
 							R.anim.blink_cell));
 		}
 	}
 
-	public void noBlinkCellContainer() {
-		getCellContainerBG(
-				((LcdShieldd) getApplication().getRunningShields().get(
-						getControllerTag())).currIndx).startAnimation(
-				AnimationUtils.loadAnimation(getActivity(),
-						R.anim.no_blink_cell));
+	public synchronized void noBlink() {
+		for (int i = 0; i < ((LcdShield) getApplication().getRunningShields()
+				.get(getControllerTag())).rows
+				* ((LcdShield) getApplication().getRunningShields().get(
+						getControllerTag())).columns; i++) {
+			final int currIndx = i;
+			if (currIndx > -1
+					&& currIndx < (((LcdShield) getApplication()
+							.getRunningShields().get(getControllerTag())).columns * ((LcdShield) getApplication()
+							.getRunningShields().get(getControllerTag())).rows)) {
+				getCellContainerBG(currIndx).getChildAt(0).startAnimation(
+						AnimationUtils.loadAnimation(getAppActivity(),
+								R.anim.no_blinking_cell));
+			}
+		}
 	}
 
-	public void blinkCellContainer() {
-		getCellContainerBG(
-				((LcdShieldd) getApplication().getRunningShields().get(
-						getControllerTag())).currIndx).startAnimation(
-				AnimationUtils.loadAnimation(getActivity(), R.anim.blink_cell));
+	public synchronized void blink() {
+		final int currIndx = ((LcdShield) getApplication().getRunningShields()
+				.get(getControllerTag())).currIndx;
+		if (currIndx > -1
+				&& currIndx < ((LcdShield) getApplication().getRunningShields()
+						.get(getControllerTag())).columns
+						* ((LcdShield) getApplication().getRunningShields()
+								.get(getControllerTag())).rows) {
+			getCellContainerBG(currIndx).getChildAt(0).setVisibility(
+					View.VISIBLE);
+			getCellContainerBG(currIndx).getChildAt(0).startAnimation(
+					AnimationUtils.loadAnimation(getAppActivity(),
+							R.anim.blink_cell));
+		}
 	}
 
 	public synchronized void clear(boolean changeCursor, boolean clearView) {
-		for (int i = 0; i < ((LcdShieldd) getApplication().getRunningShields()
+		for (int i = 0; i < ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).rows; i++) {
 			LinearLayout rowTxt = (LinearLayout) ((ViewGroup) verticalContainer
-					.getChildAt(((LcdShieldd) getApplication()
+					.getChildAt(((LcdShield) getApplication()
 							.getRunningShields().get(getControllerTag())).rows
 							- i - 1)).getChildAt(1);
 			for (int j = 0; j < rowTxt.getChildCount(); j++) {
@@ -253,29 +271,30 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 
 	public void blinkLCD() {
 		v.findViewById(R.id.bg).startAnimation(
-				AnimationUtils.loadAnimation(getActivity(),
+				AnimationUtils.loadAnimation(getAppActivity(),
 						R.anim.blink_anim_bg));
 	}
 
 	public void noBlinkLCD() {
 		v.findViewById(R.id.bg).startAnimation(
-				AnimationUtils.loadAnimation(getActivity(), R.anim.no_anim_bg));
+				AnimationUtils.loadAnimation(getAppActivity(),
+						R.anim.no_anim_bg));
 	}
 
 	private synchronized void redraw(char[] arr) {
-		for (int i = 0; i < ((LcdShieldd) getApplication().getRunningShields()
+		for (int i = 0; i < ((LcdShield) getApplication().getRunningShields()
 				.get(getControllerTag())).rows; i++) {
 			LinearLayout rowTxt = (LinearLayout) ((ViewGroup) verticalContainer
-					.getChildAt(((LcdShieldd) getApplication()
+					.getChildAt(((LcdShield) getApplication()
 							.getRunningShields().get(getControllerTag())).rows
 							- i - 1)).getChildAt(1);
 			for (int j = 0; j < rowTxt.getChildCount(); j++) {
 				((RotatingTextView) ((ViewGroup) rowTxt.getChildAt(j))
 						.getChildAt(0)).startAnimation(AnimationUtils
-						.loadAnimation(getActivity(), R.anim.rotate_lcd));
+						.loadAnimation(getAppActivity(), R.anim.rotate_lcd));
 				((RotatingTextView) ((ViewGroup) rowTxt.getChildAt(j))
 						.getChildAt(0))
-						.setText(arr[(i * ((LcdShieldd) getApplication()
+						.setText(arr[(i * ((LcdShield) getApplication()
 								.getRunningShields().get(getControllerTag())).columns)
 								+ j]
 								+ "");
@@ -305,7 +324,7 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 
 					@Override
 					public void run() {
-						blinkCell();
+						LcdFragment.this.blink();
 					}
 				});
 		}
@@ -317,7 +336,31 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 
 					@Override
 					public void run() {
-						noBlinkCell();
+						LcdFragment.this.noBlink();
+					}
+				});
+		}
+
+		@Override
+		public void cursor() {
+			if (canChangeUI() && drawn)
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						LcdFragment.this.cursor();
+					}
+				});
+		}
+
+		@Override
+		public void noCursor() {
+			if (canChangeUI() && drawn)
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						LcdFragment.this.noCursor();
 					}
 				});
 		}
@@ -327,8 +370,8 @@ public class LcdFragmentPre extends ShieldFragmentParent<LcdFragmentPre> {
 	private void initializeFirmata() {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new LcdShieldd(getActivity(), getControllerTag()));
-		((LcdShieldd) getApplication().getRunningShields().get(
+					new LcdShield(getAppActivity(), getControllerTag()));
+		((LcdShield) getApplication().getRunningShields().get(
 				getControllerTag())).setLcdEventHandler(lcdEventHandler);
 	}
 

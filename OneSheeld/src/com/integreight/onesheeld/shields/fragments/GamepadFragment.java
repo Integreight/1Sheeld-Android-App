@@ -230,7 +230,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 	private void initializeFirmata() {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new GamepadShield(getActivity(), getControllerTag()));
+					new GamepadShield(activity, getControllerTag()));
 		toggleMenuButtons();
 	}
 
