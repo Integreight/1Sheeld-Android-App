@@ -24,8 +24,6 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	private boolean isLedOn;
 	private MediaPlayer mp;
 
-	// private static final int soundResourceId = R.raw.buzzer_sound;
-
 	public SpeakerShield() {
 		super();
 		requiredPinsIndex = 0;
@@ -165,36 +163,6 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 					}
 			}
 		}
-		// else {
-		// if (uri != null) {
-		// try {
-		// // Ring
-		// if (!mp.isPlaying())
-		// mp = MediaPlayer.create(activity, Uri.parse(uri));
-		// } catch (IllegalArgumentException e) {
-		// Toast.makeText(activity,
-		// "Can't play the current buzz! Please, replace it",
-		// Toast.LENGTH_SHORT).show();
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (SecurityException e) {
-		// Toast.makeText(activity,
-		// "Can't play the current buzz! Please, replace it",
-		// Toast.LENGTH_SHORT).show();
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IllegalStateException e) {
-		// Toast.makeText(activity,
-		// "Can't play the current buzz! Please, replace it",
-		// Toast.LENGTH_SHORT).show();
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// } else {
-		// if (!mp.isPlaying())
-		// mp = MediaPlayer.create(getApplication(), soundResourceId);
-		// }
-		// }
 		mp.setLooping(true);
 		if (!mp.isPlaying() && isPrepared) {
 			mp.start();
