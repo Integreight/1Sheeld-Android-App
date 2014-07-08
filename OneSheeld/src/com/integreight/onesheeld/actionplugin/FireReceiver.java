@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.plugin;
+package com.integreight.onesheeld.actionplugin;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -35,7 +35,7 @@ public final class FireReceiver extends BroadcastReceiver
      * @param context {@inheritDoc}.
      * @param intent the incoming {@link com.twofortyfouram.locale.Intent#ACTION_FIRE_SETTING} Intent. This
      *            should contain the {@link com.twofortyfouram.locale.Intent#EXTRA_BUNDLE} that was saved by
-     *            {@link EditActivity} and later broadcast by Locale.
+     *            {@link ActionActivity} and later broadcast by Locale.
      */
     @Override
     public void onReceive(final Context context, final Intent intent)

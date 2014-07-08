@@ -74,4 +74,12 @@
     <string name="buzzer_tone">Press Required Tone</string>
     <string name="time_clock">Time</string>
 
+    <!-- Condition plugin name -->
+    <string name="condition_app_name">Locale Display Plug-in</string>
+    <string name="condition_plugin_name">Display</string>
+    <string name="list_on">On</string>
+    <string name="list_off">Off</string>
+    <string name="blurb_on">On</string>
+    <string name="blurb_off">Off</string>
+
 </resources>

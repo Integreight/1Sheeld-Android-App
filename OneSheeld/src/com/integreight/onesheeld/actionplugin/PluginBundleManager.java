@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.plugin;
+package com.integreight.onesheeld.actionplugin;
 
 import android.content.Context;
 import android.os.Bundle;
