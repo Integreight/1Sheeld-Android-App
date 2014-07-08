@@ -50,7 +50,9 @@ import com.integreight.onesheeld.shields.fragments.SevenSegmentFragment;
 import com.integreight.onesheeld.shields.fragments.SkypeFragment;
 import com.integreight.onesheeld.shields.fragments.SliderFragment;
 import com.integreight.onesheeld.shields.fragments.SmsFragment;
+import com.integreight.onesheeld.shields.fragments.SpeechRecognitionFragment;
 import com.integreight.onesheeld.shields.fragments.TemperatureFragment;
+import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
@@ -183,6 +185,12 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case KEYBOARD_SHIELD:
 			return addToCreatedListAndReturn(UIShield.KEYBOARD_SHIELD,
 					new KeyboardFragment());
+		case SPEECH_RECOGNIZER_SHIELD:
+			return addToCreatedListAndReturn(UIShield.SPEECH_RECOGNIZER_SHIELD,
+					new SpeechRecognitionFragment());
+		case TEXT_TO_SPEECH_SHIELD:
+			return addToCreatedListAndReturn(UIShield.TEXT_TO_SPEECH_SHIELD,
+					new TextToSpeechFragment());
 
 		default:
 			return new EmptyShieldFragment();

@@ -376,8 +376,10 @@ public class ArduinoConnectivityPopup extends Dialog {
 									BluetoothDevice btDevice = foundDevicesTable
 											.get(deviceView.getTag());
 									if (btDevice != null) {
-										if (btDevice.getName().toLowerCase()
-												.contains("1sheeld")) {
+										if (btDevice.getName() != null
+												&& btDevice.getName()
+														.toLowerCase()
+														.contains("1sheeld")) {
 											deviceView
 													.setText(foundDevicesTable
 															.get(deviceView
