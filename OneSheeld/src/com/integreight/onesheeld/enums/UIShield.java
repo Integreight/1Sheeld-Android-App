@@ -36,6 +36,7 @@ import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
+import com.integreight.onesheeld.shields.controller.SpeechRecognitionShield;
 import com.integreight.onesheeld.shields.controller.TemperatureShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
@@ -124,7 +125,10 @@ public enum UIShield {
 			R.drawable.shields_list_clock_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x22, "Keyboard", 0xffde1f26,
 			R.drawable.shields_list_keyboard_symbol, false,
-			KeyboardShield.class);
+			KeyboardShield.class), SPEECH_RECOGNIZER_SHIELD((byte) 0x23,
+			"Speech Recognizer", 0xffde1f26,
+			R.drawable.shields_list_keyboard_symbol, false,
+			SpeechRecognitionShield.class);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
 			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,

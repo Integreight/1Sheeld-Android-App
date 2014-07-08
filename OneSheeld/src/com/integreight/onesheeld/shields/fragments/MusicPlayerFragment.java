@@ -58,7 +58,10 @@ public class MusicPlayerFragment extends
 			public void run() {
 				while (isTracking) {
 					if ((MusicShield) getApplication().getRunningShields().get(
-							getControllerTag()) != null) {
+							getControllerTag()) != null
+							&& ((MusicShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).mediaPlayer != null) {
 						seekBar.setMax(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(((MusicShield) getApplication()
