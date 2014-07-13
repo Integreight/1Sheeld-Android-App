@@ -52,8 +52,11 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	@Override
 	public void reset() {
-		if (myTTS != null)
+		if (myTTS != null) {
 			myTTS.stop();
+			myTTS.shutdown();
+			myTTS = null;
+		}
 	}
 
 	public interface TTsEventHandler {

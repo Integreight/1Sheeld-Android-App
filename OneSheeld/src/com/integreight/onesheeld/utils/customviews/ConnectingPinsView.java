@@ -2,6 +2,7 @@ package com.integreight.onesheeld.utils.customviews;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,13 @@ public class ConnectingPinsView extends Fragment {
 	private ArrayList<LinearLayout> pinsSubContainers = new ArrayList<LinearLayout>();
 	private View view;
 	private String selectedPinName = "";
+	MainActivity activity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		this.activity = (MainActivity) activity;
+		super.onAttach(activity);
+	}
 
 	public static ConnectingPinsView getInstance() {
 		if (thisInstance == null) {
@@ -69,8 +77,7 @@ public class ConnectingPinsView extends Fragment {
 	public void reset(final ControllerParent<?> controller,
 			final OnPinSelectionListener listner) {
 		if (view == null) {
-			((MainActivity) getActivity())
-					.getSupportFragmentManager()
+			activity.getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.pinsViewContainer,
 							ConnectingPinsView.getInstance()).commit();
@@ -136,7 +143,7 @@ public class ConnectingPinsView extends Fragment {
 													.getName() + shieldPinName))
 								prevArduinoPin.connectedPins.remove(controller
 										.getClass().getName() + shieldPinName);
-							// ((OneSheeldApplication) getActivity()
+							// ((OneSheeldApplication) activity
 							// .getApplication())
 							// .getAppFirmata()
 							// .digitalWrite(
@@ -196,7 +203,7 @@ public class ConnectingPinsView extends Fragment {
 				// view
 				// .findViewById(R.id.scrollingPins);
 				for (int i = 0; i < controller.shieldPins.length; i++) {
-					LinearLayout pinSubContainer = (LinearLayout) getActivity()
+					LinearLayout pinSubContainer = (LinearLayout) activity
 							.getLayoutInflater().inflate(
 									R.layout.pin_sub_container, null, false);
 					final OneShieldButton pinButton = (OneShieldButton) pinSubContainer
