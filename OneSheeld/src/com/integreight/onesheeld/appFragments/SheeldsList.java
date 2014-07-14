@@ -120,6 +120,19 @@ public class SheeldsList extends Fragment {
 
 								@Override
 								public void onClick(View v) {
+									activity.findViewById(R.id.cancelConnection)
+											.setOnClickListener(
+													new View.OnClickListener() {
+
+														@Override
+														public void onClick(
+																View v) {
+															// TODO
+															// Auto-generated
+															// method stub
+
+														}
+													});
 									launchShieldsOperationActivity();
 								}
 							});
@@ -178,7 +191,7 @@ public class SheeldsList extends Fragment {
 								}
 							});
 			}
-		}, 1000);
+		}, 500);
 		activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) activity.getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);

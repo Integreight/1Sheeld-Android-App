@@ -64,9 +64,13 @@ public class MusicPlayerFragment extends
 									.get(getControllerTag())).mediaPlayer != null) {
 						seekBar.setMax(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaDuration);
-						seekBar.setProgress(((MusicShield) getApplication()
-								.getRunningShields().get(getControllerTag())).mediaPlayer
-								.getCurrentPosition());
+						try {
+							seekBar.setProgress(((MusicShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).mediaPlayer
+									.getCurrentPosition());
+						} catch (IllegalStateException e) {
+						}
 					}
 					try {
 						Thread.sleep(100);

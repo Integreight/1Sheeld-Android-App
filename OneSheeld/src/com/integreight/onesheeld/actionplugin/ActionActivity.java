@@ -38,8 +38,9 @@ import com.integreight.onesheeld.utils.customviews.PluginConnectingPinsView;
  * @see com.twofortyfouram.locale.Intent#EXTRA_BUNDLE
  */
 public final class ActionActivity extends AbstractPluginActivity {
-	private String[] pins = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-			"10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
+	// private String[] pins = { "0", "1", "2", "3", "4", "5", "6", "7", "8",
+	// "9",
+	// "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
 	private String[] output = { "High", "Low" };
 
 	// Spinner pinsSpinner;
@@ -81,8 +82,9 @@ public final class ActionActivity extends AbstractPluginActivity {
 		// pinsSpinner = (Spinner) findViewById(R.id.pins_spinner);
 		outputSpinner = (Spinner) findViewById(R.id.output_spinner);
 
-		ArrayAdapter<String> pinsArrayAdapter = new ArrayAdapter<String>(this,
-				android.R.layout.simple_spinner_item, pins);
+		// ArrayAdapter<String> pinsArrayAdapter = new
+		// ArrayAdapter<String>(this,
+		// android.R.layout.simple_spinner_item, pins);
 		ArrayAdapter<String> outputArrayAdapter = new ArrayAdapter<String>(
 				this, android.R.layout.simple_spinner_item, output);
 		// pinsSpinner.setAdapter(pinsArrayAdapter);
@@ -90,8 +92,8 @@ public final class ActionActivity extends AbstractPluginActivity {
 
 		if (null == savedInstanceState) {
 			if (PluginBundleManager.isBundleValid(localeBundle)) {
-				final int pin = localeBundle
-						.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
+				// final int pin = localeBundle
+				// .getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
 				final boolean output = localeBundle
 						.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT);
 				// ((EditText)

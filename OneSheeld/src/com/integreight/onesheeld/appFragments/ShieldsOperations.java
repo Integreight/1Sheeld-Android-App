@@ -300,39 +300,46 @@ public class ShieldsOperations extends BaseContainerFragment {
 								}
 							});
 			}
-		}, 1000);
+		}, 500);
 		((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.bluetooth_disconnect_button);
 		((ViewGroup) activity.findViewById(R.id.cancelConnection))
 				.getChildAt(1).setBackgroundResource(R.drawable.back_button);
+		new Handler().postDelayed(new Runnable() {
 
-		activity.findViewById(R.id.cancelConnection).setOnClickListener(
-				new View.OnClickListener() {
+			@Override
+			public void run() {
+				activity.findViewById(R.id.cancelConnection)
+						.setOnClickListener(new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						boolean isMenuOpened = (activity.appSlidingMenu != null && activity.appSlidingMenu
-								.isOpen())
-								|| (settingsSlidingView != null && settingsSlidingView
-										.isOpened())
-								|| (pinsSlidingView != null && pinsSlidingView
-										.isOpened());
-						activity.onBackPressed();
-						if (!isMenuOpened)
-							activity.findViewById(R.id.cancelConnection)
-									.setOnClickListener(
-											new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								boolean isMenuOpened = (activity.appSlidingMenu != null && activity.appSlidingMenu
+										.isOpen())
+										|| (settingsSlidingView != null && settingsSlidingView
+												.isOpened())
+										|| (pinsSlidingView != null && pinsSlidingView
+												.isOpened());
+								activity.onBackPressed();
+								if (!isMenuOpened)
+									activity.findViewById(R.id.cancelConnection)
+											.setOnClickListener(
+													new View.OnClickListener() {
 
-												@Override
-												public void onClick(View v) {
-													// TODO Auto-generated
-													// method stub
+														@Override
+														public void onClick(
+																View v) {
+															// TODO
+															// Auto-generated
+															// method stub
 
-												}
-											});
-					}
-				});
+														}
+													});
+							}
+						});
+			}
+		}, 500);
 		super.onResume();
 	}
 }
