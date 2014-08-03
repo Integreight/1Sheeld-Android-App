@@ -9,7 +9,10 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.speech.SpeechRecognizer;
+
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SpeechRecognition.RecognitionEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService;
@@ -19,6 +22,7 @@ public class SpeechRecognitionShield extends
 		ControllerParent<SpeechRecognitionShield> {
 	private SpeechRecognitionService mSpeechRecognitionService;
 	private RecognitionEventHandler eventHandler;
+	private static final byte SEND_RESULT = 0x01;
 
 	public SpeechRecognitionShield() {
 		super();
@@ -55,12 +59,23 @@ public class SpeechRecognitionShield extends
 		this.eventHandler = eventHandler;
 	}
 
+	private ShieldFrame sf;
 	RecognitionEventHandler controllerHandler = new RecognitionEventHandler() {
 
 		@Override
 		public void onResult(List<String> result) {
-			if (eventHandler != null)
-				eventHandler.onResult(result);
+			if (result.size() > 0) {
+				if (eventHandler != null)
+					eventHandler.onResult(result);
+				sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
+						SEND_RESULT);
+				String recognized = result.get(0);
+				sf.addStringArgument(recognized);
+				Log.d("Frame", sf.toString());
+				sendShieldFrame(sf);
+			} else {
+				onError("No Matching result", SpeechRecognizer.ERROR_NO_MATCH);
+			}
 		}
 
 		@Override
@@ -85,6 +100,12 @@ public class SpeechRecognitionShield extends
 		public void onBeginingOfSpeech() {
 			eventHandler.onBeginingOfSpeech();
 		}
+
+		@Override
+		public void onRmsChanged(float rmsdB) {
+			// TODO Auto-generated method stub
+
+		}
 	};
 
 	@Override
@@ -96,15 +117,22 @@ public class SpeechRecognitionShield extends
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.SPEECH_RECOGNIZER_SHIELD.getId()) {
-			if (controllerHandler != null) {
+			if (frame.getFunctionId() == 0x01) {
 				startRecognizer();
 			}
 		}
 	}
 
 	public void startRecognizer() {
-		if (mSpeechRecognitionService != null)
-			mSpeechRecognitionService.startRecognition(controllerHandler);
+		activity.runOnUiThread(new Runnable() {
+
+			@Override
+			public void run() {
+				if (mSpeechRecognitionService != null)
+					mSpeechRecognitionService
+							.startRecognition(controllerHandler);
+			}
+		});
 	}
 
 	@Override

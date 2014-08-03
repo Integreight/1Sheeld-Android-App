@@ -25,6 +25,8 @@ public class SpeechRecognition implements RecognitionListener {
 		public void onBeginingOfSpeech();
 
 		public void onEndOfSpeech();
+
+		public void onRmsChanged(float rmsdB);
 	}
 
 	private RecognitionEventHandler mResultCallback;
@@ -32,6 +34,14 @@ public class SpeechRecognition implements RecognitionListener {
 	public SpeechRecognition(Context context) {
 		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
 		mSpeechRecognizer.setRecognitionListener(this);
+	}
+
+	public void stop() {
+		if (mSpeechRecognizer != null) {
+			mSpeechRecognizer.stopListening();
+			mSpeechRecognizer.cancel();
+			mSpeechRecognizer.destroy();
+		}
 	}
 
 	public void start(RecognitionEventHandler callback) {
@@ -125,8 +135,7 @@ public class SpeechRecognition implements RecognitionListener {
 
 	@Override
 	public void onRmsChanged(float rmsdB) {
-		// TODO Auto-generated method stub
-
+		mResultCallback.onRmsChanged(rmsdB);
 	}
 
 	private void receiveResults(Bundle results) {

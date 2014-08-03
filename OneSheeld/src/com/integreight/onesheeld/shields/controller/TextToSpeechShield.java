@@ -19,6 +19,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 	// private int TTS_DATA_CHECK_CODE = 0;
 	// private int RESULT_TALK_CODE = 1;
 	private TextToSpeech myTTS;
+	private float ttsPitch = 1.0f;
 
 	public TextToSpeechShield() {
 		super();
@@ -44,8 +45,12 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		if (frame.getShieldId() == UIShield.SPEECH_RECOGNIZER_SHIELD.getId()) {
-			if (eventHandler != null) {
+		if (frame.getShieldId() == UIShield.TEXT_TO_SPEECH_SHIELD.getId()) {
+			if (frame.getFunctionId() == 0x01) {
+				speech(frame.getArgumentAsString(0));
+				if (eventHandler != null) {
+					eventHandler.onSpeek("Heyyyyyyyyy!");
+				}
 			}
 		}
 	}
@@ -127,5 +132,14 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 		 * if(myTTS.isLanguageAvailable(deviceLocale) ==
 		 * TextToSpeech.LANG_AVAILABLE) myTTS.setLanguage(deviceLocale);
 		 */
+	}
+
+	public float getTtsPitch() {
+		return ttsPitch;
+	}
+
+	public void setTtsPitch(float ttsPitch) {
+		if (myTTS.setPitch(ttsPitch) == TextToSpeech.SUCCESS)
+			this.ttsPitch = ttsPitch;
 	}
 }

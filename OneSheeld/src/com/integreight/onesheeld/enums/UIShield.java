@@ -9,6 +9,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ClockShield;
+import com.integreight.onesheeld.shields.controller.DataLoggerShield;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
@@ -126,13 +127,15 @@ public enum UIShield {
 			R.drawable.shields_list_clock_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x22, "Keyboard", 0xffde1f26,
 			R.drawable.shields_list_keyboard_symbol, false,
-			KeyboardShield.class), SPEECH_RECOGNIZER_SHIELD((byte) 0x23,
-			"Speech Recognizer", 0xffde1f26,
-			R.drawable.shields_list_keyboard_symbol, false,
-			SpeechRecognitionShield.class), TEXT_TO_SPEECH_SHIELD((byte) 0x23,
+			KeyboardShield.class), TEXT_TO_SPEECH_SHIELD((byte) 0x23,
 			"Text To Speech", 0xffde1f26,
 			R.drawable.shields_list_keyboard_symbol, false,
-			TextToSpeechShield.class);
+			TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD((byte) 0x24,
+			"Speech Recognizer", 0xffde1f26,
+			R.drawable.shields_list_voice_recognition_symbol, false,
+			SpeechRecognitionShield.class), DATA_LOGGER((byte) 0x25,
+			"Data Logger", 0xffde1f26, R.drawable.shields_list_keyboard_symbol,
+			false, DataLoggerShield.class);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
 			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
@@ -140,7 +143,9 @@ public enum UIShield {
 			0xffdb7f40, 0xffb950e9, 0xff4c84e9, 0xff0b4c8d, 0xff08c473,
 			0xff543c8d, 0xffd95342, 0xff58844f, 0xff8b268d, 0xff67584d,
 			0xff999f45, 0xff6d0347, 0xffe9bd03, 0xff127303, 0xff08bbb2,
-			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26 };
+			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26,
+			0xff142218, 0xffc9a302, 0xffa57378, 0xff3354af, 0xff282742,
+			0xff381616 };
 	private byte id;
 	private String name;
 	public int itemBackgroundColor;

@@ -42,6 +42,8 @@ public class SpeechRecognitionService extends Service {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		if (mSpeechRecognition != null)
+			mSpeechRecognition.stop();
 		Log.d(TAG, "onDestroy");
 	}
 

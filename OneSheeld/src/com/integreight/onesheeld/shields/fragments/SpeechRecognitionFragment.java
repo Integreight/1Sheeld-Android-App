@@ -105,6 +105,12 @@ public class SpeechRecognitionFragment extends
 				toggleLed(true);
 			}
 		}
+
+		@Override
+		public void onRmsChanged(float rmsdB) {
+			// TODO Auto-generated method stub
+
+		}
 	};
 
 	private void toggleLed(final boolean isOn) {

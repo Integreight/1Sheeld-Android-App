@@ -191,6 +191,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case TEXT_TO_SPEECH_SHIELD:
 			return addToCreatedListAndReturn(UIShield.TEXT_TO_SPEECH_SHIELD,
 					new TextToSpeechFragment());
+		case DATA_LOGGER:
+			return addToCreatedListAndReturn(UIShield.CLOCK_SHIELD,
+					new ClockFragment());
 
 		default:
 			return new EmptyShieldFragment();
