@@ -6,23 +6,48 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
+
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SpeechRecognitionShield;
 import com.integreight.onesheeld.shields.controller.utils.SpeechRecognition.RecognitionEventHandler;
+import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SpeechRecognitionFragment extends
 		ShieldFragmentParent<SpeechRecognitionFragment> {
 
-	ImageView ledImage;
+	View statusCircle;
+	OneShieldTextView statusHint, recognizedResult;
+	TextView rmsIndicator;
+	RelativeLayout.LayoutParams params;
+	int stepValue = 0;
+	int marginValue;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.led_shield_fragment_layout,
-				container, false);
-		ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
+		View v = inflater.inflate(
+				R.layout.voice_recognition_shield_fragment_view, container,
+				false);
+		statusCircle = v.findViewById(R.id.statusCircle);
+		statusHint = (OneShieldTextView) v.findViewById(R.id.statusHint);
+		rmsIndicator = (TextView) v.findViewById(R.id.rmsLevelIndicator);
+		recognizedResult = (OneShieldTextView) v
+				.findViewById(R.id.recognizedResult);
+		params = (LayoutParams) rmsIndicator.getLayoutParams();
+		statusCircle.getViewTreeObserver().addOnGlobalLayoutListener(
+				new ViewTreeObserver.OnGlobalLayoutListener() {
+
+					@Override
+					public void onGlobalLayout() {
+						if (stepValue == 0)
+							stepValue = statusCircle.getHeight() / 10;
+					}
+				});
 		return v;
 
 	}
@@ -32,7 +57,7 @@ public class SpeechRecognitionFragment extends
 		((SpeechRecognitionShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setEventHandler(speechRecognitionEventHandler);
-		ledImage.setOnClickListener(new View.OnClickListener() {
+		statusCircle.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View arg0) {
@@ -63,9 +88,9 @@ public class SpeechRecognitionFragment extends
 
 					@Override
 					public void run() {
+						setOff();
 						if (result.size() > 0)
-							Toast.makeText(activity, result.get(0),
-									Toast.LENGTH_LONG).show();
+							recognizedResult.setText(result.get(0));
 					}
 				});
 			}
@@ -74,7 +99,16 @@ public class SpeechRecognitionFragment extends
 		@Override
 		public void onReadyForSpeach(Bundle params) {
 			if (canChangeUI()) {
-				toggleLed(true);
+				if (canChangeUI()) {
+					uiHandler.post(new Runnable() {
+
+						@Override
+						public void run() {
+							recognizedResult.setText("");
+							setON();
+						}
+					});
+				}
 			}
 		}
 
@@ -85,6 +119,7 @@ public class SpeechRecognitionFragment extends
 
 					@Override
 					public void run() {
+						setOff();
 						Toast.makeText(activity, error, Toast.LENGTH_LONG)
 								.show();
 					}
@@ -95,37 +130,58 @@ public class SpeechRecognitionFragment extends
 		@Override
 		public void onEndOfSpeech() {
 			if (canChangeUI()) {
-				toggleLed(false);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						recognizedResult.setText("");
+						setOff();
+					}
+				});
 			}
 		}
 
 		@Override
 		public void onBeginingOfSpeech() {
 			if (canChangeUI()) {
-				toggleLed(true);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						recognizedResult.setText("");
+						setON();
+					}
+				});
 			}
 		}
 
 		@Override
-		public void onRmsChanged(float rmsdB) {
-			// TODO Auto-generated method stub
+		public void onRmsChanged(final float rmsdB) {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
+				@Override
+				public void run() {
+					marginValue = (int) (stepValue * (rmsdB > 10 ? 10 : rmsdB));
+					params.bottomMargin = marginValue < 0 ? 0 : marginValue;
+					rmsIndicator.requestLayout();
+				}
+			});
 		}
 	};
 
-	private void toggleLed(final boolean isOn) {
-		uiHandler.removeCallbacksAndMessages(null);
-		uiHandler.post(new Runnable() {
+	private void setOff() {
+		rmsIndicator.setVisibility(View.INVISIBLE);
+		statusCircle.setBackgroundColor(getResources().getColor(
+				R.color.voice_rec_circle_red));
+		statusHint.setText(R.string.tabToSpeak);
+	}
 
-			@Override
-			public void run() {
-				if (isOn) {
-					ledImage.setImageResource(R.drawable.led_shield_led_on);
-				} else {
-					ledImage.setImageResource(R.drawable.led_shield_led_off);
-				}
-			}
-		});
+	private void setON() {
+		rmsIndicator.setVisibility(View.VISIBLE);
+		statusCircle.setBackgroundColor(getResources().getColor(
+				R.color.voice_rec_circle_green));
+		statusHint.setText(R.string.speak);
 	}
 
 	// private void intializeFirmata(ArduinoFirmata firmata, int connectedPin){

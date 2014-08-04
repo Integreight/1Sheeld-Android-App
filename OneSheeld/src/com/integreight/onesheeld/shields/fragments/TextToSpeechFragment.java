@@ -63,9 +63,9 @@ public class TextToSpeechFragment extends
 							.getRunningShields().get(getControllerTag()))
 							.getTtsPitch();
 					speakerLevel
-							.setBackgroundResource(ttsPitch < 1 ? R.drawable.tts_shield_0_volume
+							.setBackgroundResource(ttsPitch <= 0 ? R.drawable.tts_shield_0_volume
 									: ttsPitch == 1 ? R.drawable.tts_shield_1_volume
-											: ttsPitch <= 2 ? R.drawable.tts_shield_2_volume
+											: ttsPitch == 2 ? R.drawable.tts_shield_2_volume
 													: R.drawable.tts_shield_3_volume);
 				}
 			}
@@ -74,7 +74,7 @@ public class TextToSpeechFragment extends
 
 			@Override
 			public void onClick(View arg0) {
-				if (ttsPitch > 0) {
+				if (ttsPitch >= 0) {
 					((TextToSpeechShield) getApplication().getRunningShields()
 							.get(getControllerTag())).setTtsPitch(ttsPitch
 							- freqValue);
@@ -82,9 +82,9 @@ public class TextToSpeechFragment extends
 							.getRunningShields().get(getControllerTag()))
 							.getTtsPitch();
 					speakerLevel
-							.setBackgroundResource(ttsPitch < 1 ? R.drawable.tts_shield_0_volume
+							.setBackgroundResource(ttsPitch <= 0 ? R.drawable.tts_shield_0_volume
 									: ttsPitch == 1 ? R.drawable.tts_shield_1_volume
-											: ttsPitch <= 2 ? R.drawable.tts_shield_2_volume
+											: ttsPitch == 2 ? R.drawable.tts_shield_2_volume
 													: R.drawable.tts_shield_3_volume);
 				}
 			}
@@ -135,7 +135,6 @@ public class TextToSpeechFragment extends
 			getApplication().getRunningShields().put(getControllerTag(),
 					new TextToSpeechShield(activity, getControllerTag()));
 		}
-
 	}
 
 	@Override
@@ -146,7 +145,6 @@ public class TextToSpeechFragment extends
 	@Override
 	public void doOnServiceConnected() {
 		initializeFirmata();
-
 	}
 
 }

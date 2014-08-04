@@ -103,8 +103,8 @@ public class SpeechRecognitionShield extends
 
 		@Override
 		public void onRmsChanged(float rmsdB) {
-			// TODO Auto-generated method stub
-
+			eventHandler.onRmsChanged(rmsdB);
+			Log.d("RMS", rmsdB + "");
 		}
 	};
 

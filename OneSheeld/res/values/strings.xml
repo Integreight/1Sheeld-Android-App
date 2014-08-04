@@ -82,4 +82,8 @@
     <string name="blurb_on">On</string>
     <string name="blurb_off">Off</string>
 
+    <!-- Voice Recognition -->
+    <string name="speak">Speak</string>
+    <string name="tabToSpeak">Tab\nto\nSpeak</string>
+
 </resources>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/statusCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/rms_shield_indicator"
+            android:layout_alignLeft="@id/rms_shield_indicator"
+            android:layout_alignRight="@id/rms_shield_indicator"
+            android:layout_alignTop="@id/rms_shield_indicator"
+            android:layout_centerHorizontal="true"
+            android:layout_margin="1dp"
+            android:background="@color/voice_rec_circle_red" />
+
+        <com.integreight.onesheeld.utils.OneShieldTextView
+            android:id="@+id/statusHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/rms_shield_indicator"
+            android:layout_alignLeft="@id/rms_shield_indicator"
+            android:layout_alignRight="@id/rms_shield_indicator"
+            android:layout_alignTop="@id/rms_shield_indicator"
+            android:layout_marginTop="5dp"
+            android:gravity="center"
+            android:text="@string/tabToSpeak"
+            android:textColor="@color/offWhite"
+            android:textSize="33sp" />
+
+        <TextView
+            android:id="@+id/rmsLevelIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/rms_shield_indicator"
+            android:layout_alignLeft="@id/rms_shield_indicator"
+            android:layout_alignRight="@id/rms_shield_indicator"
+            android:layout_alignTop="@id/rms_shield_indicator"
+            android:layout_centerHorizontal="true"
+            android:background="#61000000" />
+
+        <TextView
+            android:id="@+id/rms_shield_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/voice_recognition_shield_indicator" />
+    </RelativeLayout>
+
+    <com.integreight.onesheeld.utils.OneShieldTextView
+        android:id="@+id/recognizedResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textColor="@color/offWhite"
+        android:textSize="30sp" />
+
+</LinearLayout>
