@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.MusicPlayListAdapter;
-import com.integreight.onesheeld.utils.OneShieldButton;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.database.MusicPlaylist;
 
 public class MusicShieldSettings extends Fragment {
@@ -34,9 +34,9 @@ public class MusicShieldSettings extends Fragment {
 	private void initView() {
 		final ListView playlist = (ListView) getView().findViewById(
 				R.id.playList);
-		final OneShieldButton addFromSDcard = (OneShieldButton) getView()
+		final OneSheeldButton addFromSDcard = (OneSheeldButton) getView()
 				.findViewById(R.id.addFromSDcard);
-		final OneShieldButton removeFromPlaylist = (OneShieldButton) getView()
+		final OneSheeldButton removeFromPlaylist = (OneSheeldButton) getView()
 				.findViewById(R.id.removeFromPlayList);
 		MusicPlaylist db = new MusicPlaylist(getActivity());
 		db.openToWrite();

@@ -13,14 +13,15 @@ import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandle
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
+	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.skype_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.skype_shield_fragment_layout, container,
+				false);
 		return v;
 	}
 

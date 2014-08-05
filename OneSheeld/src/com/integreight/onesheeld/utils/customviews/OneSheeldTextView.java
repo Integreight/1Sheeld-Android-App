@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.utils;
+package com.integreight.onesheeld.utils.customviews;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 
@@ -7,9 +7,9 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-public class OneShieldTextView extends TextView {
+public class OneSheeldTextView extends TextView {
 
-	public OneShieldTextView(Context context, AttributeSet attrs) {
+	public OneSheeldTextView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setTypeface(
 				((OneSheeldApplication) context.getApplicationContext()).appFont,

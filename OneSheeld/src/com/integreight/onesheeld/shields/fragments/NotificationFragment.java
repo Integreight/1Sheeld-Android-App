@@ -20,11 +20,12 @@ public class NotificationFragment extends
 	TextView notificationTextTextView;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.notification_shield_fragment_layout,
+		v = inflater.inflate(R.layout.notification_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -46,8 +47,8 @@ public class NotificationFragment extends
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		notificationTextTextView = (TextView) getView().findViewById(
-				R.id.notification_shield_text_textview);
+		notificationTextTextView = (TextView) v
+				.findViewById(R.id.notification_shield_text_textview);
 
 	}
 

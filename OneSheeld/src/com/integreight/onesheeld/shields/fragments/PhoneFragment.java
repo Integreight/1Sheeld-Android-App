@@ -10,19 +10,20 @@ import android.widget.LinearLayout;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.PhoneShield;
 import com.integreight.onesheeld.shields.controller.PhoneShield.PhoneEventHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 	LinearLayout callsLogContainer;
+	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.phone_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.phone_shield_fragment_layout, container,
+				false);
 		return v;
 	}
 
@@ -43,8 +44,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 		super.onActivityCreated(savedInstanceState);
 		((PhoneShield) getApplication().getRunningShields().get(
 				getControllerTag())).setPhoneEventHandler(phoneEventHandler);
-		callsLogContainer = (LinearLayout) getView().findViewById(
-				R.id.callsCont);
+		callsLogContainer = (LinearLayout) v.findViewById(R.id.callsCont);
 	}
 
 	private PhoneEventHandler phoneEventHandler = new PhoneEventHandler() {
@@ -62,7 +62,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView call = (OneShieldTextView) activity
+						OneSheeldTextView call = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.outgoing_call_item,
 										callsLogContainer, false);
@@ -81,7 +81,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView call = (OneShieldTextView) activity
+						OneSheeldTextView call = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.incoming_call_item,
 										callsLogContainer, false);

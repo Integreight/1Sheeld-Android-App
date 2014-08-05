@@ -21,12 +21,13 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	ImageView ledImage;
 	Button connectButton;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.led_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.led_shield_fragment_layout, container,
+				false);
 		ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
 		return v;
 

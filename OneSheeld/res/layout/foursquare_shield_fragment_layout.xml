@@ -31,7 +31,7 @@
         android:background="@drawable/social_shields_logout"
         android:visibility="invisible" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/foursquare_shield_last_checkin_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:textSize="15sp"
         android:visibility="invisible" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/foursquare_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

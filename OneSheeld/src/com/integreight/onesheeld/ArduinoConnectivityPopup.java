@@ -40,8 +40,8 @@ import com.integreight.onesheeld.activities.DeviceListActivity;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.HttpRequest;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.TimeOut;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class ArduinoConnectivityPopup extends Dialog {
@@ -66,7 +66,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 	private LinearLayout devicesList;
 	private ProgressBar loading;
 	private Button scanOrTryAgain;
-	private OneShieldTextView statusText;
+	private OneSheeldTextView statusText;
 	private RelativeLayout transactionSlogan;
 	public static boolean isOpened = false, backPressed = false;
 	private TimeOut lockerTimeOut;
@@ -118,7 +118,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 		deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
 		loading = (ProgressBar) findViewById(R.id.progress);
 		scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
-		statusText = (OneShieldTextView) findViewById(R.id.statusText);
+		statusText = (OneSheeldTextView) findViewById(R.id.statusText);
 		transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
 		devicesList = (LinearLayout) findViewById(R.id.devicesList);
 		mBtAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -371,7 +371,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 								// TODO Auto-generated method stub
 								// devicesList.removeAllViews();
 								for (int i = 0; i < devicesList.getChildCount(); i++) {
-									OneShieldTextView deviceView = (OneShieldTextView) devicesList
+									OneSheeldTextView deviceView = (OneSheeldTextView) devicesList
 											.getChildAt(i);
 									BluetoothDevice btDevice = foundDevicesTable
 											.get(deviceView.getTag());
@@ -554,7 +554,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 							.getLastConnectedDevice().equals(address)) {
 				startService(address);
 			} else {
-				OneShieldTextView item = new OneShieldTextView(activity, null);
+				OneSheeldTextView item = new OneSheeldTextView(activity, null);
 				item.setLayoutParams(new LinearLayout.LayoutParams(
 						LinearLayout.LayoutParams.WRAP_CONTENT,
 						LinearLayout.LayoutParams.WRAP_CONTENT));

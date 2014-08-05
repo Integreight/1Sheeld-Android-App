@@ -15,7 +15,7 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.MediaAudioFilesListAdapter;
 import com.integreight.onesheeld.model.PlaylistItem;
-import com.integreight.onesheeld.utils.OneShieldButton;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 
 public class MusicShieldSettings_AddFromMedia extends Fragment {
 	public static MusicShieldSettings_AddFromMedia getInstance() {
@@ -39,7 +39,7 @@ public class MusicShieldSettings_AddFromMedia extends Fragment {
 
 	private void initView() {
 		playlist = (ListView) getView().findViewById(R.id.playList);
-		final OneShieldButton addFromMedia = (OneShieldButton) getView()
+		final OneSheeldButton addFromMedia = (OneSheeldButton) getView()
 				.findViewById(R.id.addFromMedia);
 
 		final String[] columns = { MediaStore.Images.Media.DATA,

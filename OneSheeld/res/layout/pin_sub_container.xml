@@ -6,7 +6,7 @@
     android:gravity="center"
     android:orientation="vertical" >
 
-    <com.integreight.onesheeld.utils.OneShieldButton
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:layout_width="wrap_content"
         android:layout_height="35dp"
         android:background="#00000000"
@@ -17,7 +17,7 @@
         android:textColor="@color/textColorOnDark"
         android:textSize="18sp" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:gravity="center"

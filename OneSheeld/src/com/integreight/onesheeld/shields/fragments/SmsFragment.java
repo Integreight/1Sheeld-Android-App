@@ -14,8 +14,8 @@ import android.widget.Toast;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
@@ -23,11 +23,11 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
 	Button sendSMS;
-
+	View v;
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.sms_shield_fragment_layout,
+		 v = inflater.inflate(R.layout.sms_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -49,9 +49,9 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		smsTextContainer = (LinearLayout) getView().findViewById(
+		smsTextContainer = (LinearLayout) v.findViewById(
 				R.id.sms_shield_text_container);
-		// sendSMS = (Button) getView().findViewById(R.id.sendMessage);
+		// sendSMS = (Button) v.findViewById(R.id.sendMessage);
 		// sendSMS.setOnClickListener(new View.OnClickListener() {
 		//
 		// @Override
@@ -74,7 +74,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView tv = (OneShieldTextView) activity
+						OneSheeldTextView tv = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.sent_sms_details_row,
 										smsTextContainer, false);

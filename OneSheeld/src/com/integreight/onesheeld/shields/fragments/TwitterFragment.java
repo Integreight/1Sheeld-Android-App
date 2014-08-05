@@ -13,20 +13,21 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield.TwitterEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	LinearLayout lastTweetTextContainer;
-	OneShieldTextView userNameTextView;
+	OneSheeldTextView userNameTextView;
 	Button twitterLogin;
 	Button twitterLogout;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.twitter_shield_fragment_layout,
+		v = inflater.inflate(R.layout.twitter_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -80,12 +81,11 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		lastTweetTextContainer = (LinearLayout) getView().findViewById(
-				R.id.tweetsCont);
-		userNameTextView = (OneShieldTextView) getView().findViewById(
-				R.id.twitter_shield_username_textview);
-		twitterLogin = (Button) getView().findViewById(R.id.login);
-		twitterLogout = (Button) getView().findViewById(R.id.logout);
+		lastTweetTextContainer = (LinearLayout) v.findViewById(R.id.tweetsCont);
+		userNameTextView = (OneSheeldTextView) v
+				.findViewById(R.id.twitter_shield_username_textview);
+		twitterLogin = (Button) v.findViewById(R.id.login);
+		twitterLogout = (Button) v.findViewById(R.id.logout);
 		super.onActivityCreated(savedInstanceState);
 
 	}
@@ -101,7 +101,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView tweetItem = (OneShieldTextView) activity
+						OneSheeldTextView tweetItem = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.tweet_item,
 										lastTweetTextContainer, false);
@@ -177,7 +177,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			twitterLogin.setVisibility(View.INVISIBLE);
 			lastTweetTextContainer.setVisibility(View.VISIBLE);
 			lastTweetTextContainer.removeAllViews();
-			getView().invalidate();
+			v.invalidate();
 		} else {
 			userNameTextView.setVisibility(View.INVISIBLE);
 			userNameTextView.setText("");
@@ -185,7 +185,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			twitterLogin.setVisibility(View.VISIBLE);
 			lastTweetTextContainer.setVisibility(View.INVISIBLE);
 			lastTweetTextContainer.removeAllViews();
-			getView().invalidate();
+			v.invalidate();
 		}
 	}
 
@@ -238,7 +238,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			lastTweetTextContainer.setVisibility(View.INVISIBLE);
 			lastTweetTextContainer.removeAllViews();
 		}
-		getView().invalidate();
+		v.invalidate();
 	}
 
 	private void buttonToLoggedIn() {
@@ -255,7 +255,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			lastTweetTextContainer.setVisibility(View.VISIBLE);
 			lastTweetTextContainer.removeAllViews();
 		}
-		getView().invalidate();
+		v.invalidate();
 	}
 
 	@Override

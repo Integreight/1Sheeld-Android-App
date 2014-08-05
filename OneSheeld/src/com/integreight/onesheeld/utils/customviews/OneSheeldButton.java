@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.utils;
+package com.integreight.onesheeld.utils.customviews;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 
@@ -7,8 +7,8 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.Button;
 
-public class OneShieldButton extends Button {
-	public OneShieldButton(Context context) {
+public class OneSheeldButton extends Button {
+	public OneSheeldButton(Context context) {
 		super(context);
 		setTypeface(
 				((OneSheeldApplication) context.getApplicationContext()).appFont,
@@ -17,7 +17,7 @@ public class OneShieldButton extends Button {
 						: Typeface.NORMAL);
 	}
 
-	public OneShieldButton(Context context, AttributeSet attrs) {
+	public OneSheeldButton(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setTypeface(
 				((OneSheeldApplication) context.getApplicationContext()).appFont,

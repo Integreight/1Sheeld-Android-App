@@ -18,8 +18,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
 import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.OneShieldButton;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData;
 
 public class ConnectingPinsView extends Fragment {
@@ -155,7 +153,7 @@ public class ConnectingPinsView extends Fragment {
 							listner.onUnSelect(prevArduinoPin);
 							listner.onSelect(null);
 						}
-						((OneShieldTextView) pinsSubContainers.get(selectedPin)
+						((OneSheeldTextView) pinsSubContainers.get(selectedPin)
 								.getChildAt(1))
 								.setText(tag.startsWith("_") ? tag.substring(1)
 										: tag);
@@ -206,14 +204,14 @@ public class ConnectingPinsView extends Fragment {
 					LinearLayout pinSubContainer = (LinearLayout) activity
 							.getLayoutInflater().inflate(
 									R.layout.pin_sub_container, null, false);
-					final OneShieldButton pinButton = (OneShieldButton) pinSubContainer
+					final OneSheeldButton pinButton = (OneSheeldButton) pinSubContainer
 							.getChildAt(0);
 					pinButton.setText(controller.shieldPins[i]);
 					if (i == 0)
 						pinButton.setBackgroundColor(selectedColor);
 					else
 						pinButton.setBackgroundColor(unSelectedColor);
-					OneShieldTextView pinText = (OneShieldTextView) pinSubContainer
+					OneSheeldTextView pinText = (OneSheeldTextView) pinSubContainer
 							.getChildAt(1);
 					String pinName = controller.matchedShieldPins.get(pinButton
 							.getText().toString()) != null ? controller.matchedShieldPins

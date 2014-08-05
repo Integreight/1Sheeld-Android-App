@@ -20,7 +20,7 @@
         android:orientation="horizontal"
         android:padding="10dp" >
 
-        <com.integreight.onesheeld.utils.OneShieldButton
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/addFromMedia"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

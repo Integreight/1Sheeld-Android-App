@@ -13,13 +13,14 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	TextView time_tx;
+	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.clock_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.clock_shield_fragment_layout, container,
+				false);
 		return v;
 	}
 
@@ -40,7 +41,7 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		time_tx = (TextView) getView().findViewById(R.id.time_txt);
+		time_tx = (TextView) v.findViewById(R.id.time_txt);
 	}
 
 	private ClockEventHandler clockEventHandler = new ClockEventHandler() {

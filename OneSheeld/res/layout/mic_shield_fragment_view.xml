@@ -66,7 +66,7 @@
             android:contentDescription="@string/app_name" />
     </RelativeLayout>
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/micValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

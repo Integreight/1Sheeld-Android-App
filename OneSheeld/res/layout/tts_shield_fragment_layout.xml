@@ -11,7 +11,7 @@
         android:background="@drawable/tts_shield_1_volume"
         android:contentDescription="@string/app_name" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/ttsText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -23,7 +23,7 @@
         android:contentDescription="@string/app_name"
         android:scaleType="fitXY" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/playingStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
         android:textColor="@color/offWhite"
         android:textSize="14sp" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/playingMusic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

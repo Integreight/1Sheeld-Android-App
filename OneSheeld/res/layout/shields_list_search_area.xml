@@ -11,7 +11,7 @@
         android:layout_height="35dp"
         android:orientation="horizontal" >
 
-        <com.integreight.onesheeld.utils.OneShieldButton
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/selectAll"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -24,7 +24,7 @@
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />
 
-        <com.integreight.onesheeld.utils.OneShieldButton
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/reset"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -42,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="65dp" >
 
-        <com.integreight.onesheeld.utils.OneShieldEditText
+        <com.integreight.onesheeld.utils.customviews.OneSheeldEditText
             android:id="@+id/searchArea"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

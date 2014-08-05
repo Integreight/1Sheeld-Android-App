@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.utils;
+package com.integreight.onesheeld.utils.customviews;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,7 +21,7 @@ public class Key extends Button {
 	private Drawable pressedBackground;
 	private int row;
 	private int column;
-	KeyTouchEventListener eventListener;
+	public KeyTouchEventListener eventListener;
 
 	public void setEventListener(final KeyTouchEventListener eventListener) {
 		this.eventListener = new KeyTouchEventListener() {

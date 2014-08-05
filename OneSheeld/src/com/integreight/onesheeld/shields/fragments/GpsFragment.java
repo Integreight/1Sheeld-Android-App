@@ -16,12 +16,13 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	TextView Latit, Longit;
 	Button startGps, stopGps;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.gps_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.gps_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -42,10 +43,10 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Gps Sheeld::OnActivityCreated()", "");
 
-		Latit = (TextView) getView().findViewById(R.id.lat_value_txt);
-		Longit = (TextView) getView().findViewById(R.id.lang_value_txt);
-		startGps = (Button) getView().findViewById(R.id.start_listener_bt);
-		stopGps = (Button) getView().findViewById(R.id.stop_listener_bt);
+		Latit = (TextView) v.findViewById(R.id.lat_value_txt);
+		Longit = (TextView) v.findViewById(R.id.lang_value_txt);
+		startGps = (Button) v.findViewById(R.id.start_listener_bt);
+		stopGps = (Button) v.findViewById(R.id.stop_listener_bt);
 
 		startGps.setOnClickListener(new View.OnClickListener() {
 

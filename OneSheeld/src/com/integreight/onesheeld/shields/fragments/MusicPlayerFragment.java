@@ -22,12 +22,14 @@ public class MusicPlayerFragment extends
 	ImageView playingBtn;
 	Thread seekBarTracker;
 	private boolean isTracking = false;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
+		v = inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
 				container, false);
+		return v;
 	}
 
 	@Override
@@ -177,9 +179,9 @@ public class MusicPlayerFragment extends
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		musicFileName = (TextView) getView().findViewById(R.id.playingMusic);
-		seekBar = (SeekBar) getView().findViewById(R.id.seekBar);
-		playingBtn = (ImageView) getView().findViewById(R.id.playingBtn);
-		playingStatus = (TextView) getView().findViewById(R.id.playingStatus);
+		musicFileName = (TextView) v.findViewById(R.id.playingMusic);
+		seekBar = (SeekBar) v.findViewById(R.id.seekBar);
+		playingBtn = (ImageView) v.findViewById(R.id.playingBtn);
+		playingStatus = (TextView) v.findViewById(R.id.playingStatus);
 	}
 }

@@ -27,6 +27,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	private boolean isEdit1 = true;
 	private String mUpper = "upper", mLower = "lower";
 	private int w, mWindowWidth;
+	View v;
 	private String sL[] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 			"k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
 			"x", "y", "z", "ç", "à", "é", "è", "û", "î" };
@@ -45,7 +46,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.keyboard_shield_fragment_layout,
+		 v = inflater.inflate(R.layout.keyboard_shield_fragment_layout,
 				container, false);
 		return v;
 	}
@@ -65,8 +66,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
 	@Override
 	public void setUserVisibleHint(boolean isVisibleToUser) {
-		activity.setRequestedOrientation(
-				ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+		activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 		super.setUserVisibleHint(isVisibleToUser);
 	}
 
@@ -74,7 +74,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		mEt1 = (EditText) getView().findViewById(R.id.keyboard_myEdit_txt);
+		mEt1 = (EditText) v.findViewById(R.id.keyboard_myEdit_txt);
 		mEt1.setMaxLines(Integer.MAX_VALUE);
 		mEt1.setSingleLine(false);
 		hideDefaultKeyboard();
@@ -400,43 +400,43 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 		// window
 		// height
 		// getting ids from xml files
-		mB[0] = (Button) getView().findViewById(R.id.xA);
-		mB[1] = (Button) getView().findViewById(R.id.xB);
-		mB[2] = (Button) getView().findViewById(R.id.xC);
-		mB[3] = (Button) getView().findViewById(R.id.xD);
-		mB[4] = (Button) getView().findViewById(R.id.xE);
-		mB[5] = (Button) getView().findViewById(R.id.xF);
-		mB[6] = (Button) getView().findViewById(R.id.xG);
-		mB[7] = (Button) getView().findViewById(R.id.xH);
-		mB[8] = (Button) getView().findViewById(R.id.xI);
-		mB[9] = (Button) getView().findViewById(R.id.xJ);
-		mB[10] = (Button) getView().findViewById(R.id.xK);
-		mB[11] = (Button) getView().findViewById(R.id.xL);
-		mB[12] = (Button) getView().findViewById(R.id.xM);
-		mB[13] = (Button) getView().findViewById(R.id.xN);
-		mB[14] = (Button) getView().findViewById(R.id.xO);
-		mB[15] = (Button) getView().findViewById(R.id.xP);
-		mB[16] = (Button) getView().findViewById(R.id.xQ);
-		mB[17] = (Button) getView().findViewById(R.id.xR);
-		mB[18] = (Button) getView().findViewById(R.id.xS);
-		mB[19] = (Button) getView().findViewById(R.id.xT);
-		mB[20] = (Button) getView().findViewById(R.id.xU);
-		mB[21] = (Button) getView().findViewById(R.id.xV);
-		mB[22] = (Button) getView().findViewById(R.id.xW);
-		mB[23] = (Button) getView().findViewById(R.id.xX);
-		mB[24] = (Button) getView().findViewById(R.id.xY);
-		mB[25] = (Button) getView().findViewById(R.id.xZ);
-		mB[26] = (Button) getView().findViewById(R.id.xS1);
-		mB[27] = (Button) getView().findViewById(R.id.xS2);
-		mB[28] = (Button) getView().findViewById(R.id.xS3);
-		mB[29] = (Button) getView().findViewById(R.id.xS4);
-		mB[30] = (Button) getView().findViewById(R.id.xS5);
-		mB[31] = (Button) getView().findViewById(R.id.xS6);
-		mBSpace = (Button) getView().findViewById(R.id.xSpace);
-		mBenter = (Button) getView().findViewById(R.id.xDone);
-		mBChange = (Button) getView().findViewById(R.id.xChange);
-		mBack = (Button) getView().findViewById(R.id.xBack);
-		mNum = (Button) getView().findViewById(R.id.xNum);
+		mB[0] = (Button) v.findViewById(R.id.xA);
+		mB[1] = (Button) v.findViewById(R.id.xB);
+		mB[2] = (Button) v.findViewById(R.id.xC);
+		mB[3] = (Button) v.findViewById(R.id.xD);
+		mB[4] = (Button) v.findViewById(R.id.xE);
+		mB[5] = (Button) v.findViewById(R.id.xF);
+		mB[6] = (Button) v.findViewById(R.id.xG);
+		mB[7] = (Button) v.findViewById(R.id.xH);
+		mB[8] = (Button) v.findViewById(R.id.xI);
+		mB[9] = (Button) v.findViewById(R.id.xJ);
+		mB[10] = (Button) v.findViewById(R.id.xK);
+		mB[11] = (Button) v.findViewById(R.id.xL);
+		mB[12] = (Button) v.findViewById(R.id.xM);
+		mB[13] = (Button) v.findViewById(R.id.xN);
+		mB[14] = (Button) v.findViewById(R.id.xO);
+		mB[15] = (Button) v.findViewById(R.id.xP);
+		mB[16] = (Button) v.findViewById(R.id.xQ);
+		mB[17] = (Button) v.findViewById(R.id.xR);
+		mB[18] = (Button) v.findViewById(R.id.xS);
+		mB[19] = (Button) v.findViewById(R.id.xT);
+		mB[20] = (Button) v.findViewById(R.id.xU);
+		mB[21] = (Button) v.findViewById(R.id.xV);
+		mB[22] = (Button) v.findViewById(R.id.xW);
+		mB[23] = (Button) v.findViewById(R.id.xX);
+		mB[24] = (Button) v.findViewById(R.id.xY);
+		mB[25] = (Button) v.findViewById(R.id.xZ);
+		mB[26] = (Button) v.findViewById(R.id.xS1);
+		mB[27] = (Button) v.findViewById(R.id.xS2);
+		mB[28] = (Button) v.findViewById(R.id.xS3);
+		mB[29] = (Button) v.findViewById(R.id.xS4);
+		mB[30] = (Button) v.findViewById(R.id.xS5);
+		mB[31] = (Button) v.findViewById(R.id.xS6);
+		mBSpace = (Button) v.findViewById(R.id.xSpace);
+		mBenter = (Button) v.findViewById(R.id.xDone);
+		mBChange = (Button) v.findViewById(R.id.xChange);
+		mBack = (Button) v.findViewById(R.id.xBack);
+		mNum = (Button) v.findViewById(R.id.xNum);
 		for (int i = 0; i < mB.length; i++)
 			mB[i].setOnClickListener(this);
 		mBSpace.setOnClickListener(this);

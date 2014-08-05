@@ -39,7 +39,7 @@ import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.OneShieldEditText;
+import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
 
 public class SheeldsList extends Fragment {
@@ -49,7 +49,7 @@ public class SheeldsList extends Fragment {
 	private static SheeldsList thisInstance;
 	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
-	OneShieldEditText searchBox;
+	OneSheeldEditText searchBox;
 	private static final String TAG = "ShieldsList";
 	MainActivity activity;
 	public static final int REQUEST_CONNECT_DEVICE = 1;
@@ -231,7 +231,7 @@ public class SheeldsList extends Fragment {
 		mListView.setCacheColorHint(Color.TRANSPARENT);
 		mListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		mListView.setDrawingCacheEnabled(true);
-		searchBox = (OneShieldEditText) v.findViewById(R.id.searchArea);
+		searchBox = (OneSheeldEditText) v.findViewById(R.id.searchArea);
 		searchBox.setAdapter(adapter);
 		searchBox.setDropDownHeight(0);
 		v.findViewById(R.id.selectAll).setOnClickListener(

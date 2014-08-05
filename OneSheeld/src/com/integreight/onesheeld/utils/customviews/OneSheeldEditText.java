@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.utils;
+package com.integreight.onesheeld.utils.customviews;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -7,9 +7,9 @@ import android.widget.AutoCompleteTextView;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 
-public class OneShieldEditText extends AutoCompleteTextView {
+public class OneSheeldEditText extends AutoCompleteTextView {
 
-	public OneShieldEditText(Context context, AttributeSet attrs) {
+	public OneSheeldEditText(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		setTypeface(
 				((OneSheeldApplication) context.getApplicationContext()).appFont,

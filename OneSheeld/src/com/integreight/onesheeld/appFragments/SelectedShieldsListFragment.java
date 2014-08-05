@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -56,8 +57,8 @@ import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
 import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SelectedShieldsListFragment extends ListFragment {
 	private static SelectedShieldsListAdapter UIShieldAdapter;
@@ -246,6 +247,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 			switchFragment(newContent);
 	}
 
+	TextView shieldName;
+
 	private void switchFragment(final ShieldFragmentParent<?> fragment) {
 		getListView().post(new Runnable() {
 			@Override
@@ -257,7 +260,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 						@Override
 						public void run() {
-							TextView shieldName = (OneShieldTextView) activity
+							shieldName = (OneSheeldTextView) activity
 									.findViewById(R.id.shieldName);
 							shieldName.setVisibility(fragment.shieldName
 									.equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
@@ -267,6 +270,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 						}
 					});
 				} catch (Exception e) {
+					Crashlytics.logException(e);
 				}
 				activity.closeMenu();
 			}

@@ -45,7 +45,7 @@
             android:gravity="top"
             android:orientation="horizontal" >
 
-            <com.integreight.onesheeld.utils.OneShieldTextView
+            <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                 android:id="@+id/temperature_float_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

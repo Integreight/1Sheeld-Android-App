@@ -29,13 +29,14 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 	// private Parameters parameters;
 	// private String FLASH_MODE = "on";
 	private CameraFragmentHandler fragmentHandler;
+	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.camera_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.camera_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -75,8 +76,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 
 			if (canChangeUI()) {
 				if (!isHasCamera) {
-					Toast.makeText(activity,
-							"Your Device doesn't have Camera",
+					Toast.makeText(activity, "Your Device doesn't have Camera",
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -85,8 +85,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 		@Override
 		public void OnPictureTaken() {
 			if (canChangeUI())
-				Toast.makeText(activity,
-						"Your Camera has been Captured Image",
+				Toast.makeText(activity, "Your Camera has been Captured Image",
 						Toast.LENGTH_SHORT).show();
 		}
 

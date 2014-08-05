@@ -13,24 +13,23 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
-import com.integreight.onesheeld.utils.OneShieldToggleButton;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class ToggleButtonFragment extends
 		ShieldFragmentParent<ToggleButtonFragment> {
-
-	OneShieldToggleButton toggleButtonButton;
+	View v;
+	OneSheeldToggleButton toggleButtonButton;
 	Button connectButton;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater
-				.inflate(R.layout.toggle_button_shield_fragment_layout,
-						container, false);
-		toggleButtonButton = (OneShieldToggleButton) v
+		v = inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
+				container, false);
+		toggleButtonButton = (OneSheeldToggleButton) v
 				.findViewById(R.id.toggle_button_shield_button_toggle_button);
 		if ((ToggleButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) == null) {

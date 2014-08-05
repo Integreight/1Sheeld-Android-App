@@ -13,7 +13,7 @@
         android:layout_marginTop="30dp"
         android:visibility="invisible" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/device_not_has_sensor_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <com.integreight.onesheeld.utils.OneShieldTextView
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
@@ -75,7 +75,7 @@
                         android:textSize="42sp" />
                 </RelativeLayout>
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:id="@+id/x_value_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
                     android:textColor="@color/offWhite"
                     android:textSize="24sp" />
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -112,7 +112,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <com.integreight.onesheeld.utils.OneShieldTextView
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_ycoor_top_margin"
@@ -122,7 +122,7 @@
                         android:textSize="42sp" />
                 </RelativeLayout>
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:id="@+id/y_value_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -133,7 +133,7 @@
                     android:textColor="@color/offWhite"
                     android:textSize="24sp" />
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -159,7 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
-                    <com.integreight.onesheeld.utils.OneShieldTextView
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
@@ -169,7 +169,7 @@
                         android:textSize="42sp" />
                 </RelativeLayout>
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:id="@+id/z_value_txt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -180,7 +180,7 @@
                     android:textColor="@color/offWhite"
                     android:textSize="24sp" />
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"

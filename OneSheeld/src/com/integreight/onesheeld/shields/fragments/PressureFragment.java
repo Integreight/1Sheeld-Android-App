@@ -17,12 +17,13 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 	TextView pressure_float, pressure_byte;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
+	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.pressure_shield_fragment_layout,
+		v = inflater.inflate(R.layout.pressure_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -48,17 +49,13 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Pressure Sheeld::OnActivityCreated()", "");
 
-		pressure_float = (TextView) getView().findViewById(
-				R.id.pressure_float_txt);
-		pressure_byte = (TextView) getView().findViewById(
-				R.id.pressure_byte_txt);
+		pressure_float = (TextView) v.findViewById(R.id.pressure_float_txt);
+		pressure_byte = (TextView) v.findViewById(R.id.pressure_byte_txt);
 
-		devicehasSensor = (TextView) getView().findViewById(
-				R.id.device_not_has_sensor_text);
-		stoplistening_bt = (Button) getView().findViewById(
-				R.id.stop_listener_bt);
-		startlistening_bt = (Button) getView().findViewById(
-				R.id.start_listener_bt);
+		devicehasSensor = (TextView) v
+				.findViewById(R.id.device_not_has_sensor_text);
+		stoplistening_bt = (Button) v.findViewById(R.id.stop_listener_bt);
+		startlistening_bt = (Button) v.findViewById(R.id.start_listener_bt);
 
 		startlistening_bt.setOnClickListener(new View.OnClickListener() {
 
@@ -158,9 +155,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 																 * "Your Device not have The Sensor"
 																 * );
 																 * Toast.makeText
-																 * (
-																 * activity
-																 * ,
+																 * ( activity ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
 																 * LENGTH_SHORT

@@ -11,27 +11,28 @@ import android.widget.ImageView;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.TextToSpeechShield;
 import com.integreight.onesheeld.shields.controller.TextToSpeechShield.TTsEventHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class TextToSpeechFragment extends
 		ShieldFragmentParent<TextToSpeechFragment> {
 
 	ImageView speakerLevel;
 	Button femaleBtn, maleBtn;
-	OneShieldTextView ttsText;
+	OneSheeldTextView ttsText;
 	private float ttsPitch = 1;
 	private float freqValue = 1f;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.tts_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.tts_shield_fragment_layout, container,
+				false);
 		speakerLevel = (ImageView) v
 				.findViewById(R.id.speaker_shield_imageview);
 		femaleBtn = (Button) v.findViewById(R.id.increaseBtn);
 		maleBtn = (Button) v.findViewById(R.id.decreaseBtn);
-		ttsText = (OneShieldTextView) v.findViewById(R.id.ttsText);
+		ttsText = (OneSheeldTextView) v.findViewById(R.id.ttsText);
 		return v;
 	}
 

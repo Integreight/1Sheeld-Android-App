@@ -17,13 +17,14 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	TextView light_float, light_byte;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
+	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.light_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.light_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -47,14 +48,14 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Light Sheeld::OnActivityCreated()", "");
 
-		light_float = (TextView) getView().findViewById(R.id.light_float_txt);
-		light_byte = (TextView) getView().findViewById(R.id.light_byte_txt);
+		light_float = (TextView) v.findViewById(R.id.light_float_txt);
+		light_byte = (TextView) v.findViewById(R.id.light_byte_txt);
 
-		devicehasSensor = (TextView) getView().findViewById(
+		devicehasSensor = (TextView) v.findViewById(
 				R.id.device_not_has_sensor_text);
-		stoplistening_bt = (Button) getView().findViewById(
+		stoplistening_bt = (Button) v.findViewById(
 				R.id.stop_listener_bt);
-		startlistening_bt = (Button) getView().findViewById(
+		startlistening_bt = (Button) v.findViewById(
 				R.id.start_listener_bt);
 
 		startlistening_bt.setOnClickListener(new View.OnClickListener() {
@@ -150,9 +151,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 																 * "Your Device not have The Sensor"
 																 * );
 																 * Toast.makeText
-																 * (
-																 * activity
-																 * ,
+																 * ( activity ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
 																 * LENGTH_SHORT

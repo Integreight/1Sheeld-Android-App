@@ -15,28 +15,28 @@ import android.widget.TextView;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SpeechRecognitionShield;
 import com.integreight.onesheeld.shields.controller.utils.SpeechRecognition.RecognitionEventHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SpeechRecognitionFragment extends
 		ShieldFragmentParent<SpeechRecognitionFragment> {
 
 	View statusCircle;
-	OneShieldTextView statusHint, recognizedResult;
+	OneSheeldTextView statusHint, recognizedResult;
 	TextView rmsIndicator;
 	RelativeLayout.LayoutParams params;
 	int stepValue = 0;
+	View v;
 	int marginValue;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View v = inflater.inflate(
-				R.layout.voice_recognition_shield_fragment_view, container,
-				false);
+		v = inflater.inflate(R.layout.voice_recognition_shield_fragment_view,
+				container, false);
 		statusCircle = v.findViewById(R.id.statusCircle);
-		statusHint = (OneShieldTextView) v.findViewById(R.id.statusHint);
+		statusHint = (OneSheeldTextView) v.findViewById(R.id.statusHint);
 		rmsIndicator = (TextView) v.findViewById(R.id.rmsLevelIndicator);
-		recognizedResult = (OneShieldTextView) v
+		recognizedResult = (OneSheeldTextView) v
 				.findViewById(R.id.recognizedResult);
 		params = (LayoutParams) rmsIndicator.getLayoutParams();
 		statusCircle.getViewTreeObserver().addOnGlobalLayoutListener(

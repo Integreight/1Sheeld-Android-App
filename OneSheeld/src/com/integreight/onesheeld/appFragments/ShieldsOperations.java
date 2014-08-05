@@ -23,10 +23,10 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class ShieldsOperations extends BaseContainerFragment {
 	private View v;
@@ -104,7 +104,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void run() {
-						TextView shieldName = (OneShieldTextView) activity
+						TextView shieldName = (OneSheeldTextView) activity
 								.findViewById(R.id.shieldName);
 						shieldName
 								.setVisibility(((ShieldFragmentParent<?>) mContent).shieldName

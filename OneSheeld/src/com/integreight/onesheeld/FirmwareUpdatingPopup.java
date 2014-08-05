@@ -17,19 +17,19 @@ import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.Jodem;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.HttpRequest;
-import com.integreight.onesheeld.utils.OneShieldButton;
-import com.integreight.onesheeld.utils.OneShieldTextView;
 import com.integreight.onesheeld.utils.customviews.CircularProgressBar;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 public class FirmwareUpdatingPopup extends Dialog {
 	public static boolean isOpened = false;
-	private OneShieldButton upgradeBtn;
+	private OneSheeldButton upgradeBtn;
 	private ProgressBar progress;
 	CircularProgressBar downloadingProgress;
-	private OneShieldTextView statusText;
-	private OneShieldTextView progressTxt;
+	private OneSheeldTextView statusText;
+	private OneSheeldTextView progressTxt;
 	private MainActivity activity;
 	private RelativeLayout transactionSlogan;
 	Jodem jodem;
@@ -159,11 +159,11 @@ public class FirmwareUpdatingPopup extends Dialog {
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.updating_firmware_view);
 		isOpened = true;
-		upgradeBtn = (OneShieldButton) findViewById(R.id.update);
+		upgradeBtn = (OneSheeldButton) findViewById(R.id.update);
 		progress = (ProgressBar) findViewById(R.id.progressUpdating);
 		downloadingProgress = (CircularProgressBar) findViewById(R.id.progressDownloading);
-		progressTxt = (OneShieldTextView) findViewById(R.id.progressTxt);
-		statusText = (OneShieldTextView) findViewById(R.id.updateStatusText);
+		progressTxt = (OneSheeldTextView) findViewById(R.id.progressTxt);
+		statusText = (OneSheeldTextView) findViewById(R.id.updateStatusText);
 		transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSloganUpdating);
 		setUpgrade();
 		changeSlogan(

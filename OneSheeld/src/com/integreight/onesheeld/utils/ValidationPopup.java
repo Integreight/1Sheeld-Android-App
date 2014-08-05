@@ -2,6 +2,9 @@ package com.integreight.onesheeld.utils;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
+
 import android.app.Dialog;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -27,8 +30,8 @@ public class ValidationPopup extends Dialog {
 	protected void onCreate(Bundle savedInstanceState) {
 		setContentView(R.layout.validation_popup);
 		setCancelable(false);
-		((OneShieldTextView) findViewById(R.id.title)).setText(title);
-		((OneShieldTextView) findViewById(R.id.msg)).setText(msg);
+		((OneSheeldTextView) findViewById(R.id.title)).setText(title);
+		((OneSheeldTextView) findViewById(R.id.msg)).setText(msg);
 		LinearLayout actionsCont = (LinearLayout) findViewById(R.id.actionsContainer);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.MATCH_PARENT, (int) (40 * activity
@@ -36,7 +39,7 @@ public class ValidationPopup extends Dialog {
 		params.weight = 1;
 		for (int i = 0; i < actions.length; i++) {
 			final int x = i;
-			final OneShieldButton btn = new OneShieldButton(activity);
+			final OneSheeldButton btn = new OneSheeldButton(activity);
 			btn.setLayoutParams(params);
 			btn.setGravity(Gravity.CENTER);
 			btn.setSingleLine(true);

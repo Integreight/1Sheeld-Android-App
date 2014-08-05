@@ -22,7 +22,7 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <com.integreight.onesheeld.utils.OneShieldButton
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/scanOrTryAgain"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <com.integreight.onesheeld.utils.OneShieldTextView
+                <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
@@ -119,7 +119,7 @@
         android:background="@color/green"
         android:orientation="vertical" >
 
-        <com.integreight.onesheeld.utils.OneShieldTextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/statusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

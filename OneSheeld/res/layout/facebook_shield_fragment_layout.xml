@@ -13,7 +13,7 @@
         android:contentDescription="@string/app_name"
         android:src="@drawable/facebook_shield_screen_logo" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/facebook_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.integreight.onesheeld.utils.OneShieldButton
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

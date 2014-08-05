@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/gmail_shield_subject_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
         android:background="@drawable/social_shields_logout"
         android:visibility="invisible" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/gmail_shield_username_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
         android:textColor="@color/white"
         android:visibility="invisible" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/gmail_shield_sendto_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

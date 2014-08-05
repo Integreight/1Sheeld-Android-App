@@ -15,7 +15,7 @@ import android.widget.CheckBox;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.PlaylistItem;
-import com.integreight.onesheeld.utils.OneShieldTextView;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.integreight.onesheeld.utils.database.MusicPlaylist;
 
 public class MediaAudioFilesListAdapter extends BaseAdapter {
@@ -54,7 +54,7 @@ public class MediaAudioFilesListAdapter extends BaseAdapter {
 			row = inflater.inflate(R.layout.music_row, parent, false);
 
 			holder = new Holder();
-			holder.name = (OneShieldTextView) row
+			holder.name = (OneSheeldTextView) row
 					.findViewById(R.id.musicItemName);
 			holder.check = (CheckBox) row.findViewById(R.id.musicItemCheck);
 			row.setTag(holder);
@@ -112,7 +112,7 @@ public class MediaAudioFilesListAdapter extends BaseAdapter {
 	}
 
 	static class Holder {
-		OneShieldTextView name;
+		OneSheeldTextView name;
 		CheckBox check;
 	}
 

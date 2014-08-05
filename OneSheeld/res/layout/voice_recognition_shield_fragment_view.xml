@@ -25,7 +25,7 @@
             android:layout_margin="1dp"
             android:background="@color/voice_rec_circle_red" />
 
-        <com.integreight.onesheeld.utils.OneShieldTextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/statusHint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
             android:background="@drawable/voice_recognition_shield_indicator" />
     </RelativeLayout>
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/recognizedResult"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

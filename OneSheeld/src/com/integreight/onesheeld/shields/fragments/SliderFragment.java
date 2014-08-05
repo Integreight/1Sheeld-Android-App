@@ -21,12 +21,13 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	SeekBar seekBar;
 	Button connectButton;
+	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.slider_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.slider_shield_fragment_layout, container,
+				false);
 		seekBar = (SeekBar) v.findViewById(R.id.slider_fragment_seekbar);
 		seekBar.setEnabled(false);
 		seekBar.setMax(255);

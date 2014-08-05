@@ -58,7 +58,7 @@ public enum UIShield {
 			R.drawable.shields_list_mic_symbol, false, MicShield.class, 1), KEYPAD_SHIELD(
 			(byte) 0x09, "Keypad", 0xff03c0ae,
 			R.drawable.shields_list_keypad_symbol, false, KeypadShield.class), SLIDER_SHIELD(
-			(byte) 0x01, "Sliders", 0xffc0034c,
+			(byte) 0x01, "Slider", 0xffc0034c,
 			R.drawable.shields_list_slider_symbol, false, SliderShield.class), LCD_SHIELD(
 			(byte) 0x17, "LCD", 0xff99bd03, R.drawable.shields_list_lcd_symbol,
 			false, LcdShield.class, true), MAGNETOMETER_SHIELD((byte) 0x0A,
@@ -130,12 +130,12 @@ public enum UIShield {
 			KeyboardShield.class), TEXT_TO_SPEECH_SHIELD((byte) 0x23,
 			"Text To Speech", 0xffde1f26,
 			R.drawable.shields_list_keyboard_symbol, false,
-			TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD((byte) 0x24,
-			"Speech Recognizer", 0xffde1f26,
+			TextToSpeechShield.class, false), SPEECH_RECOGNIZER_SHIELD(
+			(byte) 0x24, "Speech Recognizer", 0xffde1f26,
 			R.drawable.shields_list_voice_recognition_symbol, false,
-			SpeechRecognitionShield.class), DATA_LOGGER((byte) 0x25,
+			SpeechRecognitionShield.class, false), DATA_LOGGER((byte) 0x25,
 			"Data Logger", 0xffde1f26, R.drawable.shields_list_keyboard_symbol,
-			false, DataLoggerShield.class);
+			false, DataLoggerShield.class, false);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
 			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
