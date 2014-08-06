@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener;
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener.PhoneRingingEventHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
 	private PhoneEventHandler eventHandler;

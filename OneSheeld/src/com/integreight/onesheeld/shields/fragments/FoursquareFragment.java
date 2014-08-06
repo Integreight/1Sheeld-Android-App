@@ -11,12 +11,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield.FoursquareEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.ForsquareUtil;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class FoursquareFragment extends

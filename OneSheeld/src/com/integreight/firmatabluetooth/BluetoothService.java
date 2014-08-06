@@ -30,7 +30,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
 
 /**
  * This class does all the work for setting up and managing Bluetooth

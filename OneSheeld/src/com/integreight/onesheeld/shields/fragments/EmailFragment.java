@@ -12,12 +12,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.SecurePreferences;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 

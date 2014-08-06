@@ -14,7 +14,6 @@ import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.Fields;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;

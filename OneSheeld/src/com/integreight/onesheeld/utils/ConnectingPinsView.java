@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.utils.customviews;
+package com.integreight.onesheeld.utils;
 
 import java.util.ArrayList;
 
@@ -17,7 +17,9 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
+import com.integreight.onesheeld.utils.customviews.PinsColumnContainer;
 import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData;
 
 public class ConnectingPinsView extends Fragment {

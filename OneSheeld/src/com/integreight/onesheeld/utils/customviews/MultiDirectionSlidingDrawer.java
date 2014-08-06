@@ -29,7 +29,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
+
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 import android.view.VelocityTracker;

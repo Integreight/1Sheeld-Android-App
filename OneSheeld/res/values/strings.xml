@@ -86,4 +86,7 @@
     <string name="speak">Speak</string>
     <string name="tabToSpeak">Tab\nto\nSpeak</string>
 
+    <!-- Tutorial -->
+    <string name="go">Go !</string>
+
 </resources>

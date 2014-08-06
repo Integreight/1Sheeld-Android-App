@@ -26,8 +26,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.EventHandler;
-import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.utils.Log;
 
 public class FacebookShield extends ControllerParent<FacebookShield> {
 	private static FacebookEventHandler eventHandler;
@@ -104,7 +103,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		CommitInstanceTotable();
 	}
 
-	public static interface FacebookEventHandler extends EventHandler {
+	public static interface FacebookEventHandler {
 		void onRecievePost(String post);
 
 		void onFacebookLoggedIn();

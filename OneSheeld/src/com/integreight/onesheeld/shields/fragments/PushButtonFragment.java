@@ -13,11 +13,11 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
-import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 
 public class PushButtonFragment extends
 		ShieldFragmentParent<PushButtonFragment> {

@@ -1,6 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
-import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.utils.Log;
 
 import android.app.Service;
 import android.content.Intent;

@@ -5,10 +5,10 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.MicSoundMeter;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class MicShield extends ControllerParent<MicShield> {
 	Handler handler;

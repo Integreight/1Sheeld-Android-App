@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.shields.fragments.settings;
+package com.integreight.onesheeld.shields.fragments.sub;
 
 import android.database.Cursor;
 import android.media.RingtoneManager;

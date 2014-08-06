@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import com.integreight.onesheeld.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
@@ -22,6 +21,7 @@ import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.WakeLocker;
 
 public class OneSheeldService extends Service {

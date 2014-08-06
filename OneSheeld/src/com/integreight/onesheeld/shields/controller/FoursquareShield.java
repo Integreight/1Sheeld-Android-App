@@ -25,7 +25,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
@@ -33,6 +32,7 @@ import com.integreight.onesheeld.shields.controller.utils.FoursquareDialogError;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareError;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
 

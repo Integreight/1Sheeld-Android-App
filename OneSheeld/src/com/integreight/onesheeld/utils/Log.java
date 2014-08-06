@@ -1,4 +1,4 @@
-package com.integreight.onesheeld;
+package com.integreight.onesheeld.utils;
 
 public class Log {
 	public static void d(String tag, String msg) {

@@ -9,11 +9,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
-import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class TemperatureShield extends ControllerParent<TemperatureShield>
 		implements SensorEventListener {

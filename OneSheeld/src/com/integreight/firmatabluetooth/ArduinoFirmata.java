@@ -7,12 +7,12 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import com.integreight.onesheeld.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ArrayUtils;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
 
 public class ArduinoFirmata {

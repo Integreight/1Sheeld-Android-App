@@ -37,11 +37,15 @@ import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
-import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
+import com.integreight.onesheeld.popup.TutorialPopup;
+import com.integreight.onesheeld.popup.ValidationPopup;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.integreight.onesheeld.utils.ValidationPopup;
+import com.integreight.onesheeld.utils.Log;
+import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
 public class MainActivity extends FragmentActivity {

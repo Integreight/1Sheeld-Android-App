@@ -15,7 +15,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp" />
 
-        <com.integreight.onesheeld.utils.MutitouchKeysContainer
+        <com.integreight.onesheeld.utils.customviews.MutitouchKeysContainer
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
@@ -153,7 +153,7 @@
                         key:row="3" />
                 </LinearLayout>
             </LinearLayout>
-        </com.integreight.onesheeld.utils.MutitouchKeysContainer>
+        </com.integreight.onesheeld.utils.customviews.MutitouchKeysContainer>
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.integreight.onesheeld;
+package com.integreight.onesheeld.popup;
 
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -36,10 +36,13 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshScrollView;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.activities.DeviceListActivity;
+import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.HttpRequest;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -49,6 +52,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 	private float scale;
 	private boolean isConnecting = false;
 	private Hashtable<String, BluetoothDevice> foundDevicesTable;
+	public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
 	public ArduinoConnectivityPopup(Activity context) {
 		super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -56,9 +60,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 		scale = activity.getResources().getDisplayMetrics().density;
 		foundDevicesTable = new Hashtable<String, BluetoothDevice>();
 	}
-
-	// Return Intent extra
-	public static String EXTRA_DEVICE_ADDRESS = "device_address";
 
 	// Member fields
 	private BluetoothAdapter mBtAdapter;
@@ -521,7 +522,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 					activity.getResources().getString(R.string.connecting),
 					COLOR.GREEN);
 			Intent intent = new Intent(activity, OneSheeldService.class);
-			intent.putExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS, address);
+			intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
 			activity.startService(intent);
 			isConnecting = true;
 		}

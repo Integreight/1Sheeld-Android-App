@@ -23,8 +23,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.Log;
 
 public class TakePicture extends Activity implements SurfaceHolder.Callback {
 	// a variable to store a reference to the Image View at the main.xml file

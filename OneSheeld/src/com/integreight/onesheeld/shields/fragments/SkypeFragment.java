@@ -6,10 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandler;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {

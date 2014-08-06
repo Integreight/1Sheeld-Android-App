@@ -23,7 +23,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
+
 import android.view.SurfaceView;
 import android.widget.Toast;
 
@@ -438,7 +440,7 @@ public class CameraService extends Service {
 			 * Toast.makeText(getApplicationContext(),
 			 * "Your Picture has been taken !", Toast.LENGTH_LONG).show();
 			 */
-			com.integreight.onesheeld.Log.d("Camera", "Image Taken !");
+			com.integreight.onesheeld.utils.Log.d("Camera", "Image Taken !");
 			if (bmp != null) {
 				bmp.recycle();
 				bmp = null;

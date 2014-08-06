@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.utils;
+package com.integreight.onesheeld.utils.customviews;
 
 import android.content.Context;
 import android.support.v4.widget.SlidingPaneLayout;
@@ -17,9 +17,6 @@ public class AppSlidingLeftMenu extends SlidingPaneLayout {
 
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent arg0) {
-		// TODO Auto-generated method stub
-		// if (isNotDraggable)
-		// return true;
 		try {
 			return canSlide ? super.onInterceptTouchEvent(arg0) : false;
 		} catch (Exception e) {

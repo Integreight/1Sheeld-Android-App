@@ -1,9 +1,8 @@
-package com.integreight.onesheeld.utils;
+package com.integreight.onesheeld.utils.customviews;
 
 import java.util.ArrayList;
 
-import com.integreight.onesheeld.Log;
-import com.integreight.onesheeld.utils.customviews.Key;
+import com.integreight.onesheeld.utils.Log;
 
 import android.content.Context;
 import android.graphics.Rect;

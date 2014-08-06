@@ -16,7 +16,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
+
 import android.webkit.CookieSyncManager;
 
 public class Foursquare {

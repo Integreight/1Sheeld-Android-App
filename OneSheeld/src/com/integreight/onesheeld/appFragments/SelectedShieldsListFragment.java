@@ -56,8 +56,8 @@ import com.integreight.onesheeld.shields.fragments.TemperatureFragment;
 import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
-import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SelectedShieldsListFragment extends ListFragment {

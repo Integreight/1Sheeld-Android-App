@@ -8,11 +8,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.MusicShield;
 import com.integreight.onesheeld.shields.controller.MusicShield.MusicEventHandler;
-import com.integreight.onesheeld.shields.fragments.settings.MusicShieldSettings;
+import com.integreight.onesheeld.shields.fragments.sub.MusicShieldSettings;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MusicPlayerFragment extends

@@ -14,10 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.Log;
 
 public class GmailSinginPopup extends Dialog {
 	private AlertDialog.Builder builder;

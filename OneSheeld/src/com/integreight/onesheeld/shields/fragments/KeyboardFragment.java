@@ -16,9 +16,9 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.KeyboardShield;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>

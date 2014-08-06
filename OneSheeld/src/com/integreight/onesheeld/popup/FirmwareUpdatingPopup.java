@@ -1,4 +1,4 @@
-package com.integreight.onesheeld;
+package com.integreight.onesheeld.popup;
 
 import org.apache.http.Header;
 import org.json.JSONException;
@@ -15,8 +15,12 @@ import android.widget.RelativeLayout;
 import com.google.analytics.tracking.android.Fields;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.Jodem;
+import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.HttpRequest;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.CircularProgressBar;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;

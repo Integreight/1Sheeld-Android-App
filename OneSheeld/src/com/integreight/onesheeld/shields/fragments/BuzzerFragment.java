@@ -8,15 +8,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	private final int[] levelsResources = new int[] {

@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.shields.fragments.settings;
+package com.integreight.onesheeld.shields.fragments.sub;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

@@ -13,9 +13,9 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.SliderShield;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 
 public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 

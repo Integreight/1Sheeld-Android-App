@@ -81,7 +81,7 @@
             android:layout_centerInParent="true"
             android:background="@drawable/go_button_selector"
             android:gravity="center"
-            android:text="Go !"
+            android:text="@string/go"
             android:textColor="@color/white"
             android:textSize="35sp" />
     </RelativeLayout>

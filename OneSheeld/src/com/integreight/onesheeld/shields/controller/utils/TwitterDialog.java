@@ -16,7 +16,9 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
+
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;

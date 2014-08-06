@@ -1,4 +1,4 @@
-package com.integreight.onesheeld;
+package com.integreight.onesheeld.popup;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -9,6 +9,9 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.TutorialPagerAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
 

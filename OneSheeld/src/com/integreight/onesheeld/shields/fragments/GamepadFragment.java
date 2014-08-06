@@ -14,10 +14,10 @@ import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield.Pin;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 import com.integreight.onesheeld.utils.customviews.Key;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
 import com.integreight.onesheeld.utils.customviews.Key.KeyTouchEventListener;
 
 public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {

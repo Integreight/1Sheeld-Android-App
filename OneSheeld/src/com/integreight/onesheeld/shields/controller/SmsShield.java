@@ -6,13 +6,13 @@ import android.content.IntentFilter;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
 
-import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener.SmsReceiveEventHandler;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class SmsShield extends ControllerParent<SmsShield> {
 	private SmsEventHandler eventHandler;

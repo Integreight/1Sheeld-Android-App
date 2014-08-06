@@ -54,10 +54,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		CommitInstanceTotable();
 	}
 
-	public void setShieldHandler(EventHandler handler) {
-		CommitInstanceTotable();
-	}
-
 	public boolean isHasForgroundView() {
 		return hasForgroundView;
 	}

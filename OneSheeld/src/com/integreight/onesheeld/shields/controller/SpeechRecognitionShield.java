@@ -12,11 +12,11 @@ import android.os.IBinder;
 import android.speech.SpeechRecognizer;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.utils.SpeechRecognition.RecognitionEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class SpeechRecognitionShield extends
 		ControllerParent<SpeechRecognitionShield> {

@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield.ProximityEventHandler;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {

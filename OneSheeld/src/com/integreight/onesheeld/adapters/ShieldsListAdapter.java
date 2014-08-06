@@ -15,12 +15,12 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.ControllerParent.SelectionAction;
 
 public class ShieldsListAdapter extends BaseAdapter implements Filterable {

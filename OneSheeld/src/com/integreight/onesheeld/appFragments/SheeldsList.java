@@ -27,18 +27,17 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.Fields;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.ArduinoConnectivityPopup;
-import com.integreight.onesheeld.FirmwareUpdatingPopup;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
-import com.integreight.onesheeld.OneSheeldVersionInstallerPopupTesting;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.TutorialPopup;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
+import com.integreight.onesheeld.popup.TutorialPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
 
@@ -397,7 +396,7 @@ public class SheeldsList extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.open_bootloader_popup:
-			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
+			if (!FirmwareUpdatingPopup.isOpened)
 				new FirmwareUpdatingPopup((MainActivity) activity, false)
 						.show();
 			return true;
