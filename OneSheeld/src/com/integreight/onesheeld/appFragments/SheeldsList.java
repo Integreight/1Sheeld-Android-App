@@ -30,11 +30,11 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.Tutorial;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
-import com.integreight.onesheeld.popup.TutorialPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
@@ -405,7 +405,7 @@ public class SheeldsList extends Fragment {
 					.setLastConnectedDevice(null);
 			return true;
 		case R.id.appTutorial:
-			activity.startActivity(new Intent(activity, TutorialPopup.class)
+			activity.startActivity(new Intent(activity, Tutorial.class)
 					.putExtra("isMenu", true));
 			return true;
 		}

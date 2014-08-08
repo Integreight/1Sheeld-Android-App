@@ -14,8 +14,8 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
@@ -107,13 +107,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 			}
 		});
 	}
-
-	// private void intializeFirmata(ArduinoFirmata firmata, int connectedPin){
-	//
-	// led=new Led(firmata,connectedPin);
-	// led.setLedEventHandler(ledEventHandler);
-	// toggleLed(led.isLedOn());
-	// }
 
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {

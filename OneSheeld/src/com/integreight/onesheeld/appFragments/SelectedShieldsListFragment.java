@@ -53,6 +53,7 @@ import com.integreight.onesheeld.shields.fragments.SliderFragment;
 import com.integreight.onesheeld.shields.fragments.SmsFragment;
 import com.integreight.onesheeld.shields.fragments.SpeechRecognitionFragment;
 import com.integreight.onesheeld.shields.fragments.TemperatureFragment;
+import com.integreight.onesheeld.shields.fragments.TerminalFragment;
 import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
@@ -195,6 +196,9 @@ public class SelectedShieldsListFragment extends ListFragment {
 		case DATA_LOGGER:
 			return addToCreatedListAndReturn(UIShield.CLOCK_SHIELD,
 					new ClockFragment());
+		case TERMINAL_SHIELD:
+			return addToCreatedListAndReturn(UIShield.TERMINAL_SHIELD,
+					new TerminalFragment());
 
 		default:
 			return new EmptyShieldFragment();

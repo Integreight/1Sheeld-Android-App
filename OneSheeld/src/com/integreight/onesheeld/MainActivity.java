@@ -40,7 +40,6 @@ import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
-import com.integreight.onesheeld.popup.TutorialPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.services.OneSheeldService;
@@ -99,7 +98,7 @@ public class MainActivity extends FragmentActivity {
 		// popub.show();
 		if (getThisApplication().getShowTutAgain()
 				&& getThisApplication().getTutShownTimes() < 6)
-			startActivity(new Intent(this, TutorialPopup.class));
+			startActivity(new Intent(this, Tutorial.class));
 	}
 
 	public Thread looperThread;

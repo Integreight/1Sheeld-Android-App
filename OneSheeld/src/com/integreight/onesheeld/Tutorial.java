@@ -1,4 +1,4 @@
-package com.integreight.onesheeld.popup;
+package com.integreight.onesheeld;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -9,13 +9,11 @@ import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.TutorialPagerAdapter;
 import com.viewpagerindicator.CirclePageIndicator;
 
-public class TutorialPopup extends FragmentActivity {
+public class Tutorial extends FragmentActivity {
 	ViewPager pager;
 	RelativeLayout logoCont;
 	ImageView fadingLogo;
