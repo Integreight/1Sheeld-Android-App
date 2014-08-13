@@ -248,17 +248,18 @@ public class SelectedShieldsListFragment extends ListFragment {
 		// activity.setTitle(
 		// UIShieldAdapter.getItem(position).getName() + " Shield");
 		if (newContent != null)
-			switchFragment(newContent);
+			switchFragment(newContent, UIShieldAdapter.getItem(position));
 	}
 
 	TextView shieldName;
 
-	private void switchFragment(final ShieldFragmentParent<?> fragment) {
+	private void switchFragment(final ShieldFragmentParent<?> fragment,
+			final UIShield uiShield) {
 		getListView().post(new Runnable() {
 			@Override
 			public void run() {
 				activity.replaceCurrentFragment(R.id.shieldsContainerFrame,
-						fragment, fragment.getControllerTag(), false, false);
+						fragment, uiShield.name(), false, false);
 				try {
 					new Handler().post(new Runnable() {
 

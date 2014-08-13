@@ -137,7 +137,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 			Crashlytics
 					.log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
 							.getClass().getName() : "");
-		Log.d("TAG", controllerTag);
+		Log.test("TAG", controllerTag + "  Tag from app:  " + tagFromApp
+				+ "  Frag Tag:  " + getTag() + "  Arg:  "
+				+ getArguments().getString("H"));
 		return controllerTag;
 	}
 

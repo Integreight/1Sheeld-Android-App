@@ -467,9 +467,9 @@ public class MainActivity extends FragmentActivity {
 				ft.setCustomAnimations(R.anim.slide_out_right,
 						R.anim.slide_in_left, R.anim.slide_out_left,
 						R.anim.slide_in_right);
-			ft.replace(container, targetFragment, fragmentTag);
+			ft.replace(container, targetFragment, tag);
 			if (addToBackStack) {
-				ft.addToBackStack(backStateName);
+				ft.addToBackStack(tag);
 			}
 			ft.commit();
 		}
