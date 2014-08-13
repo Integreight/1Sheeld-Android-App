@@ -69,6 +69,18 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				logoutFromTwitter();
 			}
 		});
+		// v.findViewById(R.id.twitter_shield_imageview).setOnClickListener(
+		// new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View arg0) {
+		// ((TwitterShield) getApplication().getRunningShields()
+		// .get(getControllerTag())).uploadPhoto(
+		// Environment.getExternalStorageDirectory()
+		// + "/Pictures/Screenshots/test.png",
+		// "Testing 1Sheeld");
+		// }
+		// });
 		super.onStart();
 
 	}

@@ -1,5 +1,8 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.File;
+
+import twitter4j.Status;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -286,6 +289,42 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 								Toast.LENGTH_SHORT).show();
 				}
 		}
+	}
+
+	public void uploadPhoto(String filePath, String msg) {
+		new AsyncTask<String, Void, Status>() {
+
+			@Override
+			protected twitter4j.Status doInBackground(String... params) {
+				if (twitter != null)
+					try {
+						StatusUpdate status = new StatusUpdate(params[1]);
+						File f = new File(params[0]);
+						if (f.exists()) {
+							status.setMedia(new File(params[0]));
+							return twitter.updateStatus(status);
+						} else if (eventHandler != null) {
+							System.err.println("File Not Found  " + params[0]);
+							eventHandler.onTwitterError("File Not Found   "
+									+ params[0]);
+						}
+
+					} catch (TwitterException e) {
+						if (eventHandler != null)
+							eventHandler.onTwitterError(e.getErrorMessage());
+						e.printStackTrace();
+					}
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(twitter4j.Status result) {
+				if (result != null)
+					Toast.makeText(activity, "Done", Toast.LENGTH_LONG).show();
+				super.onPostExecute(result);
+			}
+		}.execute(filePath, msg);
+
 	}
 
 	// private void startListeningOnAKeyword(String keyword) {

@@ -84,9 +84,14 @@
 
     <!-- Voice Recognition -->
     <string name="speak">Speak</string>
-    <string name="tabToSpeak">Tab\nto\nSpeak</string>
+    <string name="tabToSpeak">Tap\nto\nSpeak</string>
 
     <!-- Tutorial -->
     <string name="go">Go !</string>
+    <!-- Terminal -->
+    <string name="terminalString">ASCII</string>
+    <string name="terminalASCI">DEC</string>
+    <string name="terminalBINARY">Binary</string>
+    <string name="terminalHEX">Hex</string>
 
 </resources>

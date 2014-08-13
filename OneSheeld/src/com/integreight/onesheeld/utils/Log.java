@@ -2,9 +2,12 @@ package com.integreight.onesheeld.utils;
 
 public class Log {
 	public static void d(String tag, String msg) {
-		// android.util.Log.d(tag, msg);
+//		 android.util.Log.d(tag, msg);
 	}
 
+	public static void test(String tag, String msg) {
+		 android.util.Log.d(tag, msg);
+	}
 	public static void i(String tag, String msg) {
 		// android.util.Log.d(tag, msg);
 	}

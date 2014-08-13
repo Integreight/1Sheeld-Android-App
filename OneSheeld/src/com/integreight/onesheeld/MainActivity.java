@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -448,14 +449,13 @@ public class MainActivity extends FragmentActivity {
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,
 			String tag, boolean addToBackStack, boolean animate) {
-		String backStateName = targetFragment.getClass().getName();
-		String fragmentTag = backStateName;
+		// String backStateName = tag;
+		// String fragmentTag = tag;
 
 		FragmentManager manager = getSupportFragmentManager();
-		boolean fragmentPopped = manager
-				.popBackStackImmediate(backStateName, 0);
+		boolean fragmentPopped = manager.popBackStackImmediate(tag, 0);
 
-		if (!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null) { // fragment
+		if (!fragmentPopped && manager.findFragmentByTag(tag) == null) { // fragment
 			// not
 			// in
 			// back
@@ -598,9 +598,12 @@ public class MainActivity extends FragmentActivity {
 	protected void onPause() {
 		isForground = false;
 		pausingTime = System.currentTimeMillis();
-		float hours = ((System.currentTimeMillis() - pausingTime) / (1000 * 60 * 60));
-		float minutes = ((System.currentTimeMillis() - pausingTime) / (1000 * 60));
-		float seconds = ((System.currentTimeMillis() - pausingTime) / (1000 * 60));
+		float hours = TimeUnit.MILLISECONDS.toSeconds(System
+				.currentTimeMillis() - pausingTime);
+		float minutes = TimeUnit.MILLISECONDS.toMinutes(System
+				.currentTimeMillis() - pausingTime);
+		float seconds = TimeUnit.MILLISECONDS.toHours(System
+				.currentTimeMillis() - pausingTime);
 		Crashlytics.setString("isBackground", "since " + hours + " hours - "
 				+ minutes + " minutes - " + seconds + " seocnds");
 		new Thread(new Runnable() {

@@ -21,5 +21,6 @@
     <color name="superDarkGray">#232323</color>
     <color name="voice_rec_circle_red">#e90027</color>
     <color name="voice_rec_circle_green">#00e800</color>
+    <color name="terminal_encoding_default_color">#4D4D4D</color>
 
 </resources>

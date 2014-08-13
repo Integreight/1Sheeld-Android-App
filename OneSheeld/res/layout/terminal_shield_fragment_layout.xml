@@ -2,9 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="10dp" >
+    android:paddingBottom="30dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="20dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,22 +35,86 @@
             android:background="@drawable/search_area_buttons_selector"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@string/send" />
+            android:text="@string/send"
+            android:textColor="@color/offWhite" />
     </LinearLayout>
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
-        android:id="@+id/terminalOutput"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/curved_terminal_output"
-        android:gravity="top|left"
-        android:paddingBottom="15dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="15dp"
-        android:scrollbars="vertical"
-        android:textColor="@color/green"
-        android:textSize="14sp" />
+        android:layout_weight="1"
+        android:background="@drawable/curved_terminal_output" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+            android:id="@+id/terminalOutput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:gravity="top|left"
+            android:scrollbars="vertical"
+            android:textColor="@color/green"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="15dp"
+        android:orientation="horizontal" >
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/terminalString"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduinoPinsSelector"
+            android:text="@string/terminalString"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/asci"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".3dp"
+            android:layout_marginRight=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduino_conn_resetAll_bg"
+            android:text="@string/terminalASCI"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/binary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".3dp"
+            android:layout_marginRight=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduino_conn_resetAll_bg"
+            android:text="@string/terminalBINARY"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/hex"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduino_conn_resetAll_bg"
+            android:text="@string/terminalHEX"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,12 +1,16 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.TerminalShield;
@@ -22,11 +26,23 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 	private OneSheeldEditText inputField;
 	private OneSheeldButton send;
 	private boolean endedWithNewLine = false;
+	private ArrayList<PrintedLine> printedLines;
+	private int[] encodingMths = new int[] { R.id.terminalString, R.id.asci,
+			R.id.binary, R.id.hex };
+	private int selectedEnMth = 0;
+
+	private String getTimeAsString() {
+		return DateFormat.format("MM/dd/yyyy hh:mm:ss", new java.util.Date())
+				.toString();
+	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+		if (printedLines == null)
+			printedLines = new ArrayList<TerminalFragment.PrintedLine>();
 		v = inflater.inflate(R.layout.terminal_shield_fragment_layout,
 				container, false);
+		selectedEnMth = 0;
 		output = (OneSheeldTextView) v.findViewById(R.id.terminalOutput);
 		inputField = (OneSheeldEditText) v.findViewById(R.id.terminalInput);
 		send = (OneSheeldButton) v.findViewById(R.id.send);
@@ -38,9 +54,13 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 				((TerminalShield) getApplication().getRunningShields().get(
 						getControllerTag())).input(inputField.getText()
 						.toString());
-				output.append((!endedWithNewLine ? "\n" : "")
-						+ new Date().toString() + " - "
-						+ inputField.getText().toString() + "\n");
+				printedLines.add(new PrintedLine(
+						(!endedWithNewLine ? "\n" : "") + getTimeAsString()
+								+ " [TX] " + "- ", inputField.getText()
+								.toString(), true));
+				output.append(((!endedWithNewLine ? "\n" : "")
+						+ getTimeAsString() + " [TX] " + "- "
+						+ getEncodedString(inputField.getText().toString()) + "\n"));
 				final int scrollAmount = output.getLayout().getLineTop(
 						output.getLineCount())
 						- output.getHeight();
@@ -49,16 +69,105 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					output.scrollTo(
 							0,
 							scrollAmount
-									+ ((int) (30 * getResources()
+									+ ((int) (0 * getResources()
 											.getDisplayMetrics().density + .5f)));
 				else
 					output.scrollTo(0, 0);
 
 				endedWithNewLine = true;
 				inputField.setText("");
+				InputMethodManager imm = (InputMethodManager) activity
+						.getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(inputField.getWindowToken(), 0);
 			}
 		});
+		int i = 0;
+		for (final int id : encodingMths) {
+			final int x = i;
+			v.findViewById(id).setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View vi) {
+					if (selectedEnMth != x) {
+						v.findViewById(encodingMths[selectedEnMth])
+								.setBackgroundColor(
+										getResources()
+												.getColor(
+														R.color.arduino_conn_resetAll_bg));
+						v.findViewById(encodingMths[x]).setBackgroundColor(
+								getResources().getColor(
+										R.color.arduinoPinsSelector));
+						selectedEnMth = x;
+						output.setText("");
+						for (PrintedLine line : printedLines) {
+							output.append(line.date
+									+ getEncodedString(line.print)
+									+ (line.isEndedWithNewLine ? "\n" : ""));
+						}
+						final int scrollAmount = output.getLayout().getLineTop(
+								output.getLineCount())
+								- output.getHeight();
+						// if there is no need to scroll, scrollAmount will
+						// be <=0
+						if (scrollAmount > 0)
+							output.scrollTo(
+									0,
+									scrollAmount
+											+ ((int) (0 * getResources()
+													.getDisplayMetrics().density + .5f)));
+						else
+							output.scrollTo(0, 0);
+					}
+				}
+			});
+			i++;
+		}
 		return v;
+	}
+
+	private String getEncodedString(String toBeEncoded) {
+		String out = "";
+		switch (selectedEnMth) {
+		case 0:
+			out = toBeEncoded;
+			break;
+		case 1:
+			try {
+				byte[] en = toBeEncoded.getBytes("US-ASCII");
+				for (byte b : en) {
+					out += b;
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case 2:
+			byte[] bytes = toBeEncoded.getBytes();
+			StringBuilder binary = new StringBuilder();
+			for (byte b : bytes) {
+				int val = b;
+				for (int i = 0; i < 8; i++) {
+					binary.append((val & 128) == 0 ? 0 : 1);
+					val <<= 1;
+				}
+				binary.append(' ');
+			}
+			out = binary.toString();
+			break;
+		case 3:
+			char[] chars = toBeEncoded.toCharArray();
+
+			StringBuffer hex = new StringBuffer();
+			for (int i = 0; i < chars.length; i++) {
+				hex.append(Integer.toHexString((int) chars[i]));
+			}
+			out = hex.toString().toUpperCase();
+			break;
+		default:
+			break;
+		}
+		return out;
 	}
 
 	@Override
@@ -86,6 +195,15 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 	}
 
 	@Override
+	public void onDestroy() {
+		if (printedLines != null)
+			printedLines.clear();
+		printedLines = null;
+		v = null;
+		super.onDestroy();
+	}
+
+	@Override
 	public void doOnServiceConnected() {
 	}
 
@@ -99,14 +217,60 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					@Override
 					public void run() {
 						if (output != null) {
-							output.append(outputTxt);
+							String date = output.length() == 0
+									|| endedWithNewLine ? getTimeAsString()
+									+ " [RX] - " : "";
+							boolean isEndedWithNewLine = outputTxt
+									.charAt(outputTxt.length() - 1) == '\n';
+							printedLines.add(new PrintedLine(date, outputTxt
+									.substring(
+											0,
+											isEndedWithNewLine ? outputTxt
+													.length() - 1 : outputTxt
+													.length()),
+									isEndedWithNewLine));
+							output.append(date
+									+ getEncodedString(outputTxt.substring(
+											0,
+											isEndedWithNewLine ? outputTxt
+													.length() - 1 : outputTxt
+													.length()))
+									+ (isEndedWithNewLine ? "\n" : ""));
 							if (outputTxt.length() > 0)
 								endedWithNewLine = outputTxt.charAt(outputTxt
 										.length() - 1) == '\n';
+							final int scrollAmount = output.getLayout()
+									.getLineTop(output.getLineCount())
+									- output.getHeight();
+							// if there is no need to scroll, scrollAmount will
+							// be <=0
+							if (scrollAmount > 0)
+								output.scrollTo(
+										0,
+										scrollAmount
+												+ ((int) (0 * getResources()
+														.getDisplayMetrics().density + .5f)));
+							else
+								output.scrollTo(0, 0);
 						}
 					}
 				});
 		}
 	};
+
+	private class PrintedLine {
+		public String date;
+		public String print;
+		public boolean isEndedWithNewLine;
+
+		private PrintedLine(String date, String print,
+				boolean isEndedWithNewLine) {
+			super();
+			this.date = date;
+			this.print = print;
+			this.isEndedWithNewLine = isEndedWithNewLine;
+		}
+
+	}
 
 }
