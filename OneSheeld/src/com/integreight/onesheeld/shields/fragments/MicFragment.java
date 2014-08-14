@@ -10,9 +10,9 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.MicShield;
 import com.integreight.onesheeld.shields.controller.MicShield.MicEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {

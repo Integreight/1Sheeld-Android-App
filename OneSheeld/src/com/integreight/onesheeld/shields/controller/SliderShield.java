@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 
 public class SliderShield extends ControllerParent<SliderShield> {
 	private int connectedPin;
@@ -27,7 +27,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
 	@Override
 	public void setConnected(ArduinoConnectedPin... pins) {
 		connectedPin = pins[0].getPinID();
-		CommitInstanceTotable();
+
 		super.setConnected(pins);
 	}
 
@@ -42,7 +42,6 @@ public class SliderShield extends ControllerParent<SliderShield> {
 		sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(sValue);
 		sendShieldFrame(sf);
-		CommitInstanceTotable();
 
 	}
 

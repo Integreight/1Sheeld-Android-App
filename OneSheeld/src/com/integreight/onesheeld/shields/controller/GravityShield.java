@@ -10,7 +10,7 @@ import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class GravityShield extends ControllerParent<GravityShield> implements
@@ -53,7 +53,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	@Override
 	public ControllerParent<GravityShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -65,7 +65,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 
 	public void setGravityEventHandler(GravityEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override
@@ -117,8 +117,7 @@ public class GravityShield extends ControllerParent<GravityShield> implements
 		if (mSensorManager == null | mGravity == null) {
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
-			mGravity = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_GRAVITY);
+			mGravity = mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY) != null) {
 			// Success! There's sensor.

@@ -16,10 +16,10 @@ import android.widget.Toast;
 
 import com.facebook.Session;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ClockShield;
@@ -43,7 +44,6 @@ import com.integreight.onesheeld.shields.controller.TerminalShield;
 import com.integreight.onesheeld.shields.controller.TextToSpeechShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
-import com.integreight.onesheeld.utils.ControllerParent;
 
 public enum UIShield {
 	LED_SHIELD((byte) 0x02, "LED", 0xff03d203,

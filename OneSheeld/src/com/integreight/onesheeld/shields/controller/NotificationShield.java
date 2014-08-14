@@ -14,7 +14,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 
 public class NotificationShield extends ControllerParent<NotificationShield> {
 	private NotificationEventHandler eventHandler;
@@ -102,7 +102,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 	public void setNotificationEventHandler(
 			NotificationEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public interface NotificationEventHandler {

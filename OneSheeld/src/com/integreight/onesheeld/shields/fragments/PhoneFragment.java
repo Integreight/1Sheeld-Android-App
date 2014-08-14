@@ -8,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.PhoneShield;
 import com.integreight.onesheeld.shields.controller.PhoneShield.PhoneEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {

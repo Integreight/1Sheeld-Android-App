@@ -20,7 +20,7 @@ import android.os.Environment;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 
 public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	private static final byte START_LOGGIN = 0x02;

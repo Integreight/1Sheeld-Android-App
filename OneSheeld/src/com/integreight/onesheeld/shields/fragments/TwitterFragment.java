@@ -10,10 +10,10 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield.TwitterEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {

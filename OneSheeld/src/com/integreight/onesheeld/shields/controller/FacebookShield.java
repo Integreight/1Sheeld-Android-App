@@ -24,8 +24,8 @@ import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class FacebookShield extends ControllerParent<FacebookShield> {
@@ -95,12 +95,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	public void setShieldFragment(Fragment fragment) {
 		this.fragment = fragment;
-		CommitInstanceTotable();
+
 	}
 
 	public void setFacebookEventHandler(FacebookEventHandler eventHandler) {
 		FacebookShield.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public static interface FacebookEventHandler {
@@ -119,7 +119,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			session.openForRead(new Session.OpenRequest(fragment)
 					.setCallback(statusCallback));
 		}
-		CommitInstanceTotable();
+
 	}
 
 	public void logoutFromFacebook() {
@@ -137,7 +137,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_FACEBOOK_USERNAME);
 		e.commit();
-		CommitInstanceTotable();
+
 	}
 
 	// @Override

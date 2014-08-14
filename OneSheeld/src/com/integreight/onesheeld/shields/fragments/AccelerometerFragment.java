@@ -8,10 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield.AccelerometerEventHandler;
 import com.integreight.onesheeld.utils.Log;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class AccelerometerFragment extends
 		ShieldFragmentParent<AccelerometerFragment> {

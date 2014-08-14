@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 
 public class TerminalShield extends ControllerParent<TerminalShield> {
 	private static final byte WRITE = 0x01;
@@ -32,7 +32,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 		sf = new ShieldFrame(UIShield.TERMINAL_SHIELD.getId(), DATA_IN);
 		sf.addStringArgument(input);
 		sendShieldFrame(sf);
-		CommitInstanceTotable();
+
 	}
 
 	@Override

@@ -9,9 +9,9 @@ import android.telephony.TelephonyManager;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener;
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener.PhoneRingingEventHandler;
-import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
@@ -41,7 +41,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 
 	@Override
 	public ControllerParent<PhoneShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		TelephonyManager tm = (TelephonyManager) getApplication()
@@ -81,7 +81,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
 
 	public void setPhoneEventHandler(PhoneEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public static interface PhoneEventHandler {

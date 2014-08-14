@@ -7,8 +7,8 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.BitsUtils;
-import com.integreight.onesheeld.utils.ControllerParent;
 
 public class GamepadShield extends ControllerParent<GamepadShield> {
 	ShieldFrame sf;
@@ -31,7 +31,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 	}
 
 	public void initPins() {
-		CommitInstanceTotable();
+
 	}
 
 	public GamepadShield() {
@@ -52,7 +52,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
 		sendShieldFrame(sf);
-		CommitInstanceTotable();
+
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
 	}
 
@@ -66,7 +66,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
 		sendShieldFrame(sf);
-		CommitInstanceTotable();
+
 		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
 		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});
 	}

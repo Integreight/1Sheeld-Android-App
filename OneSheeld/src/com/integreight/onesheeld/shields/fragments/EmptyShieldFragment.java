@@ -1,7 +1,8 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

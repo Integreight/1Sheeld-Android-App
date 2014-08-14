@@ -12,9 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SmsFragment extends ShieldFragmentParent<SmsFragment> {

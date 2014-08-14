@@ -10,7 +10,7 @@ import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class PressureShield extends ControllerParent<PressureShield> implements
@@ -53,7 +53,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 	@Override
 	public ControllerParent<PressureShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -65,7 +65,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 
 	public void setPressureEventHandler(PressureEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override
@@ -106,8 +106,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
 		if (mSensorManager == null | mPressure == null) {
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
-			mPressure = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_PRESSURE);
+			mPressure = mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE) != null) {
 			// Success! There's sensor.

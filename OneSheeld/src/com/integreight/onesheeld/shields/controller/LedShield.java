@@ -5,7 +5,7 @@ import android.app.Activity;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class LedShield extends ControllerParent<LedShield> {
@@ -40,7 +40,7 @@ public class LedShield extends ControllerParent<LedShield> {
 					.digitalRead(connectedPin);
 		else
 			isLedOn = false;
-		CommitInstanceTotable();
+
 		return isLedOn;
 	}
 
@@ -54,7 +54,7 @@ public class LedShield extends ControllerParent<LedShield> {
 		if (eventHandler != null) {
 			eventHandler.onLedChange(isLedOn);
 		}
-		CommitInstanceTotable();
+
 		super.onDigital(portNumber, portData);
 	}
 
@@ -65,7 +65,7 @@ public class LedShield extends ControllerParent<LedShield> {
 					.digitalRead(connectedPin);
 		else
 			isLedOn = false;
-		CommitInstanceTotable();
+
 	}
 
 	@Override

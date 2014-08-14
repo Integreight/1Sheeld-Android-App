@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TerminalShield;
 import com.integreight.onesheeld.shields.controller.TerminalShield.TerminalHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;

@@ -22,12 +22,12 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListner;
 import com.integreight.onesheeld.utils.AlertDialogManager;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class TwitterShield extends ControllerParent<TwitterShield> {

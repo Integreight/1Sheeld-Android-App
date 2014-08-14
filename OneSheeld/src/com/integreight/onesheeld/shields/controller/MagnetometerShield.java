@@ -10,7 +10,7 @@ import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class MagnetometerShield extends ControllerParent<MagnetometerShield>
@@ -53,7 +53,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
 	@Override
 	public ControllerParent<MagnetometerShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -67,7 +67,7 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 	public void setMagnetometerEventHandler(
 			MagnetometerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override

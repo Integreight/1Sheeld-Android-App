@@ -8,10 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield.MagnetometerEventHandler;
 import com.integreight.onesheeld.utils.Log;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class MagnetometerFragment extends
 		ShieldFragmentParent<MagnetometerFragment> {

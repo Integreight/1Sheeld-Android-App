@@ -10,7 +10,7 @@ import android.widget.Toast;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
@@ -61,7 +61,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 
 	public void setSpeakerEventHandler(SpeakerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public static interface SpeakerEventHandler {

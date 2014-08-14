@@ -8,10 +8,10 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.LightShield.LightEventHandler;
 import com.integreight.onesheeld.utils.Log;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	TextView light_float, light_byte;

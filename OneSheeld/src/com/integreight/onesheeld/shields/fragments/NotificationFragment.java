@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield.NotificationEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class NotificationFragment extends
 		ShieldFragmentParent<NotificationFragment> {

@@ -11,7 +11,7 @@ import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
 public class ClockShield extends
@@ -120,7 +120,6 @@ public class ClockShield extends
 
 	public void setClockEventHandler(ClockEventHandler clockEventHandler) {
 		this.eventHandler = clockEventHandler;
-		CommitInstanceTotable();
 
 	}
 

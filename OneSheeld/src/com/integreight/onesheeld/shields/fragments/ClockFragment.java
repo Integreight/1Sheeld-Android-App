@@ -7,9 +7,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.ClockShield;
 import com.integreight.onesheeld.shields.controller.ClockShield.ClockEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	TextView time_tx;

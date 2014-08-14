@@ -16,8 +16,8 @@ import android.widget.RelativeLayout;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
-import com.integreight.onesheeld.utils.ControllerParent;
 import com.integreight.onesheeld.utils.ConnectingPinsView.onGetPinsView;
 import com.integreight.onesheeld.utils.customviews.PinsColumnContainer.PinData.TYPE;
 
