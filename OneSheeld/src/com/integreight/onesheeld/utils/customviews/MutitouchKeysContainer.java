@@ -2,8 +2,6 @@ package com.integreight.onesheeld.utils.customviews;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import com.integreight.onesheeld.utils.Log;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
@@ -22,7 +20,6 @@ public class MutitouchKeysContainer extends RelativeLayout {
 	public MutitouchKeysContainer(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		maxPointers = getMaxPointers(context);
-		Log.sysOut("MAX    " + maxPointers);
 	}
 
 	private int getMaxPointers(Context context) {
@@ -64,7 +61,6 @@ public class MutitouchKeysContainer extends RelativeLayout {
 	private synchronized void down(int x, int y) {
 		PinData item = getTouhedIndex(x, y, childrenRects);
 		if (item.index != -1 && !pressedRects.contains(item)) {
-			Log.sysOut(item.tag + "    Pressed");
 			pressedRects.add(item);
 			item.key.eventListener.onPressed(item.key);
 		}
@@ -74,7 +70,6 @@ public class MutitouchKeysContainer extends RelativeLayout {
 		PinData item = getTouhedIndex(x, y, childrenRects);
 		if (item.index != -1 && pressedRects.contains(item)) {
 			item.key.eventListener.onReleased(item.key);
-			Log.sysOut(item.tag + "    Released");
 			pressedRects.remove(item);
 		}
 	}
@@ -89,7 +84,6 @@ public class MutitouchKeysContainer extends RelativeLayout {
 					pressed = true;
 			}
 			if (!pressed) {
-				Log.sysOut(item.tag + "    Released");
 				item.key.eventListener.onReleased(item.key);
 				pressedRects.remove(item);
 			}

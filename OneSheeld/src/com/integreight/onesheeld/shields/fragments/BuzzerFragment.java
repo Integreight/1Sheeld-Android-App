@@ -28,7 +28,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	private ImageView buzzerSpeaker;
 	private Button increaseBtn, decreaseBtn;
 	private int currLevel = 0;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

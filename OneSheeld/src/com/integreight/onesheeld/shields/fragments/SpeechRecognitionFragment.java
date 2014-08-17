@@ -26,7 +26,6 @@ public class SpeechRecognitionFragment extends
 	TextView rmsIndicator;
 	RelativeLayout.LayoutParams params;
 	int stepValue = 0;
-	View v;
 	int marginValue;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -27,7 +27,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	private boolean isEdit1 = true;
 	private String mUpper = "upper", mLower = "lower";
 	private int w, mWindowWidth;
-	View v;
+
 	private String sL[] = { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j",
 			"k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w",
 			"x", "y", "z", "ç", "à", "é", "è", "û", "î" };
@@ -46,7 +46,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		 v = inflater.inflate(R.layout.keyboard_shield_fragment_layout,
+		v = inflater.inflate(R.layout.keyboard_shield_fragment_layout,
 				container, false);
 		return v;
 	}

@@ -20,7 +20,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 
 public class ToggleButtonFragment extends
 		ShieldFragmentParent<ToggleButtonFragment> {
-	View v;
 	OneSheeldToggleButton toggleButtonButton;
 	Button connectButton;
 

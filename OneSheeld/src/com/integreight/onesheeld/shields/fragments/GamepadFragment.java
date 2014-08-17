@@ -21,7 +21,6 @@ import com.integreight.onesheeld.utils.customviews.Key;
 import com.integreight.onesheeld.utils.customviews.Key.KeyTouchEventListener;
 
 public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
-	View v;
 	MenuItem connectButton;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;

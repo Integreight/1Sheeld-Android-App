@@ -17,7 +17,6 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 	TextView distance_float, distance_byte;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -67,9 +67,6 @@ public class ConnectingPinsView extends Fragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// if (isInflated) {
-		// show = (TextView) view.findViewById(R.id.show);
-		// }
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -144,13 +141,6 @@ public class ConnectingPinsView extends Fragment {
 													.getName() + shieldPinName))
 								prevArduinoPin.connectedPins.remove(controller
 										.getClass().getName() + shieldPinName);
-							// ((OneSheeldApplication) activity
-							// .getApplication())
-							// .getAppFirmata()
-							// .digitalWrite(
-							// controller.matchedShieldPins
-							// .get(controller.shieldPins[selectedPin]).microHardwarePin,
-							// ArduinoFirmata.LOW);
 							controller.matchedShieldPins
 									.remove(controller.shieldPins[selectedPin]);
 							listner.onUnSelect(prevArduinoPin);
@@ -165,9 +155,6 @@ public class ConnectingPinsView extends Fragment {
 
 					@Override
 					public void onPinsDrawn() {
-						// pinsSubContainers.get(0).getChildAt(0)
-						// .setBackgroundColor(selectedColor);
-						// selectedPin = 0;
 						selectedPinName = controller.matchedShieldPins
 								.get(controller.shieldPins[0]) != null ? controller.matchedShieldPins
 								.get(controller.shieldPins[0]).name() : "";
@@ -195,14 +182,7 @@ public class ConnectingPinsView extends Fragment {
 				LinearLayout pinsContainer = (LinearLayout) view
 						.findViewById(R.id.requiredPinsContainer);
 				pinsContainer.removeAllViews();
-				// int pdng = (int) (2 *
-				// getResources().getDisplayMetrics().density
-				// -
-				// .5f);
 				selectedPin = 0;
-				// HorizontalScrollView scrollingPins = (HorizontalScrollView)
-				// view
-				// .findViewById(R.id.scrollingPins);
 				for (int i = 0; i < controller.shieldPins.length; i++) {
 					LinearLayout pinSubContainer = (LinearLayout) activity
 							.getLayoutInflater().inflate(
@@ -260,7 +240,6 @@ public class ConnectingPinsView extends Fragment {
 					});
 					pinsContainer.addView(pinSubContainer);
 					pinsSubContainers.add(pinSubContainer);
-					// scrollingPins.invalidate();
 				}
 			}
 		});

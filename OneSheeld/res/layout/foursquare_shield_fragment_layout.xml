@@ -11,7 +11,7 @@
         android:background="@drawable/foursquare_shield_screen_logo"
         android:contentDescription="@string/app_name" />
 
-    <Button
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:id="@+id/foursquare_shiled_login_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:background="@drawable/social_shields_login"
         android:visibility="invisible" />
 
-    <Button
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:id="@+id/foursquare_shiled_logout_bt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

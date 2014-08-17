@@ -22,7 +22,6 @@ public class TextToSpeechFragment extends
 	OneSheeldTextView ttsText;
 	private float ttsPitch = 1;
 	private float freqValue = 1f;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -30,7 +30,6 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	private static final String PREF_EMAIL_SHIELD_GMAIL_ACCOUNT = "gmail_account";
 	private static final String PREF_EMAIL_SHIELD_GMAIL_PASSWORD = "gmail_password";
 	private String userEmail;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -62,12 +61,10 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
 
-		sendTo = (TextView) v.findViewById(
-				R.id.gmail_shield_sendto_textview);
-		userName = (TextView) v.findViewById(
-				R.id.gmail_shield_username_textview);
-		subject = (TextView) v.findViewById(
-				R.id.gmail_shield_subject_textview);
+		sendTo = (TextView) v.findViewById(R.id.gmail_shield_sendto_textview);
+		userName = (TextView) v
+				.findViewById(R.id.gmail_shield_username_textview);
+		subject = (TextView) v.findViewById(R.id.gmail_shield_subject_textview);
 		login_bt = (Button) v.findViewById(R.id.login_gmail_bt);
 		logout_bt = (Button) v.findViewById(R.id.logout_gmail_bt);
 		login_bt.setOnClickListener(new View.OnClickListener() {

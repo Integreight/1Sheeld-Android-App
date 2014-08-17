@@ -23,8 +23,8 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
 
 public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
-	private static final byte START_LOGGIN = 0x02;
-	private static final byte STOP_LOGGIN = 0x03;
+	private static final byte START_LOGGING = 0x02;
+	private static final byte STOP_LOGGING = 0x03;
 	private static final byte ADD = 0x04;
 	ArrayList<String> headerList = new ArrayList<String>();
 	ArrayList<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
@@ -54,12 +54,12 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.DATA_LOGGER.getId()) {
 			switch (frame.getFunctionId()) {
-			case START_LOGGIN:
+			case START_LOGGING:
 				fileName = frame.getArgumentAsString(0);
 				headerList = new ArrayList<String>();
 				values = new ArrayList<Map<String, Object>>();
 				break;
-			case STOP_LOGGIN:
+			case STOP_LOGGING:
 				ICsvMapWriter mapWriter = null;
 				try {
 					File folder = new File(

@@ -21,7 +21,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
-	View v;
 	private OneSheeldTextView output;
 	private OneSheeldEditText inputField;
 	private OneSheeldButton send;

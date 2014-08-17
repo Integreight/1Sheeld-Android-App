@@ -13,7 +13,6 @@ import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandle
 import com.integreight.onesheeld.utils.Log;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

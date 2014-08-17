@@ -23,12 +23,12 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
 	Button sendSMS;
-	View v;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		 v = inflater.inflate(R.layout.sms_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.sms_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 
@@ -49,8 +49,8 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		smsTextContainer = (LinearLayout) v.findViewById(
-				R.id.sms_shield_text_container);
+		smsTextContainer = (LinearLayout) v
+				.findViewById(R.id.sms_shield_text_container);
 		// sendSMS = (Button) v.findViewById(R.id.sendMessage);
 		// sendSMS.setOnClickListener(new View.OnClickListener() {
 		//

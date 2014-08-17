@@ -32,7 +32,6 @@ public class SevenSegmentFragment extends
 	ImageView fSegment;
 	ImageView gSegment;
 	ImageView dotSegment;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

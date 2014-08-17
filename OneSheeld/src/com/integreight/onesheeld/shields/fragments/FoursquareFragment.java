@@ -26,7 +26,6 @@ public class FoursquareFragment extends
 	TextView lastCheckin;
 	Button login, logout;
 	private static SharedPreferences mSharedPreferences;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -29,7 +29,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 	// private Parameters parameters;
 	// private String FLASH_MODE = "on";
 	private CameraFragmentHandler fragmentHandler;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

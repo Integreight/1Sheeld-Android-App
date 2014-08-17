@@ -16,7 +16,6 @@ import com.integreight.onesheeld.utils.Log;
 public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	TextView Latit, Longit;
 	Button startGps, stopGps;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

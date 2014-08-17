@@ -21,7 +21,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	ImageView ledImage;
 	Button connectButton;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

@@ -13,7 +13,6 @@ import com.integreight.onesheeld.shields.controller.ClockShield.ClockEventHandle
 
 public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 	TextView time_tx;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

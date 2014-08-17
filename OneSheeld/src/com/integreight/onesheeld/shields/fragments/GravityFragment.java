@@ -17,7 +17,6 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 	TextView x, y, z;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,12 +51,10 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 		y = (TextView) v.findViewById(R.id.y_value_txt);
 		z = (TextView) v.findViewById(R.id.z_value_txt);
 
-		devicehasSensor = (TextView) v.findViewById(
-				R.id.device_not_has_sensor_text);
-		stoplistening_bt = (Button) v.findViewById(
-				R.id.stop_listener_bt);
-		startlistening_bt = (Button) v.findViewById(
-				R.id.start_listener_bt);
+		devicehasSensor = (TextView) v
+				.findViewById(R.id.device_not_has_sensor_text);
+		stoplistening_bt = (Button) v.findViewById(R.id.stop_listener_bt);
+		startlistening_bt = (Button) v.findViewById(R.id.start_listener_bt);
 
 		startlistening_bt.setOnClickListener(new View.OnClickListener() {
 

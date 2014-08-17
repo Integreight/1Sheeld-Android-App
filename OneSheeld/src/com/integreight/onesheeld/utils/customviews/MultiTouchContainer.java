@@ -2,8 +2,6 @@ package com.integreight.onesheeld.utils.customviews;
 
 import java.util.ArrayList;
 
-import com.integreight.onesheeld.utils.Log;
-
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -18,7 +16,6 @@ public class MultiTouchContainer extends RelativeLayout {
 
 	public MultiTouchContainer(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		// setOrientation(VERTICAL);
 	}
 
 	private void loadRects(ViewGroup vg) {
@@ -56,14 +53,12 @@ public class MultiTouchContainer extends RelativeLayout {
 				if (currentIndex != -1) {
 					key = childrenRects.get(currentIndex).key;
 					key.eventListener.onReleased(key);
-					Log.sysOut(key.getTag() + "   Release");
 				}
 				currentIndex = item.index;
 				currentTag = item.tag;
 				if (item.index != -1) {
 					key = childrenRects.get(currentIndex).key;
 					key.eventListener.onPressed(key);
-					System.out.println(key.getTag() + "   Pressed");
 				}
 				return true;
 			}
@@ -72,13 +67,11 @@ public class MultiTouchContainer extends RelativeLayout {
 			if (currentIndex != -1) {
 				key = childrenRects.get(currentIndex).key;
 				key.eventListener.onReleased(key);
-				System.out.println(key.getTag() + "   Release");
 			}
 			currentIndex = item.index;
 			if (currentIndex != -1) {
 				key = childrenRects.get(currentIndex).key;
 				key.eventListener.onReleased(key);
-				System.out.println(key.getTag() + "   Press");
 			}
 			currentTag = item.tag;
 			return true;

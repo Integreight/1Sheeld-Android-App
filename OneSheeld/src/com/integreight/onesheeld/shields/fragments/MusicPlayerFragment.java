@@ -22,7 +22,6 @@ public class MusicPlayerFragment extends
 	ImageView playingBtn;
 	Thread seekBarTracker;
 	private boolean isTracking = false;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

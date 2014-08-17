@@ -29,11 +29,11 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	Button facebookLogin;
 	Button facebookLogout;
 	Bundle savedInstanceState;
-	View v;
+
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		 v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
+		v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 
@@ -86,10 +86,9 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		lastPostTextCont = (LinearLayout) v
-				.findViewById(R.id.postsCont);
-		userNameTextView = (TextView) v.findViewById(
-				R.id.facebook_shield_username_textview);
+		lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
+		userNameTextView = (TextView) v
+				.findViewById(R.id.facebook_shield_username_textview);
 		facebookLogin = (Button) v.findViewById(R.id.login);
 		facebookLogout = (Button) v.findViewById(R.id.logout);
 	}

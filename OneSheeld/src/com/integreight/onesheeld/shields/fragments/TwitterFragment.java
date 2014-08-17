@@ -22,7 +22,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	OneSheeldTextView userNameTextView;
 	Button twitterLogin;
 	Button twitterLogout;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

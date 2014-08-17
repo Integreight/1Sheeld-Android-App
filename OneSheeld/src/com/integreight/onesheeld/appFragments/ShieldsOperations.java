@@ -3,7 +3,6 @@ package com.integreight.onesheeld.appFragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -32,7 +31,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 	private View v;
 	private static ShieldsOperations thisInstance;
 	protected SelectedShieldsListFragment mFrag;
-	private Fragment mContent;
+	private ShieldFragmentParent<?> mContent;
 	private MainActivity activity;
 
 	public static ShieldsOperations getInstance() {
@@ -120,8 +119,10 @@ public class ShieldsOperations extends BaseContainerFragment {
 			activity.setTitle(mFrag.getUIShield(0).getName() + " Shield");
 			// set the Above View
 			// setContentView(R.layout.content_frame);
-			activity.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.shieldsContainerFrame, mContent).commit();
+			activity.getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.shieldsContainerFrame, mContent,
+							mContent.getControllerTag()).commit();
 		}
 		pinsSlidingView = (MultiDirectionSlidingDrawer) getView().findViewById(
 				R.id.pinsViewSlidingView);
@@ -245,13 +246,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-	}
-
-	public void switchContent(Fragment fragment) {
-		mContent = fragment;
-		activity.getSupportFragmentManager().beginTransaction()
-				.replace(R.id.appTransitionsContainer, fragment).commit();
-		// activity.getSlidingMenu().showContent();
 	}
 
 	@Override

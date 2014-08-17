@@ -21,7 +21,6 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	SeekBar seekBar;
 	Button connectButton;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

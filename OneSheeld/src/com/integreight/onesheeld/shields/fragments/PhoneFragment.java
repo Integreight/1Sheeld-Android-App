@@ -15,7 +15,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 	LinearLayout callsLogContainer;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

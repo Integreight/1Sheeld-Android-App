@@ -19,13 +19,12 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	RelativeLayout.LayoutParams params;
 	TextView soundLevelIndicator;
 	int stepValue;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		 v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
+		v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
 				false);
 		setHasOptionsMenu(true);
 		return v;
@@ -45,8 +44,8 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		soundLevelIndicator = (TextView) v.findViewById(
-				R.id.soundLevelIndicator);
+		soundLevelIndicator = (TextView) v
+				.findViewById(R.id.soundLevelIndicator);
 		params = (LayoutParams) soundLevelIndicator.getLayoutParams();
 		soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -96,9 +95,9 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 					public void run() {
 						params.bottomMargin = (int) (value * stepValue);
 						soundLevelIndicator.requestLayout();
-						((OneSheeldTextView) v.findViewById(
-								R.id.micValue)).setText(String.valueOf(value)
-								.substring(0, 4) + " db");
+						((OneSheeldTextView) v.findViewById(R.id.micValue))
+								.setText(String.valueOf(value).substring(0, 4)
+										+ " db");
 					}
 				});
 			}

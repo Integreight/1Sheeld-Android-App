@@ -21,7 +21,6 @@ import com.integreight.onesheeld.shields.controller.LcdShield.LcdEventHandler;
 import com.integreight.onesheeld.utils.customviews.RotatingTextView;
 
 public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
-	View v;
 	private boolean drawn = false;
 
 	@Override

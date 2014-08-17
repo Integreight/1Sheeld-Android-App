@@ -17,7 +17,6 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 	TextView light_float, light_byte;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
-	View v;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,12 +50,10 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 		light_float = (TextView) v.findViewById(R.id.light_float_txt);
 		light_byte = (TextView) v.findViewById(R.id.light_byte_txt);
 
-		devicehasSensor = (TextView) v.findViewById(
-				R.id.device_not_has_sensor_text);
-		stoplistening_bt = (Button) v.findViewById(
-				R.id.stop_listener_bt);
-		startlistening_bt = (Button) v.findViewById(
-				R.id.start_listener_bt);
+		devicehasSensor = (TextView) v
+				.findViewById(R.id.device_not_has_sensor_text);
+		stoplistening_bt = (Button) v.findViewById(R.id.stop_listener_bt);
+		startlistening_bt = (Button) v.findViewById(R.id.start_listener_bt);
 
 		startlistening_bt.setOnClickListener(new View.OnClickListener() {
 

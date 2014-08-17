@@ -26,7 +26,6 @@ public class PushButtonFragment extends
 	Rect rect;
 	AppSlidingLeftMenu menu;
 	OneSheeldButton push;
-	View v;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
