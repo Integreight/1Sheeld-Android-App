@@ -102,9 +102,9 @@ public class ArduinoConnectivityPopup extends Dialog {
 										.getString(R.string.scan)))
 			setScanButtonReady();
 		else {
+			activity.finish();
 			dismiss();
 			cancel();
-			activity.finish();
 		}
 		if (lockerTimeOut != null)
 			lockerTimeOut.stopTimer();

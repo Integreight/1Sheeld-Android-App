@@ -52,6 +52,7 @@ public class SpeechRecognition implements RecognitionListener {
 				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
 		intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
 				"com.integreight.onesheeld");
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
 		mSpeechRecognizer.startListening(intent);
 	}
 

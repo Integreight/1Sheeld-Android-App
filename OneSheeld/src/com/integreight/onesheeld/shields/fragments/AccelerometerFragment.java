@@ -18,8 +18,7 @@ public class AccelerometerFragment extends
 	TextView x, y, z;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
-	View v;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {

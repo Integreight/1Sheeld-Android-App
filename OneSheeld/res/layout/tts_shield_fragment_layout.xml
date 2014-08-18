@@ -28,7 +28,8 @@
         android:layout_below="@id/ttsText"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/tts_shield_male_voice_button" />
+        android:background="@drawable/tts_shield_male_voice_button"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/increaseBtn"
@@ -38,6 +39,7 @@
         android:layout_below="@id/ttsText"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/tts_shield_female_voice_button" />
+        android:background="@drawable/tts_shield_female_voice_button"
+        android:visibility="gone" />
 
 </RelativeLayout>

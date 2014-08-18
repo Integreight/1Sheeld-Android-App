@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -126,12 +128,12 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 	}
 
 	private void configureTTSLocale() {
-		/*
-		 * Locale deviceLocale = Locale.getDefault();
-		 * 
-		 * if(myTTS.isLanguageAvailable(deviceLocale) ==
-		 * TextToSpeech.LANG_AVAILABLE) myTTS.setLanguage(deviceLocale);
-		 */
+
+		Locale deviceLocale = Locale.ENGLISH;
+
+		if (myTTS.isLanguageAvailable(deviceLocale) == TextToSpeech.LANG_AVAILABLE)
+			myTTS.setLanguage(Locale.US);
+
 	}
 
 	public float getTtsPitch() {
@@ -139,7 +141,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 	}
 
 	public void setTtsPitch(float ttsPitch) {
-		if (myTTS.setPitch(ttsPitch) == TextToSpeech.SUCCESS)
+		if (myTTS.setPitch(.1f) == TextToSpeech.SUCCESS)
 			this.ttsPitch = ttsPitch;
 	}
 }
