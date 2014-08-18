@@ -63,6 +63,12 @@ public class ShieldFrame {
 		if(n>=arguments.size())return null;
 		return new String(arguments.get(n));
 	}
+	
+	public float getArgumentAsfloat(int n){
+		byte[] b = getArgument(n);
+		if(n>=arguments.size()||b.length!=4)return 0;
+		return ByteBuffer.wrap(b).getFloat();
+	}
 
 	public void addArgument(byte[] argument) {
 		arguments.add(argument);
