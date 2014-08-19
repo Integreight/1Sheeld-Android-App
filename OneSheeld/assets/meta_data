@@ -1,0 +1,11 @@
+{
+    "facebook": "1423548367865538",
+    "twitter": {
+        "consumer_key": "RUALr0EwkNRJUUnnRS6DzwLs1",
+        "consumer_secret": "y9r7afp7hxVhpMLhyc1eIQcifZv5hxFFXQYOuZIXw1onSIGsC3"
+    },
+    "foursquare": {
+        "client_key": "SXCMMTAXT05AVQYQS5S3ZCOLEKCN5ZCDJKQYBAFJJUDJIEC0",
+        "client_secret": "RQB3QEA2HLA0TQEM3XPOGJEJ4IHHK14LUMEOPI1BOIYFEHXA"
+    }
+}

@@ -62,8 +62,8 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 					|| printedLines.get(printedLines.size() - 1).isEndedWithNewLine ? TerminalFragment
 					.getTimeAsString() + " [RX] - "
 					: "";
-			boolean isEndedWithNewLine = outputTxt
-					.charAt(outputTxt.length() - 1) == '\n';
+			boolean isEndedWithNewLine = outputTxt.length() > 0
+					&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
 			printedLines.add(new TerminalShield.PrintedLine(date, outputTxt
 					.substring(0, isEndedWithNewLine ? outputTxt.length() - 1
 							: outputTxt.length()), isEndedWithNewLine));

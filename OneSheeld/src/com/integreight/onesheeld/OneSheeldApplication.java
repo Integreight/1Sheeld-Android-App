@@ -1,8 +1,13 @@
 package com.integreight.onesheeld;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -15,6 +20,7 @@ import com.google.analytics.tracking.android.Logger.LogLevel;
 import com.google.analytics.tracking.android.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.model.SocialKeys;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
@@ -43,6 +49,7 @@ public class OneSheeldApplication extends Application {
 	public Typeface appFont;
 	private GoogleAnalytics googleAnalyticsInstance;
 	private Tracker appGaTracker;
+	public SocialKeys socialKeys = new SocialKeys();
 
 	/*
 	 * Google Analytics configuration values.
@@ -109,7 +116,48 @@ public class OneSheeldApplication extends Application {
 		setConnectionHandler(new ConnectionDetector());
 		appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
+		parseSocialKeys();
 		super.onCreate();
+	}
+
+	private void parseSocialKeys() {
+		String metaData = "";
+		try {
+			metaData = loadData("meta_data_dev");
+		} catch (Exception e) {
+			try {
+				e.printStackTrace();
+				metaData = loadData("meta_data");
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+		try {
+			JSONObject socialKeysObject = new JSONObject(metaData);
+			JSONObject twitter = socialKeysObject.getJSONObject("twitter");
+			JSONObject foursquare = socialKeysObject
+					.getJSONObject("foursquare");
+			socialKeys.facebookID = socialKeysObject.getString("facebook");
+			socialKeys.twitter.id = twitter.getString("consumer_key");
+			socialKeys.twitter.secret = twitter.getString("consumer_secret");
+			socialKeys.foursquare.id = foursquare.getString("client_key");
+			socialKeys.foursquare.secret = foursquare
+					.getString("client_secret");
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public String loadData(String inFile) throws IOException {
+		String tContents = "";
+		InputStream stream = getAssets().open(inFile);
+		int size = stream.available();
+		byte[] buffer = new byte[size];
+		stream.read(buffer);
+		stream.close();
+		tContents = new String(buffer);
+		return tContents;
 	}
 
 	public SharedPreferences getAppPreferences() {

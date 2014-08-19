@@ -60,7 +60,9 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Session session = Session.getActiveSession();
 		if (session == null) {
 			if (session == null) {
-				session = new Session(activity);
+				session = new Session.Builder(activity).setApplicationId(
+						activity.getThisApplication().socialKeys.facebookID)
+						.build();
 			}
 			Session.setActiveSession(session);
 		}
@@ -80,11 +82,18 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Session session = Session.getActiveSession();
 		if (session == null) {
 			if (savedInstanceState != null) {
-				session = Session.restoreSession(activity, null,
-						statusCallback, savedInstanceState);
+				session = new Session.Builder(activity)
+						.setApplicationId(
+								FacebookShield.this.activity
+										.getThisApplication().socialKeys.facebookID)
+						.build();
 			}
 			if (session == null) {
-				session = new Session(activity);
+				session = new Session.Builder(activity)
+						.setApplicationId(
+								FacebookShield.this.activity
+										.getThisApplication().socialKeys.facebookID)
+						.build();
 			}
 			Session.setActiveSession(session);
 		}
@@ -114,7 +123,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	public void loginToFacebook() {
 		Session session = Session.getActiveSession();
 		if (session == null) {
-			Session.openActiveSession(activity, fragment, true, statusCallback);
+			session = new Session.Builder(activity).setApplicationId(
+					activity.getThisApplication().socialKeys.facebookID)
+					.build();
+			Session.setActiveSession(session);
+			loginToFacebook();
 		} else if (!session.isOpened()) {
 			session.openForRead(new Session.OpenRequest(fragment)
 					.setCallback(statusCallback));
@@ -129,7 +142,9 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			// Session.getActiveSession().close();
 			Session.getActiveSession().closeAndClearTokenInformation();
 		} else {
-			Session ses = new Session(activity);
+			Session ses = new Session.Builder(activity).setApplicationId(
+					activity.getThisApplication().socialKeys.facebookID)
+					.build();
 			Session.setActiveSession(ses);
 			ses.closeAndClearTokenInformation();
 		}

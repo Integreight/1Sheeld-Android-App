@@ -137,7 +137,7 @@
                  - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                  - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                  - The BroadcastReceiver requires permissions not available to Locale
-                 - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.QUERY_CONDITION
+                 - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.QUERY_CONDITION
         -->
         <receiver
             android:name="com.integreight.onesheeld.conditionplugin.QueryReceiver"
@@ -153,7 +153,7 @@
         <!--
             This service is required, because detecting screen state is a REGISTERED_RECEIVER_ONLY Intent.
             In general, plug-ins that do not need a service are preferred.  This is not exported, because it is a private 
-            implementation detail of the plug-in.
+            implementation detail of the plug-in.
         -->
         <service
             android:name="com.integreight.onesheeld.conditionplugin.BackgroundService"
@@ -177,11 +177,11 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>
         </receiver>
-
+        <!--
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-
+            android:value="@string/facebook_app_id" />
+        -->
         <service
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraService"
             android:label="My Service" >

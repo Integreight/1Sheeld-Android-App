@@ -116,8 +116,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public void tweet(final String tweet) {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(TwitterAuthorization.CONSUMER_KEY);
-		cb.setOAuthConsumerSecret(TwitterAuthorization.CONSUMER_SECRET);
+		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
+		cb.setOAuthConsumerSecret(activity.getThisApplication().socialKeys.twitter.secret);
 		cb.setOAuthAccessToken(mSharedPreferences.getString(
 				PREF_KEY_OAUTH_TOKEN, null));
 		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
@@ -150,8 +150,9 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	public void login() {
 		factory = new TwitterFactory();
 		twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(TwitterAuthorization.CONSUMER_KEY,
-				TwitterAuthorization.CONSUMER_SECRET);
+		twitter.setOAuthConsumer(
+				activity.getThisApplication().socialKeys.twitter.id,
+				activity.getThisApplication().socialKeys.twitter.secret);
 		if (mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null) != null
 				&& mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null) != null) {
 			AccessToken accestoken = new AccessToken(

@@ -209,6 +209,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 				.getRunningShields().get(getControllerTag())).printedLines) {
 			output.append(line.date + getEncodedString(line.print)
 					+ (line.isEndedWithNewLine ? "\n" : ""));
+			endedWithNewLine = line.isEndedWithNewLine;
 		}
 		if (output.getLayout() != null) {
 			final int scrollAmount = output.getLayout().getLineTop(
@@ -268,8 +269,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 							String date = output.length() == 0
 									|| endedWithNewLine ? getTimeAsString()
 									+ " [RX] - " : "";
-							boolean isEndedWithNewLine = outputTxt
-									.charAt(outputTxt.length() - 1) == '\n';
+							boolean isEndedWithNewLine = outputTxt.length() > 0
+									&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
 							// ((TerminalShield) getApplication()
 							// .getRunningShields()
 							// .get(getControllerTag())).printedLines.add(new
