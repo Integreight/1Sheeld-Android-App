@@ -123,13 +123,11 @@ public class OneSheeldApplication extends Application {
 	private void parseSocialKeys() {
 		String metaData = "";
 		try {
-			metaData = loadData("meta_data_dev");
+			metaData = loadData("dev_meta_data");
 		} catch (Exception e) {
 			try {
-				e.printStackTrace();
 				metaData = loadData("meta_data");
 			} catch (Exception e1) {
-				e1.printStackTrace();
 			}
 		}
 		try {
@@ -144,8 +142,6 @@ public class OneSheeldApplication extends Application {
 			socialKeys.foursquare.secret = foursquare
 					.getString("client_secret");
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
 
