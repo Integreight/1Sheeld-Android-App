@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
+import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
@@ -76,6 +77,9 @@ public class MainActivity extends FragmentActivity {
 		if (getThisApplication().getAppFirmata() != null) {
 			getThisApplication().getAppFirmata()
 					.addFirmwareVersionQueryHandler(versionChangingHandler);
+			getThisApplication().getAppFirmata()
+					.addArduinoLibraryVersionQueryHandler(
+							arduinoLibraryVersionHandler);
 		}
 		// ValidationPopup popub = new ValidationPopup(MainActivity.this,
 		// "Firmware Upgrading", "There's a new version for your 1Sheeld",
@@ -368,6 +372,34 @@ public class MainActivity extends FragmentActivity {
 				}
 			});
 
+		}
+	};
+	ArduinoLibraryVersionChangeHandler arduinoLibraryVersionHandler = new ArduinoLibraryVersionChangeHandler() {
+		ValidationPopup popub;
+
+		@Override
+		public void onArduinoLibraryVersionChange(final int version) {
+			versionHandling.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (version < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
+						popub = new ValidationPopup(MainActivity.this,
+								"Arduino Library Update",
+								"There's a new 1Sheeld Library Update!",
+								new ValidationPopup.ValidationAction("OK",
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View v) {
+												popub.dismiss();
+											}
+										}, true));
+						if (!isFinishing())
+							popub.show();
+					}
+				}
+			});
 		}
 	};
 
