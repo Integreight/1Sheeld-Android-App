@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TerminalShield;
+import com.integreight.onesheeld.shields.controller.TerminalShield.PrintedLine;
 import com.integreight.onesheeld.shields.controller.TerminalShield.TerminalHandler;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
@@ -25,23 +26,17 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 	private OneSheeldEditText inputField;
 	private OneSheeldButton send;
 	private boolean endedWithNewLine = false;
-	private ArrayList<PrintedLine> printedLines;
-	private int[] encodingMths = new int[] { R.id.terminalString, R.id.asci,
-			R.id.binary, R.id.hex };
-	private int selectedEnMth = 0;
 
-	private String getTimeAsString() {
+	public static String getTimeAsString() {
 		return DateFormat.format("MM/dd/yyyy hh:mm:ss", new java.util.Date())
 				.toString();
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		if (printedLines == null)
-			printedLines = new ArrayList<TerminalFragment.PrintedLine>();
 		v = inflater.inflate(R.layout.terminal_shield_fragment_layout,
 				container, false);
-		selectedEnMth = 0;
+		// selectedEnMth = 0;
 		output = (OneSheeldTextView) v.findViewById(R.id.terminalOutput);
 		inputField = (OneSheeldEditText) v.findViewById(R.id.terminalInput);
 		send = (OneSheeldButton) v.findViewById(R.id.send);
@@ -53,7 +48,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 				((TerminalShield) getApplication().getRunningShields().get(
 						getControllerTag())).input(inputField.getText()
 						.toString());
-				printedLines.add(new PrintedLine(
+				((TerminalShield) getApplication().getRunningShields().get(
+						getControllerTag())).printedLines.add(new PrintedLine(
 						(!endedWithNewLine ? "\n" : "") + getTimeAsString()
 								+ " [TX] " + "- ", inputField.getText()
 								.toString(), true));
@@ -81,24 +77,37 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 			}
 		});
 		int i = 0;
-		for (final int id : encodingMths) {
+		for (final int id : ((TerminalShield) getApplication()
+				.getRunningShields().get(getControllerTag())).encodingMths) {
 			final int x = i;
 			v.findViewById(id).setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View vi) {
-					if (selectedEnMth != x) {
-						v.findViewById(encodingMths[selectedEnMth])
+					if (((TerminalShield) getApplication().getRunningShields()
+							.get(getControllerTag())).selectedEnMth != x) {
+						v.findViewById(
+								((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).encodingMths[((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).selectedEnMth])
 								.setBackgroundColor(
 										getResources()
 												.getColor(
 														R.color.arduino_conn_resetAll_bg));
-						v.findViewById(encodingMths[x]).setBackgroundColor(
-								getResources().getColor(
-										R.color.arduinoPinsSelector));
-						selectedEnMth = x;
+						v.findViewById(
+								((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).encodingMths[x])
+								.setBackgroundColor(
+										getResources().getColor(
+												R.color.arduinoPinsSelector));
+						((TerminalShield) getApplication().getRunningShields()
+								.get(getControllerTag())).selectedEnMth = x;
 						output.setText("");
-						for (PrintedLine line : printedLines) {
+						for (PrintedLine line : ((TerminalShield) getApplication()
+								.getRunningShields().get(getControllerTag())).printedLines) {
 							output.append(line.date
 									+ getEncodedString(line.print)
 									+ (line.isEndedWithNewLine ? "\n" : ""));
@@ -126,7 +135,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
 	private String getEncodedString(String toBeEncoded) {
 		String out = "";
-		switch (selectedEnMth) {
+		switch (((TerminalShield) getApplication().getRunningShields().get(
+				getControllerTag())).selectedEnMth) {
 		case 0:
 			out = toBeEncoded;
 			break;
@@ -176,8 +186,44 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 			getApplication().getRunningShields().put(getControllerTag(),
 					new TerminalShield(activity, getControllerTag()));
 		}
+		v.findViewById(
+				((TerminalShield) getApplication().getRunningShields().get(
+						getControllerTag())).encodingMths[0])
+				.setBackgroundColor(
+						getResources().getColor(
+								R.color.arduino_conn_resetAll_bg));
+		v.findViewById(
+				((TerminalShield) getApplication().getRunningShields().get(
+						getControllerTag())).encodingMths[((TerminalShield) getApplication()
+						.getRunningShields().get(getControllerTag())).selectedEnMth])
+				.setBackgroundColor(
+						getResources().getColor(R.color.arduinoPinsSelector));
 		((TerminalShield) getApplication().getRunningShields().get(
 				getControllerTag())).setEventHandler(terminalHandler);
+		if (((TerminalShield) getApplication().getRunningShields().get(
+				getControllerTag())).printedLines == null)
+			((TerminalShield) getApplication().getRunningShields().get(
+					getControllerTag())).printedLines = new ArrayList<TerminalShield.PrintedLine>();
+		output.setText("");
+		for (PrintedLine line : ((TerminalShield) getApplication()
+				.getRunningShields().get(getControllerTag())).printedLines) {
+			output.append(line.date + getEncodedString(line.print)
+					+ (line.isEndedWithNewLine ? "\n" : ""));
+		}
+		if (output.getLayout() != null) {
+			final int scrollAmount = output.getLayout().getLineTop(
+					output.getLineCount())
+					- output.getHeight();
+			// if there is no need to scroll, scrollAmount will
+			// be <=0
+			if (scrollAmount > 0)
+				output.scrollTo(0,
+						scrollAmount
+								+ ((int) (0 * getResources()
+										.getDisplayMetrics().density + .5f)));
+			else
+				output.scrollTo(0, 0);
+		}
 		super.onStart();
 
 	}
@@ -195,9 +241,12 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
 	@Override
 	public void onDestroy() {
-		if (printedLines != null)
-			printedLines.clear();
-		printedLines = null;
+		// if (((TerminalShield) getApplication().getRunningShields().get(
+		// getControllerTag())).printedLines != null)
+		// ((TerminalShield) getApplication().getRunningShields().get(
+		// getControllerTag())).printedLines.clear();
+		// ((TerminalShield) getApplication().getRunningShields().get(
+		// getControllerTag())).printedLines = null;
 		v = null;
 		super.onDestroy();
 	}
@@ -221,13 +270,16 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 									+ " [RX] - " : "";
 							boolean isEndedWithNewLine = outputTxt
 									.charAt(outputTxt.length() - 1) == '\n';
-							printedLines.add(new PrintedLine(date, outputTxt
-									.substring(
-											0,
-											isEndedWithNewLine ? outputTxt
-													.length() - 1 : outputTxt
-													.length()),
-									isEndedWithNewLine));
+							// ((TerminalShield) getApplication()
+							// .getRunningShields()
+							// .get(getControllerTag())).printedLines.add(new
+							// TerminalShield.PrintedLine(
+							// date, outputTxt.substring(
+							// 0,
+							// isEndedWithNewLine ? outputTxt
+							// .length() - 1 : outputTxt
+							// .length()),
+							// isEndedWithNewLine));
 							output.append(date
 									+ getEncodedString(outputTxt.substring(
 											0,
@@ -256,20 +308,5 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 				});
 		}
 	};
-
-	private class PrintedLine {
-		public String date;
-		public String print;
-		public boolean isEndedWithNewLine;
-
-		private PrintedLine(String date, String print,
-				boolean isEndedWithNewLine) {
-			super();
-			this.date = date;
-			this.print = print;
-			this.isEndedWithNewLine = isEndedWithNewLine;
-		}
-
-	}
 
 }

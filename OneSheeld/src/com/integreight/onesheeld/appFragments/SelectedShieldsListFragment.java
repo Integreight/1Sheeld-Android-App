@@ -25,6 +25,7 @@ import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.shields.fragments.CameraFragment;
 import com.integreight.onesheeld.shields.fragments.ClockFragment;
+import com.integreight.onesheeld.shields.fragments.DataLoggerFragment;
 import com.integreight.onesheeld.shields.fragments.EmailFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
@@ -194,8 +195,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 			return addToCreatedListAndReturn(UIShield.TEXT_TO_SPEECH_SHIELD,
 					new TextToSpeechFragment());
 		case DATA_LOGGER:
-			return addToCreatedListAndReturn(UIShield.CLOCK_SHIELD,
-					new ClockFragment());
+			return addToCreatedListAndReturn(UIShield.DATA_LOGGER,
+					new DataLoggerFragment());
 		case TERMINAL_SHIELD:
 			return addToCreatedListAndReturn(UIShield.TERMINAL_SHIELD,
 					new TerminalFragment());

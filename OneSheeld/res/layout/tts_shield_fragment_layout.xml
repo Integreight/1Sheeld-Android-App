@@ -1,22 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center" >
+    android:layout_height="match_parent" >
 
     <ImageView
         android:id="@+id/speaker_shield_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/tts_shield_1_volume"
+        android:layout_centerInParent="true"
+        android:background="@anim/tts_animation"
         android:contentDescription="@string/app_name" />
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+    <com.integreight.onesheeld.utils.customviews.AutoResizeTextView
         android:id="@+id/ttsText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/speaker_shield_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:scrollbars="vertical"
         android:textColor="@color/offWhite"
         android:textSize="27sp" />
 

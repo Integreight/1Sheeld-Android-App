@@ -1,12 +1,15 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.util.HashMap;
 import java.util.Locale;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.os.Build;
 import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -33,12 +36,22 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	@Override
 	public ControllerParent<TextToSpeechShield> setTag(String tag) {
-		myTTS = new TextToSpeech(activity, this);
+//		activity.backgroundThreadHandler.post(new Runnable() {
+//
+//			@Override
+//			public void run() {
+				myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
+//			}
+//		});
 		return super.setTag(tag);
 	}
 
 	public void setEventHandler(final TTsEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
+	}
+
+	public boolean isSpeaking() {
+		return myTTS != null && myTTS.isSpeaking();
 	}
 
 	@Override
@@ -51,7 +64,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 			if (frame.getFunctionId() == 0x01) {
 				speech(frame.getArgumentAsString(0));
 				if (eventHandler != null) {
-					eventHandler.onSpeek("Heyyyyyyyyy!");
+					eventHandler.onSpeek(frame.getArgumentAsString(0));
 				}
 			}
 		}
@@ -68,6 +81,8 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	public interface TTsEventHandler {
 		public void onSpeek(String txt);
+
+		public void onStop();
 
 		public void onError(String error, int errorCode);
 	}
@@ -104,8 +119,11 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	public void speech(String speechText) {
 		if (myTTS != null) {
+			HashMap<String, String> map = new HashMap<String, String>();
+			map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+					activity.getPackageName());
 			myTTS.speak(speechText, TextToSpeech.QUEUE_FLUSH, //
-					null);
+					map);
 		}
 
 	}
@@ -133,6 +151,48 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 		if (myTTS.isLanguageAvailable(deviceLocale) == TextToSpeech.LANG_AVAILABLE)
 			myTTS.setLanguage(Locale.US);
+		if (Build.VERSION.SDK_INT >= 15) {
+			int listenerResult = myTTS
+					.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+						@Override
+						public void onDone(String utteranceId) {
+							if (eventHandler != null) {
+								eventHandler.onStop();
+							}
+						}
+
+						@Override
+						public void onError(String utteranceId) {
+							if (eventHandler != null) {
+								eventHandler.onError("Speech Error", 0);
+							}
+						}
+
+						@Override
+						public void onStart(String utteranceId) {
+						}
+					});
+			if (listenerResult != TextToSpeech.SUCCESS) {
+				Toast.makeText(getActivity(), "Failed Utterance Progress",
+						Toast.LENGTH_SHORT).show();
+				Log.e("TAG", "failed to add utterance progress listener");
+			}
+		} else {
+			@SuppressWarnings("deprecation")
+			int listenerResult = myTTS
+					.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+						@Override
+						public void onUtteranceCompleted(String utteranceId) {
+							if (eventHandler != null)
+								eventHandler.onStop();
+						}
+					});
+			if (listenerResult != TextToSpeech.SUCCESS) {
+				Toast.makeText(getActivity(), "Failed Utterance completion",
+						Toast.LENGTH_SHORT).show();
+				Log.e("TAG", "failed to add utterance completed listener");
+			}
+		}
 
 	}
 

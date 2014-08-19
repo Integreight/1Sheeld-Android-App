@@ -23,4 +23,12 @@ public class OneSheeldTextView extends TextView {
 				getPaddingRight(), getBottom());
 	}
 
+	public OneSheeldTextView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+	}
+
+	public OneSheeldTextView(Context context) {
+		super(context);
+	}
+
 }
