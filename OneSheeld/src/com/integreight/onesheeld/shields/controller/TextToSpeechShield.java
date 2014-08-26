@@ -36,13 +36,13 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	@Override
 	public ControllerParent<TextToSpeechShield> setTag(String tag) {
-//		activity.backgroundThreadHandler.post(new Runnable() {
-//
-//			@Override
-//			public void run() {
-				myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
-//			}
-//		});
+		// activity.backgroundThreadHandler.post(new Runnable() {
+		//
+		// @Override
+		// public void run() {
+		myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
+		// }
+		// });
 		return super.setTag(tag);
 	}
 

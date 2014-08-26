@@ -1,6 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.Activity;
 
@@ -19,7 +19,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	public int[] encodingMths = new int[] { R.id.terminalString, R.id.asci,
 			R.id.binary, R.id.hex };
 	public int selectedEnMth = 0;
-	public ArrayList<PrintedLine> printedLines;
+	public CopyOnWriteArrayList<PrintedLine> printedLines, temp;
 
 	public TerminalShield() {
 		super();
@@ -31,7 +31,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
 	@Override
 	public ControllerParent<TerminalShield> setTag(String tag) {
-		printedLines = new ArrayList<TerminalShield.PrintedLine>();
+		printedLines = new CopyOnWriteArrayList<TerminalShield.PrintedLine>();
 		return super.setTag(tag);
 	}
 
@@ -51,8 +51,9 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	@Override
 	public void refresh() {
 		// TODO Auto-generated method stub
-
 	}
+
+	private boolean greaterThanThousand = false;
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
@@ -60,22 +61,26 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 			String outputTxt = frame.getArgumentAsString(0);
 			String date = printedLines.size() == 0
 					|| printedLines.get(printedLines.size() - 1).isEndedWithNewLine ? TerminalFragment
-					.getTimeAsString() + " [RX] - "
+					.getTimeAsString() + " [RX] : "
 					: "";
 			boolean isEndedWithNewLine = outputTxt.length() > 0
 					&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
 			printedLines.add(new TerminalShield.PrintedLine(date, outputTxt
 					.substring(0, isEndedWithNewLine ? outputTxt.length() - 1
 							: outputTxt.length()), isEndedWithNewLine));
+			greaterThanThousand = printedLines.size() > 1000;
+			if (greaterThanThousand) {
+				printedLines.remove(0);
+			}
 			switch (frame.getFunctionId()) {
 			case WRITE:
 				if (eventHandler != null) {
-					eventHandler.onPrint(outputTxt);
+					eventHandler.onPrint(outputTxt, greaterThanThousand);
 				}
 				break;
 			case PRINT:
 				if (eventHandler != null) {
-					eventHandler.onPrint(outputTxt);
+					eventHandler.onPrint(outputTxt, greaterThanThousand);
 				}
 				break;
 
@@ -101,7 +106,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	}
 
 	public interface TerminalHandler {
-		public void onPrint(String output);
+		public void onPrint(String output, final boolean clearBeforeWriting);
 	}
 
 	public static class PrintedLine {

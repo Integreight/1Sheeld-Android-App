@@ -11,7 +11,7 @@
         android:background="@anim/tts_animation"
         android:contentDescription="@string/app_name" />
 
-    <com.integreight.onesheeld.utils.customviews.AutoResizeTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/ttsText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:maxLines="2"
         android:scrollbars="vertical"
         android:textColor="@color/offWhite"
-        android:textSize="27sp" />
+        android:textSize="20sp" />
 
     <Button
         android:id="@+id/decreaseBtn"

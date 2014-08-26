@@ -1,7 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -36,11 +36,20 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 			Bundle savedInstanceState) {
 		v = inflater.inflate(R.layout.terminal_shield_fragment_layout,
 				container, false);
-		// selectedEnMth = 0;
 		output = (OneSheeldTextView) v.findViewById(R.id.terminalOutput);
 		inputField = (OneSheeldEditText) v.findViewById(R.id.terminalInput);
 		send = (OneSheeldButton) v.findViewById(R.id.send);
 		output.setMovementMethod(new ScrollingMovementMethod());
+		v.findViewById(R.id.clearTerminal).setOnClickListener(
+				new View.OnClickListener() {
+
+					@Override
+					public void onClick(View arg0) {
+						output.setText("");
+						((TerminalShield) getApplication().getRunningShields()
+								.get(getControllerTag())).printedLines = new CopyOnWriteArrayList<TerminalShield.PrintedLine>();
+					}
+				});
 		send.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -51,23 +60,23 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 				((TerminalShield) getApplication().getRunningShields().get(
 						getControllerTag())).printedLines.add(new PrintedLine(
 						(!endedWithNewLine ? "\n" : "") + getTimeAsString()
-								+ " [TX] " + "- ", inputField.getText()
+								+ " [TX] " + ": ", inputField.getText()
 								.toString(), true));
 				output.append(((!endedWithNewLine ? "\n" : "")
-						+ getTimeAsString() + " [TX] " + "- "
+						+ getTimeAsString() + " [TX] " + ": "
 						+ getEncodedString(inputField.getText().toString()) + "\n"));
 				final int scrollAmount = output.getLayout().getLineTop(
 						output.getLineCount())
 						- output.getHeight();
-				// if there is no need to scroll, scrollAmount will be <=0
+				// if there is no need to scroll, scr.ollAmount will be <=0
 				if (scrollAmount > 0)
 					output.scrollTo(
 							0,
 							scrollAmount
 									+ ((int) (0 * getResources()
 											.getDisplayMetrics().density + .5f)));
-				else
-					output.scrollTo(0, 0);
+				// else
+				// output.scrollTo(0, 0);
 
 				endedWithNewLine = true;
 				inputField.setText("");
@@ -123,8 +132,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 									scrollAmount
 											+ ((int) (0 * getResources()
 													.getDisplayMetrics().density + .5f)));
-						else
-							output.scrollTo(0, 0);
+						// else
+						// output.scrollTo(0, 0);
 					}
 				}
 			});
@@ -203,7 +212,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 		if (((TerminalShield) getApplication().getRunningShields().get(
 				getControllerTag())).printedLines == null)
 			((TerminalShield) getApplication().getRunningShields().get(
-					getControllerTag())).printedLines = new ArrayList<TerminalShield.PrintedLine>();
+					getControllerTag())).printedLines = new CopyOnWriteArrayList<TerminalShield.PrintedLine>();
 		output.setText("");
 		for (PrintedLine line : ((TerminalShield) getApplication()
 				.getRunningShields().get(getControllerTag())).printedLines) {
@@ -215,15 +224,13 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 			final int scrollAmount = output.getLayout().getLineTop(
 					output.getLineCount())
 					- output.getHeight();
-			// if there is no need to scroll, scrollAmount will
-			// be <=0
 			if (scrollAmount > 0)
 				output.scrollTo(0,
 						scrollAmount
 								+ ((int) (0 * getResources()
 										.getDisplayMetrics().density + .5f)));
-			else
-				output.scrollTo(0, 0);
+			// else
+			// output.scrollTo(0, 0);
 		}
 		super.onStart();
 
@@ -242,12 +249,6 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
 	@Override
 	public void onDestroy() {
-		// if (((TerminalShield) getApplication().getRunningShields().get(
-		// getControllerTag())).printedLines != null)
-		// ((TerminalShield) getApplication().getRunningShields().get(
-		// getControllerTag())).printedLines.clear();
-		// ((TerminalShield) getApplication().getRunningShields().get(
-		// getControllerTag())).printedLines = null;
 		v = null;
 		super.onDestroy();
 	}
@@ -259,51 +260,53 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 	TerminalHandler terminalHandler = new TerminalHandler() {
 
 		@Override
-		public void onPrint(final String outputTxt) {
+		public void onPrint(final String outputTxt,
+				final boolean clearBeforeWriting) {
 			if (canChangeUI())
 				uiHandler.post(new Runnable() {
 
 					@Override
 					public void run() {
 						if (output != null) {
-							String date = output.length() == 0
-									|| endedWithNewLine ? getTimeAsString()
-									+ " [RX] - " : "";
-							boolean isEndedWithNewLine = outputTxt.length() > 0
-									&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
-							// ((TerminalShield) getApplication()
-							// .getRunningShields()
-							// .get(getControllerTag())).printedLines.add(new
-							// TerminalShield.PrintedLine(
-							// date, outputTxt.substring(
-							// 0,
-							// isEndedWithNewLine ? outputTxt
-							// .length() - 1 : outputTxt
-							// .length()),
-							// isEndedWithNewLine));
-							output.append(date
-									+ getEncodedString(outputTxt.substring(
-											0,
-											isEndedWithNewLine ? outputTxt
-													.length() - 1 : outputTxt
-													.length()))
-									+ (isEndedWithNewLine ? "\n" : ""));
-							if (outputTxt.length() > 0)
-								endedWithNewLine = outputTxt.charAt(outputTxt
-										.length() - 1) == '\n';
+							if (clearBeforeWriting) {
+								output.setText("");
+								for (PrintedLine line : ((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).printedLines) {
+									output.append(line.date
+											+ getEncodedString(line.print)
+											+ (line.isEndedWithNewLine ? "\n"
+													: ""));
+									endedWithNewLine = line.isEndedWithNewLine;
+								}
+							} else {
+								String date = output.length() == 0
+										|| endedWithNewLine ? getTimeAsString()
+										+ " [RX] : " : "";
+								boolean isEndedWithNewLine = outputTxt.length() > 0
+										&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
+								output.append(date
+										+ getEncodedString(outputTxt.substring(
+												0,
+												isEndedWithNewLine ? outputTxt
+														.length() - 1
+														: outputTxt.length()))
+										+ (isEndedWithNewLine ? "\n" : ""));
+								if (outputTxt.length() > 0)
+									endedWithNewLine = outputTxt
+											.charAt(outputTxt.length() - 1) == '\n';
+							}
 							final int scrollAmount = output.getLayout()
 									.getLineTop(output.getLineCount())
 									- output.getHeight();
-							// if there is no need to scroll, scrollAmount will
-							// be <=0
 							if (scrollAmount > 0)
 								output.scrollTo(
 										0,
 										scrollAmount
 												+ ((int) (0 * getResources()
 														.getDisplayMetrics().density + .5f)));
-							else
-								output.scrollTo(0, 0);
+							// else
+							// output.scrollTo(0, 0);
 						}
 					}
 				});

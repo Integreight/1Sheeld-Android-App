@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.controller;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,13 +24,18 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
 
 public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
-	private static final byte START_LOGGING = 0x02;
-	private static final byte STOP_LOGGING = 0x03;
-	private static final byte ADD = 0x04;
+	private static final byte START_LOGGING = 0x01;
+	// private static final byte START_LOGGING_WITH_NAME = 0x02;
+	private static final byte STOP_LOGGING = 0x02;
+	// private static final byte SET_FORMATE = 0x04;
+	private static final byte ADD_FLOAT = 0x03;
+	private static final byte ADD_STRING = 0x04;
+	private static final byte LOG = 0x05;
 	ArrayList<String> headerList = new ArrayList<String>();
-	ArrayList<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+	ArrayList<Map<String, String>> dataSet = new ArrayList<Map<String, String>>();
 	String fileName = null;
 	String header[];
+	Map<String, String> rowData = new HashMap<String, String>();
 
 	public DataLoggerShield() {
 		super();
@@ -55,16 +61,31 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 		if (frame.getShieldId() == UIShield.DATA_LOGGER.getId()) {
 			switch (frame.getFunctionId()) {
 			case START_LOGGING:
-				fileName = frame.getArgumentAsString(0);
+				if (frame.getArguments().size() > 0)
+					fileName = frame.getArgumentAsString(0);
+				else
+					fileName = null;
 				headerList = new ArrayList<String>();
-				values = new ArrayList<Map<String, Object>>();
+				dataSet = new ArrayList<Map<String, String>>();
+				rowData = new HashMap<String, String>();
 				break;
+			// case START_LOGGING_WITH_NAME:
+			// fileName = frame.getArgumentAsString(0);
+			// headerList = new ArrayList<String>();
+			// dataSet = new ArrayList<Map<String, Object>>();
+			// rowData = new HashMap<String, Object>();
+			// break;
 			case STOP_LOGGING:
 				ICsvMapWriter mapWriter = null;
 				try {
 					File folder = new File(
 							Environment.getExternalStorageDirectory()
-									+ "/OneSheeld/DataLogger");
+									+ "/OneSheeld");
+					if (!folder.exists()) {
+						folder.mkdirs();
+					}
+					folder = new File(Environment.getExternalStorageDirectory()
+							+ "/OneSheeld/DataLogger");
 					if (!folder.exists()) {
 						folder.mkdirs();
 					}
@@ -96,7 +117,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 					mapWriter.writeHeader(header);
 
 					// write the customer Maps
-					for (Map<String, Object> value : values) {
+					for (Map<String, String> value : dataSet) {
 						mapWriter.write(value, header, processors);
 					}
 				} catch (IOException e) {
@@ -110,19 +131,32 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						reset();
+						// reset();
 					}
 				}
 				break;
-			case ADD:
-				// System.out.println(frame.getArgumentAsString(0));
+			case ADD_STRING:
 				String key = frame.getArgumentAsString(0);
-				String value = frame.getArgumentAsString(1);
+				String value = new String(frame.getArgument(1));
 				if (!headerList.contains(key))
 					headerList.add(key);
-				Map<String, Object> valueMap = new HashMap<String, Object>();
-				valueMap.put(key, value);
-				values.add(valueMap);
+				rowData.put(key, value);
+				break;
+			case ADD_FLOAT:
+				String keyFloat = frame.getArgumentAsString(0);
+				String valueFloat = ByteBuffer.wrap(frame.getArgument(1))
+						.getFloat() + "";
+				if (!headerList.contains(keyFloat))
+					headerList.add(keyFloat);
+				rowData.put(keyFloat, valueFloat);
+				break;
+			case LOG:
+				HashMap<String, String> temp = new HashMap<String, String>();
+				for (String head : headerList) {
+					temp.put(head, rowData.get(head));
+				}
+				dataSet.add(new HashMap<String, String>(rowData));
+				rowData = new HashMap<String, String>();
 				break;
 
 			default:
@@ -133,9 +167,9 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 
 	@Override
 	public void reset() {
-		if (values != null)
-			values.clear();
-		values = null;
+		if (dataSet != null)
+			dataSet.clear();
+		dataSet = null;
 		header = null;
 		if (headerList != null)
 			headerList.clear();

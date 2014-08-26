@@ -23,6 +23,7 @@ public class SpeechRecognitionShield extends
 	private SpeechRecognitionService mSpeechRecognitionService;
 	private RecognitionEventHandler eventHandler;
 	private static final byte SEND_RESULT = 0x01;
+	private static final byte SEND_ERROR = 0x02;
 
 	public SpeechRecognitionShield() {
 		super();
@@ -52,6 +53,13 @@ public class SpeechRecognitionShield extends
 		activity.bindService(new Intent(activity,
 				SpeechRecognitionService.class), mServiceConnection,
 				Context.BIND_AUTO_CREATE);
+		System.out.println("int AUDIO=" + SpeechRecognizer.ERROR_AUDIO
+				+ ",NETWORK=" + SpeechRecognizer.ERROR_NETWORK
+				+ ",NETWORK_TIMEOUT=" + SpeechRecognizer.ERROR_NETWORK_TIMEOUT
+				+ ",NO_MATCH=" + SpeechRecognizer.ERROR_NO_MATCH
+				+ ",RECOGNIZER_BUSY=" + SpeechRecognizer.ERROR_RECOGNIZER_BUSY
+				+ ",SERVER=" + SpeechRecognizer.ERROR_SERVER
+				+ ",SPEECH_TIMEOUT=" + SpeechRecognizer.ERROR_SPEECH_TIMEOUT);
 		return super.setTag(tag);
 	}
 
@@ -88,6 +96,38 @@ public class SpeechRecognitionShield extends
 		public void onError(String error, int errorCode) {
 			if (eventHandler != null)
 				eventHandler.onError(error, errorCode);
+			int errorSent = ERROR.SERVER;
+			switch (errorCode) {
+			case SpeechRecognizer.ERROR_AUDIO:
+				errorSent = ERROR.AUDIO;
+				break;
+			case SpeechRecognizer.ERROR_NETWORK:
+				errorSent = ERROR.NETWORK;
+				break;
+			case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+				errorSent = ERROR.NETWORK_TIMEOUT;
+				break;
+			case SpeechRecognizer.ERROR_NO_MATCH:
+				errorSent = ERROR.NO_MATCH;
+				break;
+			case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+				errorSent = ERROR.RECOGNIZER_BUSY;
+				break;
+			case SpeechRecognizer.ERROR_SERVER:
+				errorSent = ERROR.SERVER;
+				break;
+			case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+				errorSent = ERROR.SPEECH_TIMEOUT;
+				break;
+
+			default:
+				break;
+			}
+			sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
+					SEND_ERROR);
+			sf.addIntegerArgument(1, false, errorSent);
+			Log.d("Frame", sf.toString());
+			sendShieldFrame(sf);
 		}
 
 		@Override
@@ -137,6 +177,13 @@ public class SpeechRecognitionShield extends
 
 	@Override
 	public void reset() {
-		activity.unbindService(mServiceConnection);
+		if (mServiceConnection != null && activity != null)
+			activity.unbindService(mServiceConnection);
+	}
+
+	private static class ERROR {
+		protected static int AUDIO = 3, NETWORK = 2, NETWORK_TIMEOUT = 1,
+				NO_MATCH = 7, RECOGNIZER_BUSY = 8, SERVER = 4,
+				SPEECH_TIMEOUT = 6;
 	}
 }

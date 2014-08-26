@@ -58,10 +58,22 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
+            android:clickable="true"
             android:gravity="top|left"
             android:scrollbars="vertical"
             android:textColor="@color/green"
+            android:textIsSelectable="true"
             android:textSize="14sp" />
+
+        <Button
+            android:id="@+id/clearTerminal"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/transparent"
+            android:text="X"
+            android:textColor="@color/white" />
     </RelativeLayout>
 
     <LinearLayout
