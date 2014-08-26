@@ -4,6 +4,8 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
+import com.integreight.onesheeld.utils.ArrayUtils;
+
 public class ShieldFrame {
 	public static final byte START_OF_FRAME=(byte) 0xFF;
 	public static final byte END_OF_FRAME=(byte) 0x00;
@@ -64,9 +66,15 @@ public class ShieldFrame {
 		return new String(arguments.get(n));
 	}
 	
-	public float getArgumentAsfloat(int n){
+	public float getArgumentAsFloat(int n){
 		byte[] b = getArgument(n);
 		if(n>=arguments.size()||b.length!=4)return 0;
+		for(int i = 0; i < b.length / 2; i++)
+		{
+		    byte temp = b[i];
+		    b[i] = b[b.length - i - 1];
+		    b[b.length - i - 1] = temp;
+		}
 		return ByteBuffer.wrap(b).getFloat();
 	}
 

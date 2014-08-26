@@ -26,6 +26,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	private static final byte START_LOGGING = 0x02;
 	private static final byte STOP_LOGGING = 0x03;
 	private static final byte ADD = 0x04;
+	private static final byte ADD_FLOAT=0x05;
 	ArrayList<String> headerList = new ArrayList<String>();
 	ArrayList<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
 	String fileName = null;
@@ -124,7 +125,10 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				valueMap.put(key, value);
 				values.add(valueMap);
 				break;
-
+			case ADD_FLOAT:
+//				String key1 = frame.getArgumentAsString(0);
+//				float value1 = frame.getArgumentAsFloat(1);
+			break;
 			default:
 				break;
 			}
