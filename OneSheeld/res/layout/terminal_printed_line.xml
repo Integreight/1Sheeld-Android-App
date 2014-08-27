@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fadingEdge="none"
+    android:scrollbarThumbHorizontal="@drawable/transparent" >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+            android:id="@+id/dateX"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:paddingBottom="1dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingTop="1dp"
+            android:scrollbars="vertical"
+            android:singleLine="true"
+            android:textColor="@color/green"
+            android:textIsSelectable="true"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/seperator"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/green" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+            android:id="@+id/terminalOutput"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:gravity="top|left"
+            android:paddingBottom="1dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingTop="1dp"
+            android:scrollbars="vertical"
+            android:singleLine="true"
+            android:textColor="@color/green"
+            android:textIsSelectable="true"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+</HorizontalScrollView>
