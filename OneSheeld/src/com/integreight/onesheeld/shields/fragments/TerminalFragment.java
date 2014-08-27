@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.model.TerminalPrintedLine;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TerminalShield;
-import com.integreight.onesheeld.shields.controller.TerminalShield.PrintedLine;
 import com.integreight.onesheeld.shields.controller.TerminalShield.TerminalHandler;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
@@ -47,7 +47,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					public void onClick(View arg0) {
 						output.setText("");
 						((TerminalShield) getApplication().getRunningShields()
-								.get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalShield.TerminalPrintedLine>();
+								.get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 					}
 				});
 		send.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +58,10 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						getControllerTag())).input(inputField.getText()
 						.toString());
 				((TerminalShield) getApplication().getRunningShields().get(
-						getControllerTag())).terminalPrintedLines.add(new TerminalPrintedLine(
-						(!endedWithNewLine ? "\n" : "") + getTimeAsString()
-								+ " [TX] " + ": ", inputField.getText()
-								.toString(), true));
+						getControllerTag())).terminalPrintedLines
+						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
+								: "") + getTimeAsString() + " [TX] " + ": ",
+								inputField.getText().toString(), true));
 				output.append(((!endedWithNewLine ? "\n" : "")
 						+ getTimeAsString() + " [TX] " + ": "
 						+ getEncodedString(inputField.getText().toString()) + "\n"));
@@ -217,7 +217,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 		if (((TerminalShield) getApplication().getRunningShields().get(
 				getControllerTag())).terminalPrintedLines == null)
 			((TerminalShield) getApplication().getRunningShields().get(
-					getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalShield.TerminalPrintedLine>();
+					getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 		output.setText("");
 		for (TerminalPrintedLine line : ((TerminalShield) getApplication()
 				.getRunningShields().get(getControllerTag())).terminalPrintedLines) {
