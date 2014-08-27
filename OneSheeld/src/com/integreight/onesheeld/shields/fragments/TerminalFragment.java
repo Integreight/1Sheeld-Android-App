@@ -1,31 +1,34 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CompoundButton;
+import android.widget.ListView;
+import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.adapters.TerminalLinesAdapter;
 import com.integreight.onesheeld.model.TerminalPrintedLine;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TerminalShield;
 import com.integreight.onesheeld.shields.controller.TerminalShield.TerminalHandler;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
-import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
-	private OneSheeldTextView output;
+	private ListView output;
 	private OneSheeldEditText inputField;
 	private OneSheeldButton send;
 	private boolean endedWithNewLine = false;
+	private TerminalLinesAdapter outputAdapter;
+	private ToggleButton timeToggle, autoScrollingToggle;
 
 	public static String getTimeAsString() {
 		return DateFormat.format("MM/dd/yyyy hh:mm:ss", new java.util.Date())
@@ -36,16 +39,51 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 			Bundle savedInstanceState) {
 		v = inflater.inflate(R.layout.terminal_shield_fragment_layout,
 				container, false);
-		output = (OneSheeldTextView) v.findViewById(R.id.terminalOutput);
+		output = (ListView) v.findViewById(R.id.terminalOutput);
+		outputAdapter = new TerminalLinesAdapter(activity,
+				new ArrayList<TerminalPrintedLine>());
+		output.setAdapter(outputAdapter);
+		outputAdapter = (TerminalLinesAdapter) output.getAdapter();
 		inputField = (OneSheeldEditText) v.findViewById(R.id.terminalInput);
 		send = (OneSheeldButton) v.findViewById(R.id.send);
-		output.setMovementMethod(new ScrollingMovementMethod());
+		timeToggle = (ToggleButton) v.findViewById(R.id.toggleTime);
+		autoScrollingToggle = (ToggleButton) v
+				.findViewById(R.id.toggleAutoScrolling);
+		timeToggle.setChecked(((TerminalShield) getApplication()
+				.getRunningShields().get(getControllerTag())).isTimeOn);
+		autoScrollingToggle.setChecked(((TerminalShield) getApplication()
+				.getRunningShields().get(getControllerTag())).isAutoScrolling);
+		timeToggle
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						((TerminalShield) getApplication().getRunningShields()
+								.get(getControllerTag())).isTimeOn = isChecked;
+						outputAdapter.isTimeOn = isChecked;
+						outputAdapter.notifyDataSetChanged();
+					}
+				});
+		autoScrollingToggle
+				.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+					@Override
+					public void onCheckedChanged(CompoundButton buttonView,
+							boolean isChecked) {
+						((TerminalShield) getApplication().getRunningShields()
+								.get(getControllerTag())).isAutoScrolling = isChecked;
+					}
+				});
 		v.findViewById(R.id.clearTerminal).setOnClickListener(
 				new View.OnClickListener() {
 
 					@Override
 					public void onClick(View arg0) {
-						output.setText("");
+						outputAdapter
+								.updateLines(new ArrayList<TerminalPrintedLine>());
+						((TerminalShield) getApplication().getRunningShields()
+								.get(getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 						((TerminalShield) getApplication().getRunningShields()
 								.get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 					}
@@ -62,22 +100,25 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
 								: "") + getTimeAsString() + " [TX] " + ": ",
 								inputField.getText().toString(), true));
-				output.append(((!endedWithNewLine ? "\n" : "")
-						+ getTimeAsString() + " [TX] " + ": "
-						+ getEncodedString(inputField.getText().toString()) + "\n"));
-				final int scrollAmount = output.getLayout().getLineTop(
-						output.getLineCount())
-						- output.getHeight();
-				// if there is no need to scroll, scr.ollAmount will be <=0
-				if (scrollAmount > 0)
-					output.scrollTo(
-							0,
-							scrollAmount
-									+ ((int) (0 * getResources()
-											.getDisplayMetrics().density + .5f)));
-				// else
-				// output.scrollTo(0, 0);
-
+				((TerminalShield) getApplication().getRunningShields().get(
+						getControllerTag())).tempLines
+						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
+								: "") + getTimeAsString() + " [TX] " + ": ",
+								((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag()))
+										.getEncodedString(inputField.getText()
+												.toString()), true));
+				outputAdapter
+						.updateLines(((TerminalShield) getApplication()
+								.getRunningShields().get(getControllerTag())).tempLines);
+				if (((TerminalShield) getApplication().getRunningShields().get(
+						getControllerTag())).tempLines.size() > 0
+						&& ((TerminalShield) getApplication()
+								.getRunningShields().get(getControllerTag())).isAutoScrolling)
+					output.setSelection(((TerminalShield) getApplication()
+							.getRunningShields().get(getControllerTag())).tempLines
+							.size() - 1);
 				endedWithNewLine = true;
 				inputField.setText("");
 				InputMethodManager imm = (InputMethodManager) activity
@@ -114,83 +155,40 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 												R.color.arduinoPinsSelector));
 						((TerminalShield) getApplication().getRunningShields()
 								.get(getControllerTag())).selectedEnMth = x;
-						output.setText("");
+						((TerminalShield) getApplication().getRunningShields()
+								.get(getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 						for (TerminalPrintedLine line : ((TerminalShield) getApplication()
 								.getRunningShields().get(getControllerTag())).terminalPrintedLines) {
-							output.append(line.date
-									+ getEncodedString(line.print)
-									+ (line.isEndedWithNewLine ? "\n" : ""));
+							((TerminalShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).tempLines
+									.add(new TerminalPrintedLine(
+											line.date,
+											((TerminalShield) getApplication()
+													.getRunningShields().get(
+															getControllerTag()))
+													.getEncodedString(line.print),
+											line.isEndedWithNewLine));
 						}
-						final int scrollAmount = output.getLayout().getLineTop(
-								output.getLineCount())
-								- output.getHeight();
-						// if there is no need to scroll, scrollAmount will
-						// be <=0
-						if (scrollAmount > 0)
-							output.scrollTo(
-									0,
-									scrollAmount
-											+ ((int) (0 * getResources()
-													.getDisplayMetrics().density + .5f)));
-						// else
-						// output.scrollTo(0, 0);
+						outputAdapter
+								.updateLines(((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).tempLines);
+						if (((TerminalShield) getApplication()
+								.getRunningShields().get(getControllerTag())).tempLines
+								.size() > 0
+								&& ((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).isAutoScrolling)
+							output.setSelection(((TerminalShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).tempLines.size() - 1);
 					}
 				}
 			});
 			i++;
 		}
 		return v;
-	}
-
-	private String getEncodedString(String toBeEncoded) {
-		String out = "";
-		switch (((TerminalShield) getApplication().getRunningShields().get(
-				getControllerTag())).selectedEnMth) {
-		case 0:
-			out = toBeEncoded;
-			break;
-		case 1:
-			try {
-				byte[] en = toBeEncoded.getBytes("US-ASCII");
-				for (byte b : en) {
-					out += b;
-				}
-			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-		case 2:
-			byte[] bytes = toBeEncoded.getBytes();
-			StringBuilder binary = new StringBuilder();
-			for (byte b : bytes) {
-				int val = b;
-				for (int i = 0; i < 8; i++) {
-					binary.append((val & 128) == 0 ? 0 : 1);
-					val <<= 1;
-				}
-				binary.append(' ');
-			}
-			out = binary.toString();
-			break;
-		case 3:
-			byte[] byts = toBeEncoded.getBytes();
-			for (byte b : byts) {
-				if ((Integer.toHexString(b).length() < 2))
-					out += "0" + Integer.toHexString(b) + " ";
-				else if ((Integer.toHexString(b).length() == 2))
-					out += Integer.toHexString(b) + " ";
-				else {
-					String temp = Integer.toHexString(b);
-					temp = temp.substring(temp.length() - 2);
-					out += temp + " ";
-				}
-			}
-			break;
-		default:
-			break;
-		}
-		return out;
 	}
 
 	@Override
@@ -218,25 +216,26 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 				getControllerTag())).terminalPrintedLines == null)
 			((TerminalShield) getApplication().getRunningShields().get(
 					getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
-		output.setText("");
+		((TerminalShield) getApplication().getRunningShields().get(
+				getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 		for (TerminalPrintedLine line : ((TerminalShield) getApplication()
 				.getRunningShields().get(getControllerTag())).terminalPrintedLines) {
-			output.append(line.date + getEncodedString(line.print)
-					+ (line.isEndedWithNewLine ? "\n" : ""));
-			endedWithNewLine = line.isEndedWithNewLine;
+			((TerminalShield) getApplication().getRunningShields().get(
+					getControllerTag())).tempLines.add(new TerminalPrintedLine(
+					line.date, ((TerminalShield) getApplication()
+							.getRunningShields().get(getControllerTag()))
+							.getEncodedString(line.print),
+					line.isEndedWithNewLine));
 		}
-		if (output.getLayout() != null) {
-			final int scrollAmount = output.getLayout().getLineTop(
-					output.getLineCount())
-					- output.getHeight();
-			if (scrollAmount > 0)
-				output.scrollTo(0,
-						scrollAmount
-								+ ((int) (0 * getResources()
-										.getDisplayMetrics().density + .5f)));
-			// else
-			// output.scrollTo(0, 0);
-		}
+		outputAdapter.updateLines(((TerminalShield) getApplication()
+				.getRunningShields().get(getControllerTag())).tempLines);
+		if (((TerminalShield) getApplication().getRunningShields().get(
+				getControllerTag())).tempLines.size() > 0
+				&& ((TerminalShield) getApplication().getRunningShields().get(
+						getControllerTag())).isAutoScrolling)
+			output.setSelection(((TerminalShield) getApplication()
+					.getRunningShields().get(getControllerTag())).tempLines
+					.size() - 1);
 		super.onStart();
 
 	}
@@ -273,45 +272,20 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					@Override
 					public void run() {
 						if (output != null) {
-							if (clearBeforeWriting) {
-								output.setText("");
-								for (TerminalPrintedLine line : ((TerminalShield) getApplication()
+							outputAdapter
+									.updateLines(((TerminalShield) getApplication()
+											.getRunningShields().get(
+													getControllerTag())).tempLines);
+							if (((TerminalShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).tempLines.size() > 0
+									&& ((TerminalShield) getApplication()
+											.getRunningShields().get(
+													getControllerTag())).isAutoScrolling)
+								output.setSelection(((TerminalShield) getApplication()
 										.getRunningShields().get(
-												getControllerTag())).terminalPrintedLines) {
-									output.append(line.date
-											+ getEncodedString(line.print)
-											+ (line.isEndedWithNewLine ? "\n"
-													: ""));
-									endedWithNewLine = line.isEndedWithNewLine;
-								}
-							} else {
-								String date = output.length() == 0
-										|| endedWithNewLine ? getTimeAsString()
-										+ " [RX] : " : "";
-								boolean isEndedWithNewLine = outputTxt.length() > 0
-										&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
-								output.append(date
-										+ getEncodedString(outputTxt.substring(
-												0,
-												isEndedWithNewLine ? outputTxt
-														.length() - 1
-														: outputTxt.length()))
-										+ (isEndedWithNewLine ? "\n" : ""));
-								if (outputTxt.length() > 0)
-									endedWithNewLine = outputTxt
-											.charAt(outputTxt.length() - 1) == '\n';
-							}
-							final int scrollAmount = output.getLayout()
-									.getLineTop(output.getLineCount())
-									- output.getHeight();
-							if (scrollAmount > 0)
-								output.scrollTo(
-										0,
-										scrollAmount
-												+ ((int) (0 * getResources()
-														.getDisplayMetrics().density + .5f)));
-							// else
-							// output.scrollTo(0, 0);
+												getControllerTag())).tempLines
+										.size() - 1);
 						}
 					}
 				});

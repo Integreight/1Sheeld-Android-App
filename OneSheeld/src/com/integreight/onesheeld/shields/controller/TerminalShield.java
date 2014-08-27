@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import android.app.Activity;
@@ -21,6 +22,9 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 			R.id.binary, R.id.hex };
 	public int selectedEnMth = 0;
 	public CopyOnWriteArrayList<TerminalPrintedLine> terminalPrintedLines;
+	private boolean lastItemEndedWithNewLine = true;
+	public CopyOnWriteArrayList<TerminalPrintedLine> tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+	public boolean isTimeOn = true, isAutoScrolling = true;
 
 	public TerminalShield() {
 		super();
@@ -33,6 +37,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	@Override
 	public ControllerParent<TerminalShield> setTag(String tag) {
 		terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+		lastItemEndedWithNewLine = true;
 		return super.setTag(tag);
 	}
 
@@ -67,12 +72,35 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 					: "";
 			boolean isEndedWithNewLine = outputTxt.length() > 0
 					&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
-			terminalPrintedLines.add(new TerminalPrintedLine(date, outputTxt
-					.substring(0, isEndedWithNewLine ? outputTxt.length() - 1
-							: outputTxt.length()), isEndedWithNewLine));
+			if (lastItemEndedWithNewLine) {
+				terminalPrintedLines.add(new TerminalPrintedLine(date,
+						outputTxt.substring(0,
+								isEndedWithNewLine ? outputTxt.length() - 1
+										: outputTxt.length()),
+						isEndedWithNewLine));
+				tempLines.add(new TerminalPrintedLine(date,
+						getEncodedString(outputTxt.substring(0,
+								isEndedWithNewLine ? outputTxt.length() - 1
+										: outputTxt.length())),
+						isEndedWithNewLine));
+			} else if (terminalPrintedLines.size() > 0 && tempLines.size() > 0) {
+				terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = terminalPrintedLines
+						.get(terminalPrintedLines.size() - 1).print
+						+ outputTxt.substring(0,
+								isEndedWithNewLine ? outputTxt.length() - 1
+										: outputTxt.length());
+				tempLines.get(tempLines.size() - 1).print = getEncodedString(terminalPrintedLines
+						.get(terminalPrintedLines.size() - 1).print);
+				if (isEndedWithNewLine)
+					terminalPrintedLines.get(terminalPrintedLines.size() - 1).isEndedWithNewLine = true;
+			}
+			lastItemEndedWithNewLine = isEndedWithNewLine;
 			greaterThanThousand = terminalPrintedLines.size() > 1000;
 			if (greaterThanThousand) {
+				// for (int i = 0; i < 1; i++) {
 				terminalPrintedLines.remove(0);
+				tempLines.remove(0);
+				// }
 			}
 			switch (frame.getFunctionId()) {
 			case WRITE:
@@ -109,6 +137,56 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
 	public interface TerminalHandler {
 		public void onPrint(String output, final boolean clearBeforeWriting);
+	}
+
+	public String getEncodedString(String toBeEncoded) {
+		String out = "";
+		switch (selectedEnMth) {
+		case 0:
+			out = toBeEncoded;
+			break;
+		case 1:
+			try {
+				byte[] en = toBeEncoded.getBytes("US-ASCII");
+				for (byte b : en) {
+					out += b;
+				}
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			break;
+		case 2:
+			byte[] bytes = toBeEncoded.getBytes();
+			StringBuilder binary = new StringBuilder();
+			for (byte b : bytes) {
+				int val = b;
+				for (int i = 0; i < 8; i++) {
+					binary.append((val & 128) == 0 ? 0 : 1);
+					val <<= 1;
+				}
+				binary.append(' ');
+			}
+			out = binary.toString();
+			break;
+		case 3:
+			byte[] byts = toBeEncoded.getBytes();
+			for (byte b : byts) {
+				if ((Integer.toHexString(b).length() < 2))
+					out += "0" + Integer.toHexString(b) + " ";
+				else if ((Integer.toHexString(b).length() == 2))
+					out += Integer.toHexString(b) + " ";
+				else {
+					String temp = Integer.toHexString(b);
+					temp = temp.substring(temp.length() - 2);
+					out += temp + " ";
+				}
+			}
+			break;
+		default:
+			break;
+		}
+		return out;
 	}
 
 }

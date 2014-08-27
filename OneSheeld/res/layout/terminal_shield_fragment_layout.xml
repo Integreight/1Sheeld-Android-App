@@ -22,6 +22,7 @@
             android:layout_height="45dp"
             android:layout_weight="1"
             android:background="@drawable/curved_terminal_field"
+            android:maxEms="64"
             android:padding="5dp"
             android:singleLine="true"
             android:textColor="@color/green"
@@ -50,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+        <ListView
             android:id="@+id/terminalOutput"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -58,12 +59,10 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="15dp"
-            android:clickable="true"
-            android:gravity="top|left"
-            android:scrollbars="vertical"
-            android:textColor="@color/green"
-            android:textIsSelectable="true"
-            android:textSize="14sp" />
+            android:cacheColorHint="@color/transparent"
+            android:divider="@color/transparent"
+            android:dividerHeight="0dip"
+            android:fadingEdge="none" />
 
         <Button
             android:id="@+id/clearTerminal"
@@ -127,6 +126,30 @@
             android:text="@string/terminalHEX"
             android:textColor="@color/offWhite"
             android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ToggleButton
+            android:id="@+id/toggleTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="Time OFF"
+            android:textOn="Time ON" />
+
+        <ToggleButton
+            android:id="@+id/toggleAutoScrolling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:checked="true"
+            android:textOff="Auto-Scroll OFF"
+            android:textOn="Auto-Scroll ON" />
     </LinearLayout>
 
 </LinearLayout>
