@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -340,10 +341,15 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	}
 
 	public void loginToFoursquare() {
+		ProgressDialog prog = new ProgressDialog(activity);
+		prog.setMessage("Please, Wait!");
+		prog.setCancelable(false);
+		prog.show();
 		foursquare = new Foursquare(clientID, clientSecret, redirectUrl);
 
 		foursquare.authorize(getActivity(),
 				new FoursquareAuthenDialogListener());
+		prog.cancel();
 	}
 
 	@Override

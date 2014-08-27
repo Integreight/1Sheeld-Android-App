@@ -67,7 +67,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 	public void onStart() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new SliderShield(getActivity(), getControllerTag()));
+					new SliderShield(activity, getControllerTag()));
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {
@@ -112,7 +112,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new SliderShield(getActivity(), getControllerTag()));
+					new SliderShield(activity, getControllerTag()));
 
 	}
 

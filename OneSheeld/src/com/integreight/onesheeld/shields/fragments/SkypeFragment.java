@@ -49,7 +49,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 		public void onVideoCall(String user) {
 			// TODO Auto-generated method stub
 			if (canChangeUI())
-				Toast.makeText(getActivity(), user + " Outgoing Video Call",
+				Toast.makeText(activity, user + " Outgoing Video Call",
 						Toast.LENGTH_SHORT).show();
 
 		}
@@ -58,8 +58,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 		public void onSkypeClientNotInstalled(String popMessage) {
 			// TODO Auto-generated method stub
 			if (canChangeUI())
-				Toast.makeText(getActivity(), popMessage, Toast.LENGTH_SHORT)
-						.show();
+				Toast.makeText(activity, popMessage, Toast.LENGTH_SHORT).show();
 
 		}
 
@@ -73,7 +72,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 		public void onChat(String user) {
 			// TODO Auto-generated method stub
 			if (canChangeUI())
-				Toast.makeText(getActivity(), user + " Outgoing Chat",
+				Toast.makeText(activity, user + " Outgoing Chat",
 						Toast.LENGTH_SHORT).show();
 
 		}
@@ -82,7 +81,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 		public void onCall(String user) {
 			// TODO Auto-generated method stub
 			if (canChangeUI())
-				Toast.makeText(getActivity(), user + " Outgoing Call",
+				Toast.makeText(activity, user + " Outgoing Call",
 						Toast.LENGTH_SHORT).show();
 
 		}
@@ -91,7 +90,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new SkypeShield(getActivity(), getControllerTag()));
+					new SkypeShield(activity, getControllerTag()));
 			((SkypeShield) getApplication().getRunningShields().get(
 					getControllerTag()))
 					.setSkypeEventHandler(skypeEventHandler);

@@ -22,5 +22,7 @@
     <dimen name="pinViewDimen">8dp</dimen>
     <dimen name="sensor_xcoor_top_margin">-4dp</dimen>
     <dimen name="sensor_ycoor_top_margin">-3dp</dimen>
+    <dimen name="lcd_margin_left_right">60dp</dimen>
+    <dimen name="lcd_margin_top_bottom">30dp</dimen>
 
 </resources>

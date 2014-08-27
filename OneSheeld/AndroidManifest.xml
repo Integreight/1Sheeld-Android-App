@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
-    android:versionCode="140602"
-    android:versionName="1.002" >
+    android:versionCode="140703"
+    android:versionName="1.0.4" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -116,9 +116,11 @@
             tools:ignore="ExportedActivity" >
 
             <!-- this Intent filter allows the plug-in to be discovered by Locale -->
-            <intent-filter>
+            <!--
+                 <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_SETTING" />
-            </intent-filter>
+            </intent-filter>
+            -->
         </activity>
         <activity
             android:name="com.integreight.onesheeld.shields.controller.utils.TakePicture"

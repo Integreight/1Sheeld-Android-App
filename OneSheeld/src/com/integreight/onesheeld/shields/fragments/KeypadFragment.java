@@ -116,7 +116,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	private void initializeFirmata() {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new KeypadShield(getActivity(), getControllerTag()));
+					new KeypadShield(activity, getControllerTag()));
 		toggleMenuButtons();
 	}
 

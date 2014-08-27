@@ -57,7 +57,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Email Sheeld::OnActivityCreated()", "");
-		mSharedPreferences = getActivity().getApplicationContext()
+		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
 
@@ -73,9 +73,9 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
 			@Override
 			public void onClick(View v) {
-				if (ConnectionDetector.isConnectingToInternet(getActivity()))
+				if (ConnectionDetector.isConnectingToInternet(activity))
 					// show dialog of registration then call add account method
-					new GmailSinginPopup(getActivity(), emailEventHandler)
+					new GmailSinginPopup(activity, emailEventHandler)
 							.show();
 				else
 					Toast.makeText(
@@ -168,7 +168,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new EmailShield(getActivity(), getControllerTag()));
+					new EmailShield(activity, getControllerTag()));
 			((EmailShield) getApplication().getRunningShields().get(
 					getControllerTag()))
 					.setEmailEventHandler(emailEventHandler);

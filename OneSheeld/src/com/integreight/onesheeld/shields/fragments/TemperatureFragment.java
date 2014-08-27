@@ -159,7 +159,7 @@ public class TemperatureFragment extends
 																 * );
 																 * Toast.makeText
 																 * (
-																 * getActivity()
+																 * activity
 																 * ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
@@ -193,7 +193,7 @@ public class TemperatureFragment extends
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new TemperatureShield(getActivity(), getControllerTag()));
+					new TemperatureShield(activity, getControllerTag()));
 
 		}
 

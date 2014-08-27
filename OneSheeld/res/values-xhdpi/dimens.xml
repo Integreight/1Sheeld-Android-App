@@ -21,5 +21,7 @@
     <dimen name="key_label">32dp</dimen>
     <dimen name="sensor_xcoor_top_margin">0dp</dimen>
     <dimen name="sensor_ycoor_top_margin">0dp</dimen>
+    <dimen name="lcd_margin_left_right">65dp</dimen>
+    <dimen name="lcd_margin_top_bottom">35dp</dimen>
 
 </resources>

@@ -107,7 +107,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new GpsShield(getActivity(), getControllerTag()));
+					new GpsShield(activity, getControllerTag()));
 
 		}
 

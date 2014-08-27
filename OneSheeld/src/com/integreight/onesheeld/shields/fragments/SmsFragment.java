@@ -74,14 +74,14 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView tv = (OneShieldTextView) getActivity()
+						OneShieldTextView tv = (OneShieldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.sent_sms_details_row,
 										smsTextContainer, false);
 						tv.setText("SMS to " + smsNumber + " (" + smsText + ")");
 						smsTextContainer.addView(tv);
-						Toast.makeText(getActivity(), "SMS Sent!",
-								Toast.LENGTH_LONG).show();
+						Toast.makeText(activity, "SMS Sent!", Toast.LENGTH_LONG)
+								.show();
 					}
 				});
 			}
@@ -92,7 +92,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 		public void onSmsFail(String error) {
 			// TODO Auto-generated method stub
 			if (canChangeUI()) {
-				Toast.makeText(getActivity(), error, Toast.LENGTH_LONG).show();
+				Toast.makeText(activity, error, Toast.LENGTH_LONG).show();
 			}
 		}
 	};
@@ -100,7 +100,7 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	private void initializeFirmata() {
 		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new SmsShield(getActivity(), getControllerTag()));
+					new SmsShield(activity, getControllerTag()));
 		((SmsShield) getApplication().getRunningShields().get(
 				getControllerTag())).setSmsEventHandler(smsEventHandler);
 		toggleMenuButtons();

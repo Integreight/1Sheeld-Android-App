@@ -10,6 +10,7 @@ public class Log {
 	}
 
 	public static void e(String tag, String msg, Throwable tr) {
+		// tr.printStackTrace();
 		// android.util.Log.d(tag, msg);
 	}
 

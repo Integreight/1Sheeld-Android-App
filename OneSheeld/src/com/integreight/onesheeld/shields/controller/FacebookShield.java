@@ -177,6 +177,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	}
 
 	private class SessionStatusCallback implements Session.StatusCallback {
+		@SuppressWarnings("unused")
 		@Override
 		public void call(final Session session, SessionState state,
 				Exception exception) {
@@ -194,11 +195,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 								fragment, PERMISSIONS);
 						if (newPermissionsRequest != null)
 							session.requestNewPublishPermissions(newPermissionsRequest);
-						// else {
-						// if (eventHandler != null)
-						// eventHandler
-						// .onFacebookError("Kindly, reset you facebook app or update it!");
-						// }
+						else {
+							if (eventHandler != null)
+								eventHandler
+										.onFacebookError("Kindly, reset you facebook app or update it!");
+						}
 					}
 				}
 

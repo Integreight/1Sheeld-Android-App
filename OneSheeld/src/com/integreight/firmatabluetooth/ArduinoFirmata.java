@@ -43,7 +43,7 @@ public class ArduinoFirmata {
 	public static final int A4 = 17;
 	public static final int A5 = 18;
 
-	public static int arduinoLibraryVersion = -1;
+	public int arduinoLibraryVersion = -1;
 
 	private final char MAX_DATA_BYTES = 4096;
 	private final char MAX_OUTPUT_BYTES = 32;
@@ -102,7 +102,8 @@ public class ArduinoFirmata {
 	private CopyOnWriteArrayList<ArduinoFirmataEventHandler> eventHandlers;
 	private CopyOnWriteArrayList<ArduinoFirmataDataHandler> dataHandlers;
 	private CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler> frameHandlers;
-	private CopyOnWriteArrayList<ArduinoVersionQueryHandler> versionQueryHandlers;
+	private CopyOnWriteArrayList<FirmwareVersionQueryHandler> firmwareVersionQueryHandlers;
+	private CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler> arduinoLibraryVersionChangeHandlers;
 
 	public void addEventHandler(ArduinoFirmataEventHandler handler) {
 		if (handler != null && !eventHandlers.contains(handler))
@@ -135,9 +136,17 @@ public class ArduinoFirmata {
 			frameHandlers.remove(handler);
 	}
 
-	public void addVersionQueryHandler(ArduinoVersionQueryHandler handler) {
-		if (handler != null && !versionQueryHandlers.contains(handler))
-			versionQueryHandlers.add(handler);
+	public void addFirmwareVersionQueryHandler(
+			FirmwareVersionQueryHandler handler) {
+		if (handler != null && !firmwareVersionQueryHandlers.contains(handler))
+			firmwareVersionQueryHandlers.add(handler);
+	}
+
+	public void addArduinoLibraryVersionQueryHandler(
+			ArduinoLibraryVersionChangeHandler handler) {
+		if (handler != null
+				&& !arduinoLibraryVersionChangeHandlers.contains(handler))
+			arduinoLibraryVersionChangeHandlers.add(handler);
 	}
 
 	public void enableBootloaderMode() {
@@ -192,7 +201,8 @@ public class ArduinoFirmata {
 		eventHandlers = new CopyOnWriteArrayList<ArduinoFirmataEventHandler>();
 		dataHandlers = new CopyOnWriteArrayList<ArduinoFirmataDataHandler>();
 		frameHandlers = new CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler>();
-		versionQueryHandlers = new CopyOnWriteArrayList<ArduinoVersionQueryHandler>();
+		firmwareVersionQueryHandlers = new CopyOnWriteArrayList<FirmwareVersionQueryHandler>();
+		arduinoLibraryVersionChangeHandlers = new CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler>();
 		this.context = context;
 		bluetoothService.addBluetoothServiceHandler(handler);
 		uiThreadHandler = new Handler(Looper.getMainLooper());
@@ -229,6 +239,7 @@ public class ArduinoFirmata {
 		clearArduinoFirmataDataHandlers();
 		clearArduinoFirmataShieldFrameHandlers();
 		stopBuffersThreads();
+		arduinoLibraryVersion = -1;
 		if (bluetoothService != null && isOpen())
 			bluetoothService.stopConnection();
 
@@ -364,7 +375,7 @@ public class ArduinoFirmata {
 	private void setVersion(int majorVersion, int minorVersion) {
 		this.majorVersion = majorVersion;
 		this.minorVersion = minorVersion;
-		for (ArduinoVersionQueryHandler handler : versionQueryHandlers) {
+		for (FirmwareVersionQueryHandler handler : firmwareVersionQueryHandlers) {
 			handler.onVersionReceived(minorVersion, majorVersion);
 		}
 	}
@@ -751,8 +762,8 @@ public class ArduinoFirmata {
 					ShieldFrame frame = new ShieldFrame(shieldId, instanceId,
 							functionId);
 					int argumentsNumber = readByteFromUartBuffer();
-					int argumentsNumberVerification = (255-(readByteFromUartBuffer()&0xFF));
-					if(argumentsNumber!=argumentsNumberVerification){
+					int argumentsNumberVerification = (255 - (readByteFromUartBuffer() & 0xFF));
+					if (argumentsNumber != argumentsNumberVerification) {
 						if (ShieldFrameTimeout != null)
 							ShieldFrameTimeout.stopTimer();
 						uartBuffer.clear();
@@ -760,8 +771,8 @@ public class ArduinoFirmata {
 					}
 					for (int i = 0; i < argumentsNumber; i++) {
 						int length = readByteFromUartBuffer() & 0xff;
-						int lengthVerification = (255-(readByteFromUartBuffer()&0xFF));
-						if(length!=lengthVerification||length <= 0){
+						int lengthVerification = (255 - (readByteFromUartBuffer() & 0xFF));
+						if (length != lengthVerification || length <= 0) {
 							if (ShieldFrameTimeout != null)
 								ShieldFrameTimeout.stopTimer();
 							uartBuffer.clear();
@@ -781,7 +792,12 @@ public class ArduinoFirmata {
 					}
 					if (ShieldFrameTimeout != null)
 						ShieldFrameTimeout.stopTimer();
-					arduinoLibraryVersion = tempArduinoLibVersion;
+					if (arduinoLibraryVersion != tempArduinoLibVersion) {
+						arduinoLibraryVersion = tempArduinoLibVersion;
+						for (ArduinoLibraryVersionChangeHandler handler : arduinoLibraryVersionChangeHandlers) {
+							handler.onArduinoLibraryVersionChange(arduinoLibraryVersion);
+						}
+					}
 					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
 					}

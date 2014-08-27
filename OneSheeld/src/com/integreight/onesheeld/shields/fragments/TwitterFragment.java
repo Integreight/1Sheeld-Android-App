@@ -50,7 +50,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 			@Override
 			public void onClick(View arg0) {
-				if (ConnectionDetector.isConnectingToInternet(getActivity()))
+				if (ConnectionDetector.isConnectingToInternet(activity))
 					((TwitterShield) getApplication().getRunningShields().get(
 							getControllerTag())).login();
 				else
@@ -101,7 +101,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView tweetItem = (OneShieldTextView) getActivity()
+						OneShieldTextView tweetItem = (OneShieldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.tweet_item,
 										lastTweetTextContainer, false);
@@ -109,7 +109,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 						lastTweetTextContainer.addView(tweetItem);
 						((ScrollView) lastTweetTextContainer.getParent())
 								.invalidate();
-						Toast.makeText(getActivity(), "Tweet posted!",
+						Toast.makeText(activity, "Tweet posted!",
 								Toast.LENGTH_SHORT).show();
 					}
 				});
@@ -143,7 +143,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						Toast.makeText(getActivity(), error, Toast.LENGTH_SHORT)
+						Toast.makeText(activity, error, Toast.LENGTH_SHORT)
 								.show();
 
 					}
@@ -157,7 +157,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null)
 			getApplication().getRunningShields().put(getControllerTag(),
-					new TwitterShield(getActivity(), getControllerTag()));
+					new TwitterShield(activity, getControllerTag()));
 		((TwitterShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setTwitterEventHandler(twitterEventHandler);

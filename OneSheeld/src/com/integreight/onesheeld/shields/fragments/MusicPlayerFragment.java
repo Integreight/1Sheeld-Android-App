@@ -9,7 +9,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.Log;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.MusicShield;
 import com.integreight.onesheeld.shields.controller.MusicShield.MusicEventHandler;
@@ -33,8 +32,7 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onStart() {
-		((MainActivity) getActivity())
-				.getSupportFragmentManager()
+		activity.getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.settingsViewContainer,
 						MusicShieldSettings.getInstance()).commit();
@@ -62,8 +60,7 @@ public class MusicPlayerFragment extends
 					if ((MusicShield) getApplication().getRunningShields().get(
 							getControllerTag()) != null) {
 						seekBar.setMax(((MusicShield) getApplication()
-								.getRunningShields().get(getControllerTag())).mediaPlayer
-								.getDuration());
+								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaPlayer
 								.getCurrentPosition());
@@ -90,9 +87,9 @@ public class MusicPlayerFragment extends
 					getControllerTag())).setEventHandler(eventHandler);
 			control = (MusicShield) getApplication().getRunningShields().get(
 					getControllerTag());
-			if (control.mediaPlayer != null) {
+			if (control.mediaPlayer != null && control.mediaDuration > 0) {
 				eventHandler.seekTo(control.mediaPlayer.getCurrentPosition()
-						* 100 / control.mediaPlayer.getDuration());
+						* 100 / control.mediaDuration);
 				eventHandler.setMusicName(control.musicFileName);
 				if (control.mediaPlayer.isPlaying())
 					eventHandler.play();
@@ -135,8 +132,7 @@ public class MusicPlayerFragment extends
 					@Override
 					public void run() {
 						seekBar.setMax(((MusicShield) getApplication()
-								.getRunningShields().get(getControllerTag())).mediaPlayer
-								.getDuration());
+								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(pos);
 					}
 				});

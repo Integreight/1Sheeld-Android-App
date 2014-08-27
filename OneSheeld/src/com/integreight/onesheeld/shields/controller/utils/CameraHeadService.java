@@ -92,7 +92,7 @@ public class CameraHeadService extends Service implements
 		return cam;
 	}
 
-	private void setBiggeestPictureSize() {
+	private void setBesttPictureResolution() {
 		// get biggest picture size
 		width = pref.getInt("Picture_Width", 0);
 		height = pref.getInt("Picture_height", 0);
@@ -110,8 +110,8 @@ public class CameraHeadService extends Service implements
 			editor.commit();
 
 		} else {
-			if (pictureSize != null)
-				parameters.setPictureSize(width, height);
+			// if (pictureSize != null)
+			parameters.setPictureSize(width, height);
 		}
 	}
 
@@ -213,10 +213,11 @@ public class CameraHeadService extends Service implements
 
 							stopSelf();
 						}
-						parameters = mCamera.getParameters();
-						parameters.setFlashMode(FLASH_MODE);
-						// set biggest picture
-						setBiggeestPictureSize();
+						Camera.Parameters parameters = mCamera.getParameters();  
+						pictureSize = getBiggesttPictureSize(parameters);
+						if (pictureSize != null)
+							parameters
+									.setPictureSize(pictureSize.width, pictureSize.height);
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
@@ -269,11 +270,11 @@ public class CameraHeadService extends Service implements
 
 								stopSelf();
 							}
-							parameters = mCamera.getParameters();
-							parameters.setFlashMode(FLASH_MODE);
-
-							// set biggest picture
-							setBiggeestPictureSize();
+							Camera.Parameters parameters = mCamera.getParameters();  
+							pictureSize = getBiggesttPictureSize(parameters);
+							if (pictureSize != null)
+								parameters
+										.setPictureSize(pictureSize.width, pictureSize.height);
 
 							// set camera parameters
 							mCamera.setParameters(parameters);
@@ -334,7 +335,10 @@ public class CameraHeadService extends Service implements
 						}
 						parameters.setFlashMode(FLASH_MODE);
 						// set biggest picture
-						setBiggeestPictureSize();
+						setBesttPictureResolution();
+						// log quality and image format
+						Log.d("Qaulity", parameters.getJpegQuality() + "");
+						Log.d("Format", parameters.getPictureFormat() + "");
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
@@ -438,7 +442,7 @@ public class CameraHeadService extends Service implements
 			if (bmp != null)
 				bmp.recycle();
 			System.gc();
-			bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
+			bmp = decodeBitmap(data);
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			if (bmp != null && QUALITY_MODE == 0)
 				bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
@@ -577,6 +581,26 @@ public class CameraHeadService extends Service implements
 			mCamera.release();
 			mCamera = null;
 		}
+	}
+
+	public static Bitmap decodeBitmap(byte[] data) {
+
+		Bitmap bitmap = null;
+		BitmapFactory.Options bfOptions = new BitmapFactory.Options();
+		bfOptions.inDither = false; // Disable Dithering mode
+		bfOptions.inPurgeable = true; // Tell to gc that whether it needs free
+										// memory, the Bitmap can be cleared
+		bfOptions.inInputShareable = true; // Which kind of reference will be
+											// used to recover the Bitmap data
+											// after being clear, when it will
+											// be used in the future
+		bfOptions.inTempStorage = new byte[32 * 1024];
+
+		if (data != null)
+			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
+					bfOptions);
+
+		return bitmap;
 	}
 
 }

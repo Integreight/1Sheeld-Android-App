@@ -131,7 +131,7 @@ public class OrientationFragment extends
 														 * .setText(
 														 * "Your Device not have The Sensor"
 														 * ); Toast.makeText(
-														 * getActivity(),
+														 * activity,
 														 * "Device dosen't have This Sensor !"
 														 * ,
 														 * Toast.LENGTH_SHORT).
@@ -145,7 +145,7 @@ public class OrientationFragment extends
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new OrientationShield(getActivity(), getControllerTag()));
+					new OrientationShield(activity, getControllerTag()));
 
 		}
 

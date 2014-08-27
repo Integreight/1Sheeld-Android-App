@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.utils;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -27,19 +28,36 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public boolean hasSettings = false;
 	public Handler uiHandler = new Handler();
 	public String shieldName = "";
+	public MainActivity activity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		this.activity = (MainActivity) activity;
+		super.onAttach(activity);
+	}
+
+	@Override
+	public void onDetach() {
+		// activity = null;
+		super.onDetach();
+	}
 
 	public MainActivity getAppActivity() {
-		return (MainActivity) super.getActivity();
+		return activity;
 	}
 
 	public OneSheeldApplication getApplication() {
-		return getAppActivity().getThisApplication();
+		return activity.getThisApplication();
 	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
 		super.onActivityCreated(savedInstanceState);
+	}
+
+	public String getClassName() {
+		return ((T) this).getClass().getName();
 	}
 
 	@Override
@@ -83,10 +101,14 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 					});
 		} else
 			((T) ShieldFragmentParent.this).doOnServiceConnected();
-		getActivity().findViewById(R.id.settingsFixedHandler).setVisibility(
+		System.out.println("DDSDSD   "
+				+ activity
+				+ "    "
+				+ (activity != null ? activity
+						.findViewById(R.id.settingsFixedHandler) : ""));
+		activity.findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);
-		getActivity()
-				.findViewById(R.id.pinsFixedHandler)
+		activity.findViewById(R.id.pinsFixedHandler)
 				.setVisibility(
 						getApplication().getRunningShields().get(
 								getControllerTag()) == null
@@ -110,9 +132,13 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	}
 
 	public String getControllerTag() {
-		controllerTag = (controllerTag != null ? controllerTag
-				: (getArguments() != null && getArguments().getString("tag") != null) ? getArguments()
-						.getString("tag") : getTag());
+		String tagFromApp = OneSheeldApplication.shieldsFragmentsTags
+				.get(((T) this).getClass().getName());
+		controllerTag = (tagFromApp != null ? tagFromApp
+				: controllerTag != null ? controllerTag
+						: (getArguments() != null && getArguments().getString(
+								"tag") != null) ? getArguments().getString(
+								"tag") : getTag());
 		if (controllerTag == null)
 			Crashlytics
 					.log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
@@ -133,7 +159,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	@Override
 	public void onResume() {
 		MainActivity.currentShieldTag = getControllerTag();
-		((ToggleButton) getActivity().findViewById(R.id.shieldStatus))
+		((ToggleButton) activity.findViewById(R.id.shieldStatus))
 				.setChecked(getApplication().getRunningShields().get(
 						getControllerTag()).isInteractive);
 		getApplication().getGaTracker().send(

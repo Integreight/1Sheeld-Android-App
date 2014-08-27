@@ -166,7 +166,7 @@ public class MagnetometerFragment extends
 																 * );
 																 * Toast.makeText
 																 * (
-																 * getActivity()
+																 * activity
 																 * ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
@@ -184,7 +184,7 @@ public class MagnetometerFragment extends
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new MagnetometerShield(getActivity(), getControllerTag()));
+					new MagnetometerShield(activity, getControllerTag()));
 
 		}
 

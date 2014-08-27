@@ -146,7 +146,7 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 																 * );
 																 * Toast.makeText
 																 * (
-																 * getActivity()
+																 * activity
 																 * ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
@@ -164,7 +164,7 @@ public class GyroscopeFragment extends ShieldFragmentParent<GyroscopeFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new GyroscopeShield(getActivity(), getControllerTag()));
+					new GyroscopeShield(activity, getControllerTag()));
 
 		}
 

@@ -19,6 +19,7 @@ public class MusicShield extends ControllerParent<MusicShield> {
 	private ArrayList<PlaylistItem> mediaFiles = new ArrayList<PlaylistItem>();
 	private int currentIndex = 0;
 	private MusicEventHandler eventHandler;
+	public int mediaDuration = 0;
 
 	private static class METHOD {
 		public static byte PLAY = 0x02;
@@ -62,6 +63,14 @@ public class MusicShield extends ControllerParent<MusicShield> {
 				}
 				mediaPlayer = MediaPlayer.create(activity,
 						Uri.parse(mediaFiles.get(currentIndex).path));
+				mediaPlayer
+						.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+							@Override
+							public void onPrepared(MediaPlayer mp) {
+								mediaDuration = mediaPlayer.getDuration();
+							}
+						});
 				// mediaPlayer.prepare();
 			} else {
 				if (mediaFiles.size() != 0) {
@@ -180,7 +189,7 @@ public class MusicShield extends ControllerParent<MusicShield> {
 			} else if (frame.getFunctionId() == METHOD.SEEK_FORWARD) {
 				if (mediaPlayer != null) {
 					int pos = (int) (((int) frame.getArgument(0)[0])
-							* mediaPlayer.getDuration() / 100);
+							* mediaDuration / 100);
 					seekTo(pos + mediaPlayer.getCurrentPosition());
 					if (eventHandler != null) {
 						eventHandler.play();
@@ -191,7 +200,7 @@ public class MusicShield extends ControllerParent<MusicShield> {
 			} else if (frame.getFunctionId() == METHOD.SEEK_BACKWARD) {
 				if (mediaPlayer != null) {
 					int pos = (int) (((int) frame.getArgument(0)[0])
-							* mediaPlayer.getDuration() / 100);
+							* mediaDuration / 100);
 					seekTo(mediaPlayer.getCurrentPosition() - pos);
 					if (eventHandler != null) {
 						eventHandler.play();

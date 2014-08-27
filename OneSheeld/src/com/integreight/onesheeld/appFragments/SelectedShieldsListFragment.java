@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
@@ -33,7 +34,7 @@ import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
 import com.integreight.onesheeld.shields.fragments.KeyboardFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
-import com.integreight.onesheeld.shields.fragments.LcdFragmentPre;
+import com.integreight.onesheeld.shields.fragments.LcdFragment;
 import com.integreight.onesheeld.shields.fragments.LedFragment;
 import com.integreight.onesheeld.shields.fragments.LightFragment;
 import com.integreight.onesheeld.shields.fragments.MagnetometerFragment;
@@ -59,10 +60,17 @@ import com.integreight.onesheeld.utils.ShieldFragmentParent;
 public class SelectedShieldsListFragment extends ListFragment {
 	private static SelectedShieldsListAdapter UIShieldAdapter;
 	Map<UIShield, ShieldFragmentParent<?>> creadtedShields = new HashMap<UIShield, ShieldFragmentParent<?>>();
+	private MainActivity activity;
 
 	public static SelectedShieldsListFragment newInstance(Activity activity) {
 		UIShieldAdapter = new SelectedShieldsListAdapter(activity);
 		return new SelectedShieldsListFragment();
+	}
+
+	@Override
+	public void onAttach(Activity activity) {
+		this.activity = (MainActivity) activity;
+		super.onAttach(activity);
 	}
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,7 +98,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 					new KeypadFragment());
 		case LCD_SHIELD:
 			return addToCreatedListAndReturn(UIShield.LCD_SHIELD,
-					new LcdFragmentPre());
+					new LcdFragment());
 		case MAGNETOMETER_SHIELD:
 			return addToCreatedListAndReturn(UIShield.MAGNETOMETER_SHIELD,
 					new MagnetometerFragment());
@@ -184,6 +192,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 	private ShieldFragmentParent<?> addToCreatedListAndReturn(
 			UIShield uiShield, ShieldFragmentParent<?> fragment) {
 		fragment.setControllerTag(uiShield.name());
+		OneSheeldApplication.shieldsFragmentsTags.put(fragment.getClassName(),
+				uiShield.name());
 		Bundle b = new Bundle();
 		b.putString("tag", uiShield.name());
 		fragment.setArguments(b);
@@ -209,8 +219,8 @@ public class SelectedShieldsListFragment extends ListFragment {
 
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
-				return !((AppSlidingLeftMenu) getActivity().findViewById(
-						R.id.sliding_pane_layout)).isOpen();
+				return !((AppSlidingLeftMenu) activity
+						.findViewById(R.id.sliding_pane_layout)).isOpen();
 			}
 		});
 		super.onViewCreated(view, savedInstanceState);
@@ -219,7 +229,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		ShieldFragmentParent<?> newContent = getShieldFragment(position);
-		// getActivity().setTitle(
+		// activity.setTitle(
 		// UIShieldAdapter.getItem(position).getName() + " Shield");
 		if (newContent != null)
 			switchFragment(newContent);
@@ -229,15 +239,14 @@ public class SelectedShieldsListFragment extends ListFragment {
 		getListView().post(new Runnable() {
 			@Override
 			public void run() {
-				((MainActivity) getActivity()).replaceCurrentFragment(
-						R.id.shieldsContainerFrame, fragment,
-						fragment.getControllerTag(), false, false);
+				activity.replaceCurrentFragment(R.id.shieldsContainerFrame,
+						fragment, fragment.getControllerTag(), false, false);
 				try {
 					new Handler().post(new Runnable() {
 
 						@Override
 						public void run() {
-							TextView shieldName = (OneShieldTextView) getActivity()
+							TextView shieldName = (OneShieldTextView) activity
 									.findViewById(R.id.shieldName);
 							shieldName.setVisibility(fragment.shieldName
 									.equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
@@ -248,7 +257,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 					});
 				} catch (Exception e) {
 				}
-				((MainActivity) getActivity()).closeMenu();
+				activity.closeMenu();
 			}
 		});
 	}

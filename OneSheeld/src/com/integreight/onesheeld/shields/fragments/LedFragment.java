@@ -117,7 +117,7 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new LedShield(getActivity(), getControllerTag()));
+					new LedShield(activity, getControllerTag()));
 		}
 
 	}

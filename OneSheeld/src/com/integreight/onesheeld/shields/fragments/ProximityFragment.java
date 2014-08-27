@@ -160,9 +160,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 																 * "Your Device not have The Sensor"
 																 * );
 																 * Toast.makeText
-																 * (
-																 * getActivity()
-																 * ,
+																 * ( activity ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
 																 * LENGTH_SHORT
@@ -195,7 +193,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
-					new ProximityShield(getActivity(), getControllerTag()));
+					new ProximityShield(activity, getControllerTag()));
 
 		}
 
