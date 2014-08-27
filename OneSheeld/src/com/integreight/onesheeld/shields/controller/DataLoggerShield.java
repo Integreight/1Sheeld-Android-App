@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.controller;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -137,15 +136,14 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				break;
 			case ADD_STRING:
 				String key = frame.getArgumentAsString(0);
-				String value = new String(frame.getArgument(1));
+				String value = frame.getArgumentAsString(1);
 				if (!headerList.contains(key))
 					headerList.add(key);
 				rowData.put(key, value);
 				break;
 			case ADD_FLOAT:
 				String keyFloat = frame.getArgumentAsString(0);
-				String valueFloat = ByteBuffer.wrap(frame.getArgument(1))
-						.getFloat() + "";
+				String valueFloat = frame.getArgumentAsFloat(1) + "";
 				if (!headerList.contains(keyFloat))
 					headerList.add(keyFloat);
 				rowData.put(keyFloat, valueFloat);
@@ -158,7 +156,6 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				dataSet.add(new HashMap<String, String>(rowData));
 				rowData = new HashMap<String, String>();
 				break;
-
 			default:
 				break;
 			}

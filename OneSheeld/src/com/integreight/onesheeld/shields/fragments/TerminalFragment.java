@@ -47,7 +47,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					public void onClick(View arg0) {
 						output.setText("");
 						((TerminalShield) getApplication().getRunningShields()
-								.get(getControllerTag())).printedLines = new CopyOnWriteArrayList<TerminalShield.PrintedLine>();
+								.get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalShield.TerminalPrintedLine>();
 					}
 				});
 		send.setOnClickListener(new View.OnClickListener() {
@@ -58,7 +58,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						getControllerTag())).input(inputField.getText()
 						.toString());
 				((TerminalShield) getApplication().getRunningShields().get(
-						getControllerTag())).printedLines.add(new PrintedLine(
+						getControllerTag())).terminalPrintedLines.add(new TerminalPrintedLine(
 						(!endedWithNewLine ? "\n" : "") + getTimeAsString()
 								+ " [TX] " + ": ", inputField.getText()
 								.toString(), true));
@@ -115,8 +115,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						((TerminalShield) getApplication().getRunningShields()
 								.get(getControllerTag())).selectedEnMth = x;
 						output.setText("");
-						for (PrintedLine line : ((TerminalShield) getApplication()
-								.getRunningShields().get(getControllerTag())).printedLines) {
+						for (TerminalPrintedLine line : ((TerminalShield) getApplication()
+								.getRunningShields().get(getControllerTag())).terminalPrintedLines) {
 							output.append(line.date
 									+ getEncodedString(line.print)
 									+ (line.isEndedWithNewLine ? "\n" : ""));
@@ -174,13 +174,18 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 			out = binary.toString();
 			break;
 		case 3:
-			char[] chars = toBeEncoded.toCharArray();
-
-			StringBuffer hex = new StringBuffer();
-			for (int i = 0; i < chars.length; i++) {
-				hex.append(Integer.toHexString((int) chars[i]));
+			byte[] byts = toBeEncoded.getBytes();
+			for (byte b : byts) {
+				if ((Integer.toHexString(b).length() < 2))
+					out += "0" + Integer.toHexString(b) + " ";
+				else if ((Integer.toHexString(b).length() == 2))
+					out += Integer.toHexString(b) + " ";
+				else {
+					String temp = Integer.toHexString(b);
+					temp = temp.substring(temp.length() - 2);
+					out += temp + " ";
+				}
 			}
-			out = hex.toString().toUpperCase();
 			break;
 		default:
 			break;
@@ -210,12 +215,12 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 		((TerminalShield) getApplication().getRunningShields().get(
 				getControllerTag())).setEventHandler(terminalHandler);
 		if (((TerminalShield) getApplication().getRunningShields().get(
-				getControllerTag())).printedLines == null)
+				getControllerTag())).terminalPrintedLines == null)
 			((TerminalShield) getApplication().getRunningShields().get(
-					getControllerTag())).printedLines = new CopyOnWriteArrayList<TerminalShield.PrintedLine>();
+					getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalShield.TerminalPrintedLine>();
 		output.setText("");
-		for (PrintedLine line : ((TerminalShield) getApplication()
-				.getRunningShields().get(getControllerTag())).printedLines) {
+		for (TerminalPrintedLine line : ((TerminalShield) getApplication()
+				.getRunningShields().get(getControllerTag())).terminalPrintedLines) {
 			output.append(line.date + getEncodedString(line.print)
 					+ (line.isEndedWithNewLine ? "\n" : ""));
 			endedWithNewLine = line.isEndedWithNewLine;
@@ -270,9 +275,9 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						if (output != null) {
 							if (clearBeforeWriting) {
 								output.setText("");
-								for (PrintedLine line : ((TerminalShield) getApplication()
+								for (TerminalPrintedLine line : ((TerminalShield) getApplication()
 										.getRunningShields().get(
-												getControllerTag())).printedLines) {
+												getControllerTag())).terminalPrintedLines) {
 									output.append(line.date
 											+ getEncodedString(line.print)
 											+ (line.isEndedWithNewLine ? "\n"

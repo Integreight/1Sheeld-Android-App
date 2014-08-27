@@ -8,6 +8,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.model.TerminalPrintedLine;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.fragments.TerminalFragment;
 
@@ -19,7 +20,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	public int[] encodingMths = new int[] { R.id.terminalString, R.id.asci,
 			R.id.binary, R.id.hex };
 	public int selectedEnMth = 0;
-	public CopyOnWriteArrayList<PrintedLine> printedLines, temp;
+	public CopyOnWriteArrayList<TerminalPrintedLine> terminalPrintedLines;
 
 	public TerminalShield() {
 		super();
@@ -31,7 +32,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
 	@Override
 	public ControllerParent<TerminalShield> setTag(String tag) {
-		printedLines = new CopyOnWriteArrayList<TerminalShield.PrintedLine>();
+		terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
 		return super.setTag(tag);
 	}
 
@@ -59,18 +60,19 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.TERMINAL_SHIELD.getId()) {
 			String outputTxt = frame.getArgumentAsString(0);
-			String date = printedLines.size() == 0
-					|| printedLines.get(printedLines.size() - 1).isEndedWithNewLine ? TerminalFragment
+			String date = terminalPrintedLines.size() == 0
+					|| terminalPrintedLines
+							.get(terminalPrintedLines.size() - 1).isEndedWithNewLine ? TerminalFragment
 					.getTimeAsString() + " [RX] : "
 					: "";
 			boolean isEndedWithNewLine = outputTxt.length() > 0
 					&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
-			printedLines.add(new TerminalShield.PrintedLine(date, outputTxt
+			terminalPrintedLines.add(new TerminalPrintedLine(date, outputTxt
 					.substring(0, isEndedWithNewLine ? outputTxt.length() - 1
 							: outputTxt.length()), isEndedWithNewLine));
-			greaterThanThousand = printedLines.size() > 1000;
+			greaterThanThousand = terminalPrintedLines.size() > 1000;
 			if (greaterThanThousand) {
-				printedLines.remove(0);
+				terminalPrintedLines.remove(0);
 			}
 			switch (frame.getFunctionId()) {
 			case WRITE:
@@ -92,9 +94,9 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
 	@Override
 	public void reset() {
-		if (printedLines != null)
-			printedLines.clear();
-		printedLines = null;
+		if (terminalPrintedLines != null)
+			terminalPrintedLines.clear();
+		terminalPrintedLines = null;
 	}
 
 	public TerminalHandler getEventHandler() {
@@ -107,20 +109,6 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
 	public interface TerminalHandler {
 		public void onPrint(String output, final boolean clearBeforeWriting);
-	}
-
-	public static class PrintedLine {
-		public String date;
-		public String print;
-		public boolean isEndedWithNewLine;
-
-		public PrintedLine(String date, String print, boolean isEndedWithNewLine) {
-			super();
-			this.date = date;
-			this.print = print;
-			this.isEndedWithNewLine = isEndedWithNewLine;
-		}
-
 	}
 
 }

@@ -86,21 +86,21 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		@Override
 		public void getAmplitude(final Double value) {
 
-			if (canChangeUI()) {
-				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			// set data to UI
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						params.bottomMargin = (int) (value * stepValue);
 						soundLevelIndicator.requestLayout();
 						((OneSheeldTextView) v.findViewById(R.id.micValue))
 								.setText(String.valueOf(value).substring(0, 4)
 										+ " db");
 					}
-				});
-			}
+				}
+			});
 		}
 	};
 
