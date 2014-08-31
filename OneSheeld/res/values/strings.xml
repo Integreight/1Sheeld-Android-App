@@ -91,4 +91,9 @@
     <string name="terminalBINARY">Binary</string>
     <string name="terminalHEX">Hex</string>
 
+    <!-- Data Logger -->
+    <string name="readyToLog">Ready\nFor\nLogging</string>
+    <string name="stopLogging">Logging\nStopped</string>
+    <string name="logging">Logging</string>
+
 </resources>

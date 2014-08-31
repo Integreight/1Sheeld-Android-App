@@ -30,11 +30,15 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	private static final byte ADD_FLOAT = 0x03;
 	private static final byte ADD_STRING = 0x04;
 	private static final byte LOG = 0x05;
-	ArrayList<String> headerList = new ArrayList<String>();
+	public ArrayList<String> headerList = new ArrayList<String>();
 	ArrayList<Map<String, String>> dataSet = new ArrayList<Map<String, String>>();
 	String fileName = null;
 	String header[];
 	Map<String, String> rowData = new HashMap<String, String>();
+	public static final int READ_FOR_LOGGING = 0, LOGGING = 1,
+			STOPPED_LOGGING = 2;
+	public int currentStatus = READ_FOR_LOGGING;
+	private DataLoggerListener eventHandler;
 
 	public DataLoggerShield() {
 		super();
@@ -67,16 +71,18 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				headerList = new ArrayList<String>();
 				dataSet = new ArrayList<Map<String, String>>();
 				rowData = new HashMap<String, String>();
+				currentStatus = LOGGING;
+				if (eventHandler != null) {
+					eventHandler.onStartLogging();
+				}
 				break;
-			// case START_LOGGING_WITH_NAME:
-			// fileName = frame.getArgumentAsString(0);
-			// headerList = new ArrayList<String>();
-			// dataSet = new ArrayList<Map<String, Object>>();
-			// rowData = new HashMap<String, Object>();
-			// break;
 			case STOP_LOGGING:
 				ICsvMapWriter mapWriter = null;
 				try {
+					currentStatus = STOPPED_LOGGING;
+					if (eventHandler != null) {
+						eventHandler.onStopLogging(dataSet);
+					}
 					File folder = new File(
 							Environment.getExternalStorageDirectory()
 									+ "/OneSheeld");
@@ -94,8 +100,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 											+ "/OneSheeld/DataLogger/"
 											+ (fileName == null
 													|| fileName.length() == 0 ? new Date()
-													.getTime() : fileName)
-											+ ".csv"),
+													.getTime() + ""
+													: fileName) + ".csv"),
 							CsvPreference.STANDARD_PREFERENCE);
 
 					// assign a default value for married (if null), and write
@@ -135,25 +141,33 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				}
 				break;
 			case ADD_STRING:
+				currentStatus = LOGGING;
 				String key = frame.getArgumentAsString(0);
 				String value = frame.getArgumentAsString(1);
 				if (!headerList.contains(key))
 					headerList.add(key);
 				rowData.put(key, value);
+				if (eventHandler != null) {
+					eventHandler.onAdd(key, value);
+				}
 				break;
 			case ADD_FLOAT:
+				currentStatus = LOGGING;
 				String keyFloat = frame.getArgumentAsString(0);
 				String valueFloat = frame.getArgumentAsFloat(1) + "";
 				if (!headerList.contains(keyFloat))
 					headerList.add(keyFloat);
 				rowData.put(keyFloat, valueFloat);
+				if (eventHandler != null) {
+					eventHandler.onAdd(keyFloat, valueFloat);
+				}
 				break;
 			case LOG:
-				HashMap<String, String> temp = new HashMap<String, String>();
-				for (String head : headerList) {
-					temp.put(head, rowData.get(head));
-				}
+				currentStatus = LOGGING;
 				dataSet.add(new HashMap<String, String>(rowData));
+				if (eventHandler != null) {
+					eventHandler.onLog(dataSet, rowData);
+				}
 				rowData = new HashMap<String, String>();
 				break;
 			default:
@@ -171,6 +185,23 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 		if (headerList != null)
 			headerList.clear();
 		headerList = null;
+	}
+
+	public void setEventHandler(DataLoggerListener eventHandler) {
+		this.eventHandler = eventHandler;
+	}
+
+	public static interface DataLoggerListener {
+		public void onStartLogging();
+
+		public void onStopLogging(ArrayList<Map<String, String>> loggedValues);
+
+		public void onReadyForLogging();
+
+		public void onAdd(String key, String value);
+
+		public void onLog(ArrayList<Map<String, String>> loggedValues,
+				Map<String, String> rowData);
 	}
 
 }
