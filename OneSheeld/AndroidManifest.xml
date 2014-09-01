@@ -99,7 +99,7 @@
             android:singleUser="false" />
 
         <activity
-            android:name="com.integreight.onesheeld.actionplugin.ActionActivity"
+            android:name="com.integreight.onesheeld.plugin.action.ActionActivity"
             android:configChanges="orientation"
             android:exported="true"
             android:icon="@drawable/ic_launcher"
@@ -137,7 +137,7 @@
                  - The BroadcastReceiver isn't exported (e.g. android:exported="false")
                  - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
                  - The BroadcastReceiver requires permissions not available to Locale
-                 - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.QUERY_CONDITION
+                 - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.QUERY_CONDITION
         -->
         <receiver
             android:name="com.integreight.onesheeld.conditionplugin.QueryReceiver"
@@ -153,12 +153,11 @@
         <!--
             This service is required, because detecting screen state is a REGISTERED_RECEIVER_ONLY Intent.
             In general, plug-ins that do not need a service are preferred.  This is not exported, because it is a private 
-            implementation detail of the plug-in.
+            implementation detail of the plug-in.
         -->
         <service
             android:name="com.integreight.onesheeld.conditionplugin.BackgroundService"
-            android:exported="false"
-            android:process=":background" />
+            android:exported="false" />
 
         <activity
             android:name="com.integreight.onesheeld.shields.controller.utils.TakePicture"
@@ -168,8 +167,9 @@
         </activity>
 
         <receiver
-            android:name="com.integreight.onesheeld.actionplugin.FireReceiver"
+            android:name="com.integreight.onesheeld.plugin.action.FireReceiver"
             android:exported="true"
+            android:process=":background"
             tools:ignore="ExportedReceiver" >
 
             <!-- this Intent filter allows the plug-in to discovered by Locale -->
@@ -180,7 +180,7 @@
         <!--
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="@string/facebook_app_id" />
         -->
         <service
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraService"

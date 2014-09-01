@@ -271,7 +271,7 @@ public class BluetoothService {
 		ConnectedThread r;
 		// Synchronize a copy of the ConnectedThread
 		synchronized (this) {
-			if (mState != STATE_CONNECTED)
+			if (getState() != STATE_CONNECTED)
 				return;
 			r = mConnectedThread;
 		}

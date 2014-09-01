@@ -40,6 +40,7 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		if (connectedPin != -1) {
 			this.isButtonOn = isButtonOn;
 			digitalWrite(connectedPin, isButtonOn);
+			System.out.println(connectedPin + "    " + isButtonOn);
 		}
 		toggle = isButtonOn ? BitsUtils.setBit(toggle, 1) : BitsUtils.resetBit(
 				toggle, 1);

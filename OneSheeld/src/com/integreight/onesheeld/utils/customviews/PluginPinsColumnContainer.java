@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.shields.observer.OnChildFocusListener;
 import com.integreight.onesheeld.utils.customviews.PluginConnectingPinsView.onGetPinsView;
 import com.integreight.onesheeld.utils.customviews.PluginPinsColumnContainer.PinData.TYPE;
@@ -38,12 +39,12 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 	}
 
 	public void setup(OnChildFocusListener focusListener, ImageView cursor,
-			onGetPinsView onGetPinsListener) {
+			onGetPinsView onGetPinsListener, final int currentIndx) {
 		this.focusListener = focusListener;
 		this.cursor = cursor;
 		// this.controller = controller;
 		this.onGetPinsListener = onGetPinsListener;
-		currentIndex = -1;
+		this.currentIndex = -1;
 		currentTag = null;
 		isOnglobalCalled = false;
 		childrenRects = new ArrayList<PinData>();
@@ -59,6 +60,18 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 							loadRects(PluginPinsColumnContainer.this);
 							PluginPinsColumnContainer.this.onGetPinsListener
 									.onPinsDrawn();
+							if (currentIndx != -1) {
+								for (PinData iterable_element : childrenRects) {
+									if (ArduinoPin
+											.valueOf(iterable_element.tag).microHardwarePin == currentIndx) {
+										currentTag = iterable_element.tag;
+										PluginPinsColumnContainer.this.currentIndex = iterable_element.index;
+										setCursorTo(getDataOfTag(iterable_element.tag));
+										loadRects(PluginPinsColumnContainer.this);
+										break;
+									}
+								}
+							}
 							isOnglobalCalled = true;
 						}
 					}
@@ -83,24 +96,6 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 					.toString().substring(1) : v.getTag().toString();
 			if (isPinEnabled(tag) == false)
 				return PinData.TYPE.DISABLED;
-			// Hashtable<String, Boolean> table = ArduinoPin.valueOf(v.getTag()
-			// .toString()).connectedPins;
-			// Enumeration<String> enumKey = table.keys();
-			// while (enumKey.hasMoreElements()) {
-			// String key = enumKey.nextElement();
-			// if (!key.startsWith(controller.getClass().getName())) {
-			// type = PinData.TYPE.CONNECTED_OUT;
-			// }
-			// }
-			// enumKey = controller.matchedShieldPins.keys();
-			// while (enumKey.hasMoreElements()) {
-			// String key = enumKey.nextElement();
-			// if (controller.matchedShieldPins.get(key) != null
-			// && controller.matchedShieldPins.get(key) == ArduinoPin
-			// .valueOf(v.getTag().toString())) {
-			// return PinData.TYPE.CONNECTED_HERE;
-			// }
-			// }
 		} else
 			type = TYPE.DUMMY;
 		return type;
@@ -116,7 +111,10 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 				PinView v = (PinView) vg.getChildAt(i);
 				int type = getType(v);
 				if (type != TYPE.DUMMY) {
-					v.setBackgroundResource(type);
+					if (v.getTag().toString().equals(currentTag))
+						v.setBackgroundResource(PinData.TYPE.CONNECTED_HERE);
+					else
+						v.setBackgroundResource(type);
 					childrenRects.add(new PinData(((String) v.getTag()),
 							new Rect(
 									concatenatedLeft

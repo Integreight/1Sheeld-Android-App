@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.actionplugin;
+package com.integreight.onesheeld.plugin.action;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +18,11 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.plugin.AbstractPluginActivity;
+import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.utils.customviews.PluginConnectingPinsView;
 
 /**
@@ -50,28 +53,30 @@ public final class ActionActivity extends AbstractPluginActivity {
 	@Override
 	protected void onResume() {
 		((PluginConnectingPinsView) getSupportFragmentManager()
-				.findFragmentByTag("Pins"))
-				.reset(new PluginConnectingPinsView.OnPinSelectionListener() {
+				.findFragmentByTag("Pins")).reset(
+				new PluginConnectingPinsView.OnPinSelectionListener() {
 
 					@Override
 					public void onUnSelect(ArduinoPin pin) {
-						// TODO Auto-generated method stub
-
+						selectedPin = -1;
 					}
 
 					@Override
 					public void onSelect(ArduinoPin pin) {
 						if (pin != null)
 							selectedPin = pin.microHardwarePin;
+						else
+							selectedPin = -1;
 					}
-				});
+				}, selectedPin);
 		super.onResume();
 	}
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		selectedPin = ((OneSheeldApplication) getApplication())
+				.getAppPreferences().getInt("PluginActionPin", -1);
 		BundleScrubber.scrub(getIntent());
 
 		final Bundle localeBundle = getIntent().getBundleExtra(
@@ -143,8 +148,12 @@ public final class ActionActivity extends AbstractPluginActivity {
 			 * The blurb is concise status text to be displayed in the host's
 			 * UI.
 			 */
-			final String blurb = generateBlurb(getApplicationContext(), "Pin "
-					+ selectedPin + " set to " + (output ? "High" : "Low"));
+			final String blurb = selectedPin >= 0 ? (generateBlurb(
+					getApplicationContext(), "Pin " + selectedPin + " set to "
+							+ (output ? "High" : "Low"))) : generateBlurb(
+					getApplicationContext(), "No Pins Selected");
+			((OneSheeldApplication) getApplication()).getAppPreferences()
+					.edit().putInt("PluginActionPin", selectedPin).commit();
 			resultIntent.putExtra(
 					com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, blurb);
 

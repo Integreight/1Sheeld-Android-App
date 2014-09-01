@@ -61,23 +61,12 @@ public class PluginConnectingPinsView extends Fragment {
 
 	private Handler resettingHandler = new Handler();
 
-	public void reset(final OnPinSelectionListener listner) {
-		// if (view == null) {
-		// ((MainActivity) getActivity())
-		// .getSupportFragmentManager()
-		// .beginTransaction()
-		// .replace(R.id.pinsViewContainer,
-		// PluginConnectingPinsView.getInstance()).commit();
-		// }
+	public void reset(final OnPinSelectionListener listner,
+			final int currentIndx) {
 		final TextView show = (TextView) view.findViewById(R.id.show);
-		// pinsSubContainers = new ArrayList<LinearLayout>();
-		// selectedPin = 0;
 		selectedPinName = "";
 		show.setText("");
 		show.setVisibility(View.INVISIBLE);
-		// final int selectedColor = getResources().getColor(
-		// R.color.arduinoPinsSelector);
-		// final int unSelectedColor = 0x00000000;
 		final ImageView cursor = ((ImageView) view.findViewById(R.id.cursor));
 		cursor.setVisibility(View.INVISIBLE);
 		final PluginPinsColumnContainer thisPinsContainer = ((PluginPinsColumnContainer) view
@@ -105,61 +94,16 @@ public class PluginConnectingPinsView extends Fragment {
 								: View.INVISIBLE);
 						show.setText(tag.startsWith("_") ? tag.substring(1)
 								: tag);
-						// String shieldPinName =
-						// controller.shieldPins[selectedPin];
 						if (childIndex != -1) {
-							ArduinoPin arduinoPin = ArduinoPin.valueOf(tag);
-							// ArduinoPin prevArduinoPin =
-							// controller.matchedShieldPins
-							// .get(shieldPinName);
-							// if (prevArduinoPin != null
-							// && prevArduinoPin.connectedPins
-							// .containsKey(controller.getClass()
-							// .getName() + shieldPinName))
-							// prevArduinoPin.connectedPins.remove(controller
-							// .getClass().getName() + shieldPinName);
-							// controller.matchedShieldPins.put(shieldPinName,
-							// arduinoPin);
-							// arduinoPin.connectedPins.put(controller.getClass()
-							// .getName() + shieldPinName, true);
-							listner.onSelect(arduinoPin);
+							listner.onSelect(ArduinoPin.valueOf(tag));
 						} else {
-							// ArduinoPin prevArduinoPin =
-							// controller.matchedShieldPins
-							// .get(shieldPinName);
-							// if (prevArduinoPin != null
-							// && prevArduinoPin.connectedPins
-							// .containsKey(controller.getClass()
-							// .getName() + shieldPinName))
-							// prevArduinoPin.connectedPins.remove(controller
-							// .getClass().getName() + shieldPinName);
-							// ((OneSheeldApplication) getActivity()
-							// .getApplication())
-							// .getAppFirmata()
-							// .digitalWrite(
-							// controller.matchedShieldPins
-							// .get(controller.shieldPins[selectedPin]).microHardwarePin,
-							// ArduinoFirmata.LOW);
-							// controller.matchedShieldPins
-							// .remove(controller.shieldPins[selectedPin]);
-							// listner.onUnSelect(prevArduinoPin);
 							listner.onSelect(null);
 						}
-						// ((OneShieldTextView) pinsSubContainers.get(
-						// selectedPin).getChildAt(1)).setText(tag
-						// .startsWith("_") ? tag.substring(1) : tag);
 					}
 				}, cursor, new onGetPinsView() {
 
 					@Override
 					public void onPinsDrawn() {
-						// pinsSubContainers.get(0).getChildAt(0)
-						// .setBackgroundColor(selectedColor);
-						// selectedPin = 0;
-						// selectedPinName = controller.matchedShieldPins
-						// .get(controller.shieldPins[0]) != null ?
-						// controller.matchedShieldPins
-						// .get(controller.shieldPins[0]).name() : "";
 						if (selectedPinName.length() > 0) {
 							PinData data = thisPinsContainer
 									.getDataOfTag(selectedPinName);
@@ -179,81 +123,11 @@ public class PluginConnectingPinsView extends Fragment {
 							cursor.setVisibility(View.INVISIBLE);
 						}
 					}
-				});
-				// pinsSubContainers = new ArrayList<LinearLayout>();
+				}, currentIndx);
 				LinearLayout pinsContainer = (LinearLayout) view
 						.findViewById(R.id.requiredPinsContainer);
 				pinsContainer.removeAllViews();
-				// int pdng = (int) (2 *
-				// getResources().getDisplayMetrics().density
-				// -
-				// .5f);
-				// selectedPin = 0;
-				// HorizontalScrollView scrollingPins = (HorizontalScrollView)
-				// view
-				// .findViewById(R.id.scrollingPins);
-				// for (int i = 0; i < controller.shieldPins.length; i++) {
-				// LinearLayout pinSubContainer = (LinearLayout) getActivity()
-				// .getLayoutInflater().inflate(
-				// R.layout.pin_sub_container, null, false);
-				// final OneShieldButton pinButton = (OneShieldButton)
-				// pinSubContainer
-				// .getChildAt(0);
-				// pinButton.setText(controller.shieldPins[i]);
-				// if (i == 0)
-				// pinButton.setBackgroundColor(selectedColor);
-				// else
-				// pinButton.setBackgroundColor(unSelectedColor);
-				// OneShieldTextView pinText = (OneShieldTextView)
-				// pinSubContainer
-				// .getChildAt(1);
-				// String pinName = controller.matchedShieldPins.get(pinButton
-				// .getText().toString()) != null ? controller.matchedShieldPins
-				// .get(pinButton.getText().toString()).name() : "";
-				// pinText.setText(pinName.startsWith("_") ? pinName
-				// .substring(1) : pinName);
-				// final int x = i;
-				// pinButton.setOnClickListener(new View.OnClickListener() {
-				//
-				// @Override
-				// public void onClick(View arg0) {
-				// if (selectedPin != -1)
-				// pinsSubContainers.get(selectedPin)
-				// .getChildAt(0)
-				// .setBackgroundColor(unSelectedColor);
-				// pinsSubContainers.get(x).getChildAt(0)
-				// .setBackgroundColor(selectedColor);
-				// selectedPin = x;
-				// selectedPinName = controller.matchedShieldPins
-				// .get(pinButton.getText().toString()) != null ?
-				// controller.matchedShieldPins
-				// .get(pinButton.getText().toString()).name()
-				// : "";
-				// if (selectedPinName != null
-				// && selectedPinName.length() > 0) {
-				// PinData data = thisPinsContainer
-				// .getDataOfTag(selectedPinName);
-				// if (data.rect != null && data.index != -1) {
-				// thisPinsContainer.setCursorTo(data);
-				// show.setVisibility(View.VISIBLE);
-				// show.setText(data.tag.startsWith("_") ? data.tag
-				// .substring(1) : data.tag);
-				// } else {
-				// show.setText("");
-				// show.setVisibility(View.INVISIBLE);
-				// cursor.setVisibility(View.INVISIBLE);
-				// }
-				// } else {
-				// show.setText("");
-				// show.setVisibility(View.INVISIBLE);
-				// cursor.setVisibility(View.INVISIBLE);
-				// }
-				// }
-				// });
-				// pinsContainer.addView(pinSubContainer);
-				// pinsSubContainers.add(pinSubContainer);
-				// // scrollingPins.invalidate();
-				// }
+
 			}
 		});
 	}

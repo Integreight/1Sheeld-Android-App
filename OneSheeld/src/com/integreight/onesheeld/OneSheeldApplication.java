@@ -272,7 +272,7 @@ public class OneSheeldApplication extends Application {
 	public void setArduinoFirmataEventHandler(
 			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
 		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
-		appFirmata.addEventHandler(arduinoFirmataEventHandler);
+		getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
 	}
 
 	@Override

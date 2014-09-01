@@ -231,6 +231,10 @@ public class ArduinoFirmata {
 	}
 
 	public boolean isOpen() {
+		System.out.println(bluetoothService.getState() + "    "
+				+ BluetoothService.STATE_CONNECTING + "    "
+				+ BluetoothService.STATE_CONNECTED + "    "
+				+ BluetoothService.STATE_NONE);
 		return bluetoothService != null
 				&& bluetoothService.getState() == BluetoothService.STATE_CONNECTED;
 	}

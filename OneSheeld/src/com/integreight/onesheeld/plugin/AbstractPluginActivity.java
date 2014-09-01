@@ -10,14 +10,19 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.actionplugin;
+package com.integreight.onesheeld.plugin;
 
+import android.annotation.TargetApi;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.twofortyfouram.locale.api.R;
+import com.integreight.onesheeld.R;
+import com.twofortyfouram.locale.BreadCrumber;
 
 /**
  * Superclass for plug-in Activities. This class takes care of initializing
@@ -38,40 +43,30 @@ public abstract class AbstractPluginActivity extends FragmentActivity {
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		// {
-		// setupTitleApi11();
-		// }
-		// else
-		// {
-		// setTitle(BreadCrumber.generateBreadcrumb(getApplicationContext(),
-		// getIntent(),
-		// getString(R.string.plugin_name)));
-		// }
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+			setupTitleApi11();
+		} else {
+			setTitle(BreadCrumber.generateBreadcrumb(getApplicationContext(),
+					getIntent(), getString(R.string.plugin_name)));
+		}
 	}
 
-	// @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	// private void setupTitleApi11()
-	// {
-	// CharSequence callingApplicationLabel = null;
-	// try
-	// {
-	// callingApplicationLabel =
-	// getPackageManager().getApplicationLabel(getPackageManager().getApplicationInfo(getCallingPackage(),
-	// 0));
-	// }
-	// catch (final NameNotFoundException e)
-	// {
-	// if (Constants.IS_LOGGABLE)
-	// {
-	//                Log.e(Constants.LOG_TAG, "Calling package couldn't be found", e); //$NON-NLS-1$
-	// }
-	// }
-	// if (null != callingApplicationLabel)
-	// {
-	// setTitle(callingApplicationLabel);
-	// }
-	// }
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void setupTitleApi11() {
+		CharSequence callingApplicationLabel = null;
+		try {
+			callingApplicationLabel = getPackageManager().getApplicationLabel(
+					getPackageManager().getApplicationInfo(getCallingPackage(),
+							0));
+		} catch (final NameNotFoundException e) {
+			if (Constants.IS_LOGGABLE) {
+				Log.e(Constants.LOG_TAG, "Calling package couldn't be found", e); //$NON-NLS-1$
+			}
+		}
+		if (null != callingApplicationLabel) {
+			setTitle(callingApplicationLabel);
+		}
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(final Menu menu) {
@@ -80,55 +75,8 @@ public abstract class AbstractPluginActivity extends FragmentActivity {
 		getMenuInflater().inflate(
 				R.menu.twofortyfouram_locale_help_save_dontsave, menu);
 
-		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		// {
-		// setupActionBarApi11();
-		// }
-		//
-		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-		// {
-		// setupActionBarApi14();
-		// }
-
 		return true;
 	}
-
-	// @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	// private void setupActionBarApi11()
-	// {
-	// getActionBar().setSubtitle(BreadCrumber.generateBreadcrumb(getApplicationContext(),
-	// getIntent(),
-	// getString(R.string.plugin_name)));
-	// }
-
-	// @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	// private void setupActionBarApi14()
-	// {
-	// getActionBar().setDisplayHomeAsUpEnabled(true);
-	//
-	// /*
-	// * Note: There is a small TOCTOU error here, in that the host could be
-	// uninstalled right after
-	// * launching the plug-in. That would cause getApplicationIcon() to return
-	// the default application
-	// * icon. It won't fail, but it will return an incorrect icon.
-	// *
-	// * In practice, the chances that the host will be uninstalled while the
-	// plug-in UI is running are very
-	// * slim.
-	// */
-	// try
-	// {
-	// getActionBar().setIcon(getPackageManager().getApplicationIcon(getCallingPackage()));
-	// }
-	// catch (final NameNotFoundException e)
-	// {
-	// if (Constants.IS_LOGGABLE)
-	// {
-	//                Log.w(Constants.LOG_TAG, "An error occurred loading the host's icon", e); //$NON-NLS-1$
-	// }
-	// }
-	// }
 
 	@Override
 	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
