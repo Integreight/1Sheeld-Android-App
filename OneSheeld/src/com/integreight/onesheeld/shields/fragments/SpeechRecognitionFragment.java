@@ -89,7 +89,7 @@ public class SpeechRecognitionFragment extends
 					public void run() {
 						setOff();
 						if (result.size() > 0)
-							recognizedResult.setText(result.get(0));
+							recognizedResult.setText(result.get(0).toLowerCase());
 					}
 				});
 			}
