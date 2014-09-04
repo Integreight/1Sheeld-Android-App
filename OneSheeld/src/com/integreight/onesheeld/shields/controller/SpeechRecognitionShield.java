@@ -78,7 +78,7 @@ public class SpeechRecognitionShield extends
 				sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
 						SEND_RESULT);
 				String recognized = result.get(0);
-				sf.addStringArgument(recognized);
+				sf.addStringArgument(recognized.toLowerCase());
 				Log.d("Frame", sf.toString());
 				sendShieldFrame(sf);
 			} else {
