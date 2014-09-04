@@ -30,6 +30,11 @@ public class LedShield extends ControllerParent<LedShield> {
 		super(activity, tag);
 	}
 
+	@Override
+	public ControllerParent<LedShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
 	public boolean isLedOn() {
 		return isLedOn;
 	}

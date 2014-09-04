@@ -116,7 +116,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.integreight.onesheeld.conditionplugin.ConditionActivity"
+            android:name="com.integreight.onesheeld.plugin.condition.ConditionActivity"
             android:configChanges="orientation"
             android:exported="true"
             android:icon="@drawable/ic_launcher"
@@ -126,39 +126,10 @@
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
             tools:ignore="ExportedActivity" >
-
-            <!-- this Intent filter allows the plug-in to be discovered by Locale -->
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
             </intent-filter>
         </activity>
-        <!--
-             This is the "query" BroadcastReceiver. Note that Locale will reject plug-in BroadcastReceivers for the following reasons:
-                 - The BroadcastReceiver isn't exported (e.g. android:exported="false")
-                 - The BroadcastReceiver isn't enabled (e.g. android:enabled="false")
-                 - The BroadcastReceiver requires permissions not available to Locale
-                 - There are multiple BroadcastReceivers for com.twofortyfouram.locale.intent.action.QUERY_CONDITION
-        -->
-        <receiver
-            android:name="com.integreight.onesheeld.conditionplugin.QueryReceiver"
-            android:exported="true"
-            android:process=":background"
-            tools:ignore="ExportedReceiver" >
-
-            <!-- this Intent filter allows the plug-in to discovered by Locale and be queried -->
-            <intent-filter>
-                <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />
-            </intent-filter>
-        </receiver>
-        <!--
-            This service is required, because detecting screen state is a REGISTERED_RECEIVER_ONLY Intent.
-            In general, plug-ins that do not need a service are preferred.  This is not exported, because it is a private 
-            implementation detail of the plug-in.
-        -->
-        <service
-            android:name="com.integreight.onesheeld.conditionplugin.BackgroundService"
-            android:exported="false" />
-
         <activity
             android:name="com.integreight.onesheeld.shields.controller.utils.TakePicture"
             android:screenOrientation="portrait"
@@ -169,7 +140,6 @@
         <receiver
             android:name="com.integreight.onesheeld.plugin.action.FireReceiver"
             android:exported="true"
-            android:process=":background"
             tools:ignore="ExportedReceiver" >
 
             <!-- this Intent filter allows the plug-in to discovered by Locale -->
@@ -177,11 +147,17 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.FIRE_SETTING" />
             </intent-filter>
         </receiver>
-        <!--
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
-        -->
+        <receiver
+            android:name="com.integreight.onesheeld.plugin.condition.QueryReceiver"
+            android:exported="true"
+            tools:ignore="ExportedReceiver" >
+
+            <!-- this Intent filter allows the plug-in to discovered by Locale and be queried -->
+            <intent-filter>
+                <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraService"
             android:label="My Service" >

@@ -18,6 +18,7 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.controller.TaskerShield;
 
 /**
  * @author Ahmed Saad
@@ -199,7 +200,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 			@Override
 			public void run() {
-				if (hasConnectedPins)
+				if (hasConnectedPins
+						|| ((T) ControllerParent.this) instanceof TaskerShield)
 					((T) ControllerParent.this).onDigital(portNumber, portData);
 			}
 		};

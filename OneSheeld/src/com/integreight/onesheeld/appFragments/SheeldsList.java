@@ -37,6 +37,7 @@ import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
@@ -316,6 +317,10 @@ public class SheeldsList extends Fragment {
 
 		@Override
 		public void onError(String errorMessage) {
+			if (activity != null
+					&& activity.getThisApplication().taskerController != null) {
+				activity.getThisApplication().taskerController.reset();
+			}
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -329,6 +334,8 @@ public class SheeldsList extends Fragment {
 
 		@Override
 		public void onConnect() {
+			activity.getThisApplication().taskerController = new TaskerShield(
+					activity, UIShield.TASKER_SHIELD.name());
 			Log.e(TAG, "- ARDUINO CONNECTED -");
 			if (isOneSheeldServiceRunning()) {
 				((OneSheeldApplication) activity.getApplication())
@@ -341,6 +348,9 @@ public class SheeldsList extends Fragment {
 		@Override
 		public void onClose(boolean closedManually) {
 			if (activity != null) {
+				if (activity.getThisApplication().taskerController != null) {
+					activity.getThisApplication().taskerController.reset();
+				}
 				((OneSheeldApplication) activity.getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
 				activity.getOnConnectionLostHandler().connectionLost = true;

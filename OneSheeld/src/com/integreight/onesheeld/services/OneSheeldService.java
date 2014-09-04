@@ -21,7 +21,7 @@ import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.plugin.action.PluginBundleManager;
+import com.integreight.onesheeld.plugin.PluginBundleManager;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.WakeLocker;
 

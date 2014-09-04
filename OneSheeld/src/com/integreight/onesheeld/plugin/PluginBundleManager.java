@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.plugin.action;
+package com.integreight.onesheeld.plugin;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -28,6 +28,8 @@ public final class PluginBundleManager {
 	//	 public static final String BUNDLE_EXTRA_STRING_MESSAGE = "com.yourcompany.yourapp.extra.STRING_MESSAGE"; //$NON-NLS-1$
 	public static final String BUNDLE_EXTRA_PIN_NUMBER = "com.integreight.onesheeld.extra.PIN_NUMBER"; //$NON-NLS-1$
 	public static final String BUNDLE_EXTRA_OUTPUT = "com.integreight.onesheeld.extra.OUTPUT"; //$NON-NLS-1$
+	public static final String CONDITION_BUNDLE_EXTRA_PIN_NUMBER = "com.integreight.condition.extra.PIN_NUMBER"; //$NON-NLS-1$
+	public static final String CONDITION_BUNDLE_EXTRA_OUTPUT = "com.integreight.condition.extra.OUTPUT"; //$NON-NLS-1$
 
 	/**
 	 * Type: {@code int}.
@@ -49,7 +51,7 @@ public final class PluginBundleManager {
 	 *            bundle to verify. May be null, which will always return false.
 	 * @return true if the Bundle is valid, false if the bundle is invalid.
 	 */
-	public static boolean isBundleValid(final Bundle bundle) {
+	public static boolean isActionBundleValid(final Bundle bundle) {
 		if (null == bundle) {
 			return false;
 		}
@@ -74,6 +76,31 @@ public final class PluginBundleManager {
 		return true;
 	}
 
+	public static boolean isConditionBundleValid(final Bundle bundle) {
+		if (null == bundle) {
+			return false;
+		}
+
+		/*
+		 * Make sure the expected extras exist
+		 */
+		if (!bundle.containsKey(CONDITION_BUNDLE_EXTRA_PIN_NUMBER)
+				|| !bundle.containsKey(CONDITION_BUNDLE_EXTRA_OUTPUT)) {
+			return false;
+		}
+		/*
+		 * Make sure the correct number of extras exist. Run this test after
+		 * checking for specific Bundle extras above so that the error message
+		 * is more useful. (E.g. the caller will see what extras are missing,
+		 * rather than just a message that there is the wrong number).
+		 */
+		if (2 != bundle.keySet().size()) {
+			return false;
+		}
+
+		return true;
+	}
+
 	/**
 	 * @param context
 	 *            Application context.
@@ -82,11 +109,20 @@ public final class PluginBundleManager {
 	 *            null.
 	 * @return A plug-in bundle.
 	 */
-	public static Bundle generateBundle(final Context context, final int pin,
-			final boolean output) {
+	public static Bundle generateActionBundle(final Context context,
+			final int pin, final boolean output) {
 		Bundle result = new Bundle();
 		result.putInt(BUNDLE_EXTRA_PIN_NUMBER, pin);
 		result.putBoolean(BUNDLE_EXTRA_OUTPUT, output);
+
+		return result;
+	}
+
+	public static Bundle generateConditionBundle(final Context context,
+			final int pin, final boolean output) {
+		Bundle result = new Bundle();
+		result.putInt(CONDITION_BUNDLE_EXTRA_PIN_NUMBER, pin);
+		result.putBoolean(CONDITION_BUNDLE_EXTRA_OUTPUT, output);
 
 		return result;
 	}

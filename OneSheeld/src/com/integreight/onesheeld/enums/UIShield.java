@@ -39,6 +39,7 @@ import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeechRecognitionShield;
+import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.controller.TemperatureShield;
 import com.integreight.onesheeld.shields.controller.TerminalShield;
 import com.integreight.onesheeld.shields.controller.TextToSpeechShield;
@@ -138,7 +139,9 @@ public enum UIShield {
 			"Data Logger", 0xffde1f26, R.drawable.shields_list_keyboard_symbol,
 			false, DataLoggerShield.class), TERMINAL_SHIELD((byte) 0x26,
 			"Terminal", 0xffde1f26, R.drawable.shields_list_keyboard_symbol,
-			false, TerminalShield.class);
+			false, TerminalShield.class), TASKER_SHIELD((byte) 0x07, "Tasker",
+			0xff0b4c8d, R.drawable.shields_list_flashlight_symbol, false,
+			TaskerShield.class, false);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
 			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
@@ -377,4 +380,5 @@ public enum UIShield {
 		valsFiltered = null;
 		return ret;
 	}
+
 }

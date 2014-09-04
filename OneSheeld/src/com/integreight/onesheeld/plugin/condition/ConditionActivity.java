@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
-package com.integreight.onesheeld.plugin.action;
+package com.integreight.onesheeld.plugin.condition;
 
 import android.content.Context;
 import android.content.Intent;
@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.plugin.AbstractPluginActivity;
@@ -40,7 +41,7 @@ import com.integreight.onesheeld.utils.customviews.PluginConnectingPinsView;
  * @see com.twofortyfouram.locale.Intent#ACTION_EDIT_SETTING
  * @see com.twofortyfouram.locale.Intent#EXTRA_BUNDLE
  */
-public final class ActionActivity extends AbstractPluginActivity {
+public final class ConditionActivity extends AbstractPluginActivity {
 	// private String[] pins = { "0", "1", "2", "3", "4", "5", "6", "7", "8",
 	// "9",
 	// "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
@@ -94,13 +95,13 @@ public final class ActionActivity extends AbstractPluginActivity {
 		outputSpinner.setAdapter(outputArrayAdapter);
 
 		if (null == savedInstanceState) {
-			if (PluginBundleManager.isActionBundleValid(localeBundle)) {
+			if (PluginBundleManager.isConditionBundleValid(localeBundle)) {
 				// final int pin = localeBundle
 				// .getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
 				final boolean output = localeBundle
-						.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT);
+						.getBoolean(PluginBundleManager.CONDITION_BUNDLE_EXTRA_OUTPUT);
 				selectedPin = localeBundle
-						.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
+						.getInt(PluginBundleManager.CONDITION_BUNDLE_EXTRA_PIN_NUMBER);
 				// ((EditText)
 				// findViewById(android.R.id.text1)).setText(message);
 				// pinsSpinner.setSelection(pin);
@@ -139,8 +140,8 @@ public final class ActionActivity extends AbstractPluginActivity {
 			 * not recognize it).
 			 */
 			final Bundle resultBundle = PluginBundleManager
-					.generateActionBundle(getApplicationContext(), selectedPin,
-							output);
+					.generateConditionBundle(getApplicationContext(),
+							selectedPin, output);
 			resultIntent
 					.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE,
 							resultBundle);
@@ -153,8 +154,8 @@ public final class ActionActivity extends AbstractPluginActivity {
 					getApplicationContext(), "Pin " + selectedPin + " set to "
 							+ (output ? "High" : "Low"))) : generateBlurb(
 					getApplicationContext(), "No Pins Selected");
-			// ((OneSheeldApplication) getApplication()).getAppPreferences()
-			// .edit().putInt("PluginActionPin", selectedPin).commit();
+			((OneSheeldApplication) getApplication()).getAppPreferences()
+					.edit().putInt("PluginActionPin", selectedPin).commit();
 			resultIntent.putExtra(
 					com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, blurb);
 
