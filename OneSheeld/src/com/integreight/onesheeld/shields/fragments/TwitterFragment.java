@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
@@ -22,6 +23,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	OneSheeldTextView userNameTextView;
 	Button twitterLogin;
 	Button twitterLogout;
+	ProgressBar progress;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -97,6 +99,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				.findViewById(R.id.twitter_shield_username_textview);
 		twitterLogin = (Button) v.findViewById(R.id.login);
 		twitterLogout = (Button) v.findViewById(R.id.logout);
+		progress = (ProgressBar) v.findViewById(R.id.progress);
 		super.onActivityCreated(savedInstanceState);
 
 	}
@@ -161,6 +164,32 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				});
 			}
 
+		}
+
+		@Override
+		public void startProgress() {
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void stopProgress() {
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.GONE);
+					}
+				}
+			});
 		}
 
 	};

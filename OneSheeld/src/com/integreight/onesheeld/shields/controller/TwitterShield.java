@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListner;
@@ -34,6 +35,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	private TwitterEventHandler eventHandler;
 	private String lastTweet;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
+	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x03;
 	TwitterStream twitterStream;
 
 	public String getUsername() {
@@ -142,6 +144,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 					Log.e("TAG",
 							"TwitterShield::StatusUpdate::TwitterException", e);
 				}
+				if (eventHandler != null)
+					eventHandler.stopProgress();
 
 			}
 		}).start();
@@ -255,6 +259,10 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		void onTwitterLoggedIn(String userName);
 
 		void onTwitterError(String error);
+
+		void startProgress();
+
+		void stopProgress();
 	}
 
 	public boolean isTwitterLoggedInAlready() {
@@ -276,20 +284,27 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		if (frame.getShieldId() == UIShield.TWITTER_SHIELD.getId()) {
 			lastTweet = frame.getArgumentAsString(0);
 			if (isTwitterLoggedInAlready())
-				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
-					if (ConnectionDetector
-							.isConnectingToInternet(getApplication()
-									.getApplicationContext())) {
+
+				if (ConnectionDetector.isConnectingToInternet(getApplication()
+						.getApplicationContext())) {
+					if (eventHandler != null)
+						eventHandler.startProgress();
+					if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
 						tweet(lastTweet);
-						if (eventHandler != null)
-							eventHandler.onRecieveTweet(lastTweet);
-					} else
-						Toast.makeText(
-								getApplication().getApplicationContext(),
-								"Please check your Internet connection and try again.",
-								Toast.LENGTH_SHORT).show();
-				}
+					} else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
+						uploadPhoto(
+								SocialUtils.getLastCapturedImagePath(activity),
+								lastTweet);
+					}
+					if (eventHandler != null)
+						eventHandler.onRecieveTweet(lastTweet);
+				} else
+					Toast.makeText(
+							getApplication().getApplicationContext(),
+							"Please check your Internet connection and try again.",
+							Toast.LENGTH_SHORT).show();
 		}
+
 	}
 
 	public void uploadPhoto(String filePath, String msg) {
@@ -308,11 +323,14 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 							System.err.println("File Not Found  " + params[0]);
 							eventHandler.onTwitterError("File Not Found   "
 									+ params[0]);
+							eventHandler.stopProgress();
 						}
 
 					} catch (TwitterException e) {
-						if (eventHandler != null)
+						if (eventHandler != null) {
+							eventHandler.stopProgress();
 							eventHandler.onTwitterError(e.getErrorMessage());
+						}
 						e.printStackTrace();
 					}
 				return null;
@@ -320,6 +338,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 			@Override
 			protected void onPostExecute(twitter4j.Status result) {
+				if (eventHandler != null)
+					eventHandler.stopProgress();
 				if (result != null)
 					Toast.makeText(activity, "Done", Toast.LENGTH_LONG).show();
 				super.onPostExecute(result);

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	Button facebookLogin;
 	Button facebookLogout;
 	Bundle savedInstanceState;
+	ProgressBar progress;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 				.findViewById(R.id.facebook_shield_username_textview);
 		facebookLogin = (Button) v.findViewById(R.id.login);
 		facebookLogout = (Button) v.findViewById(R.id.logout);
+		progress = (ProgressBar) v.findViewById(R.id.progress);
 	}
 
 	private FacebookEventHandler facebookEventHandler = new FacebookEventHandler() {
@@ -154,6 +157,32 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 					}
 				});
 			}
+		}
+
+		@Override
+		public void startProgress() {
+			activity.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void stopProgress() {
+			activity.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.GONE);
+					}
+				}
+			});
 		}
 
 	};

@@ -71,4 +71,12 @@
         android:layout_alignParentRight="true"
         android:background="@drawable/social_shields_logout" />
 
+    <ProgressBar
+        android:id="@+id/progress"
+        style="@android:style/Widget.ProgressBar.Small.Inverse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:visibility="gone" />
+
 </RelativeLayout>
