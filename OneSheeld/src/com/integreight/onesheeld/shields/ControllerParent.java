@@ -181,16 +181,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 				@Override
 				public void run() {
-					if (isALive)
-						actionHandler.post(new Runnable() {
-
-							@Override
-							public void run() {
-								if (isInteractive)
+					if (isALive && isInteractive)
 									((T) ControllerParent.this).onSysex(
 											command, data);
-							}
-						});
 				}
 			});
 		}
