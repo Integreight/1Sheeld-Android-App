@@ -386,7 +386,7 @@ public class MainActivity extends FragmentActivity {
 					if (version < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
 						popub = new ValidationPopup(MainActivity.this,
 								"Arduino Library Update",
-								"There's a new 1Sheeld Library Update!",
+								"There's a new version of 1Sheeld's Arduino library available on our website!",
 								new ValidationPopup.ValidationAction("OK",
 										new View.OnClickListener() {
 
