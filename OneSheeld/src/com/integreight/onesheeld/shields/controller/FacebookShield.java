@@ -38,8 +38,8 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	private String lastPost;
 	private Fragment fragment;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
-//	private static final byte SEND_MESSAGE_METHOD_ID = (byte) 0x02;
-	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x03;
+//	private static final byte SEND_MESSAGE_METHOD_ID = (byte) 0x03;
+	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x02;
 
 	static final String PREF_KEY_FACEBOOK_USERNAME = "FacebookName";
 
