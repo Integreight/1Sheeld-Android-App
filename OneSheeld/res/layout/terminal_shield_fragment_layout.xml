@@ -22,7 +22,7 @@
             android:layout_height="45dp"
             android:layout_weight="1"
             android:background="@drawable/curved_terminal_field"
-            android:maxEms="64"
+            android:maxLength="64"
             android:padding="5dp"
             android:singleLine="true"
             android:textColor="@color/green"
