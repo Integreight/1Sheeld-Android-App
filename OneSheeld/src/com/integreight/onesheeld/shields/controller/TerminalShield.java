@@ -77,12 +77,12 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 						outputTxt.substring(0,
 								isEndedWithNewLine ? outputTxt.length() - 1
 										: outputTxt.length()),
-						isEndedWithNewLine));
+						isEndedWithNewLine,true));
 				tempLines.add(new TerminalPrintedLine(date,
 						getEncodedString(outputTxt.substring(0,
 								isEndedWithNewLine ? outputTxt.length() - 1
 										: outputTxt.length())),
-						isEndedWithNewLine));
+						isEndedWithNewLine,true));
 			} else if (terminalPrintedLines.size() > 0 && tempLines.size() > 0) {
 				terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = terminalPrintedLines
 						.get(terminalPrintedLines.size() - 1).print

@@ -99,7 +99,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						getControllerTag())).terminalPrintedLines
 						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
 								: "") + getTimeAsString() + " [TX] " + ": ",
-								inputField.getText().toString(), true));
+								inputField.getText().toString(), true,false));
 				((TerminalShield) getApplication().getRunningShields().get(
 						getControllerTag())).tempLines
 						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
@@ -108,7 +108,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 										.getRunningShields().get(
 												getControllerTag()))
 										.getEncodedString(inputField.getText()
-												.toString()), true));
+												.toString()), true,false));
 				outputAdapter
 						.updateLines(((TerminalShield) getApplication()
 								.getRunningShields().get(getControllerTag())).tempLines);
@@ -168,7 +168,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 													.getRunningShields().get(
 															getControllerTag()))
 													.getEncodedString(line.print),
-											line.isEndedWithNewLine));
+											line.isEndedWithNewLine,line.isRx()));
 						}
 						outputAdapter
 								.updateLines(((TerminalShield) getApplication()
@@ -225,7 +225,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					line.date, ((TerminalShield) getApplication()
 							.getRunningShields().get(getControllerTag()))
 							.getEncodedString(line.print),
-					line.isEndedWithNewLine));
+					line.isEndedWithNewLine,line.isRx()));
 		}
 		outputAdapter.updateLines(((TerminalShield) getApplication()
 				.getRunningShields().get(getControllerTag())).tempLines);

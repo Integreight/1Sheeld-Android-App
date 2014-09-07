@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +71,14 @@ public class TerminalLinesAdapter extends BaseAdapter {
 		} else
 			holder.dateX.setVisibility(View.GONE);
 		holder.output.setText(line.print);
+		if(line.isRx()){
+			holder.output.setTextColor(Color.GREEN);
+			holder.dateX.setTextColor(Color.GREEN);
+		}
+		else{
+			holder.output.setTextColor(Color.BLUE);
+			holder.dateX.setTextColor(Color.BLUE);
+		}
 		((ViewGroup) holder.output.getParent()).invalidate();
 		((ViewGroup) holder.output.getParent().getParent()).invalidate();
 		return row;
