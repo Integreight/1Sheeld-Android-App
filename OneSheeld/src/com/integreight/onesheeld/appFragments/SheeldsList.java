@@ -452,7 +452,7 @@ public class SheeldsList extends Fragment {
 			final ValidationPopup popup = new ValidationPopup(
 					activity,
 					"About 1Sheeld",
-					"1Sheeld is a product by Integreight, Inc.\n"
+					"Developed with love by Integreight, Inc. team in Cairo, Egypt.\n"
 							+ "If you have any question, please visit our website or drop us an email on info@integreight.com\n\n"
 							+ "Version: "
 							+ versionName
