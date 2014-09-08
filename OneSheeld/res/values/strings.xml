@@ -7,6 +7,7 @@
     <string name="search_for_bluetooth">Search for bluetooth devices</string>
     <string name="disconnect_device">Disconnect 1Sheeld</string>
     <string name="go_to_shields_operation">Operate the shields</string>
+    <string name="about">About</string>
 
     <!-- MainActivity -->
     <string name="send">Send</string>

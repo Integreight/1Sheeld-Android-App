@@ -1,9 +1,7 @@
 package com.integreight.onesheeld.popup;
 
-import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
-import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -12,8 +10,13 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
+
 public class ValidationPopup extends Dialog {
-	private ValidationAction[] actions;
+	private ArrayList<ValidationAction> actions;
 	private String title, msg;
 	private MainActivity activity;
 
@@ -21,9 +24,14 @@ public class ValidationPopup extends Dialog {
 			ValidationAction... actions) {
 		super(activity, android.R.style.Theme_Translucent_NoTitleBar);
 		this.msg = msg;
-		this.actions = actions;
+		this.actions = new ArrayList<ValidationAction>(Arrays.asList(actions));
 		this.title = title;
 		this.activity = activity;
+	}
+	
+	public void addValidationAction(ValidationAction action){
+		if(this.actions==null)actions=new ArrayList<ValidationPopup.ValidationAction>();
+		if(!actions.contains(action))actions.add(action);
 	}
 
 	@Override
@@ -37,20 +45,19 @@ public class ValidationPopup extends Dialog {
 				LinearLayout.LayoutParams.MATCH_PARENT, (int) (40 * activity
 						.getResources().getDisplayMetrics().density + .5f));
 		params.weight = 1;
-		for (int i = 0; i < actions.length; i++) {
-			final int x = i;
+		for(final ValidationAction action:actions){
 			final OneSheeldButton btn = new OneSheeldButton(activity);
 			btn.setLayoutParams(params);
 			btn.setGravity(Gravity.CENTER);
 			btn.setSingleLine(true);
 			btn.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13);
-			btn.setText(actions[i].actionTitle);
+			btn.setText(action.actionTitle);
 			btn.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View arg0) {
-					actions[x].onClick.onClick(btn);
-					if (actions[x].cancelAfterAction)
+					action.onClick.onClick(btn);
+					if (action.cancelAfterAction)
 						cancel();
 				}
 			});
