@@ -136,15 +136,15 @@ public class SevenSegmentFragment extends
 		public void onSegmentsChange(
 				final Hashtable<String, Boolean> segmentsStatus) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						refreshSegments(segmentsStatus);
 					}
-				});
-			}
+				}
+			});
 
 		}
 	};

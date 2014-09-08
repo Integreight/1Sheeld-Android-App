@@ -89,40 +89,35 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 		public void onSensorValueChangedFloat(final String value) {
 			// TODO Auto-generated method stub
 
-			if (canChangeUI()) {
+			// set data to UI
+			distance_float.post(new Runnable() {
 
-				// set data to UI
-				distance_float.post(new Runnable() {
-
-					@Override
-					public void run() {
-
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						distance_float.setVisibility(View.VISIBLE);
 						distance_float.setText("" + value);
 					}
-				});
-
-			}
+				}
+			});
 
 		}
 
 		@Override
 		public void onSensorValueChangedByte(final String value) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
 
-				// set data to UI
-				distance_byte.post(new Runnable() {
+			// set data to UI
+			distance_byte.post(new Runnable() {
 
-					@Override
-					public void run() {
-
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						distance_byte.setVisibility(View.VISIBLE);
 						distance_byte.setText("Distance in Byte = " + value);
 					}
-				});
-
-			}
+				}
+			});
 
 		}
 

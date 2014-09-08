@@ -18,7 +18,7 @@ public class AccelerometerFragment extends
 	TextView x, y, z;
 	TextView devicehasSensor;
 	Button stoplistening_bt, startlistening_bt;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -88,32 +88,32 @@ public class AccelerometerFragment extends
 		public void onSensorValueChangedFloat(final float[] value) {
 
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
+			// set data to UI
+			x.post(new Runnable() {
 
-				// set data to UI
-				x.post(new Runnable() {
-
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						x.setText("" + value[0]);
-					}
-				});
-				y.post(new Runnable() {
+				}
+			});
+			y.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						y.setText("" + value[1]);
-					}
-				});
-				z.post(new Runnable() {
+				}
+			});
+			z.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						z.setText("" + value[2]);
 
-					}
-				});
-			}
+				}
+			});
 
 		}
 

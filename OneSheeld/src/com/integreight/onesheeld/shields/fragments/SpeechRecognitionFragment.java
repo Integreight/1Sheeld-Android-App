@@ -82,48 +82,49 @@ public class SpeechRecognitionFragment extends
 
 		@Override
 		public void onResult(final List<String> result) {
-			if (canChangeUI()) {
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						setOff();
 						if (result.size() > 0)
-							recognizedResult.setText(result.get(0).toLowerCase());
+							recognizedResult.setText(result.get(0)
+									.toLowerCase());
 					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
 		public void onReadyForSpeach(Bundle params) {
 			if (canChangeUI()) {
-				if (canChangeUI()) {
-					uiHandler.post(new Runnable() {
+				uiHandler.post(new Runnable() {
 
-						@Override
-						public void run() {
+					@Override
+					public void run() {
+						if (canChangeUI()) {
 							recognizedResult.setText("");
 							setON();
 						}
-					});
-				}
+					}
+				});
 			}
 		}
 
 		@Override
 		public void onError(final String error, int errorCode) {
-			if (canChangeUI()) {
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						setOff();
 						Toast.makeText(activity, error, Toast.LENGTH_LONG)
 								.show();
 					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override

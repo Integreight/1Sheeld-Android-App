@@ -86,50 +86,49 @@ public class MagnetometerFragment extends
 		@Override
 		public void onSensorValueChangedFloat(final float[] value) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				// TODO Auto-generated method stub
-				if (canChangeUI()) {
+			// set data to UI
+			x.post(new Runnable() {
 
-					// set data to UI
-					x.post(new Runnable() {
-
-						@Override
-						public void run() {
-							x.setText("" + value[0]);
-						}
-					});
-					y.post(new Runnable() {
-
-						@Override
-						public void run() {
-							y.setText("" + value[1]);
-						}
-					});
-					z.post(new Runnable() {
-
-						@Override
-						public void run() {
-							z.setText("" + value[2]);
-
-						}
-					});
-					mf.post(new Runnable() {
-
-						@Override
-						public void run() {
-							float magnetic_field = (float) Math
-									.sqrt((value[0] * value[0])
-											+ (value[1] * value[1])
-											+ (value[2] * value[2]));
-							mf.setText("Magnetic Field is "
-									+ String.valueOf(magnetic_field).substring(
-											0,
-											String.valueOf(magnetic_field)
-													.indexOf('.')) + " (uT)");
-						}
-					});
+				@Override
+				public void run() {
+					if (canChangeUI())
+						x.setText("" + value[0]);
 				}
-			}
+			});
+			y.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI())
+						y.setText("" + value[1]);
+				}
+			});
+			z.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI())
+						z.setText("" + value[2]);
+
+				}
+			});
+			mf.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI()) {
+						float magnetic_field = (float) Math
+								.sqrt((value[0] * value[0])
+										+ (value[1] * value[1])
+										+ (value[2] * value[2]));
+						mf.setText("Magnetic Field is "
+								+ String.valueOf(magnetic_field).substring(
+										0,
+										String.valueOf(magnetic_field).indexOf(
+												'.')) + " (uT)");
+					}
+				}
+			});
 
 		}
 

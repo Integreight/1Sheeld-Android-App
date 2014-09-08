@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import android.content.Context;
 import android.os.Bundle;
@@ -99,7 +100,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 						getControllerTag())).terminalPrintedLines
 						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
 								: "") + getTimeAsString() + " [TX] " + ": ",
-								inputField.getText().toString(), true,false));
+								inputField.getText().toString(), true, false));
 				((TerminalShield) getApplication().getRunningShields().get(
 						getControllerTag())).tempLines
 						.add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
@@ -108,7 +109,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 										.getRunningShields().get(
 												getControllerTag()))
 										.getEncodedString(inputField.getText()
-												.toString()), true,false));
+												.toString()), true, false));
 				outputAdapter
 						.updateLines(((TerminalShield) getApplication()
 								.getRunningShields().get(getControllerTag())).tempLines);
@@ -168,7 +169,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 													.getRunningShields().get(
 															getControllerTag()))
 													.getEncodedString(line.print),
-											line.isEndedWithNewLine,line.isRx()));
+											line.isEndedWithNewLine, line
+													.isRx()));
 						}
 						outputAdapter
 								.updateLines(((TerminalShield) getApplication()
@@ -225,7 +227,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 					line.date, ((TerminalShield) getApplication()
 							.getRunningShields().get(getControllerTag()))
 							.getEncodedString(line.print),
-					line.isEndedWithNewLine,line.isRx()));
+					line.isEndedWithNewLine, line.isRx()));
 		}
 		outputAdapter.updateLines(((TerminalShield) getApplication()
 				.getRunningShields().get(getControllerTag())).tempLines);
@@ -266,29 +268,29 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 		@Override
 		public void onPrint(final String outputTxt,
 				final boolean clearBeforeWriting) {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
-						if (output != null) {
-							outputAdapter
-									.updateLines(((TerminalShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag())).tempLines);
-							if (((TerminalShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag())).tempLines.size() > 0
-									&& ((TerminalShield) getApplication()
-											.getRunningShields().get(
-													getControllerTag())).isAutoScrolling)
-								output.setSelection(((TerminalShield) getApplication()
+				@SuppressWarnings("unchecked")
+				@Override
+				public void run() {
+					if (output != null && canChangeUI()) {
+						outputAdapter
+								.updateLines((List<TerminalPrintedLine>) ((TerminalShield) getApplication()
 										.getRunningShields().get(
 												getControllerTag())).tempLines
-										.size() - 1);
-						}
+										.clone());
+						if (((TerminalShield) getApplication()
+								.getRunningShields().get(getControllerTag())).tempLines
+								.size() > 0
+								&& ((TerminalShield) getApplication()
+										.getRunningShields().get(
+												getControllerTag())).isAutoScrolling)
+							output.setSelection(((TerminalShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).tempLines.size() - 1);
 					}
-				});
+				}
+			});
 		}
 	};
 

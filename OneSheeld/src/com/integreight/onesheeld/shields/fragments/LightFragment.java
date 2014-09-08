@@ -87,22 +87,17 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
 		@Override
 		public void onSensorValueChangedFloat(final String value) {
-			// TODO Auto-generated method stub
+			// set data to UI
+			light_float.post(new Runnable() {
 
-			if (canChangeUI()) {
-
-				// set data to UI
-				light_float.post(new Runnable() {
-
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						light_float.setVisibility(View.VISIBLE);
 						light_float.setText("" + value);
 					}
-				});
-
-			}
-
+				}
+			});
 		}
 
 		@Override
@@ -113,8 +108,10 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
 				@Override
 				public void run() {
-					light_byte.setVisibility(View.VISIBLE);
-					light_byte.setText("Light in Byte = " + value);
+					if (canChangeUI()) {
+						light_byte.setVisibility(View.VISIBLE);
+						light_byte.setText("Light in Byte = " + value);
+					}
 				}
 			});
 

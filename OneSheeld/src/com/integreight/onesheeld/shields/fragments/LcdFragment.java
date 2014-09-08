@@ -305,63 +305,63 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 
 		@Override
 		public void updateLCD(final char[] arrayToUpdate) {
-			if (canChangeUI() && drawn)
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI() && drawn)
 						redraw(arrayToUpdate);
-					}
-				});
+				}
+			});
 
 		}
 
 		@Override
 		public void blink() {
-			if (canChangeUI() && drawn)
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI() && drawn)
 						LcdFragment.this.blink();
-					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void noBlink() {
-			if (canChangeUI() && drawn)
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI() && drawn)
 						LcdFragment.this.noBlink();
-					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void cursor() {
-			if (canChangeUI() && drawn)
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI() && drawn)
 						LcdFragment.this.cursor();
-					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void noCursor() {
-			if (canChangeUI() && drawn)
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI() && drawn)
 						LcdFragment.this.noCursor();
-					}
-				});
+				}
+			});
 		}
 
 	};

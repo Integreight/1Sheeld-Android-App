@@ -122,56 +122,60 @@ public class MusicPlayerFragment extends
 
 		@Override
 		public void setMusicName(final String name) {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI())
 						musicFileName.setText(name);
-					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void seekTo(final int pos) {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						seekBar.setMax(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(pos);
 					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void play() {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						playingBtn
 								.setBackgroundResource(R.drawable.musicplayer_play_symbol);
 						playingStatus.setText("Playing");
 					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void pause() {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						playingBtn
 								.setBackgroundResource(R.drawable.musicplayer_pause_symbol);
 						playingStatus.setText("Paused");
 					}
-				});
+				}
+			});
 		}
 	};
 

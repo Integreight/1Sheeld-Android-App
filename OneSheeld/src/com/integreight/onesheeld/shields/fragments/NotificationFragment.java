@@ -56,16 +56,15 @@ public class NotificationFragment extends
 		@Override
 		public void onNotificationReceive(final String notificationText) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						notificationTextTextView.setText(notificationText);
-					}
-				});
-			}
+				}
+			});
 
 		}
 	};

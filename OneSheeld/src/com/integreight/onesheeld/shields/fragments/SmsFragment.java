@@ -68,12 +68,12 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 		@Override
 		public void onSmsSent(final String smsNumber, final String smsText) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						OneSheeldTextView tv = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.sent_sms_details_row,
@@ -83,8 +83,8 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 						Toast.makeText(activity, "SMS Sent!", Toast.LENGTH_LONG)
 								.show();
 					}
-				});
-			}
+				}
+			});
 
 		}
 

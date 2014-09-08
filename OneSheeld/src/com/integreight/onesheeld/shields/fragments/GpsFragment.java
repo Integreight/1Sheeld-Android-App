@@ -77,30 +77,27 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		@Override
 		public void onLatChanged(final String lat) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				Latit.post(new Runnable() {
+			Latit.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						Latit.setText("Latitude\n" + lat);
-					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
 		public void onLangChanged(final String lang) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				Longit.post(new Runnable() {
+			Longit.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						Longit.setText("Longitude\n" + lang);
-					}
-				});
-			}
-
+				}
+			});
 		}
 	};
 

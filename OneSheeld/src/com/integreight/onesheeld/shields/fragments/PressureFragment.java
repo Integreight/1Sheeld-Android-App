@@ -89,19 +89,18 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 		@Override
 		public void onSensorValueChangedFloat(final String value) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
 
-				// set data to UI
-				pressure_float.post(new Runnable() {
+			// set data to UI
+			pressure_float.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						pressure_float.setVisibility(View.VISIBLE);
 						pressure_float.setText("" + value);
 					}
-				});
-
-			}
+				}
+			});
 
 		}
 

@@ -47,19 +47,18 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 
 		@Override
 		public void onTimeChanged(final String time, final boolean isAM) {
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						time_tx.setBackgroundResource(isAM ? R.drawable.clock_time_rounded_am
 								: R.drawable.clock_time_rounded_pm);
 						time_tx.setText(time);
 					}
-				});
-			}
-
+				}
+			});
 		}
 	};
 

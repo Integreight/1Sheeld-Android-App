@@ -109,21 +109,19 @@ public class TemperatureFragment extends
 		@Override
 		public void onSensorValueChangedByte(final String value) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
 
-				// set data to UI
-				temperature_byte.post(new Runnable() {
+			// set data to UI
+			temperature_byte.post(new Runnable() {
 
-					@Override
-					public void run() {
-
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						temperature_byte.setVisibility(View.VISIBLE);
 						temperature_byte.setText("temperature in Byte = "
 								+ value);
 					}
-				});
-
-			}
+				}
+			});
 
 		}
 

@@ -101,34 +101,32 @@ public class FoursquareFragment extends
 		@Override
 		public void onPlaceCheckin(final String placeName) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						lastCheckin.setText(placeName);
-					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
 		public void onForsquareLoggedIn(final String user) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				// uiHandler.removeCallbacksAndMessages(null);
-				userName.post(new Runnable() {
+			userName.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						login.setVisibility(View.INVISIBLE);
 						logout.setVisibility(View.VISIBLE);
 						userName.setVisibility(View.VISIBLE);
 						userName.setText(user);
 					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
@@ -145,17 +143,16 @@ public class FoursquareFragment extends
 
 		@Override
 		public void setLastPlaceCheckin(final String placeName) {
-			if (canChangeUI()) {
-				// uiHandler.removeCallbacksAndMessages(null);
-				lastCheckin.post(new Runnable() {
+			lastCheckin.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						lastCheckin.setVisibility(View.VISIBLE);
 						lastCheckin.setText(placeName);
 					}
-				});
-			}
+				}
+			});
 		}
 
 	};

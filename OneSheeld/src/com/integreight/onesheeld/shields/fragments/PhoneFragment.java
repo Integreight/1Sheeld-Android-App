@@ -56,11 +56,11 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 
 		@Override
 		public void OnCall(final String phone_number) {
-			if (canChangeUI()) {
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						OneSheeldTextView call = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.outgoing_call_item,
@@ -69,8 +69,8 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
 								.toString() + phone_number);
 						callsLogContainer.addView(call);
 					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
