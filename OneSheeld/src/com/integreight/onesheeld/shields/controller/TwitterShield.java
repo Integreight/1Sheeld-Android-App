@@ -352,11 +352,19 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 							eventHandler.onRecieveTweet(lastTweet);
 					} else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
 						lastTweet = frame.getArgumentAsString(0);
+						byte sourceFolderId=frame.getArgument(1)[0];
+						String imgPath=null;
+						if(sourceFolderId==SocialUtils.FROM_ONESHEELD_FOLDER)
+							imgPath=SocialUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+						else if (sourceFolderId==SocialUtils.FROM_CAMERA_FOLDER)
+							imgPath=SocialUtils.getLastCapturedImagePathFromCameraFolder(activity);
+						if(imgPath!=null){
 						uploadPhoto(
-								SocialUtils.getLastCapturedImagePath(activity),
+								imgPath,
 								lastTweet);
 						if (eventHandler != null)
 							eventHandler.onImageUploaded(lastTweet);
+						}
 					}
 					else if(frame.getFunctionId()==UPDATE_SEND_MESSAGE_METHOD_ID){
 						String userHandle=frame.getArgumentAsString(0);

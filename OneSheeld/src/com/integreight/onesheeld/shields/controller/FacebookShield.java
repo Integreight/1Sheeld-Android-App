@@ -423,9 +423,16 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
 						publishStory(lastPost);
 					else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
+						String imgPath=null;
+						byte sourceFolderId=frame.getArgument(1)[0];
+						if(sourceFolderId==SocialUtils.FROM_ONESHEELD_FOLDER)
+							imgPath=SocialUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+						else if (sourceFolderId==SocialUtils.FROM_CAMERA_FOLDER)
+							imgPath=SocialUtils.getLastCapturedImagePathFromCameraFolder(activity);
+						if (imgPath!=null){
 						uploadImage(
-								SocialUtils.getLastCapturedImagePath(activity),
-								lastPost);
+								imgPath,
+								lastPost);}
 					}
 					// if (frame.getFunctionId() == SEND_MESSAGE_METHOD_ID)
 					// sendMessage(lastPost, frame.getArgumentAsString(1));
