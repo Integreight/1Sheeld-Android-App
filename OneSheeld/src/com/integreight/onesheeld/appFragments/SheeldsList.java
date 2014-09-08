@@ -116,6 +116,7 @@ public class SheeldsList extends Fragment {
 	public void onResume() {
 		MainActivity.currentShieldTag = null;
 		activity.disableMenu();
+		activity.hideSoftKeyboard();
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
