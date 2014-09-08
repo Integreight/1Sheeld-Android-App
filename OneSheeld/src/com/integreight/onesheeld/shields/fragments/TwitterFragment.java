@@ -190,6 +190,50 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			});
 		}
 
+		@Override
+		public void onImageUploaded(final String tweet) {
+			// TODO Auto-generated method stub
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						OneSheeldTextView tweetItem = (OneSheeldTextView) activity
+								.getLayoutInflater().inflate(
+										R.layout.tweet_item,
+										lastTweetTextContainer, false);
+						tweetItem.setText(tweet);
+						lastTweetTextContainer.addView(tweetItem);
+						((ScrollView) lastTweetTextContainer.getParent())
+								.invalidate();
+					}
+				});
+			}
+		}
+
+		@Override
+		public void onDirectMessageSent(final String userHandle, final String msg) {
+			// TODO Auto-generated method stub
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						OneSheeldTextView tweetItem = (OneSheeldTextView) activity
+								.getLayoutInflater().inflate(
+										R.layout.tweet_item,
+										lastTweetTextContainer, false);
+						tweetItem.setText("To: "+userHandle+", Message: "+msg);
+						lastTweetTextContainer.addView(tweetItem);
+						((ScrollView) lastTweetTextContainer.getParent())
+								.invalidate();
+					}
+				});
+			}
+		}
+
 	};
 
 	private void initializeFirmata() {

@@ -41,6 +41,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	private TwitterEventHandler eventHandler;
 	private String lastTweet;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
+	private static final byte UPDATE_SEND_MESSAGE_METHOD_ID = (byte) 0x02;
 	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x03;
 	TwitterStream twitterStream;
 
@@ -150,6 +151,51 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				} catch (TwitterException e) {
 					Log.e("TAG",
 							"TwitterShield::StatusUpdate::TwitterException", e);
+					if (eventHandler != null)eventHandler.onTwitterError(e.getErrorMessage());
+				}
+				if (eventHandler != null)
+					eventHandler.stopProgress();
+
+			}
+		}).start();
+	}
+	
+	public void sendDirectMessage(String userHandle, final String msg) {
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
+		cb.setOAuthConsumerSecret(activity.getThisApplication().socialKeys.twitter.secret);
+		cb.setOAuthAccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null));
+		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+		factory = new TwitterFactory(cb.build());
+		twitter = factory.getInstance();
+		AccessToken accestoken = new AccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+		twitter.setOAuthAccessToken(accestoken);
+		if(!userHandle.startsWith("@"))userHandle="@"+userHandle;
+		final String properUserHandle=userHandle;
+		final Handler handler=new Handler(Looper.getMainLooper());
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				try {
+					twitter.sendDirectMessage(properUserHandle, msg);
+					handler.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Toast.makeText(activity, "Message sent to "+properUserHandle+"!", Toast.LENGTH_SHORT).show();
+							
+						}
+					});
+				} catch (TwitterException e) {
+					Log.e("TAG",
+							"TwitterShield::StatusUpdate::TwitterException", e);
+					if (eventHandler != null)eventHandler.onTwitterError(e.getErrorMessage());
 				}
 				if (eventHandler != null)
 					eventHandler.stopProgress();
@@ -193,6 +239,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						Log.e("TAG",
 								"TwitterShield::requestToken::TwitterException",
 								e);
+						if (eventHandler != null)eventHandler.onTwitterError(e.getErrorMessage());
 					}
 					return null;
 				}
@@ -262,6 +309,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public static interface TwitterEventHandler {
 		void onRecieveTweet(String tweet);
+		void onImageUploaded(String tweet);
+		void onDirectMessageSent(String userHandle, String msg);
 
 		void onTwitterLoggedIn(String userName);
 
@@ -289,7 +338,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.TWITTER_SHIELD.getId()) {
-			lastTweet = frame.getArgumentAsString(0);
+			
 			if (isTwitterLoggedInAlready())
 
 				if (ConnectionDetector.isConnectingToInternet(getApplication()
@@ -297,14 +346,26 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 					if (eventHandler != null)
 						eventHandler.startProgress();
 					if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID) {
+						lastTweet = frame.getArgumentAsString(0);
 						tweet(lastTweet);
+						if (eventHandler != null)
+							eventHandler.onRecieveTweet(lastTweet);
 					} else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
+						lastTweet = frame.getArgumentAsString(0);
 						uploadPhoto(
 								SocialUtils.getLastCapturedImagePath(activity),
 								lastTweet);
+						if (eventHandler != null)
+							eventHandler.onImageUploaded(lastTweet);
 					}
-					if (eventHandler != null)
-						eventHandler.onRecieveTweet(lastTweet);
+					else if(frame.getFunctionId()==UPDATE_SEND_MESSAGE_METHOD_ID){
+						String userHandle=frame.getArgumentAsString(0);
+						String msg=frame.getArgumentAsString(1);
+						sendDirectMessage(userHandle, msg);
+						if (eventHandler != null)
+							eventHandler.onDirectMessageSent(userHandle, msg);
+					}
+					
 				} else
 					Toast.makeText(
 							getApplication().getApplicationContext(),
