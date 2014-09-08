@@ -315,6 +315,20 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	}
 
 	public void uploadPhoto(String filePath, String msg) {
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
+		cb.setOAuthConsumerSecret(activity.getThisApplication().socialKeys.twitter.secret);
+		cb.setOAuthAccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null));
+		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+		factory = new TwitterFactory(cb.build());
+		twitter = factory.getInstance();
+		AccessToken accestoken = new AccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+		twitter.setOAuthAccessToken(accestoken);
+		final Handler handler=new Handler(Looper.getMainLooper());
 		new AsyncTask<String, Void, Status>() {
 
 			@Override
