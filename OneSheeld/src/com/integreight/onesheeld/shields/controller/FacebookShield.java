@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -10,7 +11,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +30,7 @@ import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
@@ -348,7 +350,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 			@Override
 			protected Void doInBackground(Void... params) {
-				bi = BitmapFactory.decodeFile(path);
+				int rotate = ImageUtils.getCameraPhotoOrientation(path);
+				Bitmap scaledBitmap  = ImageUtils.decodeFile(new File(path),1024);
+				Matrix matrix = new Matrix();
+				matrix.postRotate(rotate);
+				bi = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+				//scaledBitmap.recycle();
 				return null;
 			}
 
@@ -359,10 +366,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 				if (session != null) {
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
 					bi.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+					bi.recycle();
 					data = baos.toByteArray();
 					Bundle postParams = new Bundle();
 					postParams.putString("message", msg);
-					// postParams.putString("method", "photos.upload");
+					//postParams.putString("method", "photos.upload");
 					postParams.putByteArray("source", data);
 					Request.Callback callback = new Request.Callback() {
 						public void onCompleted(Response response) {
@@ -382,11 +390,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 							System.gc();
 							if (eventHandler != null) {
 								eventHandler.stopProgress();
+								Toast.makeText(activity, "Image Uploaded!", Toast.LENGTH_SHORT).show();
 								eventHandler.onRecievePost(msg);
 							}
 						}
 					};
-
+					Toast.makeText(activity, "Uploading your image!", Toast.LENGTH_SHORT).show();
 					Request request = new Request(session, "me/photos",
 							postParams, HttpMethod.POST, callback);
 

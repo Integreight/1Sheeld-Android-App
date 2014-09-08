@@ -123,8 +123,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 						lastTweetTextContainer.addView(tweetItem);
 						((ScrollView) lastTweetTextContainer.getParent())
 								.invalidate();
-						Toast.makeText(activity, "Tweet posted!",
-								Toast.LENGTH_SHORT).show();
 					}
 				});
 			}

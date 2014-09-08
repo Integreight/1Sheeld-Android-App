@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 import twitter4j.Status;
@@ -16,13 +18,17 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
@@ -140,6 +146,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			public void run() {
 				try {
 					twitter.updateStatus(st);
+					Toast.makeText(activity, "Tweet posted!", Toast.LENGTH_SHORT).show();
 				} catch (TwitterException e) {
 					Log.e("TAG",
 							"TwitterShield::StatusUpdate::TwitterException", e);
@@ -317,7 +324,25 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						StatusUpdate status = new StatusUpdate(params[1]);
 						File f = new File(params[0]);
 						if (f.exists()) {
-							status.setMedia(new File(params[0]));
+							int rotate = ImageUtils.getCameraPhotoOrientation(params[0]);
+							Bitmap scaledBitmap  = ImageUtils.decodeFile(new File(params[0]), 1024);
+							Matrix matrix = new Matrix();
+							matrix.postRotate(rotate);
+							Bitmap bitmap=Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+							ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+							bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+							byte[] bitmapdata = bos.toByteArray();
+							ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
+							status.setMedia("Image",bs);
+							handler.post(new Runnable() {
+								
+								@Override
+								public void run() {
+									// TODO Auto-generated method stub
+									Toast.makeText(activity, "Uploading the image!", Toast.LENGTH_SHORT).show();
+								}
+							});
+							
 							return twitter.updateStatus(status);
 						} else if (eventHandler != null) {
 							System.err.println("File Not Found  " + params[0]);
@@ -341,7 +366,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				if (eventHandler != null)
 					eventHandler.stopProgress();
 				if (result != null)
-					Toast.makeText(activity, "Done", Toast.LENGTH_LONG).show();
+					Toast.makeText(activity, "Image uploaded and tweet posted!", Toast.LENGTH_LONG).show();
 				super.onPostExecute(result);
 			}
 		}.execute(filePath, msg);
