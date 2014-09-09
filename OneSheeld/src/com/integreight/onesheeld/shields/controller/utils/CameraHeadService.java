@@ -14,9 +14,11 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Parameters;
+import android.hardware.SensorManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -26,14 +28,16 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-
-import com.integreight.onesheeld.utils.Log;
-
+import android.view.Display;
 import android.view.Gravity;
+import android.view.OrientationEventListener;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.integreight.onesheeld.utils.Log;
 
 public class CameraHeadService extends Service implements
 		SurfaceHolder.Callback {
@@ -58,6 +62,13 @@ public class CameraHeadService extends Service implements
 	SharedPreferences pref;
 	Editor editor;
 	int width = 0, height = 0;
+
+	private static final int ORIENTATION_PORTRAIT_NORMAL = 1;
+	private static final int ORIENTATION_PORTRAIT_INVERTED = 2;
+	private static final int ORIENTATION_LANDSCAPE_NORMAL = 3;
+	private static final int ORIENTATION_LANDSCAPE_INVERTED = 4;
+	private OrientationEventListener mOrientationEventListener;
+	private int mOrientation = -1;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -215,11 +226,11 @@ public class CameraHeadService extends Service implements
 
 							stopSelf();
 						}
-						Camera.Parameters parameters = mCamera.getParameters();  
+						Camera.Parameters parameters = mCamera.getParameters();
 						pictureSize = getBiggesttPictureSize(parameters);
 						if (pictureSize != null)
-							parameters
-									.setPictureSize(pictureSize.width, pictureSize.height);
+							parameters.setPictureSize(pictureSize.width,
+									pictureSize.height);
 
 						// set camera parameters
 						mCamera.setParameters(parameters);
@@ -272,11 +283,12 @@ public class CameraHeadService extends Service implements
 
 								stopSelf();
 							}
-							Camera.Parameters parameters = mCamera.getParameters();  
+							Camera.Parameters parameters = mCamera
+									.getParameters();
 							pictureSize = getBiggesttPictureSize(parameters);
 							if (pictureSize != null)
-								parameters
-										.setPictureSize(pictureSize.width, pictureSize.height);
+								parameters.setPictureSize(pictureSize.width,
+										pictureSize.height);
 
 							// set camera parameters
 							mCamera.setParameters(parameters);
@@ -428,6 +440,63 @@ public class CameraHeadService extends Service implements
 		sHolder = sv.getHolder();
 		sHolder.addCallback(this);
 
+		mOrientationEventListener = new OrientationEventListener(this, SensorManager.SENSOR_DELAY_NORMAL) {
+
+            @Override
+            public void onOrientationChanged(int orientation) {
+
+                // determine our orientation based on sensor response
+//                int lastOrientation = mOrientation;
+
+                Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();   
+                int rotation = windowManager.getDefaultDisplay().getRotation();
+                System.out.println(rotation+"");
+
+            if (display.getRotation() != Surface.ROTATION_0) {   // landscape oriented devices
+                    System.out.println("LANDSCAPE");
+                    if (orientation >= 315 || orientation < 45) {
+                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {                         
+                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
+                        }
+                    } else if (orientation < 315 && orientation >= 225) {
+                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
+                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
+                        }                       
+                    } else if (orientation < 225 && orientation >= 135) {
+                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
+                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
+                        }                       
+                    } else if (orientation <135 && orientation > 45) { 
+                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
+                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
+                        }                       
+                    }                       
+                } else {  // portrait oriented devices
+                    System.out.println("PORTRAIT");
+                    if (orientation >= 315 || orientation < 45) {
+                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {                          
+                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
+                        }
+                    } else if (orientation < 315 && orientation >= 225) {
+                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
+                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
+                        }                       
+                    } else if (orientation < 225 && orientation >= 135) {
+                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
+                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
+                        }                       
+                    } else if (orientation <135 && orientation > 45) { 
+                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
+                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
+                        }                       
+                    }
+                }
+
+            }
+        };
+        if (mOrientationEventListener.canDetectOrientation()){
+            mOrientationEventListener.enable();
+           }
 		// tells Android that this surface will have its data constantly
 		// replaced
 		if (Build.VERSION.SDK_INT < 11)
@@ -440,11 +509,31 @@ public class CameraHeadService extends Service implements
 		@Override
 		public void onPictureTaken(byte[] data, Camera camera) {
 			// decode the data obtained by the camera into a Bitmap
+			int rotate=0;
+			switch (mOrientation) {
+	          case ORIENTATION_PORTRAIT_NORMAL:
+	              rotate = 90;
+	              break;
+	          case ORIENTATION_LANDSCAPE_NORMAL:
+	              rotate = 0;
+	              break;
+	          case ORIENTATION_PORTRAIT_INVERTED:
+	              rotate = 270;
+	              break;
+	          case ORIENTATION_LANDSCAPE_INVERTED:
+	              rotate = 180;
+	              break;
+	          }
+			 Matrix matrix = new Matrix();
+	         matrix.postRotate(rotate);
+
 			Log.d("ImageTakin", "Done");
 			if (bmp != null)
 				bmp.recycle();
 			System.gc();
 			bmp = decodeBitmap(data);
+			bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+	          
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			if (bmp != null && QUALITY_MODE == 0)
 				bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
