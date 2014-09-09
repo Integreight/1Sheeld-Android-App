@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;
@@ -16,6 +17,7 @@ import org.supercsv.prefs.CsvPreference;
 
 import android.app.Activity;
 import android.os.Environment;
+import android.text.format.DateFormat;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -31,7 +33,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	private static final byte ADD_STRING = 0x04;
 	private static final byte LOG = 0x05;
 	private boolean isStarted = false;
-	public ArrayList<String> headerList = new ArrayList<String>();
+	public CopyOnWriteArrayList<String> headerList = new CopyOnWriteArrayList<String>();
 	ArrayList<Map<String, String>> dataSet = new ArrayList<Map<String, String>>();
 	String fileName = null;
 	String header[];
@@ -69,7 +71,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 					fileName = frame.getArgumentAsString(0);
 				else
 					fileName = null;
-				headerList = new ArrayList<String>();
+				headerList = new CopyOnWriteArrayList<String>();
+				headerList.add("Time");
 				dataSet = new ArrayList<Map<String, String>>();
 				rowData = new HashMap<String, String>();
 				currentStatus = LOGGING;
@@ -177,10 +180,15 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 			case LOG:
 				if (isStarted) {
 					currentStatus = LOGGING;
-					dataSet.add(new HashMap<String, String>(rowData));
+					rowData.put("Time",
+							DateFormat.format("hh:mm:ss", new java.util.Date())
+									.toString());
 					if (eventHandler != null) {
-						eventHandler.onLog(dataSet, rowData);
+						eventHandler.onLog(new ArrayList<Map<String, String>>(
+								dataSet), new HashMap<String, String>(rowData));
 					}
+					rowData.remove("Time");
+					dataSet.add(new HashMap<String, String>(rowData));
 					rowData = new HashMap<String, String>();
 				}
 				break;

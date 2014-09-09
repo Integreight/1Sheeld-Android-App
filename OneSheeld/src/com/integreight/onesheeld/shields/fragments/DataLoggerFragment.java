@@ -162,6 +162,10 @@ public class DataLoggerFragment extends
 								((OneSheeldTextView) valuesContainer
 										.findViewWithTag(header + "Value"))
 										.setText("");
+								((OneSheeldTextView) valuesContainer
+										.findViewWithTag(header + "Value")).setText(header
+										.equals("Time") ? rowData.get(header)
+										: "");
 							} else {
 								OneSheeldTextView key = new OneSheeldTextView(
 										activity);
@@ -178,7 +182,8 @@ public class DataLoggerFragment extends
 										activity);
 								value.setLayoutParams(cellParams);
 								value.setSingleLine(true);
-								value.setText("");
+								value.setText(header.equals("Time") ? rowData
+										.get(header) : "");
 								value.setTextColor(getResources().getColor(
 										R.color.offWhite));
 								value.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
@@ -196,6 +201,34 @@ public class DataLoggerFragment extends
 
 		}
 
+		void add(String header, String valueT) {
+			if (keysContainer.findViewWithTag(header) != null) {
+				((OneSheeldTextView) valuesContainer.findViewWithTag(header
+						+ "Value")).setText(valueT);
+			} else {
+				OneSheeldTextView key = new OneSheeldTextView(activity);
+				key.setLayoutParams(cellParams);
+				key.setSingleLine(true);
+				key.setText(header);
+				key.setTextColor(getResources().getColor(R.color.offWhite));
+				key.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+				key.setGravity(Gravity.CENTER);
+				key.setTag(header);
+				key.setBackgroundResource(R.drawable.squared_data_logger_cell_borded);
+				OneSheeldTextView value = new OneSheeldTextView(activity);
+				value.setLayoutParams(cellParams);
+				value.setSingleLine(true);
+				value.setText(valueT);
+				value.setTextColor(getResources().getColor(R.color.offWhite));
+				value.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+				value.setBackgroundResource(R.drawable.squared_data_logger_cell_borded);
+				value.setGravity(Gravity.CENTER);
+				value.setTag(header + "Value");
+				keysContainer.addView(key);
+				valuesContainer.addView(value);
+			}
+		}
+
 		@Override
 		public void onAdd(final String header, final String valueT) {
 			uiHandler.post(new Runnable() {
@@ -203,36 +236,9 @@ public class DataLoggerFragment extends
 				@Override
 				public void run() {
 					if (canChangeUI()) {
-						if (keysContainer.findViewWithTag(header) != null) {
-							((OneSheeldTextView) valuesContainer
-									.findViewWithTag(header + "Value"))
-									.setText(valueT);
-						} else {
-							OneSheeldTextView key = new OneSheeldTextView(
-									activity);
-							key.setLayoutParams(cellParams);
-							key.setSingleLine(true);
-							key.setText(header);
-							key.setTextColor(getResources().getColor(
-									R.color.offWhite));
-							key.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-							key.setGravity(Gravity.CENTER);
-							key.setTag(header);
-							key.setBackgroundResource(R.drawable.squared_data_logger_cell_borded);
-							OneSheeldTextView value = new OneSheeldTextView(
-									activity);
-							value.setLayoutParams(cellParams);
-							value.setSingleLine(true);
-							value.setText(valueT);
-							value.setTextColor(getResources().getColor(
-									R.color.offWhite));
-							value.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
-							value.setBackgroundResource(R.drawable.squared_data_logger_cell_borded);
-							value.setGravity(Gravity.CENTER);
-							value.setTag(header + "Value");
-							keysContainer.addView(key);
-							valuesContainer.addView(value);
-						}
+						if (keysContainer.findViewWithTag("Time") == null)
+							add("Time", "");
+						add(header, valueT);
 					}
 				}
 			});
