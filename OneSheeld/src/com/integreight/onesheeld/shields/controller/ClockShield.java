@@ -17,7 +17,7 @@ import com.integreight.onesheeld.utils.Log;
 public class ClockShield extends
 		ControllerParent<ControllerParent<ClockShield>> {
 	private static final byte CLOCK_COMMAND = (byte) 0x21;
-	private ShieldFrame frame;
+//	private ShieldFrame frame;
 	private static final byte CLOCK_VALUE = (byte) 0x01;
 	private Calendar calendar;
 	private static int seconds, minutes, hour, day, month, year;
@@ -34,7 +34,7 @@ public class ClockShield extends
 		@Override
 		public void run() {
 			// Do work
-			frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
+			ShieldFrame frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
 			calendar = Calendar.getInstance();
 
 			if (frame != null && calendar != null) {
@@ -52,8 +52,8 @@ public class ClockShield extends
 							+ (sec.length() == 1 ? "0" + sec : sec) + "",
 							calendar.get(Calendar.AM_PM) == Calendar.AM);
 			}
-			calendar = null;
-			frame = null;
+//			calendar = null;
+//			frame = null;
 			if (handler != null)
 				handler.postDelayed(this, PERIOD);
 
@@ -87,7 +87,7 @@ public class ClockShield extends
 
 		if (clock_frame.getShieldId() == CLOCK_COMMAND) {
 			isClockBegin = true;
-			frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
+			ShieldFrame frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
 
 			if (frame != null) {
 				setTime();
@@ -149,8 +149,8 @@ public class ClockShield extends
 			getActivity().unregisterReceiver(m_timeChangedReceiver);
 		if (calendar != null)
 			calendar = null;
-		if (frame != null)
-			frame = null;
+//		if (frame != null)
+//			frame = null;
 
 	}
 
@@ -158,7 +158,7 @@ public class ClockShield extends
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// check on hour and day...
-			frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
+			ShieldFrame frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
 			calendar = Calendar.getInstance();
 
 			Log.d("ClockShield:: old time", seconds + " " + minutes + " "
