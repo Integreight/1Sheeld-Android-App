@@ -187,7 +187,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 						eventHandler.onLog(new ArrayList<Map<String, String>>(
 								dataSet), new HashMap<String, String>(rowData));
 					}
-					rowData.remove("Time");
+					// rowData.remove("Time");
 					dataSet.add(new HashMap<String, String>(rowData));
 					rowData = new HashMap<String, String>();
 				}
