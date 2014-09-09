@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
-    android:versionCode="140804"
-    android:versionName="1.0.5" >
+    android:versionCode="140909"
+    android:versionName="1.1.0" >
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -65,7 +65,7 @@
         android:name="com.integreight.onesheeld.OneSheeldApplication"
         android:allowBackup="true"
         android:allowClearUserData="true"
-        android:debuggable="true"
+        android:debuggable="false"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
