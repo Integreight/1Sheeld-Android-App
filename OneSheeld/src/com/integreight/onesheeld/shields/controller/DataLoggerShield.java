@@ -30,6 +30,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	private static final byte ADD_FLOAT = 0x03;
 	private static final byte ADD_STRING = 0x04;
 	private static final byte LOG = 0x05;
+	private boolean isStarted = false;
 	public ArrayList<String> headerList = new ArrayList<String>();
 	ArrayList<Map<String, String>> dataSet = new ArrayList<Map<String, String>>();
 	String fileName = null;
@@ -72,103 +73,116 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				dataSet = new ArrayList<Map<String, String>>();
 				rowData = new HashMap<String, String>();
 				currentStatus = LOGGING;
+				isStarted = true;
 				if (eventHandler != null) {
 					eventHandler.onStartLogging();
 				}
 				break;
 			case STOP_LOGGING:
-				ICsvMapWriter mapWriter = null;
-				try {
-					currentStatus = STOPPED_LOGGING;
-					if (eventHandler != null) {
-						eventHandler.onStopLogging(dataSet);
-					}
-					File folder = new File(
-							Environment.getExternalStorageDirectory()
-									+ "/OneSheeld");
-					if (!folder.exists()) {
-						folder.mkdirs();
-					}
-					folder = new File(Environment.getExternalStorageDirectory()
-							+ "/OneSheeld/DataLogger");
-					if (!folder.exists()) {
-						folder.mkdirs();
-					}
-					mapWriter = new CsvMapWriter(
-							new FileWriter(
-									Environment.getExternalStorageDirectory()
-											+ "/OneSheeld/DataLogger/"
-											+ (fileName == null
-													|| fileName.length() == 0 ? new Date()
-													.getTime() + ""
-													: fileName) + ".csv"),
-							CsvPreference.STANDARD_PREFERENCE);
-
-					// assign a default value for married (if null), and write
-					// numberOfKids as an empty column if null
-					final CellProcessor[] processors = new CellProcessor[headerList
-							.size()];
-					for (int i = 0; i < processors.length; i++) {
-						processors[i] = new Optional();
-					}
-
-					// write the header
-					header = new String[headerList.size()];
-					int i = 0;
-					for (String headerItem : headerList) {
-						header[i] = headerItem;
-						i++;
-					}
-					mapWriter.writeHeader(header);
-
-					// write the customer Maps
-					for (Map<String, String> value : dataSet) {
-						mapWriter.write(value, header, processors);
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} finally {
-					if (mapWriter != null) {
-						try {
-							mapWriter.close();
-						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+				if (isStarted) {
+					isStarted = false;
+					ICsvMapWriter mapWriter = null;
+					try {
+						currentStatus = STOPPED_LOGGING;
+						if (eventHandler != null) {
+							eventHandler.onStopLogging(dataSet);
 						}
-						// reset();
+						File folder = new File(
+								Environment.getExternalStorageDirectory()
+										+ "/OneSheeld");
+						if (!folder.exists()) {
+							folder.mkdirs();
+						}
+						folder = new File(
+								Environment.getExternalStorageDirectory()
+										+ "/OneSheeld/DataLogger");
+						if (!folder.exists()) {
+							folder.mkdirs();
+						}
+						mapWriter = new CsvMapWriter(
+								new FileWriter(
+										Environment
+												.getExternalStorageDirectory()
+												+ "/OneSheeld/DataLogger/"
+												+ (fileName == null
+														|| fileName.length() == 0 ? new Date()
+														.getTime() + ""
+														: fileName) + ".csv"),
+								CsvPreference.STANDARD_PREFERENCE);
+
+						// assign a default value for married (if null), and
+						// write
+						// numberOfKids as an empty column if null
+						final CellProcessor[] processors = new CellProcessor[headerList
+								.size()];
+						for (int i = 0; i < processors.length; i++) {
+							processors[i] = new Optional();
+						}
+
+						// write the header
+						header = new String[headerList.size()];
+						int i = 0;
+						for (String headerItem : headerList) {
+							header[i] = headerItem;
+							i++;
+						}
+						mapWriter.writeHeader(header);
+
+						// write the customer Maps
+						for (Map<String, String> value : dataSet) {
+							mapWriter.write(value, header, processors);
+						}
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+						if (mapWriter != null) {
+							try {
+								mapWriter.close();
+							} catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+							// reset();
+						}
 					}
 				}
 				break;
 			case ADD_STRING:
-				currentStatus = LOGGING;
-				String key = frame.getArgumentAsString(0);
-				String value = frame.getArgumentAsString(1);
-				if (!headerList.contains(key))
-					headerList.add(key);
-				rowData.put(key, value);
-				if (eventHandler != null) {
-					eventHandler.onAdd(key, value);
+				if (isStarted) {
+					currentStatus = LOGGING;
+					String key = frame.getArgumentAsString(0);
+					String value = frame.getArgumentAsString(1);
+					if (!headerList.contains(key))
+						headerList.add(key);
+					rowData.put(key, value);
+					if (eventHandler != null) {
+						eventHandler.onAdd(key, value);
+					}
 				}
 				break;
 			case ADD_FLOAT:
-				currentStatus = LOGGING;
-				String keyFloat = frame.getArgumentAsString(0);
-				String valueFloat = frame.getArgumentAsFloat(1) + "";
-				if (!headerList.contains(keyFloat))
-					headerList.add(keyFloat);
-				rowData.put(keyFloat, valueFloat);
-				if (eventHandler != null) {
-					eventHandler.onAdd(keyFloat, valueFloat);
+				if (isStarted) {
+					currentStatus = LOGGING;
+					String keyFloat = frame.getArgumentAsString(0);
+					String valueFloat = frame.getArgumentAsFloat(1) + "";
+					if (!headerList.contains(keyFloat))
+						headerList.add(keyFloat);
+					rowData.put(keyFloat, valueFloat);
+					if (eventHandler != null) {
+						eventHandler.onAdd(keyFloat, valueFloat);
+					}
 				}
 				break;
 			case LOG:
-				currentStatus = LOGGING;
-				dataSet.add(new HashMap<String, String>(rowData));
-				if (eventHandler != null) {
-					eventHandler.onLog(dataSet, rowData);
+				if (isStarted) {
+					currentStatus = LOGGING;
+					dataSet.add(new HashMap<String, String>(rowData));
+					if (eventHandler != null) {
+						eventHandler.onLog(dataSet, rowData);
+					}
+					rowData = new HashMap<String, String>();
 				}
-				rowData = new HashMap<String, String>();
 				break;
 			default:
 				break;
