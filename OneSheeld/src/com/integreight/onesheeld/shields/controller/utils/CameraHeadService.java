@@ -450,10 +450,10 @@ public class CameraHeadService extends Service implements
 
                 Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();   
                 int rotation = windowManager.getDefaultDisplay().getRotation();
-                System.out.println(rotation+"");
+                Log.sysOut(rotation+"");
 
             if (display.getRotation() != Surface.ROTATION_0) {   // landscape oriented devices
-                    System.out.println("LANDSCAPE");
+            	Log.sysOut("LANDSCAPE");
                     if (orientation >= 315 || orientation < 45) {
                         if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {                         
                             mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
@@ -472,7 +472,7 @@ public class CameraHeadService extends Service implements
                         }                       
                     }                       
                 } else {  // portrait oriented devices
-                    System.out.println("PORTRAIT");
+                	Log.sysOut("PORTRAIT");
                     if (orientation >= 315 || orientation < 45) {
                         if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {                          
                             mOrientation = ORIENTATION_PORTRAIT_NORMAL;

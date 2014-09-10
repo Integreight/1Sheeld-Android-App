@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
+import com.integreight.onesheeld.utils.Log;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.provider.MediaStore;
@@ -23,10 +25,10 @@ public class SocialUtils {
 		do {
 			fullPath = imageCursor.getString(imageCursor
 					.getColumnIndex(MediaStore.Images.Media.DATA));
-			System.out.println("!@!@   " + fullPath);
+			Log.sysOut("!@!@   " + fullPath);
 			if (fullPath.contains("DCIM")) {
 				// --last image from camera --
-				System.out.println(fullPath);
+				Log.sysOut(fullPath);
 				break;
 			}
 		} while (imageCursor.moveToNext());
@@ -49,10 +51,10 @@ public class SocialUtils {
 		do {
 			fullPath = imageCursor.getString(imageCursor
 					.getColumnIndex(MediaStore.Images.Media.DATA));
-			System.out.println("!@!@   " + fullPath);
+			Log.sysOut("!@!@   " + fullPath);
 			if (fullPath.contains("OneSheeld")) {
 				// --last image from camera --
-				System.out.println(fullPath);
+				Log.sysOut(fullPath);
 				break;
 			}
 		} while (imageCursor.moveToNext());

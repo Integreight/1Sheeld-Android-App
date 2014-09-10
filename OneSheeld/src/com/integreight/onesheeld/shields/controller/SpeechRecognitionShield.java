@@ -53,7 +53,7 @@ public class SpeechRecognitionShield extends
 		activity.bindService(new Intent(activity,
 				SpeechRecognitionService.class), mServiceConnection,
 				Context.BIND_AUTO_CREATE);
-		System.out.println("int AUDIO=" + SpeechRecognizer.ERROR_AUDIO
+		Log.sysOut("int AUDIO=" + SpeechRecognizer.ERROR_AUDIO
 				+ ",NETWORK=" + SpeechRecognizer.ERROR_NETWORK
 				+ ",NETWORK_TIMEOUT=" + SpeechRecognizer.ERROR_NETWORK_TIMEOUT
 				+ ",NO_MATCH=" + SpeechRecognizer.ERROR_NO_MATCH

@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ListView;
 
+import com.integreight.onesheeld.utils.Log;
+
 public class ListViewReversed extends ListView {
 
 	private int mItemCount;
@@ -37,7 +39,7 @@ public class ListViewReversed extends ListView {
 					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 			mItemOffsetY[i] = mHeight;
 			mHeight += view.getMeasuredHeight();
-			System.out.println(mHeight);
+			Log.sysOut(mHeight+"");
 		}
 		scrollIsComputed = true;
 	}

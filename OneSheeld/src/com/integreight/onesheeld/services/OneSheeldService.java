@@ -192,7 +192,7 @@ public class OneSheeldService extends Service {
 			// Extract data included in the Intent
 			Log.test("plugin", "Receive");
 
-			System.out.println(app.getAppFirmata()
+			Log.sysOut(app.getAppFirmata()
 					+ "    "
 					+ intent.getIntExtra(
 							PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER, -1)
