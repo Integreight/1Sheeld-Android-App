@@ -3,9 +3,11 @@ package com.integreight.onesheeld.shields.controller;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -17,7 +19,6 @@ import org.supercsv.prefs.CsvPreference;
 
 import android.app.Activity;
 import android.os.Environment;
-import android.text.format.DateFormat;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -42,6 +43,10 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 			STOPPED_LOGGING = 2;
 	public int currentStatus = READ_FOR_LOGGING;
 	private DataLoggerListener eventHandler;
+	
+	public boolean isLoggingStarted(){
+		return isStarted;
+	}
 
 	public DataLoggerShield() {
 		super();
@@ -72,7 +77,6 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 				else
 					fileName = null;
 				headerList = new CopyOnWriteArrayList<String>();
-				headerList.add("Time");
 				dataSet = new ArrayList<Map<String, String>>();
 				rowData = new HashMap<String, String>();
 				currentStatus = LOGGING;
@@ -110,7 +114,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 												+ (fileName == null
 														|| fileName.length() == 0 ? new Date()
 														.getTime() + ""
-														: fileName) + ".csv"),
+														: fileName+" - "+new Date()
+														.getTime()) + ".csv"),
 								CsvPreference.STANDARD_PREFERENCE);
 
 						// assign a default value for married (if null), and
@@ -180,14 +185,14 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 			case LOG:
 				if (isStarted) {
 					currentStatus = LOGGING;
-					rowData.put("Time",
-							DateFormat.format("hh:mm:ss", new java.util.Date())
-									.toString());
 					if (eventHandler != null) {
-						eventHandler.onLog(new ArrayList<Map<String, String>>(
-								dataSet), new HashMap<String, String>(rowData));
+						eventHandler.onLog(new HashMap<String, String>(rowData));
 					}
-					// rowData.remove("Time");
+					if(!headerList.contains("Time"))headerList.add("Time");
+					rowData.put("Time",
+							new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS",Locale.US).format(new Date())
+									.toString());
+					//rowData.remove("Time");
 					dataSet.add(new HashMap<String, String>(rowData));
 					rowData = new HashMap<String, String>();
 				}
@@ -222,8 +227,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 
 		public void onAdd(String key, String value);
 
-		public void onLog(ArrayList<Map<String, String>> loggedValues,
-				Map<String, String> rowData);
+		public void onLog(Map<String, String> rowData);
 	}
 
 }

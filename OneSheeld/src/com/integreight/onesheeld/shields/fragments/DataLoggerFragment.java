@@ -96,7 +96,8 @@ public class DataLoggerFragment extends
 
 							@Override
 							public void run() {
-								if (canChangeUI()) {
+								if (canChangeUI() && !((DataLoggerShield) getApplication().getRunningShields().get(
+										getControllerTag())).isLoggingStarted()) {
 									keysContainer.removeAllViews();
 									valuesContainer.removeAllViews();
 									((DataLoggerShield) getApplication()
@@ -146,8 +147,7 @@ public class DataLoggerFragment extends
 		}
 
 		@Override
-		public void onLog(final ArrayList<Map<String, String>> loggedValues,
-				final Map<String, String> rowData) {
+		public void onLog(final Map<String, String> rowData) {
 			uiHandler.post(new Runnable() {
 
 				@Override
@@ -156,16 +156,15 @@ public class DataLoggerFragment extends
 						loggerStatus
 								.setBackgroundResource(R.drawable.large_green_circle);
 						loggerStatus.setText(R.string.logging);
-						for (String header : ((DataLoggerShield) getApplication()
-								.getRunningShields().get(getControllerTag())).headerList) {
+						for (String header : rowData.keySet()) {
 							if (keysContainer.findViewWithTag(header) != null) {
 								((OneSheeldTextView) valuesContainer
 										.findViewWithTag(header + "Value"))
 										.setText("");
-								((OneSheeldTextView) valuesContainer
-										.findViewWithTag(header + "Value")).setText(header
-										.equals("Time") ? rowData.get(header)
-										: "");
+//								((OneSheeldTextView) valuesContainer
+//										.findViewWithTag(header + "Value")).setText(header
+//										.equals("Time") ? rowData.get(header)
+//										: "");
 							} else {
 								OneSheeldTextView key = new OneSheeldTextView(
 										activity);
@@ -182,8 +181,8 @@ public class DataLoggerFragment extends
 										activity);
 								value.setLayoutParams(cellParams);
 								value.setSingleLine(true);
-								value.setText(header.equals("Time") ? rowData
-										.get(header) : "");
+//								value.setText(header.equals("Time") ? rowData
+//										.get(header) : "");
 								value.setTextColor(getResources().getColor(
 										R.color.offWhite));
 								value.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
@@ -236,8 +235,8 @@ public class DataLoggerFragment extends
 				@Override
 				public void run() {
 					if (canChangeUI()) {
-						if (keysContainer.findViewWithTag("Time") == null)
-							add("Time", "");
+//						if (keysContainer.findViewWithTag("Time") == null)
+//							add("Time", "");
 						add(header, valueT);
 					}
 				}
