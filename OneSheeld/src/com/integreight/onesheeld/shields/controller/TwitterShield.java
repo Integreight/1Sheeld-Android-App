@@ -141,13 +141,21 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				PREF_KEY_OAUTH_SECRET, null));
 		twitter.setOAuthAccessToken(accestoken);
 		final StatusUpdate st = new StatusUpdate(tweet);
+		final Handler handler=new Handler(Looper.getMainLooper());
 		new Thread(new Runnable() {
 
 			@Override
 			public void run() {
 				try {
 					twitter.updateStatus(st);
-					Toast.makeText(activity, "Tweet posted!", Toast.LENGTH_SHORT).show();
+					handler.post(new Runnable() {
+						
+						@Override
+						public void run() {
+							// TODO Auto-generated method stub
+							Toast.makeText(activity, "Tweet posted!", Toast.LENGTH_SHORT).show();
+						}
+					});
 				} catch (TwitterException e) {
 					Log.e("TAG",
 							"TwitterShield::StatusUpdate::TwitterException", e);

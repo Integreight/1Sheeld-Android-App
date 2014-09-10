@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
-    android:versionCode="140910"
-    android:versionName="1.1.1" >
+    android:versionCode="140911"
+    android:versionName="1.1.2" >
 
     <uses-sdk android:minSdkVersion="9" />
 

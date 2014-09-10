@@ -507,7 +507,7 @@ public class ArduinoFirmata {
 
 	}
 
-	private void printFrameToLog(byte[] frame) {
+	private void printFrameToLog(byte[] frame, String tag) {
 		String s = "";
 		for (byte b : frame) {
 			if ((Integer.toHexString(b).length() < 2))
@@ -520,14 +520,14 @@ public class ArduinoFirmata {
 				s += temp + " ";
 			}
 		}
-		Log.d("frame", s);
+		Log.d(tag, s);
 	}
 
 	public synchronized void sendShieldFrame(ShieldFrame frame) {
 		if (!isUartInit || isBootloader)
 			return;
 		byte[] frameBytes = frame.getAllFrameAsBytes();
-		printFrameToLog(frameBytes);
+		printFrameToLog(frameBytes,"Sent");
 		int maxShieldFrameBytes = (MAX_OUTPUT_BYTES - 3) / 2;// The 3 is for
 																// StartSysex,
 																// EndSysex and
@@ -802,6 +802,7 @@ public class ArduinoFirmata {
 							handler.onArduinoLibraryVersionChange(arduinoLibraryVersion);
 						}
 					}
+					printFrameToLog(frame.getAllFrameAsBytes(),"Rec");
 					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
 					}
