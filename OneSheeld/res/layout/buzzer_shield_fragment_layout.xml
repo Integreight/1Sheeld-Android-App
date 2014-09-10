@@ -11,7 +11,7 @@
         android:background="@drawable/buzzer_shield_25_volume"
         android:contentDescription="@string/app_name" />
 
-    <Button
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:id="@+id/decreaseBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
         android:layout_marginTop="20dp"
         android:background="@drawable/volume_down_selector" />
 
-    <Button
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:id="@+id/increaseBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

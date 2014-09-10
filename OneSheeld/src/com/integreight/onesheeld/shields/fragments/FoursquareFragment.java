@@ -11,13 +11,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield.FoursquareEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.ForsquareUtil;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class FoursquareFragment extends
 		ShieldFragmentParent<FoursquareFragment> {
@@ -30,7 +30,7 @@ public class FoursquareFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.foursquare_shield_fragment_layout,
+		v = inflater.inflate(R.layout.foursquare_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -42,14 +42,12 @@ public class FoursquareFragment extends
 		super.onActivityCreated(savedInstanceState);
 		mSharedPreferences = getApplication().getSharedPreferences(
 				"com.integreight.onesheeld", Context.MODE_PRIVATE);
-		login = (Button) getView()
-				.findViewById(R.id.foursquare_shiled_login_bt);
-		logout = (Button) getView().findViewById(
-				R.id.foursquare_shiled_logout_bt);
-		userName = (TextView) getView().findViewById(
-				R.id.foursquare_shield_username_textview);
-		lastCheckin = (TextView) getView().findViewById(
-				R.id.foursquare_shield_last_checkin_textview);
+		login = (Button) v.findViewById(R.id.foursquare_shiled_login_bt);
+		logout = (Button) v.findViewById(R.id.foursquare_shiled_logout_bt);
+		userName = (TextView) v
+				.findViewById(R.id.foursquare_shield_username_textview);
+		lastCheckin = (TextView) v
+				.findViewById(R.id.foursquare_shield_last_checkin_textview);
 
 		Log.d("Foursquare Sheeld::OnActivityCreated()", "");
 		// if user logged in set data
@@ -103,34 +101,32 @@ public class FoursquareFragment extends
 		@Override
 		public void onPlaceCheckin(final String placeName) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						lastCheckin.setText(placeName);
-					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
 		public void onForsquareLoggedIn(final String user) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				// uiHandler.removeCallbacksAndMessages(null);
-				userName.post(new Runnable() {
+			userName.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						login.setVisibility(View.INVISIBLE);
 						logout.setVisibility(View.VISIBLE);
 						userName.setVisibility(View.VISIBLE);
 						userName.setText(user);
 					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
@@ -147,17 +143,16 @@ public class FoursquareFragment extends
 
 		@Override
 		public void setLastPlaceCheckin(final String placeName) {
-			if (canChangeUI()) {
-				// uiHandler.removeCallbacksAndMessages(null);
-				lastCheckin.post(new Runnable() {
+			lastCheckin.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						lastCheckin.setVisibility(View.VISIBLE);
 						lastCheckin.setText(placeName);
 					}
-				});
-			}
+				}
+			});
 		}
 
 	};

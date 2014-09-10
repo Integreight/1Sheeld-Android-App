@@ -27,7 +27,7 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-        <EditText
+        <com.integreight.onesheeld.utils.customviews.OneSheeldEditText
             android:id="@+id/gmail_signin_dialog_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
             android:paddingTop="10dp"
             android:textStyle="bold" />
 
-        <TextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/gmail_signin_dialog_invalide_username_tx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -49,7 +49,7 @@
             android:text="invalid user name"
             android:visibility="invisible" />
 
-        <EditText
+        <com.integreight.onesheeld.utils.customviews.OneSheeldEditText
             android:id="@+id/gmail_signin_dialog_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
             android:inputType="textPassword"
             android:textStyle="bold" />
 
-        <TextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/gmail_signin_dialog_invalide_password_tx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -86,7 +86,7 @@
             android:visibility="invisible" >
         </ProgressBar>
 
-        <TextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/gmail_signin_dialog_auth_failed_tx"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -103,14 +103,14 @@
         android:orientation="horizontal"
         android:weightSum="2" >
 
-        <Button
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/gmail_cancel_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cancel" />
 
-        <Button
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/gmail_login_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -18,11 +18,11 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.GSMLocationupdates.SendFrameHandler;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class GpsShield extends ControllerParent<GpsShield> implements
 		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
@@ -66,7 +66,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
 	public void setGpsEventHandler(GpsEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override

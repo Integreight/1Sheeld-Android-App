@@ -7,6 +7,7 @@
     <string name="search_for_bluetooth">Search for bluetooth devices</string>
     <string name="disconnect_device">Disconnect 1Sheeld</string>
     <string name="go_to_shields_operation">Operate the shields</string>
+    <string name="about">About</string>
 
     <!-- MainActivity -->
     <string name="send">Send</string>
@@ -38,9 +39,6 @@
     <string name="connect">Connect</string>
 
     <!-- Social providers id -->
-    <string name="facebook_app_id">1423548367865538</string>
-    <string name="twitter_consumer_key">W89WcoS0fjGJ4pGgyBmA</string>
-    <string name="twitter_consumer_secret">izyhv5RIIaQgNsYX55hHVMj0BYm2p5bWQk8vqlasTo</string>
     <string name="scan">Scan</string>
     <string name="tryAgain">Try Again</string>
     <string name="notConnected">Not Connected</string>
@@ -73,5 +71,30 @@
 
     <string name="buzzer_tone">Press Required Tone</string>
     <string name="time_clock">Time</string>
+
+    <!-- Condition plugin name -->
+    <string name="condition_app_name">Locale Display Plug-in</string>
+    <string name="condition_plugin_name">Display</string>
+    <string name="list_on">On</string>
+    <string name="list_off">Off</string>
+    <string name="blurb_on">On</string>
+    <string name="blurb_off">Off</string>
+
+    <!-- Voice Recognition -->
+    <string name="speak">Speak</string>
+    <string name="tabToSpeak">Tap\nto\nSpeak</string>
+
+    <!-- Tutorial -->
+    <string name="go">Go !</string>
+    <!-- Terminal -->
+    <string name="terminalString">ASCII</string>
+    <string name="terminalASCI">DEC</string>
+    <string name="terminalBINARY">Binary</string>
+    <string name="terminalHEX">Hex</string>
+
+    <!-- Data Logger -->
+    <string name="readyToLog">Ready\nFor\nLogging</string>
+    <string name="stopLogging">Logging\nStopped</string>
+    <string name="logging">Logging</string>
 
 </resources>

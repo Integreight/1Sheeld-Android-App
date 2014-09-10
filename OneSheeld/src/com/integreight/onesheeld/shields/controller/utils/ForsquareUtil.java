@@ -20,7 +20,9 @@ import org.json.JSONObject;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.os.Bundle;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
+
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 

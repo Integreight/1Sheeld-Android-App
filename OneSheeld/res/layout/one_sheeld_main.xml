@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         layout="@layout/header" />
 
-    <com.integreight.onesheeld.utils.AppSlidingLeftMenu
+    <com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu
         android:id="@+id/sliding_pane_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -25,6 +25,6 @@
             android:id="@+id/appTransitionsContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.integreight.onesheeld.utils.AppSlidingLeftMenu>
+    </com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu>
 
 </LinearLayout>

@@ -6,11 +6,11 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class ProximityShield extends ControllerParent<ProximityShield>
 		implements SensorEventListener {
@@ -49,7 +49,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 	@Override
 	public ControllerParent<ProximityShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -61,7 +61,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 
 	public void setProximityEventHandler(ProximityEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override
@@ -101,8 +101,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
 		if (mSensorManager == null | mProximity == null) {
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
-			mProximity = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+			mProximity = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY) != null) {
 			// Success! There's sensor.

@@ -9,11 +9,11 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
-import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class TemperatureShield extends ControllerParent<TemperatureShield>
 		implements SensorEventListener {
@@ -58,7 +58,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 	@SuppressLint("InlinedApi")
 	@Override
 	public ControllerParent<TemperatureShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -71,7 +71,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
 
 	public void setTemperatureEventHandler(TemperatureEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override

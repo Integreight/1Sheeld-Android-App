@@ -13,11 +13,11 @@ import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class CameraShield extends ControllerParent<CameraShield> implements
 		CameraFragmentHandler {
@@ -106,7 +106,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 	@Override
 	public ControllerParent<CameraShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		if (!checkCameraHardware(getApplication().getApplicationContext())) {
@@ -136,7 +136,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 	public void setCameraEventHandler(CameraEventHandler eventHandler) {
 		// this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+		
 	}
 
 	@Override

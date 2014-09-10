@@ -38,7 +38,7 @@
             android:contentDescription="@string/app_name" />
     </RelativeLayout>
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/shield_list_item_name_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

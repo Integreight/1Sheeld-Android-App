@@ -7,8 +7,8 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.BitsUtils;
-import com.integreight.onesheeld.utils.ControllerParent;
 
 public class KeypadShield extends ControllerParent<KeypadShield> {
 	private static final byte DATA_IN = 0x01;
@@ -36,7 +36,7 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 	}
 
 	public void initPins() {
-		CommitInstanceTotable();
+
 	}
 
 	ShieldFrame sf;
@@ -59,7 +59,7 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		sendShieldFrame(sf);
 		// getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
 		// new char[] { row, column });
-		CommitInstanceTotable();
+
 	}
 
 	public void resetRowAndColumn(int row, int column) {
@@ -77,7 +77,7 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		sf.addByteArgument(rowByte);
 		sf.addByteArgument(columnByte);
 		sendShieldFrame(sf);
-		CommitInstanceTotable();
+
 	}
 
 	@Override

@@ -5,8 +5,9 @@ import android.app.Activity;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.BitsUtils;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 	private int connectedPin;
@@ -40,13 +41,14 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 		if (connectedPin != -1) {
 			this.isButtonOn = isButtonOn;
 			digitalWrite(connectedPin, isButtonOn);
+			Log.sysOut(connectedPin + "    " + isButtonOn);
 		}
 		toggle = isButtonOn ? BitsUtils.setBit(toggle, 1) : BitsUtils.resetBit(
 				toggle, 1);
 		sf = new ShieldFrame(UIShield.TOGGLEBUTTON_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(toggle);
 		sendShieldFrame(sf);
-		CommitInstanceTotable();
+
 	}
 
 	@Override

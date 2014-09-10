@@ -18,7 +18,7 @@
         android:textStyle="normal"
         android:typeface="sans" />
 
-    <RelativeLayout
+    <com.integreight.onesheeld.utils.customviews.ClickableRelativeLayout
         android:id="@+id/cancelConnection"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,9 +37,9 @@
             android:background="@drawable/bluetooth_disconnect_button"
             android:contentDescription="@string/app_name"
             android:scaleType="fitCenter" />
-    </RelativeLayout>
+    </com.integreight.onesheeld.utils.customviews.ClickableRelativeLayout>
 
-    <RelativeLayout
+    <com.integreight.onesheeld.utils.customviews.ClickableRelativeLayout
         android:id="@+id/getAvailableDevices"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,6 +57,6 @@
             android:layout_centerInParent="true"
             android:background="@drawable/shields_list_shields_operation_button"
             android:contentDescription="@string/app_name" />
-    </RelativeLayout>
+    </com.integreight.onesheeld.utils.customviews.ClickableRelativeLayout>
 
 </RelativeLayout>

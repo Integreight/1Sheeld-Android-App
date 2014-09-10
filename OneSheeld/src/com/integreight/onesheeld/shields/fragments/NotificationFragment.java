@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield.NotificationEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class NotificationFragment extends
 		ShieldFragmentParent<NotificationFragment> {
@@ -24,7 +24,7 @@ public class NotificationFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.notification_shield_fragment_layout,
+		v = inflater.inflate(R.layout.notification_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -46,8 +46,8 @@ public class NotificationFragment extends
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		notificationTextTextView = (TextView) getView().findViewById(
-				R.id.notification_shield_text_textview);
+		notificationTextTextView = (TextView) v
+				.findViewById(R.id.notification_shield_text_textview);
 
 	}
 
@@ -56,16 +56,15 @@ public class NotificationFragment extends
 		@Override
 		public void onNotificationReceive(final String notificationText) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						notificationTextTextView.setText(notificationText);
-					}
-				});
-			}
+				}
+			});
 
 		}
 	};

@@ -23,7 +23,7 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <com.integreight.onesheeld.utils.OneShieldButton
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
             android:textSize="22sp"
             android:typeface="sans" />
 
-        <com.integreight.onesheeld.utils.OneShieldTextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/progressTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
         android:background="#0094c1"
         android:orientation="vertical" >
 
-        <com.integreight.onesheeld.utils.OneShieldTextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/updateStatusText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -12,10 +12,10 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SliderShield;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 
 public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
@@ -25,8 +25,8 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.slider_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.slider_shield_fragment_layout, container,
+				false);
 		seekBar = (SeekBar) v.findViewById(R.id.slider_fragment_seekbar);
 		seekBar.setEnabled(false);
 		seekBar.setMax(255);

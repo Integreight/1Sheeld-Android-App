@@ -12,12 +12,12 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
-import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.integreight.onesheeld.utils.OneShieldButton;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 
 public class PushButtonFragment extends
 		ShieldFragmentParent<PushButtonFragment> {
@@ -25,23 +25,23 @@ public class PushButtonFragment extends
 	Button connectButton;
 	Rect rect;
 	AppSlidingLeftMenu menu;
-	OneShieldButton push;
+	OneSheeldButton push;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		final View v = inflater.inflate(
-				R.layout.push_button_shield_fragment_layout, container, false);
+		v = inflater.inflate(R.layout.push_button_shield_fragment_layout,
+				container, false);
 		if ((PushButtonShield) getApplication().getRunningShields().get(
 				getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),
 					new PushButtonShield(activity, getControllerTag()));
 		}
 
-		push = (OneShieldButton) v
+		push = (OneSheeldButton) v
 				.findViewById(R.id.push_button_shield_button_push_button);
-		menu = (AppSlidingLeftMenu) activity.findViewById(
-				R.id.sliding_pane_layout);
+		menu = (AppSlidingLeftMenu) activity
+				.findViewById(R.id.sliding_pane_layout);
 		push.setOnTouchListener(new View.OnTouchListener() {
 
 			@Override

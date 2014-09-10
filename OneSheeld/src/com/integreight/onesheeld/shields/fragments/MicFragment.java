@@ -10,10 +10,10 @@ import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.MicShield;
 import com.integreight.onesheeld.shields.controller.MicShield.MicEventHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	RelativeLayout.LayoutParams params;
@@ -24,7 +24,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
+		v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
 				false);
 		setHasOptionsMenu(true);
 		return v;
@@ -44,8 +44,8 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		soundLevelIndicator = (TextView) getView().findViewById(
-				R.id.soundLevelIndicator);
+		soundLevelIndicator = (TextView) v
+				.findViewById(R.id.soundLevelIndicator);
 		params = (LayoutParams) soundLevelIndicator.getLayoutParams();
 		soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
 				new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -56,7 +56,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 					}
 				});
 		// params.gravity = Gravity.BOTTOM;
-		// getView().findViewById(R.id.start_mic).setOnClickListener(
+		// v.findViewById(R.id.start_mic).setOnClickListener(
 		// new View.OnClickListener() {
 		//
 		// @Override
@@ -67,7 +67,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		//
 		// }
 		// });
-		// getView().findViewById(R.id.stop_mic).setOnClickListener(
+		// v.findViewById(R.id.stop_mic).setOnClickListener(
 		// new View.OnClickListener() {
 		//
 		// @Override
@@ -86,21 +86,21 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 		@Override
 		public void getAmplitude(final Double value) {
 
-			if (canChangeUI()) {
-				// set data to UI
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			// set data to UI
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						params.bottomMargin = (int) (value * stepValue);
 						soundLevelIndicator.requestLayout();
-						((OneShieldTextView) getView().findViewById(
-								R.id.micValue)).setText(String.valueOf(value)
-								.substring(0, 4) + " db");
+						((OneSheeldTextView) v.findViewById(R.id.micValue))
+								.setText(String.valueOf(value).substring(0, 4)
+										+ " db");
 					}
-				});
-			}
+				}
+			});
 		}
 	};
 

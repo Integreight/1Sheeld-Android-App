@@ -6,11 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 
@@ -19,8 +19,8 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 			Bundle savedInstanceState) {
 
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.skype_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.skype_shield_fragment_layout, container,
+				false);
 		return v;
 	}
 

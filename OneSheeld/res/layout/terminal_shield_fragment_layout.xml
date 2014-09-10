@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:paddingBottom="30dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="20dp" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldEditText
+            android:id="@+id/terminalInput"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_weight="1"
+            android:background="@drawable/curved_terminal_field"
+            android:maxLength="64"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textColor="@color/green"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/send"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/search_area_buttons_selector"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="@string/send"
+            android:textColor="@color/offWhite" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/curved_terminal_output" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ListView
+            android:id="@+id/terminalOutput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="15dp"
+            android:cacheColorHint="@color/transparent"
+            android:divider="@color/transparent"
+            android:dividerHeight="0dip"
+            android:fadingEdge="none" />
+
+        <Button
+            android:id="@+id/clearTerminal"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/transparent"
+            android:text="X"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="15dp"
+        android:orientation="horizontal" >
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/terminalString"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginRight=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduinoPinsSelector"
+            android:text="@string/terminalString"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/asci"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".3dp"
+            android:layout_marginRight=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduino_conn_resetAll_bg"
+            android:text="@string/terminalASCI"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/binary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".3dp"
+            android:layout_marginRight=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduino_conn_resetAll_bg"
+            android:text="@string/terminalBINARY"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/hex"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".3dp"
+            android:layout_weight="1"
+            android:background="@color/arduino_conn_resetAll_bg"
+            android:text="@string/terminalHEX"
+            android:textColor="@color/offWhite"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <ToggleButton
+            android:id="@+id/toggleTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:textOff="Time OFF"
+            android:textOn="Time ON" />
+
+        <ToggleButton
+            android:id="@+id/toggleAutoScrolling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:checked="true"
+            android:textOff="Auto-Scroll OFF"
+            android:textOn="Auto-Scroll ON" />
+    </LinearLayout>
+
+</LinearLayout>

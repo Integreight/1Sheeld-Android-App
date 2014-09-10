@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/black_bg" >
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/hint"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:textColor="@color/white"
         android:textSize="40sp" />
 
-    <com.integreight.onesheeld.utils.OneShieldTextView
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/slogan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,7 +55,7 @@
                 android:textOn="" />
         </RelativeLayout>
 
-        <com.integreight.onesheeld.utils.OneShieldTextView
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -74,14 +74,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <com.integreight.onesheeld.utils.OneShieldButton
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/goBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/go_button_selector"
             android:gravity="center"
-            android:text="Go !"
+            android:text="@string/go"
             android:textColor="@color/white"
             android:textSize="35sp" />
     </RelativeLayout>

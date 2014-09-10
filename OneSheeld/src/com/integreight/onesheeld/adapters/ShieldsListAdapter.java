@@ -15,13 +15,13 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.ControllerParent.SelectionAction;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent.SelectionAction;
+import com.integreight.onesheeld.utils.Log;
 
 public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	MainActivity activity;

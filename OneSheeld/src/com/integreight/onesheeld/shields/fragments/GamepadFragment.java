@@ -12,16 +12,15 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield.Pin;
-import com.integreight.onesheeld.utils.Key;
-import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.Key;
+import com.integreight.onesheeld.utils.customviews.Key.KeyTouchEventListener;
 
 public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
-
 	MenuItem connectButton;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
@@ -148,7 +147,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 
-		View v = inflater.inflate(R.layout.gamepad_shield_fragment_layout,
+		v = inflater.inflate(R.layout.gamepad_shield_fragment_layout,
 				container, false);
 		upArrowKey = (Key) v.findViewById(R.id.gamepad_up_arrow_key);
 		downArrowKey = (Key) v.findViewById(R.id.gamepad_down_arrow_key);
@@ -209,7 +208,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		initializeKeysEventHandler((ViewGroup) getView());
+		initializeKeysEventHandler((ViewGroup) v);
 
 	}
 

@@ -8,10 +8,10 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	private final String VOLUME_PREF_KEY = "buzzerVolume";
@@ -23,8 +23,6 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 	public int connectedPin = -1;
 	private boolean isLedOn;
 	private MediaPlayer mp;
-
-	// private static final int soundResourceId = R.raw.buzzer_sound;
 
 	public SpeakerShield() {
 		super();
@@ -63,7 +61,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 
 	public void setSpeakerEventHandler(SpeakerEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public static interface SpeakerEventHandler {
@@ -165,36 +163,6 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 					}
 			}
 		}
-		// else {
-		// if (uri != null) {
-		// try {
-		// // Ring
-		// if (!mp.isPlaying())
-		// mp = MediaPlayer.create(activity, Uri.parse(uri));
-		// } catch (IllegalArgumentException e) {
-		// Toast.makeText(activity,
-		// "Can't play the current buzz! Please, replace it",
-		// Toast.LENGTH_SHORT).show();
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (SecurityException e) {
-		// Toast.makeText(activity,
-		// "Can't play the current buzz! Please, replace it",
-		// Toast.LENGTH_SHORT).show();
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (IllegalStateException e) {
-		// Toast.makeText(activity,
-		// "Can't play the current buzz! Please, replace it",
-		// Toast.LENGTH_SHORT).show();
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		// } else {
-		// if (!mp.isPlaying())
-		// mp = MediaPlayer.create(getApplication(), soundResourceId);
-		// }
-		// }
 		mp.setLooping(true);
 		if (!mp.isPlaying() && isPrepared) {
 			mp.start();

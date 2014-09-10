@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import android.media.MediaRecorder;
 
-import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.utils.Log;
 
 public class MicSoundMeter {
 	// static final private double EMA_FILTER = 0.6;

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/speaker_shield_imageview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@anim/tts_animation"
+        android:contentDescription="@string/app_name" />
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+        android:id="@+id/ttsText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/speaker_shield_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
+        android:maxLines="2"
+        android:scrollbars="vertical"
+        android:textColor="@color/offWhite"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/decreaseBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/speaker_shield_imageview"
+        android:layout_below="@id/ttsText"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/tts_shield_male_voice_button"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/increaseBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/speaker_shield_imageview"
+        android:layout_below="@id/ttsText"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/tts_shield_female_voice_button"
+        android:visibility="gone" />
+
+</RelativeLayout>

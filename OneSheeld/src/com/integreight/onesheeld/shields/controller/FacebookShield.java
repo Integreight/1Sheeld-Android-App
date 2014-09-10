@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -8,6 +10,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
@@ -24,16 +29,19 @@ import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
+import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.EventHandler;
-import com.integreight.onesheeld.Log;
+import com.integreight.onesheeld.utils.Log;
 
 public class FacebookShield extends ControllerParent<FacebookShield> {
 	private static FacebookEventHandler eventHandler;
 	private String lastPost;
 	private Fragment fragment;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
+//	private static final byte SEND_MESSAGE_METHOD_ID = (byte) 0x03;
+	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x02;
 
 	static final String PREF_KEY_FACEBOOK_USERNAME = "FacebookName";
 
@@ -61,7 +69,9 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Session session = Session.getActiveSession();
 		if (session == null) {
 			if (session == null) {
-				session = new Session(activity);
+				session = new Session.Builder(activity).setApplicationId(
+						activity.getThisApplication().socialKeys.facebookID)
+						.build();
 			}
 			Session.setActiveSession(session);
 		}
@@ -81,11 +91,18 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Session session = Session.getActiveSession();
 		if (session == null) {
 			if (savedInstanceState != null) {
-				session = Session.restoreSession(activity, null,
-						statusCallback, savedInstanceState);
+				session = new Session.Builder(activity)
+						.setApplicationId(
+								FacebookShield.this.activity
+										.getThisApplication().socialKeys.facebookID)
+						.build();
 			}
 			if (session == null) {
-				session = new Session(activity);
+				session = new Session.Builder(activity)
+						.setApplicationId(
+								FacebookShield.this.activity
+										.getThisApplication().socialKeys.facebookID)
+						.build();
 			}
 			Session.setActiveSession(session);
 		}
@@ -96,31 +113,39 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	public void setShieldFragment(Fragment fragment) {
 		this.fragment = fragment;
-		CommitInstanceTotable();
+
 	}
 
 	public void setFacebookEventHandler(FacebookEventHandler eventHandler) {
 		FacebookShield.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
-	public static interface FacebookEventHandler extends EventHandler {
+	public static interface FacebookEventHandler {
 		void onRecievePost(String post);
 
 		void onFacebookLoggedIn();
 
 		void onFacebookError(String error);
+
+		void startProgress();
+
+		void stopProgress();
 	}
 
 	public void loginToFacebook() {
 		Session session = Session.getActiveSession();
 		if (session == null) {
-			Session.openActiveSession(activity, fragment, true, statusCallback);
+			session = new Session.Builder(activity).setApplicationId(
+					activity.getThisApplication().socialKeys.facebookID)
+					.build();
+			Session.setActiveSession(session);
+			loginToFacebook();
 		} else if (!session.isOpened()) {
 			session.openForRead(new Session.OpenRequest(fragment)
 					.setCallback(statusCallback));
 		}
-		CommitInstanceTotable();
+
 	}
 
 	public void logoutFromFacebook() {
@@ -130,7 +155,9 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			// Session.getActiveSession().close();
 			Session.getActiveSession().closeAndClearTokenInformation();
 		} else {
-			Session ses = new Session(activity);
+			Session ses = new Session.Builder(activity).setApplicationId(
+					activity.getThisApplication().socialKeys.facebookID)
+					.build();
 			Session.setActiveSession(ses);
 			ses.closeAndClearTokenInformation();
 		}
@@ -138,7 +165,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_FACEBOOK_USERNAME);
 		e.commit();
-		CommitInstanceTotable();
+
 	}
 
 	// @Override
@@ -251,42 +278,22 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 			Bundle postParams = new Bundle();
 			postParams.putString("message", message);
-			// postParams.putString("name", "Facebook SDK for Android");
-			// postParams.putString("caption",
-			// "Build great social apps and get more installs.");
-			// postParams
-			// .putString(
-			// "description",
-			// "The Facebook SDK for Android makes it easier and faster to develop Facebook integrated Android apps.");
-			// postParams.putString("link",
-			// "https://developers.facebook.com/android");
-			// postParams
-			// .putString("picture",
-			// "https://raw.github.com/fbsamples/ios-3.x-howtos/master/Images/iossdk_logo.png");
-
 			Request.Callback callback = new Request.Callback() {
 				public void onCompleted(Response response) {
 					FacebookRequestError error = response.getError();
 					if (error != null) {
 						if (eventHandler != null) {
 							Log.sysOut("$#$#$ " + error);
+							eventHandler.stopProgress();
 							eventHandler.onFacebookError(error
 									.getErrorMessage());
 						}
 						return;
 					}
-					// String postId = null;
-					// try {
-					// JSONObject graphResponse = response.getGraphObject()
-					// .getInnerJSONObject();
-					// postId = graphResponse.getString("id");
-					if (eventHandler != null)
+					if (eventHandler != null) {
+						eventHandler.stopProgress();
 						eventHandler.onRecievePost(message);
-					// } catch (Exception e) {
-					// //Log.i("", "JSON error " + e.getMessage());
-					// if(eventHandler!=null)eventHandler.onFacebookError(e.getMessage());
-					// }
-
+					}
 				}
 			};
 
@@ -299,22 +306,142 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	}
 
+//	private void sendMessage(final String message, final String to) {
+//		Session session = Session.getActiveSession();
+//
+//		if (session != null) {
+//
+//			Bundle postParams = new Bundle();
+//			postParams.putString("message", message);
+//			postParams.putString("to", to);
+//			Request.Callback callback = new Request.Callback() {
+//				public void onCompleted(Response response) {
+//					FacebookRequestError error = response.getError();
+//					if (error != null) {
+//						if (eventHandler != null) {
+//							Log.sysOut("$#$#$ " + error);
+//							eventHandler.stopProgress();
+//							eventHandler.onFacebookError(error
+//									.getErrorMessage());
+//						}
+//						return;
+//					}
+//					if (eventHandler != null) {
+//						eventHandler.onRecievePost("Message Sent to " + to
+//								+ " Saying " + message);
+//						eventHandler.stopProgress();
+//					}
+//				}
+//			};
+//
+//			Request request = new Request(session, "me/messages", postParams,
+//					HttpMethod.POST, callback);
+//
+//			RequestAsyncTask task = new RequestAsyncTask(request);
+//			task.execute();
+//		}
+//
+//	}
+
+	public void uploadImage(final String path, final String msg) {
+		new AsyncTask<Void, Void, Void>() {
+			byte[] data = null;
+			Bitmap bi;
+
+			@Override
+			protected Void doInBackground(Void... params) {
+				int rotate = ImageUtils.getCameraPhotoOrientation(path);
+				Bitmap scaledBitmap  = ImageUtils.decodeFile(new File(path),1024);
+				Matrix matrix = new Matrix();
+				matrix.postRotate(rotate);
+				bi = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
+				//scaledBitmap.recycle();
+				return null;
+			}
+
+			@Override
+			protected void onPostExecute(final Void result1) {
+				Session session = Session.getActiveSession();
+
+				if (session != null) {
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					bi.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+					bi.recycle();
+					data = baos.toByteArray();
+					Bundle postParams = new Bundle();
+					postParams.putString("message", msg);
+					//postParams.putString("method", "photos.upload");
+					postParams.putByteArray("source", data);
+					Request.Callback callback = new Request.Callback() {
+						public void onCompleted(Response response) {
+							FacebookRequestError error = response.getError();
+							if (error != null) {
+								if (eventHandler != null) {
+									Log.sysOut("$#$#$ " + error);
+									eventHandler.onFacebookError(error
+											.getErrorMessage());
+									eventHandler.stopProgress();
+								}
+								return;
+							}
+							data = null;
+							if (bi != null)
+								bi.recycle();
+							System.gc();
+							if (eventHandler != null) {
+								eventHandler.stopProgress();
+								Toast.makeText(activity, "Image Uploaded!", Toast.LENGTH_SHORT).show();
+								eventHandler.onRecievePost(msg);
+							}
+						}
+					};
+					Toast.makeText(activity, "Uploading your image!", Toast.LENGTH_SHORT).show();
+					Request request = new Request(session, "me/photos",
+							postParams, HttpMethod.POST, callback);
+
+					RequestAsyncTask task = new RequestAsyncTask(request);
+					task.execute();
+				} else {
+					if (bi != null)
+						bi.recycle();
+				}
+				super.onPostExecute(result1);
+			}
+		}.execute(null, null);
+	}
+
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
 		if (frame.getShieldId() == UIShield.FACEBOOK_SHIELD.getId()) {
 			lastPost = frame.getArgumentAsString(0);
-			if (isFacebookLoggedInAlready())
-				if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
-					if (ConnectionDetector
-							.isConnectingToInternet(getApplication()
-									.getApplicationContext()))
+			if (isFacebookLoggedInAlready()) {
+				if (ConnectionDetector.isConnectingToInternet(getApplication()
+						.getApplicationContext())) {
+					if (eventHandler != null)
+						eventHandler.startProgress();
+					if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
 						publishStory(lastPost);
-					else
-						Toast.makeText(
-								getApplication().getApplicationContext(),
-								"Please check your Internet connection and try again.",
-								Toast.LENGTH_SHORT).show();
+					else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
+						String imgPath=null;
+						byte sourceFolderId=frame.getArgument(1)[0];
+						if(sourceFolderId==SocialUtils.FROM_ONESHEELD_FOLDER)
+							imgPath=SocialUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+						else if (sourceFolderId==SocialUtils.FROM_CAMERA_FOLDER)
+							imgPath=SocialUtils.getLastCapturedImagePathFromCameraFolder(activity);
+						if (imgPath!=null){
+						uploadImage(
+								imgPath,
+								lastPost);}
+					}
+					// if (frame.getFunctionId() == SEND_MESSAGE_METHOD_ID)
+					// sendMessage(lastPost, frame.getArgumentAsString(1));
+				} else
+					Toast.makeText(
+							getApplication().getApplicationContext(),
+							"Please check your Internet connection and try again.",
+							Toast.LENGTH_SHORT).show();
+			}
 		}
 
 	}

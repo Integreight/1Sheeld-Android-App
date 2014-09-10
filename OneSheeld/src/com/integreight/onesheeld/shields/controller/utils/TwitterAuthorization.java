@@ -2,10 +2,6 @@ package com.integreight.onesheeld.shields.controller.utils;
 
 public class TwitterAuthorization {
 
-	public static String CONSUMER_KEY = "RUALr0EwkNRJUUnnRS6DzwLs1";
-
-	public static String CONSUMER_SECRET = "y9r7afp7hxVhpMLhyc1eIQcifZv5hxFFXQYOuZIXw1onSIGsC3";
-
 	public static String REQUEST_TOKEN_URL = "https://api.twitter.com/oauth/request_token";
 
 	public static String AUTHORIZE_URL = "https://api.twitter.com/oauth/authorize";

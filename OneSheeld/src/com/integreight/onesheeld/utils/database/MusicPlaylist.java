@@ -2,8 +2,9 @@ package com.integreight.onesheeld.utils.database;
 
 import java.util.ArrayList;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.model.PlaylistItem;
+import com.integreight.onesheeld.utils.Log;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

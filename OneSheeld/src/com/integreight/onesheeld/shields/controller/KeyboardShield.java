@@ -4,8 +4,8 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.fragments.KeyboardFragment.KeyboardEventHandler;
-import com.integreight.onesheeld.utils.ControllerParent;
 
 public class KeyboardShield extends ControllerParent<KeyboardShield> {
 	private ShieldFrame frame;

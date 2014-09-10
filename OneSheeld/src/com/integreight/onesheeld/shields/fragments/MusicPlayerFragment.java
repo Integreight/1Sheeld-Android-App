@@ -8,12 +8,12 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.MusicShield;
 import com.integreight.onesheeld.shields.controller.MusicShield.MusicEventHandler;
-import com.integreight.onesheeld.shields.fragments.settings.MusicShieldSettings;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.shields.fragments.sub.MusicShieldSettings;
+import com.integreight.onesheeld.utils.Log;
 
 public class MusicPlayerFragment extends
 		ShieldFragmentParent<MusicPlayerFragment> {
@@ -26,8 +26,9 @@ public class MusicPlayerFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		return inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
+		v = inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
 				container, false);
+		return v;
 	}
 
 	@Override
@@ -58,12 +59,19 @@ public class MusicPlayerFragment extends
 			public void run() {
 				while (isTracking) {
 					if ((MusicShield) getApplication().getRunningShields().get(
-							getControllerTag()) != null) {
+							getControllerTag()) != null
+							&& ((MusicShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).mediaPlayer != null) {
 						seekBar.setMax(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaDuration);
-						seekBar.setProgress(((MusicShield) getApplication()
-								.getRunningShields().get(getControllerTag())).mediaPlayer
-								.getCurrentPosition());
+						try {
+							seekBar.setProgress(((MusicShield) getApplication()
+									.getRunningShields()
+									.get(getControllerTag())).mediaPlayer
+									.getCurrentPosition());
+						} catch (IllegalStateException e) {
+						}
 					}
 					try {
 						Thread.sleep(100);
@@ -114,65 +122,69 @@ public class MusicPlayerFragment extends
 
 		@Override
 		public void setMusicName(final String name) {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI())
 						musicFileName.setText(name);
-					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void seekTo(final int pos) {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						seekBar.setMax(((MusicShield) getApplication()
 								.getRunningShields().get(getControllerTag())).mediaDuration);
 						seekBar.setProgress(pos);
 					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void play() {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						playingBtn
 								.setBackgroundResource(R.drawable.musicplayer_play_symbol);
 						playingStatus.setText("Playing");
 					}
-				});
+				}
+			});
 		}
 
 		@Override
 		public void pause() {
-			if (canChangeUI())
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						playingBtn
 								.setBackgroundResource(R.drawable.musicplayer_pause_symbol);
 						playingStatus.setText("Paused");
 					}
-				});
+				}
+			});
 		}
 	};
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		musicFileName = (TextView) getView().findViewById(R.id.playingMusic);
-		seekBar = (SeekBar) getView().findViewById(R.id.seekBar);
-		playingBtn = (ImageView) getView().findViewById(R.id.playingBtn);
-		playingStatus = (TextView) getView().findViewById(R.id.playingStatus);
+		musicFileName = (TextView) v.findViewById(R.id.playingMusic);
+		seekBar = (SeekBar) v.findViewById(R.id.seekBar);
+		playingBtn = (ImageView) v.findViewById(R.id.playingBtn);
+		playingStatus = (TextView) v.findViewById(R.id.playingStatus);
 	}
 }

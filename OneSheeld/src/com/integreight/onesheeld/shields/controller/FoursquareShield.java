@@ -25,14 +25,14 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareDialogError;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareError;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
@@ -40,8 +40,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 	// private static final byte FOURSQUARE_COMMAND = (byte) 0x1B;
 	private static final byte CHECKIN_METHOD_ID = (byte) 0x01;
 	Foursquare foursquare;
-	String clientID = "SXCMMTAXT05AVQYQS5S3ZCOLEKCN5ZCDJKQYBAFJJUDJIEC0";
-	String clientSecret = "RQB3QEA2HLA0TQEM3XPOGJEJ4IHHK14LUMEOPI1BOIYFEHXA";
 	String redirectUrl = "http://www.1sheeld.com";
 	String placeID = "";
 	String message = "";
@@ -76,7 +74,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	public void setFoursquareEventHandler(FoursquareEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public static interface FoursquareEventHandler {
@@ -345,8 +343,10 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		prog.setMessage("Please, Wait!");
 		prog.setCancelable(false);
 		prog.show();
-		foursquare = new Foursquare(clientID, clientSecret, redirectUrl);
-
+		foursquare = new Foursquare(
+				activity.getThisApplication().socialKeys.foursquare.id,
+				activity.getThisApplication().socialKeys.foursquare.secret,
+				redirectUrl);
 		foursquare.authorize(getActivity(),
 				new FoursquareAuthenDialogListener());
 		prog.cancel();

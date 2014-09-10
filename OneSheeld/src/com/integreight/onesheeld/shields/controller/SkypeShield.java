@@ -9,10 +9,10 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class SkypeShield extends ControllerParent<SkypeShield> {
 
@@ -36,7 +36,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 
 	public void setSkypeEventHandler(SkypeEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	public static interface SkypeEventHandler {

@@ -3,7 +3,6 @@ package com.integreight.onesheeld.utils;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import com.integreight.onesheeld.Log;
 
 import com.integreight.onesheeld.R;
 
@@ -40,9 +39,4 @@ public class BaseContainerFragment extends Fragment {
 		}
 		return isPop;
 	}
-
-	// @Override
-	// public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-	// inflater.inflate(R.menu.main, menu);
-	// }
 }

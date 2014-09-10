@@ -1,13 +1,20 @@
 package com.integreight.onesheeld;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
+import android.util.SparseArray;
 
 import com.google.analytics.tracking.android.GAServiceManager;
 import com.google.analytics.tracking.android.GoogleAnalytics;
@@ -15,16 +22,20 @@ import com.google.analytics.tracking.android.Logger.LogLevel;
 import com.google.analytics.tracking.android.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
+import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.model.SocialKeys;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.ControllerParent;
 
 /**
- * @author SaadRoid
+ * @author Ahmed Saad
  * 
  */
 public class OneSheeldApplication extends Application {
 	private SharedPreferences appPreferences;
+	public static int ARDUINO_LIBRARY_VERSION = 3;
 	private final String APP_PREF_NAME = "oneSheeldPreference";
 	private final String LAST_DEVICE = "lastConnectedDevice";
 	private final String MAJOR_VERSION = "majorVersion";
@@ -33,6 +44,8 @@ public class OneSheeldApplication extends Application {
 	private final String BUZZER_SOUND_KEY = "buzerSound";
 	private final String TUTORIAL_SHOWN_TIME = "tutShownTime";
 	private final String SHOWTUTORIALS_AGAIN = "showTutAgain";
+	private final String TASKER_CONDITION_PIN = "taskerConditionPin";
+	private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
 	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
 	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
 	public static final Hashtable<String, String> shieldsFragmentsTags = new Hashtable<String, String>();
@@ -42,6 +55,9 @@ public class OneSheeldApplication extends Application {
 	public Typeface appFont;
 	private GoogleAnalytics googleAnalyticsInstance;
 	private Tracker appGaTracker;
+	public SocialKeys socialKeys = new SocialKeys();
+	public TaskerShield taskerController;
+	public SparseArray<Boolean> taskerPinsStatus;
 
 	/*
 	 * Google Analytics configuration values.
@@ -108,7 +124,54 @@ public class OneSheeldApplication extends Application {
 		setConnectionHandler(new ConnectionDetector());
 		appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
+		parseSocialKeys();
+		initTaskerPins();
 		super.onCreate();
+	}
+
+	@SuppressLint("UseSparseArrays")
+	public void initTaskerPins() {
+		ArduinoPin[] pins = ArduinoPin.values();
+		taskerPinsStatus = new SparseArray<Boolean>(pins.length);
+		for (ArduinoPin pin : pins) {
+			taskerPinsStatus.put(pin.microHardwarePin, false);
+		}
+	}
+
+	private void parseSocialKeys() {
+		String metaData = "";
+		try {
+			metaData = loadData("dev_meta_data");
+		} catch (Exception e) {
+			try {
+				metaData = loadData("meta_data");
+			} catch (Exception e1) {
+			}
+		}
+		try {
+			JSONObject socialKeysObject = new JSONObject(metaData);
+			JSONObject twitter = socialKeysObject.getJSONObject("twitter");
+			JSONObject foursquare = socialKeysObject
+					.getJSONObject("foursquare");
+			socialKeys.facebookID = socialKeysObject.getString("facebook");
+			socialKeys.twitter.id = twitter.getString("consumer_key");
+			socialKeys.twitter.secret = twitter.getString("consumer_secret");
+			socialKeys.foursquare.id = foursquare.getString("client_key");
+			socialKeys.foursquare.secret = foursquare
+					.getString("client_secret");
+		} catch (JSONException e) {
+		}
+	}
+
+	public String loadData(String inFile) throws IOException {
+		String tContents = "";
+		InputStream stream = getAssets().open(inFile);
+		int size = stream.available();
+		byte[] buffer = new byte[size];
+		stream.read(buffer);
+		stream.close();
+		tContents = new String(buffer);
+		return tContents;
 	}
 
 	public SharedPreferences getAppPreferences() {
@@ -166,6 +229,23 @@ public class OneSheeldApplication extends Application {
 
 	public int getTutShownTimes() {
 		return appPreferences.getInt(TUTORIAL_SHOWN_TIME, 0);
+	}
+
+	public void setTaskerConditionPin(int pin) {
+		appPreferences.edit().putInt(TASKER_CONDITION_PIN, pin).commit();
+	}
+
+	public int getTaskerConditionPin() {
+		return appPreferences.getInt(TASKER_CONDITION_PIN, -1);
+	}
+
+	public void setTaskerConditionStatus(boolean flag) {
+		appPreferences.edit().putBoolean(TASKER_CONDITION_STATUS, flag)
+				.commit();
+	}
+
+	public boolean getTaskConditionStatus() {
+		return appPreferences.getBoolean(TASKER_CONDITION_STATUS, true);
 	}
 
 	public void setShownTutAgain(boolean flag) {
@@ -227,7 +307,7 @@ public class OneSheeldApplication extends Application {
 	public void setArduinoFirmataEventHandler(
 			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
 		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
-		appFirmata.addEventHandler(arduinoFirmataEventHandler);
+		getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
 	}
 
 	@Override

@@ -6,9 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ClockShield;
+import com.integreight.onesheeld.shields.controller.DataLoggerShield;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
@@ -36,10 +38,13 @@ import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
+import com.integreight.onesheeld.shields.controller.SpeechRecognitionShield;
+import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.controller.TemperatureShield;
+import com.integreight.onesheeld.shields.controller.TerminalShield;
+import com.integreight.onesheeld.shields.controller.TextToSpeechShield;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
-import com.integreight.onesheeld.utils.ControllerParent;
 
 public enum UIShield {
 	LED_SHIELD((byte) 0x02, "LED", 0xff03d203,
@@ -55,7 +60,7 @@ public enum UIShield {
 			R.drawable.shields_list_mic_symbol, false, MicShield.class, 1), KEYPAD_SHIELD(
 			(byte) 0x09, "Keypad", 0xff03c0ae,
 			R.drawable.shields_list_keypad_symbol, false, KeypadShield.class), SLIDER_SHIELD(
-			(byte) 0x01, "Sliders", 0xffc0034c,
+			(byte) 0x01, "Slider", 0xffc0034c,
 			R.drawable.shields_list_slider_symbol, false, SliderShield.class), LCD_SHIELD(
 			(byte) 0x17, "LCD", 0xff99bd03, R.drawable.shields_list_lcd_symbol,
 			false, LcdShield.class, true), MAGNETOMETER_SHIELD((byte) 0x0A,
@@ -124,7 +129,19 @@ public enum UIShield {
 			R.drawable.shields_list_clock_symbol, false, ClockShield.class), KEYBOARD_SHIELD(
 			(byte) 0x22, "Keyboard", 0xffde1f26,
 			R.drawable.shields_list_keyboard_symbol, false,
-			KeyboardShield.class);
+			KeyboardShield.class), TEXT_TO_SPEECH_SHIELD((byte) 0x23,
+			"Text To Speech", 0xffde1f26,
+			R.drawable.shields_list_tts_symbol, false,
+			TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD((byte) 0x24,
+			"Speech Recognizer", 0xffde1f26,
+			R.drawable.shields_list_voice_recognition_symbol, false,
+			SpeechRecognitionShield.class), DATA_LOGGER((byte) 0x25,
+			"Data Logger", 0xffde1f26, R.drawable.shields_list_data_logger_symbol,
+			false, DataLoggerShield.class), TERMINAL_SHIELD((byte) 0x26,
+			"Terminal", 0xffde1f26, R.drawable.shields_list_terminal_symbol,
+			false, TerminalShield.class), TASKER_SHIELD((byte) 0x07, "Tasker",
+			0xff0b4c8d, R.drawable.shields_list_flashlight_symbol, false,
+			TaskerShield.class, false);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
 			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
@@ -132,7 +149,9 @@ public enum UIShield {
 			0xffdb7f40, 0xffb950e9, 0xff4c84e9, 0xff0b4c8d, 0xff08c473,
 			0xff543c8d, 0xffd95342, 0xff58844f, 0xff8b268d, 0xff67584d,
 			0xff999f45, 0xff6d0347, 0xffe9bd03, 0xff127303, 0xff08bbb2,
-			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26 };
+			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26,
+			0xff142218, 0xffc9a302, 0xffa57378, 0xff3354af, 0xff282742,
+			0xff381616 };
 	private byte id;
 	private String name;
 	public int itemBackgroundColor;
@@ -361,4 +380,5 @@ public enum UIShield {
 		valsFiltered = null;
 		return ret;
 	}
+
 }

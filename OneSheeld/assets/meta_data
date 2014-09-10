@@ -1,0 +1,11 @@
+{
+    "facebook": "Facebook Application ID",
+    "twitter": {
+        "consumer_key": "Twitter Consumer ID",
+        "consumer_secret": "Twitter Consumer Secret"
+    },
+    "foursquare": {
+        "client_key": "Foursquare Client ID",
+        "client_secret": "Foursquare Client Secret"
+    }
+}

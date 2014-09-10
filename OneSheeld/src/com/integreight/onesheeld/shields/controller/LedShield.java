@@ -3,10 +3,10 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class LedShield extends ControllerParent<LedShield> {
 	public int connectedPin = -1;
@@ -30,6 +30,11 @@ public class LedShield extends ControllerParent<LedShield> {
 		super(activity, tag);
 	}
 
+	@Override
+	public ControllerParent<LedShield> setTag(String tag) {
+		return super.setTag(tag);
+	}
+
 	public boolean isLedOn() {
 		return isLedOn;
 	}
@@ -40,7 +45,7 @@ public class LedShield extends ControllerParent<LedShield> {
 					.digitalRead(connectedPin);
 		else
 			isLedOn = false;
-		CommitInstanceTotable();
+
 		return isLedOn;
 	}
 
@@ -54,7 +59,7 @@ public class LedShield extends ControllerParent<LedShield> {
 		if (eventHandler != null) {
 			eventHandler.onLedChange(isLedOn);
 		}
-		CommitInstanceTotable();
+
 		super.onDigital(portNumber, portData);
 	}
 
@@ -65,7 +70,7 @@ public class LedShield extends ControllerParent<LedShield> {
 					.digitalRead(connectedPin);
 		else
 			isLedOn = false;
-		CommitInstanceTotable();
+
 	}
 
 	@Override

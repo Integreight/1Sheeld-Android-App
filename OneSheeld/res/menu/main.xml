@@ -15,5 +15,10 @@
         android:orderInCategory="100"
         android:showAsAction="never"
         android:title="@string/appTutorial"/>
+    <item
+        android:id="@+id/aboutDialogButton"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/about"/>
 
 </menu>

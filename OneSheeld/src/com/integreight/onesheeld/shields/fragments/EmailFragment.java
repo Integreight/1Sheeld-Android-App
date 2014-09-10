@@ -12,14 +12,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.SecurePreferences;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
@@ -36,8 +36,8 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			Bundle savedInstanceState) {
 
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.email_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.email_shield_fragment_layout, container,
+				false);
 		return v;
 	}
 
@@ -61,22 +61,19 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
 
-		sendTo = (TextView) getView().findViewById(
-				R.id.gmail_shield_sendto_textview);
-		userName = (TextView) getView().findViewById(
-				R.id.gmail_shield_username_textview);
-		subject = (TextView) getView().findViewById(
-				R.id.gmail_shield_subject_textview);
-		login_bt = (Button) getView().findViewById(R.id.login_gmail_bt);
-		logout_bt = (Button) getView().findViewById(R.id.logout_gmail_bt);
+		sendTo = (TextView) v.findViewById(R.id.gmail_shield_sendto_textview);
+		userName = (TextView) v
+				.findViewById(R.id.gmail_shield_username_textview);
+		subject = (TextView) v.findViewById(R.id.gmail_shield_subject_textview);
+		login_bt = (Button) v.findViewById(R.id.login_gmail_bt);
+		logout_bt = (Button) v.findViewById(R.id.logout_gmail_bt);
 		login_bt.setOnClickListener(new View.OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
 				if (ConnectionDetector.isConnectingToInternet(activity))
 					// show dialog of registration then call add account method
-					new GmailSinginPopup(activity, emailEventHandler)
-							.show();
+					new GmailSinginPopup(activity, emailEventHandler).show();
 				else
 					Toast.makeText(
 							getApplication().getApplicationContext(),
@@ -130,17 +127,17 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		@Override
 		public void onEmailsent(final String email_send_to,
 				final String subject_text) {
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						sendTo.setText(email_send_to);
 						subject.setText(subject_text);
 					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
@@ -151,8 +148,15 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		}
 
 		@Override
-		public void onLoginSuccess(String userName, String password) {
-			addAccount(userName, password);
+		public void onLoginSuccess(final String userName, final String password) {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					addAccount(userName, password);
+				}
+			});
 		}
 
 		@Override
@@ -208,10 +212,12 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 			((EmailShield) getApplication().getRunningShields().get(
 					getControllerTag()))
 					.setEmailEventHandler(emailEventHandler);
-			login_bt.setVisibility(View.INVISIBLE);
-			logout_bt.setVisibility(View.VISIBLE);
-			userName.setVisibility(View.VISIBLE);
-			userName.setText(accountName);
+			if (canChangeUI()) {
+				login_bt.setVisibility(View.INVISIBLE);
+				logout_bt.setVisibility(View.VISIBLE);
+				userName.setVisibility(View.VISIBLE);
+				userName.setText(accountName);
+			}
 
 		} catch (Exception e) {
 			Log.d("Email", "EmaiFragment:: filed in password encryption");

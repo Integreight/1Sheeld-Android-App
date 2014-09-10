@@ -1,7 +1,7 @@
 package com.integreight.onesheeld.adapters;
 
-import com.integreight.onesheeld.utils.TutorialImageFragment;
-import com.integreight.onesheeld.utils.TutorialLastFragment;
+import com.integreight.onesheeld.shields.fragments.sub.TutorialImageFragment;
+import com.integreight.onesheeld.shields.fragments.sub.TutorialLastFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

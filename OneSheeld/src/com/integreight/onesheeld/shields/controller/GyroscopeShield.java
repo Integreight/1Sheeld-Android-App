@@ -7,11 +7,11 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-import com.integreight.onesheeld.Log;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.utils.ControllerParent;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 		implements SensorEventListener {
@@ -53,7 +53,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 
 	@Override
 	public ControllerParent<GyroscopeShield> invalidate(
-			com.integreight.onesheeld.utils.ControllerParent.SelectionAction selectionAction,
+			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
 			boolean isToastable) {
 		this.selectionAction = selectionAction;
 		mSensorManager = (SensorManager) getApplication().getSystemService(
@@ -65,7 +65,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 
 	public void setGyroscopeEventHandler(GyroscopeEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
-		CommitInstanceTotable();
+
 	}
 
 	@Override
@@ -117,8 +117,7 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 		if (mSensorManager == null | mGyroscope == null) {
 			mSensorManager = (SensorManager) getApplication().getSystemService(
 					Context.SENSOR_SERVICE);
-			mGyroscope = mSensorManager
-					.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+			mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
 			// Success! There's sensor.

@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 
 public class FlashlightFragment extends
 		ShieldFragmentParent<FlashlightFragment> {

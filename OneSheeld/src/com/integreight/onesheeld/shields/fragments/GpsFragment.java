@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.GpsShield;
 import com.integreight.onesheeld.shields.controller.GpsShield.GpsEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	TextView Latit, Longit;
@@ -20,8 +20,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.gps_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.gps_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -42,10 +42,10 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Gps Sheeld::OnActivityCreated()", "");
 
-		Latit = (TextView) getView().findViewById(R.id.lat_value_txt);
-		Longit = (TextView) getView().findViewById(R.id.lang_value_txt);
-		startGps = (Button) getView().findViewById(R.id.start_listener_bt);
-		stopGps = (Button) getView().findViewById(R.id.stop_listener_bt);
+		Latit = (TextView) v.findViewById(R.id.lat_value_txt);
+		Longit = (TextView) v.findViewById(R.id.lang_value_txt);
+		startGps = (Button) v.findViewById(R.id.start_listener_bt);
+		stopGps = (Button) v.findViewById(R.id.stop_listener_bt);
 
 		startGps.setOnClickListener(new View.OnClickListener() {
 
@@ -77,30 +77,27 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 		@Override
 		public void onLatChanged(final String lat) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				Latit.post(new Runnable() {
+			Latit.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						Latit.setText("Latitude\n" + lat);
-					}
-				});
-			}
+				}
+			});
 		}
 
 		@Override
 		public void onLangChanged(final String lang) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				Longit.post(new Runnable() {
+			Longit.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI())
 						Longit.setText("Longitude\n" + lang);
-					}
-				});
-			}
-
+				}
+			});
 		}
 	};
 

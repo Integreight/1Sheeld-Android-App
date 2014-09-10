@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -31,17 +32,22 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
+import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
-import com.integreight.onesheeld.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
+import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
+import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.utils.AppSlidingLeftMenu;
-import com.integreight.onesheeld.utils.ValidationPopup;
+import com.integreight.onesheeld.utils.Log;
+import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
 public class MainActivity extends FragmentActivity {
@@ -72,6 +78,9 @@ public class MainActivity extends FragmentActivity {
 		if (getThisApplication().getAppFirmata() != null) {
 			getThisApplication().getAppFirmata()
 					.addFirmwareVersionQueryHandler(versionChangingHandler);
+			getThisApplication().getAppFirmata()
+					.addArduinoLibraryVersionQueryHandler(
+							arduinoLibraryVersionHandler);
 		}
 		// ValidationPopup popub = new ValidationPopup(MainActivity.this,
 		// "Firmware Upgrading", "There's a new version for your 1Sheeld",
@@ -95,7 +104,7 @@ public class MainActivity extends FragmentActivity {
 		// popub.show();
 		if (getThisApplication().getShowTutAgain()
 				&& getThisApplication().getTutShownTimes() < 6)
-			startActivity(new Intent(this, TutorialPopup.class));
+			startActivity(new Intent(this, Tutorial.class));
 	}
 
 	public Thread looperThread;
@@ -366,6 +375,34 @@ public class MainActivity extends FragmentActivity {
 
 		}
 	};
+	ArduinoLibraryVersionChangeHandler arduinoLibraryVersionHandler = new ArduinoLibraryVersionChangeHandler() {
+		ValidationPopup popub;
+
+		@Override
+		public void onArduinoLibraryVersionChange(final int version) {
+			versionHandling.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (version < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
+						popub = new ValidationPopup(MainActivity.this,
+								"Arduino Library Update",
+								"There's a new version of 1Sheeld's Arduino library available on our website!",
+								new ValidationPopup.ValidationAction("OK",
+										new View.OnClickListener() {
+
+											@Override
+											public void onClick(View v) {
+												popub.dismiss();
+											}
+										}, true));
+						if (!isFinishing())
+							popub.show();
+					}
+				}
+			});
+		}
+	};
 
 	@Override
 	protected void onResume() {
@@ -445,14 +482,13 @@ public class MainActivity extends FragmentActivity {
 
 	public void replaceCurrentFragment(int container, Fragment targetFragment,
 			String tag, boolean addToBackStack, boolean animate) {
-		String backStateName = targetFragment.getClass().getName();
-		String fragmentTag = backStateName;
+		// String backStateName = tag;
+		// String fragmentTag = tag;
 
 		FragmentManager manager = getSupportFragmentManager();
-		boolean fragmentPopped = manager
-				.popBackStackImmediate(backStateName, 0);
+		boolean fragmentPopped = manager.popBackStackImmediate(tag, 0);
 
-		if (!fragmentPopped && manager.findFragmentByTag(fragmentTag) == null) { // fragment
+		if (!fragmentPopped && manager.findFragmentByTag(tag) == null) { // fragment
 			// not
 			// in
 			// back
@@ -464,9 +500,9 @@ public class MainActivity extends FragmentActivity {
 				ft.setCustomAnimations(R.anim.slide_out_right,
 						R.anim.slide_in_left, R.anim.slide_out_left,
 						R.anim.slide_in_right);
-			ft.replace(container, targetFragment, fragmentTag);
+			ft.replace(container, targetFragment, tag);
 			if (addToBackStack) {
-				ft.addToBackStack(backStateName);
+				ft.addToBackStack(tag);
 			}
 			ft.commit();
 		}
@@ -595,9 +631,12 @@ public class MainActivity extends FragmentActivity {
 	protected void onPause() {
 		isForground = false;
 		pausingTime = System.currentTimeMillis();
-		float hours = ((System.currentTimeMillis() - pausingTime) / (1000 * 60 * 60));
-		float minutes = ((System.currentTimeMillis() - pausingTime) / (1000 * 60));
-		float seconds = ((System.currentTimeMillis() - pausingTime) / (1000 * 60));
+		float hours = TimeUnit.MILLISECONDS.toSeconds(System
+				.currentTimeMillis() - pausingTime);
+		float minutes = TimeUnit.MILLISECONDS.toMinutes(System
+				.currentTimeMillis() - pausingTime);
+		float seconds = TimeUnit.MILLISECONDS.toHours(System
+				.currentTimeMillis() - pausingTime);
 		Crashlytics.setString("isBackground", "since " + hours + " hours - "
 				+ minutes + " minutes - " + seconds + " seocnds");
 		new Thread(new Runnable() {
@@ -634,6 +673,13 @@ public class MainActivity extends FragmentActivity {
 
 	public void showToast(String msg) {
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+	}
+	
+	public void hideSoftKeyboard() {
+	    if(getCurrentFocus()!=null) {
+	        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+	        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+	    }
 	}
 
 }

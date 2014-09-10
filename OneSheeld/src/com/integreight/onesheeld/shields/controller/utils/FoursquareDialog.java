@@ -18,7 +18,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import com.integreight.onesheeld.Log;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
+import com.integreight.onesheeld.utils.Log;
 
 public class FoursquareDialog extends Dialog {
 

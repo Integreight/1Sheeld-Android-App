@@ -10,17 +10,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Session;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.OneShieldTextView;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
@@ -29,11 +30,12 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	Button facebookLogin;
 	Button facebookLogout;
 	Bundle savedInstanceState;
+	ProgressBar progress;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
+		v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 
@@ -86,12 +88,12 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		lastPostTextCont = (LinearLayout) getView()
-				.findViewById(R.id.postsCont);
-		userNameTextView = (TextView) getView().findViewById(
-				R.id.facebook_shield_username_textview);
-		facebookLogin = (Button) getView().findViewById(R.id.login);
-		facebookLogout = (Button) getView().findViewById(R.id.logout);
+		lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
+		userNameTextView = (TextView) v
+				.findViewById(R.id.facebook_shield_username_textview);
+		facebookLogin = (Button) v.findViewById(R.id.login);
+		facebookLogout = (Button) v.findViewById(R.id.logout);
+		progress = (ProgressBar) v.findViewById(R.id.progress);
 	}
 
 	private FacebookEventHandler facebookEventHandler = new FacebookEventHandler() {
@@ -105,7 +107,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView posty = (OneShieldTextView) activity
+						OneSheeldTextView posty = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.facebook_post_item,
 										lastPostTextCont, false);
@@ -155,6 +157,32 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 					}
 				});
 			}
+		}
+
+		@Override
+		public void startProgress() {
+			activity.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void stopProgress() {
+			activity.runOnUiThread(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.GONE);
+					}
+				}
+			});
 		}
 
 	};

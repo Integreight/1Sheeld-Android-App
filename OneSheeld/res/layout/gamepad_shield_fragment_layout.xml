@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.integreight.onesheeld.utils.MutitouchKeysContainer xmlns:android="http://schemas.android.com/apk/res/android"
+<com.integreight.onesheeld.utils.customviews.MutitouchKeysContainer xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:key="http://schemas.android.com/apk/res/com.integreight.onesheeld"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +20,7 @@
         android:layout_marginLeft="@dimen/gamepad_contMarginLeft"
         android:layout_marginTop="@dimen/gamepad_contMarginTop" >
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_up_arrow_key"
             android:layout_width="@dimen/gamepad_blueButtonHeight"
             android:layout_height="@dimen/gamepad_blueButtonWidth"
@@ -29,7 +29,7 @@
             key:normalbackground="@drawable/gamepad_shield_normal_up_button"
             key:pressedbackground="@drawable/gamepad_shield_pressed_up_button" />
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_down_arrow_key"
             android:layout_width="@dimen/gamepad_blueButtonHeight"
             android:layout_height="@dimen/gamepad_blueButtonWidth"
@@ -38,7 +38,7 @@
             key:normalbackground="@drawable/gamepad_shield_normal_down_button"
             key:pressedbackground="@drawable/gamepad_shield_pressed_down_button" />
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_left_arrow_key"
             android:layout_width="@dimen/gamepad_blueButtonWidth"
             android:layout_height="@dimen/gamepad_blueButtonHeight"
@@ -47,7 +47,7 @@
             key:normalbackground="@drawable/gamepad_shield_normal_left_button"
             key:pressedbackground="@drawable/gamepad_shield_pressed_left_button" />
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_right_arrow_key"
             android:layout_width="@dimen/gamepad_blueButtonWidth"
             android:layout_height="@dimen/gamepad_blueButtonHeight"
@@ -66,7 +66,7 @@
         android:layout_marginLeft="@dimen/gamepad_contMarginLeft"
         android:layout_marginTop="25dp" >
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_yellow_key"
             android:layout_width="@dimen/gamepad_circularButtonDimen"
             android:layout_height="@dimen/gamepad_circularButtonDimen"
@@ -75,7 +75,7 @@
             key:normalbackground="@drawable/gamepad_shield_normal_yellow_button"
             key:pressedbackground="@drawable/gamepad_shield_pressed_yellow_button" />
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_green_key"
             android:layout_width="@dimen/gamepad_circularButtonDimen"
             android:layout_height="@dimen/gamepad_circularButtonDimen"
@@ -84,7 +84,7 @@
             key:normalbackground="@drawable/gamepad_shield_normal_green_button"
             key:pressedbackground="@drawable/gamepad_shield_pressed_green_button" />
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_blue_key"
             android:layout_width="@dimen/gamepad_circularButtonDimen"
             android:layout_height="@dimen/gamepad_circularButtonDimen"
@@ -93,7 +93,7 @@
             key:normalbackground="@drawable/gamepad_shield_normal_blue_button"
             key:pressedbackground="@drawable/gamepad_shield_pressed_blue_button" />
 
-        <com.integreight.onesheeld.utils.Key
+        <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_red_key"
             android:layout_width="@dimen/gamepad_circularButtonDimen"
             android:layout_height="@dimen/gamepad_circularButtonDimen"
@@ -103,4 +103,4 @@
             key:pressedbackground="@drawable/gamepad_shield_pressed_red_button" />
     </RelativeLayout>
 
-</com.integreight.onesheeld.utils.MutitouchKeysContainer>
+</com.integreight.onesheeld.utils.customviews.MutitouchKeysContainer>

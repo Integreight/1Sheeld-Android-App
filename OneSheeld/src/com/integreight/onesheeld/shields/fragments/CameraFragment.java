@@ -9,9 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 	// private SurfaceView sv;
@@ -34,8 +34,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.camera_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.camera_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -75,8 +75,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 
 			if (canChangeUI()) {
 				if (!isHasCamera) {
-					Toast.makeText(activity,
-							"Your Device doesn't have Camera",
+					Toast.makeText(activity, "Your Device doesn't have Camera",
 							Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -85,8 +84,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 		@Override
 		public void OnPictureTaken() {
 			if (canChangeUI())
-				Toast.makeText(activity,
-						"Your Camera has been Captured Image",
+				Toast.makeText(activity, "Your Camera has been Captured Image",
 						Toast.LENGTH_SHORT).show();
 		}
 

@@ -8,15 +8,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.Log;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	private final int[] levelsResources = new int[] {
@@ -32,8 +32,8 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.buzzer_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.buzzer_shield_fragment_layout, container,
+				false);
 		return v;
 
 	}
@@ -76,14 +76,14 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 								.get(getControllerTag())).stopBuzzer();
 					}
 				});
-		buzzerSpeaker = (ImageView) getView().findViewById(
-				R.id.speaker_shield_imageview);
+		buzzerSpeaker = (ImageView) v
+				.findViewById(R.id.speaker_shield_imageview);
 		buzzerSpeaker
 				.setBackgroundResource(getBuzzerVolumeResource(((SpeakerShield) getApplication()
 						.getRunningShields().get(getControllerTag()))
 						.getBuzzerVolume()));
-		increaseBtn = (Button) getView().findViewById(R.id.increaseBtn);
-		decreaseBtn = (Button) getView().findViewById(R.id.decreaseBtn);
+		increaseBtn = (Button) v.findViewById(R.id.increaseBtn);
+		decreaseBtn = (Button) v.findViewById(R.id.decreaseBtn);
 		increaseBtn.setOnClickListener(new View.OnClickListener() {
 
 			@Override

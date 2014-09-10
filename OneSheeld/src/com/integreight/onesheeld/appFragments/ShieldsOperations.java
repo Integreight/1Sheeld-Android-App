@@ -3,7 +3,6 @@ package com.integreight.onesheeld.appFragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,22 +16,22 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.integreight.onesheeld.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
-import com.integreight.onesheeld.utils.OneShieldTextView;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class ShieldsOperations extends BaseContainerFragment {
 	private View v;
 	private static ShieldsOperations thisInstance;
 	protected SelectedShieldsListFragment mFrag;
-	private Fragment mContent;
+	private ShieldFragmentParent<?> mContent;
 	private MainActivity activity;
 
 	public static ShieldsOperations getInstance() {
@@ -104,7 +103,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 
 					@Override
 					public void run() {
-						TextView shieldName = (OneShieldTextView) activity
+						TextView shieldName = (OneSheeldTextView) activity
 								.findViewById(R.id.shieldName);
 						shieldName
 								.setVisibility(((ShieldFragmentParent<?>) mContent).shieldName
@@ -120,8 +119,10 @@ public class ShieldsOperations extends BaseContainerFragment {
 			activity.setTitle(mFrag.getUIShield(0).getName() + " Shield");
 			// set the Above View
 			// setContentView(R.layout.content_frame);
-			activity.getSupportFragmentManager().beginTransaction()
-					.replace(R.id.shieldsContainerFrame, mContent).commit();
+			activity.getSupportFragmentManager()
+					.beginTransaction()
+					.replace(R.id.shieldsContainerFrame, mContent,
+							mContent.getControllerTag()).commit();
 		}
 		pinsSlidingView = (MultiDirectionSlidingDrawer) getView().findViewById(
 				R.id.pinsViewSlidingView);
@@ -247,13 +248,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 		super.onSaveInstanceState(outState);
 	}
 
-	public void switchContent(Fragment fragment) {
-		mContent = fragment;
-		activity.getSupportFragmentManager().beginTransaction()
-				.replace(R.id.appTransitionsContainer, fragment).commit();
-		// activity.getSlidingMenu().showContent();
-	}
-
 	@Override
 	public void onDestroy() {
 		mContent = null;
@@ -300,39 +294,46 @@ public class ShieldsOperations extends BaseContainerFragment {
 								}
 							});
 			}
-		}, 1000);
+		}, 500);
 		((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
 				.getChildAt(1).setBackgroundResource(
 						R.drawable.bluetooth_disconnect_button);
 		((ViewGroup) activity.findViewById(R.id.cancelConnection))
 				.getChildAt(1).setBackgroundResource(R.drawable.back_button);
+		new Handler().postDelayed(new Runnable() {
 
-		activity.findViewById(R.id.cancelConnection).setOnClickListener(
-				new View.OnClickListener() {
+			@Override
+			public void run() {
+				activity.findViewById(R.id.cancelConnection)
+						.setOnClickListener(new View.OnClickListener() {
 
-					@Override
-					public void onClick(View v) {
-						boolean isMenuOpened = (activity.appSlidingMenu != null && activity.appSlidingMenu
-								.isOpen())
-								|| (settingsSlidingView != null && settingsSlidingView
-										.isOpened())
-								|| (pinsSlidingView != null && pinsSlidingView
-										.isOpened());
-						activity.onBackPressed();
-						if (!isMenuOpened)
-							activity.findViewById(R.id.cancelConnection)
-									.setOnClickListener(
-											new View.OnClickListener() {
+							@Override
+							public void onClick(View v) {
+								boolean isMenuOpened = (activity.appSlidingMenu != null && activity.appSlidingMenu
+										.isOpen())
+										|| (settingsSlidingView != null && settingsSlidingView
+												.isOpened())
+										|| (pinsSlidingView != null && pinsSlidingView
+												.isOpened());
+								activity.onBackPressed();
+								if (!isMenuOpened)
+									activity.findViewById(R.id.cancelConnection)
+											.setOnClickListener(
+													new View.OnClickListener() {
 
-												@Override
-												public void onClick(View v) {
-													// TODO Auto-generated
-													// method stub
+														@Override
+														public void onClick(
+																View v) {
+															// TODO
+															// Auto-generated
+															// method stub
 
-												}
-											});
-					}
-				});
+														}
+													});
+							}
+						});
+			}
+		}, 500);
 		super.onResume();
 	}
 }

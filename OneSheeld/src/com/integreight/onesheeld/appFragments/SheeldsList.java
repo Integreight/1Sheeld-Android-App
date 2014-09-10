@@ -1,13 +1,18 @@
 package com.integreight.onesheeld.appFragments;
 
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,19 +32,21 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.google.analytics.tracking.android.Fields;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.onesheeld.ArduinoConnectivityPopup;
-import com.integreight.onesheeld.FirmwareUpdatingPopup;
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
-import com.integreight.onesheeld.OneSheeldVersionInstallerPopupTesting;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.TutorialPopup;
+import com.integreight.onesheeld.Tutorial;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
+import com.integreight.onesheeld.popup.ValidationPopup;
+import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.utils.ControllerParent;
-import com.integreight.onesheeld.utils.OneShieldEditText;
+import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.TaskerShield;
+import com.integreight.onesheeld.utils.Log;
+import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
 
 public class SheeldsList extends Fragment {
@@ -49,7 +56,7 @@ public class SheeldsList extends Fragment {
 	private static SheeldsList thisInstance;
 	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
-	OneShieldEditText searchBox;
+	OneSheeldEditText searchBox;
 	private static final String TAG = "ShieldsList";
 	MainActivity activity;
 	public static final int REQUEST_CONNECT_DEVICE = 1;
@@ -109,6 +116,7 @@ public class SheeldsList extends Fragment {
 	public void onResume() {
 		MainActivity.currentShieldTag = null;
 		activity.disableMenu();
+		activity.hideSoftKeyboard();
 		new Handler().postDelayed(new Runnable() {
 
 			@Override
@@ -120,6 +128,19 @@ public class SheeldsList extends Fragment {
 
 								@Override
 								public void onClick(View v) {
+									activity.findViewById(R.id.cancelConnection)
+											.setOnClickListener(
+													new View.OnClickListener() {
+
+														@Override
+														public void onClick(
+																View v) {
+															// TODO
+															// Auto-generated
+															// method stub
+
+														}
+													});
 									launchShieldsOperationActivity();
 								}
 							});
@@ -178,7 +199,7 @@ public class SheeldsList extends Fragment {
 								}
 							});
 			}
-		}, 1000);
+		}, 500);
 		activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
 		((OneSheeldApplication) activity.getApplication())
 				.setArduinoFirmataEventHandler(sheeldsFirmataHandler);
@@ -218,7 +239,7 @@ public class SheeldsList extends Fragment {
 		mListView.setCacheColorHint(Color.TRANSPARENT);
 		mListView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
 		mListView.setDrawingCacheEnabled(true);
-		searchBox = (OneShieldEditText) v.findViewById(R.id.searchArea);
+		searchBox = (OneSheeldEditText) v.findViewById(R.id.searchArea);
 		searchBox.setAdapter(adapter);
 		searchBox.setDropDownHeight(0);
 		v.findViewById(R.id.selectAll).setOnClickListener(
@@ -304,6 +325,10 @@ public class SheeldsList extends Fragment {
 
 		@Override
 		public void onError(String errorMessage) {
+			if (activity != null
+					&& activity.getThisApplication().taskerController != null) {
+				activity.getThisApplication().taskerController.reset();
+			}
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -317,6 +342,8 @@ public class SheeldsList extends Fragment {
 
 		@Override
 		public void onConnect() {
+			activity.getThisApplication().taskerController = new TaskerShield(
+					activity, UIShield.TASKER_SHIELD.name());
 			Log.e(TAG, "- ARDUINO CONNECTED -");
 			if (isOneSheeldServiceRunning()) {
 				((OneSheeldApplication) activity.getApplication())
@@ -329,6 +356,9 @@ public class SheeldsList extends Fragment {
 		@Override
 		public void onClose(boolean closedManually) {
 			if (activity != null) {
+				if (activity.getThisApplication().taskerController != null) {
+					activity.getThisApplication().taskerController.reset();
+				}
 				((OneSheeldApplication) activity.getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
 				activity.getOnConnectionLostHandler().connectionLost = true;
@@ -384,7 +414,7 @@ public class SheeldsList extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.open_bootloader_popup:
-			if (!OneSheeldVersionInstallerPopupTesting.isOpened)
+			if (!FirmwareUpdatingPopup.isOpened)
 				new FirmwareUpdatingPopup((MainActivity) activity, false)
 						.show();
 			return true;
@@ -393,12 +423,63 @@ public class SheeldsList extends Fragment {
 					.setLastConnectedDevice(null);
 			return true;
 		case R.id.appTutorial:
-			activity.startActivity(new Intent(activity, TutorialPopup.class)
+			activity.startActivity(new Intent(activity, Tutorial.class)
 					.putExtra("isMenu", true));
+			return true;
+		case R.id.aboutDialogButton:
+			showAboutDialog();
 			return true;
 		}
 
 		return false;
+	}
+
+	private void showAboutDialog() {
+		// TODO Auto-generated method stub
+		String stringDate = null;
+		try {
+			ApplicationInfo ai = activity.getPackageManager()
+					.getApplicationInfo(activity.getPackageName(), 0);
+			ZipFile zf = new ZipFile(ai.sourceDir);
+			ZipEntry ze = zf.getEntry("classes.dex");
+			long time = ze.getTime();
+			stringDate = SimpleDateFormat.getInstance().format(
+					new java.util.Date(time));
+			zf.close();
+			PackageInfo pInfo = activity.getPackageManager().getPackageInfo(
+					activity.getPackageName(), 0);
+			String versionName = pInfo.versionName;
+			int versionCode = pInfo.versionCode;
+			final ValidationPopup popup = new ValidationPopup(
+					activity,
+					"About 1Sheeld",
+					"Developed with love by Integreight, Inc. team in Cairo, Egypt.\n"
+							+ "If you have any question, please visit our website or drop us an email on info@integreight.com\n\n"
+							+ "Version: "
+							+ versionName
+							+ " ("
+							+ versionCode
+							+ ")"
+							+ (stringDate != null ? "\nApp was last updated on "
+									+ stringDate
+									: "")
+							+ "\n\n"
+							+ "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n");
+			ValidationAction vp = new ValidationPopup.ValidationAction("OK",
+					new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							popup.dismiss();
+						}
+					}, true);
+			popup.addValidationAction(vp);
+			if (!activity.isFinishing())
+				popup.show();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private boolean isOneSheeldServiceRunning() {

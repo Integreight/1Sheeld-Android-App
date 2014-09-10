@@ -14,11 +14,11 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 
 public class SevenSegmentFragment extends
 		ShieldFragmentParent<SevenSegmentFragment> {
@@ -36,7 +36,7 @@ public class SevenSegmentFragment extends
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.sevensegment_shield_fragment_view,
+		v = inflater.inflate(R.layout.sevensegment_shield_fragment_view,
 				container, false);
 		aSegment = (ImageView) v
 				.findViewById(R.id.sevensegment_shield_a_segment_imageview);
@@ -64,8 +64,8 @@ public class SevenSegmentFragment extends
 			refreshSegments(((SevenSegmentShield) getApplication()
 					.getRunningShields().get(getControllerTag()))
 					.refreshSegments());
-		LinearLayout colorChooseCont = (LinearLayout) getView().findViewById(
-				R.id.colorsContainer);
+		LinearLayout colorChooseCont = (LinearLayout) v
+				.findViewById(R.id.colorsContainer);
 		for (int i = 0; i < colorChooseCont.getChildCount(); i++) {
 			final int x = i;
 			colorChooseCont.getChildAt(x).setOnClickListener(
@@ -136,15 +136,15 @@ public class SevenSegmentFragment extends
 		public void onSegmentsChange(
 				final Hashtable<String, Boolean> segmentsStatus) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.post(new Runnable() {
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						refreshSegments(segmentsStatus);
 					}
-				});
-			}
+				}
+			});
 
 		}
 	};

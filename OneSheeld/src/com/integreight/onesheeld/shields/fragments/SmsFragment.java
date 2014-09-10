@@ -12,10 +12,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SmsShield;
 import com.integreight.onesheeld.shields.controller.SmsShield.SmsEventHandler;
-import com.integreight.onesheeld.utils.OneShieldTextView;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
@@ -27,8 +27,8 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.sms_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.sms_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 
@@ -49,9 +49,9 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		smsTextContainer = (LinearLayout) getView().findViewById(
-				R.id.sms_shield_text_container);
-		// sendSMS = (Button) getView().findViewById(R.id.sendMessage);
+		smsTextContainer = (LinearLayout) v
+				.findViewById(R.id.sms_shield_text_container);
+		// sendSMS = (Button) v.findViewById(R.id.sendMessage);
 		// sendSMS.setOnClickListener(new View.OnClickListener() {
 		//
 		// @Override
@@ -68,13 +68,13 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 		@Override
 		public void onSmsSent(final String smsNumber, final String smsText) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
-						OneShieldTextView tv = (OneShieldTextView) activity
+				@Override
+				public void run() {
+					if (canChangeUI()) {
+						OneSheeldTextView tv = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.sent_sms_details_row,
 										smsTextContainer, false);
@@ -83,8 +83,8 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 						Toast.makeText(activity, "SMS Sent!", Toast.LENGTH_LONG)
 								.show();
 					}
-				});
-			}
+				}
+			});
 
 		}
 

@@ -13,15 +13,14 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
-import com.integreight.onesheeld.utils.Key;
-import com.integreight.onesheeld.utils.Key.KeyTouchEventListener;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.Key;
+import com.integreight.onesheeld.utils.customviews.Key.KeyTouchEventListener;
 
 public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
-
 	Button connectButton;
 	MenuItem enableSerialMenuItem;
 	MenuItem disableSerialMenuItem;
@@ -51,8 +50,8 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
 
-		View v = inflater.inflate(R.layout.keypad_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.keypad_shield_fragment_layout, container,
+				false);
 		setHasOptionsMenu(true);
 		return v;
 	}
@@ -93,13 +92,12 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		initializeKeysEventHandler((ViewGroup) getView());
+		initializeKeysEventHandler((ViewGroup) v);
 
 	}
 
 	private void initializeKeysEventHandler(ViewGroup viewGroup) {
-		ViewGroup keypad = (ViewGroup) getView().findViewById(
-				R.id.keysContainer);
+		ViewGroup keypad = (ViewGroup) v.findViewById(R.id.keysContainer);
 		for (int i = 0; i < keypad.getChildCount(); i++) {
 			ViewGroup keypadRow = (ViewGroup) keypad.getChildAt(i);
 			for (int j = 0; j < keypadRow.getChildCount(); j++) {

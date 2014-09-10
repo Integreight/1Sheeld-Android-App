@@ -30,7 +30,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import com.integreight.onesheeld.Log;
+
+import com.integreight.onesheeld.utils.Log;
 
 /**
  * This class does all the work for setting up and managing Bluetooth
@@ -270,7 +271,7 @@ public class BluetoothService {
 		ConnectedThread r;
 		// Synchronize a copy of the ConnectedThread
 		synchronized (this) {
-			if (mState != STATE_CONNECTED)
+			if (getState() != STATE_CONNECTED)
 				return;
 			r = mConnectedThread;
 		}

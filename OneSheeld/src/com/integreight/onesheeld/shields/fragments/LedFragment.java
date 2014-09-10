@@ -11,11 +11,11 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView;
-import com.integreight.onesheeld.utils.customviews.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
 
 public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
@@ -25,8 +25,8 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.led_shield_fragment_layout,
-				container, false);
+		v = inflater.inflate(R.layout.led_shield_fragment_layout, container,
+				false);
 		ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
 		return v;
 
@@ -85,9 +85,15 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 		@Override
 		public void onLedChange(final boolean isLedOn) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				toggleLed(isLedOn);
-			}
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI()) {
+						toggleLed(isLedOn);
+					}
+				}
+			});
 
 		}
 	};
@@ -106,13 +112,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 			}
 		});
 	}
-
-	// private void intializeFirmata(ArduinoFirmata firmata, int connectedPin){
-	//
-	// led=new Led(firmata,connectedPin);
-	// led.setLedEventHandler(ledEventHandler);
-	// toggleLed(led.isLedOn());
-	// }
 
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {

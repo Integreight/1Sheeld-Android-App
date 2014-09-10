@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.Log;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.PressureShield.PressureEventHandler;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.Log;
 
 public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 	TextView pressure_float, pressure_byte;
@@ -22,7 +22,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.pressure_shield_fragment_layout,
+		v = inflater.inflate(R.layout.pressure_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -48,17 +48,13 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 		super.onActivityCreated(savedInstanceState);
 		Log.d("Pressure Sheeld::OnActivityCreated()", "");
 
-		pressure_float = (TextView) getView().findViewById(
-				R.id.pressure_float_txt);
-		pressure_byte = (TextView) getView().findViewById(
-				R.id.pressure_byte_txt);
+		pressure_float = (TextView) v.findViewById(R.id.pressure_float_txt);
+		pressure_byte = (TextView) v.findViewById(R.id.pressure_byte_txt);
 
-		devicehasSensor = (TextView) getView().findViewById(
-				R.id.device_not_has_sensor_text);
-		stoplistening_bt = (Button) getView().findViewById(
-				R.id.stop_listener_bt);
-		startlistening_bt = (Button) getView().findViewById(
-				R.id.start_listener_bt);
+		devicehasSensor = (TextView) v
+				.findViewById(R.id.device_not_has_sensor_text);
+		stoplistening_bt = (Button) v.findViewById(R.id.stop_listener_bt);
+		startlistening_bt = (Button) v.findViewById(R.id.start_listener_bt);
 
 		startlistening_bt.setOnClickListener(new View.OnClickListener() {
 
@@ -93,19 +89,18 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 		@Override
 		public void onSensorValueChangedFloat(final String value) {
 			// TODO Auto-generated method stub
-			if (canChangeUI()) {
 
-				// set data to UI
-				pressure_float.post(new Runnable() {
+			// set data to UI
+			pressure_float.post(new Runnable() {
 
-					@Override
-					public void run() {
+				@Override
+				public void run() {
+					if (canChangeUI()) {
 						pressure_float.setVisibility(View.VISIBLE);
 						pressure_float.setText("" + value);
 					}
-				});
-
-			}
+				}
+			});
 
 		}
 
@@ -158,9 +153,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 																 * "Your Device not have The Sensor"
 																 * );
 																 * Toast.makeText
-																 * (
-																 * activity
-																 * ,
+																 * ( activity ,
 																 * "Device dosen't have This Sensor !"
 																 * , Toast.
 																 * LENGTH_SHORT

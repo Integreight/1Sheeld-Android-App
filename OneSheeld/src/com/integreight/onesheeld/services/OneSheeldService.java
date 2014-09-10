@@ -13,7 +13,6 @@ import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import com.integreight.onesheeld.Log;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
@@ -22,6 +21,8 @@ import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.plugin.PluginBundleManager;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.WakeLocker;
 
 public class OneSheeldService extends Service {
@@ -189,8 +190,16 @@ public class OneSheeldService extends Service {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// Extract data included in the Intent
-			Log.d("plugin", "Receive");
+			Log.test("plugin", "Receive");
 
+			Log.sysOut(app.getAppFirmata()
+					+ "    "
+					+ intent.getIntExtra(
+							PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER, -1)
+					+ "    "
+					+ intent.getBooleanExtra(
+							PluginBundleManager.BUNDLE_EXTRA_OUTPUT, true)
+					+ "    " + app.getAppFirmata().isOpen());
 			String action = intent.getAction();
 			if (action.equals(OneSheeldService.PLUGIN_MESSAGE)) {
 				if (app.getAppFirmata() != null && app.getAppFirmata().isOpen()) {

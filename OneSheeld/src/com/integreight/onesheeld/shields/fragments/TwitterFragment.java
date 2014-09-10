@@ -6,27 +6,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TwitterShield;
 import com.integreight.onesheeld.shields.controller.TwitterShield.TwitterEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.OneShieldTextView;
-import com.integreight.onesheeld.utils.ShieldFragmentParent;
+import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	LinearLayout lastTweetTextContainer;
-	OneShieldTextView userNameTextView;
+	OneSheeldTextView userNameTextView;
 	Button twitterLogin;
 	Button twitterLogout;
+	ProgressBar progress;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// Inflate the layout for this fragment
-		View v = inflater.inflate(R.layout.twitter_shield_fragment_layout,
+		v = inflater.inflate(R.layout.twitter_shield_fragment_layout,
 				container, false);
 		setHasOptionsMenu(true);
 		return v;
@@ -68,6 +70,18 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 				logoutFromTwitter();
 			}
 		});
+		// v.findViewById(R.id.twitter_shield_imageview).setOnClickListener(
+		// new View.OnClickListener() {
+		//
+		// @Override
+		// public void onClick(View arg0) {
+		// ((TwitterShield) getApplication().getRunningShields()
+		// .get(getControllerTag())).uploadPhoto(
+		// Environment.getExternalStorageDirectory()
+		// + "/Pictures/Screenshots/test.png",
+		// "Testing 1Sheeld");
+		// }
+		// });
 		super.onStart();
 
 	}
@@ -80,12 +94,12 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		lastTweetTextContainer = (LinearLayout) getView().findViewById(
-				R.id.tweetsCont);
-		userNameTextView = (OneShieldTextView) getView().findViewById(
-				R.id.twitter_shield_username_textview);
-		twitterLogin = (Button) getView().findViewById(R.id.login);
-		twitterLogout = (Button) getView().findViewById(R.id.logout);
+		lastTweetTextContainer = (LinearLayout) v.findViewById(R.id.tweetsCont);
+		userNameTextView = (OneSheeldTextView) v
+				.findViewById(R.id.twitter_shield_username_textview);
+		twitterLogin = (Button) v.findViewById(R.id.login);
+		twitterLogout = (Button) v.findViewById(R.id.logout);
+		progress = (ProgressBar) v.findViewById(R.id.progress);
 		super.onActivityCreated(savedInstanceState);
 
 	}
@@ -101,7 +115,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 					@Override
 					public void run() {
-						OneShieldTextView tweetItem = (OneShieldTextView) activity
+						OneSheeldTextView tweetItem = (OneSheeldTextView) activity
 								.getLayoutInflater().inflate(
 										R.layout.tweet_item,
 										lastTweetTextContainer, false);
@@ -109,8 +123,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 						lastTweetTextContainer.addView(tweetItem);
 						((ScrollView) lastTweetTextContainer.getParent())
 								.invalidate();
-						Toast.makeText(activity, "Tweet posted!",
-								Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -152,6 +164,78 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 		}
 
+		@Override
+		public void startProgress() {
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void stopProgress() {
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.GONE);
+					}
+				}
+			});
+		}
+
+		@Override
+		public void onImageUploaded(final String tweet) {
+			// TODO Auto-generated method stub
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI()) {
+						OneSheeldTextView tweetItem = (OneSheeldTextView) activity
+								.getLayoutInflater().inflate(
+										R.layout.tweet_item,
+										lastTweetTextContainer, false);
+						tweetItem.setText(tweet);
+						lastTweetTextContainer.addView(tweetItem);
+						((ScrollView) lastTweetTextContainer.getParent())
+								.invalidate();
+					}
+				}
+			});
+		}
+
+		@Override
+		public void onDirectMessageSent(final String userHandle,
+				final String msg) {
+			// TODO Auto-generated method stub
+			uiHandler.removeCallbacksAndMessages(null);
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (canChangeUI()) {
+						OneSheeldTextView tweetItem = (OneSheeldTextView) activity
+								.getLayoutInflater().inflate(
+										R.layout.tweet_item,
+										lastTweetTextContainer, false);
+						tweetItem.setText("To: " + userHandle + ", Message: "
+								+ msg);
+						lastTweetTextContainer.addView(tweetItem);
+						((ScrollView) lastTweetTextContainer.getParent())
+								.invalidate();
+					}
+				}
+			});
+		}
+
 	};
 
 	private void initializeFirmata() {
@@ -177,7 +261,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			twitterLogin.setVisibility(View.INVISIBLE);
 			lastTweetTextContainer.setVisibility(View.VISIBLE);
 			lastTweetTextContainer.removeAllViews();
-			getView().invalidate();
+			v.invalidate();
 		} else {
 			userNameTextView.setVisibility(View.INVISIBLE);
 			userNameTextView.setText("");
@@ -185,7 +269,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			twitterLogin.setVisibility(View.VISIBLE);
 			lastTweetTextContainer.setVisibility(View.INVISIBLE);
 			lastTweetTextContainer.removeAllViews();
-			getView().invalidate();
+			v.invalidate();
 		}
 	}
 
@@ -238,7 +322,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			lastTweetTextContainer.setVisibility(View.INVISIBLE);
 			lastTweetTextContainer.removeAllViews();
 		}
-		getView().invalidate();
+		v.invalidate();
 	}
 
 	private void buttonToLoggedIn() {
@@ -255,7 +339,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			lastTweetTextContainer.setVisibility(View.VISIBLE);
 			lastTweetTextContainer.removeAllViews();
 		}
-		getView().invalidate();
+		v.invalidate();
 	}
 
 	@Override
