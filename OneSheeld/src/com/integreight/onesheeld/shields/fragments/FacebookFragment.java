@@ -208,8 +208,6 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 			buttonToLoggedIn();
 		} else {
 			buttonToLoggedOut();
-			((FacebookShield) getApplication().getRunningShields().get(
-					getControllerTag())).loginToFacebook(false);
 		}
 	}
 
@@ -244,7 +242,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 		if (ConnectionDetector.isConnectingToInternet(activity))
 
 			((FacebookShield) getApplication().getRunningShields().get(
-					getControllerTag())).loginToFacebook(true);
+					getControllerTag())).loginToFacebook();
 		else
 			Toast.makeText(getApplication().getApplicationContext(),
 					"Please check your Internet connection and try again.",
