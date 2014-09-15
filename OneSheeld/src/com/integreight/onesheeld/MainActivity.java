@@ -385,7 +385,8 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void run() {
 					if (version < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
-						popub = new ValidationPopup(MainActivity.this,
+						popub = new ValidationPopup(
+								MainActivity.this,
 								"Arduino Library Update",
 								"There's a new version of 1Sheeld's Arduino library available on our website!",
 								new ValidationPopup.ValidationAction("OK",
@@ -420,7 +421,8 @@ public class MainActivity extends FragmentActivity {
 					if (connectionLost) {
 						runOnUiThread(new Runnable() {
 							public void run() {
-								if (!ArduinoConnectivityPopup.isOpened)
+								if (!ArduinoConnectivityPopup.isOpened
+										&& !isFinishing())
 									new ArduinoConnectivityPopup(
 											MainActivity.this).show();
 							}
@@ -674,12 +676,13 @@ public class MainActivity extends FragmentActivity {
 	public void showToast(String msg) {
 		Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
 	}
-	
+
 	public void hideSoftKeyboard() {
-	    if(getCurrentFocus()!=null) {
-	        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-	        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-	    }
+		if (getCurrentFocus() != null) {
+			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			inputMethodManager.hideSoftInputFromWindow(getCurrentFocus()
+					.getWindowToken(), 0);
+		}
 	}
 
 }
