@@ -486,27 +486,28 @@ public class MainActivity extends FragmentActivity {
 			String tag, boolean addToBackStack, boolean animate) {
 		// String backStateName = tag;
 		// String fragmentTag = tag;
+		if (!isFinishing()) {
+			FragmentManager manager = getSupportFragmentManager();
+			boolean fragmentPopped = manager.popBackStackImmediate(tag, 0);
 
-		FragmentManager manager = getSupportFragmentManager();
-		boolean fragmentPopped = manager.popBackStackImmediate(tag, 0);
-
-		if (!fragmentPopped && manager.findFragmentByTag(tag) == null) { // fragment
-			// not
-			// in
-			// back
-			// stack,
-			// create
-			// it.
-			FragmentTransaction ft = manager.beginTransaction();
-			if (animate)
-				ft.setCustomAnimations(R.anim.slide_out_right,
-						R.anim.slide_in_left, R.anim.slide_out_left,
-						R.anim.slide_in_right);
-			ft.replace(container, targetFragment, tag);
-			if (addToBackStack) {
-				ft.addToBackStack(tag);
+			if (!fragmentPopped && manager.findFragmentByTag(tag) == null) { // fragment
+				// not
+				// in
+				// back
+				// stack,
+				// create
+				// it.
+				FragmentTransaction ft = manager.beginTransaction();
+				if (animate)
+					ft.setCustomAnimations(R.anim.slide_out_right,
+							R.anim.slide_in_left, R.anim.slide_out_left,
+							R.anim.slide_in_right);
+				ft.replace(container, targetFragment, tag);
+				if (addToBackStack) {
+					ft.addToBackStack(tag);
+				}
+				ft.commit();
 			}
-			ft.commit();
 		}
 	}
 
