@@ -141,7 +141,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				PREF_KEY_OAUTH_SECRET, null));
 		twitter.setOAuthAccessToken(accestoken);
 		final StatusUpdate st = new StatusUpdate(tweet);
-		final Handler handler=new Handler(Looper.getMainLooper());
+		final Handler handler = new Handler(Looper.getMainLooper());
 		new Thread(new Runnable() {
 
 			@Override
@@ -149,17 +149,19 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				try {
 					twitter.updateStatus(st);
 					handler.post(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							Toast.makeText(activity, "Tweet posted!", Toast.LENGTH_SHORT).show();
+							Toast.makeText(activity, "Tweet posted!",
+									Toast.LENGTH_SHORT).show();
 						}
 					});
 				} catch (TwitterException e) {
 					Log.e("TAG",
 							"TwitterShield::StatusUpdate::TwitterException", e);
-					if (eventHandler != null)eventHandler.onTwitterError(e.getErrorMessage());
+					if (eventHandler != null)
+						eventHandler.onTwitterError(e.getErrorMessage());
 				}
 				if (eventHandler != null)
 					eventHandler.stopProgress();
@@ -167,7 +169,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			}
 		}).start();
 	}
-	
+
 	public void sendDirectMessage(String userHandle, final String msg) {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
@@ -182,9 +184,10 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
 				PREF_KEY_OAUTH_SECRET, null));
 		twitter.setOAuthAccessToken(accestoken);
-		if(!userHandle.startsWith("@"))userHandle="@"+userHandle;
-		final String properUserHandle=userHandle;
-		final Handler handler=new Handler(Looper.getMainLooper());
+		if (!userHandle.startsWith("@"))
+			userHandle = "@" + userHandle;
+		final String properUserHandle = userHandle;
+		final Handler handler = new Handler(Looper.getMainLooper());
 		new Thread(new Runnable() {
 
 			@Override
@@ -192,18 +195,22 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				try {
 					twitter.sendDirectMessage(properUserHandle, msg);
 					handler.post(new Runnable() {
-						
+
 						@Override
 						public void run() {
 							// TODO Auto-generated method stub
-							Toast.makeText(activity, "Message sent to "+properUserHandle+"!", Toast.LENGTH_SHORT).show();
-							
+							Toast.makeText(
+									activity,
+									"Message sent to " + properUserHandle + "!",
+									Toast.LENGTH_SHORT).show();
+
 						}
 					});
 				} catch (TwitterException e) {
 					Log.e("TAG",
 							"TwitterShield::StatusUpdate::TwitterException", e);
-					if (eventHandler != null)eventHandler.onTwitterError(e.getErrorMessage());
+					if (eventHandler != null)
+						eventHandler.onTwitterError(e.getErrorMessage());
 				}
 				if (eventHandler != null)
 					eventHandler.stopProgress();
@@ -247,7 +254,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						Log.e("TAG",
 								"TwitterShield::requestToken::TwitterException",
 								e);
-						if (eventHandler != null)eventHandler.onTwitterError(e.getErrorMessage());
+						if (eventHandler != null)
+							eventHandler.onTwitterError(e.getErrorMessage());
 					}
 					return null;
 				}
@@ -317,7 +325,9 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public static interface TwitterEventHandler {
 		void onRecieveTweet(String tweet);
+
 		void onImageUploaded(String tweet);
+
 		void onDirectMessageSent(String userHandle, String msg);
 
 		void onTwitterLoggedIn(String userName);
@@ -346,7 +356,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.TWITTER_SHIELD.getId()) {
-			
+
 			if (isTwitterLoggedInAlready())
 
 				if (ConnectionDetector.isConnectingToInternet(getApplication()
@@ -360,28 +370,27 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 							eventHandler.onRecieveTweet(lastTweet);
 					} else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
 						lastTweet = frame.getArgumentAsString(0);
-						byte sourceFolderId=frame.getArgument(1)[0];
-						String imgPath=null;
-						if(sourceFolderId==SocialUtils.FROM_ONESHEELD_FOLDER)
-							imgPath=SocialUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
-						else if (sourceFolderId==SocialUtils.FROM_CAMERA_FOLDER)
-							imgPath=SocialUtils.getLastCapturedImagePathFromCameraFolder(activity);
-						if(imgPath!=null){
-						uploadPhoto(
-								imgPath,
-								lastTweet);
-						if (eventHandler != null)
-							eventHandler.onImageUploaded(lastTweet);
+						byte sourceFolderId = frame.getArgument(1)[0];
+						String imgPath = null;
+						if (sourceFolderId == SocialUtils.FROM_ONESHEELD_FOLDER)
+							imgPath = SocialUtils
+									.getLastCapturedImagePathFromOneSheeldFolder(activity);
+						else if (sourceFolderId == SocialUtils.FROM_CAMERA_FOLDER)
+							imgPath = SocialUtils
+									.getLastCapturedImagePathFromCameraFolder(activity);
+						if (imgPath != null) {
+							uploadPhoto(imgPath, lastTweet);
+							if (eventHandler != null)
+								eventHandler.onImageUploaded(lastTweet);
 						}
-					}
-					else if(frame.getFunctionId()==UPDATE_SEND_MESSAGE_METHOD_ID){
-						String userHandle=frame.getArgumentAsString(0);
-						String msg=frame.getArgumentAsString(1);
+					} else if (frame.getFunctionId() == UPDATE_SEND_MESSAGE_METHOD_ID) {
+						String userHandle = frame.getArgumentAsString(0);
+						String msg = frame.getArgumentAsString(1);
 						sendDirectMessage(userHandle, msg);
 						if (eventHandler != null)
 							eventHandler.onDirectMessageSent(userHandle, msg);
 					}
-					
+
 				} else
 					Toast.makeText(
 							getApplication().getApplicationContext(),
@@ -405,8 +414,25 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
 				PREF_KEY_OAUTH_SECRET, null));
 		twitter.setOAuthAccessToken(accestoken);
-		final Handler handler=new Handler(Looper.getMainLooper());
+		final Handler handler = new Handler(Looper.getMainLooper());
 		new AsyncTask<String, Void, Status>() {
+			Bitmap bitmap;
+			Matrix matrix;
+			ByteArrayOutputStream bos;
+			byte[] bitmapdata;
+			ByteArrayInputStream bs;
+
+			@Override
+			protected void onCancelled() {
+				if (bitmap != null)
+					bitmap.recycle();
+				bitmap = null;
+				matrix = null;
+				bos = null;
+				bitmapdata = null;
+				System.gc();
+				super.onCancelled();
+			}
 
 			@Override
 			protected twitter4j.Status doInBackground(String... params) {
@@ -415,25 +441,32 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						StatusUpdate status = new StatusUpdate(params[1]);
 						File f = new File(params[0]);
 						if (f.exists()) {
-							int rotate = ImageUtils.getCameraPhotoOrientation(params[0]);
-							Bitmap scaledBitmap  = ImageUtils.decodeFile(new File(params[0]), 1024);
-							Matrix matrix = new Matrix();
+							int rotate = ImageUtils
+									.getCameraPhotoOrientation(params[0]);
+							bitmap = ImageUtils.decodeFile(new File(params[0]),
+									1024);
+							matrix = new Matrix();
 							matrix.postRotate(rotate);
-							Bitmap bitmap=Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
-							ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
-							bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-							byte[] bitmapdata = bos.toByteArray();
-							ByteArrayInputStream bs = new ByteArrayInputStream(bitmapdata);
-							status.setMedia("Image",bs);
+							bitmap = Bitmap.createBitmap(bitmap, 0, 0,
+									bitmap.getWidth(), bitmap.getHeight(),
+									matrix, true);
+							bos = new ByteArrayOutputStream();
+							bitmap.compress(Bitmap.CompressFormat.JPEG, 100,
+									bos);
+							bitmapdata = bos.toByteArray();
+							bs = new ByteArrayInputStream(bitmapdata);
+							status.setMedia("Image", bs);
 							handler.post(new Runnable() {
-								
+
 								@Override
 								public void run() {
 									// TODO Auto-generated method stub
-									Toast.makeText(activity, "Uploading the image!", Toast.LENGTH_SHORT).show();
+									Toast.makeText(activity,
+											"Uploading the image!",
+											Toast.LENGTH_SHORT).show();
 								}
 							});
-							
+
 							return twitter.updateStatus(status);
 						} else if (eventHandler != null) {
 							System.err.println("File Not Found  " + params[0]);
@@ -454,10 +487,19 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 			@Override
 			protected void onPostExecute(twitter4j.Status result) {
+				if (bitmap != null)
+					bitmap.recycle();
+				bitmap = null;
+				matrix = null;
+				bos = null;
+				bitmapdata = null;
 				if (eventHandler != null)
 					eventHandler.stopProgress();
 				if (result != null)
-					Toast.makeText(activity, "Image uploaded and tweet posted!", Toast.LENGTH_LONG).show();
+					Toast.makeText(activity,
+							"Image uploaded and tweet posted!",
+							Toast.LENGTH_LONG).show();
+				System.gc();
 				super.onPostExecute(result);
 			}
 		}.execute(filePath, msg);

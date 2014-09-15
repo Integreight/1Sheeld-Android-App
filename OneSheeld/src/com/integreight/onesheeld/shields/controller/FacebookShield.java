@@ -40,7 +40,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	private String lastPost;
 	private Fragment fragment;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
-//	private static final byte SEND_MESSAGE_METHOD_ID = (byte) 0x03;
+	// private static final byte SEND_MESSAGE_METHOD_ID = (byte) 0x03;
 	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x02;
 
 	static final String PREF_KEY_FACEBOOK_USERNAME = "FacebookName";
@@ -306,42 +306,42 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	}
 
-//	private void sendMessage(final String message, final String to) {
-//		Session session = Session.getActiveSession();
-//
-//		if (session != null) {
-//
-//			Bundle postParams = new Bundle();
-//			postParams.putString("message", message);
-//			postParams.putString("to", to);
-//			Request.Callback callback = new Request.Callback() {
-//				public void onCompleted(Response response) {
-//					FacebookRequestError error = response.getError();
-//					if (error != null) {
-//						if (eventHandler != null) {
-//							Log.sysOut("$#$#$ " + error);
-//							eventHandler.stopProgress();
-//							eventHandler.onFacebookError(error
-//									.getErrorMessage());
-//						}
-//						return;
-//					}
-//					if (eventHandler != null) {
-//						eventHandler.onRecievePost("Message Sent to " + to
-//								+ " Saying " + message);
-//						eventHandler.stopProgress();
-//					}
-//				}
-//			};
-//
-//			Request request = new Request(session, "me/messages", postParams,
-//					HttpMethod.POST, callback);
-//
-//			RequestAsyncTask task = new RequestAsyncTask(request);
-//			task.execute();
-//		}
-//
-//	}
+	// private void sendMessage(final String message, final String to) {
+	// Session session = Session.getActiveSession();
+	//
+	// if (session != null) {
+	//
+	// Bundle postParams = new Bundle();
+	// postParams.putString("message", message);
+	// postParams.putString("to", to);
+	// Request.Callback callback = new Request.Callback() {
+	// public void onCompleted(Response response) {
+	// FacebookRequestError error = response.getError();
+	// if (error != null) {
+	// if (eventHandler != null) {
+	// Log.sysOut("$#$#$ " + error);
+	// eventHandler.stopProgress();
+	// eventHandler.onFacebookError(error
+	// .getErrorMessage());
+	// }
+	// return;
+	// }
+	// if (eventHandler != null) {
+	// eventHandler.onRecievePost("Message Sent to " + to
+	// + " Saying " + message);
+	// eventHandler.stopProgress();
+	// }
+	// }
+	// };
+	//
+	// Request request = new Request(session, "me/messages", postParams,
+	// HttpMethod.POST, callback);
+	//
+	// RequestAsyncTask task = new RequestAsyncTask(request);
+	// task.execute();
+	// }
+	//
+	// }
 
 	public void uploadImage(final String path, final String msg) {
 		new AsyncTask<Void, Void, Void>() {
@@ -351,11 +351,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			@Override
 			protected Void doInBackground(Void... params) {
 				int rotate = ImageUtils.getCameraPhotoOrientation(path);
-				Bitmap scaledBitmap  = ImageUtils.decodeFile(new File(path),1024);
+				bi = ImageUtils.decodeFile(new File(path), 1024);
 				Matrix matrix = new Matrix();
 				matrix.postRotate(rotate);
-				bi = Bitmap.createBitmap(scaledBitmap , 0, 0, scaledBitmap .getWidth(), scaledBitmap .getHeight(), matrix, true);
-				//scaledBitmap.recycle();
+				bi = Bitmap.createBitmap(bi, 0, 0, bi.getWidth(),
+						bi.getHeight(), matrix, true);
+				// scaledBitmap.recycle();
 				return null;
 			}
 
@@ -365,12 +366,14 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 				if (session != null) {
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					bi.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-					bi.recycle();
+					if (bi != null) {
+						bi.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+						bi.recycle();
+					}
 					data = baos.toByteArray();
 					Bundle postParams = new Bundle();
 					postParams.putString("message", msg);
-					//postParams.putString("method", "photos.upload");
+					// postParams.putString("method", "photos.upload");
 					postParams.putByteArray("source", data);
 					Request.Callback callback = new Request.Callback() {
 						public void onCompleted(Response response) {
@@ -390,12 +393,14 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 							System.gc();
 							if (eventHandler != null) {
 								eventHandler.stopProgress();
-								Toast.makeText(activity, "Image Uploaded!", Toast.LENGTH_SHORT).show();
+								Toast.makeText(activity, "Image Uploaded!",
+										Toast.LENGTH_SHORT).show();
 								eventHandler.onRecievePost(msg);
 							}
 						}
 					};
-					Toast.makeText(activity, "Uploading your image!", Toast.LENGTH_SHORT).show();
+					Toast.makeText(activity, "Uploading your image!",
+							Toast.LENGTH_SHORT).show();
 					Request request = new Request(session, "me/photos",
 							postParams, HttpMethod.POST, callback);
 
@@ -423,16 +428,17 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					if (frame.getFunctionId() == UPDATE_STATUS_METHOD_ID)
 						publishStory(lastPost);
 					else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
-						String imgPath=null;
-						byte sourceFolderId=frame.getArgument(1)[0];
-						if(sourceFolderId==SocialUtils.FROM_ONESHEELD_FOLDER)
-							imgPath=SocialUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
-						else if (sourceFolderId==SocialUtils.FROM_CAMERA_FOLDER)
-							imgPath=SocialUtils.getLastCapturedImagePathFromCameraFolder(activity);
-						if (imgPath!=null){
-						uploadImage(
-								imgPath,
-								lastPost);}
+						String imgPath = null;
+						byte sourceFolderId = frame.getArgument(1)[0];
+						if (sourceFolderId == SocialUtils.FROM_ONESHEELD_FOLDER)
+							imgPath = SocialUtils
+									.getLastCapturedImagePathFromOneSheeldFolder(activity);
+						else if (sourceFolderId == SocialUtils.FROM_CAMERA_FOLDER)
+							imgPath = SocialUtils
+									.getLastCapturedImagePathFromCameraFolder(activity);
+						if (imgPath != null) {
+							uploadImage(imgPath, lastPost);
+						}
 					}
 					// if (frame.getFunctionId() == SEND_MESSAGE_METHOD_ID)
 					// sendMessage(lastPost, frame.getArgumentAsString(1));
