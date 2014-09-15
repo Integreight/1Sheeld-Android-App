@@ -94,10 +94,13 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 				public void run() {
 					if (canChangeUI()) {
 						params.bottomMargin = (int) (value * stepValue);
-						soundLevelIndicator.requestLayout();
-						((OneSheeldTextView) v.findViewById(R.id.micValue))
-								.setText(String.valueOf(value).substring(0, 4)
-										+ " db");
+						if (soundLevelIndicator != null)
+							soundLevelIndicator.requestLayout();
+						if (v != null && v.findViewById(R.id.micValue) != null)
+							((OneSheeldTextView) v.findViewById(R.id.micValue))
+									.setText(String.valueOf(value).substring(0,
+											4)
+											+ " db");
 					}
 				}
 			});
