@@ -41,14 +41,19 @@ import com.google.analytics.tracking.android.MapBuilder;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
+import com.parse.Parse;
+import com.parse.ParseAnalytics;
+import com.parse.PushService;
 
 public class MainActivity extends FragmentActivity {
 	// private final String TAG = "MainActivity";
@@ -67,6 +72,9 @@ public class MainActivity extends FragmentActivity {
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		initCrashlyticsAndUncaughtThreadHandler();
+		Parse.initialize(this, ApiObjects.parse.get("app_id"), ApiObjects.parse.get("client_id"));
+		ParseAnalytics.trackAppOpened(getIntent());
+		PushService.setDefaultPushCallback(this, MainActivity.class);
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
 		initLooperThread();

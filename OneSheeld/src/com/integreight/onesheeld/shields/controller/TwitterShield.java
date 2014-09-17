@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
@@ -125,8 +126,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public void tweet(final String tweet) {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
-		cb.setOAuthConsumerSecret(activity.getThisApplication().socialKeys.twitter.secret);
+		cb.setOAuthConsumerKey(ApiObjects.twitter.get("consumer_key"));
+		cb.setOAuthConsumerSecret(ApiObjects.twitter.get("consumer_secret"));
 		cb.setOAuthAccessToken(mSharedPreferences.getString(
 				PREF_KEY_OAUTH_TOKEN, null));
 		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
@@ -172,8 +173,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public void sendDirectMessage(String userHandle, final String msg) {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
-		cb.setOAuthConsumerSecret(activity.getThisApplication().socialKeys.twitter.secret);
+		cb.setOAuthConsumerKey(ApiObjects.twitter.get("consumer_key"));
+		cb.setOAuthConsumerSecret(ApiObjects.twitter.get("consumer_secret"));
 		cb.setOAuthAccessToken(mSharedPreferences.getString(
 				PREF_KEY_OAUTH_TOKEN, null));
 		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
@@ -223,8 +224,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		factory = new TwitterFactory();
 		twitter = new TwitterFactory().getInstance();
 		twitter.setOAuthConsumer(
-				activity.getThisApplication().socialKeys.twitter.id,
-				activity.getThisApplication().socialKeys.twitter.secret);
+				ApiObjects.twitter.get("consumer_key"),
+				ApiObjects.twitter.get("consumer_secret"));
 		if (mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null) != null
 				&& mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null) != null) {
 			AccessToken accestoken = new AccessToken(
@@ -402,8 +403,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public void uploadPhoto(String filePath, String msg) {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
-		cb.setOAuthConsumerKey(activity.getThisApplication().socialKeys.twitter.id);
-		cb.setOAuthConsumerSecret(activity.getThisApplication().socialKeys.twitter.secret);
+		cb.setOAuthConsumerKey(ApiObjects.twitter.get("consumer_key"));
+		cb.setOAuthConsumerSecret(ApiObjects.twitter.get("consumer_secret"));
 		cb.setOAuthAccessToken(mSharedPreferences.getString(
 				PREF_KEY_OAUTH_TOKEN, null));
 		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(

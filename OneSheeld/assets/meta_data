@@ -7,5 +7,9 @@
     "foursquare": {
         "client_key": "Foursquare Client ID",
         "client_secret": "Foursquare Client Secret"
+    },
+    "parse": {
+        "app_id": "Parse App ID",
+        "client_id": "Parse Client ID"
     }
 }

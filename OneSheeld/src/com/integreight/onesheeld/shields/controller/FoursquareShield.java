@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
@@ -344,8 +345,8 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 		prog.setCancelable(false);
 		prog.show();
 		foursquare = new Foursquare(
-				activity.getThisApplication().socialKeys.foursquare.id,
-				activity.getThisApplication().socialKeys.foursquare.secret,
+				ApiObjects.foursquare.get("client_key"),
+				ApiObjects.foursquare.get("client_secret"),
 				redirectUrl);
 		foursquare.authorize(getActivity(),
 				new FoursquareAuthenDialogListener());

@@ -23,7 +23,7 @@ import com.google.analytics.tracking.android.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
-import com.integreight.onesheeld.model.SocialKeys;
+import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
@@ -55,7 +55,7 @@ public class OneSheeldApplication extends Application {
 	public Typeface appFont;
 	private GoogleAnalytics googleAnalyticsInstance;
 	private Tracker appGaTracker;
-	public SocialKeys socialKeys = new SocialKeys();
+	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
 	public SparseArray<Boolean> taskerPinsStatus;
 
@@ -150,15 +150,41 @@ public class OneSheeldApplication extends Application {
 		}
 		try {
 			JSONObject socialKeysObject = new JSONObject(metaData);
-			JSONObject twitter = socialKeysObject.getJSONObject("twitter");
-			JSONObject foursquare = socialKeysObject
-					.getJSONObject("foursquare");
-			socialKeys.facebookID = socialKeysObject.getString("facebook");
-			socialKeys.twitter.id = twitter.getString("consumer_key");
-			socialKeys.twitter.secret = twitter.getString("consumer_secret");
-			socialKeys.foursquare.id = foursquare.getString("client_key");
-			socialKeys.foursquare.secret = foursquare
-					.getString("client_secret");
+			JSONObject facebook = new JSONObject();
+			JSONObject twitter = new JSONObject();
+			JSONObject foursquare = new JSONObject();
+			JSONObject parse = new JSONObject();
+			if (socialKeysObject.has("facebook")) {
+				facebook = socialKeysObject.getJSONObject("facebook");
+				if (facebook.has("app_id"))
+					ApiObjects.facebook.add("app_id",
+							facebook.getString("app_id"));
+			}
+			if (socialKeysObject.has("twitter")) {
+				twitter = socialKeysObject.getJSONObject("twitter");
+				if (twitter.has("consumer_key")
+						&& twitter.has("consumer_secret")) {
+					ApiObjects.twitter.add("consumer_key",
+							twitter.getString("consumer_key"));
+					ApiObjects.twitter.add("consumer_secret",
+							twitter.getString("consumer_secret"));
+				}
+			}
+			if (socialKeysObject.has("foursquare")){
+				foursquare = socialKeysObject.getJSONObject("foursquare");
+				if (foursquare.has("client_key")&&foursquare.has("client_secret")){
+					ApiObjects.foursquare.add("client_key",
+							foursquare.getString("client_key"));
+					ApiObjects.foursquare.add("client_secret",
+							foursquare.getString("client_secret"));
+					}
+				}
+			if (socialKeysObject.has("parse")){
+				parse = socialKeysObject.getJSONObject("parse");
+				if (parse.has("app_id")&&parse.has("client_id"))
+					ApiObjects.parse.add("app_id", parse.getString("app_id"));
+					ApiObjects.parse.add("client_id", parse.getString("client_id"));
+				}
 		} catch (JSONException e) {
 		}
 	}

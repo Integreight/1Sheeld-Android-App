@@ -29,6 +29,7 @@ import com.facebook.Settings;
 import com.facebook.model.GraphUser;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
@@ -69,8 +70,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		Session session = Session.getActiveSession();
 		if (session == null) {
 			if (session == null) {
-				session = new Session.Builder(activity).setApplicationId(
-						activity.getThisApplication().socialKeys.facebookID)
+				session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
 						.build();
 			}
 			Session.setActiveSession(session);
@@ -92,16 +92,12 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 		if (session == null) {
 			if (savedInstanceState != null) {
 				session = new Session.Builder(activity)
-						.setApplicationId(
-								FacebookShield.this.activity
-										.getThisApplication().socialKeys.facebookID)
+						.setApplicationId(ApiObjects.facebook.get("app_id"))
 						.build();
 			}
 			if (session == null) {
 				session = new Session.Builder(activity)
-						.setApplicationId(
-								FacebookShield.this.activity
-										.getThisApplication().socialKeys.facebookID)
+						.setApplicationId(ApiObjects.facebook.get("app_id"))
 						.build();
 			}
 			Session.setActiveSession(session);
@@ -136,8 +132,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	public void loginToFacebook() {
 		Session session = Session.getActiveSession();
 		if (session == null) {
-			session = new Session.Builder(activity).setApplicationId(
-					activity.getThisApplication().socialKeys.facebookID)
+			session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
 					.build();
 			Session.setActiveSession(session);
 			loginToFacebook();
@@ -155,8 +150,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 			// Session.getActiveSession().close();
 			Session.getActiveSession().closeAndClearTokenInformation();
 		} else {
-			Session ses = new Session.Builder(activity).setApplicationId(
-					activity.getThisApplication().socialKeys.facebookID)
+			Session ses = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
 					.build();
 			Session.setActiveSession(ses);
 			ses.closeAndClearTokenInformation();
