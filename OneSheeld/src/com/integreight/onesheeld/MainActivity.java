@@ -47,7 +47,6 @@ import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBlu
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
