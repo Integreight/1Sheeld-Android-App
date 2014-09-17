@@ -7,13 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.hardware.Camera;
@@ -94,11 +91,6 @@ public class CameraHeadService extends Service implements
 				} catch (RuntimeException e) {
 					Log.e("Camera",
 							"Camera failed to open: " + e.getLocalizedMessage());
-					/*
-					 * Toast.makeText(getApplicationContext(),
-					 * "Front Camera failed to open", Toast.LENGTH_LONG)
-					 * .show();
-					 */
 				}
 			}
 		}
@@ -111,7 +103,7 @@ public class CameraHeadService extends Service implements
 		height = pref.getInt("Picture_height", 0);
 
 		if (width == 0 | height == 0) {
-			pictureSize = getBiggesttPictureSize(parameters);
+			pictureSize = CameraUtils.getBiggesttPictureSize(parameters);
 			if (pictureSize != null)
 				parameters
 						.setPictureSize(pictureSize.width, pictureSize.height);
@@ -125,49 +117,6 @@ public class CameraHeadService extends Service implements
 		} else {
 			// if (pictureSize != null)
 			parameters.setPictureSize(width, height);
-		}
-	}
-
-	private Camera.Size getBiggesttPictureSize(Camera.Parameters parameters) {
-		Camera.Size result = null;
-
-		for (Camera.Size size : parameters.getSupportedPictureSizes()) {
-			if (result == null) {
-				result = size;
-			} else {
-				int resultArea = result.width * result.height;
-				int newArea = size.width * size.height;
-
-				if (newArea > resultArea) {
-					result = size;
-				}
-			}
-		}
-
-		return (result);
-	}
-
-	/** Check if this device has a camera */
-	private boolean checkCameraHardware(Context context) {
-		if (context.getPackageManager().hasSystemFeature(
-				PackageManager.FEATURE_CAMERA)) {
-			// this device has a camera
-			return true;
-		} else {
-			// no camera on this device
-			return false;
-		}
-	}
-
-	/** Check if this device has front camera */
-	private boolean checkFrontCamera(Context context) {
-		if (context.getPackageManager().hasSystemFeature(
-				PackageManager.FEATURE_CAMERA_FRONT)) {
-			// this device has front camera
-			return true;
-		} else {
-			// no front camera on this device
-			return false;
 		}
 	}
 
@@ -188,7 +137,7 @@ public class CameraHeadService extends Service implements
 
 	private synchronized void takeImage(Intent intent) {
 
-		if (checkCameraHardware(getApplicationContext())) {
+		if (CameraUtils.checkCameraHardware(getApplicationContext())) {
 			Bundle extras = intent.getExtras();
 			if (extras != null) {
 				String flash_mode = extras.getString("FLASH");
@@ -227,7 +176,8 @@ public class CameraHeadService extends Service implements
 							stopSelf();
 						}
 						Camera.Parameters parameters = mCamera.getParameters();
-						pictureSize = getBiggesttPictureSize(parameters);
+						pictureSize = CameraUtils
+								.getBiggesttPictureSize(parameters);
 						if (pictureSize != null)
 							parameters.setPictureSize(pictureSize.width,
 									pictureSize.height);
@@ -254,15 +204,9 @@ public class CameraHeadService extends Service implements
 
 						stopSelf();
 					}
-					/*
-					 * sHolder = sv.getHolder(); // tells Android that this
-					 * surface will have its data // constantly // replaced if
-					 * (Build.VERSION.SDK_INT < 11)
-					 * 
-					 * sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS)
-					 */
+
 				} else {
-					if (checkFrontCamera(getApplicationContext())) {
+					if (CameraUtils.checkFrontCamera(getApplicationContext())) {
 						mCamera = openFrontFacingCameraGingerbread();
 
 						if (mCamera != null) {
@@ -285,7 +229,8 @@ public class CameraHeadService extends Service implements
 							}
 							Camera.Parameters parameters = mCamera
 									.getParameters();
-							pictureSize = getBiggesttPictureSize(parameters);
+							pictureSize = CameraUtils
+									.getBiggesttPictureSize(parameters);
 							if (pictureSize != null)
 								parameters.setPictureSize(pictureSize.width,
 										pictureSize.height);
@@ -298,11 +243,6 @@ public class CameraHeadService extends Service implements
 
 						} else {
 							mCamera = null;
-							/*
-							 * Toast.makeText(getApplicationContext(),
-							 * "API dosen't support front camera",
-							 * Toast.LENGTH_LONG).show();
-							 */
 							handler.post(new Runnable() {
 
 								@Override
@@ -311,22 +251,11 @@ public class CameraHeadService extends Service implements
 											getApplicationContext(),
 											"Your Device dosen't have Front Camera !",
 											Toast.LENGTH_LONG).show();
-
 								}
 							});
-
 							stopSelf();
-
 						}
-						// Get a surface
-						/*
-						 * sHolder = sv.getHolder(); // tells Android that this
-						 * surface will have its data // constantly // replaced
-						 * if (Build.VERSION.SDK_INT < 11)
-						 * 
-						 * sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS
-						 * );
-						 */
+
 					}
 
 				}
@@ -377,24 +306,11 @@ public class CameraHeadService extends Service implements
 					// TODO Auto-generated catch block
 					Log.e("TAG", "CmaraHeadService()::takePicture", e);
 				}
-				// Get a surface
-				/*
-				 * sHolder = sv.getHolder(); // tells Android that this surface
-				 * will have its data constantly // replaced if
-				 * (Build.VERSION.SDK_INT < 11)
-				 * 
-				 * sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-				 */
 
 			}
 
 		} else {
-			// display in long period of time
-			/*
-			 * Toast.makeText(getApplicationContext(),
-			 * "Your Device dosen't have a Camera !", Toast.LENGTH_LONG)
-			 * .show();
-			 */
+
 			handler.post(new Runnable() {
 
 				@Override
@@ -534,30 +450,10 @@ public class CameraHeadService extends Service implements
 			Log.d("ImageTakin", "Done");
 			if (bmp != null)
 				bmp.recycle();
-			BitmapFactory.Options bfOptions = new BitmapFactory.Options();
-			bfOptions.inDither = false; // Disable Dithering mode
-			bfOptions.inPurgeable = true; // Tell to gc that whether it needs
-											// free
-											// memory, the Bitmap can be cleared
-			bfOptions.inInputShareable = true; // Which kind of reference will
-												// be
-												// used to recover the Bitmap
-												// data
-												// after being clear, when it
-												// will
-												// be used in the future
-			bfOptions.inTempStorage = new byte[32 * 1024];
-
-			if (data != null)
-				bmp = BitmapFactory.decodeByteArray(data, 0, data.length,
-						bfOptions);
+			// decode with options and set rotation
+			bmp = ImageUtils.decodeBitmap(data, matrix);
 			data = null;
-			bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
-					bmp.getHeight(), matrix, true);
-			if (matrix != null)
-				matrix.reset();
-			matrix = null;
-			System.gc();
+
 			ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 			if (bmp != null && QUALITY_MODE == 0)
 				bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
@@ -697,25 +593,4 @@ public class CameraHeadService extends Service implements
 			mCamera = null;
 		}
 	}
-
-	public static Bitmap decodeBitmap(byte[] data) {
-
-		Bitmap bitmap = null;
-		BitmapFactory.Options bfOptions = new BitmapFactory.Options();
-		bfOptions.inDither = false; // Disable Dithering mode
-		bfOptions.inPurgeable = true; // Tell to gc that whether it needs free
-										// memory, the Bitmap can be cleared
-		bfOptions.inInputShareable = true; // Which kind of reference will be
-											// used to recover the Bitmap data
-											// after being clear, when it will
-											// be used in the future
-		bfOptions.inTempStorage = new byte[32 * 1024];
-
-		if (data != null)
-			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
-					bfOptions);
-
-		return bitmap;
-	}
-
 }

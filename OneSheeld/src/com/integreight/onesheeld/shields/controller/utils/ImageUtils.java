@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.media.ExifInterface;
 
 import com.integreight.onesheeld.utils.Log;
@@ -65,4 +66,45 @@ public class ImageUtils {
 		}
 		return rotate;
 	}
+
+	public static Bitmap rotateImage(Bitmap src, float degree) {
+		// create new matrix object
+		Matrix matrix = new Matrix();
+		// setup rotation degree
+		matrix.postRotate(degree);
+		// return new bitmap rotated using matrix
+		return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(),
+				matrix, true);
+	}
+
+	public static Bitmap decodeBitmap(byte[] data, Matrix matrix) {
+		Bitmap bitmap = null;
+		BitmapFactory.Options bfOptions = new BitmapFactory.Options();
+		bfOptions.inDither = false; // Disable Dithering mode
+		bfOptions.inPurgeable = true; // Tell to gc that whether it needs
+										// free
+										// memory, the Bitmap can be cleared
+		bfOptions.inInputShareable = true; // Which kind of reference will
+											// be
+											// used to recover the Bitmap
+											// data
+											// after being clear, when it
+											// will
+											// be used in the future
+		bfOptions.inTempStorage = new byte[32 * 1024];
+
+		if (data != null)
+			bitmap = BitmapFactory.decodeByteArray(data, 0, data.length,
+					bfOptions);
+
+		bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+				bitmap.getHeight(), matrix, true);
+		if (matrix != null)
+			matrix.reset();
+		matrix = null;
+		System.gc();
+
+		return bitmap;
+	}
+
 }
