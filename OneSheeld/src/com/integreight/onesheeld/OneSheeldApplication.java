@@ -28,6 +28,8 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.parse.Parse;
+import com.parse.PushService;
 
 /**
  * @author Ahmed Saad
@@ -125,6 +127,8 @@ public class OneSheeldApplication extends Application {
 		appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
 		parseSocialKeys();
+		Parse.initialize(this, ApiObjects.parse.get("app_id"), ApiObjects.parse.get("client_id"));
+		PushService.setDefaultPushCallback(this, MainActivity.class);
 		initTaskerPins();
 		super.onCreate();
 	}
