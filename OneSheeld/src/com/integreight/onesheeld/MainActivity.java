@@ -308,8 +308,8 @@ public class MainActivity extends FragmentActivity {
 												@Override
 												public void onClick(View v) {
 													new FirmwareUpdatingPopup(
-															MainActivity.this,
-															false).show();
+															MainActivity.this/*,
+															false*/).show();
 												}
 											}, true),
 									new ValidationPopup.ValidationAction(
@@ -362,8 +362,9 @@ public class MainActivity extends FragmentActivity {
 												@Override
 												public void onClick(View v) {
 													FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
-															MainActivity.this,
-															false);
+															MainActivity.this/*,
+															false*/
+															);
 													fup.setCancelable(false);
 													fup.show();
 												}

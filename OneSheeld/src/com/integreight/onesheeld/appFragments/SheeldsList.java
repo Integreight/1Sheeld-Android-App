@@ -415,7 +415,7 @@ public class SheeldsList extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.open_bootloader_popup:
 			if (!FirmwareUpdatingPopup.isOpened)
-				new FirmwareUpdatingPopup((MainActivity) activity, false)
+				new FirmwareUpdatingPopup((MainActivity) activity/*, false*/)
 						.show();
 			return true;
 		case R.id.action_settings:
