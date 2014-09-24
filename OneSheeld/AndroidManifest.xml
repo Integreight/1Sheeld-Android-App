@@ -209,8 +209,11 @@
             <intent-filter>
                 <action android:name="com.integreight.onesheeld.push.PinModePushMessage" />
                 <action android:name="com.integreight.onesheeld.push.DigitalWritePushMessage" />
-                <action android:name="com.integreight.onesheeld.push.DigitalReadPushMessage" />
+                <action android:name="com.integreight.onesheeld.push.DigitalReadRequestPushMessage" />
+                <action android:name="com.integreight.onesheeld.push.DigitalReadResponsePushMessage" />
                 <action android:name="com.integreight.onesheeld.push.AnalogWritePushMessage" />
+                <action android:name="com.integreight.onesheeld.push.KeyValueFloatPushMessage" />
+                <action android:name="com.integreight.onesheeld.push.KeyValueStringPushMessage" />
             </intent-filter>
         </receiver>
     </application>

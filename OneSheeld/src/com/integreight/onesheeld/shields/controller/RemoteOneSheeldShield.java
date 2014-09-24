@@ -16,8 +16,14 @@ import com.parse.ParseQuery;
 public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShield> {
 	private static final byte PIN_MODE = (byte) 0x01;
 	private static final byte DIGITAL_WRITE = (byte) 0x02;
-	private static final byte DIGITAL_READ = (byte) 0x03;
+	private static final byte DIGITAL_READ_REQUEST = (byte) 0x03;
 	private static final byte ANALOG_WRITE= (byte) 0x04;
+	private static final byte FLOAT_MESSAGE= (byte) 0x05;
+	private static final byte STRING_MESSAGE= (byte) 0x06;
+	
+	public static final byte DIGITAL_READ_RESPONSE = (byte) 0x01;
+	public static final byte FLOAT_MESSAGE_RESPONSE = (byte) 0x02;
+	public static final byte STRING_MESSAGE_RESPONSE = (byte) 0x03;
 	
 //	public static final String INTENT="com.integreight.onesheeld.push.DigitalPushMessages";
 	public RemoteOneSheeldShield() {
@@ -39,8 +45,10 @@ public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShiel
 			switch (frame.getFunctionId()) {
 			case PIN_MODE:processPinModeMessage(frame);break;
 			case DIGITAL_WRITE:processDigitalWriteMessage(frame);break;
-			case DIGITAL_READ:processDigitalReadRequestMessage(frame);break;
+			case DIGITAL_READ_REQUEST:processDigitalReadRequestMessage(frame);break;
 			case ANALOG_WRITE:processAnalogWriteMessage(frame);break;
+			case FLOAT_MESSAGE:processKeyValueFloatMessage(frame);break;
+			case STRING_MESSAGE:processKeyValueStringMessage(frame);break;
 			}
 		}
 	}
@@ -112,6 +120,40 @@ public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShiel
 		sendPushMessage(address, json);
 	}
 	
+	private void processKeyValueFloatMessage(ShieldFrame frame){
+		if(frame==null)return;
+		if(frame.getArguments().size()!=3)return;
+		String address=frame.getArgumentAsString(0);
+		String key=frame.getArgumentAsString(1);
+		float value=frame.getArgumentAsFloat(2);
+		JSONObject json=getKeyValueFloatMessage(key, value);
+		try {
+			json.put("action", PushMessagesReceiver.KeyValueFloatPushMessageAction);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		sendPushMessage(address, json);
+	}
+	
+	private void processKeyValueStringMessage(ShieldFrame frame){
+		if(frame==null)return;
+		if(frame.getArguments().size()!=3)return;
+		String address=frame.getArgumentAsString(0);
+		String key=frame.getArgumentAsString(1);
+		String value=frame.getArgumentAsString(2);
+		JSONObject json=getKeyValueStringMessage(key, value);
+		try {
+			json.put("action", PushMessagesReceiver.KeyValueStringPushMessageAction);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+		sendPushMessage(address, json);
+	}
+	
 	private void sendPushMessage(String installationId, JSONObject json){
 		try {
 			json.put("from", ParseInstallation.getCurrentInstallation().getInstallationId());
@@ -122,9 +164,9 @@ public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShiel
 		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery(); 
 		query.whereEqualTo("installationId", installationId);    
 		ParsePush push = new ParsePush();
-		push.setExpirationTimeInterval(10);//10 seconds timeout
 		push.setQuery(query);
 		push.setData(json);//push.setMessage(json.toString());
+		push.setExpirationTimeInterval(10);//10 seconds timeout
 		push.sendInBackground();
 	}
 	
@@ -161,7 +203,7 @@ public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShiel
 			JSONObject json=new JSONObject();
 //			json.put("type","DIGITAL_WRITE");
 			json.put("pin", pin);
-			json.put("value", true);
+			json.put("value", value);
 			return json;
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -184,11 +226,11 @@ public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShiel
 		}
 	}
 	
-	private JSONObject getKeyValueMessage(String key, float value){
+	private JSONObject getKeyValueFloatMessage(String key, float value){
 		try {
 			JSONObject json=new JSONObject();
-			json.put("type","KEYVALUE_MESSAGE");
-			json.put("value_type", "FLOAT");
+//			json.put("type","KEYVALUE_MESSAGE");
+//			json.put("value_type", "FLOAT");
 			json.put("key", key);
 			json.put("value", value);
 			return json;
@@ -199,11 +241,11 @@ public class RemoteOneSheeldShield extends ControllerParent<RemoteOneSheeldShiel
 		}
 	}
 	
-	private JSONObject getKeyValueMessage(String key, String value){
+	private JSONObject getKeyValueStringMessage(String key, String value){
 		try {
 			JSONObject json=new JSONObject();
-			json.put("type","KEYVALUE_MESSAGE");
-			json.put("value_type", "STRING");
+//			json.put("type","KEYVALUE_MESSAGE");
+//			json.put("value_type", "STRING");
 			json.put("key", value);
 			json.put("value", value);
 			return json;
