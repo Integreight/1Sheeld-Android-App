@@ -25,6 +25,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
@@ -59,6 +60,7 @@ public class OneSheeldApplication extends Application {
 	private Tracker appGaTracker;
 	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
+	public RemoteOneSheeldShield remoteOneSheeldController;
 	public SparseArray<Boolean> taskerPinsStatus;
 
 	/*

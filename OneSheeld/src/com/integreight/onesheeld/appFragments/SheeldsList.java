@@ -44,10 +44,12 @@ import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
+import com.parse.ParseInstallation;
 
 public class SheeldsList extends Fragment {
 	View v;
@@ -329,6 +331,10 @@ public class SheeldsList extends Fragment {
 					&& activity.getThisApplication().taskerController != null) {
 				activity.getThisApplication().taskerController.reset();
 			}
+			if (activity != null
+					&& activity.getThisApplication().remoteOneSheeldController != null) {
+				activity.getThisApplication().remoteOneSheeldController.reset();
+			}
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -344,6 +350,8 @@ public class SheeldsList extends Fragment {
 		public void onConnect() {
 			activity.getThisApplication().taskerController = new TaskerShield(
 					activity, UIShield.TASKER_SHIELD.name());
+			activity.getThisApplication().remoteOneSheeldController = new RemoteOneSheeldShield(
+					activity, UIShield.REMOTEONESHEELD_SHIELD.name());
 			Log.e(TAG, "- ARDUINO CONNECTED -");
 			if (isOneSheeldServiceRunning()) {
 				((OneSheeldApplication) activity.getApplication())
@@ -358,6 +366,9 @@ public class SheeldsList extends Fragment {
 			if (activity != null) {
 				if (activity.getThisApplication().taskerController != null) {
 					activity.getThisApplication().taskerController.reset();
+				}
+				if (activity.getThisApplication().remoteOneSheeldController != null) {
+					activity.getThisApplication().remoteOneSheeldController.reset();
 				}
 				((OneSheeldApplication) activity.getApplication())
 						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
@@ -415,7 +426,7 @@ public class SheeldsList extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.open_bootloader_popup:
 			if (!FirmwareUpdatingPopup.isOpened)
-				new FirmwareUpdatingPopup((MainActivity) activity/*, false*/)
+				new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
 						.show();
 			return true;
 		case R.id.action_settings:
@@ -450,6 +461,12 @@ public class SheeldsList extends Fragment {
 					activity.getPackageName(), 0);
 			String versionName = pInfo.versionName;
 			int versionCode = pInfo.versionCode;
+			String installationIdString = (ParseInstallation
+					.getCurrentInstallation() != null && ParseInstallation
+					.getCurrentInstallation().getInstallationId() != null) ? "Connect using: "
+					+ ParseInstallation.getCurrentInstallation()
+							.getInstallationId() + "\n\n"
+					: "";
 			final ValidationPopup popup = new ValidationPopup(
 					activity,
 					"About 1Sheeld",
@@ -464,7 +481,8 @@ public class SheeldsList extends Fragment {
 									+ stringDate
 									: "")
 							+ "\n\n"
-							+ "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n");
+							+ "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n"
+							+ installationIdString);
 			ValidationAction vp = new ValidationPopup.ValidationAction("OK",
 					new View.OnClickListener() {
 
