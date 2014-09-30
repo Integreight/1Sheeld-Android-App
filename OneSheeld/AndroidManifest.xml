@@ -214,6 +214,9 @@
                 <action android:name="com.integreight.onesheeld.push.AnalogWritePushMessage" />
                 <action android:name="com.integreight.onesheeld.push.KeyValueFloatPushMessage" />
                 <action android:name="com.integreight.onesheeld.push.KeyValueStringPushMessage" />
+                <action android:name="com.integreight.onesheeld.push.SubscribeToDigitalPinPushMessage" />
+                <action android:name="com.integreight.onesheeld.push.UnsubscribeToDigitalPinPushMessage" />
+                <action android:name="com.integreight.onesheeld.push.DigitalPinSubscribtionResponsePushMessage" />
             </intent-filter>
         </receiver>
     </application>

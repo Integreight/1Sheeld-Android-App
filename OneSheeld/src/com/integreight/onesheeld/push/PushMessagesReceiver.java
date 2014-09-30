@@ -1,7 +1,10 @@
 package com.integreight.onesheeld.push;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,10 +35,14 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 	public static final String DigitalWritePushMessageAction = "com.integreight.onesheeld.push.DigitalWritePushMessage";
 	public static final String DigitalReadRequestPushMessageAction = "com.integreight.onesheeld.push.DigitalReadRequestPushMessage";
 	public static final String DigitalReadResponsePushMessageAction = "com.integreight.onesheeld.push.DigitalReadResponsePushMessage";
+	public static final String SubscribeToDigitalPinPushMessageAction = "com.integreight.onesheeld.push.SubscribeToDigitalPinPushMessage";
+	public static final String UnsubscribeToDigitalPinPushMessageAction = "com.integreight.onesheeld.push.UnsubscribeToDigitalPinPushMessage";
+	public static final String DigitalPinSubscribtionResponsePushMessageAction = "com.integreight.onesheeld.push.DigitalPinSubscribtionResponsePushMessage";
 	public static final String AnalogWritePushMessageAction = "com.integreight.onesheeld.push.AnalogWritePushMessage";
 	public static final String KeyValueFloatPushMessageAction = "com.integreight.onesheeld.push.KeyValueFloatPushMessage";
 	public static final String KeyValueStringPushMessageAction = "com.integreight.onesheeld.push.KeyValueStringPushMessage";
 	private static long lastNotifiedTimeStamp;
+
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		try {
@@ -45,7 +52,7 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 					"com.parse.Data"));
 			Log.d(TAG, "got action " + action + " on channel " + channel
 					+ " with:");
-			
+
 			OneSheeldApplication app = (OneSheeldApplication) context
 					.getApplicationContext();
 			Iterator<?> itr = json.keys();
@@ -53,17 +60,20 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 				String key = (String) itr.next();
 				Log.d(TAG, "..." + key + " => " + json.getString(key));
 			}
-			String from =json.getString("from");
+			String from = json.getString("from");
+			String myAddress=ParseInstallation.getCurrentInstallation().getInstallationId();
+			if(from.equals(myAddress))return;
 			if (app.getAppFirmata() == null
 					|| (app.getAppFirmata() != null && !app.getAppFirmata()
 							.isOpen())) {
-				if(lastNotifiedTimeStamp+60<System.nanoTime()/1000000000||lastNotifiedTimeStamp==0){
-				showNotification(context,"Incoming connection!");
-				lastNotifiedTimeStamp=System.nanoTime()/1000000000;
+				if (lastNotifiedTimeStamp + 60 < System.nanoTime() / 1000000000
+						|| lastNotifiedTimeStamp == 0) {
+					showNotification(context, "Incoming connection!");
+					lastNotifiedTimeStamp = System.nanoTime() / 1000000000;
 				}
 				return;
 			}
-			
+
 			if (action.equals(PinModePushMessageAction)) {
 				app.getAppFirmata().pinMode(
 						json.getInt("pin"),
@@ -86,9 +96,11 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 				sendPushMessage(from, digitalReadResponseJson);
 
 			} else if (action.equals(DigitalReadResponsePushMessageAction)) {
-				ShieldFrame frame= new ShieldFrame(UIShield.REMOTEONESHEELD_SHIELD.getId(), RemoteOneSheeldShield.DIGITAL_READ_RESPONSE);
+				ShieldFrame frame = new ShieldFrame(
+						UIShield.REMOTEONESHEELD_SHIELD.getId(),
+						RemoteOneSheeldShield.DIGITAL_READ_RESPONSE);
 				frame.addStringArgument(from);
-				frame.addByteArgument((byte)json.getInt("pin"));
+				frame.addByteArgument((byte) json.getInt("pin"));
 				frame.addBooleanArgument(json.getBoolean("value"));
 				app.getAppFirmata().sendShieldFrame(frame);
 
@@ -97,24 +109,71 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 						ArduinoFirmata.OUTPUT);
 				app.getAppFirmata().analogWrite(json.getInt("pin"),
 						json.getInt("value"));
-			}
-			else if (action.equals(KeyValueFloatPushMessageAction)) {
-				ShieldFrame frame= new ShieldFrame(UIShield.REMOTEONESHEELD_SHIELD.getId(), RemoteOneSheeldShield.FLOAT_MESSAGE_RESPONSE);
+			} else if (action.equals(KeyValueFloatPushMessageAction)) {
+				ShieldFrame frame = new ShieldFrame(
+						UIShield.REMOTEONESHEELD_SHIELD.getId(),
+						RemoteOneSheeldShield.FLOAT_MESSAGE_RESPONSE);
 				frame.addStringArgument(from);
 				frame.addStringArgument(json.getString("key"));
 				frame.addFloatArgument((float) json.getDouble("value"));
 				app.getAppFirmata().sendShieldFrame(frame);
-			}
-			else if (action.equals(KeyValueStringPushMessageAction)) {
-				ShieldFrame frame= new ShieldFrame(UIShield.REMOTEONESHEELD_SHIELD.getId(), RemoteOneSheeldShield.STRING_MESSAGE_RESPONSE);
+			} else if (action.equals(KeyValueStringPushMessageAction)) {
+				ShieldFrame frame = new ShieldFrame(
+						UIShield.REMOTEONESHEELD_SHIELD.getId(),
+						RemoteOneSheeldShield.STRING_MESSAGE_RESPONSE);
 				frame.addStringArgument(from);
 				frame.addStringArgument(json.getString("key"));
 				frame.addStringArgument(json.getString("value"));
 				app.getAppFirmata().sendShieldFrame(frame);
-			}else {
+			} else if (action.equals(SubscribeToDigitalPinPushMessageAction)) {
+				List<Integer> pins = new ArrayList<Integer>();
+				JSONArray pinsArr = json.getJSONArray("pins");
+				if (pinsArr != null) {
+					for (int i = 0; i < pinsArr.length(); i++) {
+						pins.add(pinsArr.getJSONObject(i).getInt("pin"));
+					}
+				}
+				app.remoteOneSheeldController
+						.subscribeToDigitalPins(from, pins);
+			} else if (action.equals(UnsubscribeToDigitalPinPushMessageAction)) {
+				List<Integer> pins = new ArrayList<Integer>();
+				JSONArray pinsArr = json.getJSONArray("pins");
+				if (pinsArr != null) {
+					for (int i = 0; i < pinsArr.length(); i++) {
+						pins.add(pinsArr.getJSONObject(i).getInt("pin"));
+					}
+				}
+				app.remoteOneSheeldController.unSubscribeToDigitalPins(from,
+						pins);
+			} else if (action
+					.equals(DigitalPinSubscribtionResponsePushMessageAction)) {
+				List<Integer> pins = new ArrayList<Integer>();
+				JSONArray pinsArr = json.getJSONArray("pins");
+				if (pinsArr != null) {
+					for (int i = 0; i < pinsArr.length(); i++) {
+						pins.add(pinsArr.getJSONObject(i).getInt("pin"));
+					}
+				}
+
+				ShieldFrame frame = new ShieldFrame(
+						UIShield.REMOTEONESHEELD_SHIELD.getId(),
+						RemoteOneSheeldShield.DIGITAL_PIN_SUBSCRIPTION_RESPONSE);
+				frame.addStringArgument(from);
+				if (pinsArr != null) {
+					for (int i = 0; i < pinsArr.length(); i++) {
+						byte pin = (byte) (pinsArr.getJSONObject(i).getInt(
+								"pin") & 0xff);
+						byte value = (byte) ((pinsArr.getJSONObject(i)
+								.getBoolean("value")) ? 1 : 0);
+						byte pinAndValue = (byte) ((pin | (value << 7)) & 0xff);
+						frame.addByteArgument(pinAndValue);
+					}
+				}
+				app.getAppFirmata().sendShieldFrame(frame);
+			} else {
 				return;
 			}
-			
+
 		} catch (JSONException e) {
 			Log.d(TAG, "JSONException: " + e.getMessage());
 		} catch (Exception e) {
@@ -139,16 +198,17 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 		push.setExpirationTimeInterval(10);// 10 seconds timeout
 		push.sendInBackground();
 	}
-	
-	protected void showNotification(Context context,String notificationText) {
+
+	protected void showNotification(Context context, String notificationText) {
 		// TODO Auto-generated method stub
 		NotificationCompat.Builder build = new NotificationCompat.Builder(
 				context);
 		build.setSmallIcon(R.drawable.white_ee_icon);
 		build.setContentTitle(notificationText);
 		build.setContentText("Someone is trying to control your 1Sheeld");
-//		Uri alertSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//		build.setSound(alertSound);
+		// Uri alertSound =
+		// RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+		// build.setSound(alertSound);
 		build.setTicker(notificationText);
 		build.setWhen(System.currentTimeMillis());
 		Intent notificationIntent = new Intent(context, MainActivity.class);
@@ -160,7 +220,8 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 
 		build.setContentIntent(intent);
 		Notification notification = build.build();
-		notification.flags=Notification.DEFAULT_LIGHTS | Notification.FLAG_AUTO_CANCEL |Notification.DEFAULT_SOUND;
+		notification.flags = Notification.DEFAULT_LIGHTS
+				| Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(1, notification);

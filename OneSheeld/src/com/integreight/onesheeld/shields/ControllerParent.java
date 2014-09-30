@@ -18,6 +18,7 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 
 /**
@@ -182,8 +183,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				@Override
 				public void run() {
 					if (isALive && isInteractive)
-									((T) ControllerParent.this).onSysex(
-											command, data);
+						((T) ControllerParent.this).onSysex(command, data);
 				}
 			});
 		}
@@ -194,7 +194,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 			@Override
 			public void run() {
 				if (hasConnectedPins
-						|| ((T) ControllerParent.this) instanceof TaskerShield)
+						|| ((T) ControllerParent.this) instanceof TaskerShield
+						|| ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)
 					((T) ControllerParent.this).onDigital(portNumber, portData);
 			}
 		};
