@@ -90,18 +90,38 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 				digitalReadResponseJson
 						.put("action",
 								PushMessagesReceiver.DigitalReadResponsePushMessageAction);
-				digitalReadResponseJson.put("pin", json.getInt("pin"));
-				digitalReadResponseJson.put("value", app.getAppFirmata()
-						.digitalRead(json.getInt("pin")));
+				JSONArray jsonPinArray=new JSONArray();
+				JSONObject pin=new JSONObject();
+				pin.put("pin", json.getJSONArray("pins").getJSONObject(0).getInt("pin"));
+				pin.put("value", app.getAppFirmata()
+						.digitalRead(json.getJSONArray("pins").getJSONObject(0).getInt("pin")));
+				jsonPinArray.put(pin);
+				digitalReadResponseJson.put("pins", jsonPinArray);
 				sendPushMessage(from, digitalReadResponseJson);
 
 			} else if (action.equals(DigitalReadResponsePushMessageAction)) {
+				List<Integer> pins = new ArrayList<Integer>();
+				JSONArray pinsArr = json.getJSONArray("pins");
+				if (pinsArr != null) {
+					for (int i = 0; i < pinsArr.length(); i++) {
+						pins.add(pinsArr.getJSONObject(i).getInt("pin"));
+					}
+				}
+
 				ShieldFrame frame = new ShieldFrame(
 						UIShield.REMOTEONESHEELD_SHIELD.getId(),
 						RemoteOneSheeldShield.DIGITAL_READ_RESPONSE);
 				frame.addStringArgument(from);
-				frame.addByteArgument((byte) json.getInt("pin"));
-				frame.addBooleanArgument(json.getBoolean("value"));
+				if (pinsArr != null) {
+					for (int i = 0; i < pinsArr.length(); i++) {
+						byte pin = (byte) (pinsArr.getJSONObject(i).getInt(
+								"pin") & 0xff);
+						byte value = (byte) ((pinsArr.getJSONObject(i)
+								.getBoolean("value")) ? 1 : 0);
+						byte pinAndValue = (byte) ((pin | (value << 7)) & 0xff);
+						frame.addByteArgument(pinAndValue);
+					}
+				}
 				app.getAppFirmata().sendShieldFrame(frame);
 
 			} else if (action.equals(AnalogWritePushMessageAction)) {
@@ -157,7 +177,7 @@ public class PushMessagesReceiver extends BroadcastReceiver {
 
 				ShieldFrame frame = new ShieldFrame(
 						UIShield.REMOTEONESHEELD_SHIELD.getId(),
-						RemoteOneSheeldShield.DIGITAL_PIN_SUBSCRIPTION_RESPONSE);
+						RemoteOneSheeldShield.DIGITAL_READ_RESPONSE);
 				frame.addStringArgument(from);
 				if (pinsArr != null) {
 					for (int i = 0; i < pinsArr.length(); i++) {

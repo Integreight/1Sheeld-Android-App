@@ -35,7 +35,7 @@ public class RemoteOneSheeldShield extends
 	public static final byte DIGITAL_READ_RESPONSE = (byte) 0x01;
 	public static final byte FLOAT_MESSAGE_RESPONSE = (byte) 0x02;
 	public static final byte STRING_MESSAGE_RESPONSE = (byte) 0x03;
-	public static final byte DIGITAL_PIN_SUBSCRIPTION_RESPONSE = (byte) 0x04;
+//	public static final byte DIGITAL_PIN_SUBSCRIPTION_RESPONSE = (byte) 0x04;
 
 	public static final int MAXIMUM_NOTIFICATION_LIMIT = 1000;
 
@@ -136,8 +136,9 @@ public class RemoteOneSheeldShield extends
 		if (frame.getArguments().size() != 2)
 			return;
 		String address = frame.getArgumentAsString(0);
-		int pin = (int) (frame.getArgument(1)[0] & 0xff);
-		JSONObject json = getDigitalRequestReadMessage(pin);
+		final int pin = (int) (frame.getArgument(1)[0] & 0xff);
+		@SuppressWarnings("serial")
+		JSONObject json = getSubscribeToDigitalPinMessage(new ArrayList<Integer>(){{add(pin);}});
 		try {
 			json.put("action",
 					PushMessagesReceiver.DigitalReadRequestPushMessageAction);
@@ -287,20 +288,20 @@ public class RemoteOneSheeldShield extends
 		push.sendInBackground();
 	}
 
-	private JSONObject getDigitalRequestReadMessage(int pin) {
-		try {
-			JSONObject json = new JSONObject();
-			// json.put("type","DIGITAL_READ");
-			json.put("pin", pin);
-			json.put("from", ParseInstallation.getCurrentInstallation()
-					.getInstallationId());
-			return json;
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return null;
-		}
-	}
+//	private JSONObject getDigitalRequestReadMessage(int pin) {
+//		try {
+//			JSONObject json = new JSONObject();
+//			// json.put("type","DIGITAL_READ");
+//			json.put("pin", pin);
+//			json.put("from", ParseInstallation.getCurrentInstallation()
+//					.getInstallationId());
+//			return json;
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
 
 	private JSONObject getPinModeMessage(int pin, int mode) {
 		try {
