@@ -191,16 +191,6 @@
 
         <service android:name="com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService" />
         <service android:name="com.parse.PushService" />
-
-        <receiver
-            android:name="com.parse.ParsePushBroadcastReceiver"
-            android:exported="false" >
-            <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
-            </intent-filter>
-        </receiver>
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >

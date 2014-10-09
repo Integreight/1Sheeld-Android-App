@@ -45,10 +45,11 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 
 	@Override
 	public void onPushReceive(Context context, Intent intent) {
+		super.onPushReceive(context, intent);
 		try {
-			String channel = intent.getExtras().getString("com.parse.Channel");
+			String channel = intent.getExtras().getString(ParsePushBroadcastReceiver.KEY_PUSH_CHANNEL);
 			JSONObject json = new JSONObject(intent.getExtras().getString(
-					"com.parse.Data"));
+					ParsePushBroadcastReceiver.KEY_PUSH_DATA));
 			if (json.has("action")) {
 				String action = json.getString("action");
 				Log.d(TAG, "got action " + action + " on channel " + channel
@@ -253,5 +254,13 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(1, notification);
+	}
+
+	@Override
+	protected void onPushOpen(Context context, Intent intent) {
+		Intent newIntent = context.getPackageManager()
+				.getLaunchIntentForPackage(context.getPackageName());
+		newIntent.putExtras(intent.getExtras());
+		context.startActivity(newIntent);
 	}
 }
