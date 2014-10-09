@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 import android.util.SparseArray;
@@ -62,6 +63,8 @@ public class OneSheeldApplication extends Application {
 	public TaskerShield taskerController;
 	public RemoteOneSheeldShield remoteOneSheeldController;
 	public SparseArray<Boolean> taskerPinsStatus;
+	
+	private static boolean isDebuggable = true;
 
 	/*
 	 * Google Analytics configuration values.
@@ -121,6 +124,10 @@ public class OneSheeldApplication extends Application {
 		}
 		return appGaTracker;
 	}
+	
+	public static boolean isDebuggable(){
+		return isDebuggable;
+	}
 
 	@Override
 	public void onCreate() {
@@ -132,6 +139,8 @@ public class OneSheeldApplication extends Application {
 		Parse.initialize(this, ApiObjects.parse.get("app_id"), ApiObjects.parse.get("client_id"));
 		PushService.setDefaultPushCallback(this, MainActivity.class);
 		initTaskerPins();
+		isDebuggable=(0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+		if(isDebuggable()&&!ParseInstallation.getCurrentInstallation().getList("channels").contains("dev"))ParsePush.subscribeInBackground("dev");
 		super.onCreate();
 	}
 
