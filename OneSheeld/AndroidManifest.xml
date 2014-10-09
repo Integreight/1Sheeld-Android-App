@@ -193,6 +193,15 @@
         <service android:name="com.parse.PushService" />
 
         <receiver
+            android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+            </intent-filter>
+        </receiver>
+        <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>
@@ -206,16 +215,9 @@
             android:name="com.integreight.onesheeld.push.PushMessagesReceiver"
             android:exported="false" >
             <intent-filter>
-                <action android:name="com.integreight.onesheeld.push.PinModePushMessage" />
-                <action android:name="com.integreight.onesheeld.push.DigitalWritePushMessage" />
-                <action android:name="com.integreight.onesheeld.push.DigitalReadRequestPushMessage" />
-                <action android:name="com.integreight.onesheeld.push.DigitalReadResponsePushMessage" />
-                <action android:name="com.integreight.onesheeld.push.AnalogWritePushMessage" />
-                <action android:name="com.integreight.onesheeld.push.KeyValueFloatPushMessage" />
-                <action android:name="com.integreight.onesheeld.push.KeyValueStringPushMessage" />
-                <action android:name="com.integreight.onesheeld.push.SubscribeToDigitalPinPushMessage" />
-                <action android:name="com.integreight.onesheeld.push.UnsubscribeToDigitalPinPushMessage" />
-                <action android:name="com.integreight.onesheeld.push.DigitalPinSubscribtionResponsePushMessage" />
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
     </application>
