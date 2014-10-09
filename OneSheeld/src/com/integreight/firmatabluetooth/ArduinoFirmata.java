@@ -56,6 +56,7 @@ public class ArduinoFirmata {
 	private final byte SYSTEM_RESET = (byte) 0xFF;
 	private final byte START_SYSEX = (byte) 0xF0;
 	private final byte END_SYSEX = (byte) 0xF7;
+	private final byte REPORT_INPUT_PINS = (byte) 0x5F;
 	private final byte RESET_MICRO = (byte) 0x60;
 	private final byte BLUETOOTH_RESET = (byte) 0x61;
 	// private final byte IS_ALIVE = (byte) 0x62;
@@ -222,6 +223,10 @@ public class ArduinoFirmata {
 			write((byte) (REPORT_DIGITAL | i));
 			write((byte) 1);
 		}
+	}
+	
+	public void reportInputPinsValues(){
+		sysex(REPORT_INPUT_PINS, new byte[] {});
 	}
 
 	public void setAllPinsAsInput() {
@@ -665,6 +670,7 @@ public class ArduinoFirmata {
 				// TODO Auto-generated method stub
 				enableReporting();
 				setAllPinsAsInput();
+				reportInputPinsValues();
 				initUart();
 				queryVersion();
 				onConnect();
