@@ -38,6 +38,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		smsListener = new SmsListener();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
 		if (smsReceiveEventHandler != null)
 			smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
 		getActivity().registerReceiver(smsListener, filter);
@@ -150,16 +151,12 @@ public class SmsShield extends ControllerParent<SmsShield> {
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-		frame = null;
-		smsListener = null;
-
 		try {
 			getActivity().unregisterReceiver(smsListener);
 		} catch (Exception e) {
-			// TODO: handle exception
-
 		}
+		frame = null;
+		smsListener = null;
 	}
 
 	public void sendSmsToArduino() {
