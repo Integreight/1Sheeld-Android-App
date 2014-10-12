@@ -461,12 +461,28 @@ public class SheeldsList extends Fragment {
 					activity.getPackageName(), 0);
 			String versionName = pInfo.versionName;
 			int versionCode = pInfo.versionCode;
-			String installationIdString = (ParseInstallation
+			String installationIdString ="";
+			ValidationAction shareConnectionId=null;
+			if(ParseInstallation
 					.getCurrentInstallation() != null && ParseInstallation
-					.getCurrentInstallation().getInstallationId() != null) ? "Connect using: "
+					.getCurrentInstallation().getInstallationId() != null){
+				installationIdString="Connect using: "
 					+ ParseInstallation.getCurrentInstallation()
-							.getInstallationId() + "\n\n"
-					: "";
+							.getInstallationId() + "\n\n";
+				shareConnectionId = new ValidationPopup.ValidationAction("Share Id!",
+						new View.OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								String shareBody = "Connect to my 1Sheeld using this address: "+ParseInstallation.getCurrentInstallation().getInstallationId();
+							    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+							        sharingIntent.setType("text/plain");
+							        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My 1Sheeld Address");
+							        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+							        startActivity(Intent.createChooser(sharingIntent, "Share Using"));
+							}
+						}, false);
+				}
 			final ValidationPopup popup = new ValidationPopup(
 					activity,
 					"About 1Sheeld",
@@ -483,7 +499,7 @@ public class SheeldsList extends Fragment {
 							+ "\n\n"
 							+ "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n"
 							+ installationIdString);
-			ValidationAction vp = new ValidationPopup.ValidationAction("OK",
+			ValidationAction ok = new ValidationPopup.ValidationAction("Okay!",
 					new View.OnClickListener() {
 
 						@Override
@@ -491,7 +507,9 @@ public class SheeldsList extends Fragment {
 							popup.dismiss();
 						}
 					}, true);
-			popup.addValidationAction(vp);
+			
+			popup.addValidationAction(ok);
+			if(shareConnectionId!=null)popup.addValidationAction(shareConnectionId);
 			if (!activity.isFinishing())
 				popup.show();
 		} catch (Exception e) {
