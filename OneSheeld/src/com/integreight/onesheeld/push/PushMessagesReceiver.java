@@ -25,9 +25,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.utils.Log;
 import com.parse.ParseInstallation;
-import com.parse.ParsePush;
 import com.parse.ParsePushBroadcastReceiver;
-import com.parse.ParseQuery;
 
 public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 	private static final String TAG = "PushMessagesReceiver";
@@ -91,9 +89,6 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 				} else if (action.equals(DigitalReadRequestPushMessageAction)) {
 
 					JSONObject digitalReadResponseJson = new JSONObject();
-					digitalReadResponseJson
-							.put("action",
-									PushMessagesReceiver.DigitalReadResponsePushMessageAction);
 					JSONArray jsonPinArray = new JSONArray();
 					JSONObject pin = new JSONObject();
 					pin.put("pin", json.getJSONArray("pins").getJSONObject(0)
@@ -104,7 +99,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 											.getInt("pin")));
 					jsonPinArray.put(pin);
 					digitalReadResponseJson.put("pins", jsonPinArray);
-					sendPushMessage(from, digitalReadResponseJson);
+					app.remoteOneSheeldController.sendPushMessage(PushMessagesReceiver.DigitalReadResponsePushMessageAction,from, digitalReadResponseJson);
 
 				} else if (action.equals(DigitalReadResponsePushMessageAction)) {
 					List<Integer> pins = new ArrayList<Integer>();
@@ -211,22 +206,22 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 		}
 	}
 
-	private void sendPushMessage(String installationId, JSONObject json) {
-		try {
-			json.put("from", ParseInstallation.getCurrentInstallation()
-					.getInstallationId());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-		query.whereEqualTo("installationId", installationId);
-		ParsePush push = new ParsePush();
-		push.setQuery(query);
-		push.setData(json);// push.setMessage(json.toString());
-		push.setExpirationTimeInterval(10);// 10 seconds timeout
-		push.sendInBackground();
-	}
+//	private void sendPushMessage(String installationId, JSONObject json) {
+//		try {
+//			json.put("from", ParseInstallation.getCurrentInstallation()
+//					.getInstallationId());
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+//		query.whereEqualTo("installationId", installationId);
+//		ParsePush push = new ParsePush();
+//		push.setQuery(query);
+//		push.setData(json);// push.setMessage(json.toString());
+//		push.setExpirationTimeInterval(10);// 10 seconds timeout
+//		push.sendInBackground();
+//	}
 
 	protected void showNotification(Context context, String notificationText) {
 		// TODO Auto-generated method stub

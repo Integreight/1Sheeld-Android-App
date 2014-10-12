@@ -11,15 +11,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.push.PushMessagesReceiver;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
-import com.parse.ParsePush;
-import com.parse.ParseQuery;
 
 public class RemoteOneSheeldShield extends
 		ControllerParent<RemoteOneSheeldShield> {
@@ -120,14 +122,7 @@ public class RemoteOneSheeldShield extends
 		int pin = (int) (frame.getArgument(1)[0] & 0xff);
 		int mode = (int) (frame.getArgument(2)[0] & 0xff);
 		JSONObject json = getPinModeMessage(pin, mode);
-		try {
-			json.put("action", PushMessagesReceiver.PinModePushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.PinModePushMessageAction,address, json);
 	}
 
 	private void processDigitalReadRequestMessage(ShieldFrame frame) {
@@ -139,15 +134,7 @@ public class RemoteOneSheeldShield extends
 		final int pin = (int) (frame.getArgument(1)[0] & 0xff);
 		@SuppressWarnings("serial")
 		JSONObject json = getSubscribeToDigitalPinMessage(new ArrayList<Integer>(){{add(pin);}});
-		try {
-			json.put("action",
-					PushMessagesReceiver.DigitalReadRequestPushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.DigitalReadRequestPushMessageAction,address, json);
 	}
 
 	private void processDigitalWriteMessage(ShieldFrame frame) {
@@ -159,15 +146,7 @@ public class RemoteOneSheeldShield extends
 		int pin = (int) (frame.getArgument(1)[0] & 0xff);
 		boolean value = (int) (frame.getArgument(2)[0] & 0xff) != 0;
 		JSONObject json = getDigitalWriteMessage(pin, value);
-		try {
-			json.put("action",
-					PushMessagesReceiver.DigitalWritePushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.DigitalWritePushMessageAction,address, json);
 	}
 
 	private void processAnalogWriteMessage(ShieldFrame frame) {
@@ -179,15 +158,7 @@ public class RemoteOneSheeldShield extends
 		int pin = (int) (frame.getArgument(1)[0] & 0xff);
 		int value = (int) (frame.getArgument(2)[0] & 0xff);
 		JSONObject json = getAnalogWriteMessage(pin, value);
-		try {
-			json.put("action",
-					PushMessagesReceiver.AnalogWritePushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.AnalogWritePushMessageAction,address, json);
 	}
 
 	private void processKeyValueFloatMessage(ShieldFrame frame) {
@@ -199,15 +170,7 @@ public class RemoteOneSheeldShield extends
 		String key = frame.getArgumentAsString(1);
 		float value = frame.getArgumentAsFloat(2);
 		JSONObject json = getKeyValueFloatMessage(key, value);
-		try {
-			json.put("action",
-					PushMessagesReceiver.KeyValueFloatPushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.KeyValueFloatPushMessageAction,address, json);
 	}
 
 	private void processKeyValueStringMessage(ShieldFrame frame) {
@@ -219,15 +182,7 @@ public class RemoteOneSheeldShield extends
 		String key = frame.getArgumentAsString(1);
 		String value = frame.getArgumentAsString(2);
 		JSONObject json = getKeyValueStringMessage(key, value);
-		try {
-			json.put("action",
-					PushMessagesReceiver.KeyValueStringPushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.KeyValueStringPushMessageAction,address, json);
 	}
 
 	private void processSubscribeToDigitalPinMessage(ShieldFrame frame) {
@@ -239,15 +194,7 @@ public class RemoteOneSheeldShield extends
 		for (int i = 1; i < frame.getArguments().size(); i++)
 			pinsArr.add((int) (frame.getArgument(i)[0] & 0xff));
 		JSONObject json = getSubscribeToDigitalPinMessage(pinsArr);
-		try {
-			json.put("action",
-					PushMessagesReceiver.SubscribeToDigitalPinPushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.SubscribeToDigitalPinPushMessageAction,address, json);
 	}
 
 	private void processUnsubscribeToDigitalPinMessage(ShieldFrame frame) {
@@ -259,33 +206,31 @@ public class RemoteOneSheeldShield extends
 		for (int i = 1; i < frame.getArguments().size(); i++)
 			pinsArr.add((int) (frame.getArgument(i)[0] & 0xff));
 		JSONObject json = getUnsubscribeToDigitalPinMessage(pinsArr);
-		try {
-			json.put(
-					"action",
-					PushMessagesReceiver.UnsubscribeToDigitalPinPushMessageAction);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
-		sendPushMessage(address, json);
+		sendPushMessage(PushMessagesReceiver.UnsubscribeToDigitalPinPushMessageAction,address, json);
 	}
 
-	private void sendPushMessage(String installationId, JSONObject json) {
-		try {
-			json.put("from", ParseInstallation.getCurrentInstallation()
-					.getInstallationId());
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-		query.whereEqualTo("installationId", installationId);
-		ParsePush push = new ParsePush();
-		push.setQuery(query);
-		push.setData(json);// push.setMessage(json.toString());
-		push.setExpirationTimeInterval(10);// 10 seconds timeout
-		push.sendInBackground();
+	public void sendPushMessage(String action, String to, JSONObject json) {
+//		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
+//		query.whereEqualTo("installationId", to);
+//		ParsePush push = new ParsePush();
+//		push.setQuery(query);
+//		push.setData(json);// push.setMessage(json.toString());
+//		push.setExpirationTimeInterval(10);// 10 seconds timeout
+//		push.sendInBackground();
+		
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("to", to);
+		params.put("from", ParseInstallation.getCurrentInstallation().getInstallationId());
+		params.put("payload", json);
+		params.put("action", action);
+		ParseCloud.callFunctionInBackground("sendRemote1SheeldPushMessage", params, new FunctionCallback<String>() {
+		   public void done(String success, ParseException e) {
+		       if (e == null) {
+		          // Push sent successfully
+		    	   Log.d("Push", "Push Sent!");
+		       }
+		   }
+		});
 	}
 
 //	private JSONObject getDigitalRequestReadMessage(int pin) {
@@ -499,10 +444,7 @@ public class RemoteOneSheeldShield extends
 			json.put("push_limit", MAXIMUM_NOTIFICATION_LIMIT);
 			json.put("current_push",
 					digitalPinSubscribtionNotificationsLimit.get(to));
-			json.put(
-					"action",
-					PushMessagesReceiver.DigitalPinSubscribtionResponsePushMessageAction);
-			sendPushMessage(to, json);
+			sendPushMessage(PushMessagesReceiver.DigitalPinSubscribtionResponsePushMessageAction,to, json);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
