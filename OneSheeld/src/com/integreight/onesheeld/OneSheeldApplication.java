@@ -60,6 +60,8 @@ public class OneSheeldApplication extends Application {
 	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
 	public SparseArray<Boolean> taskerPinsStatus;
+	
+	public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
 
 	/*
 	 * Google Analytics configuration values.
