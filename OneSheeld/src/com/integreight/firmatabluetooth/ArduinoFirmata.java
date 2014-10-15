@@ -556,6 +556,11 @@ public class ArduinoFirmata {
 		disableBootloaderMode();
 		clearAllBuffers();
 		unMuteFirmata();
+		enableReporting();
+		setAllPinsAsInput();
+		reportInputPinsValues();
+		initUart();
+		queryVersion();
 	}
 
 	private void muteFirmata() {

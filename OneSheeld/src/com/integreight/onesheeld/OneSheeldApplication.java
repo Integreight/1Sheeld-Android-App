@@ -64,6 +64,8 @@ public class OneSheeldApplication extends Application {
 	public TaskerShield taskerController;
 	public RemoteOneSheeldShield remoteOneSheeldController;
 	public SparseArray<Boolean> taskerPinsStatus;
+	
+	public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
 
 	private static boolean isDebuggable = true;
 

@@ -206,7 +206,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 					}
 				});
 		HttpRequest.getInstance().get(
-				"http://www.1sheeld.com/api/firmware.json",
+				OneSheeldApplication.FIRMWARE_UPGRADING_URL,
 				new JsonHttpResponseHandler() {
 
 					@Override
