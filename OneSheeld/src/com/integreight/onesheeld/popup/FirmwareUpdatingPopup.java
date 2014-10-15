@@ -61,9 +61,9 @@ public class FirmwareUpdatingPopup extends Dialog {
 				}
 				isFailed = false;
 				// activity.getThisApplication().getAppFirmata().returnAppToNormal();
-				activity.getThisApplication().getAppFirmata().enableReporting();
-				activity.getThisApplication().getAppFirmata()
-						.setAllPinsAsInput();
+//				activity.getThisApplication().getAppFirmata().enableReporting();
+//				activity.getThisApplication().getAppFirmata()
+//						.setAllPinsAsInput();
 				handler.post(new Runnable() {
 
 					@Override
@@ -116,10 +116,13 @@ public class FirmwareUpdatingPopup extends Dialog {
 					public void run() {
 						FirmwareUpdatingPopup.this.setCancelable(true);
 						// activity.getThisApplication().getAppFirmata().returnAppToNormal();
-						activity.getThisApplication().getAppFirmata()
-								.enableReporting();
-						activity.getThisApplication().getAppFirmata()
-								.setAllPinsAsInput();
+//						activity.getThisApplication().getAppFirmata()
+//								.enableReporting();
+//						activity.getThisApplication().getAppFirmata()
+//								.setAllPinsAsInput();
+						changeSlogan("An error occurred!", COLOR.RED);
+						isFailed = true;
+						setUpgrade();
 						activity.getThisApplication()
 								.getGaTracker()
 								.send(MapBuilder
@@ -140,10 +143,10 @@ public class FirmwareUpdatingPopup extends Dialog {
 					public void run() {
 						FirmwareUpdatingPopup.this.setCancelable(true);
 						// activity.getThisApplication().getAppFirmata().returnAppToNormal();
-						activity.getThisApplication().getAppFirmata()
-								.enableReporting();
-						activity.getThisApplication().getAppFirmata()
-								.setAllPinsAsInput();
+//						activity.getThisApplication().getAppFirmata()
+//								.enableReporting();
+//						activity.getThisApplication().getAppFirmata()
+//								.setAllPinsAsInput();
 						changeSlogan("1Sheeld not responding!", COLOR.RED);
 						isFailed = true;
 						setUpgrade();
