@@ -677,8 +677,8 @@ public class ArduinoFirmata {
 				setAllPinsAsInput();
 				reportInputPinsValues();
 				initUart();
-				queryVersion();
 				onConnect();
+				queryVersion();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
 				// mConnectedDeviceName,
