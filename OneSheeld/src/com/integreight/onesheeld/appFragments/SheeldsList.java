@@ -483,16 +483,25 @@ public class SheeldsList extends Fragment {
 							}
 						}, false);
 				}
+			String firmwareVersion ="";
+			if ((((OneSheeldApplication) activity.getApplication())
+							.getAppFirmata() != null && ((OneSheeldApplication) activity
+							.getApplication()).getAppFirmata().isOpen())&&(((OneSheeldApplication) activity.getApplication())
+									.getAppFirmata().getMajorVersion()!=0)){
+				firmwareVersion="\nFirmware Version: v"+(((OneSheeldApplication) activity.getApplication())
+						.getAppFirmata().getMajorVersion())+"."+(((OneSheeldApplication) activity.getApplication())
+								.getAppFirmata().getMinorVersion())+"\n\n";
+			}
 			final ValidationPopup popup = new ValidationPopup(
 					activity,
 					"About 1Sheeld",
 					"Developed with love by Integreight, Inc. team in Cairo, Egypt.\n"
 							+ "If you have any question, please visit our website or drop us an email on info@integreight.com\n\n"
-							+ "Version: "
+							+ "App Version: "
 							+ versionName
 							+ " ("
 							+ versionCode
-							+ ")"
+							+ ")"+firmwareVersion
 							+ (stringDate != null ? "\nApp was last updated on "
 									+ stringDate
 									: "")
