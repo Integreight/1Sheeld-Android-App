@@ -147,7 +147,7 @@ public class OneSheeldApplication extends Application {
 	private void parseSocialKeys() {
 		String metaData = "";
 		try {
-			metaData = loadData("dev_meta_data");
+			metaData = loadData("dev_meta_data.json");
 		} catch (Exception e) {
 			try {
 				metaData = loadData("meta_data.json");
