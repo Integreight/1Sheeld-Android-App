@@ -82,7 +82,7 @@ public final class FireReceiver extends BroadcastReceiver {
 								bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
 								bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
 			}
-			Toast.makeText(context, "MESSAGE", Toast.LENGTH_LONG).show();
+//			Toast.makeText(context, "MESSAGE", Toast.LENGTH_LONG).show();
 		}
 	}
 }
