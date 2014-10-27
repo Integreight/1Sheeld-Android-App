@@ -150,7 +150,7 @@ public class OneSheeldApplication extends Application {
 			metaData = loadData("dev_meta_data");
 		} catch (Exception e) {
 			try {
-				metaData = loadData("meta_data");
+				metaData = loadData("meta_data.json");
 			} catch (Exception e1) {
 			}
 		}
