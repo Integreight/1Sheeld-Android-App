@@ -1,5 +1,7 @@
 {
-    "facebook": "Facebook Application ID",
+	"facebook": {
+        "app_id": "Facebook Application ID"
+    },
     "twitter": {
         "consumer_key": "Twitter Consumer ID",
         "consumer_secret": "Twitter Consumer Secret"
