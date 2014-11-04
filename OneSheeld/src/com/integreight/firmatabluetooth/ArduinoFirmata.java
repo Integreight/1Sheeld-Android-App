@@ -234,6 +234,10 @@ public class ArduinoFirmata {
 			pinMode(i, INPUT);
 		}
 	}
+	
+	public void notifyHardwareOfConnection(){
+		sendShieldFrame(new ShieldFrame((byte)0x00, (byte)0x01));
+	}
 
 	public boolean isOpen() {
 		Log.sysOut(bluetoothService.getState() + "    "
@@ -679,6 +683,7 @@ public class ArduinoFirmata {
 				initUart();
 				onConnect();
 				queryVersion();
+				notifyHardwareOfConnection();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
 				// mConnectedDeviceName,
