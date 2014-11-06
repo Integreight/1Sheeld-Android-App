@@ -3,13 +3,20 @@ package com.integreight.onesheeld.shields.controller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import twitter4j.FilterQuery;
+import twitter4j.StallWarning;
 import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
 import twitter4j.StatusUpdate;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.ConfigurationBuilder;
@@ -44,7 +51,10 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
 	private static final byte UPDATE_SEND_MESSAGE_METHOD_ID = (byte) 0x02;
 	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x03;
+	private static final byte TRACK_KEYWORD_METHOD_ID = (byte) 0x04;
+	private static final byte STOP_TRACKING_KEYWORD_METHOD_ID = (byte) 0x05;
 	TwitterStream twitterStream;
+	private List<String> trackedKeywords;
 
 	public String getUsername() {
 		return mSharedPreferences.getString(PREF_KEY_TWITTER_USERNAME, "");
@@ -76,7 +86,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public TwitterShield() {
 		super();
-		// startListeningOnAKeyword("1sheeld");
 	}
 
 	@Override
@@ -84,6 +93,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
+		trackedKeywords=new ArrayList<String>();
+//		if(isTwitterLoggedInAlready())initTwitterListening();
 		return super.setTag(tag);
 	}
 
@@ -92,6 +103,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		mSharedPreferences = activity.getApplicationContext()
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
+		trackedKeywords=new ArrayList<String>();
+//		if(isTwitterLoggedInAlready())initTwitterListening();
 	}
 
 	// @Override
@@ -223,8 +236,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	public void login() {
 		factory = new TwitterFactory();
 		twitter = new TwitterFactory().getInstance();
-		twitter.setOAuthConsumer(
-				ApiObjects.twitter.get("consumer_key"),
+		twitter.setOAuthConsumer(ApiObjects.twitter.get("consumer_key"),
 				ApiObjects.twitter.get("consumer_secret"));
 		if (mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null) != null
 				&& mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null) != null) {
@@ -281,6 +293,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 										.onTwitterLoggedIn(TwitterAuthorization.TWITTER_USER_NAME);
 							// Commit the edits!
 							editor.commit();
+//							initTwitterListening();
 
 						}
 
@@ -334,6 +347,12 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		void onTwitterLoggedIn(String userName);
 
 		void onTwitterError(String error);
+		
+		void onNewTrackedKeyword(String word);
+		
+		void onNewTrackedKeywordRemoved(String word);
+		
+		void onNewTrackedTweetFound(String tweet);
 
 		void startProgress();
 
@@ -390,6 +409,32 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						sendDirectMessage(userHandle, msg);
 						if (eventHandler != null)
 							eventHandler.onDirectMessageSent(userHandle, msg);
+					}else if (frame.getFunctionId() == TRACK_KEYWORD_METHOD_ID) {
+						String keyword = frame.getArgumentAsString(0);
+						if(trackedKeywords.isEmpty()&&twitterStream==null)initTwitterListening();
+						if(!trackedKeywords.contains(keyword.toLowerCase())){
+							trackedKeywords.add(keyword.toLowerCase());
+						}
+						if (eventHandler != null)
+							eventHandler.onNewTrackedKeyword(keyword);
+						FilterQuery query = new FilterQuery();
+						String[] keywordsStrings = new String[trackedKeywords.size()];
+						query.track(trackedKeywords.toArray(keywordsStrings));
+						twitterStream.filter(query);
+					}else if (frame.getFunctionId() == STOP_TRACKING_KEYWORD_METHOD_ID) {
+						String keyword = frame.getArgumentAsString(0);
+						if(trackedKeywords.contains(keyword.toLowerCase())){
+							trackedKeywords.remove(keyword.toLowerCase());
+						}
+						if (eventHandler != null)
+							eventHandler.onNewTrackedKeywordRemoved(keyword);
+						if(trackedKeywords.isEmpty()&&twitterStream!=null)stopListeningOnAKeyword();
+						else if(twitterStream!=null){ 
+						FilterQuery query = new FilterQuery();
+						String[] keywordsStrings = new String[trackedKeywords.size()];
+						query.track(trackedKeywords.toArray(keywordsStrings));
+						twitterStream.filter(query);
+						}
 					}
 
 				} else
@@ -507,82 +552,85 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	}
 
-	// private void startListeningOnAKeyword(String keyword) {
-	// ConfigurationBuilder cb = new ConfigurationBuilder();
-	// cb.setOAuthConsumerKey(TwitterAuthorization.CONSUMER_KEY);
-	// cb.setOAuthConsumerSecret(TwitterAuthorization.CONSUMER_SECRET);
-	// cb.setOAuthAccessToken("1608329586-6oJK4QJOPHT5fCwo7ckc9wZGEuaT1p6ZIQ5RBVH");
-	// cb.setOAuthAccessTokenSecret("aRq7RsAp132UwHtO6Kr7ottM3f9i5wb58xTIGLZcElhoH");
-	//
-	// twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-	// // twitterStream.s
-	// twitterStream.clearListeners();
-	// twitterStream.cleanUp();
-	// FilterQuery query = new FilterQuery();
-	// String[] keywords = new String[] { keyword };
-	// query.track(keywords);
-	//
-	// StatusListener listener = new StatusListener() {
-	// public void onScrubGeo(long arg0, long arg1) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	//
-	// @Override
-	// public void onStallWarning(StallWarning arg0) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	//
-	// @Override
-	// public void onStatus(twitter4j.Status arg0) {
-	// // TODO Auto-generated method stub
-	// Log.d("tweet", arg0.getText());
-	// ShieldFrame frame = new ShieldFrame(
-	// UIShield.TWITTER_SHIELD.getId(), (byte) 0x01);
-	// frame.addStringArgument(arg0.getUser().getName());
-	// frame.addStringArgument(arg0.getText());
-	// activity.getThisApplication().getAppFirmata()
-	// .sendShieldFrame(frame);
-	// }
-	//
-	// @Override
-	// public void onException(Exception arg0) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	//
-	// @Override
-	// public void onDeletionNotice(StatusDeletionNotice arg0) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	//
-	// @Override
-	// public void onTrackLimitationNotice(int arg0) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-	// };
-	// twitterStream.addListener(listener);
-	// // sample() method internally creates a thread which manipulates
-	// // TwitterStream and calls these adequate listener methods continuously.
-	// twitterStream.filter(query);
-	// // twitterStream.sample();
-	// }
-	//
-	// private void stopListeningOnAKeyword() {
-	// if (twitterStream == null)
-	// return;
-	// twitterStream.clearListeners();
-	// twitterStream.cleanUp();
-	// twitterStream = null;
-	// }
+	private void initTwitterListening() {
+		ConfigurationBuilder cb = new ConfigurationBuilder();
+		cb.setOAuthConsumerKey(ApiObjects.twitter.get("consumer_key"));
+		cb.setOAuthConsumerSecret(ApiObjects.twitter.get("consumer_secret"));
+		cb.setOAuthAccessToken(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_TOKEN, null));
+		cb.setOAuthAccessTokenSecret(mSharedPreferences.getString(
+				PREF_KEY_OAUTH_SECRET, null));
+
+		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
+		// twitterStream.s
+		twitterStream.clearListeners();
+		twitterStream.cleanUp();
+//		FilterQuery query = new FilterQuery();
+//		String[] keywords = new String[] { keyword };
+//		query.track(keywords);
+
+		StatusListener listener = new StatusListener() {
+			public void onScrubGeo(long arg0, long arg1) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStallWarning(StallWarning arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onStatus(twitter4j.Status arg0) {
+				// TODO Auto-generated method stub
+				Log.d("tweet", arg0.getText());
+				ShieldFrame frame = new ShieldFrame(
+						UIShield.TWITTER_SHIELD.getId(), (byte) 0x01);
+				frame.addStringArgument(arg0.getUser().getName());
+				frame.addStringArgument(arg0.getText());
+				activity.getThisApplication().getAppFirmata()
+						.sendShieldFrame(frame);
+			}
+
+			@Override
+			public void onException(Exception arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onDeletionNotice(StatusDeletionNotice arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onTrackLimitationNotice(int arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		};
+		twitterStream.addListener(listener);
+		// sample() method internally creates a thread which manipulates
+		// TwitterStream and calls these adequate listener methods continuously.
+//		twitterStream.filter(query);
+		// twitterStream.sample();
+	}
+
+	private void stopListeningOnAKeyword() {
+		if (twitterStream == null)
+			return;
+		twitterStream.clearListeners();
+		twitterStream.cleanUp();
+		twitterStream.shutdown();
+		twitterStream = null;
+	}
 
 	@Override
 	public void reset() {
 		// TODO Auto-generated method stub
-		// stopListeningOnAKeyword();
+		 stopListeningOnAKeyword();
 	}
 
 }
