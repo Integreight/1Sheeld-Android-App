@@ -236,6 +236,60 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 			});
 		}
 
+		@Override
+		public void onNewTrackedKeyword(final String word) {
+			// TODO Auto-generated method stub
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Toast.makeText(activity, "Twitter tracks new keyword: "+word, Toast.LENGTH_SHORT)
+								.show();
+
+					}
+				});
+			}
+		}
+
+		@Override
+		public void onNewTrackedKeywordRemoved(final String word) {
+			// TODO Auto-generated method stub
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Toast.makeText(activity, "Twitter stopped tracking keyword: "+word, Toast.LENGTH_SHORT)
+								.show();
+
+					}
+				});
+			}
+		}
+
+		@Override
+		public void onNewTrackedTweetFound(final String tweet) {
+			// TODO Auto-generated method stub
+			if (canChangeUI()) {
+				uiHandler.removeCallbacksAndMessages(null);
+				uiHandler.post(new Runnable() {
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						Toast.makeText(activity, "Tracked tweet found: "+tweet, Toast.LENGTH_SHORT)
+								.show();
+
+					}
+				});
+			}
+		}
+
 	};
 
 	private void initializeFirmata() {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 	private static final String PREF_EMAIL_SHIELD_GMAIL_ACCOUNT = "gmail_account";
 	private static final String PREF_EMAIL_SHIELD_GMAIL_PASSWORD = "gmail_password";
 	private String userEmail;
+	ProgressBar progress;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +69,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		subject = (TextView) v.findViewById(R.id.gmail_shield_subject_textview);
 		login_bt = (Button) v.findViewById(R.id.login_gmail_bt);
 		logout_bt = (Button) v.findViewById(R.id.logout_gmail_bt);
+		progress = (ProgressBar) v.findViewById(R.id.progress);
 		login_bt.setOnClickListener(new View.OnClickListener() {
 
 			@Override
@@ -166,6 +169,35 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 				Toast.makeText(getApplication(), message_not_sent,
 						Toast.LENGTH_LONG).show();
 			}
+		}
+
+		@Override
+		public void startProgress() {
+			// TODO Auto-generated method stub
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.VISIBLE);
+					}
+				}
+			});
+			
+		}
+
+		@Override
+		public void stopProgress() {
+			// TODO Auto-generated method stub
+			uiHandler.post(new Runnable() {
+
+				@Override
+				public void run() {
+					if (progress != null && canChangeUI()) {
+						progress.setVisibility(View.GONE);
+					}
+				}
+			});
 		}
 	};
 
