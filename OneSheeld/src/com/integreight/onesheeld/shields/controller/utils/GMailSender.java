@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -9,16 +10,20 @@ import java.util.Properties;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class GMailSender extends javax.mail.Authenticator {
 	private String mailhost = "smtp.gmail.com";
@@ -63,6 +68,51 @@ public class GMailSender extends javax.mail.Authenticator {
 			message.setSender(new InternetAddress(sender));
 			message.setSubject(subject);
 			message.setDataHandler(handler);
+			if (recipients.indexOf(',') > 0)
+				message.setRecipients(Message.RecipientType.TO,
+						InternetAddress.parse(recipients));
+			else
+
+				message.setRecipient(Message.RecipientType.TO,
+						new InternetAddress(recipients));
+
+			Transport.send(message);
+			// emailEventHandler.onSuccess();
+			return 0;
+		} catch (AuthenticationFailedException e) {
+			// emailEventHandler.onSendingAuthError("Authentication Failed");
+			return 1;
+		} catch (AddressException e) {
+			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient");
+			return 2;
+		} catch (SendFailedException e) {
+			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
+			return 2;
+		} catch (MessagingException e) {
+			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
+			return 2;
+		}
+	}
+	
+	public synchronized int sendMail(String subject, String body,
+			String sender, String recipients, String filePath) {
+		try {
+			MimeMessage message = new MimeMessage(session);
+			message.setSender(new InternetAddress(sender));
+			message.setSubject(subject);
+		    MimeBodyPart mbp1 = new MimeBodyPart();
+		    mbp1.setText(body);
+
+		    MimeBodyPart mbp2 = new MimeBodyPart();
+		    FileDataSource fds = new FileDataSource(new File(filePath));
+		    mbp2.setDataHandler(new DataHandler(fds));
+		    mbp2.setFileName(fds.getName());
+
+		    Multipart mp = new MimeMultipart();
+		    mp.addBodyPart(mbp1);
+		    mp.addBodyPart(mbp2);
+
+		    message.setContent(mp);
 			if (recipients.indexOf(',') > 0)
 				message.setRecipients(Message.RecipientType.TO,
 						InternetAddress.parse(recipients));

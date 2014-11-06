@@ -11,6 +11,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.GMailSender;
+import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.SecurePreferences;
@@ -19,6 +20,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 
 	private EmailEventHandler eventHandler;
 	private static final byte SEND_METHOD_ID = (byte) 0x01;
+	private static final byte SEND_WITH_ATTACHMENT = (byte) 0x02;
 	private static SharedPreferences mSharedPreferences;
 	private static final String PREF_EMAIL_SHIELD_USER_LOGIN = "user_login_status";
 	private static final String PREF_EMAIL_SHIELD_GMAIL_ACCOUNT = "gmail_account";
@@ -28,6 +30,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 	private static String message_body = "";
 	private static String message_reciption = "";
 	private static String message_subject = "";
+	private static String attachment_file_path = null;
 
 	public EmailShield() {
 		super();
@@ -60,13 +63,17 @@ public class EmailShield extends ControllerParent<EmailShield> {
 		void onEmailnotSent(String message_not_sent);
 
 		void onLoginSuccess(String userName, String password);
+		
+		void startProgress();
+
+		void stopProgress();
 	}
 
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
 		if (frame.getShieldId() == UIShield.EMAIL_SHIELD.getId()) {
-			if (frame.getFunctionId() == SEND_METHOD_ID) {
+			if (frame.getFunctionId() == SEND_METHOD_ID||frame.getFunctionId() == SEND_WITH_ATTACHMENT) {
 				if (isLoggedIn()) {
 					// retrieve user name and password from sharedPref...
 					setUserData();
@@ -80,8 +87,21 @@ public class EmailShield extends ControllerParent<EmailShield> {
 					// check Internet connection
 					if (ConnectionDetector
 							.isConnectingToInternet(getApplication()
-									.getApplicationContext()))
-						sendGmail(email_send_to, subject, body);
+									.getApplicationContext())){
+						if(frame.getFunctionId() == SEND_METHOD_ID)
+						sendGmail(email_send_to, subject, body,null);
+						else if(frame.getFunctionId() == SEND_WITH_ATTACHMENT){
+							byte sourceFolderId = frame.getArgument(3)[0];
+							String imgPath = null;
+							if (sourceFolderId == SocialUtils.FROM_ONESHEELD_FOLDER)
+								imgPath = SocialUtils
+										.getLastCapturedImagePathFromOneSheeldFolder(activity);
+							else if (sourceFolderId == SocialUtils.FROM_CAMERA_FOLDER)
+								imgPath = SocialUtils
+										.getLastCapturedImagePathFromCameraFolder(activity);
+							sendGmail(email_send_to, subject, body,imgPath);
+						}
+					}
 					else
 						Toast.makeText(
 								getApplication().getApplicationContext(),
@@ -93,10 +113,11 @@ public class EmailShield extends ControllerParent<EmailShield> {
 
 	}
 
-	private void sendGmail(String email_send_to, String subject, String body) {
+	private void sendGmail(String email_send_to, String subject, String body, String filePath) {
 		message_body = body;
 		message_reciption = email_send_to;
 		message_subject = subject;
+		attachment_file_path=filePath;
 		new sendGmailinBackground().execute();
 
 	}
@@ -107,11 +128,16 @@ public class EmailShield extends ControllerParent<EmailShield> {
 
 		@Override
 		protected Integer doInBackground(Void... params) {
+			if (eventHandler != null)
+				eventHandler.startProgress();
 			try {
-				result = sender.sendMail(message_subject, message_body,
-						userEmail, message_reciption);
+				result = (attachment_file_path==null)?sender.sendMail(message_subject, message_body,
+						userEmail, message_reciption):sender.sendMail(message_subject, message_body,
+								userEmail, message_reciption,attachment_file_path);
 			} catch (Exception e) {
 				Log.d("SendMail", e.getMessage());
+				if (eventHandler != null)
+					eventHandler.stopProgress();
 			}
 			return result;
 		}
@@ -138,6 +164,8 @@ public class EmailShield extends ControllerParent<EmailShield> {
 			default:
 				break;
 			}
+			if (eventHandler != null)
+				eventHandler.stopProgress();
 		}
 
 	}
