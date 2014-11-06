@@ -310,7 +310,7 @@ public class RemoteOneSheeldShield extends
 			JSONObject json = new JSONObject();
 			// json.put("type","KEYVALUE_MESSAGE");
 			// json.put("value_type", "STRING");
-			json.put("key", value);
+			json.put("key", key);
 			json.put("value", value);
 			return json;
 		} catch (JSONException e) {
