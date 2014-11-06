@@ -117,7 +117,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 	public void doOnServiceConnected() {
 		invalidateController();
-	};
+	}
 
 	@Override
 	public void onResume() {

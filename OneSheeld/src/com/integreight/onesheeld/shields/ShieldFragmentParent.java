@@ -64,6 +64,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
+		activity = (MainActivity) getAppActivity();
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -115,7 +116,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 						}
 					});
 		} else
-			((T) ShieldFragmentParent.this).doOnServiceConnected();
+			doOnServiceConnected();
 		// View or hide Setting sliding drawer handler button
 		activity.findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);

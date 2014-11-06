@@ -64,58 +64,64 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 	@Override
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		if (frame.getShieldId() == UIShield.TERMINAL_SHIELD.getId()) {
-			String outputTxt = frame.getArgumentAsString(0);
-			String date = terminalPrintedLines.size() == 0
-					|| terminalPrintedLines
-							.get(terminalPrintedLines.size() - 1).isEndedWithNewLine ? TerminalFragment
-					.getTimeAsString() + " [RX] : "
-					: "";
-			boolean isEndedWithNewLine = outputTxt.length() > 0
-					&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
-			if (lastItemEndedWithNewLine) {
-				terminalPrintedLines.add(new TerminalPrintedLine(date,
-						outputTxt.substring(0,
-								isEndedWithNewLine ? outputTxt.length() - 1
-										: outputTxt.length()),
-						isEndedWithNewLine,true));
-				tempLines.add(new TerminalPrintedLine(date,
-						getEncodedString(outputTxt.substring(0,
-								isEndedWithNewLine ? outputTxt.length() - 1
-										: outputTxt.length())),
-						isEndedWithNewLine,true));
-			} else if (terminalPrintedLines.size() > 0 && tempLines.size() > 0) {
-				terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = terminalPrintedLines
-						.get(terminalPrintedLines.size() - 1).print
-						+ outputTxt.substring(0,
-								isEndedWithNewLine ? outputTxt.length() - 1
-										: outputTxt.length());
-				tempLines.get(tempLines.size() - 1).print = getEncodedString(terminalPrintedLines
-						.get(terminalPrintedLines.size() - 1).print);
-				if (isEndedWithNewLine)
-					terminalPrintedLines.get(terminalPrintedLines.size() - 1).isEndedWithNewLine = true;
-			}
-			lastItemEndedWithNewLine = isEndedWithNewLine;
-			greaterThanThousand = terminalPrintedLines.size() > 1000;
-			if (greaterThanThousand) {
-				// for (int i = 0; i < 1; i++) {
-				terminalPrintedLines.remove(0);
-				tempLines.remove(0);
-				// }
-			}
-			switch (frame.getFunctionId()) {
-			case WRITE:
-				if (eventHandler != null) {
-					eventHandler.onPrint(outputTxt, greaterThanThousand);
+			String outputTxt = null;
+			if (frame.getArguments() != null && frame.getArguments().size() > 0)
+				outputTxt = frame.getArgumentAsString(0);
+			if (outputTxt != null) {
+				String date = terminalPrintedLines.size() == 0
+						|| terminalPrintedLines
+								.get(terminalPrintedLines.size() - 1).isEndedWithNewLine ? TerminalFragment
+						.getTimeAsString() + " [RX] : "
+						: "";
+				boolean isEndedWithNewLine = outputTxt.length() > 0
+						&& outputTxt.charAt(outputTxt.length() - 1) == '\n';
+				if (lastItemEndedWithNewLine) {
+					terminalPrintedLines.add(new TerminalPrintedLine(date,
+							outputTxt.substring(0,
+									isEndedWithNewLine ? outputTxt.length() - 1
+											: outputTxt.length()),
+							isEndedWithNewLine, true));
+					tempLines.add(new TerminalPrintedLine(date,
+							getEncodedString(outputTxt.substring(0,
+									isEndedWithNewLine ? outputTxt.length() - 1
+											: outputTxt.length())),
+							isEndedWithNewLine, true));
+				} else if (terminalPrintedLines.size() > 0
+						&& tempLines.size() > 0) {
+					terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = terminalPrintedLines
+							.get(terminalPrintedLines.size() - 1).print
+							+ outputTxt.substring(0,
+									isEndedWithNewLine ? outputTxt.length() - 1
+											: outputTxt.length());
+					tempLines.get(tempLines.size() - 1).print = getEncodedString(terminalPrintedLines
+							.get(terminalPrintedLines.size() - 1).print);
+					if (isEndedWithNewLine)
+						terminalPrintedLines
+								.get(terminalPrintedLines.size() - 1).isEndedWithNewLine = true;
 				}
-				break;
-			case PRINT:
-				if (eventHandler != null) {
-					eventHandler.onPrint(outputTxt, greaterThanThousand);
+				lastItemEndedWithNewLine = isEndedWithNewLine;
+				greaterThanThousand = terminalPrintedLines.size() > 1000;
+				if (greaterThanThousand) {
+					// for (int i = 0; i < 1; i++) {
+					terminalPrintedLines.remove(0);
+					tempLines.remove(0);
+					// }
 				}
-				break;
+				switch (frame.getFunctionId()) {
+				case WRITE:
+					if (eventHandler != null) {
+						eventHandler.onPrint(outputTxt, greaterThanThousand);
+					}
+					break;
+				case PRINT:
+					if (eventHandler != null) {
+						eventHandler.onPrint(outputTxt, greaterThanThousand);
+					}
+					break;
 
-			default:
-				break;
+				default:
+					break;
+				}
 			}
 		}
 	}

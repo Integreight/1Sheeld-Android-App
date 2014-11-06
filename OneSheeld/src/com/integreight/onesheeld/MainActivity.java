@@ -300,16 +300,21 @@ public class MainActivity extends FragmentActivity {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							popub = new ValidationPopup(MainActivity.this,
-									"Optional Firmware Upgrade", msg,
+							popub = new ValidationPopup(
+									MainActivity.this,
+									"Optional Firmware Upgrade",
+									msg,
 									new ValidationPopup.ValidationAction("Now",
 											new View.OnClickListener() {
 
 												@Override
 												public void onClick(View v) {
 													new FirmwareUpdatingPopup(
-															MainActivity.this/*,
-															false*/).show();
+															MainActivity.this/*
+																			 * ,
+																			 * false
+																			 */)
+															.show();
 												}
 											}, true),
 									new ValidationPopup.ValidationAction(
@@ -362,9 +367,11 @@ public class MainActivity extends FragmentActivity {
 												@Override
 												public void onClick(View v) {
 													FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
-															MainActivity.this/*,
-															false*/
-															);
+															MainActivity.this/*
+																			 * ,
+																			 * false
+																			 */
+													);
 													fup.setCancelable(false);
 													fup.show();
 												}
@@ -422,14 +429,16 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void handleMessage(Message msg) {
 					if (connectionLost) {
-						runOnUiThread(new Runnable() {
-							public void run() {
-								if (!ArduinoConnectivityPopup.isOpened
-										&& !isFinishing())
-									new ArduinoConnectivityPopup(
-											MainActivity.this).show();
-							}
-						});
+						if (!ArduinoConnectivityPopup.isOpened
+								&& !isFinishing())
+							runOnUiThread(new Runnable() {
+								public void run() {
+									if (!ArduinoConnectivityPopup.isOpened
+											&& !isFinishing())
+										new ArduinoConnectivityPopup(
+												MainActivity.this).show();
+								}
+							});
 						if (getSupportFragmentManager()
 								.getBackStackEntryCount() > 1) {
 							getSupportFragmentManager().beginTransaction()

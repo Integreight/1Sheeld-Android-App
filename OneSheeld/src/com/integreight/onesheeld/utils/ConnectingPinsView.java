@@ -67,6 +67,7 @@ public class ConnectingPinsView extends Fragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+		activity = (MainActivity) getActivity();
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -74,7 +75,9 @@ public class ConnectingPinsView extends Fragment {
 
 	public void reset(final ControllerParent<?> controller,
 			final OnPinSelectionListener listner) {
-		if (view == null) {
+		if (activity == null)
+			activity = (MainActivity) getActivity();
+		if (view == null && activity != null) {
 			activity.getSupportFragmentManager()
 					.beginTransaction()
 					.replace(R.id.pinsViewContainer,
