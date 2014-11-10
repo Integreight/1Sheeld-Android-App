@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import twitter4j.ConnectionLifeCycleListener;
 import twitter4j.FilterQuery;
 import twitter4j.StallWarning;
 import twitter4j.Status;
@@ -53,6 +54,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x03;
 	private static final byte TRACK_KEYWORD_METHOD_ID = (byte) 0x04;
 	private static final byte STOP_TRACKING_KEYWORD_METHOD_ID = (byte) 0x05;
+	private boolean thereIsAConnectionRequest;
+	private boolean isTwitterStreamConnecting;
 	TwitterStream twitterStream;
 	private List<String> trackedKeywords;
 
@@ -94,6 +97,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
 		trackedKeywords=new ArrayList<String>();
+		thereIsAConnectionRequest=false;
+		isTwitterStreamConnecting=false;
 //		if(isTwitterLoggedInAlready())initTwitterListening();
 		return super.setTag(tag);
 	}
@@ -104,6 +109,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				.getSharedPreferences("com.integreight.onesheeld",
 						Context.MODE_PRIVATE);
 		trackedKeywords=new ArrayList<String>();
+		thereIsAConnectionRequest=false;
+		isTwitterStreamConnecting=false;
 //		if(isTwitterLoggedInAlready())initTwitterListening();
 	}
 
@@ -365,6 +372,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	}
 
 	public void logoutFromTwitter() {
+		stopListeningOnAKeyword();
 		Editor e = mSharedPreferences.edit();
 		e.remove(PREF_KEY_OAUTH_TOKEN);
 		e.remove(PREF_KEY_OAUTH_SECRET);
@@ -414,27 +422,43 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						if(trackedKeywords.isEmpty()&&twitterStream==null)initTwitterListening();
 						if(!trackedKeywords.contains(keyword.toLowerCase())){
 							trackedKeywords.add(keyword.toLowerCase());
+							FilterQuery query = new FilterQuery();
+							String[] keywordsStrings = new String[trackedKeywords.size()];
+							query.track(trackedKeywords.toArray(keywordsStrings));
+							twitterStream.cleanUp();
+							twitterStream.shutdown();
+							if(!isTwitterStreamConnecting&&!thereIsAConnectionRequest){
+//								twitterStream.cleanUp();
+//								twitterStream.shutdown();
+								filterTwitterStream(query);
+							}
+							else{
+								thereIsAConnectionRequest=true;
+							}
 						}
 						if (eventHandler != null)
 							eventHandler.onNewTrackedKeyword(keyword);
-						FilterQuery query = new FilterQuery();
-						String[] keywordsStrings = new String[trackedKeywords.size()];
-						query.track(trackedKeywords.toArray(keywordsStrings));
-						twitterStream.filter(query);
 					}else if (frame.getFunctionId() == STOP_TRACKING_KEYWORD_METHOD_ID) {
 						String keyword = frame.getArgumentAsString(0);
 						if(trackedKeywords.contains(keyword.toLowerCase())){
 							trackedKeywords.remove(keyword.toLowerCase());
+							if(trackedKeywords.isEmpty()&&twitterStream!=null)stopListeningOnAKeyword();
+							else if(twitterStream!=null){ 
+							FilterQuery query = new FilterQuery();
+							String[] keywordsStrings = new String[trackedKeywords.size()];
+							query.track(trackedKeywords.toArray(keywordsStrings));
+							twitterStream.cleanUp();
+							twitterStream.shutdown();
+							if(!isTwitterStreamConnecting&&!thereIsAConnectionRequest){
+								filterTwitterStream(query);
+							}
+							else{
+								thereIsAConnectionRequest=true;
+							}
+							}
 						}
 						if (eventHandler != null)
 							eventHandler.onNewTrackedKeywordRemoved(keyword);
-						if(trackedKeywords.isEmpty()&&twitterStream!=null)stopListeningOnAKeyword();
-						else if(twitterStream!=null){ 
-						FilterQuery query = new FilterQuery();
-						String[] keywordsStrings = new String[trackedKeywords.size()];
-						query.track(trackedKeywords.toArray(keywordsStrings));
-						twitterStream.filter(query);
-						}
 					}
 
 				} else
@@ -552,6 +576,11 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	}
 
+	private void filterTwitterStream(FilterQuery q){
+		isTwitterStreamConnecting=true;
+		twitterStream.filter(q);
+	}
+	
 	private void initTwitterListening() {
 		ConfigurationBuilder cb = new ConfigurationBuilder();
 		cb.setOAuthConsumerKey(ApiObjects.twitter.get("consumer_key"));
@@ -563,11 +592,51 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
 		// twitterStream.s
-		twitterStream.clearListeners();
-		twitterStream.cleanUp();
+//		twitterStream.clearListeners();
+//		twitterStream.cleanUp();
 //		FilterQuery query = new FilterQuery();
 //		String[] keywords = new String[] { keyword };
 //		query.track(keywords);
+		twitterStream.addConnectionLifeCycleListener(new ConnectionLifeCycleListener() {
+			
+			@Override
+			public void onDisconnect() {
+				// TODO Auto-generated method stub
+				isTwitterStreamConnecting=false;
+				
+				if(thereIsAConnectionRequest){
+					FilterQuery query = new FilterQuery();
+					String[] keywordsStrings = new String[trackedKeywords.size()];
+					query.track(trackedKeywords.toArray(keywordsStrings));
+//					twitterStream.cleanUp();
+//					twitterStream.shutdown();
+					twitterStream.filter(query);
+					thereIsAConnectionRequest=false;
+				}
+			}
+			
+			@Override
+			public void onConnect() {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onCleanUp() {
+				// TODO Auto-generated method stub
+				isTwitterStreamConnecting=false;
+				
+				if(thereIsAConnectionRequest){
+					FilterQuery query = new FilterQuery();
+					String[] keywordsStrings = new String[trackedKeywords.size()];
+					query.track(trackedKeywords.toArray(keywordsStrings));
+//					twitterStream.cleanUp();
+//					twitterStream.shutdown();
+					twitterStream.filter(query);
+					thereIsAConnectionRequest=false;
+				}
+			}
+		});
 
 		StatusListener listener = new StatusListener() {
 			public void onScrubGeo(long arg0, long arg1) {
