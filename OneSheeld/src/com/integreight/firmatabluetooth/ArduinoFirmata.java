@@ -60,7 +60,6 @@ public class ArduinoFirmata {
 	private final byte RESET_MICRO = (byte) 0x60;
 	private final byte BLUETOOTH_RESET = (byte) 0x61;
 	private final byte IS_ALIVE = (byte) 0x62;
-	// private final byte FIRMWARE_VERSION_QUERY = (byte) 0x63; //Deprecated
 	private final byte MUTE_FIRMATA = (byte) 0x64;
 	private final byte UART_COMMAND = (byte) 0x65;
 	private final byte UART_DATA = (byte) 0x66;
@@ -236,7 +235,7 @@ public class ArduinoFirmata {
 	}
 	
 	public void notifyHardwareOfConnection(){
-		sendShieldFrame(new ShieldFrame((byte)0x00, (byte)0x01));
+		sysex(IS_ALIVE, new byte[] { });
 	}
 
 	public boolean isOpen() {
@@ -426,7 +425,7 @@ public class ArduinoFirmata {
 						}
 						
 						if (sysexCommand == IS_ALIVE) {
-								sysex(IS_ALIVE, new byte[] { });
+								notifyHardwareOfConnection();
 						}
 
 						for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
@@ -569,7 +568,7 @@ public class ArduinoFirmata {
 		reportInputPinsValues();
 		initUart();
 		queryVersion();
-		sysex(IS_ALIVE, new byte[] { });
+		notifyHardwareOfConnection();
 	}
 
 	private void muteFirmata() {
@@ -688,7 +687,6 @@ public class ArduinoFirmata {
 				initUart();
 				onConnect();
 				queryVersion();
-				sysex(IS_ALIVE, new byte[] { });
 				notifyHardwareOfConnection();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
@@ -826,8 +824,7 @@ public class ArduinoFirmata {
 					}
 					printFrameToLog(frame.getAllFrameAsBytes(),"Rec");
 					if(shieldId==0x00){
-						if(functionId==0x01)
-						notifyHardwareOfConnection();
+						//1Sheeld configration from the library
 					}
 					else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
