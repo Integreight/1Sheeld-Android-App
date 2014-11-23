@@ -234,10 +234,14 @@ public class ArduinoFirmata {
 		}
 	}
 	
-	public void notifyHardwareOfConnection(){
+	public void respondToIsAlive(){
 		sysex(IS_ALIVE, new byte[] { });
 	}
 
+	public void notifyHardwareOfConnection(){
+		sendShieldFrame(new ShieldFrame((byte)0x00, (byte)0x01));
+	}
+	
 	public boolean isOpen() {
 		Log.sysOut(bluetoothService.getState() + "    "
 				+ BluetoothService.STATE_CONNECTING + "    "
@@ -425,7 +429,7 @@ public class ArduinoFirmata {
 						}
 						
 						if (sysexCommand == IS_ALIVE) {
-								notifyHardwareOfConnection();
+								respondToIsAlive();
 						}
 
 						for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
@@ -568,6 +572,7 @@ public class ArduinoFirmata {
 		reportInputPinsValues();
 		initUart();
 		queryVersion();
+		respondToIsAlive();
 		notifyHardwareOfConnection();
 	}
 
@@ -687,6 +692,7 @@ public class ArduinoFirmata {
 				initUart();
 				onConnect();
 				queryVersion();
+				respondToIsAlive();
 				notifyHardwareOfConnection();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
