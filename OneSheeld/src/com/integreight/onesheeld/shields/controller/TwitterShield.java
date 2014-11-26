@@ -91,6 +91,11 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		super();
 	}
 
+	public void notifyHardwareOfTwitterSelection(){
+		activity.getThisApplication().getAppFirmata()
+		.sendShieldFrame(new ShieldFrame(UIShield.TWITTER_SHIELD.getId(),(byte)0x02));
+	}
+	
 	@Override
 	public ControllerParent<TwitterShield> setTag(String tag) {
 		mSharedPreferences = activity.getApplicationContext()
@@ -100,6 +105,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		thereIsAConnectionRequest=false;
 		isTwitterStreamConnecting=false;
 //		if(isTwitterLoggedInAlready())initTwitterListening();
+		notifyHardwareOfTwitterSelection();
 		return super.setTag(tag);
 	}
 
@@ -111,6 +117,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		trackedKeywords=new ArrayList<String>();
 		thereIsAConnectionRequest=false;
 		isTwitterStreamConnecting=false;
+		notifyHardwareOfTwitterSelection();
 //		if(isTwitterLoggedInAlready())initTwitterListening();
 	}
 
