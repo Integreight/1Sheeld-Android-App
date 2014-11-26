@@ -572,8 +572,9 @@ public class ArduinoFirmata {
 		reportInputPinsValues();
 		initUart();
 		queryVersion();
-		respondToIsAlive();
 		notifyHardwareOfConnection();
+		respondToIsAlive();
+		
 	}
 
 	private void muteFirmata() {
@@ -692,8 +693,8 @@ public class ArduinoFirmata {
 				initUart();
 				onConnect();
 				queryVersion();
-				respondToIsAlive();
 				notifyHardwareOfConnection();
+				respondToIsAlive();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
 				// mConnectedDeviceName,
