@@ -276,7 +276,7 @@ public class CameraHeadService extends Service implements
 						if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
 							FLASH_MODE = "auto";
 						}
-						parameters.setFlashMode(FLASH_MODE);
+						if(CameraUtils.hasFlash(mCamera))parameters.setFlashMode(FLASH_MODE);
 						// set biggest picture
 						setBesttPictureResolution();
 						// log quality and image format
