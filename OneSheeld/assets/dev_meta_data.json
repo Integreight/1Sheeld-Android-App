@@ -13,5 +13,8 @@
     "parse": {
         "app_id": "W0vebUNWqmcvQWgOukMgvz491E9z19YuIlNacqzR",
         "client_id": "cO3QQhK1JIqbdE9B9HYXcsgjO2n2l0gIHEqJCwef"
+    },
+	"analytics": {
+		"property_id": "UA-48040929-2"
     }
 }

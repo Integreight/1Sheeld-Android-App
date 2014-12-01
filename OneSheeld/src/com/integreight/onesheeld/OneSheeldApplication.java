@@ -178,6 +178,7 @@ public class OneSheeldApplication extends Application {
 			JSONObject twitter = new JSONObject();
 			JSONObject foursquare = new JSONObject();
 			JSONObject parse = new JSONObject();
+			JSONObject analytics = new JSONObject();
 			if (socialKeysObject.has("facebook")) {
 				facebook = socialKeysObject.getJSONObject("facebook");
 				if (facebook.has("app_id"))
@@ -209,6 +210,11 @@ public class OneSheeldApplication extends Application {
 				if (parse.has("app_id") && parse.has("client_id"))
 					ApiObjects.parse.add("app_id", parse.getString("app_id"));
 				ApiObjects.parse.add("client_id", parse.getString("client_id"));
+			}
+			if (socialKeysObject.has("analytics")) {
+				analytics = socialKeysObject.getJSONObject("analytics");
+				if (analytics.has("property_id"))
+					ApiObjects.analytics.add("property_id", analytics.getString("property_id"));
 			}
 		} catch (JSONException e) {
 		}

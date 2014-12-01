@@ -7,6 +7,7 @@ public class ApiObjects {
 	public static ApiObject twitter = new ApiObject();
 	public static ApiObject foursquare = new ApiObject();
 	public static ApiObject parse = new ApiObject();
+	public static ApiObject analytics = new ApiObject();
 
 	public static class ApiObject {
 		private HashMap<String, String> apiObjects;
