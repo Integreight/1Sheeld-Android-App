@@ -30,7 +30,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.Fields;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -213,6 +213,8 @@ public class SheeldsList extends Fragment {
 				new ArduinoConnectivityPopup(activity).show();
 		}
 		Crashlytics.setString("Current View", "Shields List");
+		((OneSheeldApplication) activity.getApplication()).getTracker().setScreenName("Main Shields List");
+		((OneSheeldApplication) activity.getApplication()).getTracker().send(new HitBuilders.ScreenViewBuilder().build());
 		super.onResume();
 	}
 
@@ -353,9 +355,20 @@ public class SheeldsList extends Fragment {
 			activity.getThisApplication().remoteOneSheeldController = new RemoteOneSheeldShield(
 					activity, UIShield.REMOTEONESHEELD_SHIELD.name());
 			Log.e(TAG, "- ARDUINO CONNECTED -");
+			((OneSheeldApplication) activity.getApplication())
+			.getTracker().send(new HitBuilders.ScreenViewBuilder()
+            .setNewSession()
+            .build());
+			((OneSheeldApplication) activity.getApplication())
+			.getTracker().send(new HitBuilders.TimingBuilder()
+	        .setCategory("Connection Timing")
+	        .setValue(System.currentTimeMillis())
+	        .setVariable("Connection")
+	        .setLabel("Connected")
+	        .build());
 			if (isOneSheeldServiceRunning()) {
-				((OneSheeldApplication) activity.getApplication())
-						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
+//				((OneSheeldApplication) activity.getApplication())
+//						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
 				if (adapter != null)
 					adapter.applyToControllerTable();
 			}
@@ -371,7 +384,12 @@ public class SheeldsList extends Fragment {
 					activity.getThisApplication().remoteOneSheeldController.reset();
 				}
 				((OneSheeldApplication) activity.getApplication())
-						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
+				.getTracker().send(new HitBuilders.TimingBuilder()
+		        .setCategory("Connection Timing")
+		        .setValue(System.currentTimeMillis())
+		        .setVariable("Connection")
+		        .setLabel("Disconnected")
+		        .build());
 				activity.getOnConnectionLostHandler().connectionLost = true;
 				if (activity.getOnConnectionLostHandler().canInvokeOnCloseConnection
 						|| activity.isForground)

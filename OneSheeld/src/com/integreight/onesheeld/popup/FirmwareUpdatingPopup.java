@@ -12,8 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.google.analytics.tracking.android.Fields;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.Jodem;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -81,11 +80,11 @@ public class FirmwareUpdatingPopup extends Dialog {
 						changeSlogan("Upgrade Firmware", COLOR.BLUE);
 					}
 				}, 1500);
-				activity.getThisApplication()
-						.getGaTracker()
-						.send(MapBuilder.createEvent(TRACKER_CATG,
-								"Installed the firmware update successfully",
-								"", null).build());
+				
+				activity.getThisApplication().getTracker().send(new HitBuilders.EventBuilder()
+		        .setCategory("Firmware")
+		        .setAction("Firmware installed successfully")
+		        .build());
 
 			}
 
@@ -123,13 +122,10 @@ public class FirmwareUpdatingPopup extends Dialog {
 						changeSlogan("An error occurred!", COLOR.RED);
 						isFailed = true;
 						setUpgrade();
-						activity.getThisApplication()
-								.getGaTracker()
-								.send(MapBuilder
-										.createEvent(
-												TRACKER_CATG,
-												"Failed to install the firmware version",
-												"", null).build());
+						activity.getThisApplication().getTracker().send(new HitBuilders.EventBuilder()
+				        .setCategory("Firmware")
+				        .setAction("Firmware installation failed")
+				        .build());
 					}
 				});
 			}
@@ -155,10 +151,8 @@ public class FirmwareUpdatingPopup extends Dialog {
 
 			}
 		});
-		activity.getThisApplication()
-				.getGaTracker()
-				.send(MapBuilder.createAppView()
-						.set(Fields.SCREEN_NAME, "Firmware Upgrade").build());
+		((OneSheeldApplication) activity.getApplication()).getTracker().setScreenName("Firmware Upgrade");
+		((OneSheeldApplication) activity.getApplication()).getTracker().send(new HitBuilders.ScreenViewBuilder().build());
 		// TODO Auto-generated constructor stub
 	}
 
@@ -241,11 +235,11 @@ public class FirmwareUpdatingPopup extends Dialog {
 							((OneSheeldApplication) activity.getApplication())
 									.setVersionWebResult(response.toString());
 							downloadFirmware();
-							activity.getThisApplication()
-									.getGaTracker()
-									.send(MapBuilder.createEvent(TRACKER_CATG,
-											"Got the server version", "", null)
-											.build());
+//							activity.getThisApplication()
+//									.getGaTracker()
+//									.send(MapBuilder.createEvent(TRACKER_CATG,
+//											"Got the server version", "", null)
+//											.build());
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							Log.e("TAG", "Exception", e);
@@ -291,13 +285,13 @@ public class FirmwareUpdatingPopup extends Dialog {
 											COLOR.BLUE);
 
 								// progressBar.setProgress(0);
-								activity.getThisApplication()
-										.getGaTracker()
-										.send(MapBuilder
-												.createEvent(
-														TRACKER_CATG,
-														"Downloaded the firmware update",
-														"", null).build());
+//								activity.getThisApplication()
+//										.getGaTracker()
+//										.send(MapBuilder
+//												.createEvent(
+//														TRACKER_CATG,
+//														"Downloaded the firmware update",
+//														"", null).build());
 								super.onSuccess(binaryData);
 							}
 
@@ -308,14 +302,10 @@ public class FirmwareUpdatingPopup extends Dialog {
 								changeSlogan("Error Downloading!", COLOR.RED);
 								setUpgrade();
 								Log.d("bootloader", statusCode + "");
-								activity.getThisApplication()
-										.getGaTracker()
-										.send(MapBuilder
-												.createEvent(
-														TRACKER_CATG,
-														"Failed to download the firmware update",
-														statusCode + "", null)
-												.build());
+								activity.getThisApplication().getTracker().send(new HitBuilders.EventBuilder()
+						        .setCategory("Firmware")
+						        .setAction("Firmware download failed")
+						        .build());
 								super.onFailure(statusCode, headers,
 										binaryData, error);
 							}

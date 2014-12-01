@@ -14,13 +14,11 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
-import android.preference.PreferenceManager;
 import android.util.SparseArray;
 
-import com.google.analytics.tracking.android.GAServiceManager;
-import com.google.analytics.tracking.android.GoogleAnalytics;
-import com.google.analytics.tracking.android.Logger.LogLevel;
-import com.google.analytics.tracking.android.Tracker;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Logger.LogLevel;
+import com.google.android.gms.analytics.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
@@ -58,8 +56,8 @@ public class OneSheeldApplication extends Application {
 	private ConnectionDetector connectionHandler;
 	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
 	public Typeface appFont;
-	private GoogleAnalytics googleAnalyticsInstance;
-	private Tracker appGaTracker;
+//	private GoogleAnalytics googleAnalyticsInstance;
+//	private Tracker appGaTracker;
 	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
 	public RemoteOneSheeldShield remoteOneSheeldController;
@@ -68,65 +66,80 @@ public class OneSheeldApplication extends Application {
 	public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
 
 	private static boolean isDebuggable = true;
+	
+	private Tracker gaTracker;
 
 	/*
 	 * Google Analytics configuration values.
 	 */
 	// Placeholder property ID.
-	private static final String GA_PROPERTY_ID = "UA-48040929-2";
+//	private static final String GA_PROPERTY_ID = "";
+//
+//	// Dispatch period in seconds.
+//	private static final int GA_DISPATCH_PERIOD = 30;
 
-	// Dispatch period in seconds.
-	private static final int GA_DISPATCH_PERIOD = 30;
+//	// Prevent hits from being sent to reports, i.e. during testing.
+//	private static final boolean GA_IS_DRY_RUN = false;
+//
+//	// GA Logger verbosity.
+//	private static final LogLevel GA_LOG_VERBOSITY = LogLevel.VERBOSE;
+//
+//	// Key used to store a user's tracking preferences in SharedPreferences.
+//	private static final String TRACKING_PREF_KEY = "trackingPreference";
 
-	// Prevent hits from being sent to reports, i.e. during testing.
-	private static final boolean GA_IS_DRY_RUN = false;
-
-	// GA Logger verbosity.
-	private static final LogLevel GA_LOG_VERBOSITY = LogLevel.VERBOSE;
-
-	// Key used to store a user's tracking preferences in SharedPreferences.
-	private static final String TRACKING_PREF_KEY = "trackingPreference";
-
-	public GoogleAnalytics getGoogleAnalytics() {
-		if (googleAnalyticsInstance == null) {
-			googleAnalyticsInstance = GoogleAnalytics
-					.getInstance(getApplicationContext());
-		}
-		return googleAnalyticsInstance;
-	}
-
-	@SuppressWarnings("deprecation")
-	public Tracker getGaTracker() {
-		if (appGaTracker == null) {
-			appGaTracker = getGoogleAnalytics().getTracker(GA_PROPERTY_ID);
-
-			// Set dispatch period.
-			GAServiceManager.getInstance().setLocalDispatchPeriod(
-					GA_DISPATCH_PERIOD);
-
-			// Set dryRun flag.
-			googleAnalyticsInstance.setDryRun(GA_IS_DRY_RUN);
-			// Set Logger verbosity.
-			googleAnalyticsInstance.getLogger().setLogLevel(GA_LOG_VERBOSITY);
-			// Set the opt out flag when user updates a tracking preference.
-			SharedPreferences userPrefs = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			userPrefs
-					.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-						@Override
-						public void onSharedPreferenceChanged(
-								SharedPreferences sharedPreferences, String key) {
-							if (key.equals(TRACKING_PREF_KEY)) {
-								GoogleAnalytics.getInstance(
-										getApplicationContext()).setAppOptOut(
-										sharedPreferences
-												.getBoolean(key, false));
-							}
-						}
-					});
-		}
-		return appGaTracker;
-	}
+//	public GoogleAnalytics getGoogleAnalytics() {
+//		if (googleAnalyticsInstance == null) {
+//			googleAnalyticsInstance = GoogleAnalytics
+//					.getInstance(getApplicationContext());
+//		}
+//		return googleAnalyticsInstance;
+//	}
+//
+//	@SuppressWarnings("deprecation")
+//	public Tracker getGaTracker() {
+//		if (appGaTracker == null) {
+//			appGaTracker = getGoogleAnalytics().getTracker(GA_PROPERTY_ID);
+//
+//			// Set dispatch period.
+//			GAServiceManager.getInstance().setLocalDispatchPeriod(
+//					GA_DISPATCH_PERIOD);
+//
+//			// Set dryRun flag.
+//			googleAnalyticsInstance.setDryRun(GA_IS_DRY_RUN);
+//			// Set Logger verbosity.
+//			googleAnalyticsInstance.getLogger().setLogLevel(GA_LOG_VERBOSITY);
+//			// Set the opt out flag when user updates a tracking preference.
+//			SharedPreferences userPrefs = PreferenceManager
+//					.getDefaultSharedPreferences(this);
+//			userPrefs
+//					.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
+//						@Override
+//						public void onSharedPreferenceChanged(
+//								SharedPreferences sharedPreferences, String key) {
+//							if (key.equals(TRACKING_PREF_KEY)) {
+//								GoogleAnalytics.getInstance(
+//										getApplicationContext()).setAppOptOut(
+//										sharedPreferences
+//												.getBoolean(key, false));
+//							}
+//						}
+//					});
+//		}
+//		return appGaTracker;
+//	}
+	
+	  public synchronized Tracker getTracker() {
+		  if(gaTracker!=null)return gaTracker;
+		      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+		      GoogleAnalytics.getInstance(this).getLogger()
+		      .setLogLevel(LogLevel.VERBOSE);
+//		      analytics.enableAutoActivityReports(this);
+		      gaTracker = analytics.newTracker(ApiObjects.analytics.get("property_id"));
+		      gaTracker.enableAdvertisingIdCollection(true);
+		      gaTracker.setSessionTimeout(-1);
+//		      GoogleAnalytics.getInstance(this).dispatchLocalHits();
+		      return gaTracker;
+		  }
 
 	public static boolean isDebuggable() {
 		return isDebuggable;

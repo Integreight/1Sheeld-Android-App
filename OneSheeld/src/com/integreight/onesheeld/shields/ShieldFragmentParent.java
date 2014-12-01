@@ -11,8 +11,7 @@ import android.view.View;
 import android.widget.ToggleButton;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.Fields;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -190,9 +189,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 				.setChecked(getApplication().getRunningShields().get(
 						getControllerTag()).isInteractive);
 		// Google analytics tracking
-		getApplication().getGaTracker().send(
-				MapBuilder.createAppView()
-						.set(Fields.SCREEN_NAME, getControllerTag()).build());
+		getApplication().getTracker().setScreenName(getControllerTag());
+		getApplication().getTracker().send(new HitBuilders.ScreenViewBuilder().build());
 		// Logging current view for crashlytics
 		Crashlytics.setString("Current View", getTag());
 		super.onResume();

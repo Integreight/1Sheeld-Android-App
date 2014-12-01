@@ -8,8 +8,7 @@ import android.os.Handler;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.Fields;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -267,9 +266,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		if (getApplication().getRunningShields().get(tag) == null)
 			getApplication().getRunningShields().put(tag, this);
 		getApplication().getAppFirmata().initUart();
-		getApplication().getGaTracker().send(
-				MapBuilder.createEvent(Fields.EVENT_ACTION, "start", "", null)
-						.set(getTag(), "start").build());
+		getApplication().getTracker().send(new HitBuilders.TimingBuilder()
+        .setCategory("Shields Selection Timing")
+        .setValue(System.currentTimeMillis())
+        .setVariable(tag)
+        .setLabel("Shield Selected")
+        .build());
 		Crashlytics
 				.setString(
 						"Number of running shields",
@@ -349,10 +351,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				}
 			});
 		}
-		getApplication().getGaTracker().send(
-				MapBuilder
-						.createEvent("Controller Tracker", "end", getTag(),
-								null).set(getTag(), "end").build());
+		getApplication().getTracker().send(new HitBuilders.TimingBuilder()
+        .setCategory("Shields Selection Timing")
+        .setValue(System.currentTimeMillis())
+        .setVariable(tag)
+        .setLabel("Shield Unselected")
+        .build());
 		Crashlytics
 				.setString(
 						"Number of running shields",
