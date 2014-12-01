@@ -367,18 +367,6 @@ public class OneSheeldApplication extends Application {
 		getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
 	}
 
-	@Override
-	public void onLowMemory() {
-
-		super.onLowMemory();
-	}
-
-	@Override
-	public void onTrimMemory(int level) {
-
-		super.onTrimMemory(level);
-	}
-
 	// public ArduinoFirmataEventHandler
 	// getArduinoFirmataHandlerForConnectivityPopup() {
 	// return arduinoFirmataHandlerForConnectivityPopup;
