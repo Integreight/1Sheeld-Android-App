@@ -58,6 +58,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 											// found sensors
 	public boolean isInteractive = true;// flag used for the interaction
 										// top-right toggle button
+	
+	private long selectionTime;
 
 	public ControllerParent() {
 		// TODO Auto-generated constructor stub
@@ -266,12 +268,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		if (getApplication().getRunningShields().get(tag) == null)
 			getApplication().getRunningShields().put(tag, this);
 		getApplication().getAppFirmata().initUart();
-		getApplication().getTracker().send(new HitBuilders.TimingBuilder()
-        .setCategory("Shields Selection Timing")
-        .setValue(System.currentTimeMillis())
-        .setVariable(tag)
-        .setLabel("Shield Selected")
-        .build());
+		selectionTime=System.currentTimeMillis();
 		Crashlytics
 				.setString(
 						"Number of running shields",
@@ -351,12 +348,14 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				}
 			});
 		}
+		if(selectionTime!=0){
 		getApplication().getTracker().send(new HitBuilders.TimingBuilder()
         .setCategory("Shields Selection Timing")
-        .setValue(System.currentTimeMillis())
+        .setValue(System.currentTimeMillis()-selectionTime)
         .setVariable(tag)
-        .setLabel("Shield Unselected")
         .build());
+		selectionTime=0;
+		}
 		Crashlytics
 				.setString(
 						"Number of running shields",

@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.util.SparseArray;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger.LogLevel;
 import com.google.android.gms.analytics.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
@@ -68,6 +69,8 @@ public class OneSheeldApplication extends Application {
 	private static boolean isDebuggable = true;
 	
 	private Tracker gaTracker;
+	
+	private long connectionTime;
 
 	/*
 	 * Google Analytics configuration values.
@@ -128,6 +131,23 @@ public class OneSheeldApplication extends Application {
 //		return appGaTracker;
 //	}
 	
+		public void startConnectionTimer(){
+			connectionTime=System.currentTimeMillis();
+		}
+		
+		public void endConnectionTimerAndReport(){
+			if(connectionTime==0)return;
+			getTracker().send(new HitBuilders.TimingBuilder()
+	        .setCategory("Connection Timing")
+	        .setValue(System.currentTimeMillis()-connectionTime)
+	        .setVariable("Connection")
+	        .build());
+			connectionTime=0;
+		}
+		
+		public long getConnectionTime(){
+			return connectionTime;
+		}
 	  public synchronized Tracker getTracker() {
 		  if(gaTracker!=null)return gaTracker;
 		      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
@@ -163,6 +183,7 @@ public class OneSheeldApplication extends Application {
 				|| !ParseInstallation.getCurrentInstallation()
 						.getList("channels").contains("dev")))
 			ParsePush.subscribeInBackground("dev");
+		connectionTime=0;
 		super.onCreate();
 	}
 

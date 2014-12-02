@@ -360,12 +360,7 @@ public class SheeldsList extends Fragment {
             .setNewSession()
             .build());
 			((OneSheeldApplication) activity.getApplication())
-			.getTracker().send(new HitBuilders.TimingBuilder()
-	        .setCategory("Connection Timing")
-	        .setValue(System.currentTimeMillis())
-	        .setVariable("Connection")
-	        .setLabel("Connected")
-	        .build());
+			.startConnectionTimer();
 			if (isOneSheeldServiceRunning()) {
 //				((OneSheeldApplication) activity.getApplication())
 //						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
@@ -384,12 +379,7 @@ public class SheeldsList extends Fragment {
 					activity.getThisApplication().remoteOneSheeldController.reset();
 				}
 				((OneSheeldApplication) activity.getApplication())
-				.getTracker().send(new HitBuilders.TimingBuilder()
-		        .setCategory("Connection Timing")
-		        .setValue(System.currentTimeMillis())
-		        .setVariable("Connection")
-		        .setLabel("Disconnected")
-		        .build());
+				.endConnectionTimerAndReport();
 				activity.getOnConnectionLostHandler().connectionLost = true;
 				if (activity.getOnConnectionLostHandler().canInvokeOnCloseConnection
 						|| activity.isForground)
