@@ -337,6 +337,8 @@ public class SheeldsList extends Fragment {
 					&& activity.getThisApplication().remoteOneSheeldController != null) {
 				activity.getThisApplication().remoteOneSheeldController.reset();
 			}
+			((OneSheeldApplication) activity.getApplication())
+			.endConnectionTimerAndReport();
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
