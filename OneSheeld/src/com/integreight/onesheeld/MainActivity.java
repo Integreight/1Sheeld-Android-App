@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +37,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
@@ -139,7 +140,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initCrashlyticsAndUncaughtThreadHandler() {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+		UncaughtExceptionHandler myHandler=new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread arg0, final Throwable arg1) {
@@ -173,7 +174,13 @@ public class MainActivity extends FragmentActivity {
 					}
 				}).start();
 			}
-		});
+		};
+		
+		UncaughtExceptionHandler gaHandler= new ExceptionReporter(
+			    getThisApplication().getTracker(),                                        // Currently used Tracker.
+			    myHandler,      // Current default uncaught exception handler.
+			    getApplicationContext());          
+		Thread.setDefaultUncaughtExceptionHandler(gaHandler);
 		Crashlytics.start(this);
 	}
 
