@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.util.Log;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -41,6 +42,8 @@ public class RemoteOneSheeldShield extends
 
 	public static final int MAXIMUM_NOTIFICATION_LIMIT = 1000;
 
+	private boolean isReportedToAnalytics;
+	
 	private ConcurrentHashMap<String, Integer> digitalPinSubscribtionNotificationsLimit;
 	private Map<String, List<Integer>> subscribedDevices;
 	private Map<Integer, Boolean> lastSentValues;
@@ -60,6 +63,7 @@ public class RemoteOneSheeldShield extends
 		currentValues = new ConcurrentHashMap<Integer, Boolean>();
 		digitalPinFloatingGuard = new ConcurrentHashMap<Integer, Boolean>();
 		digitalPinsChangeCheckerThread = new DigitalPinsChangeChecker();
+		isReportedToAnalytics=false;
 	}
 
 	@Override
@@ -109,6 +113,14 @@ public class RemoteOneSheeldShield extends
 			case UNSUBSCRIBE_TO_DIGITAL_PIN_CHANGES:
 				processUnsubscribeToDigitalPinMessage(frame);
 				break;
+			}
+			
+			if(!isReportedToAnalytics){
+				activity.getThisApplication().getTracker().send(new HitBuilders.EventBuilder()
+		        .setCategory("Shields Events")
+		        .setAction("Remote OneSheeld Used")
+		        .build());
+				isReportedToAnalytics=true;
 			}
 		}
 	}
@@ -458,6 +470,7 @@ public class RemoteOneSheeldShield extends
 		if (digitalPinsChangeCheckerThread != null) {
 			digitalPinsChangeCheckerThread.stopRunning();
 		}
+		isReportedToAnalytics=false;
 	}
 
 	private class DigitalPinsChangeChecker extends Thread {

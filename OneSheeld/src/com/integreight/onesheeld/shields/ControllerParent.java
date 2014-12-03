@@ -348,7 +348,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				}
 			});
 		}
-		if(selectionTime!=0){
+		if(selectionTime!=0 && !(((T) ControllerParent.this) instanceof TaskerShield
+				|| ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)){
 		getApplication().getTracker().send(new HitBuilders.TimingBuilder()
         .setCategory("Shields Selection Timing")
         .setValue(System.currentTimeMillis()-selectionTime)
