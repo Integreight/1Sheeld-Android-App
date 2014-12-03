@@ -151,13 +151,11 @@ public class OneSheeldApplication extends Application {
 	  public synchronized Tracker getTracker() {
 		  if(gaTracker!=null)return gaTracker;
 		      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-		      GoogleAnalytics.getInstance(this).getLogger()
-		      .setLogLevel(LogLevel.VERBOSE);
-//		      analytics.enableAutoActivityReports(this);
+		      analytics.setAppOptOut(isDebuggable);
+		      analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
 		      gaTracker = analytics.newTracker(ApiObjects.analytics.get("property_id"));
 		      gaTracker.enableAdvertisingIdCollection(true);
 		      gaTracker.setSessionTimeout(-1);
-//		      GoogleAnalytics.getInstance(this).dispatchLocalHits();
 		      return gaTracker;
 		  }
 
