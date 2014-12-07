@@ -130,16 +130,16 @@ public enum UIShield {
 			(byte) 0x22, "Keyboard", 0xffde1f26,
 			R.drawable.shields_list_keyboard_symbol, false,
 			KeyboardShield.class), TEXT_TO_SPEECH_SHIELD((byte) 0x23,
-			"Text To Speech", 0xffde1f26,
-			R.drawable.shields_list_tts_symbol, false,
-			TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD((byte) 0x24,
-			"Speech Recognizer", 0xffde1f26,
+			"Text To Speech", 0xffde1f26, R.drawable.shields_list_tts_symbol,
+			false, TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD(
+			(byte) 0x24, "Speech Recognizer", 0xffde1f26,
 			R.drawable.shields_list_voice_recognition_symbol, false,
 			SpeechRecognitionShield.class), DATA_LOGGER((byte) 0x25,
-			"Data Logger", 0xffde1f26, R.drawable.shields_list_data_logger_symbol,
-			false, DataLoggerShield.class), TERMINAL_SHIELD((byte) 0x26,
-			"Terminal", 0xffde1f26, R.drawable.shields_list_terminal_symbol,
-			false, TerminalShield.class), TASKER_SHIELD((byte) 0x07, "Tasker",
+			"Data Logger", 0xffde1f26,
+			R.drawable.shields_list_data_logger_symbol, false,
+			DataLoggerShield.class), TERMINAL_SHIELD((byte) 0x26, "Terminal",
+			0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
+			TerminalShield.class), TASKER_SHIELD((byte) 0x07, "Tasker",
 			0xff0b4c8d, R.drawable.shields_list_flashlight_symbol, false,
 			TaskerShield.class, false);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
@@ -152,16 +152,16 @@ public enum UIShield {
 			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26,
 			0xff142218, 0xffc9a302, 0xffa57378, 0xff3354af, 0xff282742,
 			0xff381616 };
-	private byte id;
-	private String name;
+	public byte id;
+	public String name;
 	public int itemBackgroundColor;
-	private int symbolId;
-	private boolean mainActivitySelection;
-	private static UIShield shieldsActivitySelection;
-	private static boolean isConnected = false;
-	private boolean isReleasable = true;
-	private int isInvalidatable = 0;
-	private Class<? extends ControllerParent<?>> shieldType;
+	public int symbolId;
+	public boolean mainActivitySelection;
+	public static UIShield shieldsActivitySelection;
+	public static boolean isConnected = false;
+	public boolean isReleasable = true;
+	public int isInvalidatable = 0;
+	public Class<? extends ControllerParent<?>> shieldType;
 	public int position = 0;
 
 	public int getSymbolId() {

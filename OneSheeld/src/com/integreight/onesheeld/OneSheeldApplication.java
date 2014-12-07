@@ -23,10 +23,13 @@ import com.google.analytics.tracking.android.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
+import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.parse.Parse;
 import com.parse.PushService;
@@ -60,7 +63,7 @@ public class OneSheeldApplication extends Application {
 	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
 	public SparseArray<Boolean> taskerPinsStatus;
-	
+
 	public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
 
 	/*
@@ -129,9 +132,11 @@ public class OneSheeldApplication extends Application {
 		appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
 		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
 		parseSocialKeys();
-		Parse.initialize(this, ApiObjects.parse.get("app_id"), ApiObjects.parse.get("client_id"));
+		Parse.initialize(this, ApiObjects.parse.get("app_id"),
+				ApiObjects.parse.get("client_id"));
 		PushService.setDefaultPushCallback(this, MainActivity.class);
 		initTaskerPins();
+		AppShields.getInstance().init();
 		super.onCreate();
 	}
 
@@ -176,21 +181,22 @@ public class OneSheeldApplication extends Application {
 							twitter.getString("consumer_secret"));
 				}
 			}
-			if (socialKeysObject.has("foursquare")){
+			if (socialKeysObject.has("foursquare")) {
 				foursquare = socialKeysObject.getJSONObject("foursquare");
-				if (foursquare.has("client_key")&&foursquare.has("client_secret")){
+				if (foursquare.has("client_key")
+						&& foursquare.has("client_secret")) {
 					ApiObjects.foursquare.add("client_key",
 							foursquare.getString("client_key"));
 					ApiObjects.foursquare.add("client_secret",
 							foursquare.getString("client_secret"));
-					}
 				}
-			if (socialKeysObject.has("parse")){
+			}
+			if (socialKeysObject.has("parse")) {
 				parse = socialKeysObject.getJSONObject("parse");
-				if (parse.has("app_id")&&parse.has("client_id"))
+				if (parse.has("app_id") && parse.has("client_id"))
 					ApiObjects.parse.add("app_id", parse.getString("app_id"));
-					ApiObjects.parse.add("client_id", parse.getString("client_id"));
-				}
+				ApiObjects.parse.add("client_id", parse.getString("client_id"));
+			}
 		} catch (JSONException e) {
 		}
 	}

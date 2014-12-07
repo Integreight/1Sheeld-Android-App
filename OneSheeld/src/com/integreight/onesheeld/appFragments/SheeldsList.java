@@ -38,6 +38,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.Tutorial;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
@@ -45,6 +46,7 @@ import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
+import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
@@ -415,7 +417,7 @@ public class SheeldsList extends Fragment {
 		switch (item.getItemId()) {
 		case R.id.open_bootloader_popup:
 			if (!FirmwareUpdatingPopup.isOpened)
-				new FirmwareUpdatingPopup((MainActivity) activity/*, false*/)
+				new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
 						.show();
 			return true;
 		case R.id.action_settings:
@@ -502,13 +504,13 @@ public class SheeldsList extends Fragment {
 		OneSheeldApplication app = (OneSheeldApplication) activity
 				.getApplication();
 		// app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
-		for (UIShield shield : shieldsUIList) {
-			if (shield.isMainActivitySelection()
-					&& shield.getShieldType() != null) {
-				if (app.getRunningShields().get(shield.name()) == null) {
+		for (int j = 0; j < AppShields.getInstance().getShieldsArray().size(); j++) {
+			Shield shield = AppShields.getInstance().getShieldsArray().get(j);
+			if (shield.mainActivitySelection && shield.shieldType != null) {
+				if (app.getRunningShields().get(shield.name) == null) {
 					ControllerParent<?> type = null;
 					try {
-						type = shield.getShieldType().newInstance();
+						type = shield.shieldType.newInstance();
 					} catch (java.lang.InstantiationException e) {
 						// TODO Auto-generated catch block
 						Log.e("TAG",
@@ -520,9 +522,10 @@ public class SheeldsList extends Fragment {
 								"isAnyShieldsSelected()::IllegalAccessException",
 								e);
 					}
-					type.setActivity(activity).setTag(shield.name());
+					type.setActivity(activity).setTag(shield.name);
 				}
 				i++;
+				break;
 			}
 		}
 		if (i > 0)

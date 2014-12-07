@@ -146,53 +146,54 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 	}
 
 	private void configureTTSLocale() {
-
-		Locale deviceLocale = Locale.ENGLISH;
-
-		if (myTTS.isLanguageAvailable(deviceLocale) == TextToSpeech.LANG_AVAILABLE)
-			myTTS.setLanguage(Locale.US);
-		if (Build.VERSION.SDK_INT >= 15) {
-			int listenerResult = myTTS
-					.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-						@Override
-						public void onDone(String utteranceId) {
-							if (eventHandler != null) {
-								eventHandler.onStop();
+		if (myTTS != null) {
+			if (myTTS.isLanguageAvailable(Locale.ENGLISH) == TextToSpeech.LANG_AVAILABLE)
+				myTTS.setLanguage(Locale.US);
+			if (Build.VERSION.SDK_INT >= 15) {
+				int listenerResult = myTTS
+						.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+							@Override
+							public void onDone(String utteranceId) {
+								if (eventHandler != null) {
+									eventHandler.onStop();
+								}
 							}
-						}
 
-						@Override
-						public void onError(String utteranceId) {
-							if (eventHandler != null) {
-								eventHandler.onError("Speech Error", 0);
+							@Override
+							public void onError(String utteranceId) {
+								if (eventHandler != null) {
+									eventHandler.onError("Speech Error", 0);
+								}
 							}
-						}
 
-						@Override
-						public void onStart(String utteranceId) {
-						}
-					});
-			if (listenerResult != TextToSpeech.SUCCESS) {
-				Toast.makeText(getActivity(), "Failed Utterance Progress",
-						Toast.LENGTH_SHORT).show();
-				Log.e("TAG", "failed to add utterance progress listener");
+							@Override
+							public void onStart(String utteranceId) {
+							}
+						});
+				if (listenerResult != TextToSpeech.SUCCESS) {
+					Toast.makeText(getActivity(), "Failed Utterance Progress",
+							Toast.LENGTH_SHORT).show();
+					Log.e("TAG", "failed to add utterance progress listener");
+				}
+			} else {
+				@SuppressWarnings("deprecation")
+				int listenerResult = myTTS
+						.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
+							@Override
+							public void onUtteranceCompleted(String utteranceId) {
+								if (eventHandler != null)
+									eventHandler.onStop();
+							}
+						});
+				if (listenerResult != TextToSpeech.SUCCESS) {
+					Toast.makeText(getActivity(),
+							"Failed Utterance completion", Toast.LENGTH_SHORT)
+							.show();
+					Log.e("TAG", "failed to add utterance completed listener");
+				}
 			}
-		} else {
-			@SuppressWarnings("deprecation")
-			int listenerResult = myTTS
-					.setOnUtteranceCompletedListener(new TextToSpeech.OnUtteranceCompletedListener() {
-						@Override
-						public void onUtteranceCompleted(String utteranceId) {
-							if (eventHandler != null)
-								eventHandler.onStop();
-						}
-					});
-			if (listenerResult != TextToSpeech.SUCCESS) {
-				Toast.makeText(getActivity(), "Failed Utterance completion",
-						Toast.LENGTH_SHORT).show();
-				Log.e("TAG", "failed to add utterance completed listener");
-			}
-		}
+		} else
+			myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
 
 	}
 
