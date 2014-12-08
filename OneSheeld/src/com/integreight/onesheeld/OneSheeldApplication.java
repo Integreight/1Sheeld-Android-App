@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -137,11 +138,13 @@ public class OneSheeldApplication extends Application {
 		
 		public void endConnectionTimerAndReport(){
 			if(connectionTime==0)return;
-			getTracker().send(new HitBuilders.TimingBuilder()
+			Map<String, String> hit = new HitBuilders.TimingBuilder()
 	        .setCategory("Connection Timing")
 	        .setValue(System.currentTimeMillis()-connectionTime)
 	        .setVariable("Connection")
-	        .build());
+	        .build();
+			//hit.put("&sc", "end");
+			getTracker().send(hit);
 			connectionTime=0;
 		}
 		
