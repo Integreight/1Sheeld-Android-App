@@ -176,11 +176,11 @@ public class MainActivity extends FragmentActivity {
 			}
 		};
 		
-		UncaughtExceptionHandler gaHandler= new ExceptionReporter(
-			    getThisApplication().getTracker(),                                        // Currently used Tracker.
-			    myHandler,      // Current default uncaught exception handler.
-			    getApplicationContext());          
-		Thread.setDefaultUncaughtExceptionHandler(gaHandler);
+//		UncaughtExceptionHandler gaHandler= new ExceptionReporter(
+//			    getThisApplication().getTracker(),
+//			    myHandler,      // Current default uncaught exception handler.
+//			    getApplicationContext());          
+		Thread.setDefaultUncaughtExceptionHandler(myHandler);
 		Crashlytics.start(this);
 	}
 
