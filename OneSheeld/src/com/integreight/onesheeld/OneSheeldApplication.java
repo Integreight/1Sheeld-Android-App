@@ -155,7 +155,7 @@ public class OneSheeldApplication extends Application {
 		  if(gaTracker!=null)return gaTracker;
 		      GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
 		      analytics.setAppOptOut(isDebuggable);
-		      analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
+		      if(isDebuggable)analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
 		      gaTracker = analytics.newTracker(ApiObjects.analytics.get("property_id"));
 		      gaTracker.enableAdvertisingIdCollection(true);
 		      gaTracker.setSessionTimeout(-1);
