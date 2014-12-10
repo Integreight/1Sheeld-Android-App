@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- *
+ * Copyright 2013 Naver Business Platform Corp.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -32,8 +33,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 
-import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 import com.handmark.pulltorefresh.library.internal.IndicatorLayout;
+import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
+import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 
 public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extends PullToRefreshBase<T> implements
 		OnScrollListener {
@@ -64,6 +66,14 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 	private boolean mShowIndicator;
 	private boolean mScrollEmptyView = true;
+	/**
+	 * <p>
+	 * Indicator Layout Class Token <br /> {@link IndicatorLayoutFactory} will create instances by using this class token.
+	 * The token must not be null. {@link IndicatorLayoutFacoty} ensures that class token exists always.
+	 * Assignment some class token into this variable is implemented at {@link #handleStyledAttributes(TypedArray)}.
+	 * </p>
+	 */
+	private Class<? extends IndicatorLayout> mIndicatorLayoutClazz;
 
 	public PullToRefreshAdapterViewBase(Context context) {
 		super(context);
@@ -80,8 +90,8 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 		mRefreshableView.setOnScrollListener(this);
 	}
 
-	public PullToRefreshAdapterViewBase(Context context, Mode mode, AnimationStyle animStyle) {
-		super(context, mode, animStyle);
+	public PullToRefreshAdapterViewBase(Context context, Mode mode, Class<? extends LoadingLayout> loadingLayoutClazz) {
+		super(context, mode, loadingLayoutClazz);
 		mRefreshableView.setOnScrollListener(this);
 	}
 
@@ -89,7 +99,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	 * Gets whether an indicator graphic should be displayed when the View is in
 	 * a state where a Pull-to-Refresh can happen. An example of this state is
 	 * when the Adapter View is scrolled to the top and the mode is set to
-	 * {@link Mode#PULL_FROM_START}. The default value is <var>true</var> if
+	 * {@link PullToRefreshBase.Mode#PULL_FROM_START}. The default value is <var>true</var> if
 	 * {@link PullToRefreshBase#isPullToRefreshOverScrollEnabled()
 	 * isPullToRefreshOverScrollEnabled()} returns false.
 	 * 
@@ -224,7 +234,7 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	 * Sets whether an indicator graphic should be displayed when the View is in
 	 * a state where a Pull-to-Refresh can happen. An example of this state is
 	 * when the Adapter View is scrolled to the top and the mode is set to
-	 * {@link Mode#PULL_FROM_START}
+	 * {@link PullToRefreshBase.Mode#PULL_FROM_START}
 	 * 
 	 * @param showIndicator - true if the indicators should be shown.
 	 */
@@ -301,6 +311,17 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 	protected void handleStyledAttributes(TypedArray a) {
 		// Set Show Indicator to the XML value, or default value
 		mShowIndicator = a.getBoolean(R.styleable.PullToRefresh_ptrShowIndicator, !isPullToRefreshOverScrollEnabled());
+		
+		// Get IndicatorLayout code
+		String layoutCode = null;
+		if (a.hasValue(R.styleable.PullToRefresh_ptrIndicatorStyle)) {
+			layoutCode = a.getString(R.styleable.PullToRefresh_ptrIndicatorStyle);
+			 
+		} 
+		
+		// Convert layoutCode to a class token, and assign the class token into mIndicatorLayoutClazz
+		mIndicatorLayoutClazz = IndicatorLayoutFactory.createIndicatorLayoutClazzByLayoutCode(layoutCode);
+			
 	}
 
 	protected boolean isReadyForPullStart() {
@@ -337,11 +358,8 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 		if (mode.showHeaderLoadingLayout() && null == mIndicatorIvTop) {
 			// If the mode can pull down, and we don't have one set already
-			mIndicatorIvTop = new IndicatorLayout(getContext(), Mode.PULL_FROM_START);
-			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.rightMargin = getResources().getDimensionPixelSize(R.dimen.indicator_right_padding);
-			params.gravity = Gravity.TOP | Gravity.RIGHT;
+			mIndicatorIvTop = IndicatorLayoutFactory.createIndicatorLayout(mIndicatorLayoutClazz, getContext(), Mode.PULL_FROM_START);
+			ViewGroup.LayoutParams params = mIndicatorIvTop.createApplicableHeaderLayoutParams();
 			refreshableViewWrapper.addView(mIndicatorIvTop, params);
 
 		} else if (!mode.showHeaderLoadingLayout() && null != mIndicatorIvTop) {
@@ -352,11 +370,8 @@ public abstract class PullToRefreshAdapterViewBase<T extends AbsListView> extend
 
 		if (mode.showFooterLoadingLayout() && null == mIndicatorIvBottom) {
 			// If the mode can pull down, and we don't have one set already
-			mIndicatorIvBottom = new IndicatorLayout(getContext(), Mode.PULL_FROM_END);
-			FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-					ViewGroup.LayoutParams.WRAP_CONTENT);
-			params.rightMargin = getResources().getDimensionPixelSize(R.dimen.indicator_right_padding);
-			params.gravity = Gravity.BOTTOM | Gravity.RIGHT;
+			mIndicatorIvBottom = IndicatorLayoutFactory.createIndicatorLayout(mIndicatorLayoutClazz, getContext(), Mode.PULL_FROM_END);
+			ViewGroup.LayoutParams params = mIndicatorIvBottom.createApplicableFooterLayoutParams();
 			refreshableViewWrapper.addView(mIndicatorIvBottom, params);
 
 		} else if (!mode.showFooterLoadingLayout() && null != mIndicatorIvBottom) {
