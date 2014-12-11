@@ -12,9 +12,9 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -25,14 +25,14 @@ import com.integreight.onesheeld.shields.controller.utils.GSMLocationupdates.Sen
 import com.integreight.onesheeld.utils.Log;
 
 public class GpsShield extends ControllerParent<GpsShield> implements
-		LocationListener, GooglePlayServicesClient.ConnectionCallbacks,
-		GooglePlayServicesClient.OnConnectionFailedListener, SendFrameHandler {
+		LocationListener, GoogleApiClient.ConnectionCallbacks,
+		GoogleApiClient.OnConnectionFailedListener, SendFrameHandler {
 	public static final byte GPS_VALUE = 0x01;
 	private GpsEventHandler eventHandler;
 	private LocationRequest mLocationRequest;
-	private LocationClient mLocationClient;
+	private GoogleApiClient mLocationClient;
 	private boolean mUpdatesRequested;
-	private Location lastLocation;
+//	private Location lastLocation;
 	private ShieldFrame frame;
 	private LocationManager manager;
 	private static final int SERVICE_VERSION_UPDATE_REQUIRED = 2,
@@ -51,8 +51,13 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	@Override
 	public ControllerParent<GpsShield> setTag(String tag) {
 
-		mLocationClient = new LocationClient(getActivity()
-				.getApplicationContext(), this, this);
+//		mLocationClient = new LocationClient(getActivity()
+//				.getApplicationContext(), this, this);
+		mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        .addApi(LocationServices.API)
+        .addConnectionCallbacks(this)
+        .addOnConnectionFailedListener(this)
+        .build();
 		mUpdatesRequested = false;
 		manager = (LocationManager) getApplication().getSystemService(
 				Context.LOCATION_SERVICE);
@@ -101,8 +106,11 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 		// check Internet connection
 
-		mLocationClient = new LocationClient(getActivity()
-				.getApplicationContext(), this, this);
+		mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        .addApi(LocationServices.API)
+        .addConnectionCallbacks(this)
+        .addOnConnectionFailedListener(this)
+        .build();
 		if (mLocationClient != null)
 			mLocationClient.connect();
 
@@ -123,7 +131,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 				Log.d("Gps",
 						"Google Play services was not available for some reasons");
 		} else {
-			startPeriodicUpdates();
+//			startPeriodicUpdates();
 		}
 	}
 
@@ -157,46 +165,46 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mUpdatesRequested = false;
 		if (mLocationClient.isConnected()) {
 			mLocationClient.unregisterConnectionCallbacks(this);
-			mLocationClient.removeLocationUpdates(this);
+//			mLocationClient.removeLocationUpdates(this);
 			mLocationClient.disconnect();
 		}
 		// After disconnect() is called, the client is considered "dead".
 	}
 
-	private void startPeriodicUpdates() {
-		if (mLocationClient != null) {
-			lastLocation = mLocationClient.getLastLocation();
-			if (lastLocation != null) {
-				Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
-				Log.d("Gps Lat::Double in Radians",
-						getRadians(lastLocation.getLatitude()) + "");
-				Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
-				Log.d("Gps Long::Double in Radians",
-						getRadians(lastLocation.getLongitude()) + "");
-				if (eventHandler != null) {
-					eventHandler
-							.onLangChanged(lastLocation.getLongitude() + "");
-					eventHandler.onLatChanged(lastLocation.getLatitude() + "");
-				}
-			} /*
-			 * else {
-			 * 
-			 * GSMLocationupdates gsmLocationupdates = new GSMLocationupdates(
-			 * 
-			 * getApplication().getApplicationContext());
-			 * gsmLocationupdates.updateLocation();
-			 * 
-			 * }
-			 */
-		}
+//	private void startPeriodicUpdates() {
+//		if (mLocationClient != null) {
+//			lastLocation = mLocationClient.getLastLocation();
+//			if (lastLocation != null) {
+//				Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
+//				Log.d("Gps Lat::Double in Radians",
+//						getRadians(lastLocation.getLatitude()) + "");
+//				Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
+//				Log.d("Gps Long::Double in Radians",
+//						getRadians(lastLocation.getLongitude()) + "");
+//				if (eventHandler != null) {
+//					eventHandler
+//							.onLangChanged(lastLocation.getLongitude() + "");
+//					eventHandler.onLatChanged(lastLocation.getLatitude() + "");
+//				}
+//			} /*
+//			 * else {
+//			 * 
+//			 * GSMLocationupdates gsmLocationupdates = new GSMLocationupdates(
+//			 * 
+//			 * getApplication().getApplicationContext());
+//			 * gsmLocationupdates.updateLocation();
+//			 * 
+//			 * }
+//			 */
+//		}
+//
+//	}
 
-	}
-
-	private double getRadians(double angdeg) {
-		double result = Math.toRadians(angdeg);
-		return result;
-
-	}
+//	private double getRadians(double angdeg) {
+//		double result = Math.toRadians(angdeg);
+//		return result;
+//
+//	}
 
 	private void showErrorDialog(int errorCode) {
 		Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
@@ -287,7 +295,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 			eventHandler.onLangChanged(arg0.getLongitude() + "");
 			eventHandler.onLatChanged(arg0.getLatitude() + "");
 		}
-		lastLocation = arg0;
+//		lastLocation = arg0;
 		sendFrame(arg0);
 	}
 
@@ -303,15 +311,11 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		// TODO Auto-generated method stub
 		if (mUpdatesRequested && mLocationRequest != null
 				&& mLocationClient != null) {
-			mLocationClient.requestLocationUpdates(mLocationRequest, this);
-			startPeriodicUpdates();
+//			mLocationClient.requestLocationUpdates(mLocationRequest, this);
+			LocationServices.FusedLocationApi.requestLocationUpdates(
+					mLocationClient, mLocationRequest, this);
+//			startPeriodicUpdates();
 		}
-
-	}
-
-	@Override
-	public void onDisconnected() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -338,5 +342,11 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 			}
 			sendFrame(location);
 		}
+	}
+
+	@Override
+	public void onConnectionSuspended(int arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 }
