@@ -29,11 +29,23 @@ proguard/
 *.iws
 .idea/
 
+# Other
 project.properties
+import-summary.txt
+
+# OSX files
 .DS_Store
+
+# Windows thumbnail db
 Thumbs.db
 
-#Crashlytics
+# Crashlytics
 com_crashlytics_export_strings.xml
 crashlytics-build.properties
 crashlytics.properties
+
+# Android Studio
+.idea
+#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+.gradle
+build/
