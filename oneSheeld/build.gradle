@@ -1,4 +1,19 @@
+buildscript {
+    repositories {
+        maven { url 'http://download.crashlytics.com/maven' }
+    }
+
+    dependencies {
+        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+    }
+}
 apply plugin: 'com.android.application'
+apply plugin: 'crashlytics'
+
+repositories {
+    maven { url 'http://download.crashlytics.com/maven' }
+}
+
 
 android {
     compileSdkVersion 18
@@ -41,4 +56,5 @@ dependencies {
     compile files('libs/twitter4j-async-4.0.2.jar')
     compile files('libs/twitter4j-core-4.0.2.jar')
     compile files('libs/twitter4j-stream-4.0.2.jar')
+    compile 'com.crashlytics.android:crashlytics:1.+'
 }
