@@ -32,6 +32,7 @@ proguard/
 # Other
 project.properties
 import-summary.txt
+manifest-merger-release-report.txt
 
 # OSX files
 .DS_Store
