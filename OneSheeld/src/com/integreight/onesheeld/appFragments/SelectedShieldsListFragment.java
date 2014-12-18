@@ -20,6 +20,7 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
@@ -64,7 +65,7 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class SelectedShieldsListFragment extends ListFragment {
 	private static SelectedShieldsListAdapter UIShieldAdapter;
-	Map<UIShield, ShieldFragmentParent<?>> creadtedShields = new HashMap<UIShield, ShieldFragmentParent<?>>();
+	Map<String, ShieldFragmentParent<?>> creadtedShields = new HashMap<String, ShieldFragmentParent<?>>();
 	private MainActivity activity;
 
 	public static SelectedShieldsListFragment newInstance(Activity activity) {
@@ -85,141 +86,113 @@ public class SelectedShieldsListFragment extends ListFragment {
 	}
 
 	public ShieldFragmentParent<?> getShieldFragment(int position) {
-		UIShield uiShield = UIShieldAdapter.getItem(position);
-		if (creadtedShields.containsKey(uiShield))
-			return creadtedShields.get(uiShield);
-		switch (uiShield) {
-		case LED_SHIELD:
-			return addToCreatedListAndReturn(UIShield.LED_SHIELD,
-					new LedFragment());
-		case ACCELEROMETER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.ACCELEROMETER_SHIELD,
+		Shield uiShield = UIShieldAdapter.getItem(position);
+		if (creadtedShields.containsKey(uiShield.tag))
+			return creadtedShields.get(uiShield.tag);
+		if (uiShield.id == UIShield.LED_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new LedFragment());
+		if (uiShield.id == UIShield.ACCELEROMETER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new AccelerometerFragment());
-		case FACEBOOK_SHIELD:
-			return addToCreatedListAndReturn(UIShield.FACEBOOK_SHIELD,
-					new FacebookFragment());
-		case KEYPAD_SHIELD:
-			return addToCreatedListAndReturn(UIShield.KEYPAD_SHIELD,
-					new KeypadFragment());
-		case LCD_SHIELD:
-			return addToCreatedListAndReturn(UIShield.LCD_SHIELD,
-					new LcdFragment());
-		case MAGNETOMETER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.MAGNETOMETER_SHIELD,
+		if (uiShield.id == UIShield.FACEBOOK_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new FacebookFragment());
+		if (uiShield.id == UIShield.KEYPAD_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new KeypadFragment());
+		if (uiShield.id == UIShield.LCD_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new LcdFragment());
+		if (uiShield.id == UIShield.MAGNETOMETER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new MagnetometerFragment());
-		case PUSHBUTTON_SHIELD:
-			return addToCreatedListAndReturn(UIShield.PUSHBUTTON_SHIELD,
-					new PushButtonFragment());
-		case SEVENSEGMENT_SHIELD:
-			return addToCreatedListAndReturn(UIShield.SEVENSEGMENT_SHIELD,
+		if (uiShield.id == UIShield.PUSHBUTTON_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new PushButtonFragment());
+		if (uiShield.id == UIShield.SEVENSEGMENT_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new SevenSegmentFragment());
-		case SLIDER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.SLIDER_SHIELD,
-					new SliderFragment());
-		case BUZZER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.BUZZER_SHIELD,
-					new BuzzerFragment());
-		case TOGGLEBUTTON_SHIELD:
-			return addToCreatedListAndReturn(UIShield.TOGGLEBUTTON_SHIELD,
+		if (uiShield.id == UIShield.SLIDER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new SliderFragment());
+		if (uiShield.id == UIShield.BUZZER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new BuzzerFragment());
+		if (uiShield.id == UIShield.TOGGLEBUTTON_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new ToggleButtonFragment());
-		case TWITTER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.TWITTER_SHIELD,
-					new TwitterFragment());
-		case NOTIFICATION_SHIELD:
-			return addToCreatedListAndReturn(UIShield.NOTIFICATION_SHIELD,
+		if (uiShield.id == UIShield.TWITTER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new TwitterFragment());
+		if (uiShield.id == UIShield.NOTIFICATION_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new NotificationFragment());
-		case GAMEDPAD_SHIELD:
-			return addToCreatedListAndReturn(UIShield.GAMEDPAD_SHIELD,
-					new GamepadFragment());
-		case FOURSQUARE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.FOURSQUARE_SHIELD,
-					new FoursquareFragment());
-		case GPS_SHIELD:
-			return addToCreatedListAndReturn(UIShield.GPS_SHIELD,
-					new GpsFragment());
-		case SMS_SHIELD:
-			return addToCreatedListAndReturn(UIShield.SMS_SHIELD,
-					new SmsFragment());
-		case MUSICPLAYER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.MUSICPLAYER_SHIELD,
+		if (uiShield.id == UIShield.GAMEDPAD_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new GamepadFragment());
+		if (uiShield.id == UIShield.FOURSQUARE_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new FoursquareFragment());
+		if (uiShield.id == UIShield.GPS_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new GpsFragment());
+		if (uiShield.id == UIShield.SMS_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new SmsFragment());
+		if (uiShield.id == UIShield.MUSICPLAYER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new MusicPlayerFragment());
-		case GYROSCOPE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.GYROSCOPE_SHIELD,
-					new GyroscopeFragment());
-		case FLASHLIGHT_SHIELD:
-			return addToCreatedListAndReturn(UIShield.FLASHLIGHT_SHIELD,
-					new FlashlightFragment());
-		case MIC_SHIELD:
-			return addToCreatedListAndReturn(UIShield.MIC_SHIELD,
-					new MicFragment());
-		case SKYPE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.SKYPE_SHIELD,
-					new SkypeFragment());
-		case PROXIMITY_SHIELD:
-			return addToCreatedListAndReturn(UIShield.PROXIMITY_SHIELD,
-					new ProximityFragment());
-		case GRAVITY_SHIELD:
-			return addToCreatedListAndReturn(UIShield.GRAVITY_SHIELD,
-					new GravityFragment());
-		case ORIENTATION_SHIELD:
-			return addToCreatedListAndReturn(UIShield.ORIENTATION_SHIELD,
+		if (uiShield.id == UIShield.GYROSCOPE_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new GyroscopeFragment());
+		if (uiShield.id == UIShield.FLASHLIGHT_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new FlashlightFragment());
+		if (uiShield.id == UIShield.MIC_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new MicFragment());
+		if (uiShield.id == UIShield.SKYPE_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new SkypeFragment());
+		if (uiShield.id == UIShield.PROXIMITY_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new ProximityFragment());
+		if (uiShield.id == UIShield.GRAVITY_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new GravityFragment());
+		if (uiShield.id == UIShield.ORIENTATION_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new OrientationFragment());
-		case LIGHT_SHIELD:
-			return addToCreatedListAndReturn(UIShield.LIGHT_SHIELD,
-					new LightFragment());
-		case PRESSURE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.PRESSURE_SHIELD,
-					new PressureFragment());
-		case TEMPERATURE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.TEMPERATURE_SHIELD,
+		if (uiShield.id == UIShield.LIGHT_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new LightFragment());
+		if (uiShield.id == UIShield.PRESSURE_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new PressureFragment());
+		if (uiShield.id == UIShield.TEMPERATURE_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new TemperatureFragment());
-		case CAMERA_SHIELD:
-			return addToCreatedListAndReturn(UIShield.CAMERA_SHIELD,
-					new CameraFragment());
-		case PHONE_SHIELD:
-			return addToCreatedListAndReturn(UIShield.PHONE_SHIELD,
-					new PhoneFragment());
-		case EMAIL_SHIELD:
-			return addToCreatedListAndReturn(UIShield.EMAIL_SHIELD,
-					new EmailFragment());
-		case CLOCK_SHIELD:
-			return addToCreatedListAndReturn(UIShield.CLOCK_SHIELD,
-					new ClockFragment());
-		case KEYBOARD_SHIELD:
-			return addToCreatedListAndReturn(UIShield.KEYBOARD_SHIELD,
-					new KeyboardFragment());
-		case SPEECH_RECOGNIZER_SHIELD:
-			return addToCreatedListAndReturn(UIShield.SPEECH_RECOGNIZER_SHIELD,
+		if (uiShield.id == UIShield.CAMERA_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new CameraFragment());
+		if (uiShield.id == UIShield.PHONE_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new PhoneFragment());
+		if (uiShield.id == UIShield.EMAIL_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new EmailFragment());
+		if (uiShield.id == UIShield.CLOCK_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new ClockFragment());
+		if (uiShield.id == UIShield.KEYBOARD_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new KeyboardFragment());
+		if (uiShield.id == UIShield.SPEECH_RECOGNIZER_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new SpeechRecognitionFragment());
-		case TEXT_TO_SPEECH_SHIELD:
-			return addToCreatedListAndReturn(UIShield.TEXT_TO_SPEECH_SHIELD,
+		if (uiShield.id == UIShield.TEXT_TO_SPEECH_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield,
 					new TextToSpeechFragment());
-		case DATA_LOGGER:
-			return addToCreatedListAndReturn(UIShield.DATA_LOGGER,
-					new DataLoggerFragment());
-		case TERMINAL_SHIELD:
-			return addToCreatedListAndReturn(UIShield.TERMINAL_SHIELD,
-					new TerminalFragment());
+		if (uiShield.id == UIShield.DATA_LOGGER.id)
+			return addToCreatedListAndReturn(uiShield, new DataLoggerFragment());
+		if (uiShield.id == UIShield.TERMINAL_SHIELD.id)
+			return addToCreatedListAndReturn(uiShield, new TerminalFragment());
 
-		default:
+		else {
 			return new EmptyShieldFragment();
 		}
 	}
 
-	private ShieldFragmentParent<?> addToCreatedListAndReturn(
-			UIShield uiShield, ShieldFragmentParent<?> fragment) {
-		fragment.setControllerTag(uiShield.name());
+	private ShieldFragmentParent<?> addToCreatedListAndReturn(Shield uiShield,
+			ShieldFragmentParent<?> fragment) {
+		fragment.setControllerTag(uiShield.tag);
 		OneSheeldApplication.shieldsFragmentsTags.put(fragment.getClassName(),
-				uiShield.name());
+				uiShield.tag);
 		Bundle b = new Bundle();
-		b.putString("tag", uiShield.name());
+		b.putString("tag", uiShield.tag);
 		fragment.setArguments(b);
-		fragment.shieldName = uiShield.getName();
-		creadtedShields.put(uiShield, fragment);
+		fragment.shieldName = uiShield.name;
+		creadtedShields.put(uiShield.tag, fragment);
 		return fragment;
 	}
 
-	public UIShield getUIShield(int position) {
+	public Shield getUIShield(int position) {
 		return UIShieldAdapter.getItem(position);
 	}
 
@@ -255,12 +228,12 @@ public class SelectedShieldsListFragment extends ListFragment {
 	TextView shieldName;
 
 	private void switchFragment(final ShieldFragmentParent<?> fragment,
-			final UIShield uiShield) {
+			final Shield uiShield) {
 		getListView().post(new Runnable() {
 			@Override
 			public void run() {
 				activity.replaceCurrentFragment(R.id.shieldsContainerFrame,
-						fragment, uiShield.name(), false, false);
+						fragment, uiShield.tag, false, false);
 				try {
 					new Handler().post(new Runnable() {
 

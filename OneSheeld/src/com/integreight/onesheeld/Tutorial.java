@@ -20,8 +20,9 @@ public class Tutorial extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
-		if (!isMenu)
-			MainActivity.thisInstance.finish();
+		if (!isMenu) {
+			MainActivity.thisInstance.finishManually();
+		}
 		finish();
 		super.onBackPressed();
 	}

@@ -34,6 +34,10 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((LedShield) getApplication().getRunningShields().get(
 				getControllerTag())).setLedEventHandler(ledEventHandler);
 		toggleLed(((LedShield) getApplication().getRunningShields().get(

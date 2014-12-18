@@ -23,6 +23,7 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -59,6 +60,7 @@ public class MainActivity extends FragmentActivity {
 	private onConnectedToBluetooth onConnectToBlueTooth = null;
 	public static String currentShieldTag = null;
 	public static MainActivity thisInstance;
+	private boolean isBackPressed = false;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -108,6 +110,14 @@ public class MainActivity extends FragmentActivity {
 				&& getThisApplication().getTutShownTimes() < 6)
 			startActivity(new Intent(this, Tutorial.class));
 	}
+
+	// @Override
+	// public void onConfigurationChanged(Configuration newConfig) {
+	// stopLooperThread();
+	// super.onConfigurationChanged(newConfig);
+	// initCrashlyticsAndUncaughtThreadHandler();
+	// initLooperThread();
+	// }
 
 	public Thread looperThread;
 	public Handler backgroundThreadHandler;
@@ -483,8 +493,9 @@ public class MainActivity extends FragmentActivity {
 							});
 					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 					getSupportFragmentManager().executePendingTransactions();
-				} else
+				} else {
 					moveTaskToBack(true);
+				}
 			}
 		} else {
 			if (pinsView.isOpened())
@@ -527,17 +538,48 @@ public class MainActivity extends FragmentActivity {
 		this.stopService(new Intent(this, OneSheeldService.class));
 	}
 
+	public void finishManually() {
+		isBackPressed = true;
+		finish();
+	}
+
 	@Override
 	protected void onDestroy() {
 		// isBoundService = OneSheeldService.isBound;
 		// if (isMyServiceRunning())
+		Log.d("S", "Destroy");
 		getThisApplication().getGaTracker().send(
 				MapBuilder.createEvent("App lifecycle",
 						"Finished the app manually", "", 0L).build());
 		ArduinoConnectivityPopup.isOpened = false;
 		stopService();
 		stopLooperThread();
-		// isBoundService = false;
+		moveTaskToBack(true);
+		if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
+			while (!((OneSheeldApplication) getApplication()).getAppFirmata()
+					.close())
+				;
+		}
+		// // unExpeted
+		if (!isBackPressed) {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// tryToSendNotificationsToAdmins(arg1);
+					Intent in = new Intent(getIntent());
+					PendingIntent intent = PendingIntent.getActivity(
+							getBaseContext(), 0, in, getIntent().getFlags());
+
+					AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+					mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
+							intent);
+					android.os.Process.killProcess(android.os.Process.myPid());
+				}
+			}).start();
+		} else
+			android.os.Process.killProcess(android.os.Process.myPid());
+		isBackPressed = false;
 		super.onDestroy();
 	}
 

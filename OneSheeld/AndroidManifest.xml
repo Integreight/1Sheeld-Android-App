@@ -73,7 +73,6 @@
         android:name="com.integreight.onesheeld.OneSheeldApplication"
         android:allowBackup="true"
         android:allowClearUserData="true"
-        android:debuggable="true"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -192,7 +191,7 @@
 
         <service android:name="com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService" />
         <service android:name="com.parse.PushService" />
-        <receiver
+        <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
             <intent-filter>

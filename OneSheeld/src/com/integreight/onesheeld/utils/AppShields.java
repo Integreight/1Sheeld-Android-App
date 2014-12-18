@@ -39,20 +39,45 @@ public class AppShields {
 		return shieldsArray;
 	}
 
+	public Shield getShield(String tag) {
+		if (shieldsArray == null || shieldsArray.size() == 0)
+			initShields();
+		return shieldsTable.get(tag);
+	}
+
+	public void putShield(int position, Shield shield) {
+		if (shieldsArray == null || shieldsArray.size() == 0)
+			initShields();
+		shieldsArray.put(position, shield);
+	}
+
+	public void putShield(String tag, Shield shield) {
+		if (shieldsArray == null || shieldsArray.size() == 0)
+			initShields();
+		shieldsTable.put(tag, shield);
+	}
+
+	public Shield getShield(int position) {
+		if (shieldsArray == null || shieldsArray.size() == 0)
+			initShields();
+		return shieldsArray.get(position);
+	}
+
 	private void initShields() {
 		int i = 0;
 		shieldsArray = new SparseArray<Shield>();
 		shieldsTable = new Hashtable<String, Shield>();
 		for (UIShield shield : UIShield.valuesFiltered()) {
-			shieldsTable.put(shield.name(),
-					new Shield(shield.getId(), shield.getName(),
+			shieldsTable.put(shield.name(), new Shield(shield.getId(),
+					shield.name, shield.getName(), shield.itemBackgroundColor,
+					shield.symbolId, shield.mainActivitySelection,
+					shield.shieldType, shield.isReleasable,
+					shield.isInvalidatable));
+			shieldsArray.put(i,
+					new Shield(shield.getId(), shield.name, shield.getName(),
 							shield.itemBackgroundColor, shield.symbolId,
 							shield.mainActivitySelection, shield.shieldType,
 							shield.isReleasable, shield.isInvalidatable));
-			shieldsArray.put(i, new Shield(shield.getId(), shield.getName(),
-					shield.itemBackgroundColor, shield.symbolId,
-					shield.mainActivitySelection, shield.shieldType,
-					shield.isReleasable, shield.isInvalidatable));
 			i++;
 		}
 	}

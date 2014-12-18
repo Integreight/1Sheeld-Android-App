@@ -36,6 +36,10 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		super.onStart();
 
 	}

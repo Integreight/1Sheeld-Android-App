@@ -44,7 +44,6 @@ import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
@@ -56,7 +55,6 @@ public class SheeldsList extends Fragment {
 	boolean isInflated = false;
 	private ListView mListView;
 	private static SheeldsList thisInstance;
-	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
 	OneSheeldEditText searchBox;
 	private static final String TAG = "ShieldsList";
@@ -234,7 +232,6 @@ public class SheeldsList extends Fragment {
 
 	private void initView() {
 		// mListView.addHeaderView(mHeader);
-		shieldsUIList = UIShield.valuesFiltered();
 		adapter = new ShieldsListAdapter(activity);
 		mListView.setAdapter(adapter);
 		mListView.setSelection(1);
@@ -253,9 +250,9 @@ public class SheeldsList extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
-						for (UIShield shield : UIShield.valuesFiltered()) {
-							UIShield.valueOf(shield.name())
-									.setMainActivitySelection(true);
+						for (int i = 0; i < AppShields.getInstance()
+								.getShieldsArray().size(); i++) {
+							AppShields.getInstance().getShield(i).mainActivitySelection = true;
 						}
 						searchBox.setText("");
 						adapter.selectAll();
@@ -270,9 +267,9 @@ public class SheeldsList extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
-						for (UIShield shield : UIShield.valuesFiltered()) {
-							UIShield.valueOf(shield.name())
-									.setMainActivitySelection(false);
+						for (int i = 0; i < AppShields.getInstance()
+								.getShieldsArray().size(); i++) {
+							AppShields.getInstance().getShield(i).mainActivitySelection = false;
 						}
 						searchBox.setText("");
 						adapter.reset();
@@ -500,36 +497,15 @@ public class SheeldsList extends Fragment {
 	}
 
 	private boolean isAnyShieldsSelected() {
-		int i = 0;
-		OneSheeldApplication app = (OneSheeldApplication) activity
-				.getApplication();
+		// OneSheeldApplication app = (OneSheeldApplication) activity
+		// .getApplication();
 		// app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
 		for (int j = 0; j < AppShields.getInstance().getShieldsArray().size(); j++) {
-			Shield shield = AppShields.getInstance().getShieldsArray().get(j);
+			Shield shield = AppShields.getInstance().getShield(j);
 			if (shield.mainActivitySelection && shield.shieldType != null) {
-				if (app.getRunningShields().get(shield.name) == null) {
-					ControllerParent<?> type = null;
-					try {
-						type = shield.shieldType.newInstance();
-					} catch (java.lang.InstantiationException e) {
-						// TODO Auto-generated catch block
-						Log.e("TAG",
-								"isAnyShieldsSelected()::InstantiationException",
-								e);
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						Log.e("TAG",
-								"isAnyShieldsSelected()::IllegalAccessException",
-								e);
-					}
-					type.setActivity(activity).setTag(shield.name);
-				}
-				i++;
-				break;
+				return true;
 			}
 		}
-		if (i > 0)
-			return true;
 		return false;
 	}
 }

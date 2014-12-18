@@ -102,7 +102,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 										.getString(R.string.scan)))
 			setScanButtonReady();
 		else {
-			activity.finish();
+			((MainActivity) activity).finishManually();
 			dismiss();
 			cancel();
 		}

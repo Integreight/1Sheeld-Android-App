@@ -25,7 +25,10 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
 
 	@Override
 	public void onStart() {
-
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		super.onStart();
 
 	}

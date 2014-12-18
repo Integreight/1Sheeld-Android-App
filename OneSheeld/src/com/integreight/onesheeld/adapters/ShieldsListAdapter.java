@@ -76,11 +76,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 		}
 		final Holder tempHolder = holder;
 		final Shield shield = shieldsList.get(position);
-		String name = shield.name;
 		Integer iconId = shield.symbolId;
 		Integer imageId = shield.itemBackgroundColor;
 
-		holder.name.setText(name);
+		holder.name.setText(shield.name);
 		if (holder.icon.getDrawingCache() != null) {
 			holder.icon.getDrawingCache().recycle();
 		}
@@ -155,6 +154,9 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 										}
 									});
 									shield.mainActivitySelection = true;
+									shieldsList.put(position, shield);
+									AppShields.getInstance().putShield(
+											position, shield);
 								}
 
 								@Override
@@ -180,13 +182,15 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 									//
 									// @Override
 									// public void run() {
-									if (app.getRunningShields()
-											.get(shield.name) != null) {
-										app.getRunningShields()
-												.get(shield.name).resetThis();
+									if (app.getRunningShields().get(shield.tag) != null) {
+										app.getRunningShields().get(shield.tag)
+												.resetThis();
 										app.getRunningShields().remove(
-												shield.name);
+												shield.tag);
 									}
+									shieldsList.put(position, shield);
+									AppShields.getInstance().putShield(
+											position, shield);
 									// }
 									// });
 								}
@@ -194,12 +198,12 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 							if (type != null) {
 								if (shield.isInvalidatable == 1) {
 									type.setActivity(activity)
-											.setTag(shield.name)
+											.setTag(shield.tag)
 											.invalidate(selectionAction, true);
 								} else {
 									selectionAction.onSuccess();
 									type.setActivity(activity).setTag(
-											shield.name);
+											shield.tag);
 								}
 							}
 						} else {
@@ -220,10 +224,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 							//
 							// @Override
 							// public void run() {
-							if (app.getRunningShields().get(shield.name) != null) {
-								app.getRunningShields().get(shield.name)
+							if (app.getRunningShields().get(shield.tag) != null) {
+								app.getRunningShields().get(shield.tag)
 										.resetThis();
-								app.getRunningShields().remove(shield.name);
+								app.getRunningShields().remove(shield.tag);
 							}
 							// }
 							// });
@@ -272,7 +276,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 
 					if (shield.mainActivitySelection
 							&& shield.shieldType != null) {
-						if (app.getRunningShields().get(shield.name) == null) {
+						if (app.getRunningShields().get(shield.tag) == null) {
 							SelectionAction selectionAction = new SelectionAction() {
 
 								@Override
@@ -282,14 +286,13 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 								@Override
 								public void onFailure() {
 									shieldsList.get(x).mainActivitySelection = false;
-									AppShields.getInstance().getShieldsTable()
-											.get(shield.name).mainActivitySelection = false;
-									if (app.getRunningShields()
-											.get(shield.name) != null) {
-										app.getRunningShields()
-												.get(shield.name).resetThis();
+									AppShields.getInstance().putShield(x,
+											shieldsList.get(x));
+									if (app.getRunningShields().get(shield.tag) != null) {
+										app.getRunningShields().get(shield.tag)
+												.resetThis();
 										app.getRunningShields().remove(
-												shield.name);
+												shield.tag);
 									}
 									uiHandler.removeCallbacksAndMessages(null);
 									uiHandler.post(new Runnable() {
@@ -317,19 +320,18 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 							if (type != null) {
 								if (shield.isInvalidatable == 1) {
 									type.setActivity(activity)
-											.setTag(shield.name)
+											.setTag(shield.tag)
 											.invalidate(selectionAction, false);
 								} else {
 									type.setActivity(activity).setTag(
-											shield.name);
+											shield.tag);
 								}
 							}
 						}
 					} else {
-						if (app.getRunningShields().get(shield.name) != null) {
-							app.getRunningShields().get(shield.name)
-									.resetThis();
-							app.getRunningShields().remove(shield.name);
+						if (app.getRunningShields().get(shield.tag) != null) {
+							app.getRunningShields().get(shield.tag).resetThis();
+							app.getRunningShields().remove(shield.tag);
 						}
 					}
 				}
@@ -364,8 +366,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 				if (arg0 != null) {
 					for (int i = 0; i < AppShields.getInstance()
 							.getShieldsArray().size(); i++) {
-						Shield uiShield = AppShields.getInstance()
-								.getShieldsArray().get(i);
+						Shield uiShield = AppShields.getInstance().getShield(i);
 						if (uiShield.name.toLowerCase().startsWith(
 								arg0.toString().toLowerCase())) {
 							filteredShields.put(filteredShields.size(),

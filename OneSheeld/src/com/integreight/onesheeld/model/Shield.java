@@ -14,9 +14,10 @@ public class Shield {
 	public int isInvalidatable = 0;
 	public Class<? extends ControllerParent<?>> shieldType;
 	public int position = 0;
+	public String tag;
 
-	public Shield(byte id, String name, int mainImageStripId, int symbolId,
-			boolean mainActivitySelection,
+	public Shield(byte id, String tag, String name, int mainImageStripId,
+			int symbolId, boolean mainActivitySelection,
 			Class<? extends ControllerParent<?>> shieldType) {
 		this.id = id;
 		this.name = name;
@@ -24,10 +25,11 @@ public class Shield {
 		this.symbolId = symbolId;
 		this.mainActivitySelection = mainActivitySelection;
 		this.shieldType = shieldType;
+		this.tag = tag;
 	}
 
-	public Shield(byte id, String name, int mainImageStripId, int symbolId,
-			boolean mainActivitySelection,
+	public Shield(byte id, String tag, String name, int mainImageStripId,
+			int symbolId, boolean mainActivitySelection,
 			Class<? extends ControllerParent<?>> shieldType, int isInvalidatable) {
 		this.id = id;
 		this.name = name;
@@ -36,10 +38,11 @@ public class Shield {
 		this.mainActivitySelection = mainActivitySelection;
 		this.shieldType = shieldType;
 		this.isInvalidatable = isInvalidatable;
+		this.tag = tag;
 	}
 
-	public Shield(byte id, String name, int mainImageStripId, int symbolId,
-			boolean mainActivitySelection,
+	public Shield(byte id, String tag, String name, int mainImageStripId,
+			int symbolId, boolean mainActivitySelection,
 			Class<? extends ControllerParent<?>> shieldType,
 			boolean isReleasable) {
 		this.id = id;
@@ -49,10 +52,11 @@ public class Shield {
 		this.mainActivitySelection = mainActivitySelection;
 		this.shieldType = shieldType;
 		this.isReleasable = isReleasable;
+		this.tag = tag;
 	}
 
-	public Shield(byte id, String name, int mainImageStripId, int symbolId,
-			boolean mainActivitySelection,
+	public Shield(byte id, String tag, String name, int mainImageStripId,
+			int symbolId, boolean mainActivitySelection,
 			Class<? extends ControllerParent<?>> shieldType,
 			boolean isReleasable, int isInvalidatable) {
 		this.id = id;
@@ -63,6 +67,7 @@ public class Shield {
 		this.shieldType = shieldType;
 		this.isReleasable = isReleasable;
 		this.isInvalidatable = isInvalidatable;
+		this.tag = tag;
 	}
 
 }

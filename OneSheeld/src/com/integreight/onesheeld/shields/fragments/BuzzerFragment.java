@@ -46,6 +46,11 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 		// .beginTransaction()
 		// .replace(R.id.settingsViewContainer,
 		// BuzzerShieldSettings.getInstance()).commit();
+
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {

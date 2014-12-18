@@ -65,9 +65,10 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
 	@Override
 	public void onStart() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null)
-			getApplication().getRunningShields().put(getControllerTag(),
-					new SliderShield(activity, getControllerTag()));
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {

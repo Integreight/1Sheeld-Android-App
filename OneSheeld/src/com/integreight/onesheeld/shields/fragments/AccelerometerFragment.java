@@ -32,6 +32,10 @@ public class AccelerometerFragment extends
 	@Override
 	public void onStart() {
 		super.onStart();
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((AccelerometerShield) getApplication().getRunningShields().get(
 				getControllerTag())).registerSensorListener(true);
 
