@@ -276,7 +276,7 @@ public class CameraHeadService extends Service implements
 						if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
 							FLASH_MODE = "auto";
 						}
-						parameters.setFlashMode(FLASH_MODE);
+						if(CameraUtils.hasFlash(mCamera))parameters.setFlashMode(FLASH_MODE);
 						// set biggest picture
 						setBesttPictureResolution();
 						// log quality and image format
@@ -432,13 +432,15 @@ public class CameraHeadService extends Service implements
 			int rotate = 0;
 			switch (mOrientation) {
 			case ORIENTATION_PORTRAIT_NORMAL:
-				rotate = 90;
+				if(!isFrontCamRequest)rotate = 90;
+				else rotate = 270;
 				break;
 			case ORIENTATION_LANDSCAPE_NORMAL:
 				rotate = 0;
 				break;
 			case ORIENTATION_PORTRAIT_INVERTED:
-				rotate = 270;
+				if(!isFrontCamRequest)rotate = 270;
+				else rotate = 90;
 				break;
 			case ORIENTATION_LANDSCAPE_INVERTED:
 				rotate = 180;

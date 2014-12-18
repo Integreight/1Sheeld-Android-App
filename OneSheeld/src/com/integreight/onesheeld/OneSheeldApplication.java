@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,25 +13,26 @@ import org.json.JSONObject;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
-import android.preference.PreferenceManager;
 import android.util.SparseArray;
 
-import com.google.analytics.tracking.android.GAServiceManager;
-import com.google.analytics.tracking.android.GoogleAnalytics;
-import com.google.analytics.tracking.android.Logger.LogLevel;
-import com.google.analytics.tracking.android.Tracker;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger.LogLevel;
+import com.google.android.gms.analytics.Tracker;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
-import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.parse.Parse;
-import com.parse.PushService;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
 
 /**
  * @author Ahmed Saad
@@ -56,71 +58,117 @@ public class OneSheeldApplication extends Application {
 	private ConnectionDetector connectionHandler;
 	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
 	public Typeface appFont;
-	private GoogleAnalytics googleAnalyticsInstance;
-	private Tracker appGaTracker;
+	// private GoogleAnalytics googleAnalyticsInstance;
+	// private Tracker appGaTracker;
 	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
+	public RemoteOneSheeldShield remoteOneSheeldController;
 	public SparseArray<Boolean> taskerPinsStatus;
 
 	public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
+
+	private static boolean isDebuggable = true;
+
+	private Tracker gaTracker;
+
+	private long connectionTime;
 
 	/*
 	 * Google Analytics configuration values.
 	 */
 	// Placeholder property ID.
-	private static final String GA_PROPERTY_ID = "UA-48040929-2";
+	// private static final String GA_PROPERTY_ID = "";
+	//
+	// // Dispatch period in seconds.
+	// private static final int GA_DISPATCH_PERIOD = 30;
 
-	// Dispatch period in seconds.
-	private static final int GA_DISPATCH_PERIOD = 30;
+	// // Prevent hits from being sent to reports, i.e. during testing.
+	// private static final boolean GA_IS_DRY_RUN = false;
+	//
+	// // GA Logger verbosity.
+	// private static final LogLevel GA_LOG_VERBOSITY = LogLevel.VERBOSE;
+	//
+	// // Key used to store a user's tracking preferences in SharedPreferences.
+	// private static final String TRACKING_PREF_KEY = "trackingPreference";
 
-	// Prevent hits from being sent to reports, i.e. during testing.
-	private static final boolean GA_IS_DRY_RUN = false;
+	// public GoogleAnalytics getGoogleAnalytics() {
+	// if (googleAnalyticsInstance == null) {
+	// googleAnalyticsInstance = GoogleAnalytics
+	// .getInstance(getApplicationContext());
+	// }
+	// return googleAnalyticsInstance;
+	// }
+	//
+	// @SuppressWarnings("deprecation")
+	// public Tracker getGaTracker() {
+	// if (appGaTracker == null) {
+	// appGaTracker = getGoogleAnalytics().getTracker(GA_PROPERTY_ID);
+	//
+	// // Set dispatch period.
+	// GAServiceManager.getInstance().setLocalDispatchPeriod(
+	// GA_DISPATCH_PERIOD);
+	//
+	// // Set dryRun flag.
+	// googleAnalyticsInstance.setDryRun(GA_IS_DRY_RUN);
+	// // Set Logger verbosity.
+	// googleAnalyticsInstance.getLogger().setLogLevel(GA_LOG_VERBOSITY);
+	// // Set the opt out flag when user updates a tracking preference.
+	// SharedPreferences userPrefs = PreferenceManager
+	// .getDefaultSharedPreferences(this);
+	// userPrefs
+	// .registerOnSharedPreferenceChangeListener(new
+	// SharedPreferences.OnSharedPreferenceChangeListener() {
+	// @Override
+	// public void onSharedPreferenceChanged(
+	// SharedPreferences sharedPreferences, String key) {
+	// if (key.equals(TRACKING_PREF_KEY)) {
+	// GoogleAnalytics.getInstance(
+	// getApplicationContext()).setAppOptOut(
+	// sharedPreferences
+	// .getBoolean(key, false));
+	// }
+	// }
+	// });
+	// }
+	// return appGaTracker;
+	// }
 
-	// GA Logger verbosity.
-	private static final LogLevel GA_LOG_VERBOSITY = LogLevel.VERBOSE;
-
-	// Key used to store a user's tracking preferences in SharedPreferences.
-	private static final String TRACKING_PREF_KEY = "trackingPreference";
-
-	public GoogleAnalytics getGoogleAnalytics() {
-		if (googleAnalyticsInstance == null) {
-			googleAnalyticsInstance = GoogleAnalytics
-					.getInstance(getApplicationContext());
-		}
-		return googleAnalyticsInstance;
+	public void startConnectionTimer() {
+		connectionTime = System.currentTimeMillis();
 	}
 
-	@SuppressWarnings("deprecation")
-	public Tracker getGaTracker() {
-		if (appGaTracker == null) {
-			appGaTracker = getGoogleAnalytics().getTracker(GA_PROPERTY_ID);
+	public void endConnectionTimerAndReport() {
+		if (connectionTime == 0)
+			return;
+		Map<String, String> hit = new HitBuilders.TimingBuilder()
+				.setCategory("Connection Timing")
+				.setValue(System.currentTimeMillis() - connectionTime)
+				.setVariable("Connection").build();
+		// hit.put("&sc", "end");
+		getTracker().send(hit);
+		connectionTime = 0;
+	}
 
-			// Set dispatch period.
-			GAServiceManager.getInstance().setLocalDispatchPeriod(
-					GA_DISPATCH_PERIOD);
+	public long getConnectionTime() {
+		return connectionTime;
+	}
 
-			// Set dryRun flag.
-			googleAnalyticsInstance.setDryRun(GA_IS_DRY_RUN);
-			// Set Logger verbosity.
-			googleAnalyticsInstance.getLogger().setLogLevel(GA_LOG_VERBOSITY);
-			// Set the opt out flag when user updates a tracking preference.
-			SharedPreferences userPrefs = PreferenceManager
-					.getDefaultSharedPreferences(this);
-			userPrefs
-					.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-						@Override
-						public void onSharedPreferenceChanged(
-								SharedPreferences sharedPreferences, String key) {
-							if (key.equals(TRACKING_PREF_KEY)) {
-								GoogleAnalytics.getInstance(
-										getApplicationContext()).setAppOptOut(
-										sharedPreferences
-												.getBoolean(key, false));
-							}
-						}
-					});
-		}
-		return appGaTracker;
+	public synchronized Tracker getTracker() {
+		if (gaTracker != null)
+			return gaTracker;
+		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+		analytics.setAppOptOut(isDebuggable);
+		if (isDebuggable)
+			analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
+		gaTracker = analytics.newTracker(ApiObjects.analytics
+				.get("property_id"));
+		gaTracker.enableAdvertisingIdCollection(true);
+		gaTracker.setSessionTimeout(-1);
+		return gaTracker;
+	}
+
+	public static boolean isDebuggable() {
+		return isDebuggable;
 	}
 
 	@Override
@@ -132,9 +180,16 @@ public class OneSheeldApplication extends Application {
 		parseSocialKeys();
 		Parse.initialize(this, ApiObjects.parse.get("app_id"),
 				ApiObjects.parse.get("client_id"));
-		PushService.setDefaultPushCallback(this, MainActivity.class);
+		ParseInstallation.getCurrentInstallation().saveInBackground();
 		initTaskerPins();
-		AppShields.getInstance().init();
+		isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+		if (isDebuggable()
+				&& (ParseInstallation.getCurrentInstallation().getList(
+						"channels") == null || !ParseInstallation
+						.getCurrentInstallation().getList("channels")
+						.contains("dev")))
+			ParsePush.subscribeInBackground("dev");
+		connectionTime = 0;
 		super.onCreate();
 	}
 
@@ -150,10 +205,10 @@ public class OneSheeldApplication extends Application {
 	private void parseSocialKeys() {
 		String metaData = "";
 		try {
-			metaData = loadData("dev_meta_data");
+			metaData = loadData("dev_meta_data.json");
 		} catch (Exception e) {
 			try {
-				metaData = loadData("meta_data");
+				metaData = loadData("meta_data.json");
 			} catch (Exception e1) {
 			}
 		}
@@ -163,6 +218,7 @@ public class OneSheeldApplication extends Application {
 			JSONObject twitter = new JSONObject();
 			JSONObject foursquare = new JSONObject();
 			JSONObject parse = new JSONObject();
+			JSONObject analytics = new JSONObject();
 			if (socialKeysObject.has("facebook")) {
 				facebook = socialKeysObject.getJSONObject("facebook");
 				if (facebook.has("app_id"))
@@ -194,6 +250,12 @@ public class OneSheeldApplication extends Application {
 				if (parse.has("app_id") && parse.has("client_id"))
 					ApiObjects.parse.add("app_id", parse.getString("app_id"));
 				ApiObjects.parse.add("client_id", parse.getString("client_id"));
+			}
+			if (socialKeysObject.has("analytics")) {
+				analytics = socialKeysObject.getJSONObject("analytics");
+				if (analytics.has("property_id"))
+					ApiObjects.analytics.add("property_id",
+							analytics.getString("property_id"));
 			}
 		} catch (JSONException e) {
 		}
@@ -344,18 +406,6 @@ public class OneSheeldApplication extends Application {
 			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
 		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
 		getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
-	}
-
-	@Override
-	public void onLowMemory() {
-
-		super.onLowMemory();
-	}
-
-	@Override
-	public void onTrimMemory(int level) {
-
-		super.onTrimMemory(level);
 	}
 
 	// public ArduinoFirmataEventHandler

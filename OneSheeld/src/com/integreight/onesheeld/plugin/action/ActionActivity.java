@@ -18,6 +18,8 @@ import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.plugin.AbstractPluginActivity;
@@ -69,6 +71,8 @@ public final class ActionActivity extends AbstractPluginActivity {
 							selectedPin = -1;
 					}
 				}, selectedPin);
+		((OneSheeldApplication) this.getApplication()).getTracker().setScreenName("TASKER_SHIELD");
+		((OneSheeldApplication) this.getApplication()).getTracker().send(new HitBuilders.ScreenViewBuilder().build());
 		super.onResume();
 	}
 

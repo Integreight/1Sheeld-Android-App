@@ -33,6 +33,7 @@ import com.integreight.onesheeld.shields.controller.PhoneShield;
 import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
@@ -141,7 +142,10 @@ public enum UIShield {
 			0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
 			TerminalShield.class), TASKER_SHIELD((byte) 0x07, "Tasker",
 			0xff0b4c8d, R.drawable.shields_list_flashlight_symbol, false,
-			TaskerShield.class, false);
+			TaskerShield.class, false), REMOTEONESHEELD_SHIELD((byte) 0x28,
+			"Remote 1Sheeld", 0xff0b4c8d,
+			R.drawable.shields_list_flashlight_symbol, false,
+			RemoteOneSheeldShield.class, false);
 	public static int[] colors = new int[] { 0xff03d203, 0xffd4d903,
 			0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
 			0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,

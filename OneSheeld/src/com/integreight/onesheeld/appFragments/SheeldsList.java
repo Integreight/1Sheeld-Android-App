@@ -30,7 +30,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.Fields;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -44,11 +44,13 @@ import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
+import com.parse.ParseInstallation;
 
 public class SheeldsList extends Fragment {
 	View v;
@@ -211,6 +213,10 @@ public class SheeldsList extends Fragment {
 				new ArduinoConnectivityPopup(activity).show();
 		}
 		Crashlytics.setString("Current View", "Shields List");
+		((OneSheeldApplication) activity.getApplication()).getTracker()
+				.setScreenName("Main Shields List");
+		((OneSheeldApplication) activity.getApplication()).getTracker().send(
+				new HitBuilders.ScreenViewBuilder().build());
 		super.onResume();
 	}
 
@@ -328,6 +334,12 @@ public class SheeldsList extends Fragment {
 					&& activity.getThisApplication().taskerController != null) {
 				activity.getThisApplication().taskerController.reset();
 			}
+			if (activity != null
+					&& activity.getThisApplication().remoteOneSheeldController != null) {
+				activity.getThisApplication().remoteOneSheeldController.reset();
+			}
+			((OneSheeldApplication) activity.getApplication())
+					.endConnectionTimerAndReport();
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -343,10 +355,17 @@ public class SheeldsList extends Fragment {
 		public void onConnect() {
 			activity.getThisApplication().taskerController = new TaskerShield(
 					activity, UIShield.TASKER_SHIELD.name());
+			activity.getThisApplication().remoteOneSheeldController = new RemoteOneSheeldShield(
+					activity, UIShield.REMOTEONESHEELD_SHIELD.name());
 			Log.e(TAG, "- ARDUINO CONNECTED -");
+			((OneSheeldApplication) activity.getApplication()).getTracker()
+					.send(new HitBuilders.ScreenViewBuilder().setNewSession()
+							.build());
+			((OneSheeldApplication) activity.getApplication())
+					.startConnectionTimer();
 			if (isOneSheeldServiceRunning()) {
-				((OneSheeldApplication) activity.getApplication())
-						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
+				// ((OneSheeldApplication) activity.getApplication())
+				// .getGaTracker().set(Fields.SESSION_CONTROL, "start");
 				if (adapter != null)
 					adapter.applyToControllerTable();
 			}
@@ -358,8 +377,12 @@ public class SheeldsList extends Fragment {
 				if (activity.getThisApplication().taskerController != null) {
 					activity.getThisApplication().taskerController.reset();
 				}
+				if (activity.getThisApplication().remoteOneSheeldController != null) {
+					activity.getThisApplication().remoteOneSheeldController
+							.reset();
+				}
 				((OneSheeldApplication) activity.getApplication())
-						.getGaTracker().set(Fields.SESSION_CONTROL, "end");
+						.endConnectionTimerAndReport();
 				activity.getOnConnectionLostHandler().connectionLost = true;
 				if (activity.getOnConnectionLostHandler().canInvokeOnCloseConnection
 						|| activity.isForground)
@@ -449,22 +472,68 @@ public class SheeldsList extends Fragment {
 					activity.getPackageName(), 0);
 			String versionName = pInfo.versionName;
 			int versionCode = pInfo.versionCode;
+			String installationIdString = "";
+			ValidationAction shareConnectionId = null;
+			if (ParseInstallation.getCurrentInstallation() != null
+					&& ParseInstallation.getCurrentInstallation()
+							.getInstallationId() != null) {
+				installationIdString = "Connect using: "
+						+ ParseInstallation.getCurrentInstallation()
+								.getInstallationId() + "\n\n";
+				shareConnectionId = new ValidationPopup.ValidationAction(
+						"Share Id!", new View.OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								String shareBody = "Connect to my 1Sheeld using this address: "
+										+ ParseInstallation
+												.getCurrentInstallation()
+												.getInstallationId();
+								Intent sharingIntent = new Intent(
+										android.content.Intent.ACTION_SEND);
+								sharingIntent.setType("text/plain");
+								sharingIntent.putExtra(
+										android.content.Intent.EXTRA_SUBJECT,
+										"My 1Sheeld Address");
+								sharingIntent.putExtra(
+										android.content.Intent.EXTRA_TEXT,
+										shareBody);
+								startActivity(Intent.createChooser(
+										sharingIntent, "Share Using"));
+							}
+						}, false);
+			}
+			String firmwareVersion = "";
+			if ((((OneSheeldApplication) activity.getApplication())
+					.getAppFirmata() != null && ((OneSheeldApplication) activity
+					.getApplication()).getAppFirmata().isOpen())
+					&& (((OneSheeldApplication) activity.getApplication())
+							.getAppFirmata().getMajorVersion() != 0)) {
+				firmwareVersion = "\nFirmware Version: v"
+						+ (((OneSheeldApplication) activity.getApplication())
+								.getAppFirmata().getMajorVersion())
+						+ "."
+						+ (((OneSheeldApplication) activity.getApplication())
+								.getAppFirmata().getMinorVersion()) + "\n\n";
+			}
 			final ValidationPopup popup = new ValidationPopup(
 					activity,
 					"About 1Sheeld",
 					"Developed with love by Integreight, Inc. team in Cairo, Egypt.\n"
 							+ "If you have any question, please visit our website or drop us an email on info@integreight.com\n\n"
-							+ "Version: "
+							+ "App Version: "
 							+ versionName
 							+ " ("
 							+ versionCode
 							+ ")"
+							+ firmwareVersion
 							+ (stringDate != null ? "\nApp was last updated on "
 									+ stringDate
 									: "")
 							+ "\n\n"
-							+ "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n");
-			ValidationAction vp = new ValidationPopup.ValidationAction("OK",
+							+ "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n"
+							+ installationIdString);
+			ValidationAction ok = new ValidationPopup.ValidationAction("Okay!",
 					new View.OnClickListener() {
 
 						@Override
@@ -472,7 +541,10 @@ public class SheeldsList extends Fragment {
 							popup.dismiss();
 						}
 					}, true);
-			popup.addValidationAction(vp);
+
+			popup.addValidationAction(ok);
+			if (shareConnectionId != null)
+				popup.addValidationAction(shareConnectionId);
 			if (!activity.isFinishing())
 				popup.show();
 		} catch (Exception e) {

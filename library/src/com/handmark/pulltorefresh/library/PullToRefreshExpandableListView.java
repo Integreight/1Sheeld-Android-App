@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- *
+ * Copyright 2013 Naver Business Platform Corp.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +25,7 @@ import android.view.View;
 import android.widget.ExpandableListView;
 
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
+import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 
 public class PullToRefreshExpandableListView extends PullToRefreshAdapterViewBase<ExpandableListView> {
 
@@ -39,8 +41,8 @@ public class PullToRefreshExpandableListView extends PullToRefreshAdapterViewBas
 		super(context, mode);
 	}
 
-	public PullToRefreshExpandableListView(Context context, Mode mode, AnimationStyle style) {
-		super(context, mode, style);
+	public PullToRefreshExpandableListView(Context context, Mode mode, Class<? extends LoadingLayout> loadingLayoutClazz) {
+		super(context, mode, loadingLayoutClazz);
 	}
 
 	@Override

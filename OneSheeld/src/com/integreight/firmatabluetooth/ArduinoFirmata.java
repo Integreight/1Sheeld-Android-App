@@ -59,8 +59,7 @@ public class ArduinoFirmata {
 	private final byte REPORT_INPUT_PINS = (byte) 0x5F;
 	private final byte RESET_MICRO = (byte) 0x60;
 	private final byte BLUETOOTH_RESET = (byte) 0x61;
-	// private final byte IS_ALIVE = (byte) 0x62;
-	// private final byte FIRMWARE_VERSION_QUERY = (byte) 0x63; //Deprecated
+	private final byte IS_ALIVE = (byte) 0x62;
 	private final byte MUTE_FIRMATA = (byte) 0x64;
 	private final byte UART_COMMAND = (byte) 0x65;
 	private final byte UART_DATA = (byte) 0x66;
@@ -234,7 +233,15 @@ public class ArduinoFirmata {
 			pinMode(i, INPUT);
 		}
 	}
+	
+	public void respondToIsAlive(){
+		sysex(IS_ALIVE, new byte[] { });
+	}
 
+	public void notifyHardwareOfConnection(){
+		sendShieldFrame(new ShieldFrame((byte)0x00, (byte)0x01));
+	}
+	
 	public boolean isOpen() {
 		Log.sysOut(bluetoothService.getState() + "    "
 				+ BluetoothService.STATE_CONNECTING + "    "
@@ -420,6 +427,10 @@ public class ArduinoFirmata {
 								close();
 							}
 						}
+						
+						if (sysexCommand == IS_ALIVE) {
+								respondToIsAlive();
+						}
 
 						for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
 							dataHandler.onSysex(sysexCommand, sysexData);
@@ -561,6 +572,9 @@ public class ArduinoFirmata {
 		reportInputPinsValues();
 		initUart();
 		queryVersion();
+		notifyHardwareOfConnection();
+		respondToIsAlive();
+		
 	}
 
 	private void muteFirmata() {
@@ -677,8 +691,10 @@ public class ArduinoFirmata {
 				setAllPinsAsInput();
 				reportInputPinsValues();
 				initUart();
-				queryVersion();
 				onConnect();
+				queryVersion();
+				notifyHardwareOfConnection();
+				respondToIsAlive();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
 				// mConnectedDeviceName,
@@ -763,7 +779,7 @@ public class ArduinoFirmata {
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
 					for (UIShield shield : UIShield.values()) {
-						if (shieldId == shield.getId())
+						if (shieldId == shield.getId()||shieldId == 0x00)
 							found = true;
 					}
 					if (!found) {
@@ -776,7 +792,7 @@ public class ArduinoFirmata {
 					byte functionId = readByteFromUartBuffer();
 					ShieldFrame frame = new ShieldFrame(shieldId, instanceId,
 							functionId);
-					int argumentsNumber = readByteFromUartBuffer();
+					int argumentsNumber = readByteFromUartBuffer() & 0xFF;
 					int argumentsNumberVerification = (255 - (readByteFromUartBuffer() & 0xFF));
 					if (argumentsNumber != argumentsNumberVerification) {
 						if (ShieldFrameTimeout != null)
@@ -814,7 +830,10 @@ public class ArduinoFirmata {
 						}
 					}
 					printFrameToLog(frame.getAllFrameAsBytes(),"Rec");
-					for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
+					if(shieldId==0x00){
+						//1Sheeld configration from the library
+					}
+					else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
 					}
 				} catch (InterruptedException e) {

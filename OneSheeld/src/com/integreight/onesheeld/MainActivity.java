@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +24,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -37,8 +37,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
@@ -71,6 +70,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(arg0);
 		initCrashlyticsAndUncaughtThreadHandler();
 		ParseAnalytics.trackAppOpened(getIntent());
+		// Get a Tracker (should auto-report)
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
 		initLooperThread();
@@ -148,7 +148,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initCrashlyticsAndUncaughtThreadHandler() {
-		Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+		UncaughtExceptionHandler myHandler = new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread arg0, final Throwable arg1) {
@@ -182,7 +182,13 @@ public class MainActivity extends FragmentActivity {
 					}
 				}).start();
 			}
-		});
+		};
+
+		// UncaughtExceptionHandler gaHandler= new ExceptionReporter(
+		// getThisApplication().getTracker(),
+		// myHandler, // Current default uncaught exception handler.
+		// getApplicationContext());
+		Thread.setDefaultUncaughtExceptionHandler(myHandler);
 		Crashlytics.start(this);
 	}
 
@@ -392,7 +398,9 @@ public class MainActivity extends FragmentActivity {
 					}
 				}
 			});
-
+			getThisApplication().getTracker().send(
+					new HitBuilders.ScreenViewBuilder().setCustomDimension(1,
+							majorVersion + "." + minorVersion).build());
 		}
 	};
 	ArduinoLibraryVersionChangeHandler arduinoLibraryVersionHandler = new ArduinoLibraryVersionChangeHandler() {
@@ -420,6 +428,10 @@ public class MainActivity extends FragmentActivity {
 						if (!isFinishing())
 							popub.show();
 					}
+					getThisApplication().getTracker().send(
+							new HitBuilders.ScreenViewBuilder()
+									.setCustomDimension(2, version + "")
+									.build());
 				}
 			});
 		}
@@ -545,12 +557,9 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onDestroy() {
-		// isBoundService = OneSheeldService.isBound;
-		// if (isMyServiceRunning())
-		Log.d("S", "Destroy");
-		getThisApplication().getGaTracker().send(
-				MapBuilder.createEvent("App lifecycle",
-						"Finished the app manually", "", 0L).build());
+		getThisApplication().getTracker().send(
+				new HitBuilders.EventBuilder().setCategory("App lifecycle")
+						.setAction("Finished the app manually").build());
 		ArduinoConnectivityPopup.isOpened = false;
 		stopService();
 		stopLooperThread();
@@ -718,13 +727,13 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
-		EasyTracker.getInstance(this).activityStart(this);
+		// GoogleAnalytics.getInstance(this).reportActivityStart(this);
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-		EasyTracker.getInstance(this).activityStop(this);
+		// GoogleAnalytics.getInstance(this).reportActivityStop(this);
 		super.onStop();
 	}
 

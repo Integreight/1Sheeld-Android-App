@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- *
+ * Copyright 2013 Naver Business Platform Corp.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,8 +54,8 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		super(context, mode);
 	}
 
-	public PullToRefreshListView(Context context, Mode mode, AnimationStyle style) {
-		super(context, mode, style);
+	public PullToRefreshListView(Context context, Mode mode, Class<? extends LoadingLayout> loadingLayoutClazz) {
+		super(context, mode, loadingLayoutClazz);
 	}
 
 	@Override
@@ -69,7 +70,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		 * the header/footer views won't show so we use the normal method.
 		 */
 		ListAdapter adapter = mRefreshableView.getAdapter();
-		if (!mListViewExtrasEnabled || !getShowViewWhileRefreshing() || null == adapter || adapter.isEmpty()) {
+		if (!mListViewExtrasEnabled || !getShowViewWhileRefreshing() || null == adapter || adapter.isEmpty() || getCurrentMode() == Mode.GOOGLE_STYLE) {
 			super.onRefreshing(doScroll);
 			return;
 		}
@@ -131,7 +132,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		/**
 		 * If the extras are not enabled, just call up to super and return.
 		 */
-		if (!mListViewExtrasEnabled) {
+		if (!mListViewExtrasEnabled || getCurrentMode() == Mode.GOOGLE_STYLE) {
 			super.onReset();
 			return;
 		}
@@ -226,7 +227,10 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		super.handleStyledAttributes(a);
 
 		mListViewExtrasEnabled = a.getBoolean(R.styleable.PullToRefresh_ptrListViewExtrasEnabled, true);
-
+		if ( getMode() == Mode.GOOGLE_STYLE) {
+			mListViewExtrasEnabled = false;
+		}
+		
 		if (mListViewExtrasEnabled) {
 			final FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT,
 					FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.CENTER_HORIZONTAL);

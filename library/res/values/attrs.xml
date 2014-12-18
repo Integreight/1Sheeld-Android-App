@@ -22,6 +22,7 @@
             <flag name="pullFromEnd" value="0x2" />
             <flag name="both" value="0x3" />
             <flag name="manualOnly" value="0x4" />
+            <flag name="google" value="0x5" />
 
             <!-- These last two are depreacted -->
             <flag name="pullDownFromTop" value="0x1" />
@@ -50,11 +51,28 @@
         <attr name="ptrSubHeaderTextAppearance" format="reference" />
 
         <!-- Style of Animation should be used displayed when pulling. -->
-        <attr name="ptrAnimationStyle">
-            <flag name="rotate" value="0x0" />
-            <flag name="flip" value="0x1" />
+        <attr name="ptrAnimationStyle" format="string">
+        </attr>
+        <!--  -->
+        <attr name="ptrIndicatorStyle" format="string">
+        </attr>
+ 
+        <!-- Styles of Animation for google style pull to refresh -->
+        <attr name="ptrGoogleViewStyle" format="string">
+        </attr>
+		<!-- Styles of Progress Bar Layout for google style pull to refresh -->
+        <attr name="ptrGoogleProgressStyle" format="string">
         </attr>
 
+        <!-- Label attributes of Loading layout -->
+        <attr name="ptrPullLabel" format="string" />
+        <attr name="ptrRefreshLabel" format="string" />
+        <attr name="ptrReleaseLabel" format="string" />
+        
+        <attr name="ptrFriction" format="float" value="2.0" />
+        <attr name="ptrSmoothScrollDuration" format="integer" value="200" />
+        <attr name="ptrSmoothScrollLongDuration" format="integer" value="325" />
+        
         <!-- Whether the user can scroll while the View is Refreshing -->
         <attr name="ptrScrollingWhileRefreshingEnabled" format="reference|boolean" />
 
@@ -71,10 +89,31 @@
         -->
         <attr name="ptrRotateDrawableWhilePulling" format="reference|boolean" />
 
+        <!-- Whether Google style view layout's size is set to ActionBar's size 
+        	 (Don't set to false as possible, it's hard to control height if this flag is false) -->
+        <attr name="ptrSetGoogleViewLayoutSizeToActionbarHeight" format="reference|boolean" />
+        <!-- Animation Options only for google Style mode  -->
+		<!--  Whether Google style view layout's fade-in animation is shown when pulling -->
+        <attr name="ptrShowGoogleStyleViewAnimationEnabled" format="reference|boolean" />
+       <!-- Whether Refreshable view is hidden when refreshing -->
+        <attr name="ptrHideRefeshableViewWhileRefreshingEnabled" format="reference|boolean" />
+        <!-- Whether Rotating progress bar is shown when refreshing -->
+        <attr name="ptrViewRefeshableViewProgressBarOnCenterWhileRefreshingEnabled" format="reference|boolean" />
+        <!-- Duration of Google style view layout's fade-in/out animation -->
+        <attr name="ptrShowGoogleStyleViewAnimationDuration" format="integer" value="100" />
+        <!-- Duration of  Refreshable view's fade-in/out animation -->
+        <attr name="ptrHideRefeshableViewWhileRefreshingDuration" format="integer" value="500" />
+        <!-- Duration of rotating progress bar's fade-in/out animation -->
+        <attr name="ptrViewRefeshableViewProgressBarOnCenterWhileRefreshingDuration" format="integer" value="200" />
+		
+		<!-- These attrs are enabled to set width or height of Rotating progress bar on center -->
+        <attr name="ptrRefeshableViewProgressBarOnCenterWidth" format="integer" value="200" />
+        <attr name="ptrRefeshableViewProgressBarOnCenterHeight" format="integer" value="200" />
+
         <!-- BELOW HERE ARE DEPRECEATED. DO NOT USE. -->
         <attr name="ptrAdapterViewBackground" format="reference|color" />
         <attr name="ptrDrawableTop" format="reference" />
         <attr name="ptrDrawableBottom" format="reference" />
+     
     </declare-styleable>
-
 </resources>

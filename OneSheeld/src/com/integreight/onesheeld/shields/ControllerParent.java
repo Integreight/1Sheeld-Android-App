@@ -8,8 +8,7 @@ import android.os.Handler;
 import android.view.View;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.analytics.tracking.android.Fields;
-import com.google.analytics.tracking.android.MapBuilder;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -18,6 +17,7 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 
 /**
@@ -58,6 +58,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 											// found sensors
 	public boolean isInteractive = true;// flag used for the interaction
 										// top-right toggle button
+	
+	private long selectionTime;
 
 	public ControllerParent() {
 		// TODO Auto-generated constructor stub
@@ -182,8 +184,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				@Override
 				public void run() {
 					if (isALive && isInteractive)
-									((T) ControllerParent.this).onSysex(
-											command, data);
+						((T) ControllerParent.this).onSysex(command, data);
 				}
 			});
 		}
@@ -194,7 +195,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 			@Override
 			public void run() {
 				if (hasConnectedPins
-						|| ((T) ControllerParent.this) instanceof TaskerShield)
+						|| ((T) ControllerParent.this) instanceof TaskerShield
+						|| ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)
 					((T) ControllerParent.this).onDigital(portNumber, portData);
 			}
 		};
@@ -266,9 +268,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 		if (getApplication().getRunningShields().get(tag) == null)
 			getApplication().getRunningShields().put(tag, this);
 		getApplication().getAppFirmata().initUart();
-		getApplication().getGaTracker().send(
-				MapBuilder.createEvent(Fields.EVENT_ACTION, "start", "", null)
-						.set(getTag(), "start").build());
+		selectionTime=System.currentTimeMillis();
 		Crashlytics
 				.setString(
 						"Number of running shields",
@@ -348,10 +348,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 				}
 			});
 		}
-		getApplication().getGaTracker().send(
-				MapBuilder
-						.createEvent("Controller Tracker", "end", getTag(),
-								null).set(getTag(), "end").build());
+		if(selectionTime!=0 && !(((T) ControllerParent.this) instanceof TaskerShield
+				|| ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)){
+		getApplication().getTracker().send(new HitBuilders.TimingBuilder()
+        .setCategory("Shields Selection Timing")
+        .setValue(System.currentTimeMillis()-selectionTime)
+        .setVariable(tag)
+        .build());
+		selectionTime=0;
+		}
 		Crashlytics
 				.setString(
 						"Number of running shields",

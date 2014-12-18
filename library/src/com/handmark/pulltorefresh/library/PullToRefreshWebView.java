@@ -1,6 +1,7 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- *
+ * Copyright 2013 Naver Business Platform Corp.
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,6 +15,8 @@
  * limitations under the License.
  *******************************************************************************/
 package com.handmark.pulltorefresh.library;
+
+import com.handmark.pulltorefresh.library.internal.LoadingLayout;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -77,8 +80,8 @@ public class PullToRefreshWebView extends PullToRefreshBase<WebView> {
 		mRefreshableView.setWebChromeClient(defaultWebChromeClient);
 	}
 
-	public PullToRefreshWebView(Context context, Mode mode, AnimationStyle style) {
-		super(context, mode, style);
+	public PullToRefreshWebView(Context context, Mode mode, Class<? extends LoadingLayout> loadingLayoutClazz) {
+		super(context, mode, loadingLayoutClazz);
 
 		/**
 		 * Added so that by default, Pull-to-Refresh refreshes the page
@@ -112,11 +115,8 @@ public class PullToRefreshWebView extends PullToRefreshBase<WebView> {
 
 	@Override
 	protected boolean isReadyForPullEnd() {
-		@SuppressWarnings("deprecation")
-		float exactContentHeight = FloatMath.floor(mRefreshableView
-				.getContentHeight() * mRefreshableView.getScale());
-		return mRefreshableView.getScrollY() >= (exactContentHeight - mRefreshableView
-				.getHeight());
+		float exactContentHeight = FloatMath.floor(mRefreshableView.getContentHeight() * mRefreshableView.getScale());
+		return mRefreshableView.getScrollY() >= (exactContentHeight - mRefreshableView.getHeight());
 	}
 
 	@Override
@@ -147,30 +147,22 @@ public class PullToRefreshWebView extends PullToRefreshBase<WebView> {
 		}
 
 		@Override
-		protected boolean overScrollBy(int deltaX, int deltaY, int scrollX,
-				int scrollY, int scrollRangeX, int scrollRangeY,
-				int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
+		protected boolean overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX,
+				int scrollRangeY, int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
 
-			final boolean returnValue = super.overScrollBy(deltaX, deltaY,
-					scrollX, scrollY, scrollRangeX, scrollRangeY,
-					maxOverScrollX, maxOverScrollY, isTouchEvent);
+			final boolean returnValue = super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX,
+					scrollRangeY, maxOverScrollX, maxOverScrollY, isTouchEvent);
 
 			// Does all of the hard work...
-			OverscrollHelper.overScrollBy(PullToRefreshWebView.this, deltaX,
-					scrollX, deltaY, scrollY, getScrollRange(),
-					OVERSCROLL_FUZZY_THRESHOLD, OVERSCROLL_SCALE_FACTOR,
-					isTouchEvent);
+			OverscrollHelper.overScrollBy(PullToRefreshWebView.this, deltaX, scrollX, deltaY, scrollY,
+					getScrollRange(), OVERSCROLL_FUZZY_THRESHOLD, OVERSCROLL_SCALE_FACTOR, isTouchEvent);
 
 			return returnValue;
 		}
 
-		@SuppressWarnings("deprecation")
 		private int getScrollRange() {
-			return (int) Math
-					.max(0,
-							FloatMath.floor(mRefreshableView.getContentHeight()
-									* mRefreshableView.getScale())
-									- (getHeight() - getPaddingBottom() - getPaddingTop()));
+			return (int) Math.max(0, FloatMath.floor(mRefreshableView.getContentHeight() * mRefreshableView.getScale())
+					- (getHeight() - getPaddingBottom() - getPaddingTop()));
 		}
 	}
 }
