@@ -13,6 +13,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
 import com.crashlytics.android.Crashlytics;
@@ -38,7 +39,8 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 	public static final String DigitalPinSubscribtionResponsePushMessageAction = "com.integreight.onesheeld.push.DigitalPinSubscribtionResponsePushMessage";
 	public static final String AnalogWritePushMessageAction = "com.integreight.onesheeld.push.AnalogWritePushMessage";
 	public static final String KeyValueFloatPushMessageAction = "com.integreight.onesheeld.push.KeyValueFloatPushMessage";
-	public static final String KeyValueStringPushMessageAction = "com.integreight.onesheeld.push.KeyValueStringPushMessage";
+    public static final String KeyValueStringPushMessageAction = "com.integreight.onesheeld.push.KeyValueStringPushMessage";
+    public static final String NotificationWithUrlPushMessageAction = "com.integreight.onesheeld.push.NotificationWithUrl";
 	private static long lastNotifiedTimeStamp;
 
 	@Override
@@ -52,7 +54,13 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 				String action = json.getString("action");
 				Log.d(TAG, "got action " + action + " on channel " + channel
 						+ " with:");
-
+                if (action.equals(NotificationWithUrlPushMessageAction)){
+                    String title=json.getString("notification_title");
+                    String message=json.getString("notification_message");
+                    String url=json.getString("notification_url");
+                    showNotificationWithUrl(context,title,message,url);
+                    return;
+                }
 				OneSheeldApplication app = (OneSheeldApplication) context
 						.getApplicationContext();
 				Iterator<?> itr = json.keys();
@@ -230,26 +238,43 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 		build.setSmallIcon(R.drawable.white_ee_icon);
 		build.setContentTitle(notificationText);
 		build.setContentText("Someone is trying to control your 1Sheeld");
-		// Uri alertSound =
-		// RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		// build.setSound(alertSound);
 		build.setTicker(notificationText);
 		build.setWhen(System.currentTimeMillis());
 		Intent notificationIntent = new Intent(context, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
 		PendingIntent intent = PendingIntent.getActivity(context, 0,
 				notificationIntent, 0);
-
 		build.setContentIntent(intent);
 		Notification notification = build.build();
-		notification.flags = Notification.DEFAULT_LIGHTS
-				| Notification.FLAG_AUTO_CANCEL | Notification.DEFAULT_SOUND;
+        notification.flags =  Notification.FLAG_AUTO_CANCEL;
+        notification.defaults |=  Notification.DEFAULT_ALL;
 		NotificationManager notificationManager = (NotificationManager) context
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		notificationManager.notify(1, notification);
 	}
+
+    protected void showNotificationWithUrl(Context context, String title, String notificationText, String url) {
+        // TODO Auto-generated method stub
+        NotificationCompat.Builder build = new NotificationCompat.Builder(
+                context);
+        build.setSmallIcon(R.drawable.white_ee_icon);
+        build.setContentTitle(title);
+        build.setContentText(notificationText);
+        build.setTicker(notificationText);
+        build.setWhen(System.currentTimeMillis());
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent intent = PendingIntent.getActivity(context, 0,
+                notificationIntent, 0);
+        build.setContentIntent(intent);
+        Notification notification = build.build();
+        notification.flags =  Notification.FLAG_AUTO_CANCEL;
+        notification.defaults |=  Notification.DEFAULT_ALL;
+        NotificationManager notificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(2, notification);
+    }
 
 	@Override
 	protected void onPushOpen(Context context, Intent intent) {
