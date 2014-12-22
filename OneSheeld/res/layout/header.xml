@@ -52,11 +52,20 @@
             android:layout_height="wrap_content" />
 
         <ImageView
+            android:id="@+id/operationsLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:background="@drawable/shields_list_shields_operation_button"
             android:contentDescription="@string/app_name" />
+
+        <ProgressBar
+            android:id="@+id/progressShieldInit"
+            style="@android:style/Widget.ProgressBar.Inverse"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
     </com.integreight.onesheeld.utils.customviews.ClickableRelativeLayout>
 
 </RelativeLayout>

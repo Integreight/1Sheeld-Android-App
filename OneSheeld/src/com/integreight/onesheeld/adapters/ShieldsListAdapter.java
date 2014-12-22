@@ -261,6 +261,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 	Handler handler = new Handler();
 
 	public void applyToControllerTable() {
+		activity.findViewById(R.id.progressShieldInit).setVisibility(
+				View.VISIBLE);
+		activity.findViewById(R.id.operationsLogo)
+				.setVisibility(View.INVISIBLE);
 		for (int i = 0; i < shieldsList.size(); i++) {
 			final Shield shield = shieldsList.get(i);
 			final int x = i;
@@ -285,9 +289,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 
 								@Override
 								public void onFailure() {
-									shieldsList.get(x).mainActivitySelection = false;
+									shield.mainActivitySelection = false;
+									shieldsList.setValueAt(x, shield);
 									AppShields.getInstance().putShield(x,
-											shieldsList.get(x));
+											shield);
 									if (app.getRunningShields().get(shield.tag) != null) {
 										app.getRunningShields().get(shield.tag)
 												.resetThis();
@@ -333,6 +338,18 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 							app.getRunningShields().get(shield.tag).resetThis();
 							app.getRunningShields().remove(shield.tag);
 						}
+					}
+					if (x == shieldsList.size() - 1) {
+						uiHandler.post(new Runnable() {
+
+							@Override
+							public void run() {
+								activity.findViewById(R.id.progressShieldInit)
+										.setVisibility(View.INVISIBLE);
+								activity.findViewById(R.id.operationsLogo)
+										.setVisibility(View.VISIBLE);
+							}
+						});
 					}
 				}
 			});

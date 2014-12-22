@@ -306,23 +306,25 @@ public class SheeldsList extends Fragment {
 	}
 
 	private void launchShieldsOperationActivity() {
-		if (!isAnyShieldsSelected()) {
-			Toast.makeText(activity, "Select at least 1 shield",
-					Toast.LENGTH_LONG).show();
-			return;
-		} else {
-			activity.replaceCurrentFragment(R.id.appTransitionsContainer,
-					ShieldsOperations.getInstance(),
-					ShieldsOperations.class.getName(), true, true);
-			activity.findViewById(R.id.getAvailableDevices).setOnClickListener(
-					new View.OnClickListener() {
+		if (getActivity().findViewById(R.id.progressShieldInit).getVisibility() != View.VISIBLE) {
+			if (!isAnyShieldsSelected()) {
+				Toast.makeText(activity, "Select at least 1 shield",
+						Toast.LENGTH_LONG).show();
+				return;
+			} else {
+				activity.replaceCurrentFragment(R.id.appTransitionsContainer,
+						ShieldsOperations.getInstance(),
+						ShieldsOperations.class.getName(), true, true);
+				activity.findViewById(R.id.getAvailableDevices)
+						.setOnClickListener(new View.OnClickListener() {
 
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
 
-						}
-					});
+							}
+						});
+			}
 		}
 	}
 
