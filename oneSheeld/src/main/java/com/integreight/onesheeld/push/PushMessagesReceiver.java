@@ -238,18 +238,13 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 		build.setSmallIcon(R.drawable.white_ee_icon);
 		build.setContentTitle(notificationText);
 		build.setContentText("Someone is trying to control your 1Sheeld");
-		// Uri alertSound =
-		// RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-		// build.setSound(alertSound);
 		build.setTicker(notificationText);
 		build.setWhen(System.currentTimeMillis());
 		Intent notificationIntent = new Intent(context, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
 		PendingIntent intent = PendingIntent.getActivity(context, 0,
 				notificationIntent, 0);
-
 		build.setContentIntent(intent);
 		Notification notification = build.build();
         notification.flags =  Notification.FLAG_AUTO_CANCEL;
@@ -266,18 +261,12 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
         build.setSmallIcon(R.drawable.white_ee_icon);
         build.setContentTitle(title);
         build.setContentText(notificationText);
-        // Uri alertSound =
-        // RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        // build.setSound(alertSound);
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
         PendingIntent intent = PendingIntent.getActivity(context, 0,
                 notificationIntent, 0);
-
-
         build.setContentIntent(intent);
         Notification notification = build.build();
         notification.flags =  Notification.FLAG_AUTO_CANCEL;
