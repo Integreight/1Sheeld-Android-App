@@ -19,6 +19,7 @@ package com.facebook.widget;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
@@ -381,7 +382,7 @@ public class LoginButton extends Button {
      * manage the setting of permissions outside of the LoginButton class altogether
      * (by managing the session explicitly).
      *
-     * @param permissions the read permissions to use
+     * @param permissions the publish permissions to use
      *
      * @throws UnsupportedOperationException if setReadPermissions has been called
      * @throws IllegalArgumentException if permissions is null or empty
@@ -407,7 +408,7 @@ public class LoginButton extends Button {
      * manage the setting of permissions outside of the LoginButton class altogether
      * (by managing the session explicitly).
      *
-     * @param permissions the read permissions to use
+     * @param permissions the publish permissions to use
      *
      * @throws UnsupportedOperationException if setReadPermissions has been called
      * @throws IllegalArgumentException if permissions is null or empty
@@ -843,6 +844,11 @@ public class LoginButton extends Button {
                         openRequest = new Session.OpenRequest(parentFragment);
                     } else if (context instanceof Activity) {
                         openRequest = new Session.OpenRequest((Activity)context);
+                    } else if (context instanceof ContextWrapper) {
+                        Context baseContext = ((ContextWrapper)context).getBaseContext();
+                        if (baseContext instanceof Activity) {
+                            openRequest = new Session.OpenRequest((Activity)baseContext);
+                        }
                     }
 
                     if (openRequest != null) {
