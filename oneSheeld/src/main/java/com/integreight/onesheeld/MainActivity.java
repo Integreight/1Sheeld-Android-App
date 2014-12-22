@@ -69,7 +69,7 @@ public class MainActivity extends FragmentActivity {
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		initCrashlyticsAndUncaughtThreadHandler();
-		ParseAnalytics.trackAppOpened(getIntent());
+//		ParseAnalytics.trackAppOpened(getIntent());
 		// Get a Tracker (should auto-report)
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
