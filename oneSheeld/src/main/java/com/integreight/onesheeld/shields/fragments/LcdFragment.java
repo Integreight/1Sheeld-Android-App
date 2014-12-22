@@ -53,6 +53,10 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		uiHandler = new Handler();
 		((LcdShield) getApplication().getRunningShields().get(
 				getControllerTag())).setLcdEventHandler(lcdEventHandler);

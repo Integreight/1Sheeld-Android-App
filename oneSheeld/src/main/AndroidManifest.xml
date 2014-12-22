@@ -91,6 +91,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+
+
+
         </activity>
         <activity
             android:name="com.facebook.LoginActivity"
@@ -134,6 +137,13 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
             </intent-filter>
         </activity>
+
+
+
+
+
+
+
         <receiver
             android:name="com.integreight.onesheeld.plugin.action.FireReceiver"
             android:exported="true"
@@ -154,7 +164,12 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.QUERY_CONDITION" />
             </intent-filter>
         </receiver>
+
         <service
+
+
+
+
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraHeadService"
             android:label="My CameraHeadService"
             android:singleUser="true" >
@@ -163,6 +178,9 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+
+
 
         <activity
             android:name="Tutorial"
@@ -173,6 +191,7 @@
 
         <service android:name="com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService" />
         <service android:name="com.parse.PushService" />
+
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -193,5 +212,4 @@
             </intent-filter>
         </receiver>
     </application>
-
 </manifest>

@@ -60,10 +60,12 @@ public class SevenSegmentFragment extends
 
 	@Override
 	public void onStart() {
-		if (getApplication().getRunningShields().get(getControllerTag()) != null)
-			refreshSegments(((SevenSegmentShield) getApplication()
-					.getRunningShields().get(getControllerTag()))
-					.refreshSegments());
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
+		refreshSegments(((SevenSegmentShield) getApplication()
+				.getRunningShields().get(getControllerTag())).refreshSegments());
 		LinearLayout colorChooseCont = (LinearLayout) v
 				.findViewById(R.id.colorsContainer);
 		for (int i = 0; i < colorChooseCont.getChildCount(); i++) {

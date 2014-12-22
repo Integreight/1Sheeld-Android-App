@@ -116,7 +116,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 				});
 			} catch (Exception e) {
 			}
-			activity.setTitle(mFrag.getUIShield(0).getName() + " Shield");
+			activity.setTitle(mFrag.getUIShield(0).name + " Shield");
 			// set the Above View
 			// setContentView(R.layout.content_frame);
 			activity.getSupportFragmentManager()

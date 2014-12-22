@@ -46,6 +46,10 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		initializeFirmata();
 		checkLogin();
 		facebookLogin.setOnClickListener(new View.OnClickListener() {

@@ -16,7 +16,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.OneSheeldApplication;
@@ -65,13 +64,6 @@ public final class FireReceiver extends BroadcastReceiver {
 		BundleScrubber.scrub(bundle);
 
 		if (PluginBundleManager.isActionBundleValid(bundle)) {
-			System.out
-					.println(app.getAppFirmata()
-							+ "    "
-							+ bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER)
-							+ "    "
-							+ bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT)
-							+ "    " + app.getAppFirmata().isOpen());
 			if (app.getAppFirmata() != null) {
 				app.getAppFirmata()
 						.pinMode(
@@ -82,7 +74,7 @@ public final class FireReceiver extends BroadcastReceiver {
 								bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
 								bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
 			}
-//			Toast.makeText(context, "MESSAGE", Toast.LENGTH_LONG).show();
+			// Toast.makeText(context, "MESSAGE", Toast.LENGTH_LONG).show();
 		}
 	}
 }

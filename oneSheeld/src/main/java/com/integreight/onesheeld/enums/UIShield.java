@@ -156,16 +156,16 @@ public enum UIShield {
 			0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26,
 			0xff142218, 0xffc9a302, 0xffa57378, 0xff3354af, 0xff282742,
 			0xff381616 };
-	private byte id;
-	private String name;
+	public byte id;
+	public String name;
 	public int itemBackgroundColor;
-	private int symbolId;
-	private boolean mainActivitySelection;
-	private static UIShield shieldsActivitySelection;
-	private static boolean isConnected = false;
-	private boolean isReleasable = true;
-	private int isInvalidatable = 0;
-	private Class<? extends ControllerParent<?>> shieldType;
+	public int symbolId;
+	public boolean mainActivitySelection;
+	public static UIShield shieldsActivitySelection;
+	public static boolean isConnected = false;
+	public boolean isReleasable = true;
+	public int isInvalidatable = 0;
+	public Class<? extends ControllerParent<?>> shieldType;
 	public int position = 0;
 
 	public int getSymbolId() {

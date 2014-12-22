@@ -32,6 +32,10 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		super.onStart();
 
 	}
@@ -117,7 +121,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 
 	public void doOnServiceConnected() {
 		invalidateController();
-	};
+	}
 
 	@Override
 	public void onResume() {

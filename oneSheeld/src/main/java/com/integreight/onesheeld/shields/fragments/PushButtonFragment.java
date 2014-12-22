@@ -87,6 +87,10 @@ public class PushButtonFragment extends
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		ConnectingPinsView.getInstance().reset(
 				getApplication().getRunningShields().get(getControllerTag()),
 				new OnPinSelectionListener() {

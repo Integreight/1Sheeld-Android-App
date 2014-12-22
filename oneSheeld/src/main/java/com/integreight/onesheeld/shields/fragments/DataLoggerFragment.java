@@ -35,6 +35,10 @@ public class DataLoggerFragment extends
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		super.onStart();
 	}
 
@@ -96,8 +100,11 @@ public class DataLoggerFragment extends
 
 							@Override
 							public void run() {
-								if (canChangeUI() && !((DataLoggerShield) getApplication().getRunningShields().get(
-										getControllerTag())).isLoggingStarted()) {
+								if (canChangeUI()
+										&& !((DataLoggerShield) getApplication()
+												.getRunningShields().get(
+														getControllerTag()))
+												.isLoggingStarted()) {
 									keysContainer.removeAllViews();
 									valuesContainer.removeAllViews();
 									((DataLoggerShield) getApplication()
@@ -161,10 +168,11 @@ public class DataLoggerFragment extends
 								((OneSheeldTextView) valuesContainer
 										.findViewWithTag(header + "Value"))
 										.setText("");
-//								((OneSheeldTextView) valuesContainer
-//										.findViewWithTag(header + "Value")).setText(header
-//										.equals("Time") ? rowData.get(header)
-//										: "");
+								// ((OneSheeldTextView) valuesContainer
+								// .findViewWithTag(header +
+								// "Value")).setText(header
+								// .equals("Time") ? rowData.get(header)
+								// : "");
 							} else {
 								OneSheeldTextView key = new OneSheeldTextView(
 										activity);
@@ -181,8 +189,8 @@ public class DataLoggerFragment extends
 										activity);
 								value.setLayoutParams(cellParams);
 								value.setSingleLine(true);
-//								value.setText(header.equals("Time") ? rowData
-//										.get(header) : "");
+								// value.setText(header.equals("Time") ? rowData
+								// .get(header) : "");
 								value.setTextColor(getResources().getColor(
 										R.color.offWhite));
 								value.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
@@ -235,8 +243,8 @@ public class DataLoggerFragment extends
 				@Override
 				public void run() {
 					if (canChangeUI()) {
-//						if (keysContainer.findViewWithTag("Time") == null)
-//							add("Time", "");
+						// if (keysContainer.findViewWithTag("Time") == null)
+						// add("Time", "");
 						add(header, valueT);
 					}
 				}

@@ -32,6 +32,10 @@ public class TemperatureFragment extends
 	@Override
 	public void onStart() {
 		super.onStart();
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((TemperatureShield) getApplication().getRunningShields().get(
 				getControllerTag())).registerSensorListener(true);
 

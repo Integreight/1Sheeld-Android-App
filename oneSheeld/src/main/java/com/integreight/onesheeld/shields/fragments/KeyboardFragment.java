@@ -53,7 +53,10 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
 	@Override
 	public void onStart() {
-
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		super.onStart();
 
 	}

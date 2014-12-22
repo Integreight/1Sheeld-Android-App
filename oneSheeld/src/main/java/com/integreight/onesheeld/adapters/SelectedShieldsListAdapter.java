@@ -13,18 +13,20 @@ import android.widget.ImageView;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.Shield;
+import com.integreight.onesheeld.utils.AppShields;
 
 public class SelectedShieldsListAdapter extends BaseAdapter {
 	Activity activity;
-	List<UIShield> shieldList;
+	List<Shield> shieldList;
 	LayoutInflater inflater;
 
 	public SelectedShieldsListAdapter(Activity a) {
 		this.activity = a;
-		this.shieldList = new ArrayList<UIShield>();
-		List<UIShield> tempShieldsList = UIShield.valuesFiltered();
-		for (UIShield shield : tempShieldsList) {
-			if (shield.isMainActivitySelection())
+		this.shieldList = new ArrayList<Shield>();
+		for (int i = 0; i < AppShields.getInstance().getShieldsArray().size(); i++) {
+			Shield shield = AppShields.getInstance().getShield(i);
+			if (shield.mainActivitySelection)
 				this.shieldList.add(shield);
 		}
 
@@ -36,7 +38,7 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 		return shieldList.size();
 	}
 
-	public UIShield getItem(int position) {
+	public Shield getItem(int position) {
 		return shieldList.get(position);
 	}
 
@@ -64,9 +66,9 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 			holder = (Holder) row.getTag();
 		}
 
-		UIShield shield = shieldList.get(position);
-		Integer iconId = shield.getSymbolId();
-		Integer imageId = shield.getItemBackgroundColor();
+		Shield shield = shieldList.get(position);
+		Integer iconId = shield.symbolId;
+		Integer imageId = shield.itemBackgroundColor;
 		if (holder.symbol.getDrawingCache() != null) {
 			holder.symbol.getDrawingCache().recycle();
 		}
@@ -76,7 +78,8 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 
 		row.setBackgroundColor(imageId);
 
-		if (UIShield.getShieldsActivitySelection() == shield) {
+		if (UIShield.getShieldsActivitySelection() != null
+				&& UIShield.getShieldsActivitySelection().id == shield.id) {
 			holder.selectionCircle.setVisibility(View.VISIBLE);
 		} else {
 			holder.selectionCircle.setVisibility(View.INVISIBLE);

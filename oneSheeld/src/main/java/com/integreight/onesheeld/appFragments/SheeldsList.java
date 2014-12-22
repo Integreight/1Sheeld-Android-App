@@ -38,14 +38,15 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.Tutorial;
 import com.integreight.onesheeld.adapters.ShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
+import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
@@ -56,7 +57,6 @@ public class SheeldsList extends Fragment {
 	boolean isInflated = false;
 	private ListView mListView;
 	private static SheeldsList thisInstance;
-	private List<UIShield> shieldsUIList;
 	private ShieldsListAdapter adapter;
 	OneSheeldEditText searchBox;
 	private static final String TAG = "ShieldsList";
@@ -213,8 +213,10 @@ public class SheeldsList extends Fragment {
 				new ArduinoConnectivityPopup(activity).show();
 		}
 		Crashlytics.setString("Current View", "Shields List");
-		((OneSheeldApplication) activity.getApplication()).getTracker().setScreenName("Main Shields List");
-		((OneSheeldApplication) activity.getApplication()).getTracker().send(new HitBuilders.ScreenViewBuilder().build());
+		((OneSheeldApplication) activity.getApplication()).getTracker()
+				.setScreenName("Main Shields List");
+		((OneSheeldApplication) activity.getApplication()).getTracker().send(
+				new HitBuilders.ScreenViewBuilder().build());
 		super.onResume();
 	}
 
@@ -236,7 +238,6 @@ public class SheeldsList extends Fragment {
 
 	private void initView() {
 		// mListView.addHeaderView(mHeader);
-		shieldsUIList = UIShield.valuesFiltered();
 		adapter = new ShieldsListAdapter(activity);
 		mListView.setAdapter(adapter);
 		mListView.setSelection(1);
@@ -255,9 +256,9 @@ public class SheeldsList extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
-						for (UIShield shield : UIShield.valuesFiltered()) {
-							UIShield.valueOf(shield.name())
-									.setMainActivitySelection(true);
+						for (int i = 0; i < AppShields.getInstance()
+								.getShieldsArray().size(); i++) {
+							AppShields.getInstance().getShield(i).mainActivitySelection = true;
 						}
 						searchBox.setText("");
 						adapter.selectAll();
@@ -272,9 +273,9 @@ public class SheeldsList extends Fragment {
 								.getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
 								0);
-						for (UIShield shield : UIShield.valuesFiltered()) {
-							UIShield.valueOf(shield.name())
-									.setMainActivitySelection(false);
+						for (int i = 0; i < AppShields.getInstance()
+								.getShieldsArray().size(); i++) {
+							AppShields.getInstance().getShield(i).mainActivitySelection = false;
 						}
 						searchBox.setText("");
 						adapter.reset();
@@ -338,7 +339,7 @@ public class SheeldsList extends Fragment {
 				activity.getThisApplication().remoteOneSheeldController.reset();
 			}
 			((OneSheeldApplication) activity.getApplication())
-			.endConnectionTimerAndReport();
+					.endConnectionTimerAndReport();
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
@@ -357,15 +358,14 @@ public class SheeldsList extends Fragment {
 			activity.getThisApplication().remoteOneSheeldController = new RemoteOneSheeldShield(
 					activity, UIShield.REMOTEONESHEELD_SHIELD.name());
 			Log.e(TAG, "- ARDUINO CONNECTED -");
+			((OneSheeldApplication) activity.getApplication()).getTracker()
+					.send(new HitBuilders.ScreenViewBuilder().setNewSession()
+							.build());
 			((OneSheeldApplication) activity.getApplication())
-			.getTracker().send(new HitBuilders.ScreenViewBuilder()
-            .setNewSession()
-            .build());
-			((OneSheeldApplication) activity.getApplication())
-			.startConnectionTimer();
+					.startConnectionTimer();
 			if (isOneSheeldServiceRunning()) {
-//				((OneSheeldApplication) activity.getApplication())
-//						.getGaTracker().set(Fields.SESSION_CONTROL, "start");
+				// ((OneSheeldApplication) activity.getApplication())
+				// .getGaTracker().set(Fields.SESSION_CONTROL, "start");
 				if (adapter != null)
 					adapter.applyToControllerTable();
 			}
@@ -378,10 +378,11 @@ public class SheeldsList extends Fragment {
 					activity.getThisApplication().taskerController.reset();
 				}
 				if (activity.getThisApplication().remoteOneSheeldController != null) {
-					activity.getThisApplication().remoteOneSheeldController.reset();
+					activity.getThisApplication().remoteOneSheeldController
+							.reset();
 				}
 				((OneSheeldApplication) activity.getApplication())
-				.endConnectionTimerAndReport();
+						.endConnectionTimerAndReport();
 				activity.getOnConnectionLostHandler().connectionLost = true;
 				if (activity.getOnConnectionLostHandler().canInvokeOnCloseConnection
 						|| activity.isForground)
@@ -471,36 +472,49 @@ public class SheeldsList extends Fragment {
 					activity.getPackageName(), 0);
 			String versionName = pInfo.versionName;
 			int versionCode = pInfo.versionCode;
-			String installationIdString ="";
-			ValidationAction shareConnectionId=null;
-			if(ParseInstallation
-					.getCurrentInstallation() != null && ParseInstallation
-					.getCurrentInstallation().getInstallationId() != null){
-				installationIdString="Connect using: "
-					+ ParseInstallation.getCurrentInstallation()
-							.getInstallationId() + "\n\n";
-				shareConnectionId = new ValidationPopup.ValidationAction("Share Id!",
-						new View.OnClickListener() {
+			String installationIdString = "";
+			ValidationAction shareConnectionId = null;
+			if (ParseInstallation.getCurrentInstallation() != null
+					&& ParseInstallation.getCurrentInstallation()
+							.getInstallationId() != null) {
+				installationIdString = "Connect using: "
+						+ ParseInstallation.getCurrentInstallation()
+								.getInstallationId() + "\n\n";
+				shareConnectionId = new ValidationPopup.ValidationAction(
+						"Share Id!", new View.OnClickListener() {
 
 							@Override
 							public void onClick(View v) {
-								String shareBody = "Connect to my 1Sheeld using this address: "+ParseInstallation.getCurrentInstallation().getInstallationId();
-							    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-							        sharingIntent.setType("text/plain");
-							        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "My 1Sheeld Address");
-							        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
-							        startActivity(Intent.createChooser(sharingIntent, "Share Using"));
+								String shareBody = "Connect to my 1Sheeld using this address: "
+										+ ParseInstallation
+												.getCurrentInstallation()
+												.getInstallationId();
+								Intent sharingIntent = new Intent(
+										android.content.Intent.ACTION_SEND);
+								sharingIntent.setType("text/plain");
+								sharingIntent.putExtra(
+										android.content.Intent.EXTRA_SUBJECT,
+										"My 1Sheeld Address");
+								sharingIntent.putExtra(
+										android.content.Intent.EXTRA_TEXT,
+										shareBody);
+								startActivity(Intent.createChooser(
+										sharingIntent, "Share Using"));
 							}
 						}, false);
-				}
-			String firmwareVersion ="";
+			}
+			String firmwareVersion = "";
 			if ((((OneSheeldApplication) activity.getApplication())
-							.getAppFirmata() != null && ((OneSheeldApplication) activity
-							.getApplication()).getAppFirmata().isOpen())&&(((OneSheeldApplication) activity.getApplication())
-									.getAppFirmata().getMajorVersion()!=0)){
-				firmwareVersion="\nFirmware Version: v"+(((OneSheeldApplication) activity.getApplication())
-						.getAppFirmata().getMajorVersion())+"."+(((OneSheeldApplication) activity.getApplication())
-								.getAppFirmata().getMinorVersion())+"\n\n";
+					.getAppFirmata() != null && ((OneSheeldApplication) activity
+					.getApplication()).getAppFirmata().isOpen())
+					&& (((OneSheeldApplication) activity.getApplication())
+							.getAppFirmata().getMajorVersion() != 0)) {
+				firmwareVersion = "\nFirmware Version: v"
+						+ (((OneSheeldApplication) activity.getApplication())
+								.getAppFirmata().getMajorVersion())
+						+ "."
+						+ (((OneSheeldApplication) activity.getApplication())
+								.getAppFirmata().getMinorVersion()) + "\n\n";
 			}
 			final ValidationPopup popup = new ValidationPopup(
 					activity,
@@ -511,7 +525,8 @@ public class SheeldsList extends Fragment {
 							+ versionName
 							+ " ("
 							+ versionCode
-							+ ")"+firmwareVersion
+							+ ")"
+							+ firmwareVersion
 							+ (stringDate != null ? "\nApp was last updated on "
 									+ stringDate
 									: "")
@@ -526,9 +541,10 @@ public class SheeldsList extends Fragment {
 							popup.dismiss();
 						}
 					}, true);
-			
+
 			popup.addValidationAction(ok);
-			if(shareConnectionId!=null)popup.addValidationAction(shareConnectionId);
+			if (shareConnectionId != null)
+				popup.addValidationAction(shareConnectionId);
 			if (!activity.isFinishing())
 				popup.show();
 		} catch (Exception e) {
@@ -553,35 +569,15 @@ public class SheeldsList extends Fragment {
 	}
 
 	private boolean isAnyShieldsSelected() {
-		int i = 0;
-		OneSheeldApplication app = (OneSheeldApplication) activity
-				.getApplication();
+		// OneSheeldApplication app = (OneSheeldApplication) activity
+		// .getApplication();
 		// app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
-		for (UIShield shield : shieldsUIList) {
-			if (shield.isMainActivitySelection()
-					&& shield.getShieldType() != null) {
-				if (app.getRunningShields().get(shield.name()) == null) {
-					ControllerParent<?> type = null;
-					try {
-						type = shield.getShieldType().newInstance();
-					} catch (java.lang.InstantiationException e) {
-						// TODO Auto-generated catch block
-						Log.e("TAG",
-								"isAnyShieldsSelected()::InstantiationException",
-								e);
-					} catch (IllegalAccessException e) {
-						// TODO Auto-generated catch block
-						Log.e("TAG",
-								"isAnyShieldsSelected()::IllegalAccessException",
-								e);
-					}
-					type.setActivity(activity).setTag(shield.name());
-				}
-				i++;
+		for (int j = 0; j < AppShields.getInstance().getShieldsArray().size(); j++) {
+			Shield shield = AppShields.getInstance().getShield(j);
+			if (shield.mainActivitySelection && shield.shieldType != null) {
+				return true;
 			}
 		}
-		if (i > 0)
-			return true;
 		return false;
 	}
 }

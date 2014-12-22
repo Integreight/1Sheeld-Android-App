@@ -53,6 +53,10 @@ public class SpeechRecognitionFragment extends
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((SpeechRecognitionShield) getApplication().getRunningShields().get(
 				getControllerTag()))
 				.setEventHandler(speechRecognitionEventHandler);

@@ -42,7 +42,10 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
 
 	@Override
 	public void onStart() {
-
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		super.onStart();
 
 	}

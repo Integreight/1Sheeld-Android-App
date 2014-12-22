@@ -33,6 +33,10 @@ public class MusicPlayerFragment extends
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		activity.getSupportFragmentManager()
 				.beginTransaction()
 				.replace(R.id.settingsViewContainer,

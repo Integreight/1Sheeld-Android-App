@@ -37,7 +37,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.google.android.gms.analytics.ExceptionReporter;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
@@ -60,6 +59,7 @@ public class MainActivity extends FragmentActivity {
 	private onConnectedToBluetooth onConnectToBlueTooth = null;
 	public static String currentShieldTag = null;
 	public static MainActivity thisInstance;
+	private boolean isBackPressed = false;
 
 	public OneSheeldApplication getThisApplication() {
 		return (OneSheeldApplication) getApplication();
@@ -70,7 +70,7 @@ public class MainActivity extends FragmentActivity {
 		super.onCreate(arg0);
 		initCrashlyticsAndUncaughtThreadHandler();
 		ParseAnalytics.trackAppOpened(getIntent());
-		//Get a Tracker (should auto-report)
+		// Get a Tracker (should auto-report)
 		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
 		initLooperThread();
@@ -111,6 +111,14 @@ public class MainActivity extends FragmentActivity {
 			startActivity(new Intent(this, Tutorial.class));
 	}
 
+	// @Override
+	// public void onConfigurationChanged(Configuration newConfig) {
+	// stopLooperThread();
+	// super.onConfigurationChanged(newConfig);
+	// initCrashlyticsAndUncaughtThreadHandler();
+	// initLooperThread();
+	// }
+
 	public Thread looperThread;
 	public Handler backgroundThreadHandler;
 	private Looper backgroundHandlerLooper;
@@ -140,7 +148,7 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	private void initCrashlyticsAndUncaughtThreadHandler() {
-		UncaughtExceptionHandler myHandler=new Thread.UncaughtExceptionHandler() {
+		UncaughtExceptionHandler myHandler = new Thread.UncaughtExceptionHandler() {
 
 			@Override
 			public void uncaughtException(Thread arg0, final Throwable arg1) {
@@ -175,11 +183,11 @@ public class MainActivity extends FragmentActivity {
 				}).start();
 			}
 		};
-		
-//		UncaughtExceptionHandler gaHandler= new ExceptionReporter(
-//			    getThisApplication().getTracker(),
-//			    myHandler,      // Current default uncaught exception handler.
-//			    getApplicationContext());          
+
+		// UncaughtExceptionHandler gaHandler= new ExceptionReporter(
+		// getThisApplication().getTracker(),
+		// myHandler, // Current default uncaught exception handler.
+		// getApplicationContext());
 		Thread.setDefaultUncaughtExceptionHandler(myHandler);
 		Crashlytics.start(this);
 	}
@@ -308,16 +316,21 @@ public class MainActivity extends FragmentActivity {
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-							popub = new ValidationPopup(MainActivity.this,
-									"Optional Firmware Upgrade", msg,
+							popub = new ValidationPopup(
+									MainActivity.this,
+									"Optional Firmware Upgrade",
+									msg,
 									new ValidationPopup.ValidationAction("Now",
 											new View.OnClickListener() {
 
 												@Override
 												public void onClick(View v) {
 													new FirmwareUpdatingPopup(
-															MainActivity.this/*,
-															false*/).show();
+															MainActivity.this/*
+																			 * ,
+																			 * false
+																			 */)
+															.show();
 												}
 											}, true),
 									new ValidationPopup.ValidationAction(
@@ -370,9 +383,11 @@ public class MainActivity extends FragmentActivity {
 												@Override
 												public void onClick(View v) {
 													FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
-															MainActivity.this/*,
-															false*/
-															);
+															MainActivity.this/*
+																			 * ,
+																			 * false
+																			 */
+													);
 													fup.setCancelable(false);
 													fup.show();
 												}
@@ -383,9 +398,9 @@ public class MainActivity extends FragmentActivity {
 					}
 				}
 			});
-			getThisApplication().getTracker().send(new HitBuilders.ScreenViewBuilder()
-            .setCustomDimension(1, majorVersion+"."+minorVersion)
-            .build());
+			getThisApplication().getTracker().send(
+					new HitBuilders.ScreenViewBuilder().setCustomDimension(1,
+							majorVersion + "." + minorVersion).build());
 		}
 	};
 	ArduinoLibraryVersionChangeHandler arduinoLibraryVersionHandler = new ArduinoLibraryVersionChangeHandler() {
@@ -413,10 +428,10 @@ public class MainActivity extends FragmentActivity {
 						if (!isFinishing())
 							popub.show();
 					}
-					getThisApplication().getTracker().send(new HitBuilders.ScreenViewBuilder()
-		            .setCustomDimension(2, version+"")
-		            .build()
-		        );
+					getThisApplication().getTracker().send(
+							new HitBuilders.ScreenViewBuilder()
+									.setCustomDimension(2, version + "")
+									.build());
 				}
 			});
 		}
@@ -436,14 +451,16 @@ public class MainActivity extends FragmentActivity {
 				@Override
 				public void handleMessage(Message msg) {
 					if (connectionLost) {
-						runOnUiThread(new Runnable() {
-							public void run() {
-								if (!ArduinoConnectivityPopup.isOpened
-										&& !isFinishing())
-									new ArduinoConnectivityPopup(
-											MainActivity.this).show();
-							}
-						});
+						if (!ArduinoConnectivityPopup.isOpened
+								&& !isFinishing())
+							runOnUiThread(new Runnable() {
+								public void run() {
+									if (!ArduinoConnectivityPopup.isOpened
+											&& !isFinishing())
+										new ArduinoConnectivityPopup(
+												MainActivity.this).show();
+								}
+							});
 						if (getSupportFragmentManager()
 								.getBackStackEntryCount() > 1) {
 							getSupportFragmentManager().beginTransaction()
@@ -488,8 +505,9 @@ public class MainActivity extends FragmentActivity {
 							});
 					getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
 					getSupportFragmentManager().executePendingTransactions();
-				} else
+				} else {
 					moveTaskToBack(true);
+				}
 			}
 		} else {
 			if (pinsView.isOpened())
@@ -532,18 +550,45 @@ public class MainActivity extends FragmentActivity {
 		this.stopService(new Intent(this, OneSheeldService.class));
 	}
 
+	public void finishManually() {
+		isBackPressed = true;
+		finish();
+	}
+
 	@Override
 	protected void onDestroy() {
-		// isBoundService = OneSheeldService.isBound;
-		// if (isMyServiceRunning())
-		getThisApplication().getTracker().send(new HitBuilders.EventBuilder()
-        .setCategory("App lifecycle")
-        .setAction("Finished the app manually")
-        .build());
+		getThisApplication().getTracker().send(
+				new HitBuilders.EventBuilder().setCategory("App lifecycle")
+						.setAction("Finished the app manually").build());
 		ArduinoConnectivityPopup.isOpened = false;
 		stopService();
 		stopLooperThread();
-		// isBoundService = false;
+		moveTaskToBack(true);
+		if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
+			while (!((OneSheeldApplication) getApplication()).getAppFirmata()
+					.close())
+				;
+		}
+		// // unExpeted
+		if (!isBackPressed) {
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					// tryToSendNotificationsToAdmins(arg1);
+					Intent in = new Intent(getIntent());
+					PendingIntent intent = PendingIntent.getActivity(
+							getBaseContext(), 0, in, getIntent().getFlags());
+
+					AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+					mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
+							intent);
+					android.os.Process.killProcess(android.os.Process.myPid());
+				}
+			}).start();
+		} else
+			android.os.Process.killProcess(android.os.Process.myPid());
+		isBackPressed = false;
 		super.onDestroy();
 	}
 
@@ -682,13 +727,13 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
-//		GoogleAnalytics.getInstance(this).reportActivityStart(this);
+		// GoogleAnalytics.getInstance(this).reportActivityStart(this);
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-//		GoogleAnalytics.getInstance(this).reportActivityStop(this);
+		// GoogleAnalytics.getInstance(this).reportActivityStop(this);
 		super.onStop();
 	}
 

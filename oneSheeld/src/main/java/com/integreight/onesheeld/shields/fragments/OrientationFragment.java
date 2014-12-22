@@ -32,6 +32,10 @@ public class OrientationFragment extends
 	@Override
 	public void onStart() {
 		super.onStart();
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((OrientationShield) getApplication().getRunningShields().get(
 				getControllerTag())).registerSensorListener(true);
 

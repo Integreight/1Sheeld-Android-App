@@ -32,6 +32,10 @@ public class MagnetometerFragment extends
 	@Override
 	public void onStart() {
 		super.onStart();
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((MagnetometerShield) getApplication().getRunningShields().get(
 				getControllerTag())).registerSensorListener(true);
 

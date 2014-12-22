@@ -1,9 +1,11 @@
 package com.integreight.onesheeld.shields;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,8 +18,9 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
+import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
 
 /**
@@ -52,8 +55,21 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		super.onDetach();
 	}
 
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {
+		FragmentTransaction ft = activity.getSupportFragmentManager()
+				.beginTransaction();
+		ft.detach(this).commit();
+		super.onConfigurationChanged(newConfig);
+		FragmentTransaction ft1 = activity.getSupportFragmentManager()
+				.beginTransaction();
+		ft1.attach(this).commit();
+		activity = getAppActivity();
+		controllerTag = getControllerTag();
+	}
+
 	public MainActivity getAppActivity() {
-		return activity;
+		return (MainActivity) getActivity();
 	}
 
 	public OneSheeldApplication getApplication() {
@@ -63,6 +79,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		setHasOptionsMenu(true);
+		activity = (MainActivity) getAppActivity();
 		super.onActivityCreated(savedInstanceState);
 	}
 
@@ -70,8 +87,38 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		return ((T) this).getClass().getName();
 	}
 
+	public boolean reInitController() {
+		ControllerParent<?> type = null;
+		Shield shield = AppShields.getInstance().getShield(getControllerTag());
+		if (shield != null) {
+			try {
+				type = shield.shieldType.newInstance();
+			} catch (java.lang.InstantiationException e) {
+				// TODO Auto-generated catch block
+				Log.e("TAG", "Exception", e);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				Log.e("TAG", "Exception", e);
+			}
+			if (type != null) {
+				type.setActivity(getAppActivity()).setTag(shield.tag);
+				getApplication().getRunningShields().get(getControllerTag())
+						.setHasForgroundView(true);
+				return true;
+			}
+		} else {
+			getActivity().getSupportFragmentManager().beginTransaction()
+					.remove(this).commit();
+			onDestroy();
+			return false;
+		}
+		return false;
+	}
+
 	@Override
 	public void onStart() {
+		Log.d("S", "start");
+		activity = getAppActivity();
 		uiHandler = new Handler();
 		/*
 		 * If the Shield lost it's controller instance within the application,
@@ -81,22 +128,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 			getApplication().getRunningShields().get(getControllerTag())
 					.setHasForgroundView(true);
 		else {
-			ControllerParent<?> type = null;
-			UIShield shield = UIShield.valueOf(getControllerTag());
-			try {
-				type = shield.getShieldType().newInstance();
-			} catch (java.lang.InstantiationException e) {
-				// TODO Auto-generated catch block
-				Log.e("TAG", "Exception", e);
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				Log.e("TAG", "Exception", e);
-			}
-			if (type != null) {
-				type.setActivity(getAppActivity()).setTag(shield.name());
-				getApplication().getRunningShields().get(getControllerTag())
-						.setHasForgroundView(true);
-			}
+			reInitController();
+			return;
 		}
 		if (getApplication().getAppFirmata() == null) {
 			getApplication().addServiceEventHandler(
@@ -114,7 +147,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 						}
 					});
 		} else
-			((T) ShieldFragmentParent.this).doOnServiceConnected();
+			doOnServiceConnected();
 		// View or hide Setting sliding drawer handler button
 		activity.findViewById(R.id.settingsFixedHandler).setVisibility(
 				hasSettings ? View.VISIBLE : View.GONE);

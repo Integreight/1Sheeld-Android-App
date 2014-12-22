@@ -50,6 +50,10 @@ public class TextToSpeechFragment extends
 
 	@Override
 	public void onStart() {
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		uiHandler = new Handler();
 		((TextToSpeechShield) getApplication().getRunningShields().get(
 				getControllerTag())).setEventHandler(ttsEventHandler);

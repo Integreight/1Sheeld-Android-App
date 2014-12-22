@@ -31,6 +31,10 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
 	@Override
 	public void onStart() {
 		super.onStart();
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		((ProximityShield) getApplication().getRunningShields().get(
 				getControllerTag())).registerSensorListener(true);
 

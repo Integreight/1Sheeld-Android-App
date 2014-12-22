@@ -37,9 +37,11 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
 	@Override
 	public void onStart() {
-
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
+		}
 		initializeFirmata();
-
 		if (((TwitterShield) getApplication().getRunningShields().get(
 				getControllerTag())) != null
 				&& ((TwitterShield) getApplication().getRunningShields().get(

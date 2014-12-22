@@ -195,10 +195,9 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
 	@Override
 	public void onStart() {
-		if ((TerminalShield) getApplication().getRunningShields().get(
-				getControllerTag()) == null) {
-			getApplication().getRunningShields().put(getControllerTag(),
-					new TerminalShield(activity, getControllerTag()));
+		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+			if (!reInitController())
+				return;
 		}
 		v.findViewById(
 				((TerminalShield) getApplication().getRunningShields().get(
