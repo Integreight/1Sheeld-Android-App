@@ -204,9 +204,10 @@ public class TemperatureFragment extends
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		((TemperatureShield) getApplication().getRunningShields().get(
-				getControllerTag()))
-				.setTemperatureEventHandler(temperatureEventHandler);
+		if (getApplication().getRunningShields().get(getControllerTag()) != null)
+			((TemperatureShield) getApplication().getRunningShields().get(
+					getControllerTag()))
+					.setTemperatureEventHandler(temperatureEventHandler);
 
 	}
 }

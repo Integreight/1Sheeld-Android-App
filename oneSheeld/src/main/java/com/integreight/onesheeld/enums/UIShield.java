@@ -133,7 +133,7 @@ public enum UIShield {
 			KeyboardShield.class), TEXT_TO_SPEECH_SHIELD((byte) 0x23,
 			"Text To Speech", 0xffde1f26, R.drawable.shields_list_tts_symbol,
 			false, TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD(
-			(byte) 0x24, "Speech Recognizer", 0xffde1f26,
+			(byte) 0x24, "Voice Recognizer", 0xffde1f26,
 			R.drawable.shields_list_voice_recognition_symbol, false,
 			SpeechRecognitionShield.class), DATA_LOGGER((byte) 0x25,
 			"Data Logger", 0xffde1f26,

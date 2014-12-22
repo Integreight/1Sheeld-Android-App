@@ -218,12 +218,14 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 	public void onResume() {
 		MainActivity.currentShieldTag = getControllerTag();
 		// restore the staus of shield interaction toggle button
-		((ToggleButton) activity.findViewById(R.id.shieldStatus))
-				.setChecked(getApplication().getRunningShields().get(
-						getControllerTag()).isInteractive);
+		if (getApplication().getRunningShields().get(getControllerTag()) != null)
+			((ToggleButton) activity.findViewById(R.id.shieldStatus))
+					.setChecked(getApplication().getRunningShields().get(
+							getControllerTag()).isInteractive);
 		// Google analytics tracking
 		getApplication().getTracker().setScreenName(getControllerTag());
-		getApplication().getTracker().send(new HitBuilders.ScreenViewBuilder().build());
+		getApplication().getTracker().send(
+				new HitBuilders.ScreenViewBuilder().build());
 		// Logging current view for crashlytics
 		Crashlytics.setString("Current View", getTag());
 		super.onResume();
