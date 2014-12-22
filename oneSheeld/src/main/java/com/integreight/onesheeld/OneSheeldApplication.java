@@ -29,6 +29,7 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
+import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
@@ -190,6 +191,7 @@ public class OneSheeldApplication extends Application {
 						.contains("dev")))
 			ParsePush.subscribeInBackground("dev");
 		connectionTime = 0;
+        AppShields.getInstance().init();
 		super.onCreate();
 	}
 
