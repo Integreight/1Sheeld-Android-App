@@ -16,7 +16,6 @@ import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
 
 public class ArduinoFirmata {
-	public final static String VERSION = "0.2.0";
 	public final static String TAG = "ArduinoFirmata";
 
 	LinkedBlockingQueue<Byte> uartBuffer;
@@ -28,20 +27,20 @@ public class ArduinoFirmata {
 
 	public static final byte INPUT = 0;
 	public static final byte OUTPUT = 1;
-	public static final byte ANALOG = 2;
+//	public static final byte ANALOG = 2;
 	public static final byte PWM = 3;
 	public static final byte SERVO = 4;
-	public static final byte SHIFT = 5;
-	public static final byte I2C = 6;
+//	public static final byte SHIFT = 5;
+//	public static final byte I2C = 6;
 	public static final boolean LOW = false;
 	public static final boolean HIGH = true;
 
-	public static final int A0 = 14;
-	public static final int A1 = 15;
-	public static final int A2 = 16;
-	public static final int A3 = 15;
-	public static final int A4 = 17;
-	public static final int A5 = 18;
+//	public static final int A0 = 14;
+//	public static final int A1 = 15;
+//	public static final int A2 = 16;
+//	public static final int A3 = 15;
+//	public static final int A4 = 17;
+//	public static final int A5 = 18;
 
 	public int arduinoLibraryVersion = -1;
 
