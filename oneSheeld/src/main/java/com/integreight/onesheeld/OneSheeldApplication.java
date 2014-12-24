@@ -40,7 +40,7 @@ import com.parse.ParsePush;
  */
 public class OneSheeldApplication extends Application {
 	private SharedPreferences appPreferences;
-	public static int ARDUINO_LIBRARY_VERSION = 3;
+	public static int ARDUINO_LIBRARY_VERSION = 4;
 	private final String APP_PREF_NAME = "oneSheeldPreference";
 	private final String LAST_DEVICE = "lastConnectedDevice";
 	private final String MAJOR_VERSION = "majorVersion";
