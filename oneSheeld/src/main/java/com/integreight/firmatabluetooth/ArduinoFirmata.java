@@ -65,6 +65,9 @@ public class ArduinoFirmata {
 	// private final byte PULSE_IN_INIT = (byte)0x67;
 	// private final byte PULSE_IN_DATA = (byte)0x68;
 
+    private final byte CONFIGURATION_SHIELD_ID = (byte) 0x00;
+    private final byte BT_CONNECTED=(byte)0x01;
+
 	private final byte UART_BEGIN = (byte) 0x01;
 	private final byte UART_END = (byte) 0x00;
 
@@ -238,7 +241,7 @@ public class ArduinoFirmata {
 	}
 
 	public void notifyHardwareOfConnection(){
-		sendShieldFrame(new ShieldFrame((byte)0x00, (byte)0x01));
+		sendShieldFrame(new ShieldFrame(CONFIGURATION_SHIELD_ID, BT_CONNECTED));
 	}
 	
 	public boolean isOpen() {
@@ -778,7 +781,7 @@ public class ArduinoFirmata {
 					byte shieldId = readByteFromUartBuffer();
 					boolean found = false;
 					for (UIShield shield : UIShield.values()) {
-						if (shieldId == shield.getId()||shieldId == 0x00)
+						if (shieldId == shield.getId()||shieldId == CONFIGURATION_SHIELD_ID)
 							found = true;
 					}
 					if (!found) {
@@ -829,7 +832,7 @@ public class ArduinoFirmata {
 						}
 					}
 					printFrameToLog(frame.getAllFrameAsBytes(),"Rec");
-					if(shieldId==0x00){
+					if(shieldId==CONFIGURATION_SHIELD_ID){
 						//1Sheeld configration from the library
 					}
 					else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
