@@ -53,7 +53,10 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 	private static final byte UPDATE_SEND_MESSAGE_METHOD_ID = (byte) 0x02;
 	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x03;
 	private static final byte TRACK_KEYWORD_METHOD_ID = (byte) 0x04;
-	private static final byte STOP_TRACKING_KEYWORD_METHOD_ID = (byte) 0x05;
+    private static final byte STOP_TRACKING_KEYWORD_METHOD_ID = (byte) 0x05;
+    private static final byte GET_TWEET = (byte) 0x01;
+    private static final byte IS_TWITTER_SELECTED = (byte) 0x02;
+
 	private boolean thereIsAConnectionRequest;
 	private boolean isTwitterStreamConnecting;
 	TwitterStream twitterStream;
@@ -93,7 +96,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 
 	public void notifyHardwareOfTwitterSelection(){
 		activity.getThisApplication().getAppFirmata()
-		.sendShieldFrame(new ShieldFrame(UIShield.TWITTER_SHIELD.getId(),(byte)0x02));
+		.sendShieldFrame(new ShieldFrame(UIShield.TWITTER_SHIELD.getId(),IS_TWITTER_SELECTED));
 	}
 	
 	@Override
@@ -662,7 +665,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				// TODO Auto-generated method stub
 				Log.d("tweet", arg0.getText());
 				ShieldFrame frame = new ShieldFrame(
-						UIShield.TWITTER_SHIELD.getId(), (byte) 0x01);
+						UIShield.TWITTER_SHIELD.getId(), GET_TWEET);
 				frame.addStringArgument(arg0.getUser().getName());
 				frame.addStringArgument(arg0.getText());
 				activity.getThisApplication().getAppFirmata()
