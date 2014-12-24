@@ -156,7 +156,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 									shield.mainActivitySelection = true;
 									shieldsList.put(position, shield);
 									AppShields.getInstance().putShield(
-											position, shield);
+											shield.position, shield);
 								}
 
 								@Override
@@ -190,7 +190,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 									}
 									shieldsList.put(position, shield);
 									AppShields.getInstance().putShield(
-											position, shield);
+											shield.position, shield);
 									// }
 									// });
 								}

@@ -166,10 +166,6 @@
         </receiver>
 
         <service
-
-
-
-
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraHeadService"
             android:label="My CameraHeadService"
             android:singleUser="true" >

@@ -9,6 +9,8 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 
+import com.integreight.onesheeld.utils.Log;
+
 public class SpeechRecognition implements RecognitionListener {
 	@SuppressWarnings("unused")
 	private static final String TAG = SpeechRecognition.class.getSimpleName();
@@ -115,7 +117,7 @@ public class SpeechRecognition implements RecognitionListener {
 	@Override
 	public void onEvent(int eventType, Bundle params) {
 		// TODO Auto-generated method stub
-
+        Log.d("VR",eventType+"");
 	}
 
 	@Override
