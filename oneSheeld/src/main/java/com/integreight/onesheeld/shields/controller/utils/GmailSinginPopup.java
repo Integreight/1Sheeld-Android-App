@@ -28,9 +28,8 @@ public class GmailSinginPopup extends Dialog {
 	private String userName, password;
 	TextView invalide_username_tx, invalide_password_tx, auth_failed_tx;
 	private EmailEventHandler emailEventHandler;
-	private static String message_body = "This mail just to insure that the user Email is valid";
-	private static String message_reciption = "testingonesheeld@gmail.com";
-	private static String message_subject = "OneSheeld";
+	private static String message_body = "This mail just to insure that the user email and password are valid for future connections with 1Sheeld app.";
+	private static String message_subject = "Checking connection with email server";
 	private ProgressBar loading;
 
 	public GmailSinginPopup(Activity context, EmailEventHandler eventHandler) {
@@ -169,7 +168,7 @@ public class GmailSinginPopup extends Dialog {
 		protected Integer doInBackground(Void... params) {
 			try {
 				result = sender.sendMail(message_subject, message_body,
-						userEmail, message_reciption);
+						userEmail, userEmail);
 			} catch (Exception e) {
 				Log.d("SendMail", e.getMessage());
 			}
