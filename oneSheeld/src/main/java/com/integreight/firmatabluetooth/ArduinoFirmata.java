@@ -67,6 +67,8 @@ public class ArduinoFirmata {
 
     private final byte CONFIGURATION_SHIELD_ID = (byte) 0x00;
     private final byte BT_CONNECTED=(byte)0x01;
+    private final byte QUERY_LIBRARY_VERSION=(byte)0x03;
+    private final byte LIBRARY_VERSION_RESPONSE=(byte)0x01;
 
 	private final byte UART_BEGIN = (byte) 0x01;
 	private final byte UART_END = (byte) 0x00;
@@ -573,9 +575,10 @@ public class ArduinoFirmata {
 		setAllPinsAsInput();
 		reportInputPinsValues();
 		initUart();
-		queryVersion();
+		queryFirmwareVersion();
 		notifyHardwareOfConnection();
 		respondToIsAlive();
+        queryLibraryVersion();
 		
 	}
 
@@ -587,9 +590,13 @@ public class ArduinoFirmata {
 		sysex(MUTE_FIRMATA, new byte[] { 0 });
 	}
 
-	private void queryVersion() {
-		write(REPORT_VERSION);
-	}
+    private void queryFirmwareVersion() {
+        write(REPORT_VERSION);
+    }
+
+    private void queryLibraryVersion() {
+        sendShieldFrame(new ShieldFrame(CONFIGURATION_SHIELD_ID, QUERY_LIBRARY_VERSION));
+    }
 
 	private void clearAllBuffers() {
 		bluetoothBuffer.clear();
@@ -694,9 +701,10 @@ public class ArduinoFirmata {
 				reportInputPinsValues();
 				initUart();
 				onConnect();
-				queryVersion();
+				queryFirmwareVersion();
 				notifyHardwareOfConnection();
 				respondToIsAlive();
+                queryLibraryVersion();
 				// String mConnectedDeviceName = device.getName();
 				// Toast.makeText(context, "Connected to " +
 				// mConnectedDeviceName,
@@ -834,6 +842,9 @@ public class ArduinoFirmata {
 					printFrameToLog(frame.getAllFrameAsBytes(),"Rec");
 					if(shieldId==CONFIGURATION_SHIELD_ID){
 						//1Sheeld configration from the library
+                        if(functionId==LIBRARY_VERSION_RESPONSE){
+
+                        }
 					}
 					else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
 						frameHandler.onNewShieldFrameReceived(frame);
