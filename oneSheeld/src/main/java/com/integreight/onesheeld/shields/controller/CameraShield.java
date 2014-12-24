@@ -152,13 +152,13 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 			case QUALITY_METHOD_ID:
 				byte quality_mode = frame.getArgument(0)[0];
 				switch (quality_mode) {
-				case 0:
+				case 1:
 					QUALITY_MODE = 40;
 					break;
-				case 1:
+				case 2:
 					QUALITY_MODE = 70;
 					break;
-				case 2:
+				case 3:
 					QUALITY_MODE = 100;
 					break;
 
