@@ -33,6 +33,7 @@ proguard/
 project.properties
 import-summary.txt
 manifest-merger-release-report.txt
+dev_meta_data.json
 
 # OSX files
 .DS_Store
