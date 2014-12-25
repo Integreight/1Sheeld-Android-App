@@ -71,7 +71,7 @@ public enum UIShield {
 			"Push Button", 0xffb97547,
 			R.drawable.shields_list_push_button_symbol, false,
 			PushButtonShield.class), TOGGLEBUTTON_SHIELD((byte) 0x04,
-			"On/Off Button", 0xffc0039d,
+			"Toggle Button", 0xffc0039d,
 			R.drawable.shields_list_push_button_symbol, false,
 			ToggleButtonShield.class), ACCELEROMETER_SHIELD((byte) 0x0B,
 			"Accelerometer", 0xff266a5d,
