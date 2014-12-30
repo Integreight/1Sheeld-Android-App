@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
     android:versionCode="141225"
-    android:versionName="1.1.3" >
+    android:versionName="1.1.3">
 
     <uses-sdk android:minSdkVersion="9" />
 
@@ -76,7 +76,7 @@
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name="com.integreight.onesheeld.MainActivity"
             android:configChanges="orientation"
@@ -84,14 +84,12 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar"
-            android:windowSoftInputMode="adjustPan" >
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-
 
 
         </activity>
@@ -115,7 +113,7 @@
             android:theme="@android:style/Theme.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="ExportedActivity" >
+            tools:ignore="ExportedActivity">
 
             <!-- this Intent filter allows the plug-in to be discovered by Locale -->
             <intent-filter>
@@ -132,22 +130,17 @@
             android:theme="@android:style/Theme.Light"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize"
-            tools:ignore="ExportedActivity" >
+            tools:ignore="ExportedActivity">
             <intent-filter>
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
             </intent-filter>
         </activity>
 
 
-
-
-
-
-
         <receiver
             android:name="com.integreight.onesheeld.plugin.action.FireReceiver"
             android:exported="true"
-            tools:ignore="ExportedReceiver" >
+            tools:ignore="ExportedReceiver">
 
             <!-- this Intent filter allows the plug-in to discovered by Locale -->
             <intent-filter>
@@ -157,7 +150,7 @@
         <receiver
             android:name="com.integreight.onesheeld.plugin.condition.QueryReceiver"
             android:exported="true"
-            tools:ignore="ExportedReceiver" >
+            tools:ignore="ExportedReceiver">
 
             <!-- this Intent filter allows the plug-in to discovered by Locale and be queried -->
             <intent-filter>
@@ -168,29 +161,26 @@
         <service
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraHeadService"
             android:label="My CameraHeadService"
-            android:singleUser="true" >
-        </service>
+            android:process=".camera"
+            android:singleUser="true"></service>
 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
 
-
-
         <activity
             android:name="Tutorial"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar" >
-        </activity>
+            android:theme="@android:style/Theme.Black.NoTitleBar"></activity>
 
         <service android:name="com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService" />
         <service android:name="com.parse.PushService" />
 
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
@@ -200,7 +190,7 @@
         </receiver>
         <receiver
             android:name="com.integreight.onesheeld.push.PushMessagesReceiver"
-            android:exported="false" >
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
                 <action android:name="com.parse.push.intent.DELETE" />
