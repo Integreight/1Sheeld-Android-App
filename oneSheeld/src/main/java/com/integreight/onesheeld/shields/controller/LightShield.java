@@ -6,6 +6,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -19,22 +20,24 @@ public class LightShield extends ControllerParent<LightShield> implements
 	private Sensor mLight;
 	private LightEventHandler eventHandler;
 	private ShieldFrame frame;
-	/*
-	 * Handler handler; int PERIOD = 100;
-	 */
+    Handler handler;
+    int PERIOD = 100;
 	boolean flag = false;
 	boolean isHandlerLive = false;
 	float oldInput = 0;
 	boolean isFirstTime = true;
 
-	/*
-	 * private final Runnable processSensors = new Runnable() {
-	 * 
-	 * @Override public void run() { // Do work with the sensor values.
-	 * 
-	 * flag = true; // The Runnable is posted to run again here: if (handler !=
-	 * null) handler.postDelayed(this, PERIOD); } };
-	 */
+    private final Runnable processSensors = new Runnable() {
+        @Override
+        public void run() {
+            // Do work with the sensor values.
+
+            flag = true;
+            // The Runnable is posted to run again here:
+            if (handler != null)
+                handler.postDelayed(this, PERIOD);
+        }
+    };
 
 	public LightShield() {
 	}
@@ -78,17 +81,17 @@ public class LightShield extends ControllerParent<LightShield> implements
 
 	@Override
 	public void onSensorChanged(SensorEvent event) {
-		Log.d("Sensor Data of X", event.values[0] + "");
-		if (eventHandler != null)
-			eventHandler.onSensorValueChangedFloat(event.values[0] + "");
-		if ((oldInput != event.values[0] || isFirstTime)) {
-			isFirstTime = false;
-			frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
-			oldInput = event.values[0];
-			frame.addIntegerArgument(3, false, Math.round(event.values[0]));
-			sendShieldFrame(frame);
-
-		}
+        if (flag && (oldInput != event.values[0] || isFirstTime)) {
+            Log.d("Sensor Data of X", event.values[0] + "");
+            if (eventHandler != null)
+                eventHandler.onSensorValueChangedFloat(event.values[0] + "");
+                isFirstTime = false;
+                frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
+                oldInput = event.values[0];
+                frame.addIntegerArgument(3, false, Math.round(event.values[0]));
+                sendShieldFrame(frame);
+                flag=false;
+        }
 	}
 
 	// Register a listener for the sensor.
@@ -103,12 +106,10 @@ public class LightShield extends ControllerParent<LightShield> implements
 				&& mLight != null) {
 			// Success! There's sensor.
 			if (!isHandlerLive) {
-				// handler = new Handler();
+				handler = new Handler();
 				mSensorManager.registerListener(this, mLight,
 						SensorManager.SENSOR_DELAY_GAME);
-				/*
-				 * if (processSensors != null) handler.post(processSensors);
-				 */
+				handler.post(processSensors);
 				if (eventHandler != null)
 					eventHandler.isDeviceHasSensor(true);
 				isHandlerLive = true;
@@ -131,20 +132,18 @@ public class LightShield extends ControllerParent<LightShield> implements
 	}
 
 	// Unregister a listener for the sensor .
-	public void unegisterSensorListener() {
-		// mSensorManager.unregisterListener(this);
-		if (mSensorManager != null && mLight != null) {
+    public void unegisterSensorListener() {
+        // mSensorManager.unregisterListener(this);
+        if (mSensorManager != null && handler != null && mLight != null) {
 
-			mSensorManager.unregisterListener(this, mLight);
-			mSensorManager.unregisterListener(this);
-			/*
-			 * if (processSensors != null)
-			 * handler.removeCallbacks(processSensors);
-			 */
-			// handler.removeCallbacksAndMessages(null);
-			isHandlerLive = false;
-		}
-	}
+            mSensorManager.unregisterListener(this, mLight);
+            mSensorManager.unregisterListener(this);
+            if (processSensors != null)
+                handler.removeCallbacks(processSensors);
+            handler.removeCallbacksAndMessages(null);
+            isHandlerLive = false;
+        }
+    }
 
 	public static interface LightEventHandler {
 
