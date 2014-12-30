@@ -27,28 +27,8 @@ import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.plugin.PluginBundleManager;
 import com.integreight.onesheeld.utils.customviews.PluginConnectingPinsView;
 
-/**
- * This is the "Edit" activity for a Locale Plug-in.
- * <p>
- * This Activity can be started in one of two states:
- * <ul>
- * <li>New plug-in instance: The Activity's Intent will not contain
- * {@link com.twofortyfouram.locale.Intent#EXTRA_BUNDLE}.</li>
- * <li>Old plug-in instance: The Activity's Intent will contain
- * {@link com.twofortyfouram.locale.Intent#EXTRA_BUNDLE} from a previously saved
- * plug-in instance that the user is editing.</li>
- * </ul>
- * 
- * @see com.twofortyfouram.locale.Intent#ACTION_EDIT_SETTING
- * @see com.twofortyfouram.locale.Intent#EXTRA_BUNDLE
- */
 public final class ActionActivity extends AbstractPluginActivity {
-	// private String[] pins = { "0", "1", "2", "3", "4", "5", "6", "7", "8",
-	// "9",
-	// "10", "11", "12", "13", "A0", "A1", "A2", "A3", "A4", "A5" };
 	private String[] output = { "High", "Low" };
-
-	// Spinner pinsSpinner;
 	Spinner outputSpinner;
 	int selectedPin = -1;
 
@@ -84,30 +64,18 @@ public final class ActionActivity extends AbstractPluginActivity {
 		final Bundle localeBundle = getIntent().getBundleExtra(
 				com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
 		BundleScrubber.scrub(localeBundle);
-
 		setContentView(R.layout.plugin_action_activity);
-		// pinsSpinner = (Spinner) findViewById(R.id.pins_spinner);
 		outputSpinner = (Spinner) findViewById(R.id.output_spinner);
-
-		// ArrayAdapter<String> pinsArrayAdapter = new
-		// ArrayAdapter<String>(this,
-		// android.R.layout.simple_spinner_item, pins);
 		ArrayAdapter<String> outputArrayAdapter = new ArrayAdapter<String>(
 				this, android.R.layout.simple_spinner_item, output);
-		// pinsSpinner.setAdapter(pinsArrayAdapter);
 		outputSpinner.setAdapter(outputArrayAdapter);
 
 		if (null == savedInstanceState) {
 			if (PluginBundleManager.isActionBundleValid(localeBundle)) {
-				// final int pin = localeBundle
-				// .getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
 				final boolean output = localeBundle
 						.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT);
 				selectedPin = localeBundle
 						.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
-				// ((EditText)
-				// findViewById(android.R.id.text1)).setText(message);
-				// pinsSpinner.setSelection(pin);
 				if (output)
 					outputSpinner.setSelection(0);
 				else
@@ -123,69 +91,35 @@ public final class ActionActivity extends AbstractPluginActivity {
 	@Override
 	public void finish() {
 		if (!isCanceled()) {
-			// final String message = ((EditText)
-			// findViewById(android.R.id.text1)).getText().toString();
 			final boolean output = (outputSpinner).getSelectedItem().toString()
 					.toLowerCase().equals("high") ? true : false;
-			// if (message.length() > 0)
-			// {
 			final Intent resultIntent = new Intent();
-
-			/*
-			 * This extra is the data to ourselves: either for the Activity or
-			 * the BroadcastReceiver. Note that anything placed in this Bundle
-			 * must be available to Locale's class loader. So storing String,
-			 * int, and other standard objects will work just fine. Parcelable
-			 * objects are not acceptable, unless they also implement
-			 * Serializable. Serializable objects must be standard Android
-			 * platform objects (A Serializable class private to this plug-in's
-			 * APK cannot be stored in the Bundle, as Locale's classloader will
-			 * not recognize it).
-			 */
 			final Bundle resultBundle = PluginBundleManager
 					.generateActionBundle(getApplicationContext(), selectedPin,
 							output);
 			resultIntent
 					.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE,
 							resultBundle);
-
-			/*
-			 * The blurb is concise status text to be displayed in the host's
-			 * UI.
-			 */
 			final String blurb = selectedPin >= 0 ? (generateBlurb(
 					getApplicationContext(), "Pin " + selectedPin + " set to "
 							+ (output ? "High" : "Low"))) : generateBlurb(
 					getApplicationContext(), "No Pins Selected");
-			// ((OneSheeldApplication) getApplication()).getAppPreferences()
-			// .edit().putInt("PluginActionPin", selectedPin).commit();
 			resultIntent.putExtra(
 					com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, blurb);
 
 			setResult(RESULT_OK, resultIntent);
-			// }
 		}
 
 		super.finish();
 	}
 
-	/**
-	 * @param context
-	 *            Application context.
-	 * @param message
-	 *            The toast message to be displayed by the plug-in. Cannot be
-	 *            null.
-	 * @return A blurb for the plug-in.
-	 */
-	/* package */static String generateBlurb(final Context context,
+	static String generateBlurb(final Context context,
 			final String message) {
 		final int maxBlurbLength = context.getResources().getInteger(
 				R.integer.twofortyfouram_locale_maximum_blurb_length);
-
 		if (message.length() > maxBlurbLength) {
 			return message.substring(0, maxBlurbLength);
 		}
-
 		return message;
 	}
 }

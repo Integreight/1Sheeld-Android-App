@@ -103,7 +103,7 @@ public class CameraHeadService extends Service implements
 		height = pref.getInt("Picture_height", 0);
 
 		if (width == 0 | height == 0) {
-			pictureSize = CameraUtils.getBiggesttPictureSize(parameters);
+			pictureSize = CameraUtils.getBiggestPictureSize(parameters);
 			if (pictureSize != null)
 				parameters
 						.setPictureSize(pictureSize.width, pictureSize.height);
@@ -177,7 +177,7 @@ public class CameraHeadService extends Service implements
 						}
 						Camera.Parameters parameters = mCamera.getParameters();
 						pictureSize = CameraUtils
-								.getBiggesttPictureSize(parameters);
+								.getBiggestPictureSize(parameters);
 						if (pictureSize != null)
 							parameters.setPictureSize(pictureSize.width,
 									pictureSize.height);
@@ -197,7 +197,7 @@ public class CameraHeadService extends Service implements
 							public void run() {
 								Toast.makeText(
 										getApplicationContext(),
-										"Your Device dosen't have Front Camera !",
+										"Your device doesn't have a front camera!",
 										Toast.LENGTH_LONG).show();
 							}
 						});
@@ -220,7 +220,7 @@ public class CameraHeadService extends Service implements
 									public void run() {
 										Toast.makeText(
 												getApplicationContext(),
-												"API dosen't support front camera",
+												"API doesn't support front camera",
 												Toast.LENGTH_LONG).show();
 									}
 								});
@@ -230,7 +230,7 @@ public class CameraHeadService extends Service implements
 							Camera.Parameters parameters = mCamera
 									.getParameters();
 							pictureSize = CameraUtils
-									.getBiggesttPictureSize(parameters);
+									.getBiggestPictureSize(parameters);
 							if (pictureSize != null)
 								parameters.setPictureSize(pictureSize.width,
 										pictureSize.height);
@@ -249,7 +249,7 @@ public class CameraHeadService extends Service implements
 								public void run() {
 									Toast.makeText(
 											getApplicationContext(),
-											"Your Device dosen't have Front Camera !",
+											"Your device doesn't have a front camera!",
 											Toast.LENGTH_LONG).show();
 								}
 							});
@@ -280,7 +280,7 @@ public class CameraHeadService extends Service implements
 						// set biggest picture
 						setBesttPictureResolution();
 						// log quality and image format
-						Log.d("Qaulity", parameters.getJpegQuality() + "");
+						Log.d("Quality", parameters.getJpegQuality() + "");
 						Log.d("Format", parameters.getPictureFormat() + "");
 
 						// set camera parameters
@@ -316,7 +316,7 @@ public class CameraHeadService extends Service implements
 				@Override
 				public void run() {
 					Toast.makeText(getApplicationContext(),
-							"Your Device dosen't have a Camera !",
+							"Your device doesn't have a camera!",
 							Toast.LENGTH_LONG).show();
 				}
 			});
@@ -361,10 +361,6 @@ public class CameraHeadService extends Service implements
 
 			@Override
 			public void onOrientationChanged(int orientation) {
-
-				// determine our orientation based on sensor response
-				// int lastOrientation = mOrientation;
-
 				Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
 						.getDefaultDisplay();
 				int rotation = windowManager.getDefaultDisplay().getRotation();
@@ -517,10 +513,6 @@ public class CameraHeadService extends Service implements
 				mCamera.release();
 				mCamera = null;
 			}
-			/*
-			 * Toast.makeText(getApplicationContext(),
-			 * "Your Picture has been taken !", Toast.LENGTH_LONG).show();
-			 */
 			com.integreight.onesheeld.utils.Log.d("Camera", "Image Taken !");
 			if (bmp != null) {
 				bmp.recycle();

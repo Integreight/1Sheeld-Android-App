@@ -72,7 +72,6 @@ public class ValidationPopup extends Dialog {
 		public boolean cancelAfterAction = false;
 
 		public ValidationAction() {
-			// TODO Auto-generated constructor stub
 		}
 
 		public ValidationAction(String actionTitle,

@@ -8,11 +8,6 @@ import android.telephony.SmsMessage;
 
 public class SmsListener extends BroadcastReceiver {
 	private SmsReceiveEventHandler eventHandler;
-
-	public void sendSMS()
-	{
-		eventHandler.onSmsReceiveSuccess("+201119611432","Welcome OneSheeld,: MyCuisine is a community for people who cook it's like");
-	}
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// TODO Auto-generated method stub

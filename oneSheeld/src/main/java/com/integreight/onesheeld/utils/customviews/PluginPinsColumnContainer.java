@@ -26,7 +26,6 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 	private ArrayList<PinData> childrenRects = new ArrayList<PinData>();
 	ImageView cursor;
 	RelativeLayout.LayoutParams cursorParams;
-	// ControllerParent<?> controller;
 	private onGetPinsView onGetPinsListener;
 	private boolean isOnglobalCalled = false;
 
@@ -42,7 +41,6 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 			onGetPinsView onGetPinsListener, final int currentIndx) {
 		this.focusListener = focusListener;
 		this.cursor = cursor;
-		// this.controller = controller;
 		this.onGetPinsListener = onGetPinsListener;
 		this.currentIndex = -1;
 		currentTag = null;
@@ -81,11 +79,6 @@ public class PluginPinsColumnContainer extends RelativeLayout {
 	int concatenatedLeft = 0, concatenatedTop = 0, concatenatedRight = 0;
 
 	private boolean isPinEnabled(String tag) {
-		// for (int i = 0; i < controller.getRequiredPinsNames().length; i++) {
-		// if (tag.equals(controller.getRequiredPinsNames()[i])) {
-		// return true;
-		// }
-		// }
 		return true;
 	}
 

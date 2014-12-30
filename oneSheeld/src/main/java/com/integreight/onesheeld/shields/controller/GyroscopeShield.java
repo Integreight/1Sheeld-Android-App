@@ -93,7 +93,6 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
 			oldInput_x = event.values[0];
 			oldInput_y = event.values[1];
 			oldInput_z = event.values[2];
-			// frame.addByteArgument((byte) Math.round(event.values[0]));
 			frame.addFloatArgument(event.values[0]);
 			frame.addFloatArgument(event.values[1]);
 			frame.addFloatArgument(event.values[2]);

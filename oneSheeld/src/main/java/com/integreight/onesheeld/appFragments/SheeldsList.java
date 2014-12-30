@@ -234,10 +234,8 @@ public class SheeldsList extends Fragment {
 		super.onActivityCreated(savedInstanceState);
 	}
 
-	int lastTranslate = 0;
 
 	private void initView() {
-		// mListView.addHeaderView(mHeader);
 		adapter = new ShieldsListAdapter(activity);
 		mListView.setAdapter(adapter);
 		mListView.setSelection(1);
@@ -345,7 +343,7 @@ public class SheeldsList extends Fragment {
 			UIShield.setConnected(false);
 			adapter.notifyDataSetChanged();
 			if (activity.getSupportFragmentManager().getBackStackEntryCount() > 1) {
-				activity.getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+				activity.getSupportFragmentManager().popBackStack();
 				activity.getSupportFragmentManager()
 						.executePendingTransactions();
 			}
@@ -366,8 +364,6 @@ public class SheeldsList extends Fragment {
 			((OneSheeldApplication) activity.getApplication())
 					.startConnectionTimer();
 			if (isOneSheeldServiceRunning()) {
-				// ((OneSheeldApplication) activity.getApplication())
-				// .getGaTracker().set(Fields.SESSION_CONTROL, "start");
 				if (adapter != null)
 					adapter.applyToControllerTable();
 			}
@@ -571,9 +567,6 @@ public class SheeldsList extends Fragment {
 	}
 
 	private boolean isAnyShieldsSelected() {
-		// OneSheeldApplication app = (OneSheeldApplication) activity
-		// .getApplication();
-		// app.setRunningSheelds(new Hashtable<String, ControllerParent<?>>());
 		for (int j = 0; j < AppShields.getInstance().getShieldsArray().size(); j++) {
 			Shield shield = AppShields.getInstance().getShield(j);
 			if (shield.mainActivitySelection && shield.shieldType != null) {

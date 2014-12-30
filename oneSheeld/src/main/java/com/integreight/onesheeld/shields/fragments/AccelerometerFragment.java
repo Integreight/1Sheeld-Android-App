@@ -122,44 +122,7 @@ public class AccelerometerFragment extends
 		}
 
 		@Override
-		public void isDeviceHasSensor(final Boolean hasSensor) {/*
-																 * 
-																 * if
-																 * (canChangeUI
-																 * ()) {
-																 * 
-																 * // set data
-																 * to UI
-																 * uiHandler.
-																 * removeCallbacksAndMessages
-																 * (null);
-																 * uiHandler
-																 * .post(new
-																 * Runnable() {
-																 * 
-																 * @Override
-																 * public void
-																 * run() { if
-																 * (!hasSensor)
-																 * {
-																 * devicehasSensor
-																 * .setText(
-																 * "Your Device not have The Sensor"
-																 * );
-																 * Toast.makeText
-																 * (
-																 * getActivity()
-																 * ,
-																 * "Device dosen't have This Sensor !"
-																 * , Toast.
-																 * LENGTH_SHORT
-																 * ).show(); }
-																 * else {
-																 * 
-																 * } } });
-																 * 
-																 * }
-																 */
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 		}
 	};
 

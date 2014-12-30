@@ -22,7 +22,6 @@ import com.integreight.onesheeld.utils.Log;
 public class GmailSinginPopup extends Dialog {
 	private AlertDialog.Builder builder;
 	private Activity activity;
-	// private LayoutInflater inflater;
 	EditText userName_edt, password_edt;
 	Button login_bt, cancel_bt;
 	private String userName, password;
@@ -44,7 +43,6 @@ public class GmailSinginPopup extends Dialog {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.gmail_singin_dialog_layout);
-		// inflater = activity.getLayoutInflater();
 		builder = new AlertDialog.Builder(activity);
 		// Set other dialog properties
 		auth_failed_tx = (TextView) findViewById(R.id.gmail_signin_dialog_auth_failed_tx);
@@ -181,14 +179,12 @@ public class GmailSinginPopup extends Dialog {
 			super.onPostExecute(result);
 			switch (result) {
 			case 0:
-				// eventHandler.onSuccess();
 				loading.setVisibility(View.INVISIBLE);
 				isUsernameValide(true);
 				break;
 			case 1:
 				loading.setVisibility(View.INVISIBLE);
 				auth_failed_tx.setVisibility(View.VISIBLE);
-				// eventHandler.onEmailnotSent("Authentication Failedd");
 				break;
 			case 2:
 				loading.setVisibility(View.INVISIBLE);
@@ -199,26 +195,5 @@ public class GmailSinginPopup extends Dialog {
 			}
 		}
 
-	}
-
-	public static void sendReportMail(String sender_email,
-			String reciption_email, String title, String body, String password)
-
-	{
-		int result;
-		GMailSender sender = new GMailSender(sender_email, password);
-		result = sender.sendMail(title, body, sender_email, reciption_email);
-		switch (result) {
-		case 0:
-			Log.d("Crash Report", "Mail sent");
-			break;
-		case 1:
-			Log.d("Crash Report", "Auth faield");
-			break;
-		case 2:
-			Log.d("Crash Report", "Mail not sent yet, Try again");
-		default:
-			break;
-		}
 	}
 }

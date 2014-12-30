@@ -114,10 +114,10 @@ public class Foursquare {
 		// if (isSessionValid()) {
 		// parameters.putString(TOKEN, getAccessToken());
 		// }
-		String url = endpoint + "?" + ForsquareUtil.encodeUrl(parameters);
+		String url = endpoint + "?" + FoursquareUtils.encodeUrl(parameters);
 		if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-			ForsquareUtil.showAlert(context, "Error",
-					"Application requires permission to access the Internet");
+			FoursquareUtils.showAlert(context, "Error",
+                    "Application requires permission to access the Internet");
 		} else {
 			new FoursquareDialog(context, url, listener).show();
 		}
@@ -164,7 +164,7 @@ public class Foursquare {
 			params.putString("oauth_token", myToken);
 		}
 		String url = API_END_POING_BASE_URL + graphPath;
-		return ForsquareUtil.openUrl(url, httpMethod, params);
+		return FoursquareUtils.openUrl(url, httpMethod, params);
 	}
 
 	public static interface DialogListener {

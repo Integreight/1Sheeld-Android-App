@@ -20,9 +20,6 @@ import com.integreight.onesheeld.utils.Log;
 public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 		implements TextToSpeech.OnInitListener {
 	private TTsEventHandler eventHandler;
-	// private UtteranceProgressListener uteranceListener;
-	// private int TTS_DATA_CHECK_CODE = 0;
-	// private int RESULT_TALK_CODE = 1;
 	private TextToSpeech myTTS;
 	private float ttsPitch = 1.0f;
 
@@ -36,13 +33,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 	@Override
 	public ControllerParent<TextToSpeechShield> setTag(String tag) {
-		// activity.backgroundThreadHandler.post(new Runnable() {
-		//
-		// @Override
-		// public void run() {
 		myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
-		// }
-		// });
 		return super.setTag(tag);
 	}
 
@@ -93,12 +84,6 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
 		// Extra options
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "en-US");
-		// intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
-		// 2000000);
-		// intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
-		// 2000000);
-		// intent.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS,
-		// 20000000);
 		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Speech to text example"); // Text
 																					// message
 																					// in

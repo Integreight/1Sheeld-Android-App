@@ -61,7 +61,6 @@ public class OneSheeldApplication extends Application {
 	public Typeface appFont;
 	// private GoogleAnalytics googleAnalyticsInstance;
 	// private Tracker appGaTracker;
-	public ApiObjects socialKeys = new ApiObjects();
 	public TaskerShield taskerController;
 	public RemoteOneSheeldShield remoteOneSheeldController;
 	public SparseArray<Boolean> taskerPinsStatus;
@@ -73,66 +72,6 @@ public class OneSheeldApplication extends Application {
 	private Tracker gaTracker;
 
 	private long connectionTime;
-
-	/*
-	 * Google Analytics configuration values.
-	 */
-	// Placeholder property ID.
-	// private static final String GA_PROPERTY_ID = "";
-	//
-	// // Dispatch period in seconds.
-	// private static final int GA_DISPATCH_PERIOD = 30;
-
-	// // Prevent hits from being sent to reports, i.e. during testing.
-	// private static final boolean GA_IS_DRY_RUN = false;
-	//
-	// // GA Logger verbosity.
-	// private static final LogLevel GA_LOG_VERBOSITY = LogLevel.VERBOSE;
-	//
-	// // Key used to store a user's tracking preferences in SharedPreferences.
-	// private static final String TRACKING_PREF_KEY = "trackingPreference";
-
-	// public GoogleAnalytics getGoogleAnalytics() {
-	// if (googleAnalyticsInstance == null) {
-	// googleAnalyticsInstance = GoogleAnalytics
-	// .getInstance(getApplicationContext());
-	// }
-	// return googleAnalyticsInstance;
-	// }
-	//
-	// @SuppressWarnings("deprecation")
-	// public Tracker getGaTracker() {
-	// if (appGaTracker == null) {
-	// appGaTracker = getGoogleAnalytics().getTracker(GA_PROPERTY_ID);
-	//
-	// // Set dispatch period.
-	// GAServiceManager.getInstance().setLocalDispatchPeriod(
-	// GA_DISPATCH_PERIOD);
-	//
-	// // Set dryRun flag.
-	// googleAnalyticsInstance.setDryRun(GA_IS_DRY_RUN);
-	// // Set Logger verbosity.
-	// googleAnalyticsInstance.getLogger().setLogLevel(GA_LOG_VERBOSITY);
-	// // Set the opt out flag when user updates a tracking preference.
-	// SharedPreferences userPrefs = PreferenceManager
-	// .getDefaultSharedPreferences(this);
-	// userPrefs
-	// .registerOnSharedPreferenceChangeListener(new
-	// SharedPreferences.OnSharedPreferenceChangeListener() {
-	// @Override
-	// public void onSharedPreferenceChanged(
-	// SharedPreferences sharedPreferences, String key) {
-	// if (key.equals(TRACKING_PREF_KEY)) {
-	// GoogleAnalytics.getInstance(
-	// getApplicationContext()).setAppOptOut(
-	// sharedPreferences
-	// .getBoolean(key, false));
-	// }
-	// }
-	// });
-	// }
-	// return appGaTracker;
-	// }
 
 	public void startConnectionTimer() {
 		connectionTime = System.currentTimeMillis();
@@ -409,15 +348,4 @@ public class OneSheeldApplication extends Application {
 		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
 		getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
 	}
-
-	// public ArduinoFirmataEventHandler
-	// getArduinoFirmataHandlerForConnectivityPopup() {
-	// return arduinoFirmataHandlerForConnectivityPopup;
-	// }
-	//
-	// public void setArduinoFirmataHandlerForConnectivityPopup(
-	// ArduinoFirmataEventHandler arduinoFirmataHandlerForConnectivityPopup) {
-	// this.arduinoFirmataHandlerForConnectivityPopup =
-	// arduinoFirmataHandlerForConnectivityPopup;
-	// }
 }

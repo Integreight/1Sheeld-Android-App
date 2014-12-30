@@ -15,7 +15,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield.FoursquareEventHandler;
-import com.integreight.onesheeld.shields.controller.utils.ForsquareUtil;
+import com.integreight.onesheeld.shields.controller.utils.FoursquareUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 
@@ -194,7 +194,7 @@ public class FoursquareFragment extends
 		e.remove("PREF_KEY_FOURSQUARE_LOGIN");
 		e.remove("PREF_FourSquare_OAUTH_TOKEN");
 		e.commit();
-		ForsquareUtil.clearCookies(getApplication());
+		FoursquareUtils.clearCookies(getApplication());
 		login.setVisibility(View.VISIBLE);
 		logout.setVisibility(View.INVISIBLE);
 		userName.setVisibility(View.INVISIBLE);

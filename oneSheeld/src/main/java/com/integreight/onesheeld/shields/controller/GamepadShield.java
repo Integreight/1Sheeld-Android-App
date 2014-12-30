@@ -30,10 +30,6 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		super.setConnected(pins);
 	}
 
-	public void initPins() {
-
-	}
-
 	public GamepadShield() {
 		super();
 		requiredPinsIndex = 0;
@@ -52,8 +48,6 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
 		sendShieldFrame(sf);
-
-		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new char[]{row,column});
 	}
 
 	public void setPinToLow(String pinName, int pinId) {
@@ -66,9 +60,6 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
 		sf.addByteArgument(buttonByte);
 		sendShieldFrame(sf);
-
-		// firmata.sendUart(KEYPAD_COMMAND,DATA_IN,new
-		// char[]{NOTHING_PRESSED,NOTHING_PRESSED});
 	}
 
 	public static enum Pin {
@@ -92,39 +83,6 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 		public int getId() {
 			return id;
 		}
-
-		public static CharSequence[] getPinsNames() {
-			CharSequence[] temp = new CharSequence[Pin.values().length];
-			for (int i = 0; i < temp.length; i++) {
-				temp[i] = Pin.values()[i].getName();
-			}
-			return temp;
-		}
-
-		public static Pin getPin(int position) {
-			switch (position) {
-			case 0:
-				return UP_ARROW;
-			case 1:
-				return RIGHT_ARROW;
-			case 2:
-				return DOWN_ARROW;
-			case 3:
-				return LEFT_ARROW;
-			case 4:
-				return YELLOW_BUTTON;
-			case 5:
-				return RED_BUTTON;
-			case 6:
-				return GREEN_BUTTON;
-			case 7:
-				return BLUE_BUTTON;
-			default:
-				return null;
-			}
-
-		}
-
 	}
 
 	@Override

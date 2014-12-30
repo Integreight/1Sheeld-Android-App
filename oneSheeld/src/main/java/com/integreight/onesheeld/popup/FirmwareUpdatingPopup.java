@@ -39,17 +39,10 @@ public class FirmwareUpdatingPopup extends Dialog {
 	private Handler uIHandler = new Handler();
 	private boolean isFailed = false;
 
-	// private boolean isChinese = false;
-	// private final String TRACKER_CATG = "Firmware Upgrade";
-
-	public FirmwareUpdatingPopup(final MainActivity activity/*
-															 * , boolean
-															 * isChinese
-															 */) {
+	public FirmwareUpdatingPopup(final MainActivity activity) {
 		super(activity, android.R.style.Theme_Translucent_NoTitleBar);
 		this.activity = activity;
 		final Handler handler = new Handler();
-		// this.isChinese = isChinese;
 		jodem = new Jodem(activity.getThisApplication().getAppFirmata()
 				.getBTService(), new Jodem.JodemEventHandler() {
 
@@ -63,10 +56,6 @@ public class FirmwareUpdatingPopup extends Dialog {
 					Log.e("TAG", "Exception", e);
 				}
 				isFailed = false;
-				// activity.getThisApplication().getAppFirmata().returnAppToNormal();
-				// activity.getThisApplication().getAppFirmata().enableReporting();
-				// activity.getThisApplication().getAppFirmata()
-				// .setAllPinsAsInput();
 				handler.post(new Runnable() {
 
 					@Override
@@ -120,11 +109,6 @@ public class FirmwareUpdatingPopup extends Dialog {
 					@Override
 					public void run() {
 						FirmwareUpdatingPopup.this.setCancelable(true);
-						// activity.getThisApplication().getAppFirmata().returnAppToNormal();
-						// activity.getThisApplication().getAppFirmata()
-						// .enableReporting();
-						// activity.getThisApplication().getAppFirmata()
-						// .setAllPinsAsInput();
 						changeSlogan("An error occurred!", COLOR.RED);
 						isFailed = true;
 						setUpgrade();
@@ -147,11 +131,6 @@ public class FirmwareUpdatingPopup extends Dialog {
 					@Override
 					public void run() {
 						FirmwareUpdatingPopup.this.setCancelable(true);
-						// activity.getThisApplication().getAppFirmata().returnAppToNormal();
-						// activity.getThisApplication().getAppFirmata()
-						// .enableReporting();
-						// activity.getThisApplication().getAppFirmata()
-						// .setAllPinsAsInput();
 						changeSlogan("1Sheeld not responding!", COLOR.RED);
 						isFailed = true;
 						setUpgrade();
@@ -246,11 +225,6 @@ public class FirmwareUpdatingPopup extends Dialog {
 							((OneSheeldApplication) activity.getApplication())
 									.setVersionWebResult(response.toString());
 							downloadFirmware();
-							// activity.getThisApplication()
-							// .getGaTracker()
-							// .send(MapBuilder.createEvent(TRACKER_CATG,
-							// "Got the server version", "", null)
-							// .build());
 						} catch (NumberFormatException e) {
 							// TODO Auto-generated catch block
 							Log.e("TAG", "Exception", e);
@@ -272,18 +246,12 @@ public class FirmwareUpdatingPopup extends Dialog {
 			try {
 				HttpRequest.getInstance().get(
 						new JSONObject(activity.getThisApplication()
-								.getVersionWebResult()).get(/*
-															 * isChinese ?
-															 * "url_china" :
-															 */"url")
+								.getVersionWebResult()).get("url")
 								.toString(),
 						new BinaryHttpResponseHandler(new String[] {
 								"application/octet-stream", "text/plain" }) {
 							@Override
 							public void onSuccess(byte[] binaryData) {
-								// TODO
-								// Auto-generated
-								// method stub
 								FirmwareUpdatingPopup.this.setCancelable(false);
 								activity.getThisApplication().getAppFirmata()
 										.prepareAppForSendingFirmware();
@@ -297,15 +265,6 @@ public class FirmwareUpdatingPopup extends Dialog {
 								else
 									changeSlogan("Please, Press reset!",
 											COLOR.BLUE);
-
-								// progressBar.setProgress(0);
-								// activity.getThisApplication()
-								// .getGaTracker()
-								// .send(MapBuilder
-								// .createEvent(
-								// TRACKER_CATG,
-								// "Downloaded the firmware update",
-								// "", null).build());
 								super.onSuccess(binaryData);
 							}
 
@@ -330,13 +289,6 @@ public class FirmwareUpdatingPopup extends Dialog {
 							@Override
 							public void onProgress(int bytesWritten,
 									int totalSize) {
-								// TODO
-								// Auto-generated
-								// method stub
-								// int value = (int) ((bytesWritten / (float)
-								// totalSize) * 100);
-								// downloadingProgress.setProgress(value);
-								// downloadingProgress.setTitle(value + " %");
 								super.onProgress(bytesWritten, totalSize);
 							}
 						});
@@ -394,8 +346,8 @@ public class FirmwareUpdatingPopup extends Dialog {
 
 	private final static class COLOR {
 		public final static int RED = 0xff9B1201;
-		// public final static int YELLOW = 0xffE79401;
+		public final static int YELLOW = 0xffE79401;
 		public final static int BLUE = 0xff0094C1;
-		// public final static int ORANGE = 0xffE74D01;
+		public final static int ORANGE = 0xffE74D01;
 	}
 }

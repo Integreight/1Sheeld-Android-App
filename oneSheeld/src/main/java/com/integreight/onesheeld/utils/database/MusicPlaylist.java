@@ -19,7 +19,6 @@ public class MusicPlaylist {
 	public static final int MYDATABASE_VERSION = 1;
 	public static final String KEY_ID = "_id", PATH = "path", NAME = "name";
 
-	// create table MY_DATABASE (ID integer primary key, Content text not null);
 	private static final String SCRIPT_CREATE_DATABASE = "create table "
 			+ MYDATABASE_TABLE + "(" + KEY_ID + " integer primary key, " + PATH
 			+ " text, " + NAME + " text);";

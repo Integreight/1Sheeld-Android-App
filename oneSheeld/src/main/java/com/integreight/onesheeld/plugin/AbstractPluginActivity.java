@@ -24,19 +24,7 @@ import android.view.MenuItem;
 import com.integreight.onesheeld.R;
 import com.twofortyfouram.locale.BreadCrumber;
 
-/**
- * Superclass for plug-in Activities. This class takes care of initializing
- * aspects of the plug-in's UI to look more integrated with the plug-in host.
- */
 public abstract class AbstractPluginActivity extends FragmentActivity {
-	/**
-	 * Flag boolean that can only be set to true via the "Don't Save"
-	 * {@link com.twofortyfouram.locale.platform.R.id#twofortyfouram_locale_menu_dontsave}
-	 * menu item in {@link #onMenuItemSelected(int, MenuItem)}.
-	 */
-	/*
-	 * There is no need to save/restore this field's state.
-	 */
 	private boolean mIsCancelled = false;
 
 	@Override
@@ -96,14 +84,6 @@ public abstract class AbstractPluginActivity extends FragmentActivity {
 
 		return super.onOptionsItemSelected(item);
 	}
-
-	/**
-	 * During {@link #finish()}, subclasses can call this method to determine
-	 * whether the Activity was canceled.
-	 * 
-	 * @return True if the Activity was canceled. False if the Activity was not
-	 *         canceled.
-	 */
 	protected boolean isCanceled() {
 		return mIsCancelled;
 	}

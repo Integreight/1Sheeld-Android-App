@@ -21,8 +21,6 @@ import com.integreight.onesheeld.utils.Log;
 
 public class CameraShield extends ControllerParent<CameraShield> implements
 		CameraFragmentHandler {
-	// private CameraEventHandler eventHandler;
-	// private static final byte CAMERA_COMMAND = (byte) 0x15;
 	private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
 	private static final byte FLASH_METHOD_ID = (byte) 0x02;
 	private static final byte QUALITY_METHOD_ID = (byte) 0x04;
@@ -33,7 +31,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	private Queue<CameraCapture> cameraCaptureQueue;
 	int numberOfFrames = 0;
 	Handler UIHandler;
-	boolean isFrontCamera = false;
 	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -143,8 +140,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 
 		if (frame.getShieldId() == UIShield.CAMERA_SHIELD.getId()) {
-
-			// String userId = frame.getArgumentAsString(0);
 			Log.d("OnNewFrame", "cameraCaptureQueue size = "
 					+ cameraCaptureQueue.size());
 
@@ -195,12 +190,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 					sendCaptureImageIntent(camCapture);
 				}
 				cameraCaptureQueue.add(camCapture);
-
-				/*
-				 * getApplication().getApplicationContext().startService( new
-				 * Intent(getApplication().getApplicationContext(),
-				 * CameraService.class));
-				 */
 
 				break;
 			case FRONT_CAPTURE:

@@ -30,7 +30,6 @@ public class GMailSender extends javax.mail.Authenticator {
 	private static String user;
 	private static String password;
 	private Session session;
-	// EmailEventHandler emailEventHandler;
 
 	static {
 		Security.addProvider(new JSSEProvider());
@@ -39,8 +38,6 @@ public class GMailSender extends javax.mail.Authenticator {
 	public GMailSender(String user_email, String pass) {
 		user = user_email;
 		password = pass;
-		// this.emailEventHandler = handler;
-
 		Properties props = new Properties();
 		props.setProperty("mail.transport.protocol", "smtp");
 		props.setProperty("mail.host", mailhost);
@@ -77,19 +74,14 @@ public class GMailSender extends javax.mail.Authenticator {
 						new InternetAddress(recipients));
 
 			Transport.send(message);
-			// emailEventHandler.onSuccess();
 			return 0;
 		} catch (AuthenticationFailedException e) {
-			// emailEventHandler.onSendingAuthError("Authentication Failed");
 			return 1;
 		} catch (AddressException e) {
-			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient");
 			return 2;
 		} catch (SendFailedException e) {
-			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
 			return 2;
 		} catch (MessagingException e) {
-			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
 			return 2;
 		}
 	}
@@ -122,19 +114,14 @@ public class GMailSender extends javax.mail.Authenticator {
 						new InternetAddress(recipients));
 
 			Transport.send(message);
-			// emailEventHandler.onSuccess();
 			return 0;
 		} catch (AuthenticationFailedException e) {
-			// emailEventHandler.onSendingAuthError("Authentication Failed");
 			return 1;
 		} catch (AddressException e) {
-			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient");
 			return 2;
 		} catch (SendFailedException e) {
-			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
 			return 2;
 		} catch (MessagingException e) {
-			// emailEventHandler.onEmailnotSent("message could not be sent to the recipient ");
 			return 2;
 		}
 	}

@@ -40,12 +40,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
 	@Override
 	public void onStart() {
-		// hasSettings = true;
-		// ((MainActivity) activity)
-		// .getSupportFragmentManager()
-		// .beginTransaction()
-		// .replace(R.id.settingsViewContainer,
-		// BuzzerShieldSettings.getInstance()).commit();
 
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			if (!reInitController())
@@ -64,8 +58,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 									.setConnected(new ArduinoConnectedPin(
 											pin.microHardwarePin,
 											ArduinoFirmata.INPUT));
-							// toggleLed(getApplication().getAppFirmata()
-							// .digitalRead(pin.microHardwarePin));
 						} else {
 							((SpeakerShield) getApplication()
 									.getRunningShields()

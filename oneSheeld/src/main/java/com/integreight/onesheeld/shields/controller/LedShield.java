@@ -12,14 +12,6 @@ public class LedShield extends ControllerParent<LedShield> {
 	public int connectedPin = -1;
 	private boolean isLedOn;
 	private LedEventHandler eventHandler;
-
-	// public Led(ArduinoFirmata firmata, int connectedPin) {
-	// this.connectedPin = connectedPin;
-	// this.firmata = firmata;
-	// setFirmataEventHandler();
-	// firmata.pinMode(connectedPin, ArduinoFirmata.INPUT);
-	// isLedOn = firmata.digitalRead(connectedPin);
-	// }
 	public LedShield() {
 		super();
 		requiredPinsIndex = 0;

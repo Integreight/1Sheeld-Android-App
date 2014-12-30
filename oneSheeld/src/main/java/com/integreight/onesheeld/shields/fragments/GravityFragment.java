@@ -117,41 +117,7 @@ public class GravityFragment extends ShieldFragmentParent<GravityFragment> {
 		}
 
 		@Override
-		public void isDeviceHasSensor(final Boolean hasSensor) {/*
-																 * if
-																 * (canChangeUI
-																 * ()) {
-																 * 
-																 * // set data
-																 * to UI
-																 * uiHandler.
-																 * removeCallbacksAndMessages
-																 * (null);
-																 * uiHandler
-																 * .post(new
-																 * Runnable() {
-																 * 
-																 * @Override
-																 * public void
-																 * run() { if
-																 * (!hasSensor)
-																 * {
-																 * devicehasSensor
-																 * .setText(
-																 * "Your Device not have The Sensor"
-																 * );
-																 * Toast.makeText
-																 * ( activity ,
-																 * "Device dosen't have This Sensor !"
-																 * , Toast.
-																 * LENGTH_SHORT
-																 * ).show(); }
-																 * else {
-																 * 
-																 * } } });
-																 * 
-																 * }
-																 */
+		public void isDeviceHasSensor(final Boolean hasSensor) {
 		}
 	};
 

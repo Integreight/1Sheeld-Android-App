@@ -52,8 +52,6 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import com.parse.ParseAnalytics;
 
 public class MainActivity extends FragmentActivity {
-	// private final String TAG = "MainActivity";
-	// private boolean isBoundService = false;
 	public AppSlidingLeftMenu appSlidingMenu;
 	public boolean isForground = false;
 	private onConnectedToBluetooth onConnectToBlueTooth = null;
@@ -69,13 +67,8 @@ public class MainActivity extends FragmentActivity {
 	public void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		initCrashlyticsAndUncaughtThreadHandler();
-//		ParseAnalytics.trackAppOpened(getIntent());
-		// Get a Tracker (should auto-report)
-		// requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.one_sheeld_main);
 		initLooperThread();
-		// set the Behind View
-		// setBehindContentView(R.layout.menu_frame);
 		replaceCurrentFragment(R.id.appTransitionsContainer,
 				SheeldsList.getInstance(), "base", true, false);
 		resetSlidingMenu();
@@ -86,38 +79,10 @@ public class MainActivity extends FragmentActivity {
 					.addArduinoLibraryVersionQueryHandler(
 							arduinoLibraryVersionHandler);
 		}
-		// ValidationPopup popub = new ValidationPopup(MainActivity.this,
-		// "Firmware Upgrading", "There's a new version for your 1Sheeld",
-		// new ValidationPopup.ValidationAction("Now",
-		// new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// new FirmwareUpdatingPopup(MainActivity.this)
-		// .show();
-		// }
-		// }, true), new ValidationPopup.ValidationAction(
-		// "Not Now", new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// // TODO Auto-generated method stub
-		//
-		// }
-		// }, true));
-		// popub.show();
 		if (getThisApplication().getShowTutAgain()
 				&& getThisApplication().getTutShownTimes() < 6)
 			startActivity(new Intent(this, Tutorial.class));
 	}
-
-	// @Override
-	// public void onConfigurationChanged(Configuration newConfig) {
-	// stopLooperThread();
-	// super.onConfigurationChanged(newConfig);
-	// initCrashlyticsAndUncaughtThreadHandler();
-	// initLooperThread();
-	// }
 
 	public Thread looperThread;
 	public Handler backgroundThreadHandler;
@@ -154,8 +119,6 @@ public class MainActivity extends FragmentActivity {
 			public void uncaughtException(Thread arg0, final Throwable arg1) {
 				arg1.printStackTrace();
 				ArduinoConnectivityPopup.isOpened = false;
-				// stopService(new Intent(getApplicationContext(),
-				// OneSheeldService.class));
 				moveTaskToBack(true);
 				if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
 					while (!((OneSheeldApplication) getApplication())
@@ -167,7 +130,6 @@ public class MainActivity extends FragmentActivity {
 
 					@Override
 					public void run() {
-						// tryToSendNotificationsToAdmins(arg1);
 						Intent in = new Intent(getIntent());
 						PendingIntent intent = PendingIntent
 								.getActivity(getBaseContext(), 0, in,
@@ -183,94 +145,8 @@ public class MainActivity extends FragmentActivity {
 				}).start();
 			}
 		};
-
-		// UncaughtExceptionHandler gaHandler= new ExceptionReporter(
-		// getThisApplication().getTracker(),
-		// myHandler, // Current default uncaught exception handler.
-		// getApplicationContext());
 		Thread.setDefaultUncaughtExceptionHandler(myHandler);
 		Crashlytics.start(this);
-	}
-
-	public void tryToSendNotificationsToAdmins(Throwable arg1) {
-		try {
-			// Get Exception Details
-			StackTraceElement[] stackTraceElement = arg1.getStackTrace();
-
-			String fileName = "";
-			String methodName = "";
-			String className = arg1.getClass().getSimpleName();
-			int lineNumber = 0;
-
-			String packageName = MainActivity.this.getApplicationInfo().packageName;
-			for (int i = 0; i < stackTraceElement.length; i++) {
-				if (stackTraceElement[i].getClassName().startsWith(packageName)) {
-					fileName = stackTraceElement[i].getFileName();
-					methodName = stackTraceElement[i].getMethodName();
-					lineNumber = stackTraceElement[i].getLineNumber();
-					break;
-				}
-			}
-
-			String url = "http://api.instapush.im/v1/post";
-			HttpClient httpclient = new DefaultHttpClient();
-			HttpPost httppost = new HttpPost(url);
-			httppost.addHeader("Content-Type", "application/json");
-			httppost.addHeader("x-instapush-appid", "53627f8ca4c48a291a1de9af");
-			httppost.addHeader("x-instapush-appsecret",
-					"93df7ea24ebf96a9f13f5b5bbb9c7eb9");
-			JSONObject instaPushObject = new JSONObject();
-			instaPushObject.put("event", "app_crash");
-			JSONObject instaPushTrackers = new JSONObject();
-			instaPushTrackers.put("exception_name", className);
-			instaPushTrackers.put("class_name", fileName);
-			instaPushTrackers.put("method_name", methodName);
-			instaPushTrackers.put("line_number", lineNumber);
-			instaPushObject.put("trackers", instaPushTrackers);
-			StringEntity entity = new StringEntity(instaPushObject.toString());
-			httppost.setEntity(entity);
-			// Execute the request
-			HttpResponse response;
-
-			response = httpclient.execute(httppost);
-			HttpEntity entity1 = response.getEntity();
-			if (entity1 != null) {
-				InputStream instream = entity1.getContent();
-				String result = convertStreamToString(instream);
-				Log.d("InstaPush", result);
-				instream.close();
-			}
-
-		} catch (Exception e) {
-			Log.e("TAG", "Exception", e);
-		}
-	}
-
-	private static String convertStreamToString(InputStream is) {
-		/*
-		 * To convert the InputStream to String we use the
-		 * BufferedReader.readLine() method. We iterate until the BufferedReader
-		 * return null which means there's no more data to read. Each line will
-		 * appended to a StringBuilder and returned as String.
-		 */
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-		StringBuilder sb = new StringBuilder();
-
-		String line = null;
-		try {
-			while ((line = reader.readLine()) != null) {
-				sb.append(line + "\n");
-			}
-		} catch (IOException e) {
-			Log.e("TAG", "Exception", e);
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				Log.e("TAG", "Exception", e);
-			}
-		}
-		return sb.toString();
 	}
 
 	Handler versionHandling = new Handler();
@@ -525,13 +401,7 @@ public class MainActivity extends FragmentActivity {
 			FragmentManager manager = getSupportFragmentManager();
 			boolean fragmentPopped = manager.popBackStackImmediate(tag, 0);
 
-			if (!fragmentPopped && manager.findFragmentByTag(tag) == null) { // fragment
-				// not
-				// in
-				// back
-				// stack,
-				// create
-				// it.
+			if (!fragmentPopped && manager.findFragmentByTag(tag) == null) {
 				FragmentTransaction ft = manager.beginTransaction();
 				if (animate)
 					ft.setCustomAnimations(R.anim.slide_out_right,
@@ -592,19 +462,6 @@ public class MainActivity extends FragmentActivity {
 		super.onDestroy();
 	}
 
-	//
-	// private boolean isMyServiceRunning() {
-	// ActivityManager manager = (ActivityManager)
-	// getSystemService(Context.ACTIVITY_SERVICE);
-	// for (RunningServiceInfo service : manager
-	// .getRunningServices(Integer.MAX_VALUE)) {
-	// if (OneSheeldApplication.class.getName().equals(
-	// service.service.getClassName())) {
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 	public void openMenu() {
 		resetSlidingMenu();
 		appSlidingMenu.openPane();
@@ -640,20 +497,12 @@ public class MainActivity extends FragmentActivity {
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		switch (requestCode) {
 		case SheeldsList.REQUEST_CONNECT_DEVICE:
-			// When DeviceListActivity returns with a device to connect
-			// if (resultCode == Activity.RESULT_OK) {
-			// ((MainActivity) getActivity())
-			// .setSupportProgressBarIndeterminateVisibility(true);
-			// // connectDevice(data);
-			// }
 			break;
 		case SheeldsList.REQUEST_ENABLE_BT:
 			// When the request to enable Bluetooth returns
 			if (resultCode != Activity.RESULT_OK) {
 				Toast.makeText(this, R.string.bt_not_enabled_leaving,
 						Toast.LENGTH_SHORT).show();
-				// ArduinoConnectivityPopup.isOpened = false;
-				// finish();
 			} else {
 				if (onConnectToBlueTooth != null
 						&& ArduinoConnectivityPopup.isOpened)
@@ -727,13 +576,11 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	protected void onStart() {
-		// GoogleAnalytics.getInstance(this).reportActivityStart(this);
 		super.onStart();
 	}
 
 	@Override
 	protected void onStop() {
-		// GoogleAnalytics.getInstance(this).reportActivityStop(this);
 		super.onStop();
 	}
 

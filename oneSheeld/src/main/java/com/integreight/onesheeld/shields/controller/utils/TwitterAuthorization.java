@@ -16,9 +16,4 @@ public class TwitterAuthorization {
 
 	public static String TWITTER_USER_NAME = null;
 
-	// public static final String TWITTER_CALLBACK_URL = "oauth://onesheeld";
-	// public static final String URL_TWITTER_AUTH = "auth_url";
-	// public static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
-	// public static final String URL_TWITTER_OAUTH_TOKEN = "oauth_token";
-
 }

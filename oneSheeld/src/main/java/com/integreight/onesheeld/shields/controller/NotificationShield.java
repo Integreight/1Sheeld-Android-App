@@ -33,27 +33,6 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 		super(activity, tag);
 	}
 
-	@Override
-	public void onUartReceive(byte[] data) {
-		// if (data.length < 2)
-		// return;
-		// byte command = data[0];
-		// byte methodId = data[1];
-		// int n = data.length - 2;
-		// byte[] newArray = new byte[n];
-		// System.arraycopy(data, 2, newArray, 0, n);
-		// if (command == NOTIFICATION_COMMAND) {
-		// String notificationText = new String(newArray);
-		// lastNotificationText = notificationText;
-		// if (methodId == NOTIFY_PHONE_METHOD_ID) {
-		// showNotification(notificationText);
-		// eventHandler.onNotificationReceive(notificationText);
-		// }
-		//
-		// }
-		// super.onUartReceive(data);
-	}
-
 	protected void showNotification(String notificationText) {
 		// TODO Auto-generated method stub
 		NotificationCompat.Builder build = new NotificationCompat.Builder(
@@ -62,36 +41,16 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 		build.setContentTitle(notificationText);
 		build.setContentText("Notification received from 1Sheeld!");
 		build.setTicker(notificationText);
-		// build.setContentInfo("");
 		build.setWhen(System.currentTimeMillis());
 		Toast.makeText(activity, notificationText, Toast.LENGTH_SHORT).show();
-		// PendingIntent pendingIntent = PendingIntent.getService(this, 0, new
-		// Intent(this, OneSheeldService.class), 0);
-
-		// build.addAction(R.drawable.action_cancel,
-		// "Close Service",pendingIntent );
-		// build.addAction(R.drawable.action_cancel,
-		// "Close Service",pendingIntent );
-		// build.addAction(R.drawable.action_cancel,
-		// "Close Service",pendingIntent );
-		// Intent notificationIntent = new Intent(activity, MainActivity.class);
-		// notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
-		// | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-		//
-		// PendingIntent intent = PendingIntent.getActivity(this, 0,
-		// notificationIntent, 0);
-
-		// build.setContentIntent(intent);
 		Vibrator v = (Vibrator) activity
 				.getSystemService(Context.VIBRATOR_SERVICE);
 		v.vibrate(1000);
 		Intent notificationIntent = new Intent(activity, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
 		PendingIntent intent = PendingIntent.getActivity(activity, 0,
 				notificationIntent, 0);
-
 		build.setContentIntent(intent);
 		Notification notification = build.build();
 		NotificationManager notificationManager = (NotificationManager) activity
@@ -120,9 +79,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 				if (eventHandler != null)
 					eventHandler.onNotificationReceive(notificationText);
 			}
-
 		}
-
 	}
 
 	@Override

@@ -38,7 +38,6 @@ public class RemoteOneSheeldShield extends
 	public static final byte DIGITAL_READ_RESPONSE = (byte) 0x01;
 	public static final byte FLOAT_MESSAGE_RESPONSE = (byte) 0x02;
 	public static final byte STRING_MESSAGE_RESPONSE = (byte) 0x03;
-//	public static final byte DIGITAL_PIN_SUBSCRIPTION_RESPONSE = (byte) 0x04;
 
 	public static final int MAXIMUM_NOTIFICATION_LIMIT = 1000;
 
@@ -222,14 +221,6 @@ public class RemoteOneSheeldShield extends
 	}
 
 	public void sendPushMessage(String action, String to, JSONObject json) {
-//		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-//		query.whereEqualTo("installationId", to);
-//		ParsePush push = new ParsePush();
-//		push.setQuery(query);
-//		push.setData(json);// push.setMessage(json.toString());
-//		push.setExpirationTimeInterval(10);// 10 seconds timeout
-//		push.sendInBackground();
-		
 		HashMap<String, Object> params = new HashMap<String, Object>();
 		params.put("to", to);
 		params.put("from", ParseInstallation.getCurrentInstallation().getInstallationId());
@@ -244,21 +235,6 @@ public class RemoteOneSheeldShield extends
 		   }
 		});
 	}
-
-//	private JSONObject getDigitalRequestReadMessage(int pin) {
-//		try {
-//			JSONObject json = new JSONObject();
-//			// json.put("type","DIGITAL_READ");
-//			json.put("pin", pin);
-//			json.put("from", ParseInstallation.getCurrentInstallation()
-//					.getInstallationId());
-//			return json;
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//			return null;
-//		}
-//	}
 
 	private JSONObject getPinModeMessage(int pin, int mode) {
 		try {
@@ -277,7 +253,6 @@ public class RemoteOneSheeldShield extends
 	private JSONObject getDigitalWriteMessage(int pin, boolean value) {
 		try {
 			JSONObject json = new JSONObject();
-			// json.put("type","DIGITAL_WRITE");
 			json.put("pin", pin);
 			json.put("value", value);
 			return json;
@@ -291,7 +266,6 @@ public class RemoteOneSheeldShield extends
 	private JSONObject getAnalogWriteMessage(int pin, int value) {
 		try {
 			JSONObject json = new JSONObject();
-			// json.put("type","ANALOG_WRITE");
 			json.put("pin", pin);
 			json.put("value", value);
 			return json;
@@ -305,8 +279,6 @@ public class RemoteOneSheeldShield extends
 	private JSONObject getKeyValueFloatMessage(String key, float value) {
 		try {
 			JSONObject json = new JSONObject();
-			// json.put("type","KEYVALUE_MESSAGE");
-			// json.put("value_type", "FLOAT");
 			json.put("key", key);
 			json.put("value", value);
 			return json;
@@ -320,8 +292,6 @@ public class RemoteOneSheeldShield extends
 	private JSONObject getKeyValueStringMessage(String key, String value) {
 		try {
 			JSONObject json = new JSONObject();
-			// json.put("type","KEYVALUE_MESSAGE");
-			// json.put("value_type", "STRING");
 			json.put("key", key);
 			json.put("value", value);
 			return json;
@@ -334,8 +304,6 @@ public class RemoteOneSheeldShield extends
 
 	private JSONObject getSubscribeToDigitalPinMessage(List<Integer> pinsArr) {
 		try {
-			// ArrayList<JSONObject> pinsJsonArr = new ArrayList<JSONObject>();
-			// @SuppressWarnings("unchecked")
 			JSONArray pins = new JSONArray();
 			for (Integer pin : pinsArr) {
 				JSONObject obj = new JSONObject();
@@ -355,8 +323,6 @@ public class RemoteOneSheeldShield extends
 
 	private JSONObject getUnsubscribeToDigitalPinMessage(List<Integer> pinsArr) {
 		try {
-			// ArrayList<JSONObject> pinsJsonArr = new ArrayList<JSONObject>();
-			// @SuppressWarnings("unchecked")
 			JSONArray pins = new JSONArray();
 			for (Integer pin : pinsArr) {
 				JSONObject obj = new JSONObject();
@@ -429,9 +395,6 @@ public class RemoteOneSheeldShield extends
 			for (Integer pin : pins) {
 				if (tempList.contains(pin))
 					tempList.remove(pin);
-				// if(lastSentValues.containsKey(pin))lastSentValues.remove(pin);
-				// if(currentValues.containsKey(pin))currentValues.remove(pin);
-				// if(digitalPinFloatingGuard.containsKey(pin))digitalPinFloatingGuard.remove(pin);
 			}
 			if (tempList.size() <= 0) {
 				subscribedDevices.remove(address);

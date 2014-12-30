@@ -31,8 +31,8 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
-import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 
@@ -41,7 +41,6 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 	private String lastPost;
 	private Fragment fragment;
 	private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
-	// private static final byte SEND_MESSAGE_METHOD_ID = (byte) 0x03;
 	private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x02;
 
 	static final String PREF_KEY_FACEBOOK_USERNAME = "FacebookName";
@@ -162,34 +161,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	}
 
-	// @Override
-	// public void onUartReceive(byte[] data) {
-	// TODO Auto-generated method stub
-	// if (data.length < 2)
-	// return;
-	// byte command = data[0];
-	// byte methodId = data[1];
-	// int n = data.length - 2;
-	// byte[] newArray = new byte[n];
-	// System.arraycopy(data, 2, newArray, 0, n);
-	// if (command == FACEBOOK_COMMAND) {
-	// String post = new String(newArray);
-	// lastPost = post;
-	// if (isFacebookLoggedInAlready())
-	// if (methodId == UPDATE_STATUS_METHOD_ID)
-	// publishStory(post);
-	//
-	// // }
-	// super.onUartReceive(data);
-	// }
-
 	public String getUsername() {
-		// TODO Auto-generated method stub
 		return mSharedPreferences.getString(PREF_KEY_FACEBOOK_USERNAME, "");
 	}
 
 	public boolean isFacebookLoggedInAlready() {
-		// TODO Auto-generated method stub
 		if (Session.getActiveSession() != null)
 			return Session.getActiveSession().isOpened()
 					&& getUsername().length() > 0;
@@ -300,43 +276,6 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
 	}
 
-	// private void sendMessage(final String message, final String to) {
-	// Session session = Session.getActiveSession();
-	//
-	// if (session != null) {
-	//
-	// Bundle postParams = new Bundle();
-	// postParams.putString("message", message);
-	// postParams.putString("to", to);
-	// Request.Callback callback = new Request.Callback() {
-	// public void onCompleted(Response response) {
-	// FacebookRequestError error = response.getError();
-	// if (error != null) {
-	// if (eventHandler != null) {
-	// Log.sysOut("$#$#$ " + error);
-	// eventHandler.stopProgress();
-	// eventHandler.onFacebookError(error
-	// .getErrorMessage());
-	// }
-	// return;
-	// }
-	// if (eventHandler != null) {
-	// eventHandler.onRecievePost("Message Sent to " + to
-	// + " Saying " + message);
-	// eventHandler.stopProgress();
-	// }
-	// }
-	// };
-	//
-	// Request request = new Request(session, "me/messages", postParams,
-	// HttpMethod.POST, callback);
-	//
-	// RequestAsyncTask task = new RequestAsyncTask(request);
-	// task.execute();
-	// }
-	//
-	// }
-
 	public void uploadImage(final String path, final String msg) {
 		new AsyncTask<Void, Void, Void>() {
 			byte[] data = null;
@@ -350,7 +289,6 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 				matrix.postRotate(rotate);
 				bi = Bitmap.createBitmap(bi, 0, 0, bi.getWidth(),
 						bi.getHeight(), matrix, true);
-				// scaledBitmap.recycle();
 				return null;
 			}
 
@@ -367,7 +305,6 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					data = baos.toByteArray();
 					Bundle postParams = new Bundle();
 					postParams.putString("message", msg);
-					// postParams.putString("method", "photos.upload");
 					postParams.putByteArray("source", data);
 					Request.Callback callback = new Request.Callback() {
 						public void onCompleted(Response response) {
@@ -424,18 +361,16 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 					else if (frame.getFunctionId() == UPLOAD_PHOTO_METHOD_ID) {
 						String imgPath = null;
 						byte sourceFolderId = frame.getArgument(1)[0];
-						if (sourceFolderId == SocialUtils.FROM_ONESHEELD_FOLDER)
-							imgPath = SocialUtils
+						if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
+							imgPath = CameraUtils
 									.getLastCapturedImagePathFromOneSheeldFolder(activity);
-						else if (sourceFolderId == SocialUtils.FROM_CAMERA_FOLDER)
-							imgPath = SocialUtils
+						else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
+							imgPath = CameraUtils
 									.getLastCapturedImagePathFromCameraFolder(activity);
 						if (imgPath != null) {
 							uploadImage(imgPath, lastPost);
 						}
 					}
-					// if (frame.getFunctionId() == SEND_MESSAGE_METHOD_ID)
-					// sendMessage(lastPost, frame.getArgumentAsString(1));
 				} else
 					Toast.makeText(
 							getApplication().getApplicationContext(),

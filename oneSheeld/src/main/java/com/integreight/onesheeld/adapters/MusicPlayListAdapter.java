@@ -106,8 +106,6 @@ public class MusicPlayListAdapter extends BaseAdapter {
 			for (PlaylistItem playlistItem : items) {
 				this.items.add(playlistItem);
 			}
-			// else
-			// shieldList = new ArrayList<UIShield>();
 			notifyDataSetChanged();
 		}
 	}

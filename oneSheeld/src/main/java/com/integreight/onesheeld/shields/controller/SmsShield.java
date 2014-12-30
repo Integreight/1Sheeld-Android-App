@@ -73,19 +73,6 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		super(activity, tag);
 	}
 
-	@Override
-	public void onUartReceive(byte[] data) {
-		// if (data.length < 2)
-		// return;
-		// byte command = data[0];
-		// byte methodId = data[1];
-		// int n = data.length - 2;
-		// byte[] newArray = new byte[n];
-		// System.arraycopy(data, 2, newArray, 0, n);
-
-		super.onUartReceive(data);
-	}
-
 	protected void sendSms(String smsNumber, String smsText) {
 
 		try {
@@ -159,7 +146,4 @@ public class SmsShield extends ControllerParent<SmsShield> {
 		smsListener = null;
 	}
 
-	public void sendSmsToArduino() {
-		smsListener.sendSMS();
-	}
 }

@@ -17,14 +17,4 @@ public class OneSheeldEditText extends AutoCompleteTextView {
 						.getStyle() == Typeface.BOLD ? Typeface.BOLD
 						: Typeface.NORMAL);
 	}
-
-	// @Override
-	// public boolean onKeyPreIme(int keyCode, KeyEvent event) {
-	// if (event.getKeyCode() == KeyEvent.KEYCODE_BACK
-	// && event.getAction() == KeyEvent.ACTION_UP) {
-	// clearFocus();
-	// }
-	// return super.dispatchKeyEvent(event);
-	// }
-
 }

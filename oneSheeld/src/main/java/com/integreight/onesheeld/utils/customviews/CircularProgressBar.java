@@ -213,58 +213,6 @@ public class CircularProgressBar extends ProgressBar {
 		invalidate();
 	}
 
-	public void animateProgressTo(final int start, final int end,
-			final ProgressAnimationListener listener) {
-		if (start != 0)
-			setProgress(start);
-
-		// final ObjectAnimator progressBarAnimator =
-		// ObjectAnimator.ofFloat(this,
-		// "animateProgress", start, end);
-		// progressBarAnimator.setDuration(1500);
-		// // progressBarAnimator.setInterpolator(new
-		// // AnticipateOvershootInterpolator(2f, 1.5f));
-		// progressBarAnimator.setInterpolator(new LinearInterpolator());
-		//
-		// progressBarAnimator.addListener(new AnimatorListener() {
-		// @Override
-		// public void onAnimationCancel(final Animator animation) {
-		// }
-		//
-		// @Override
-		// public void onAnimationEnd(final Animator animation) {
-		// CircularProgressBar.this.setProgress(end);
-		// if (listener != null)
-		// listener.onAnimationFinish();
-		// }
-		//
-		// @Override
-		// public void onAnimationRepeat(final Animator animation) {
-		// }
-		//
-		// @Override
-		// public void onAnimationStart(final Animator animation) {
-		// if (listener != null)
-		// listener.onAnimationStart();
-		// }
-		// });
-		//
-		// progressBarAnimator.addUpdateListener(new AnimatorUpdateListener() {
-		// @Override
-		// public void onAnimationUpdate(final ValueAnimator animation) {
-		// int progress = ((Float) animation.getAnimatedValue())
-		// .intValue();
-		// if (progress != CircularProgressBar.this.getProgress()) {
-		// Log.d(TAG, progress + "");
-		// CircularProgressBar.this.setProgress(progress);
-		// if (listener != null)
-		// listener.onAnimationProgress(progress);
-		// }
-		// }
-		// });
-		// progressBarAnimator.start();
-	}
-
 	public synchronized void setTitle(String title) {
 		this.mTitle = title;
 		invalidate();

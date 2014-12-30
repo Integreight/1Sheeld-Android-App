@@ -51,7 +51,7 @@ public class TwitterDialog extends Dialog {
 	static final int PADDING = 2;
 
 	private String mUrl;
-	private TwitterDialogListner mListener;
+	private TwitterDialogListener mListener;
 	private ProgressDialog mSpinner;
 	private WebView mWebView;
 	private LinearLayout mContent;
@@ -64,7 +64,7 @@ public class TwitterDialog extends Dialog {
 	private static final String TAG = "Foursquare-WebView";
 
 	public TwitterDialog(Context context, String url, Twitter twitter,
-			RequestToken requestToken, TwitterDialogListner listener) {
+			RequestToken requestToken, TwitterDialogListener listener) {
 		super(context);
 		this.requestToken = requestToken;
 		this.twitter = twitter;
@@ -186,17 +186,6 @@ public class TwitterDialog extends Dialog {
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			Log.d(TAG, "Redirecting URL " + url);
-
-			// if (url.startsWith(FoursquareApp.CALLBACK_URL)) {
-			// String urls[] = url.split("=");
-			//
-			// // mListener.onComplete(urls[1]);
-			//
-			// TwitterDialog.this.dismiss();
-			//
-			// return true;
-			// }
-
 			return false;
 		}
 
@@ -235,12 +224,6 @@ public class TwitterDialog extends Dialog {
 			mWebView.loadUrl("javascript:window.HTMLOUT.showHTML('<head>'+document.getElementsByTagName('html')[0].innerHTML+'</head>');");
 		}
 
-	}
-
-	public interface FsqDialogListener {
-		public abstract void onComplete(String accessToken);
-
-		public abstract void onError(String error);
 	}
 
 	class MyJavaScriptInterface {
@@ -309,8 +292,6 @@ public class TwitterDialog extends Dialog {
 			} else if (currentURl
 					.equals("https://api.twitter.com/oauth/authenticate")
 					&& pinCode == null) {
-				// Log.d("check twitter", "here 1");
-				// TwitterDialog.this.dismiss();
 			}
 		}
 	}

@@ -5,7 +5,6 @@ public class ArduinoConnectedPin {
 	private byte pinMode;
 	
 	public ArduinoConnectedPin() {
-		// TODO Auto-generated constructor stub
 	}
 	public ArduinoConnectedPin(int pinID, byte pinMode) {
 		super();

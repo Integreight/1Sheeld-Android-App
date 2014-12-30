@@ -38,7 +38,6 @@ import com.integreight.onesheeld.utils.Log;
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 	private FoursquareEventHandler eventHandler;
-	// private static final byte FOURSQUARE_COMMAND = (byte) 0x1B;
 	private static final byte CHECKIN_METHOD_ID = (byte) 0x01;
 	Foursquare foursquare;
 	String redirectUrl = "http://www.1sheeld.com";
@@ -138,8 +137,6 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
 				HttpClient hc = new DefaultHttpClient();
 				HttpResponse rp = hc.execute(post);
-				// Log.d("response from server ",EntityUtils.toString(rp.getEntity())+"");
-				// EntityUtils.toString(rp.getEntity());
 				HttpEntity mEntity = rp.getEntity();
 				InputStream resp = mEntity.getContent();
 				try {

@@ -87,7 +87,6 @@ public class MicSoundMeter {
 	// db= 20* log10(amplitude/baseline_amplitude);
 	public double getAmplitudeEMA() {
 		double amp = getAmplitude();
-		// mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
 		if (amp == 0)
 			return 0;
 

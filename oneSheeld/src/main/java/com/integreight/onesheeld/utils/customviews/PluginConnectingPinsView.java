@@ -17,10 +17,6 @@ import com.integreight.onesheeld.utils.customviews.PluginPinsColumnContainer.Pin
 
 public class PluginConnectingPinsView extends Fragment {
 	private static PluginConnectingPinsView thisInstance;
-	// TextView show;
-	// private int selectedPin = 0;
-	// private ArrayList<LinearLayout> pinsSubContainers = new
-	// ArrayList<LinearLayout>();
 	private View view;
 	private String selectedPinName = "";
 
@@ -53,9 +49,6 @@ public class PluginConnectingPinsView extends Fragment {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
-		// if (isInflated) {
-		// show = (TextView) view.findViewById(R.id.show);
-		// }
 		super.onActivityCreated(savedInstanceState);
 	}
 

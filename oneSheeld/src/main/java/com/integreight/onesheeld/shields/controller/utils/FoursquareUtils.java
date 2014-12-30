@@ -26,24 +26,8 @@ import com.integreight.onesheeld.utils.Log;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 
-/**
- * Utility class supporting the Foursquare Object.
- * 
- * @author Mukesh Yadav
- * 
- */
-public final class ForsquareUtil {
+public final class FoursquareUtils {
 
-	/**
-	 * Generate the multi-part post body providing the parameters and boundary
-	 * string
-	 * 
-	 * @param parameters
-	 *            the parameters need to be posted
-	 * @param boundary
-	 *            the random string as boundary
-	 * @return a string of the post body
-	 */
 	public static String encodePostBody(Bundle parameters, String boundary) {
 		if (parameters == null)
 			return "";
@@ -103,13 +87,6 @@ public final class ForsquareUtil {
 		return params;
 	}
 
-	/**
-	 * Parse a URL query and fragment parameters into a key-value bundle.
-	 * 
-	 * @param url
-	 *            the URL to parse
-	 * @return a dictionary bundle of keys and values
-	 */
 	public static Bundle parseUrl(String url) {
 		// hack to prevent MalformedURLException
 		url = url.replace("#", "?");
@@ -124,24 +101,6 @@ public final class ForsquareUtil {
 		}
 	}
 
-	/**
-	 * Connect to an HTTP URL and return the response as a string.
-	 * 
-	 * Note that the HTTP method override is used on non-GET requests. (i.e.
-	 * requests are made as "POST" with method specified in the body).
-	 * 
-	 * @param url
-	 *            - the resource to open: must be a welformed URL
-	 * @param method
-	 *            - the HTTP method to use ("GET", "POST", etc.)
-	 * @param params
-	 *            - the query parameter for the URL (e.g. access_token=foo)
-	 * @return the URL contents as a String
-	 * @throws MalformedURLException
-	 *             - if the URL format is invalid
-	 * @throws IOException
-	 *             - if a network problem occurs
-	 */
 	public static String openUrl(String url, String method, Bundle params)
 			throws MalformedURLException, IOException {
 		// random string as boundary for multi-part http post
@@ -239,71 +198,6 @@ public final class ForsquareUtil {
 		cookieManager.removeAllCookie();
 	}
 
-	/**
-	 * Parse a server response into a JSON Object. This is a basic
-	 * implementation using org.json.JSONObject representation. More
-	 * sophisticated applications may wish to do their own parsing.
-	 * 
-	 * The parsed JSON is checked for a variety of error fields and a
-	 * FoursquareException is thrown if an error condition is set, populated
-	 * with the error message and error type or code if available.
-	 * 
-	 * @param response
-	 *            - string representation of the response
-	 * @return the response as a JSON Object
-	 * @throws JSONException
-	 *             - if the response is not valid JSON
-	 * @throws FoursquareError
-	 *             - if an error condition is set
-	 */
-	public static JSONObject parseJson(String response) throws JSONException,
-			FoursquareError {
-		// Edge case: when sending a POST request to /[post_id]/likes
-		// the return value is 'true' or 'false'. Unfortunately
-		// these values cause the JSONObject constructor to throw
-		// an exception.
-		if (response.equals("false")) {
-			throw new FoursquareError("request failed");
-		}
-		if (response.equals("true")) {
-			response = "{value : true}";
-		}
-		JSONObject json = new JSONObject(response);
-
-		// errors set by the server are not consistent
-		// they depend on the method and endpoint
-		if (json.has("error")) {
-			JSONObject error = json.getJSONObject("error");
-			throw new FoursquareError(error.getString("message"),
-					error.getString("type"), 0);
-		}
-		if (json.has("error_code") && json.has("error_msg")) {
-			throw new FoursquareError(json.getString("error_msg"), "",
-					Integer.parseInt(json.getString("error_code")));
-		}
-		if (json.has("error_code")) {
-			throw new FoursquareError("request failed", "",
-					Integer.parseInt(json.getString("error_code")));
-		}
-		if (json.has("error_msg")) {
-			throw new FoursquareError(json.getString("error_msg"));
-		}
-		if (json.has("error_reason")) {
-			throw new FoursquareError(json.getString("error_reason"));
-		}
-		return json;
-	}
-
-	/**
-	 * Display a simple alert dialog with the given text and title.
-	 * 
-	 * @param context
-	 *            Android context in which the dialog should be displayed
-	 * @param title
-	 *            Alert dialog title
-	 * @param text
-	 *            Alert dialog message
-	 */
 	public static void showAlert(Context context, String title, String text) {
 		Builder alertBuilder = new Builder(context);
 		alertBuilder.setTitle(title);

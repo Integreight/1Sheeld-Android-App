@@ -67,16 +67,6 @@ public class ImageUtils {
 		return rotate;
 	}
 
-	public static Bitmap rotateImage(Bitmap src, float degree) {
-		// create new matrix object
-		Matrix matrix = new Matrix();
-		// setup rotation degree
-		matrix.postRotate(degree);
-		// return new bitmap rotated using matrix
-		return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(),
-				matrix, true);
-	}
-
 	public static Bitmap decodeBitmap(byte[] data, Matrix matrix) {
 		Bitmap bitmap = null;
 		BitmapFactory.Options bfOptions = new BitmapFactory.Options();
