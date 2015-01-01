@@ -24,6 +24,8 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -146,7 +148,9 @@ public class MainActivity extends FragmentActivity {
 			}
 		};
 		Thread.setDefaultUncaughtExceptionHandler(myHandler);
-		Crashlytics.start(this);
+        if (hasCrashlyticsApiKey(this)) {
+            Crashlytics.start(this);
+        }
 	}
 
 	Handler versionHandling = new Handler();
@@ -595,5 +599,33 @@ public class MainActivity extends FragmentActivity {
 					.getWindowToken(), 0);
 		}
 	}
+
+    static boolean hasCrashlyticsApiKey(Context context) {
+
+        boolean hasValidKey = false;
+        try {
+
+            Context appContext = context.getApplicationContext();
+            ApplicationInfo ai = appContext.getPackageManager().getApplicationInfo(appContext.getPackageName(),
+                    PackageManager.GET_META_DATA);
+
+            Bundle bundle = ai.metaData;
+            if (bundle != null) {
+
+                String apiKey = bundle.getString("com.crashlytics.ApiKey");
+                hasValidKey = apiKey != null && !apiKey.equals("0000000000000000000000000000000000000000");
+
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+
+            // Should not happen since the name was determined dynamically from the app context.
+//            Log.e(LOGTAG, "Unexpected NameNotFound.", e);
+
+        }
+
+        return hasValidKey;
+
+    }
 
 }
