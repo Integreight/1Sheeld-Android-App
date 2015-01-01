@@ -1,22 +1,10 @@
 package com.integreight.onesheeld;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
@@ -37,7 +25,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
@@ -51,7 +38,6 @@ import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
-import com.parse.ParseAnalytics;
 
 public class MainActivity extends FragmentActivity {
 	public AppSlidingLeftMenu appSlidingMenu;
