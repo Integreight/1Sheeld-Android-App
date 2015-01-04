@@ -6,7 +6,6 @@ public class PlaylistItem {
 	public boolean isSelected = false;
 
 	public PlaylistItem() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public PlaylistItem(int id, String name, String path) {

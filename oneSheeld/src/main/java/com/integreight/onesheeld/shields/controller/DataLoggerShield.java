@@ -27,9 +27,7 @@ import com.integreight.onesheeld.shields.ControllerParent;
 
 public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 	private static final byte START_LOGGING = 0x01;
-	// private static final byte START_LOGGING_WITH_NAME = 0x02;
 	private static final byte STOP_LOGGING = 0x02;
-	// private static final byte SET_FORMATE = 0x04;
 	private static final byte ADD_FLOAT = 0x03;
 	private static final byte ADD_STRING = 0x04;
 	private static final byte LOG = 0x05;
@@ -117,10 +115,6 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 														: fileName+" - "+new Date()
 														.getTime()) + ".csv"),
 								CsvPreference.STANDARD_PREFERENCE);
-
-						// assign a default value for married (if null), and
-						// write
-						// numberOfKids as an empty column if null
 						final CellProcessor[] processors = new CellProcessor[headerList
 								.size()];
 						for (int i = 0; i < processors.length; i++) {

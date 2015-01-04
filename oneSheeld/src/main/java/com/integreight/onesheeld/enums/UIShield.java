@@ -93,10 +93,7 @@ public enum UIShield {
 			R.drawable.shields_list_musicplayer_symbol, false,
 			MusicShield.class), GYROSCOPE_SHIELD((byte) 0x0E, "Gyroscope",
 			0xff4c84e9, R.drawable.shields_list_gyroscope_symbol, false,
-			GyroscopeShield.class, 1), FLASHLIGHT_SHIELD((byte) 0x05,
-			"Flashlight", 0xff0b4c8d,
-			R.drawable.shields_list_flashlight_symbol, false,
-			EmptyShield.class, false), SKYPE_SHIELD((byte) 0x1F, "Skype",
+			GyroscopeShield.class, 1), SKYPE_SHIELD((byte) 0x1F, "Skype",
 			0xff08c473, R.drawable.shields_list_skype_symbol, false,
 			SkypeShield.class), PROXIMITY_SHIELD((byte) 0x13, "Proximity",
 			0xff543c8d, R.drawable.shields_list_proximity_symbol, false,
@@ -168,51 +165,12 @@ public enum UIShield {
 	public Class<? extends ControllerParent<?>> shieldType;
 	public int position = 0;
 
-	public int getSymbolId() {
-		return symbolId;
-	}
-
-	public boolean isReleasable() {
-		return isReleasable;
-	}
-
-	public boolean isInvalidatable() {
-		return isInvalidatable == 1;
-	}
-
-	// public int getMainBWImageStripId() {
-	// return mainBWImageStripId;
-	// }
-	public Boolean isMainActivitySelection() {
-		return mainActivitySelection;
-	}
-
 	public static UIShield getShieldsActivitySelection() {
 		return shieldsActivitySelection;
 	}
 
-	public static void setShieldsActivitySelection(UIShield selection) {
-		shieldsActivitySelection = selection;
-	}
-
-	public void setMainActivitySelection(boolean toggleStatus) {
-		this.mainActivitySelection = toggleStatus;
-	}
-
-	public int getItemBackgroundColor() {
-		return itemBackgroundColor;
-	}
-
 	public String getName() {
 		return name;
-	}
-
-	public Class<? extends ControllerParent<?>> getShieldType() {
-		return shieldType;
-	}
-
-	public void setShieldType(Class<? extends ControllerParent<?>> shieldType) {
-		this.shieldType = shieldType;
 	}
 
 	private UIShield(byte id, String name, int mainImageStripId, int symbolId,
@@ -251,106 +209,8 @@ public enum UIShield {
 		this.isReleasable = isReleasable;
 	}
 
-	private UIShield(byte id, String name, int mainImageStripId, int symbolId,
-			boolean mainActivitySelection,
-			Class<? extends ControllerParent<?>> shieldType,
-			boolean isReleasable, int isInvalidatable) {
-		this.id = id;
-		this.name = name;
-		this.itemBackgroundColor = mainImageStripId;
-		this.symbolId = symbolId;
-		this.mainActivitySelection = mainActivitySelection;
-		this.shieldType = shieldType;
-		this.isReleasable = isReleasable;
-		this.isInvalidatable = isInvalidatable;
-	}
-
 	public byte getId() {
 		return id;
-	}
-
-	public static UIShield getPosition(int id) {
-		switch (id) {
-		case 1:
-			return LED_SHIELD;
-		case 2:
-			return NOTIFICATION_SHIELD;
-		case 3:
-			return SEVENSEGMENT_SHIELD;
-		case 4:
-			return BUZZER_SHIELD;
-		case 5:
-			return MIC_SHIELD;
-		case 6:
-			return KEYPAD_SHIELD;
-		case 7:
-			return SLIDER_SHIELD;
-		case 8:
-			return LCD_SHIELD;
-		case 9:
-			return MAGNETOMETER_SHIELD;
-		case 10:
-			return PUSHBUTTON_SHIELD;
-		case 11:
-			return TOGGLEBUTTON_SHIELD;
-		case 12:
-			return ACCELEROMETER_SHIELD;
-		case 13:
-			return FACEBOOK_SHIELD;
-		case 14:
-			return TWITTER_SHIELD;
-		case 15:
-			return GAMEDPAD_SHIELD;
-		case 16:
-			return FOURSQUARE_SHIELD;
-		case 17:
-			return GPS_SHIELD;
-		case 18:
-			return SMS_SHIELD;
-		case 19:
-			return MUSICPLAYER_SHIELD;
-		case 20:
-			return GYROSCOPE_SHIELD;
-		case 21:
-			return FLASHLIGHT_SHIELD;
-		case 22:
-			return SKYPE_SHIELD;
-		case 23:
-			return PROXIMITY_SHIELD;
-		case 24:
-			return GRAVITY_SHIELD;
-		case 25:
-			return ORIENTATION_SHIELD;
-		case 26:
-			return LIGHT_SHIELD;
-		case 27:
-			return PRESSURE_SHIELD;
-		case 28:
-			return TEMPERATURE_SHIELD;
-		case 29:
-			return CAMERA_SHIELD;
-		case 30:
-			return PHONE_SHIELD;
-		case 31:
-			return NFC;
-		case 32:
-			return WIFI;
-		case 33:
-			return GSM;
-		case 34:
-			return GLCD;
-		case 35:
-			return EMAIL_SHIELD;
-		case 36:
-			return CLOCK_SHIELD;
-		case 37:
-			return KEYBOARD_SHIELD;
-		}
-		return null;
-	}
-
-	public static boolean isConnected() {
-		return isConnected;
 	}
 
 	public static void setConnected(boolean isConnected) {

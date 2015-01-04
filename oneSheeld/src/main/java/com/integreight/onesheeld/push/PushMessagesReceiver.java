@@ -214,23 +214,6 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
 		}
 	}
 
-//	private void sendPushMessage(String installationId, JSONObject json) {
-//		try {
-//			json.put("from", ParseInstallation.getCurrentInstallation()
-//					.getInstallationId());
-//		} catch (JSONException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		ParseQuery<ParseInstallation> query = ParseInstallation.getQuery();
-//		query.whereEqualTo("installationId", installationId);
-//		ParsePush push = new ParsePush();
-//		push.setQuery(query);
-//		push.setData(json);// push.setMessage(json.toString());
-//		push.setExpirationTimeInterval(10);// 10 seconds timeout
-//		push.sendInBackground();
-//	}
-
 	protected void showNotification(Context context, String notificationText) {
 		// TODO Auto-generated method stub
 		NotificationCompat.Builder build = new NotificationCompat.Builder(

@@ -67,23 +67,12 @@ public class ImageUtils {
         return rotate;
     }
 
-    public static Bitmap rotateImage(Bitmap src, float degree) {
-        // create new matrix object
-        Matrix matrix = new Matrix();
-        // setup rotation degree
-        matrix.postRotate(degree);
-        // return new bitmap rotated using matrix
-        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(),
-                matrix, true);
-    }
-
     private static Bitmap bitmap = null;
 
     public static Bitmap decodeBitmap(byte[] data, Matrix matrix) {
-        if(bitmap!=null)
-        {
+        if (bitmap != null) {
             bitmap.recycle();
-            bitmap=null;
+            bitmap = null;
         }
         BitmapFactory.Options bfOptions = new BitmapFactory.Options();
         bfOptions.inDither = false; // Disable Dithering mode

@@ -97,10 +97,6 @@ public class FoursquareDialog extends Dialog {
 
 	private void setUpTitle() {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-		/*
-		 * Drawable icon = getContext().getResources().getDrawable(
-		 * R.drawable.foursquare);
-		 */
 		mTitle = new TextView(getContext());
 		mTitle.setText("Foursquare");
 		mTitle.setTextColor(Color.WHITE);
@@ -108,8 +104,6 @@ public class FoursquareDialog extends Dialog {
 		mTitle.setBackgroundColor(FB_BLUE);
 		mTitle.setPadding(MARGIN + PADDING, MARGIN, MARGIN, MARGIN);
 		mTitle.setCompoundDrawablePadding(MARGIN + PADDING);
-		// mTitle.setCompoundDrawablesWithIntrinsicBounds(icon, null, null,
-		// null);
 		mContent.addView(mTitle);
 	}
 
@@ -131,28 +125,13 @@ public class FoursquareDialog extends Dialog {
 		public boolean shouldOverrideUrlLoading(WebView view, String url) {
 			Log.d("Foursquare-WebView", "Redirect URL: " + url);
 			if (url.startsWith(Foursquare.REDIRECT_URI)) {
-				Bundle values = ForsquareUtil.parseUrl(url);
+				Bundle values = FoursquareUtils.parseUrl(url);
 				mListener.onComplete(values);
-				// String error = values.getString("error");
-				// if (error == null) {
-				// error = values.getString("error_type");
-				// }
-				//
-				// if (error == null) {
-				// mListener.onComplete(values);
-				// } else if (error.equals("access_denied") ||
-				// error.equals("OAuthAccessDeniedException")) {
-				// mListener.onCancel();
-				// } else {
-				// mListener.onFoursquareError(new FoursquareError(error));
-				// }
-
 				FoursquareDialog.this.dismiss();
 				return true;
 			} else if (url.contains(DISPLAY_STRING)) {
 				return false;
 			}
-
 			getContext().startActivity(
 					new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
 			return true;
@@ -191,7 +170,7 @@ public class FoursquareDialog extends Dialog {
 
 		private boolean checkRedirectUrl(String url) {
 			if (url.startsWith(Foursquare.REDIRECT_URI)) {
-				Bundle values = ForsquareUtil.parseUrl(url);
+				Bundle values = FoursquareUtils.parseUrl(url);
 				mListener.onComplete(values);
 
 				FoursquareDialog.this.dismiss();

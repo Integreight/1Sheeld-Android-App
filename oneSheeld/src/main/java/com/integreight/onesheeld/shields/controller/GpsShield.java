@@ -21,7 +21,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
-import com.integreight.onesheeld.shields.controller.utils.GSMLocationupdates.SendFrameHandler;
+import com.integreight.onesheeld.shields.controller.utils.SendFrameHandler;
 import com.integreight.onesheeld.utils.Log;
 
 public class GpsShield extends ControllerParent<GpsShield> implements
@@ -32,7 +32,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	private LocationRequest mLocationRequest;
 	private GoogleApiClient mLocationClient;
 	private boolean mUpdatesRequested;
-//	private Location lastLocation;
 	private ShieldFrame frame;
 	private LocationManager manager;
 	private static final int SERVICE_VERSION_UPDATE_REQUIRED = 2,
@@ -50,9 +49,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
 	@Override
 	public ControllerParent<GpsShield> setTag(String tag) {
-
-//		mLocationClient = new LocationClient(getActivity()
-//				.getApplicationContext(), this, this);
 		mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
         .addApi(LocationServices.API)
         .addConnectionCallbacks(this)
@@ -130,8 +126,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 			} else
 				Log.d("Gps",
 						"Google Play services was not available for some reasons");
-		} else {
-//			startPeriodicUpdates();
 		}
 	}
 
@@ -165,46 +159,9 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		mUpdatesRequested = false;
 		if (mLocationClient.isConnected()) {
 			mLocationClient.unregisterConnectionCallbacks(this);
-//			mLocationClient.removeLocationUpdates(this);
 			mLocationClient.disconnect();
 		}
-		// After disconnect() is called, the client is considered "dead".
 	}
-
-//	private void startPeriodicUpdates() {
-//		if (mLocationClient != null) {
-//			lastLocation = mLocationClient.getLastLocation();
-//			if (lastLocation != null) {
-//				Log.d("Gps Lat::Double", lastLocation.getLatitude() + "");
-//				Log.d("Gps Lat::Double in Radians",
-//						getRadians(lastLocation.getLatitude()) + "");
-//				Log.d("Gps Long::Double", lastLocation.getLongitude() + "");
-//				Log.d("Gps Long::Double in Radians",
-//						getRadians(lastLocation.getLongitude()) + "");
-//				if (eventHandler != null) {
-//					eventHandler
-//							.onLangChanged(lastLocation.getLongitude() + "");
-//					eventHandler.onLatChanged(lastLocation.getLatitude() + "");
-//				}
-//			} /*
-//			 * else {
-//			 * 
-//			 * GSMLocationupdates gsmLocationupdates = new GSMLocationupdates(
-//			 * 
-//			 * getApplication().getApplicationContext());
-//			 * gsmLocationupdates.updateLocation();
-//			 * 
-//			 * }
-//			 */
-//		}
-//
-//	}
-
-//	private double getRadians(double angdeg) {
-//		double result = Math.toRadians(angdeg);
-//		return result;
-//
-//	}
 
 	private void showErrorDialog(int errorCode) {
 		Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
@@ -258,16 +215,12 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		case SUCCESS:
 			return true;
 		case SERVICE_DISABLED:
-			// showErrorDialog(SERVICE_DISABLED);
 			return false;
 		case SERVICE_MISSING:
-			// showErrorDialog(SERVICE_MISSING);
 			return false;
 		case SERVICE_VERSION_UPDATE_REQUIRED:
-			// showErrorDialog(SERVICE_VERSION_UPDATE_REQUIRED);
 			return false;
 		case CANCELED:
-			// showErrorDialog(CANCELED);
 			return false;
 
 		}
@@ -311,10 +264,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 		// TODO Auto-generated method stub
 		if (mUpdatesRequested && mLocationRequest != null
 				&& mLocationClient != null) {
-//			mLocationClient.requestLocationUpdates(mLocationRequest, this);
 			LocationServices.FusedLocationApi.requestLocationUpdates(
 					mLocationClient, mLocationRequest, this);
-//			startPeriodicUpdates();
 		}
 
 	}
@@ -322,9 +273,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 	private void sendFrame(Location myLocation) {
 		// TODO Auto-generated method stub
 		frame = new ShieldFrame(UIShield.GPS_SHIELD.getId(), GPS_VALUE);
-		// frame.addByteArgument((byte) Math.round(event.values[0]));
-		float lat = (float) myLocation.getLatitude();// getRadians(myLocation.getLatitude());
-		float lang = (float) myLocation.getLongitude();// getRadians(myLocation.getLongitude());
+		float lat = (float) myLocation.getLatitude();
+		float lang = (float) myLocation.getLongitude();
 		frame.addFloatArgument(lat);
 		frame.addFloatArgument(lang);
 		sendShieldFrame(frame);

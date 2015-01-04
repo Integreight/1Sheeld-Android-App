@@ -31,26 +31,4 @@ public class PinView extends ImageView {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	// private Rect rect; // Variable rect to hold the bounds of the view
-	// @Override
-	// public boolean onTouchEvent(MotionEvent event) {
-	// if (event.getAction() == MotionEvent.ACTION_DOWN) {
-	// // Construct a rect of the view's bounds
-	// rect = new Rect(getLeft(), getTop(), getRight(),
-	// getBottom());
-	// focusListner.focusOnThisChild(index);
-	// return true;
-	//
-	// }
-	// if (event.getAction() == MotionEvent.ACTION_MOVE) {
-	// if (!rect.contains(getLeft() + (int) event.getX(),getTop()
-	// + (int) event.getY())) {
-	// return false;
-	// } else {
-	// focusListner.focusOnThisChild(index);
-	// return true;
-	// }
-	// }
-	// return false;
-	// }
 }

@@ -59,30 +59,6 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
 						stepValue = soundLevelIndicator.getHeight() / 80;
 					}
 				});
-		// params.gravity = Gravity.BOTTOM;
-		// v.findViewById(R.id.start_mic).setOnClickListener(
-		// new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// invalidateController();
-		// ((MicShield) getApplication().getRunningShields().get(
-		// getControllerTag())).startMic(false);
-		//
-		// }
-		// });
-		// v.findViewById(R.id.stop_mic).setOnClickListener(
-		// new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View v) {
-		// invalidateController();
-		// ((MicShield) getApplication().getRunningShields().get(
-		// getControllerTag())).stopMic();
-		//
-		// }
-		// });
-
 	}
 
 	private MicEventHandler micEventHandler = new MicEventHandler() {

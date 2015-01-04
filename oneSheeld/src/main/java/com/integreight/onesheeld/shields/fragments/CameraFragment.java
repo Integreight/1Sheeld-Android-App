@@ -14,20 +14,7 @@ import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
-	// private SurfaceView sv;
-
-	// a bitmap to display the captured image
-	// private Bitmap bmp;
 	FileOutputStream fo;
-
-	// Camera variables
-	// a surface holder
-	// private SurfaceHolder sHolder;
-	// a variable to control the camera
-	// private Camera mCamera;
-	// the camera parameters
-	// private Parameters parameters;
-	// private String FLASH_MODE = "on";
 	private CameraFragmentHandler fragmentHandler;
 
 	@Override

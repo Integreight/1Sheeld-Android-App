@@ -26,33 +26,11 @@ import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.plugin.Constants;
 import com.integreight.onesheeld.plugin.PluginBundleManager;
 
-/**
- * This is the "query" BroadcastReceiver for a Locale Plug-in condition.
- * 
- * @see com.twofortyfouram.locale.Intent#ACTION_QUERY_CONDITION
- * @see com.twofortyfouram.locale.Intent#EXTRA_BUNDLE
- */
 public final class QueryReceiver extends BroadcastReceiver {
 
-	/**
-	 * @param context
-	 *            {@inheritDoc}.
-	 * @param intent
-	 *            the incoming
-	 *            {@link com.twofortyfouram.locale.Intent#ACTION_QUERY_CONDITION}
-	 *            Intent. This should always contain the
-	 *            {@link com.twofortyfouram.locale.Intent#EXTRA_BUNDLE} that was
-	 *            saved by {@link EditActivity} and later broadcast by Locale.
-	 */
-	public static int SELECTED_PIN = -1;
-	public static boolean IS_HIGH = false;
 
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		/*
-		 * Always be strict on input parameters! A malicious third-party app
-		 * could send a malformed Intent.
-		 */
 		OneSheeldApplication app = (OneSheeldApplication) context
 				.getApplicationContext();
 		if (!com.twofortyfouram.locale.Intent.ACTION_QUERY_CONDITION
@@ -87,9 +65,6 @@ public final class QueryReceiver extends BroadcastReceiver {
 							.get(selectedPin)) {
 				setResultCode(com.twofortyfouram.locale.Intent.RESULT_CONDITION_SATISFIED);
 				app.taskerPinsStatus.put(selectedPin, digitalReadStatus);
-				Toast.makeText(context,
-						"Heeeeeee7   " + intent.getExtras().getString("Key"),
-						Toast.LENGTH_SHORT).show();
 			} else {
 				setResultCode(com.twofortyfouram.locale.Intent.RESULT_CONDITION_UNSATISFIED);
 			}

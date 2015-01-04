@@ -30,23 +30,8 @@ import com.integreight.onesheeld.plugin.PluginBundleManager;
  */
 public final class FireReceiver extends BroadcastReceiver {
 
-	/**
-	 * @param context
-	 *            {@inheritDoc}.
-	 * @param intent
-	 *            the incoming
-	 *            {@link com.twofortyfouram.locale.Intent#ACTION_FIRE_SETTING}
-	 *            Intent. This should contain the
-	 *            {@link com.twofortyfouram.locale.Intent#EXTRA_BUNDLE} that was
-	 *            saved by {@link EditActivity} and later broadcast by Locale.
-	 */
 	@Override
 	public void onReceive(final Context context, final Intent intent) {
-		/*
-		 * Always be strict on input parameters! A malicious third-party app
-		 * could send a malformed Intent.
-		 */
-
 		OneSheeldApplication app = (OneSheeldApplication) context
 				.getApplicationContext();
 		if (!com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent
@@ -74,7 +59,6 @@ public final class FireReceiver extends BroadcastReceiver {
 								bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
 								bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
 			}
-			// Toast.makeText(context, "MESSAGE", Toast.LENGTH_LONG).show();
 		}
 	}
 }

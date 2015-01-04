@@ -17,11 +17,9 @@ import com.integreight.onesheeld.utils.Log;
 public class ClockShield extends
 		ControllerParent<ControllerParent<ClockShield>> {
 	private static final byte CLOCK_COMMAND = (byte) 0x21;
-//	private ShieldFrame frame;
 	private static final byte CLOCK_VALUE = (byte) 0x01;
 	private Calendar calendar;
 	private static int seconds, minutes, hour, day, month, year;
-	boolean isFirstFrame = true;
 	private ClockEventHandler eventHandler;
 	private IntentFilter intentFilter;
 	Handler handler;
@@ -52,8 +50,6 @@ public class ClockShield extends
 							+ (sec.length() == 1 ? "0" + sec : sec) + "",
 							calendar.get(Calendar.AM_PM) == Calendar.AM);
 			}
-//			calendar = null;
-//			frame = null;
 			if (handler != null)
 				handler.postDelayed(this, PERIOD);
 
@@ -149,8 +145,6 @@ public class ClockShield extends
 			getActivity().unregisterReceiver(m_timeChangedReceiver);
 		if (calendar != null)
 			calendar = null;
-//		if (frame != null)
-//			frame = null;
 
 	}
 

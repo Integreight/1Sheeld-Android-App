@@ -37,11 +37,11 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
-import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
-import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListner;
+import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListener;
 import com.integreight.onesheeld.utils.AlertDialogManager;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
@@ -121,34 +121,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 		thereIsAConnectionRequest=false;
 		isTwitterStreamConnecting=false;
 		notifyHardwareOfTwitterSelection();
-//		if(isTwitterLoggedInAlready())initTwitterListening();
 	}
-
-	// @Override
-	// public void onUartReceive(byte[] data) {
-	// if (data.length < 2)
-	// return;
-	// byte command = data[0];
-	// byte methodId = data[1];
-	// int n = data.length - 2;
-	// byte[] newArray = new byte[n];
-	// System.arraycopy(data, 2, newArray, 0, n);
-	// if (command == UPDATE_STATUS_METHOD_ID) {
-	// String tweet = new String(newArray);
-	// if (isTwitterLoggedInAlready())
-	// if (methodId == UPDATE_STATUS_METHOD_ID) {
-	// if (!tweet.equals(lastTweet)) {
-	// tweet(tweet);
-	// eventHandler.onRecieveTweet(tweet);
-	// } else
-	// eventHandler
-	// .onTwitterError("You have posted this tweet before!");
-	// lastTweet = tweet;
-	// }
-	//
-	// }
-	// super.onUartReceive(data);
-	// }
 
 	public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
 		this.eventHandler = eventHandler;
@@ -164,9 +137,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				PREF_KEY_OAUTH_SECRET, null));
 		factory = new TwitterFactory(cb.build());
 		twitter = factory.getInstance();
-		// twitter.setOAuthConsumer(
-		// mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, null),
-		// mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, null));
 		AccessToken accestoken = new AccessToken(mSharedPreferences.getString(
 				PREF_KEY_OAUTH_TOKEN, null), mSharedPreferences.getString(
 				PREF_KEY_OAUTH_SECRET, null));
@@ -293,7 +263,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				@Override
 				protected void onPostExecute(Void result) {
 
-					final TwitterDialogListner listener = new TwitterDialogListner() {
+					final TwitterDialogListener listener = new TwitterDialogListener() {
 						@Override
 						public void onComplete() {
 							SharedPreferences.Editor editor = mSharedPreferences
@@ -410,11 +380,11 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 						lastTweet = frame.getArgumentAsString(0);
 						byte sourceFolderId = frame.getArgument(1)[0];
 						String imgPath = null;
-						if (sourceFolderId == SocialUtils.FROM_ONESHEELD_FOLDER)
-							imgPath = SocialUtils
+						if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
+							imgPath = CameraUtils
 									.getLastCapturedImagePathFromOneSheeldFolder(activity);
-						else if (sourceFolderId == SocialUtils.FROM_CAMERA_FOLDER)
-							imgPath = SocialUtils
+						else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
+							imgPath = CameraUtils
 									.getLastCapturedImagePathFromCameraFolder(activity);
 						if (imgPath != null) {
 							uploadPhoto(imgPath, lastTweet);
@@ -438,8 +408,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 							twitterStream.cleanUp();
 							twitterStream.shutdown();
 							if(!isTwitterStreamConnecting&&!thereIsAConnectionRequest){
-//								twitterStream.cleanUp();
-//								twitterStream.shutdown();
 								filterTwitterStream(query);
 							}
 							else{
@@ -601,12 +569,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 				PREF_KEY_OAUTH_SECRET, null));
 
 		twitterStream = new TwitterStreamFactory(cb.build()).getInstance();
-		// twitterStream.s
-//		twitterStream.clearListeners();
-//		twitterStream.cleanUp();
-//		FilterQuery query = new FilterQuery();
-//		String[] keywords = new String[] { keyword };
-//		query.track(keywords);
 		twitterStream.addConnectionLifeCycleListener(new ConnectionLifeCycleListener() {
 			
 			@Override
@@ -618,8 +580,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 					FilterQuery query = new FilterQuery();
 					String[] keywordsStrings = new String[trackedKeywords.size()];
 					query.track(trackedKeywords.toArray(keywordsStrings));
-//					twitterStream.cleanUp();
-//					twitterStream.shutdown();
 					twitterStream.filter(query);
 					thereIsAConnectionRequest=false;
 				}
@@ -640,8 +600,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 					FilterQuery query = new FilterQuery();
 					String[] keywordsStrings = new String[trackedKeywords.size()];
 					query.track(trackedKeywords.toArray(keywordsStrings));
-//					twitterStream.cleanUp();
-//					twitterStream.shutdown();
 					twitterStream.filter(query);
 					thereIsAConnectionRequest=false;
 				}
@@ -691,10 +649,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
 			}
 		};
 		twitterStream.addListener(listener);
-		// sample() method internally creates a thread which manipulates
-		// TwitterStream and calls these adequate listener methods continuously.
-//		twitterStream.filter(query);
-		// twitterStream.sample();
 	}
 
 	private void stopListeningOnAKeyword() {

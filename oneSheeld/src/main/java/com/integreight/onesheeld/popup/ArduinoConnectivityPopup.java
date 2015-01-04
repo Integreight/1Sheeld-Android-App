@@ -446,8 +446,6 @@ public class ArduinoConnectivityPopup extends Dialog {
 	}
 
 	private void scanDevices() {
-
-		// pairedListView.setAdapter(mNewDevicesArrayAdapter);
 		devicesList.removeAllViews();
 		backPressed = false;
 		foundDevicesTable = new Hashtable<String, BluetoothDevice>();

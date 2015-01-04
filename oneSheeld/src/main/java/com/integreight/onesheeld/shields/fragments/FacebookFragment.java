@@ -135,9 +135,6 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 					@Override
 					public void run() {
 						buttonToLoggedIn();
-						// getAppActivity()
-						// .setSupportProgressBarIndeterminateVisibility(
-						// false);
 					}
 				});
 			}

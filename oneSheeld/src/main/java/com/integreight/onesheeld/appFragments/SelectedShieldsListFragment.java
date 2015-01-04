@@ -30,7 +30,6 @@ import com.integreight.onesheeld.shields.fragments.DataLoggerFragment;
 import com.integreight.onesheeld.shields.fragments.EmailFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
-import com.integreight.onesheeld.shields.fragments.FlashlightFragment;
 import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
@@ -133,8 +132,6 @@ public class SelectedShieldsListFragment extends ListFragment {
 					new MusicPlayerFragment());
 		if (uiShield.id == UIShield.GYROSCOPE_SHIELD.id)
 			return addToCreatedListAndReturn(uiShield, new GyroscopeFragment());
-		if (uiShield.id == UIShield.FLASHLIGHT_SHIELD.id)
-			return addToCreatedListAndReturn(uiShield, new FlashlightFragment());
 		if (uiShield.id == UIShield.MIC_SHIELD.id)
 			return addToCreatedListAndReturn(uiShield, new MicFragment());
 		if (uiShield.id == UIShield.SKYPE_SHIELD.id)
@@ -219,8 +216,6 @@ public class SelectedShieldsListFragment extends ListFragment {
 	@Override
 	public void onListItemClick(ListView lv, View v, int position, long id) {
 		ShieldFragmentParent<?> newContent = getShieldFragment(position);
-		// activity.setTitle(
-		// UIShieldAdapter.getItem(position).getName() + " Shield");
 		if (newContent != null)
 			switchFragment(newContent, UIShieldAdapter.getItem(position));
 	}

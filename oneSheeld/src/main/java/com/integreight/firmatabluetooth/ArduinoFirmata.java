@@ -27,22 +27,12 @@ public class ArduinoFirmata {
 
 	public static final byte INPUT = 0;
 	public static final byte OUTPUT = 1;
-//	public static final byte ANALOG = 2;
 	public static final byte PWM = 3;
 	public static final byte SERVO = 4;
-//	public static final byte SHIFT = 5;
-//	public static final byte I2C = 6;
 	public static final boolean LOW = false;
 	public static final boolean HIGH = true;
 
-//	public static final int A0 = 14;
-//	public static final int A1 = 15;
-//	public static final int A2 = 16;
-//	public static final int A3 = 15;
-//	public static final int A4 = 17;
-//	public static final int A5 = 18;
-
-	public int arduinoLibraryVersion = -1;
+	private int arduinoLibraryVersion = -1;
 
 	private final char MAX_DATA_BYTES = 4096;
 	private final char MAX_OUTPUT_BYTES = 32;
@@ -62,8 +52,6 @@ public class ArduinoFirmata {
 	private final byte MUTE_FIRMATA = (byte) 0x64;
 	private final byte UART_COMMAND = (byte) 0x65;
 	private final byte UART_DATA = (byte) 0x66;
-	// private final byte PULSE_IN_INIT = (byte)0x67;
-	// private final byte PULSE_IN_DATA = (byte)0x68;
 
     private final byte CONFIGURATION_SHIELD_ID = (byte) 0x00;
     private final byte BT_CONNECTED=(byte)0x01;

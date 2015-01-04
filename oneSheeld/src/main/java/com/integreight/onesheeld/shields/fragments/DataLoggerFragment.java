@@ -168,11 +168,6 @@ public class DataLoggerFragment extends
 								((OneSheeldTextView) valuesContainer
 										.findViewWithTag(header + "Value"))
 										.setText("");
-								// ((OneSheeldTextView) valuesContainer
-								// .findViewWithTag(header +
-								// "Value")).setText(header
-								// .equals("Time") ? rowData.get(header)
-								// : "");
 							} else {
 								OneSheeldTextView key = new OneSheeldTextView(
 										activity);
@@ -189,8 +184,6 @@ public class DataLoggerFragment extends
 										activity);
 								value.setLayoutParams(cellParams);
 								value.setSingleLine(true);
-								// value.setText(header.equals("Time") ? rowData
-								// .get(header) : "");
 								value.setTextColor(getResources().getColor(
 										R.color.offWhite));
 								value.setTextSize(TypedValue.COMPLEX_UNIT_DIP,
@@ -243,8 +236,6 @@ public class DataLoggerFragment extends
 				@Override
 				public void run() {
 					if (canChangeUI()) {
-						// if (keysContainer.findViewWithTag("Time") == null)
-						// add("Time", "");
 						add(header, valueT);
 					}
 				}

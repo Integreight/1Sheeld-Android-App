@@ -187,11 +187,6 @@ public class LcdShield extends ControllerParent<LcdShield> {
 			break;
 
 		case BEGIN:
-			// if (eventHandler != null)
-			// eventHandler.noBlink();
-			// changeCursor(0);
-			// if (isBlinking && eventHandler != null)
-			// eventHandler.blink();
 			break;
 		case SET_CURSOR:
 			if (eventHandler != null) {
@@ -274,10 +269,6 @@ public class LcdShield extends ControllerParent<LcdShield> {
 	public void reset() {
 		// TODO Auto-generated method stub
 
-	}
-
-	public char[] getChars() {
-		return chars;
 	}
 
 	public void setChars(char[] chars) {

@@ -26,55 +26,29 @@ import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.WakeLocker;
 
 public class OneSheeldService extends Service {
-
-	// private static final String TAG = "OneSheeldService";
-	// private static final boolean D = true;
 	public static boolean isBound = false;
 	SharedPreferences sharedPrefs;
-	// private final IBinder mBinder = new OneSheeldBinder();
 	private BluetoothAdapter mBluetoothAdapter = null;
 	private String deviceAddress;
 	private ArduinoFirmataEventHandler arduinoEventHandler = new ArduinoFirmataEventHandler() {
 
 		@Override
 		public void onError(String errorMessage) {
-			// TODO Auto-generated method stub
-			// sheeldConnectedMessageToActivity(COMMUNICAITON_ERROR);
 			stopSelf();
 		}
 
 		@Override
 		public void onConnect() {
-			// TODO Auto-generated method stub
-			// sheeldConnectedMessageToActivity(SHEELD_BLUETOOTH_CONNECTED);
-			// sharedPrefs.edit().putString(DEVICE_ADDRESS_KEY, deviceAddress)
-			// .commit();
-
 			showNotification();
-
 		}
 
 		@Override
 		public void onClose(boolean closedManually) {
-			// TODO Auto-generated method stub
-			// sheeldConnectedMessageToActivity(SHEELD_CLOSE_CONNECTION);
-			// if (!closedManually)
-			// sharedPrefs.edit().remove(DEVICE_ADDRESS_KEY).commit();
 			stopSelf();
 
 		}
 	};
 
-	// public static final String SHEELD_BLUETOOTH_CONNECTED =
-	// "com.integreight.SHEELD_BLUETOOTH_CONNECTED";
-	// public static final String COMMUNICAITON_ERROR =
-	// "com.integreight.COMMUNICAITON_ERROR";
-	// public static final String SHEELD_CLOSE_CONNECTION =
-	// "com.integreight.SHEELD_CLOES_CONNECTION";
-	public static final String PLUGIN_MESSAGE = "com.integreight.PLUGIN_MESSAGE";
-
-	// public static final String DEVICE_ADDRESS_KEY =
-	// "com.integreight.DEVICE_ADDRESS_KEY";
 	OneSheeldApplication app;
 
 	@Override
@@ -82,9 +56,6 @@ public class OneSheeldService extends Service {
 		// TODO Auto-generated method stub
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		app = (OneSheeldApplication) getApplication();
-		LocalBroadcastManager.getInstance(this).registerReceiver(
-				mMessageReceiver,
-				new IntentFilter(OneSheeldService.PLUGIN_MESSAGE));
 		sharedPrefs = this.getSharedPreferences("com.integreight.onesheeld",
 				Context.MODE_PRIVATE);
 		isBound = false;
@@ -118,7 +89,6 @@ public class OneSheeldService extends Service {
 	@Override
 	public boolean onUnbind(Intent intent) {
 		isBound = false;
-		// stopSelf();
 		return super.onUnbind(intent);
 	}
 
@@ -128,8 +98,6 @@ public class OneSheeldService extends Service {
 		while (!app.getAppFirmata().close())
 			;
 		hideNotifcation();
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(
-				mMessageReceiver);
 		isBound = false;
 		WakeLocker.release();
 		super.onDestroy();
@@ -141,24 +109,12 @@ public class OneSheeldService extends Service {
 		build.setContentText("The service is running!");
 		build.setContentTitle("1Sheeld is connected");
 		build.setTicker("1Sheeld is connected!");
-		// build.setContentInfo("");
 		build.setWhen(System.currentTimeMillis());
-		// PendingIntent pendingIntent = PendingIntent.getService(this, 0, new
-		// Intent(this, OneSheeldService.class), 0);
-
-		// build.addAction(R.drawable.action_cancel,
-		// "Close Service",pendingIntent );
-		// build.addAction(R.drawable.action_cancel,
-		// "Close Service",pendingIntent );
-		// build.addAction(R.drawable.action_cancel,
-		// "Close Service",pendingIntent );
 		Intent notificationIntent = new Intent(this, MainActivity.class);
 		notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
 				| Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
 		PendingIntent intent = PendingIntent.getActivity(this, 0,
 				notificationIntent, 0);
-
 		build.setContentIntent(intent);
 		Notification notification = build.build();
 		startForeground(1, notification);
@@ -168,55 +124,8 @@ public class OneSheeldService extends Service {
 		stopForeground(true);
 	}
 
-	// private void sheeldConnectedMessageToActivity(String event) {
-	// Intent intent = new Intent(event);
-	// LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-	// }
-
 	public ArduinoFirmata getFirmata() {
 		return app.getAppFirmata();
 	}
-
-	// public class OneSheeldBinder extends Binder {
-	// public OneSheeldService getService() {
-	// // Return this instance of LocalService so clients can call public
-	// // methods
-	// return OneSheeldService.this;
-	// }
-	//
-	// }
-
-	private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			// Extract data included in the Intent
-			Log.test("plugin", "Receive");
-
-			Log.sysOut(app.getAppFirmata()
-					+ "    "
-					+ intent.getIntExtra(
-							PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER, -1)
-					+ "    "
-					+ intent.getBooleanExtra(
-							PluginBundleManager.BUNDLE_EXTRA_OUTPUT, true)
-					+ "    " + app.getAppFirmata().isOpen());
-			String action = intent.getAction();
-			if (action.equals(OneSheeldService.PLUGIN_MESSAGE)) {
-				if (app.getAppFirmata() != null && app.getAppFirmata().isOpen()) {
-					int pin = intent.getIntExtra("pin", -1);
-					boolean output = intent.getBooleanExtra("output", false);
-					app.getAppFirmata().pinMode(pin, ArduinoFirmata.OUTPUT);
-					app.getAppFirmata().digitalWrite(pin, output);
-					Toast.makeText(
-							context,
-							"Pin " + pin + " set to "
-									+ (output ? "High" : "Low"),
-							Toast.LENGTH_LONG).show();
-				}
-
-			}
-
-		}
-	};
 
 }

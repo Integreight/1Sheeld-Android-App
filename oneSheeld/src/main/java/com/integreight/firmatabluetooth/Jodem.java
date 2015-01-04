@@ -216,7 +216,6 @@ public class Jodem {
 
 		error_count = 0;
 		int success_count = 0;
-		//int total_packets = 0;
 		byte sequence = 1;
 		while (true){
 			byte[] data=new byte[packet_size];
@@ -256,16 +255,12 @@ public class Jodem {
 				byte readChar = readByteFromBuffer();
 				if (readChar == ACK){
 					success_count += 1;
-//					if (callable(callback))
-//						callback(total_packets, success_count, error_count);
 					jodemHandler.onProgress(length, (readCount>=128)?success_count*readCount:((success_count-1)*packet_size+readCount), error_count);
 					break;
 				}
 				if (readChar == NAK){
 					error_count += 1;
 					jodemHandler.onProgress(length, (readCount>=128)?success_count*readCount:((success_count-1)*packet_size+readCount), error_count);
-//					if (callable(callback))
-//						callback(total_packets, success_count, error_count)
 						if (error_count >= retry){
 							//// excessive amounts of retransmissions requested,
 							//// abort transfer

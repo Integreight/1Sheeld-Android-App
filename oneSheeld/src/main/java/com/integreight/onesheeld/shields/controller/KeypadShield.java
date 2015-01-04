@@ -57,9 +57,6 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
 		sf.addByteArgument(rowByte);
 		sf.addByteArgument(columnByte);
 		sendShieldFrame(sf);
-		// getApplication().getAppFirmata().sendUart(KEYPAD_COMMAND, DATA_IN,
-		// new char[] { row, column });
-
 	}
 
 	public void resetRowAndColumn(int row, int column) {

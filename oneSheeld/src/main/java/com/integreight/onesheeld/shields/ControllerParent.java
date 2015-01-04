@@ -153,11 +153,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
 	}
 
-	public void onUartReceive(byte[] data) {
-		// TODO Auto-generated method stub
-
-	}
-
 	public abstract void onNewShieldFrameReceived(ShieldFrame frame);
 
 	public Handler actionHandler = new Handler(); // queuing sysex UI calls

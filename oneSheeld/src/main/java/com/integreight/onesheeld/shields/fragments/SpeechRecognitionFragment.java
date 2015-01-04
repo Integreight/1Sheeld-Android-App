@@ -188,13 +188,6 @@ public class SpeechRecognitionFragment extends
 		statusHint.setText(R.string.speak);
 	}
 
-	// private void intializeFirmata(ArduinoFirmata firmata, int connectedPin){
-	//
-	// led=new Led(firmata,connectedPin);
-	// led.setLedEventHandler(ledEventHandler);
-	// toggleLed(led.isLedOn());
-	// }
-
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
 			getApplication().getRunningShields().put(getControllerTag(),

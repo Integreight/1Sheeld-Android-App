@@ -140,11 +140,11 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 			}
 		} else {
 			// Failure! No sensor.
-			Log.d("Device dos't have Sensor ", "Accelerometer");
+			Log.d("Device doesn't have Sensor ", "Accelerometer");
 			if (selectionAction != null)
 				selectionAction.onFailure();
 			if (isToastable)
-				activity.showToast("Device doesn't support this Sensor!");
+				activity.showToast("Device doesn't support this sensor!");
 
 			if (eventHandler != null)
 				eventHandler.isDeviceHasSensor(false);

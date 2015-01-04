@@ -113,17 +113,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 					public void run() {
 						if (shield.mainActivitySelection
 								&& shield.shieldType != null) {
-							// uiHandler.post(new Runnable() {
-							//
-							// @Override
-							// public void run() {
-							// tempHolder.selectionCircle
-							// .setVisibility(View.VISIBLE);
-							// tempHolder.blackUpperLayer
-							// .setVisibility(View.INVISIBLE);
-							// }
-							// });
-							// TODO Auto-generated method stub
 							try {
 								type = shield.shieldType.newInstance();
 							} catch (java.lang.InstantiationException e) {
@@ -173,15 +162,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 													.setVisibility(View.VISIBLE);
 										}
 									});
-									// if (!activity.looperThread.isAlive()
-									// || activity.looperThread
-									// .isInterrupted())
-									// activity.initLooperThread();
-									// activity.backgroundThreadHandler
-									// .post(new Runnable() {
-									//
-									// @Override
-									// public void run() {
 									if (app.getRunningShields().get(shield.tag) != null) {
 										app.getRunningShields().get(shield.tag)
 												.resetThis();
@@ -191,8 +171,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 									shieldsList.put(position, shield);
 									AppShields.getInstance().putShield(
 											shield.position, shield);
-									// }
-									// });
 								}
 							};
 							if (type != null) {
@@ -207,7 +185,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 								}
 							}
 						} else {
-							// tempHolder.selectionButton.setVisibility(View.INVISIBLE);
 							uiHandler.removeCallbacksAndMessages(null);
 							uiHandler.post(new Runnable() {
 
@@ -219,18 +196,11 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
 											.setVisibility(View.VISIBLE);
 								}
 							});
-							// activity.backgroundThreadHandler.post(new
-							// Runnable() {
-							//
-							// @Override
-							// public void run() {
 							if (app.getRunningShields().get(shield.tag) != null) {
 								app.getRunningShields().get(shield.tag)
 										.resetThis();
 								app.getRunningShields().remove(shield.tag);
 							}
-							// }
-							// });
 						}
 					}
 				});

@@ -120,28 +120,7 @@ public class OrientationFragment extends
 		}
 
 		@Override
-		public void isDeviceHasSensor(Boolean hasSensor) {/*
-														 * // TODO
-														 * Auto-generated method
-														 * stub
-														 * 
-														 * // TODO
-														 * Auto-generated method
-														 * stub if
-														 * (canChangeUI()) { if
-														 * (!hasSensor) {
-														 * devicehasSensor
-														 * .setText(
-														 * "Your Device not have The Sensor"
-														 * ); Toast.makeText(
-														 * activity,
-														 * "Device dosen't have This Sensor !"
-														 * ,
-														 * Toast.LENGTH_SHORT).
-														 * show(); } else {
-														 * 
-														 * } }
-														 */
+		public void isDeviceHasSensor(Boolean hasSensor) {
 		}
 	};
 

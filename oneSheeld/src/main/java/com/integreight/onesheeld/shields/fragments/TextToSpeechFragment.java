@@ -22,8 +22,6 @@ public class TextToSpeechFragment extends
 	ImageView speakerLevel;
 	Button femaleBtn, maleBtn;
 	OneSheeldTextView ttsText;
-	// private float ttsPitch = 1;
-	// private float freqValue = 1f;
 	AnimationDrawable animation;
 
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,57 +55,6 @@ public class TextToSpeechFragment extends
 		uiHandler = new Handler();
 		((TextToSpeechShield) getApplication().getRunningShields().get(
 				getControllerTag())).setEventHandler(ttsEventHandler);
-		// ttsPitch = ((TextToSpeechShield) getApplication().getRunningShields()
-		// .get(getControllerTag())).getTtsPitch();
-		// speakerLevel.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// ttsEventHandler
-		// .onSpeek("Android Android Android Android Android Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android AndroidAndroid Android Android Android");
-		// ((TextToSpeechShield) getApplication().getRunningShields().get(
-		// getControllerTag()))
-		// .speech("Android Android Android Android");
-		// }
-		// });
-		// femaleBtn.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// if (ttsPitch < 3) {
-		// ((TextToSpeechShield) getApplication().getRunningShields()
-		// .get(getControllerTag())).setTtsPitch(ttsPitch
-		// + freqValue);
-		// ttsPitch = ((TextToSpeechShield) getApplication()
-		// .getRunningShields().get(getControllerTag()))
-		// .getTtsPitch();
-		// speakerLevel
-		// .setBackgroundResource(ttsPitch <= 0 ? R.drawable.tts_shield_0_volume
-		// : ttsPitch == 1 ? R.drawable.tts_shield_1_volume
-		// : ttsPitch == 2 ? R.drawable.tts_shield_2_volume
-		// : R.drawable.tts_shield_3_volume);
-		// }
-		// }
-		// });
-		// maleBtn.setOnClickListener(new View.OnClickListener() {
-		//
-		// @Override
-		// public void onClick(View arg0) {
-		// if (ttsPitch >= 0) {
-		// ((TextToSpeechShield) getApplication().getRunningShields()
-		// .get(getControllerTag())).setTtsPitch(ttsPitch
-		// - freqValue);
-		// ttsPitch = ((TextToSpeechShield) getApplication()
-		// .getRunningShields().get(getControllerTag()))
-		// .getTtsPitch();
-		// speakerLevel
-		// .setBackgroundResource(ttsPitch <= 0 ? R.drawable.tts_shield_0_volume
-		// : ttsPitch == 1 ? R.drawable.tts_shield_1_volume
-		// : ttsPitch == 2 ? R.drawable.tts_shield_2_volume
-		// : R.drawable.tts_shield_3_volume);
-		// }
-		// }
-		// });
 		super.onStart();
 	}
 
@@ -177,13 +124,6 @@ public class TextToSpeechFragment extends
 			});
 		}
 	};
-
-	// private void intializeFirmata(ArduinoFirmata firmata, int connectedPin){
-	//
-	// led=new Led(firmata,connectedPin);
-	// led.setLedEventHandler(ledEventHandler);
-	// toggleLed(led.isLedOn());
-	// }
 
 	private void initializeFirmata() {
 		if (getApplication().getRunningShields().get(getControllerTag()) == null) {

@@ -33,12 +33,6 @@ import android.os.Looper;
 
 import com.integreight.onesheeld.utils.Log;
 
-/**
- * This class does all the work for setting up and managing Bluetooth
- * connections with other devices. It has a thread that listens for incoming
- * connections, a thread for connecting with a device, and a thread for
- * performing data transmissions when connected.
- */
 public class BluetoothService {
 	// Debugging
 	private static final String TAG = "BluetoothService";
@@ -59,22 +53,8 @@ public class BluetoothService {
 
 	}
 
-	// Message types sent from the BluetoothChatService Handler
-	// public static final int MESSAGE_STATE_CHANGE = 1;
-	// public static final int MESSAGE_READ = 2;
-	// public static final int MESSAGE_WRITE = 3;
-	// public static final int MESSAGE_DEVICE_NAME = 4;
-	// public static final int MESSAGE_TOAST = 5;
-
-	// public static final String DEVICE_NAME = "device_name";
-	// public static final String TOAST = "toast";
-
 	private CopyOnWriteArrayList<BluetoothServiceHandler> handlers;
 
-	// public void setBluetoothServiceCallback(BluetoothServiceHandler
-	// btCallBack){
-	// handler=btCallBack;
-	// }
 
 	// Unique UUID for this application
 	public static final UUID MY_UUID = UUID
@@ -98,14 +78,6 @@ public class BluetoothService {
 
 	private boolean closedManually = false;
 
-	/**
-	 * Constructor. Prepares a new BluetoothChat session.
-	 * 
-	 * @param context
-	 *            The UI Activity Context
-	 * @param btHandler
-	 *            A Handler to send messages back to the UI Activity
-	 */
 	public BluetoothService(Context context) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
@@ -124,12 +96,6 @@ public class BluetoothService {
 			socket.close();
 	}
 
-	/**
-	 * Set the current state of the chat connection
-	 * 
-	 * @param state
-	 *            An integer defining the current connection state
-	 */
 	private synchronized void setState(int state) {
 		if (D)
 			Log.d(TAG, "setState() " + mState + " -> " + state);
@@ -143,21 +109,10 @@ public class BluetoothService {
 		}
 	}
 
-	/**
-	 * Return the current connection state.
-	 */
 	public synchronized int getState() {
 		return mState;
 	}
 
-	/**
-	 * Start the ConnectThread to initiate a connection to a remote device.
-	 * 
-	 * @param device
-	 *            The BluetoothDevice to connect
-	 * @param secure
-	 *            Socket Security type - Secure (true) , Insecure (false)
-	 */
 	public synchronized void connect(BluetoothDevice device) {
 		if (D)
 			Log.d(TAG, "connect to: " + device);
@@ -184,14 +139,6 @@ public class BluetoothService {
 
 	}
 
-	/**
-	 * Start the ConnectedThread to begin managing a Bluetooth connection
-	 * 
-	 * @param socket
-	 *            The BluetoothSocket on which the connection was made
-	 * @param device
-	 *            The BluetoothDevice that has been connected
-	 */
 	public synchronized void connected(BluetoothSocket socket,
 			BluetoothDevice device) {
 		if (D)
@@ -215,9 +162,6 @@ public class BluetoothService {
 		mConnectedThread.start();
 	}
 
-	/**
-	 * Stop all threads
-	 */
 	private synchronized void stop() {
 		if (D)
 			Log.d(TAG, "stop");
@@ -259,13 +203,6 @@ public class BluetoothService {
 		return (BluetoothSocket) m.invoke(mmDevice, 1);
 	}
 
-	/**
-	 * Write to the ConnectedThread in an unsynchronized manner
-	 * 
-	 * @param out
-	 *            The bytes to write
-	 * @see ConnectedThread#write(byte[])
-	 */
 	public void write(byte[] out) {
 		// Create temporary object
 		ConnectedThread r;
@@ -284,9 +221,6 @@ public class BluetoothService {
 		write(_writeData);
 	}
 
-	/**
-	 * Indicate that the connection attempt failed and notify the UI Activity.
-	 */
 	private void connectionFailed() {
 		for (BluetoothServiceHandler handler : handlers) {
 			handler.onError("Unable to connect device");
@@ -294,18 +228,10 @@ public class BluetoothService {
 		stop();
 	}
 
-	/**
-	 * Indicate that the connection was lost and notify the UI Activity.
-	 */
 	private void connectionLost() {
 		stop();
 	}
 
-	/**
-	 * This thread runs while attempting to make an outgoing connection with a
-	 * device. It runs straight through; the connection either succeeds or
-	 * fails.
-	 */
 	private class ConnectThread extends Thread {
 		private BluetoothSocket mmSocket = null;
 
@@ -468,10 +394,6 @@ public class BluetoothService {
 		}
 	}
 
-	/**
-	 * This thread runs during a connection with a remote device. It handles all
-	 * incoming and outgoing transmissions.
-	 */
 	private class ConnectedThread extends Thread {
 		private final BluetoothSocket mmSocket;
 		private final InputStream mmInStream;
@@ -544,12 +466,6 @@ public class BluetoothService {
 			}
 		}
 
-		/**
-		 * Write to the connected OutStream.
-		 * 
-		 * @param buffer
-		 *            The bytes to write
-		 */
 		public synchronized void write(final byte[] buffer) {
 			if (writeHandler == null)
 				return;

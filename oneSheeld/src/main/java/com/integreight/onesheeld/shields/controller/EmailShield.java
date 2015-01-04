@@ -10,8 +10,8 @@ import android.widget.Toast;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.GMailSender;
-import com.integreight.onesheeld.shields.controller.utils.SocialUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.SecurePreferences;
@@ -83,7 +83,6 @@ public class EmailShield extends ControllerParent<EmailShield> {
 					String body = frame.getArgumentAsString(2);
 					if (eventHandler != null)
 						eventHandler.onEmailsent(email_send_to, subject);
-					// sendMailUsingJavaAPI(email_send_to, subject, body);
 					// check Internet connection
 					if (ConnectionDetector
 							.isConnectingToInternet(getApplication()
@@ -93,11 +92,11 @@ public class EmailShield extends ControllerParent<EmailShield> {
 						else if(frame.getFunctionId() == SEND_WITH_ATTACHMENT){
 							byte sourceFolderId = frame.getArgument(3)[0];
 							String imgPath = null;
-							if (sourceFolderId == SocialUtils.FROM_ONESHEELD_FOLDER)
-								imgPath = SocialUtils
+							if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
+								imgPath = CameraUtils
 										.getLastCapturedImagePathFromOneSheeldFolder(activity);
-							else if (sourceFolderId == SocialUtils.FROM_CAMERA_FOLDER)
-								imgPath = SocialUtils
+							else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
+								imgPath = CameraUtils
 										.getLastCapturedImagePathFromCameraFolder(activity);
 							sendGmail(email_send_to, subject, body,imgPath);
 						}
@@ -179,15 +178,10 @@ public class EmailShield extends ControllerParent<EmailShield> {
 		// decrypt
 		String encryptedPassword_str = mSharedPreferences.getString(
 				PREF_EMAIL_SHIELD_GMAIL_PASSWORD, "");
-		// byte[] encryptedPassword_bytes =
-		// SecurePreferences.convertStirngToByteArray(encryptedPassword_str);
 		if (!encryptedPassword_str.equalsIgnoreCase("")) {
 			encryptedPassword_bytes = Base64.decode(encryptedPassword_str,
 					Base64.DEFAULT);
 		}
-		// String mkey_str = mSharedPreferences.getString("M_KEY", "");
-		// byte[] mkey_bytes =
-		// SecurePreferences.convertStirngToByteArray(mkey_str);
 
 		try {
 			byte[] key = SecurePreferences.generateKey();

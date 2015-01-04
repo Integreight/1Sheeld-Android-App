@@ -25,6 +25,10 @@ android {
         targetSdkVersion 9
     }
 
+    buildTypes.all{
+            ext.enableCrashlytics = isCrashlyticsPropertiesAvailable()
+    }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -57,4 +61,8 @@ dependencies {
     compile files('libs/twitter4j-core-4.0.2.jar')
     compile files('libs/twitter4j-stream-4.0.2.jar')
     compile 'com.crashlytics.android:crashlytics:1.+'
+}
+
+def isCrashlyticsPropertiesAvailable() {
+    return new File("./oneSheeld/crashlytics.properties").exists()
 }

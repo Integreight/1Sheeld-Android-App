@@ -55,11 +55,6 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
 	public void onNewShieldFrameReceived(ShieldFrame frame) {
 		// TODO Auto-generated method stub
 		if (frame.getShieldId() == UIShield.SKYPE_SHIELD.getId()) {
-			/*
-			 * if (frame.getFunctionId() == CALL_METHOD_ID) { String user =
-			 * frame.getArgumentAsString(0); if (eventHandler != null)
-			 * eventHandler.onCall(user); }
-			 */
 			String userId = frame.getArgumentAsString(0);
 			Log.d("Skype_User_ID ", userId);
 			if (ConnectionDetector.isConnectingToInternet(getApplication()

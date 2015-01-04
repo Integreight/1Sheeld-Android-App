@@ -71,7 +71,6 @@ public class MusicShield extends ControllerParent<MusicShield> {
 								mediaDuration = mediaPlayer.getDuration();
 							}
 						});
-				// mediaPlayer.prepare();
 			} else {
 				if (mediaFiles.size() != 0) {
 					if (currentIndex > mediaFiles.size()) {

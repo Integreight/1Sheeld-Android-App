@@ -231,17 +231,10 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 		try {
 			byte[] key = SecurePreferences.generateKey();
 			byte[] encryptedPassword = SecurePreferences.encrypt(key, b);
-			// String encryptedPassword_str =
-			// SecurePreferences.convertByteArrayToString(encryptedPassword);
 			String encryptedPassword_str = Base64.encodeToString(
 					encryptedPassword, Base64.DEFAULT);
 			editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD,
 					encryptedPassword_str);
-			// String key_str = SecurePreferences.convertByteArrayToString(key);
-			// String key_str = Base64.encodeToString(key, Base64.DEFAULT);
-
-			// editor.putString("M_KEY",key_str );
-			// editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD, password);
 			editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
 			// Commit the edits!
 			editor.commit();
