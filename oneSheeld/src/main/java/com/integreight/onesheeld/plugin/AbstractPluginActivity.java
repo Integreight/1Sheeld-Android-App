@@ -25,66 +25,67 @@ import com.integreight.onesheeld.R;
 import com.twofortyfouram.locale.BreadCrumber;
 
 public abstract class AbstractPluginActivity extends FragmentActivity {
-	private boolean mIsCancelled = false;
+    private boolean mIsCancelled = false;
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			setupTitleApi11();
-		} else {
-			setTitle(BreadCrumber.generateBreadcrumb(getApplicationContext(),
-					getIntent(), getString(R.string.plugin_name)));
-		}
-	}
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            setupTitleApi11();
+        } else {
+            setTitle(BreadCrumber.generateBreadcrumb(getApplicationContext(),
+                    getIntent(), getString(R.string.plugin_name)));
+        }
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupTitleApi11() {
-		CharSequence callingApplicationLabel = null;
-		try {
-			callingApplicationLabel = getPackageManager().getApplicationLabel(
-					getPackageManager().getApplicationInfo(getCallingPackage(),
-							0));
-		} catch (final NameNotFoundException e) {
-			if (Constants.IS_LOGGABLE) {
-				Log.e(Constants.LOG_TAG, "Calling package couldn't be found", e); //$NON-NLS-1$
-			}
-		}
-		if (null != callingApplicationLabel) {
-			setTitle(callingApplicationLabel);
-		}
-	}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setupTitleApi11() {
+        CharSequence callingApplicationLabel = null;
+        try {
+            callingApplicationLabel = getPackageManager().getApplicationLabel(
+                    getPackageManager().getApplicationInfo(getCallingPackage(),
+                            0));
+        } catch (final NameNotFoundException e) {
+            if (Constants.IS_LOGGABLE) {
+                Log.e(Constants.LOG_TAG, "Calling package couldn't be found", e); //$NON-NLS-1$
+            }
+        }
+        if (null != callingApplicationLabel) {
+            setTitle(callingApplicationLabel);
+        }
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(final Menu menu) {
-		super.onCreateOptionsMenu(menu);
+    @Override
+    public boolean onCreateOptionsMenu(final Menu menu) {
+        super.onCreateOptionsMenu(menu);
 
-		getMenuInflater().inflate(
-				R.menu.twofortyfouram_locale_help_save_dontsave, menu);
+        getMenuInflater().inflate(
+                R.menu.twofortyfouram_locale_help_save_dontsave, menu);
 
-		return true;
-	}
+        return true;
+    }
 
-	@Override
-	public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
-		final int id = item.getItemId();
+    @Override
+    public boolean onMenuItemSelected(final int featureId, final MenuItem item) {
+        final int id = item.getItemId();
 
-		if (android.R.id.home == id) {
-			finish();
-			return true;
-		} else if (R.id.twofortyfouram_locale_menu_dontsave == id) {
-			mIsCancelled = true;
-			finish();
-			return true;
-		} else if (R.id.twofortyfouram_locale_menu_save == id) {
-			finish();
-			return true;
-		}
+        if (android.R.id.home == id) {
+            finish();
+            return true;
+        } else if (R.id.twofortyfouram_locale_menu_dontsave == id) {
+            mIsCancelled = true;
+            finish();
+            return true;
+        } else if (R.id.twofortyfouram_locale_menu_save == id) {
+            finish();
+            return true;
+        }
 
-		return super.onOptionsItemSelected(item);
-	}
-	protected boolean isCanceled() {
-		return mIsCancelled;
-	}
+        return super.onOptionsItemSelected(item);
+    }
+
+    protected boolean isCanceled() {
+        return mIsCancelled;
+    }
 }

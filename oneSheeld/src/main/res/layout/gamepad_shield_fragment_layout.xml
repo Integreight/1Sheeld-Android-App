@@ -10,7 +10,7 @@
     android:layout_marginRight="25dp"
     android:layout_marginTop="45dp"
     android:background="@drawable/gamepad_shield_gamepad_background"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <RelativeLayout
         android:layout_width="@dimen/gamepad_blueButtonDimen"
@@ -18,7 +18,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="@dimen/gamepad_contMarginLeft"
-        android:layout_marginTop="@dimen/gamepad_contMarginTop" >
+        android:layout_marginTop="@dimen/gamepad_contMarginTop">
 
         <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_up_arrow_key"
@@ -64,7 +64,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="@dimen/gamepad_contMarginTop"
         android:layout_marginLeft="@dimen/gamepad_contMarginLeft"
-        android:layout_marginTop="25dp" >
+        android:layout_marginTop="25dp">
 
         <com.integreight.onesheeld.utils.customviews.Key
             android:id="@+id/gamepad_yellow_key"

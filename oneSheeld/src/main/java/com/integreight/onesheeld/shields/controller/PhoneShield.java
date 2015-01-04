@@ -15,135 +15,135 @@ import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener
 import com.integreight.onesheeld.utils.Log;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
-	private PhoneEventHandler eventHandler;
-	private static final byte CALL_METHOD_ID = (byte) 0x01;
-	private PhoneCallStateListener phoneListener;
-	private TelephonyManager telephonyManager;
-	private ShieldFrame frame;
+    private PhoneEventHandler eventHandler;
+    private static final byte CALL_METHOD_ID = (byte) 0x01;
+    private PhoneCallStateListener phoneListener;
+    private TelephonyManager telephonyManager;
+    private ShieldFrame frame;
 
-	public PhoneShield() {
-	}
+    public PhoneShield() {
+    }
 
-	public PhoneShield(Activity activity, String tag) {
-		super(activity, tag);
-	}
+    public PhoneShield(Activity activity, String tag) {
+        super(activity, tag);
+    }
 
-	@Override
-	public ControllerParent<PhoneShield> setTag(String tag) {
-		phoneListener = new PhoneCallStateListener();
-		phoneListener.setPhoneRingingEventHandler(phoneRingingEventHandler);
-		telephonyManager = (TelephonyManager) getApplication()
-				.getSystemService(Context.TELEPHONY_SERVICE);
-		telephonyManager.listen(phoneListener,
-				PhoneStateListener.LISTEN_CALL_STATE);
-		return super.setTag(tag);
-	}
+    @Override
+    public ControllerParent<PhoneShield> setTag(String tag) {
+        phoneListener = new PhoneCallStateListener();
+        phoneListener.setPhoneRingingEventHandler(phoneRingingEventHandler);
+        telephonyManager = (TelephonyManager) getApplication()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        telephonyManager.listen(phoneListener,
+                PhoneStateListener.LISTEN_CALL_STATE);
+        return super.setTag(tag);
+    }
 
-	@Override
-	public ControllerParent<PhoneShield> invalidate(
-			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
-			boolean isToastable) {
-		this.selectionAction = selectionAction;
-		TelephonyManager tm = (TelephonyManager) getApplication()
-				.getSystemService(Context.TELEPHONY_SERVICE);
-		if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
-			// No calling functionality
-			if (this.selectionAction != null) {
-				this.selectionAction.onFailure();
-				if (isToastable)
-					activity.showToast("Device doesn't support Calling functionality !");
-			}
-		} else {
-			// calling functionality
-			if (this.selectionAction != null) {
-				this.selectionAction.onSuccess();
-			}
-		}
+    @Override
+    public ControllerParent<PhoneShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        TelephonyManager tm = (TelephonyManager) getApplication()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+            // No calling functionality
+            if (this.selectionAction != null) {
+                this.selectionAction.onFailure();
+                if (isToastable)
+                    activity.showToast("Device doesn't support Calling functionality !");
+            }
+        } else {
+            // calling functionality
+            if (this.selectionAction != null) {
+                this.selectionAction.onSuccess();
+            }
+        }
 
-		return super.invalidate(selectionAction, isToastable);
-	}
+        return super.invalidate(selectionAction, isToastable);
+    }
 
-	@Override
-	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		if (frame.getShieldId() == UIShield.PHONE_SHIELD.getId()) {
-			String phone_number = frame.getArgumentAsString(0);
+    @Override
+    public void onNewShieldFrameReceived(ShieldFrame frame) {
+        if (frame.getShieldId() == UIShield.PHONE_SHIELD.getId()) {
+            String phone_number = frame.getArgumentAsString(0);
 
-			switch (frame.getFunctionId()) {
-			case CALL_METHOD_ID:
-				call(phone_number);
-				break;
-			default:
-				break;
-			}
-		}
+            switch (frame.getFunctionId()) {
+                case CALL_METHOD_ID:
+                    call(phone_number);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-	}
+    }
 
-	public void setPhoneEventHandler(PhoneEventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+    public void setPhoneEventHandler(PhoneEventHandler eventHandler) {
+        this.eventHandler = eventHandler;
 
-	}
+    }
 
-	public static interface PhoneEventHandler {
-		void OnCall(String phone_number);
+    public static interface PhoneEventHandler {
+        void OnCall(String phone_number);
 
-		void onReceiveACall(String phoneNumber);
+        void onReceiveACall(String phoneNumber);
 
-		void isRinging(boolean isRinging);
-	}
+        void isRinging(boolean isRinging);
+    }
 
-	private void call(String phoneNumber) {
-		try {
-			Intent callIntent = new Intent(Intent.ACTION_CALL);
-			callIntent.setData(Uri.parse("tel:" + phoneNumber));
-			callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			callIntent.setPackage("com.android.phone");
-			getApplication().startActivity(callIntent);
-		} catch (Exception e) {
-			Intent callIntent = new Intent(Intent.ACTION_CALL);
-			callIntent.setData(Uri.parse("tel:" + phoneNumber));
-			callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-			getApplication().startActivity(callIntent);
-		}
-		if (eventHandler != null)
-			eventHandler.OnCall(phoneNumber);
-		// Set Handlers to update UI..
-	}
+    private void call(String phoneNumber) {
+        try {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+            callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            callIntent.setPackage("com.android.phone");
+            getApplication().startActivity(callIntent);
+        } catch (Exception e) {
+            Intent callIntent = new Intent(Intent.ACTION_CALL);
+            callIntent.setData(Uri.parse("tel:" + phoneNumber));
+            callIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getApplication().startActivity(callIntent);
+        }
+        if (eventHandler != null)
+            eventHandler.OnCall(phoneNumber);
+        // Set Handlers to update UI..
+    }
 
-	private PhoneRingingEventHandler phoneRingingEventHandler = new PhoneRingingEventHandler() {
+    private PhoneRingingEventHandler phoneRingingEventHandler = new PhoneRingingEventHandler() {
 
-		@Override
-		public void sendIncomingNumber(String phoneNumber) {
-			// send frame contain Incoming Number..
-			Log.d("Phone::Controller::SendIncomingNum", phoneNumber);
-			frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x02);
-			frame.addStringArgument(phoneNumber);
-			sendShieldFrame(frame);
-			if (eventHandler != null)
-				eventHandler.onReceiveACall(phoneNumber);
-		}
+        @Override
+        public void sendIncomingNumber(String phoneNumber) {
+            // send frame contain Incoming Number..
+            Log.d("Phone::Controller::SendIncomingNum", phoneNumber);
+            frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x02);
+            frame.addStringArgument(phoneNumber);
+            sendShieldFrame(frame);
+            if (eventHandler != null)
+                eventHandler.onReceiveACall(phoneNumber);
+        }
 
-		@Override
-		public void isPhoneRinging(boolean isRinging) {
-			// send frame with Ringing state..
-			Log.d("Phone::Controller::isPhoneRinging", isRinging + "");
-			frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x01);
-			if (isRinging) {
-				frame.addByteArgument((byte) 1);
-			} else {
-				frame.addByteArgument((byte) 0);
-			}
-			sendShieldFrame(frame);
-		}
-	};
+        @Override
+        public void isPhoneRinging(boolean isRinging) {
+            // send frame with Ringing state..
+            Log.d("Phone::Controller::isPhoneRinging", isRinging + "");
+            frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x01);
+            if (isRinging) {
+                frame.addByteArgument((byte) 1);
+            } else {
+                frame.addByteArgument((byte) 0);
+            }
+            sendShieldFrame(frame);
+        }
+    };
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		frame = null;
-		if (phoneListener != null && telephonyManager != null)
-			telephonyManager.listen(phoneListener,
-					PhoneStateListener.LISTEN_NONE);
-	}
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        frame = null;
+        if (phoneListener != null && telephonyManager != null)
+            telephonyManager.listen(phoneListener,
+                    PhoneStateListener.LISTEN_NONE);
+    }
 
 }

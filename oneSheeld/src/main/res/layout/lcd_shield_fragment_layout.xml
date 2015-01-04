@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true" >
+    android:clickable="true">
 
     <TextView
         android:id="@+id/bg"
@@ -21,7 +21,6 @@
         android:paddingBottom="@dimen/lcd_margin_top_bottom"
         android:paddingLeft="@dimen/lcd_margin_left_right"
         android:paddingRight="@dimen/lcd_margin_left_right"
-        android:paddingTop="@dimen/lcd_margin_top_bottom" >
-    </LinearLayout>
+        android:paddingTop="@dimen/lcd_margin_top_bottom"></LinearLayout>
 
 </RelativeLayout>

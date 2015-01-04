@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/black_bg" >
+    android:background="@drawable/black_bg">
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
         android:id="@+id/hint"
@@ -33,14 +33,14 @@
         android:layout_above="@id/slogan"
         android:layout_marginBottom="10dp"
         android:gravity="center"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <RelativeLayout
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:background="@drawable/tut_unchecked"
             android:gravity="center_vertical"
-            android:padding="2.5dp" >
+            android:padding="2.5dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/check"
-        android:layout_below="@id/hint" >
+        android:layout_below="@id/hint">
 
         <TextView
             android:layout_width="wrap_content"

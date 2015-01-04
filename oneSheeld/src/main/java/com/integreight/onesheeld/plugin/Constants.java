@@ -14,13 +14,10 @@ package com.integreight.onesheeld.plugin;
 
 import com.integreight.onesheeld.BuildConfig;
 
-import android.content.Context;
-
 /**
  * Class of constants used by this Locale plug-in.
  */
-public final class Constants
-{
+public final class Constants {
     /**
      * Log tag for logcat messages.
      */
@@ -36,8 +33,7 @@ public final class Constants
      *
      * @throws UnsupportedOperationException because this class cannot be instantiated.
      */
-    private Constants()
-    {
+    private Constants() {
         throw new UnsupportedOperationException("This class is non-instantiable"); //$NON-NLS-1$
     }
 }

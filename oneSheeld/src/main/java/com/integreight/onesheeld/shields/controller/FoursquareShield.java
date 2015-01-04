@@ -1,21 +1,5 @@
 package com.integreight.onesheeld.shields.controller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,325 +19,341 @@ import com.integreight.onesheeld.shields.controller.utils.FoursquareError;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URLEncoder;
+
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
-	private FoursquareEventHandler eventHandler;
-	private static final byte CHECKIN_METHOD_ID = (byte) 0x01;
-	Foursquare foursquare;
-	String redirectUrl = "http://www.1sheeld.com";
-	String placeID = "";
-	String message = "";
+    private FoursquareEventHandler eventHandler;
+    private static final byte CHECKIN_METHOD_ID = (byte) 0x01;
+    Foursquare foursquare;
+    String redirectUrl = "http://www.1sheeld.com";
+    String placeID = "";
+    String message = "";
 
-	// Shared Preferences
-	private static SharedPreferences mSharedPreferences;
+    // Shared Preferences
+    private static SharedPreferences mSharedPreferences;
 
-	public FoursquareShield() {
-		super();
-	}
+    public FoursquareShield() {
+        super();
+    }
 
-	@Override
-	public ControllerParent<FoursquareShield> setTag(String tag) {
-		// getShareprefrences
-		mSharedPreferences = activity.getApplicationContext()
-				.getSharedPreferences("com.integreight.onesheeld",
-						Context.MODE_PRIVATE);
+    @Override
+    public ControllerParent<FoursquareShield> setTag(String tag) {
+        // getShareprefrences
+        mSharedPreferences = activity.getApplicationContext()
+                .getSharedPreferences("com.integreight.onesheeld",
+                        Context.MODE_PRIVATE);
 
-		return super.setTag(tag);
-	}
+        return super.setTag(tag);
+    }
 
-	public FoursquareShield(Activity activity, String tag) {
-		super(activity, tag);
-		// getShareprefrences
-	}
+    public FoursquareShield(Activity activity, String tag) {
+        super(activity, tag);
+        // getShareprefrences
+    }
 
-	public boolean isFoursquareLoggedInAlready() {
-		// return twitter login status from Shared Preferences
-		return mSharedPreferences
-				.getBoolean("PREF_KEY_FOURSQUARE_LOGIN", false);
-	}
+    public boolean isFoursquareLoggedInAlready() {
+        // return twitter login status from Shared Preferences
+        return mSharedPreferences
+                .getBoolean("PREF_KEY_FOURSQUARE_LOGIN", false);
+    }
 
-	public void setFoursquareEventHandler(FoursquareEventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+    public void setFoursquareEventHandler(FoursquareEventHandler eventHandler) {
+        this.eventHandler = eventHandler;
 
-	}
+    }
 
-	public static interface FoursquareEventHandler {
-		void onPlaceCheckin(String placeName);
+    public static interface FoursquareEventHandler {
+        void onPlaceCheckin(String placeName);
 
-		void setLastPlaceCheckin(String placeName);
+        void setLastPlaceCheckin(String placeName);
 
-		void onForsquareLoggedIn(String userName);
+        void onForsquareLoggedIn(String userName);
 
-		void onForsquareLogout();
+        void onForsquareLogout();
 
-		void onForsquareError();
+        void onForsquareError();
 
-	}
+    }
 
-	@Override
-	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
-		if (frame.getShieldId() == UIShield.FOURSQUARE_SHIELD.getId()) {
-			if (isFoursquareLoggedInAlready())
-				if (frame.getFunctionId() == CHECKIN_METHOD_ID) {
-					placeID = frame.getArgumentAsString(0);
-					message = frame.getArgumentAsString(1);
-					if (ConnectionDetector
-							.isConnectingToInternet(getApplication()
-									.getApplicationContext())) {
-						ConnectFour connectFour = new ConnectFour();
-						connectFour.execute("");
-					} else
-						Toast.makeText(
-								getApplication().getApplicationContext(),
-								"Please check your Internet connection and try again.",
-								Toast.LENGTH_SHORT).show();
-				}
-		}
-	}
+    @Override
+    public void onNewShieldFrameReceived(ShieldFrame frame) {
+        // TODO Auto-generated method stub
+        if (frame.getShieldId() == UIShield.FOURSQUARE_SHIELD.getId()) {
+            if (isFoursquareLoggedInAlready())
+                if (frame.getFunctionId() == CHECKIN_METHOD_ID) {
+                    placeID = frame.getArgumentAsString(0);
+                    message = frame.getArgumentAsString(1);
+                    if (ConnectionDetector
+                            .isConnectingToInternet(getApplication()
+                                    .getApplicationContext())) {
+                        ConnectFour connectFour = new ConnectFour();
+                        connectFour.execute("");
+                    } else
+                        Toast.makeText(
+                                getApplication().getApplicationContext(),
+                                "Please check your Internet connection and try again.",
+                                Toast.LENGTH_SHORT).show();
+                }
+        }
+    }
 
-	private class ConnectFour extends AsyncTask<String, String, String> {
+    private class ConnectFour extends AsyncTask<String, String, String> {
 
-		String response = "";
+        String response = "";
 
-		@Override
-		protected String doInBackground(String... params) {
-			// TODO Auto-generated method stub
-			try {
-				String foursquare_token = mSharedPreferences.getString(
-						"PREF_FourSquare_OAUTH_TOKEN", null);
-				String placeId = placeID;
-				String messageId = URLEncoder.encode(message, "UTF-8");
-				String checkinURLRequest = "https://api.foursquare.com/v2/checkins/add?venueId="
-						+ placeId
-						+ "&"
-						+ "shout="
-						+ messageId
-						+ "&broadcast=public&oauth_token="
-						+ foursquare_token
-						+ "&v=20140201";
-				Log.d("checkinURLRequest", checkinURLRequest);
-				HttpPost post = new HttpPost(checkinURLRequest);
+        @Override
+        protected String doInBackground(String... params) {
+            // TODO Auto-generated method stub
+            try {
+                String foursquare_token = mSharedPreferences.getString(
+                        "PREF_FourSquare_OAUTH_TOKEN", null);
+                String placeId = placeID;
+                String messageId = URLEncoder.encode(message, "UTF-8");
+                String checkinURLRequest = "https://api.foursquare.com/v2/checkins/add?venueId="
+                        + placeId
+                        + "&"
+                        + "shout="
+                        + messageId
+                        + "&broadcast=public&oauth_token="
+                        + foursquare_token
+                        + "&v=20140201";
+                Log.d("checkinURLRequest", checkinURLRequest);
+                HttpPost post = new HttpPost(checkinURLRequest);
 
-				HttpClient hc = new DefaultHttpClient();
-				HttpResponse rp = hc.execute(post);
-				HttpEntity mEntity = rp.getEntity();
-				InputStream resp = mEntity.getContent();
-				try {
-					response = getStringFromInputStream(resp);
-				} catch (Exception e) {
-					response = getStringFromInputStream(resp);
-				}
+                HttpClient hc = new DefaultHttpClient();
+                HttpResponse rp = hc.execute(post);
+                HttpEntity mEntity = rp.getEntity();
+                InputStream resp = mEntity.getContent();
+                try {
+                    response = getStringFromInputStream(resp);
+                } catch (Exception e) {
+                    response = getStringFromInputStream(resp);
+                }
 
-				if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-					Log.d("Response From Server ::", rp.toString());
-				}
-			} catch (Exception e) {
-				Log.d("HTTP ERROR ::", e.toString());
-			}
-			return response;
-		}
+                if (rp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                    Log.d("Response From Server ::", rp.toString());
+                }
+            } catch (Exception e) {
+                Log.d("HTTP ERROR ::", e.toString());
+            }
+            return response;
+        }
 
-		@Override
-		protected void onPostExecute(String result) {
-			// TODO Auto-generated method stub
-			super.onPostExecute(result);
-			// parse checkin response !
-			try {
-				JSONObject json = new JSONObject(result);
-				JSONObject response = json.getJSONObject("response");
-				JSONObject checkins = response.getJSONObject("checkin");
-				JSONObject venue = checkins.getJSONObject("venue");
-				String placeName = venue.getString("name");
-				if (eventHandler != null)
-					eventHandler.onPlaceCheckin(placeName);
-				// save in share prefrences
-				SharedPreferences.Editor editor = mSharedPreferences.edit();
-				editor.putString("PREF_FourSquare_LastPlace", placeName);
-				// Commit the edits!
-				editor.commit();
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            // parse checkin response !
+            try {
+                JSONObject json = new JSONObject(result);
+                JSONObject response = json.getJSONObject("response");
+                JSONObject checkins = response.getJSONObject("checkin");
+                JSONObject venue = checkins.getJSONObject("venue");
+                String placeName = venue.getString("name");
+                if (eventHandler != null)
+                    eventHandler.onPlaceCheckin(placeName);
+                // save in share prefrences
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putString("PREF_FourSquare_LastPlace", placeName);
+                // Commit the edits!
+                editor.commit();
 
-			} catch (Exception e) {
-				// TODO: handle exception
-				Log.d("Exception of Parsing checkin response :: ", e.toString());
-			}
+            } catch (Exception e) {
+                // TODO: handle exception
+                Log.d("Exception of Parsing checkin response :: ", e.toString());
+            }
 
-		}
+        }
 
-	}
+    }
 
-	// convert InputStream to String
-	private static String getStringFromInputStream(InputStream is) {
+    // convert InputStream to String
+    private static String getStringFromInputStream(InputStream is) {
 
-		BufferedReader br = null;
-		StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
+        StringBuilder sb = new StringBuilder();
 
-		String line;
-		try {
+        String line;
+        try {
 
-			br = new BufferedReader(new InputStreamReader(is));
-			while ((line = br.readLine()) != null) {
-				sb.append(line);
-			}
+            br = new BufferedReader(new InputStreamReader(is));
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
 
-		} catch (IOException e) {
-			Log.e("TAG", "Foursquare::getStringFromInputStream", e);
-		} finally {
-			if (br != null) {
-				try {
-					br.close();
-				} catch (IOException e) {
-					Log.e("TAG", "Foursquare::getStringFromInputStream", e);
-				}
-			}
-		}
+        } catch (IOException e) {
+            Log.e("TAG", "Foursquare::getStringFromInputStream", e);
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    Log.e("TAG", "Foursquare::getStringFromInputStream", e);
+                }
+            }
+        }
 
-		return sb.toString();
+        return sb.toString();
 
-	}
+    }
 
-	private class ParseUserFoursquareData extends
-			AsyncTask<String, Void, String> {
+    private class ParseUserFoursquareData extends
+            AsyncTask<String, Void, String> {
 
-		@Override
-		protected String doInBackground(String... params) {
-			String aa = null;
+        @Override
+        protected String doInBackground(String... params) {
+            String aa = null;
 
-			try {
+            try {
 
-				aa = foursquare.request("users/self");
-				// show and save prefrences user name , last place
-				// checkin
-				// jsonParser(aa);
-				Log.d("Foursquare-Main", aa);
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				Log.e("TAG", "Foursquare::ParseUserFoursquareData", e);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				Log.e("TAG", "Foursquare::ParseUserFoursquareData", e);
-			}
-			return aa;
-		}
+                aa = foursquare.request("users/self");
+                // show and save prefrences user name , last place
+                // checkin
+                // jsonParser(aa);
+                Log.d("Foursquare-Main", aa);
+            } catch (MalformedURLException e) {
+                // TODO Auto-generated catch block
+                Log.e("TAG", "Foursquare::ParseUserFoursquareData", e);
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                Log.e("TAG", "Foursquare::ParseUserFoursquareData", e);
+            }
+            return aa;
+        }
 
-		@Override
-		protected void onPostExecute(String result) {
+        @Override
+        protected void onPostExecute(String result) {
 
-			try {
-				JSONObject json = new JSONObject(result);
-				JSONObject response = json.getJSONObject("response");
-				JSONObject user = response.getJSONObject("user");
-				String userName = user.getString("firstName");
-				// Set user name UI
-				if (eventHandler != null)
-					eventHandler.onForsquareLoggedIn(userName);
-				JSONObject venue = user.getJSONObject("checkins")
-						.getJSONArray("items").getJSONObject(0)
-						.getJSONObject("venue");
-				String placeName = venue.getString("name");
-				if (eventHandler != null)
-					eventHandler.setLastPlaceCheckin(placeName);
+            try {
+                JSONObject json = new JSONObject(result);
+                JSONObject response = json.getJSONObject("response");
+                JSONObject user = response.getJSONObject("user");
+                String userName = user.getString("firstName");
+                // Set user name UI
+                if (eventHandler != null)
+                    eventHandler.onForsquareLoggedIn(userName);
+                JSONObject venue = user.getJSONObject("checkins")
+                        .getJSONArray("items").getJSONObject(0)
+                        .getJSONObject("venue");
+                String placeName = venue.getString("name");
+                if (eventHandler != null)
+                    eventHandler.setLastPlaceCheckin(placeName);
 
-				// save in share prefrences
-				SharedPreferences.Editor editor = mSharedPreferences.edit();
-				editor.putString("PREF_FourSquare_UserName", userName);
-				editor.putString("PREF_FourSquare_LastPlace", placeName);
+                // save in share prefrences
+                SharedPreferences.Editor editor = mSharedPreferences.edit();
+                editor.putString("PREF_FourSquare_UserName", userName);
+                editor.putString("PREF_FourSquare_LastPlace", placeName);
 
-				// Commit the edits!
-				editor.commit();
+                // Commit the edits!
+                editor.commit();
 
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				Log.d("Exception of Parsing User login response :: ",
-						e.toString());
+            } catch (JSONException e) {
+                // TODO Auto-generated catch block
+                Log.d("Exception of Parsing User login response :: ",
+                        e.toString());
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
-	private class FoursquareAuthenDialogListener implements DialogListener {
+    private class FoursquareAuthenDialogListener implements DialogListener {
 
-		@Override
-		public void onComplete(Bundle values) {
-			new ParseUserFoursquareData().execute("");
-		}
+        @Override
+        public void onComplete(Bundle values) {
+            new ParseUserFoursquareData().execute("");
+        }
 
-		@Override
-		public void onFoursquareError(FoursquareError e) {
-			Toast.makeText(getApplication().getApplicationContext(),
-					"Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
-					.show();
+        @Override
+        public void onFoursquareError(FoursquareError e) {
+            Toast.makeText(getApplication().getApplicationContext(),
+                    "Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
+                    .show();
 
-		}
+        }
 
-		@Override
-		public void onError(FoursquareDialogError e) {
-			Toast.makeText(getApplication().getApplicationContext(),
-					"Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
-					.show();
+        @Override
+        public void onError(FoursquareDialogError e) {
+            Toast.makeText(getApplication().getApplicationContext(),
+                    "Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
+                    .show();
 
-		}
+        }
 
-		@Override
-		public void onCancel() {
-			Toast.makeText(getApplication().getApplicationContext(),
-					"Foursquare Login canceled ", Toast.LENGTH_SHORT).show();
+        @Override
+        public void onCancel() {
+            Toast.makeText(getApplication().getApplicationContext(),
+                    "Foursquare Login canceled ", Toast.LENGTH_SHORT).show();
 
-		}
+        }
 
-	}
+    }
 
-	public void jsonParser(String result) {
-		try {
-			JSONObject json = new JSONObject(result);
-			JSONObject response = json.getJSONObject("response");
-			JSONObject user = response.getJSONObject("user");
-			String userName = user.getString("firstName");
-			// Set user name UI
-			if (eventHandler != null)
-				eventHandler.onForsquareLoggedIn(userName);
-			JSONObject venue = user.getJSONObject("checkins")
-					.getJSONArray("items").getJSONObject(0)
-					.getJSONObject("venue");
-			String placeName = venue.getString("name");
-			if (eventHandler != null)
-				eventHandler.onPlaceCheckin(placeName);
+    public void jsonParser(String result) {
+        try {
+            JSONObject json = new JSONObject(result);
+            JSONObject response = json.getJSONObject("response");
+            JSONObject user = response.getJSONObject("user");
+            String userName = user.getString("firstName");
+            // Set user name UI
+            if (eventHandler != null)
+                eventHandler.onForsquareLoggedIn(userName);
+            JSONObject venue = user.getJSONObject("checkins")
+                    .getJSONArray("items").getJSONObject(0)
+                    .getJSONObject("venue");
+            String placeName = venue.getString("name");
+            if (eventHandler != null)
+                eventHandler.onPlaceCheckin(placeName);
 
-			// save in share prefrences
-			SharedPreferences.Editor editor = mSharedPreferences.edit();
-			editor.putString("PREF_FourSquare_UserName", userName);
-			editor.putString("PREF_FourSquare_LastPlace", placeName);
+            // save in share prefrences
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
+            editor.putString("PREF_FourSquare_UserName", userName);
+            editor.putString("PREF_FourSquare_LastPlace", placeName);
 
-			// Commit the edits!
-			editor.commit();
+            // Commit the edits!
+            editor.commit();
 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			Log.e("TAG", "Foursquare::jsonParser", e);
-		}
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            Log.e("TAG", "Foursquare::jsonParser", e);
+        }
 
-	}
+    }
 
-	public void loginToFoursquare() {
-		ProgressDialog prog = new ProgressDialog(activity);
-		prog.setMessage("Please, Wait!");
-		prog.setCancelable(false);
-		prog.show();
-		foursquare = new Foursquare(
-				ApiObjects.foursquare.get("client_key"),
-				ApiObjects.foursquare.get("client_secret"),
-				redirectUrl);
-		foursquare.authorize(getActivity(),
-				new FoursquareAuthenDialogListener());
-		prog.cancel();
-	}
+    public void loginToFoursquare() {
+        ProgressDialog prog = new ProgressDialog(activity);
+        prog.setMessage("Please, Wait!");
+        prog.setCancelable(false);
+        prog.show();
+        foursquare = new Foursquare(
+                ApiObjects.foursquare.get("client_key"),
+                ApiObjects.foursquare.get("client_secret"),
+                redirectUrl);
+        foursquare.authorize(getActivity(),
+                new FoursquareAuthenDialogListener());
+        prog.cancel();
+    }
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
 }

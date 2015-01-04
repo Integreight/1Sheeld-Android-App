@@ -1,9 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/superDarkGray"
-    android:clickable="true" >
+    android:clickable="true">
 
     <ImageView
         android:id="@+id/speaker_fragment_background_imageview"
@@ -24,7 +23,7 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp" >
+        android:layout_marginTop="20dp">
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/shieldName"
@@ -42,8 +41,7 @@
             android:id="@+id/shieldsContainerFrame"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/shieldName" >
-        </FrameLayout>
+            android:layout_below="@id/shieldName"></FrameLayout>
     </RelativeLayout>
 
     <CheckBox
@@ -70,14 +68,13 @@
         android:textOff=""
         android:textOn="" />
 
-    <com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer
-        xmlns:my="http://schemas.android.com/apk/res/com.integreight.onesheeld"
+    <com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer xmlns:my="http://schemas.android.com/apk/res/com.integreight.onesheeld"
         android:id="@+id/pinsViewSlidingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         my:content="@id/pinsViewContainer"
         my:direction="rightToLeft"
-        my:handle="@id/handler" >
+        my:handle="@id/handler">
 
         <Button
             android:id="@+id/handler"
@@ -90,18 +87,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:background="#D9000000" >
-        </FrameLayout>
+            android:background="#D9000000"></FrameLayout>
     </com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer>
 
-    <com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer
-        xmlns:my="http://schemas.android.com/apk/res/com.integreight.onesheeld"
+    <com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer xmlns:my="http://schemas.android.com/apk/res/com.integreight.onesheeld"
         android:id="@+id/settingsSlidingView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         my:content="@id/settingsViewContainer"
         my:direction="rightToLeft"
-        my:handle="@id/settingsHandler" >
+        my:handle="@id/settingsHandler">
 
         <Button
             android:id="@+id/settingsHandler"
@@ -114,8 +109,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:background="#D9000000" >
-        </FrameLayout>
+            android:background="#D9000000"></FrameLayout>
     </com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer>
 
     <LinearLayout
@@ -123,7 +117,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <ImageView
             android:id="@+id/pinsFixedHandler"

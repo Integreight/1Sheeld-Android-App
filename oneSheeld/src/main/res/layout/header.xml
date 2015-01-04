@@ -5,7 +5,7 @@
     android:background="@color/arduino_conn_gray_bg"
     android:gravity="center"
     android:paddingBottom="10dp"
-    android:paddingTop="10dp" >
+    android:paddingTop="10dp">
 
     <TextView
         android:id="@+id/currentViewTitle"
@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_toLeftOf="@id/currentViewTitle" >
+        android:layout_toLeftOf="@id/currentViewTitle">
 
         <TextView
             android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/currentViewTitle" >
+        android:layout_toRightOf="@id/currentViewTitle">
 
         <TextView
             android:layout_width="wrap_content"

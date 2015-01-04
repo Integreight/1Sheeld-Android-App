@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:layout_width="wrap_content"

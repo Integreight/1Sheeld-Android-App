@@ -1,15 +1,5 @@
 package com.integreight.onesheeld;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -35,317 +25,326 @@ import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Ahmed Saad
- * 
  */
 public class OneSheeldApplication extends Application {
-	private SharedPreferences appPreferences;
-	public static int ARDUINO_LIBRARY_VERSION = 4;
-	private final String APP_PREF_NAME = "oneSheeldPreference";
-	private final String LAST_DEVICE = "lastConnectedDevice";
-	private final String MAJOR_VERSION = "majorVersion";
-	private final String MINOR_VERSION = "minorVersion";
-	private final String VERSION_WEB_RESULT = "versionWebResult";
-	private final String BUZZER_SOUND_KEY = "buzerSound";
-	private final String TUTORIAL_SHOWN_TIME = "tutShownTime";
-	private final String SHOWTUTORIALS_AGAIN = "showTutAgain";
-	private final String TASKER_CONDITION_PIN = "taskerConditionPin";
-	private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
-	private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
-	private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
-	public static final Hashtable<String, String> shieldsFragmentsTags = new Hashtable<String, String>();
-	private ArduinoFirmata appFirmata;
-	private ConnectionDetector connectionHandler;
-	private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
-	public Typeface appFont;
-	// private GoogleAnalytics googleAnalyticsInstance;
-	// private Tracker appGaTracker;
-	public TaskerShield taskerController;
-	public RemoteOneSheeldShield remoteOneSheeldController;
-	public SparseArray<Boolean> taskerPinsStatus;
+    private SharedPreferences appPreferences;
+    public static int ARDUINO_LIBRARY_VERSION = 4;
+    private final String APP_PREF_NAME = "oneSheeldPreference";
+    private final String LAST_DEVICE = "lastConnectedDevice";
+    private final String MAJOR_VERSION = "majorVersion";
+    private final String MINOR_VERSION = "minorVersion";
+    private final String VERSION_WEB_RESULT = "versionWebResult";
+    private final String BUZZER_SOUND_KEY = "buzerSound";
+    private final String TUTORIAL_SHOWN_TIME = "tutShownTime";
+    private final String SHOWTUTORIALS_AGAIN = "showTutAgain";
+    private final String TASKER_CONDITION_PIN = "taskerConditionPin";
+    private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
+    private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
+    private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
+    public static final Hashtable<String, String> shieldsFragmentsTags = new Hashtable<String, String>();
+    private ArduinoFirmata appFirmata;
+    private ConnectionDetector connectionHandler;
+    private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
+    public Typeface appFont;
+    // private GoogleAnalytics googleAnalyticsInstance;
+    // private Tracker appGaTracker;
+    public TaskerShield taskerController;
+    public RemoteOneSheeldShield remoteOneSheeldController;
+    public SparseArray<Boolean> taskerPinsStatus;
 
-	public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
+    public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";
 
-	private static boolean isDebuggable = true;
+    private static boolean isDebuggable = true;
 
-	private Tracker gaTracker;
+    private Tracker gaTracker;
 
-	private long connectionTime;
+    private long connectionTime;
 
-	public void startConnectionTimer() {
-		connectionTime = System.currentTimeMillis();
-	}
+    public void startConnectionTimer() {
+        connectionTime = System.currentTimeMillis();
+    }
 
-	public void endConnectionTimerAndReport() {
-		if (connectionTime == 0)
-			return;
+    public void endConnectionTimerAndReport() {
+        if (connectionTime == 0)
+            return;
         Map<String, String> hit = new HitBuilders.TimingBuilder()
                 .setCategory("Connection Timing")
                 .setValue(System.currentTimeMillis() - connectionTime)
                 .setVariable("Connection").build();
         // hit.put("&sc", "end");
         getTracker().send(hit);
-		connectionTime = 0;
-	}
+        connectionTime = 0;
+    }
 
-	public long getConnectionTime() {
-		return connectionTime;
-	}
+    public long getConnectionTime() {
+        return connectionTime;
+    }
 
-	public synchronized Tracker getTracker() {
-		if (gaTracker != null)
-			return gaTracker;
-		GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-		analytics.setAppOptOut(isDebuggable);
-		if (isDebuggable)
-			analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
-		gaTracker = analytics.newTracker(ApiObjects.analytics
-				.get("property_id"));
-		gaTracker.enableAdvertisingIdCollection(true);
-		gaTracker.setSessionTimeout(-1);
-		return gaTracker;
-	}
+    public synchronized Tracker getTracker() {
+        if (gaTracker != null)
+            return gaTracker;
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        analytics.setAppOptOut(isDebuggable);
+        if (isDebuggable)
+            analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
+        gaTracker = analytics.newTracker(ApiObjects.analytics
+                .get("property_id"));
+        gaTracker.enableAdvertisingIdCollection(true);
+        gaTracker.setSessionTimeout(-1);
+        return gaTracker;
+    }
 
-	public static boolean isDebuggable() {
-		return isDebuggable;
-	}
+    public static boolean isDebuggable() {
+        return isDebuggable;
+    }
 
-	@Override
-	public void onCreate() {
-		setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
-		setConnectionHandler(new ConnectionDetector());
-		appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
-		setAppFirmata(new ArduinoFirmata(getApplicationContext()));
-		parseSocialKeys();
-		Parse.initialize(this, ApiObjects.parse.get("app_id"),
-				ApiObjects.parse.get("client_id"));
-		ParseInstallation.getCurrentInstallation().saveInBackground();
-		initTaskerPins();
-		isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-		if (isDebuggable()
-				&& (ParseInstallation.getCurrentInstallation().getList(
-						"channels") == null || !ParseInstallation
-						.getCurrentInstallation().getList("channels")
-						.contains("dev")))
-			ParsePush.subscribeInBackground("dev");
-		connectionTime = 0;
+    @Override
+    public void onCreate() {
+        setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
+        setConnectionHandler(new ConnectionDetector());
+        appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
+        setAppFirmata(new ArduinoFirmata(getApplicationContext()));
+        parseSocialKeys();
+        Parse.initialize(this, ApiObjects.parse.get("app_id"),
+                ApiObjects.parse.get("client_id"));
+        ParseInstallation.getCurrentInstallation().saveInBackground();
+        initTaskerPins();
+        isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
+        if (isDebuggable()
+                && (ParseInstallation.getCurrentInstallation().getList(
+                "channels") == null || !ParseInstallation
+                .getCurrentInstallation().getList("channels")
+                .contains("dev")))
+            ParsePush.subscribeInBackground("dev");
+        connectionTime = 0;
         AppShields.getInstance().init();
-		super.onCreate();
-	}
+        super.onCreate();
+    }
 
-	@SuppressLint("UseSparseArrays")
-	public void initTaskerPins() {
-		ArduinoPin[] pins = ArduinoPin.values();
-		taskerPinsStatus = new SparseArray<Boolean>(pins.length);
-		for (ArduinoPin pin : pins) {
-			taskerPinsStatus.put(pin.microHardwarePin, false);
-		}
-	}
+    @SuppressLint("UseSparseArrays")
+    public void initTaskerPins() {
+        ArduinoPin[] pins = ArduinoPin.values();
+        taskerPinsStatus = new SparseArray<Boolean>(pins.length);
+        for (ArduinoPin pin : pins) {
+            taskerPinsStatus.put(pin.microHardwarePin, false);
+        }
+    }
 
-	private void parseSocialKeys() {
-		String metaData = "";
-		try {
-			metaData = loadData("dev_meta_data.json");
-		} catch (Exception e) {
-			try {
-				metaData = loadData("meta_data.json");
-			} catch (Exception e1) {
-			}
-		}
-		try {
-			JSONObject socialKeysObject = new JSONObject(metaData);
-			JSONObject facebook = new JSONObject();
-			JSONObject twitter = new JSONObject();
-			JSONObject foursquare = new JSONObject();
-			JSONObject parse = new JSONObject();
-			JSONObject analytics = new JSONObject();
-			if (socialKeysObject.has("facebook")) {
-				facebook = socialKeysObject.getJSONObject("facebook");
-				if (facebook.has("app_id"))
-					ApiObjects.facebook.add("app_id",
-							facebook.getString("app_id"));
-			}
-			if (socialKeysObject.has("twitter")) {
-				twitter = socialKeysObject.getJSONObject("twitter");
-				if (twitter.has("consumer_key")
-						&& twitter.has("consumer_secret")) {
-					ApiObjects.twitter.add("consumer_key",
-							twitter.getString("consumer_key"));
-					ApiObjects.twitter.add("consumer_secret",
-							twitter.getString("consumer_secret"));
-				}
-			}
-			if (socialKeysObject.has("foursquare")) {
-				foursquare = socialKeysObject.getJSONObject("foursquare");
-				if (foursquare.has("client_key")
-						&& foursquare.has("client_secret")) {
-					ApiObjects.foursquare.add("client_key",
-							foursquare.getString("client_key"));
-					ApiObjects.foursquare.add("client_secret",
-							foursquare.getString("client_secret"));
-				}
-			}
-			if (socialKeysObject.has("parse")) {
-				parse = socialKeysObject.getJSONObject("parse");
-				if (parse.has("app_id") && parse.has("client_id"))
-					ApiObjects.parse.add("app_id", parse.getString("app_id"));
-				ApiObjects.parse.add("client_id", parse.getString("client_id"));
-			}
-			if (socialKeysObject.has("analytics")) {
-				analytics = socialKeysObject.getJSONObject("analytics");
-				if (analytics.has("property_id"))
-					ApiObjects.analytics.add("property_id",
-							analytics.getString("property_id"));
-			}
-		} catch (JSONException e) {
-		}
-	}
+    private void parseSocialKeys() {
+        String metaData = "";
+        try {
+            metaData = loadData("dev_meta_data.json");
+        } catch (Exception e) {
+            try {
+                metaData = loadData("meta_data.json");
+            } catch (Exception e1) {
+            }
+        }
+        try {
+            JSONObject socialKeysObject = new JSONObject(metaData);
+            JSONObject facebook = new JSONObject();
+            JSONObject twitter = new JSONObject();
+            JSONObject foursquare = new JSONObject();
+            JSONObject parse = new JSONObject();
+            JSONObject analytics = new JSONObject();
+            if (socialKeysObject.has("facebook")) {
+                facebook = socialKeysObject.getJSONObject("facebook");
+                if (facebook.has("app_id"))
+                    ApiObjects.facebook.add("app_id",
+                            facebook.getString("app_id"));
+            }
+            if (socialKeysObject.has("twitter")) {
+                twitter = socialKeysObject.getJSONObject("twitter");
+                if (twitter.has("consumer_key")
+                        && twitter.has("consumer_secret")) {
+                    ApiObjects.twitter.add("consumer_key",
+                            twitter.getString("consumer_key"));
+                    ApiObjects.twitter.add("consumer_secret",
+                            twitter.getString("consumer_secret"));
+                }
+            }
+            if (socialKeysObject.has("foursquare")) {
+                foursquare = socialKeysObject.getJSONObject("foursquare");
+                if (foursquare.has("client_key")
+                        && foursquare.has("client_secret")) {
+                    ApiObjects.foursquare.add("client_key",
+                            foursquare.getString("client_key"));
+                    ApiObjects.foursquare.add("client_secret",
+                            foursquare.getString("client_secret"));
+                }
+            }
+            if (socialKeysObject.has("parse")) {
+                parse = socialKeysObject.getJSONObject("parse");
+                if (parse.has("app_id") && parse.has("client_id"))
+                    ApiObjects.parse.add("app_id", parse.getString("app_id"));
+                ApiObjects.parse.add("client_id", parse.getString("client_id"));
+            }
+            if (socialKeysObject.has("analytics")) {
+                analytics = socialKeysObject.getJSONObject("analytics");
+                if (analytics.has("property_id"))
+                    ApiObjects.analytics.add("property_id",
+                            analytics.getString("property_id"));
+            }
+        } catch (JSONException e) {
+        }
+    }
 
-	public String loadData(String inFile) throws IOException {
-		String tContents = "";
-		InputStream stream = getAssets().open(inFile);
-		int size = stream.available();
-		byte[] buffer = new byte[size];
-		stream.read(buffer);
-		stream.close();
-		tContents = new String(buffer);
-		return tContents;
-	}
+    public String loadData(String inFile) throws IOException {
+        String tContents = "";
+        InputStream stream = getAssets().open(inFile);
+        int size = stream.available();
+        byte[] buffer = new byte[size];
+        stream.read(buffer);
+        stream.close();
+        tContents = new String(buffer);
+        return tContents;
+    }
 
-	public SharedPreferences getAppPreferences() {
-		return appPreferences;
-	}
+    public SharedPreferences getAppPreferences() {
+        return appPreferences;
+    }
 
-	public void setAppPreferences(SharedPreferences appPreferences) {
-		this.appPreferences = appPreferences;
-	}
+    public void setAppPreferences(SharedPreferences appPreferences) {
+        this.appPreferences = appPreferences;
+    }
 
-	public String getLastConnectedDevice() {
-		return appPreferences.getString(LAST_DEVICE, null);
-	}
+    public String getLastConnectedDevice() {
+        return appPreferences.getString(LAST_DEVICE, null);
+    }
 
-	public void setLastConnectedDevice(String lastConnectedDevice) {
-		appPreferences.edit().putString(LAST_DEVICE, lastConnectedDevice)
-				.commit();
-	}
+    public void setLastConnectedDevice(String lastConnectedDevice) {
+        appPreferences.edit().putString(LAST_DEVICE, lastConnectedDevice)
+                .commit();
+    }
 
-	public int getMajorVersion() {
-		return appPreferences.getInt(MAJOR_VERSION, -1);
-	}
+    public int getMajorVersion() {
+        return appPreferences.getInt(MAJOR_VERSION, -1);
+    }
 
-	public void setMajorVersion(int majorVersion) {
-		appPreferences.edit().putInt(MAJOR_VERSION, majorVersion).commit();
-	}
+    public void setMajorVersion(int majorVersion) {
+        appPreferences.edit().putInt(MAJOR_VERSION, majorVersion).commit();
+    }
 
-	public int getMinorVersion() {
-		return appPreferences.getInt(MINOR_VERSION, -1);
-	}
+    public int getMinorVersion() {
+        return appPreferences.getInt(MINOR_VERSION, -1);
+    }
 
-	public void setMinorVersion(int minorVersion) {
-		appPreferences.edit().putInt(MINOR_VERSION, minorVersion).commit();
-	}
+    public void setMinorVersion(int minorVersion) {
+        appPreferences.edit().putInt(MINOR_VERSION, minorVersion).commit();
+    }
 
-	public void setVersionWebResult(String json) {
-		appPreferences.edit().putString(VERSION_WEB_RESULT, json).commit();
-	}
+    public void setVersionWebResult(String json) {
+        appPreferences.edit().putString(VERSION_WEB_RESULT, json).commit();
+    }
 
-	public String getVersionWebResult() {
-		return appPreferences.getString(VERSION_WEB_RESULT, null);
-	}
+    public String getVersionWebResult() {
+        return appPreferences.getString(VERSION_WEB_RESULT, null);
+    }
 
-	public void setBuzzerSound(String uri) {
-		appPreferences.edit().putString(BUZZER_SOUND_KEY, uri).commit();
-	}
+    public void setBuzzerSound(String uri) {
+        appPreferences.edit().putString(BUZZER_SOUND_KEY, uri).commit();
+    }
 
-	public String getBuzzerSound() {
-		return appPreferences.getString(BUZZER_SOUND_KEY, null);
-	}
+    public String getBuzzerSound() {
+        return appPreferences.getString(BUZZER_SOUND_KEY, null);
+    }
 
-	public void setTutShownTimes(int times) {
-		appPreferences.edit().putInt(TUTORIAL_SHOWN_TIME, times).commit();
-	}
+    public void setTutShownTimes(int times) {
+        appPreferences.edit().putInt(TUTORIAL_SHOWN_TIME, times).commit();
+    }
 
-	public int getTutShownTimes() {
-		return appPreferences.getInt(TUTORIAL_SHOWN_TIME, 0);
-	}
+    public int getTutShownTimes() {
+        return appPreferences.getInt(TUTORIAL_SHOWN_TIME, 0);
+    }
 
-	public void setTaskerConditionPin(int pin) {
-		appPreferences.edit().putInt(TASKER_CONDITION_PIN, pin).commit();
-	}
+    public void setTaskerConditionPin(int pin) {
+        appPreferences.edit().putInt(TASKER_CONDITION_PIN, pin).commit();
+    }
 
-	public int getTaskerConditionPin() {
-		return appPreferences.getInt(TASKER_CONDITION_PIN, -1);
-	}
+    public int getTaskerConditionPin() {
+        return appPreferences.getInt(TASKER_CONDITION_PIN, -1);
+    }
 
-	public void setTaskerConditionStatus(boolean flag) {
-		appPreferences.edit().putBoolean(TASKER_CONDITION_STATUS, flag)
-				.commit();
-	}
+    public void setTaskerConditionStatus(boolean flag) {
+        appPreferences.edit().putBoolean(TASKER_CONDITION_STATUS, flag)
+                .commit();
+    }
 
-	public boolean getTaskConditionStatus() {
-		return appPreferences.getBoolean(TASKER_CONDITION_STATUS, true);
-	}
+    public boolean getTaskConditionStatus() {
+        return appPreferences.getBoolean(TASKER_CONDITION_STATUS, true);
+    }
 
-	public void setShownTutAgain(boolean flag) {
-		appPreferences.edit().putBoolean(SHOWTUTORIALS_AGAIN, !flag).commit();
-	}
+    public void setShownTutAgain(boolean flag) {
+        appPreferences.edit().putBoolean(SHOWTUTORIALS_AGAIN, !flag).commit();
+    }
 
-	public boolean getShowTutAgain() {
-		return appPreferences.getBoolean(SHOWTUTORIALS_AGAIN, true);
-	}
+    public boolean getShowTutAgain() {
+        return appPreferences.getBoolean(SHOWTUTORIALS_AGAIN, true);
+    }
 
-	public Hashtable<String, ControllerParent<?>> getRunningShields() {
-		return runningSheelds;
-	}
+    public Hashtable<String, ControllerParent<?>> getRunningShields() {
+        return runningSheelds;
+    }
 
-	public void setRunningSheelds(
-			Hashtable<String, ControllerParent<?>> runningSheelds) {
-		this.runningSheelds = runningSheelds;
-	}
+    public void setRunningSheelds(
+            Hashtable<String, ControllerParent<?>> runningSheelds) {
+        this.runningSheelds = runningSheelds;
+    }
 
-	public ArduinoFirmata getAppFirmata() {
+    public ArduinoFirmata getAppFirmata() {
 
-		return appFirmata;
-	}
+        return appFirmata;
+    }
 
-	public void setAppFirmata(ArduinoFirmata appFirmata) {
-		this.appFirmata = appFirmata;
-	}
+    public void setAppFirmata(ArduinoFirmata appFirmata) {
+        this.appFirmata = appFirmata;
+    }
 
-	public void addServiceEventHandler(
-			OneSheeldServiceHandler serviceEventHandler) {
-		if (!this.serviceEventHandlers.contains(serviceEventHandler))
-			this.serviceEventHandlers.add(serviceEventHandler);
-	}
+    public void addServiceEventHandler(
+            OneSheeldServiceHandler serviceEventHandler) {
+        if (!this.serviceEventHandlers.contains(serviceEventHandler))
+            this.serviceEventHandlers.add(serviceEventHandler);
+    }
 
-	public List<OneSheeldServiceHandler> getServiceEventHandlers() {
-		return serviceEventHandlers;
-	}
+    public List<OneSheeldServiceHandler> getServiceEventHandlers() {
+        return serviceEventHandlers;
+    }
 
-	public void clearServiceEventHandlers() {
-		if (getAppFirmata() != null) {
-			// getRunningShields().clear();
-			getAppFirmata().clearArduinoFirmataDataHandlers();
-			getAppFirmata().clearArduinoFirmataShieldFrameHandlers();
-		}
-	}
+    public void clearServiceEventHandlers() {
+        if (getAppFirmata() != null) {
+            // getRunningShields().clear();
+            getAppFirmata().clearArduinoFirmataDataHandlers();
+            getAppFirmata().clearArduinoFirmataShieldFrameHandlers();
+        }
+    }
 
-	public ConnectionDetector getConnectionHandler() {
-		return connectionHandler;
-	}
+    public ConnectionDetector getConnectionHandler() {
+        return connectionHandler;
+    }
 
-	public void setConnectionHandler(ConnectionDetector connectionHandler) {
-		this.connectionHandler = connectionHandler;
-	}
+    public void setConnectionHandler(ConnectionDetector connectionHandler) {
+        this.connectionHandler = connectionHandler;
+    }
 
-	public ArduinoFirmataEventHandler getArduinoFirmataEventHandler() {
-		return arduinoFirmataEventHandler;
-	}
+    public ArduinoFirmataEventHandler getArduinoFirmataEventHandler() {
+        return arduinoFirmataEventHandler;
+    }
 
-	public void setArduinoFirmataEventHandler(
-			ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
-		this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
-		getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
-	}
+    public void setArduinoFirmataEventHandler(
+            ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
+        this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
+        getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
+    }
 }

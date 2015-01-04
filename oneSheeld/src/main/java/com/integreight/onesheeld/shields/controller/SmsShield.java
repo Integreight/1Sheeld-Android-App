@@ -14,136 +14,136 @@ import com.integreight.onesheeld.shields.controller.utils.SmsListener.SmsReceive
 import com.integreight.onesheeld.utils.Log;
 
 public class SmsShield extends ControllerParent<SmsShield> {
-	private SmsEventHandler eventHandler;
-	private String lastSmsText;
-	private String lastSmsNumber;
-	private static final byte SEND_SMS_METHOD_ID = (byte) 0x01;
-	private SmsListener smsListener;
-	private ShieldFrame frame;
+    private SmsEventHandler eventHandler;
+    private String lastSmsText;
+    private String lastSmsNumber;
+    private static final byte SEND_SMS_METHOD_ID = (byte) 0x01;
+    private SmsListener smsListener;
+    private ShieldFrame frame;
 
-	public String getLastSmsText() {
-		return lastSmsText;
-	}
+    public String getLastSmsText() {
+        return lastSmsText;
+    }
 
-	public String getLastSmsNumber() {
-		return lastSmsNumber;
-	}
+    public String getLastSmsNumber() {
+        return lastSmsNumber;
+    }
 
-	public SmsShield() {
-		super();
-	}
+    public SmsShield() {
+        super();
+    }
 
-	@Override
-	public ControllerParent<SmsShield> setTag(String tag) {
-		smsListener = new SmsListener();
-		IntentFilter filter = new IntentFilter();
-		filter.addAction("android.provider.Telephony.SMS_RECEIVED");
-		filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
-		if (smsReceiveEventHandler != null)
-			smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
-		getActivity().registerReceiver(smsListener, filter);
-		return super.setTag(tag);
-	}
+    @Override
+    public ControllerParent<SmsShield> setTag(String tag) {
+        smsListener = new SmsListener();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.provider.Telephony.SMS_RECEIVED");
+        filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
+        if (smsReceiveEventHandler != null)
+            smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
+        getActivity().registerReceiver(smsListener, filter);
+        return super.setTag(tag);
+    }
 
-	@Override
-	public ControllerParent<SmsShield> invalidate(
-			com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
-			boolean isToastable) {
-		this.selectionAction = selectionAction;
-		TelephonyManager tm = (TelephonyManager) getApplication()
-				.getSystemService(Context.TELEPHONY_SERVICE);
-		if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
-			// No calling functionality
-			if (this.selectionAction != null) {
-				this.selectionAction.onFailure();
-				if (isToastable)
-					activity.showToast("Device doesn't support SMS functionality !");
-			}
-		} else {
-			// calling functionality
-			if (this.selectionAction != null) {
-				this.selectionAction.onSuccess();
-			}
-		}
+    @Override
+    public ControllerParent<SmsShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        TelephonyManager tm = (TelephonyManager) getApplication()
+                .getSystemService(Context.TELEPHONY_SERVICE);
+        if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
+            // No calling functionality
+            if (this.selectionAction != null) {
+                this.selectionAction.onFailure();
+                if (isToastable)
+                    activity.showToast("Device doesn't support SMS functionality !");
+            }
+        } else {
+            // calling functionality
+            if (this.selectionAction != null) {
+                this.selectionAction.onSuccess();
+            }
+        }
 
-		return super.invalidate(selectionAction, isToastable);
-	}
+        return super.invalidate(selectionAction, isToastable);
+    }
 
-	public SmsShield(Activity activity, String tag) {
-		super(activity, tag);
-	}
+    public SmsShield(Activity activity, String tag) {
+        super(activity, tag);
+    }
 
-	protected void sendSms(String smsNumber, String smsText) {
+    protected void sendSms(String smsNumber, String smsText) {
 
-		try {
-			SmsManager smsManager = SmsManager.getDefault();
-			smsManager.sendTextMessage(smsNumber, null, smsText, null, null);
-			if (eventHandler != null)
-				eventHandler.onSmsSent(smsNumber, smsText);
-		} catch (Exception e) {
-			if (eventHandler != null)
-				eventHandler.onSmsFail(e.getMessage());
+        try {
+            SmsManager smsManager = SmsManager.getDefault();
+            smsManager.sendTextMessage(smsNumber, null, smsText, null, null);
+            if (eventHandler != null)
+                eventHandler.onSmsSent(smsNumber, smsText);
+        } catch (Exception e) {
+            if (eventHandler != null)
+                eventHandler.onSmsFail(e.getMessage());
 
-			Log.e("TAG", "sendSms::sendTextMessage", e);
-		}
+            Log.e("TAG", "sendSms::sendTextMessage", e);
+        }
 
-	}
+    }
 
-	public void setSmsEventHandler(SmsEventHandler eventHandler) {
-		this.eventHandler = eventHandler;
+    public void setSmsEventHandler(SmsEventHandler eventHandler) {
+        this.eventHandler = eventHandler;
 
-	}
+    }
 
-	public interface SmsEventHandler {
-		void onSmsSent(String smsNumber, String smsText);
+    public interface SmsEventHandler {
+        void onSmsSent(String smsNumber, String smsText);
 
-		void onSmsFail(String error);
-	}
+        void onSmsFail(String error);
+    }
 
-	@Override
-	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
-		if (frame.getShieldId() == UIShield.SMS_SHIELD.getId()) {
-			String smsNumber = frame.getArgumentAsString(0);
-			String smsText = frame.getArgumentAsString(1);
-			lastSmsText = smsText;
-			if (frame.getFunctionId() == SEND_SMS_METHOD_ID) {
-				sendSms(smsNumber, smsText);
-			}
+    @Override
+    public void onNewShieldFrameReceived(ShieldFrame frame) {
+        // TODO Auto-generated method stub
+        if (frame.getShieldId() == UIShield.SMS_SHIELD.getId()) {
+            String smsNumber = frame.getArgumentAsString(0);
+            String smsText = frame.getArgumentAsString(1);
+            lastSmsText = smsText;
+            if (frame.getFunctionId() == SEND_SMS_METHOD_ID) {
+                sendSms(smsNumber, smsText);
+            }
 
-		}
+        }
 
-	}
+    }
 
-	private SmsReceiveEventHandler smsReceiveEventHandler = new SmsReceiveEventHandler() {
+    private SmsReceiveEventHandler smsReceiveEventHandler = new SmsReceiveEventHandler() {
 
-		@Override
-		public void onSmsReceiveSuccess(String mobile_num, String sms_body) {
-			// send frame contain SMS body..
-			Log.d("SMS::Controller::onSmsReceiveSuccess", sms_body);
-			frame = new ShieldFrame(UIShield.SMS_SHIELD.getId(), (byte) 0x01);
-			frame.addStringArgument(mobile_num);
-			frame.addStringArgument(sms_body);
+        @Override
+        public void onSmsReceiveSuccess(String mobile_num, String sms_body) {
+            // send frame contain SMS body..
+            Log.d("SMS::Controller::onSmsReceiveSuccess", sms_body);
+            frame = new ShieldFrame(UIShield.SMS_SHIELD.getId(), (byte) 0x01);
+            frame.addStringArgument(mobile_num);
+            frame.addStringArgument(sms_body);
 
-			Log.d("Fram", frame.getArgumentAsString(1));
-			sendShieldFrame(frame);
-		}
+            Log.d("Fram", frame.getArgumentAsString(1));
+            sendShieldFrame(frame);
+        }
 
-		@Override
-		public void onSmsReceiveFailed() {
-			Log.d("SMS::Controller::onSmsReceiveFailed",
-					"Failed to receive SMS !");
-		}
-	};
+        @Override
+        public void onSmsReceiveFailed() {
+            Log.d("SMS::Controller::onSmsReceiveFailed",
+                    "Failed to receive SMS !");
+        }
+    };
 
-	@Override
-	public void reset() {
-		try {
-			getActivity().unregisterReceiver(smsListener);
-		} catch (Exception e) {
-		}
-		frame = null;
-		smsListener = null;
-	}
+    @Override
+    public void reset() {
+        try {
+            getActivity().unregisterReceiver(smsListener);
+        } catch (Exception e) {
+        }
+        frame = null;
+        smsListener = null;
+    }
 
 }

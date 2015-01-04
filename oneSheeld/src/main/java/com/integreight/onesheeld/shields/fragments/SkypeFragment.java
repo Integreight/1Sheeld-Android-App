@@ -14,96 +14,96 @@ import com.integreight.onesheeld.utils.Log;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
 
-		// Inflate the layout for this fragment
-		v = inflater.inflate(R.layout.skype_shield_fragment_layout, container,
-				false);
-		return v;
-	}
+        // Inflate the layout for this fragment
+        v = inflater.inflate(R.layout.skype_shield_fragment_layout, container,
+                false);
+        return v;
+    }
 
-	@Override
-	public void onStart() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-			if (!reInitController())
-				return;
-		}
-		super.onStart();
+    @Override
+    public void onStart() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        super.onStart();
 
-	}
+    }
 
-	@Override
-	public void onStop() {
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-		Log.d("Skype Sheeld::OnActivityCreated()", "");
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+        Log.d("Skype Sheeld::OnActivityCreated()", "");
 
-	}
+    }
 
-	private SkypeEventHandler skypeEventHandler = new SkypeEventHandler() {
+    private SkypeEventHandler skypeEventHandler = new SkypeEventHandler() {
 
-		@Override
-		public void onVideoCall(String user) {
-			// TODO Auto-generated method stub
-			if (canChangeUI())
-				Toast.makeText(activity, user + " Outgoing Video Call",
-						Toast.LENGTH_SHORT).show();
+        @Override
+        public void onVideoCall(String user) {
+            // TODO Auto-generated method stub
+            if (canChangeUI())
+                Toast.makeText(activity, user + " Outgoing Video Call",
+                        Toast.LENGTH_SHORT).show();
 
-		}
+        }
 
-		@Override
-		public void onSkypeClientNotInstalled(String popMessage) {
-			// TODO Auto-generated method stub
-			if (canChangeUI())
-				Toast.makeText(activity, popMessage, Toast.LENGTH_SHORT).show();
+        @Override
+        public void onSkypeClientNotInstalled(String popMessage) {
+            // TODO Auto-generated method stub
+            if (canChangeUI())
+                Toast.makeText(activity, popMessage, Toast.LENGTH_SHORT).show();
 
-		}
+        }
 
-		@Override
-		public void onError(String error) {
-			// TODO Auto-generated method stub
+        @Override
+        public void onError(String error) {
+            // TODO Auto-generated method stub
 
-		}
+        }
 
-		@Override
-		public void onChat(String user) {
-			// TODO Auto-generated method stub
-			if (canChangeUI())
-				Toast.makeText(activity, user + " Outgoing Chat",
-						Toast.LENGTH_SHORT).show();
+        @Override
+        public void onChat(String user) {
+            // TODO Auto-generated method stub
+            if (canChangeUI())
+                Toast.makeText(activity, user + " Outgoing Chat",
+                        Toast.LENGTH_SHORT).show();
 
-		}
+        }
 
-		@Override
-		public void onCall(String user) {
-			// TODO Auto-generated method stub
-			if (canChangeUI())
-				Toast.makeText(activity, user + " Outgoing Call",
-						Toast.LENGTH_SHORT).show();
+        @Override
+        public void onCall(String user) {
+            // TODO Auto-generated method stub
+            if (canChangeUI())
+                Toast.makeText(activity, user + " Outgoing Call",
+                        Toast.LENGTH_SHORT).show();
 
-		}
-	};
+        }
+    };
 
-	private void initializeFirmata() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-			getApplication().getRunningShields().put(getControllerTag(),
-					new SkypeShield(activity, getControllerTag()));
-			((SkypeShield) getApplication().getRunningShields().get(
-					getControllerTag()))
-					.setSkypeEventHandler(skypeEventHandler);
-		}
+    private void initializeFirmata() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            getApplication().getRunningShields().put(getControllerTag(),
+                    new SkypeShield(activity, getControllerTag()));
+            ((SkypeShield) getApplication().getRunningShields().get(
+                    getControllerTag()))
+                    .setSkypeEventHandler(skypeEventHandler);
+        }
 
-	}
+    }
 
-	@Override
-	public void doOnServiceConnected() {
-		initializeFirmata();
-	}
+    @Override
+    public void doOnServiceConnected() {
+        initializeFirmata();
+    }
 }

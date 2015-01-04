@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="10dp" >
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/twitter_shield_imageview"
@@ -44,14 +44,13 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:visibility="visible" >
+        android:visibility="visible">
 
         <LinearLayout
             android:id="@+id/tweetsCont"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldButton

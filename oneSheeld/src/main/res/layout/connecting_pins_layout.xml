@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity" >
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/scrollingPins"
@@ -14,7 +14,7 @@
         android:layout_marginRight="22dp"
         android:layout_marginTop="10dp"
         android:gravity="center"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,15 +29,14 @@
             android:layout_weight="1"
             android:background="@color/transparent"
             android:fillViewport="true"
-            android:scrollbarThumbHorizontal="@drawable/transparent" >
+            android:scrollbarThumbHorizontal="@drawable/transparent">
 
             <LinearLayout
                 android:id="@+id/requiredPinsContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal" >
-            </LinearLayout>
+                android:orientation="horizontal"></LinearLayout>
         </HorizontalScrollView>
 
         <TextView
@@ -61,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/scrollingPins"
-        android:layout_below="@id/show" >
+        android:layout_below="@id/show">
 
         <ImageView
             android:id="@+id/background"
@@ -81,7 +80,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:paddingTop="18dp" >
+            android:paddingTop="18dp">
 
             <LinearLayout
                 android:id="@+id/pinsCont"
@@ -91,7 +90,7 @@
                 android:background="@drawable/arduino_default_pin"
                 android:gravity="right"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.PinView
                     android:layout_width="wrap_content"
@@ -142,7 +141,7 @@
                 android:layout_toLeftOf="@id/pinsCont"
                 android:gravity="right"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
@@ -214,7 +213,7 @@
                 android:background="@drawable/arduino_default_pin"
                 android:gravity="right"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.PinView
                     android:layout_width="wrap_content"
@@ -271,7 +270,7 @@
                 android:layout_toLeftOf="@id/pinsCont01"
                 android:gravity="right"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
@@ -351,7 +350,7 @@
                 android:background="@drawable/arduino_default_pin"
                 android:gravity="left"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.PinView
                     android:layout_width="wrap_content"
@@ -416,7 +415,7 @@
                 android:layout_toRightOf="@id/pinsCont2"
                 android:gravity="left"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"
@@ -508,7 +507,7 @@
                 android:background="@drawable/arduino_default_pin"
                 android:gravity="left"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.PinView
                     android:layout_width="wrap_content"
@@ -583,7 +582,7 @@
                 android:layout_toRightOf="@id/pinsCont3"
                 android:gravity="left"
                 android:orientation="vertical"
-                android:padding="2dp" >
+                android:padding="2dp">
 
                 <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
                     android:layout_width="wrap_content"

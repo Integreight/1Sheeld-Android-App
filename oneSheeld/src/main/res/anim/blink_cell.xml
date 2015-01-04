@@ -5,7 +5,7 @@
     android:fillEnabled="true"
     android:interpolator="@android:anim/accelerate_decelerate_interpolator"
     android:repeatCount="infinite"
-    android:repeatMode="reverse" >
+    android:repeatMode="reverse">
 
     <alpha
         android:duration="200"

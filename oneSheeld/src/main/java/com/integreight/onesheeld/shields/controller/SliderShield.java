@@ -8,53 +8,53 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
 
 public class SliderShield extends ControllerParent<SliderShield> {
-	private int connectedPin;
-	private int sliderValue;
-	private ShieldFrame sf;
-	private static final byte DATA_IN = 0x01;
-	private byte sValue = 0;
+    private int connectedPin;
+    private int sliderValue;
+    private ShieldFrame sf;
+    private static final byte DATA_IN = 0x01;
+    private byte sValue = 0;
 
-	public SliderShield() {
-		super();
-		requiredPinsIndex = 1;
-		shieldPins = new String[] { "Slider" };
-	}
+    public SliderShield() {
+        super();
+        requiredPinsIndex = 1;
+        shieldPins = new String[]{"Slider"};
+    }
 
-	public SliderShield(Activity activity, String tag) {
-		super(activity, tag);
-	}
+    public SliderShield(Activity activity, String tag) {
+        super(activity, tag);
+    }
 
-	@Override
-	public void setConnected(ArduinoConnectedPin... pins) {
-		connectedPin = pins[0].getPinID();
+    @Override
+    public void setConnected(ArduinoConnectedPin... pins) {
+        connectedPin = pins[0].getPinID();
 
-		super.setConnected(pins);
-	}
+        super.setConnected(pins);
+    }
 
-	public int getSliderValue() {
-		return sliderValue;
-	}
+    public int getSliderValue() {
+        return sliderValue;
+    }
 
-	public void setSliderValue(int sliderValue) {
-		this.sliderValue = sliderValue;
-		analogWrite(connectedPin, sliderValue);
-		sValue = (byte) sliderValue;
-		sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
-		sf.addByteArgument(sValue);
-		sendShieldFrame(sf);
+    public void setSliderValue(int sliderValue) {
+        this.sliderValue = sliderValue;
+        analogWrite(connectedPin, sliderValue);
+        sValue = (byte) sliderValue;
+        sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
+        sf.addByteArgument(sValue);
+        sendShieldFrame(sf);
 
-	}
+    }
 
-	@Override
-	public void onNewShieldFrameReceived(ShieldFrame frame) {
-		// TODO Auto-generated method stub
+    @Override
+    public void onNewShieldFrameReceived(ShieldFrame frame) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
-	@Override
-	public void reset() {
-		// TODO Auto-generated method stub
-		sf = null;
-	}
+    @Override
+    public void reset() {
+        // TODO Auto-generated method stub
+        sf = null;
+    }
 
 }

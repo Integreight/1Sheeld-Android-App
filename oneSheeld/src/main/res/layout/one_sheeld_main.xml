@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/arduino_conn_gray_bg"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <include
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
     <com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu
         android:id="@+id/sliding_pane_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <FrameLayout
             android:id="@+id/selectedShieldsContainer"

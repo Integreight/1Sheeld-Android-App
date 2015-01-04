@@ -24,41 +24,41 @@ import com.integreight.onesheeld.plugin.PluginBundleManager;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
- * 
+ *
  * @see com.twofortyfouram.locale.Intent#ACTION_FIRE_SETTING
  * @see com.twofortyfouram.locale.Intent#EXTRA_BUNDLE
  */
 public final class FireReceiver extends BroadcastReceiver {
 
-	@Override
-	public void onReceive(final Context context, final Intent intent) {
-		OneSheeldApplication app = (OneSheeldApplication) context
-				.getApplicationContext();
-		if (!com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent
-				.getAction())
-				|| app.getAppFirmata() == null
-				|| (app.getAppFirmata() != null && !app.getAppFirmata()
-						.isOpen())) {
-			return;
-		}
+    @Override
+    public void onReceive(final Context context, final Intent intent) {
+        OneSheeldApplication app = (OneSheeldApplication) context
+                .getApplicationContext();
+        if (!com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent
+                .getAction())
+                || app.getAppFirmata() == null
+                || (app.getAppFirmata() != null && !app.getAppFirmata()
+                .isOpen())) {
+            return;
+        }
 
-		BundleScrubber.scrub(intent);
+        BundleScrubber.scrub(intent);
 
-		final Bundle bundle = intent
-				.getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
-		BundleScrubber.scrub(bundle);
+        final Bundle bundle = intent
+                .getBundleExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
+        BundleScrubber.scrub(bundle);
 
-		if (PluginBundleManager.isActionBundleValid(bundle)) {
-			if (app.getAppFirmata() != null) {
-				app.getAppFirmata()
-						.pinMode(
-								bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
-								ArduinoFirmata.OUTPUT);
-				app.getAppFirmata()
-						.digitalWrite(
-								bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
-								bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
-			}
-		}
-	}
+        if (PluginBundleManager.isActionBundleValid(bundle)) {
+            if (app.getAppFirmata() != null) {
+                app.getAppFirmata()
+                        .pinMode(
+                                bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
+                                ArduinoFirmata.OUTPUT);
+                app.getAppFirmata()
+                        .digitalWrite(
+                                bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
+                                bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
+            }
+        }
+    }
 }

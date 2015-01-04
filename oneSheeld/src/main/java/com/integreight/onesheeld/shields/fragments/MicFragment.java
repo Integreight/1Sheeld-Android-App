@@ -16,99 +16,99 @@ import com.integreight.onesheeld.shields.controller.MicShield.MicEventHandler;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
-	RelativeLayout.LayoutParams params;
-	TextView soundLevelIndicator;
-	int stepValue;
+    RelativeLayout.LayoutParams params;
+    TextView soundLevelIndicator;
+    int stepValue;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
-				false);
-		setHasOptionsMenu(true);
-		return v;
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
+                false);
+        setHasOptionsMenu(true);
+        return v;
+    }
 
-	@Override
-	public void onStart() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-			if (!reInitController())
-				return;
-		}
-		super.onStart();
+    @Override
+    public void onStart() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        super.onStart();
 
-	}
+    }
 
-	@Override
-	public void onStop() {
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		soundLevelIndicator = (TextView) v
-				.findViewById(R.id.soundLevelIndicator);
-		params = (LayoutParams) soundLevelIndicator.getLayoutParams();
-		soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
-				new ViewTreeObserver.OnGlobalLayoutListener() {
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        soundLevelIndicator = (TextView) v
+                .findViewById(R.id.soundLevelIndicator);
+        params = (LayoutParams) soundLevelIndicator.getLayoutParams();
+        soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
 
-					@Override
-					public void onGlobalLayout() {
-						stepValue = soundLevelIndicator.getHeight() / 80;
-					}
-				});
-	}
+                    @Override
+                    public void onGlobalLayout() {
+                        stepValue = soundLevelIndicator.getHeight() / 80;
+                    }
+                });
+    }
 
-	private MicEventHandler micEventHandler = new MicEventHandler() {
+    private MicEventHandler micEventHandler = new MicEventHandler() {
 
-		@Override
-		public void getAmplitude(final Double value) {
+        @Override
+        public void getAmplitude(final Double value) {
 
-			// set data to UI
-			uiHandler.removeCallbacksAndMessages(null);
-			uiHandler.post(new Runnable() {
+            // set data to UI
+            uiHandler.removeCallbacksAndMessages(null);
+            uiHandler.post(new Runnable() {
 
-				@Override
-				public void run() {
-					if (canChangeUI()) {
-						params.bottomMargin = (int) (value * stepValue);
-						if (soundLevelIndicator != null)
-							soundLevelIndicator.requestLayout();
-						if (v != null && v.findViewById(R.id.micValue) != null)
-							((OneSheeldTextView) v.findViewById(R.id.micValue))
-									.setText(String.valueOf(value).substring(0,
-											4)
-											+ " db");
-					}
-				}
-			});
-		}
-	};
+                @Override
+                public void run() {
+                    if (canChangeUI()) {
+                        params.bottomMargin = (int) (value * stepValue);
+                        if (soundLevelIndicator != null)
+                            soundLevelIndicator.requestLayout();
+                        if (v != null && v.findViewById(R.id.micValue) != null)
+                            ((OneSheeldTextView) v.findViewById(R.id.micValue))
+                                    .setText(String.valueOf(value).substring(0,
+                                            4)
+                                            + " db");
+                    }
+                }
+            });
+        }
+    };
 
-	private void invalidateController() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-			getApplication().getRunningShields().put(getControllerTag(),
-					new MicShield(activity, getControllerTag()));
-		}
+    private void invalidateController() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            getApplication().getRunningShields().put(getControllerTag(),
+                    new MicShield(activity, getControllerTag()));
+        }
 
-	}
+    }
 
-	public void doOnServiceConnected() {
-		invalidateController();
-	}
+    public void doOnServiceConnected() {
+        invalidateController();
+    }
 
-	@Override
-	public void onResume() {
-		invalidateController();
-		((MicShield) getApplication().getRunningShields().get(
-				getControllerTag())).setMicEventHandler(micEventHandler);
-		((MicShield) getApplication().getRunningShields().get(
-				getControllerTag())).startMic(false);
-		((MicShield) getApplication().getRunningShields().get(
-				getControllerTag())).doOnResume();
+    @Override
+    public void onResume() {
+        invalidateController();
+        ((MicShield) getApplication().getRunningShields().get(
+                getControllerTag())).setMicEventHandler(micEventHandler);
+        ((MicShield) getApplication().getRunningShields().get(
+                getControllerTag())).startMic(false);
+        ((MicShield) getApplication().getRunningShields().get(
+                getControllerTag())).doOnResume();
 
-		super.onResume();
-	}
+        super.onResume();
+    }
 }

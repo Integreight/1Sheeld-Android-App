@@ -25,263 +25,263 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
-	LinearLayout lastPostTextCont;
-	TextView userNameTextView;
-	Button facebookLogin;
-	Button facebookLogout;
-	Bundle savedInstanceState;
-	ProgressBar progress;
+    LinearLayout lastPostTextCont;
+    TextView userNameTextView;
+    Button facebookLogin;
+    Button facebookLogout;
+    Bundle savedInstanceState;
+    ProgressBar progress;
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
-				container, false);
-		setHasOptionsMenu(true);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
+                container, false);
+        setHasOptionsMenu(true);
 
-		this.savedInstanceState = savedInstanceState;
-		return v;
+        this.savedInstanceState = savedInstanceState;
+        return v;
 
-	}
+    }
 
-	@Override
-	public void onStart() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-			if (!reInitController())
-				return;
-		}
-		initializeFirmata();
-		checkLogin();
-		facebookLogin.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onStart() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        initializeFirmata();
+        checkLogin();
+        facebookLogin.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				loginToFacebook();
-			}
-		});
-		facebookLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                loginToFacebook();
+            }
+        });
+        facebookLogout.setOnClickListener(new View.OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				logoutFromFacebook();
-			}
-		});
-		super.onStart();
-	}
+            @Override
+            public void onClick(View arg0) {
+                logoutFromFacebook();
+            }
+        });
+        super.onStart();
+    }
 
-	@Override
-	public void onStop() {
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		Session.getActiveSession().onActivityResult(activity, requestCode,
-				resultCode, data);
-		super.onActivityResult(requestCode, resultCode, data);
-	}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Session.getActiveSession().onActivityResult(activity, requestCode,
+                resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		Session session = Session.getActiveSession();
-		Session.saveSession(session, outState);
-	}
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Session session = Session.getActiveSession();
+        Session.saveSession(session, outState);
+    }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-		lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
-		userNameTextView = (TextView) v
-				.findViewById(R.id.facebook_shield_username_textview);
-		facebookLogin = (Button) v.findViewById(R.id.login);
-		facebookLogout = (Button) v.findViewById(R.id.logout);
-		progress = (ProgressBar) v.findViewById(R.id.progress);
-	}
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+        lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
+        userNameTextView = (TextView) v
+                .findViewById(R.id.facebook_shield_username_textview);
+        facebookLogin = (Button) v.findViewById(R.id.login);
+        facebookLogout = (Button) v.findViewById(R.id.logout);
+        progress = (ProgressBar) v.findViewById(R.id.progress);
+    }
 
-	private FacebookEventHandler facebookEventHandler = new FacebookEventHandler() {
+    private FacebookEventHandler facebookEventHandler = new FacebookEventHandler() {
 
-		@Override
-		public void onRecievePost(final String post) {
-			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				uiHandler.removeCallbacksAndMessages(null);
-				uiHandler.post(new Runnable() {
+        @Override
+        public void onRecievePost(final String post) {
+            // TODO Auto-generated method stub
+            if (canChangeUI()) {
+                uiHandler.removeCallbacksAndMessages(null);
+                uiHandler.post(new Runnable() {
 
-					@Override
-					public void run() {
-						OneSheeldTextView posty = (OneSheeldTextView) activity
-								.getLayoutInflater().inflate(
-										R.layout.facebook_post_item,
-										lastPostTextCont, false);
-						posty.setText(post);
-						lastPostTextCont.addView(posty);
-						((ScrollView) lastPostTextCont.getParent())
-								.invalidate();
-						Toast.makeText(activity, "Posted on your wall!",
-								Toast.LENGTH_SHORT).show();
-					}
-				});
-			}
-		}
+                    @Override
+                    public void run() {
+                        OneSheeldTextView posty = (OneSheeldTextView) activity
+                                .getLayoutInflater().inflate(
+                                        R.layout.facebook_post_item,
+                                        lastPostTextCont, false);
+                        posty.setText(post);
+                        lastPostTextCont.addView(posty);
+                        ((ScrollView) lastPostTextCont.getParent())
+                                .invalidate();
+                        Toast.makeText(activity, "Posted on your wall!",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        }
 
-		@Override
-		public void onFacebookLoggedIn() {
-			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				activity.runOnUiThread(new Runnable() {
+        @Override
+        public void onFacebookLoggedIn() {
+            // TODO Auto-generated method stub
+            if (canChangeUI()) {
+                activity.runOnUiThread(new Runnable() {
 
-					@Override
-					public void run() {
-						buttonToLoggedIn();
-					}
-				});
-			}
-		}
+                    @Override
+                    public void run() {
+                        buttonToLoggedIn();
+                    }
+                });
+            }
+        }
 
-		@Override
-		public void onFacebookError(final String error) {
-			// TODO Auto-generated method stub
-			if (canChangeUI()) {
-				activity.runOnUiThread(new Runnable() {
+        @Override
+        public void onFacebookError(final String error) {
+            // TODO Auto-generated method stub
+            if (canChangeUI()) {
+                activity.runOnUiThread(new Runnable() {
 
-					@Override
-					public void run() {
-						// TODO Auto-generated method stub
-						Toast.makeText(activity, error, Toast.LENGTH_SHORT)
-								.show();
-						// buttonToLoggedIn();
-						// getAppActivity()
-						// .setSupportProgressBarIndeterminateVisibility(
-						// false);
-					}
-				});
-			}
-		}
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                        Toast.makeText(activity, error, Toast.LENGTH_SHORT)
+                                .show();
+                        // buttonToLoggedIn();
+                        // getAppActivity()
+                        // .setSupportProgressBarIndeterminateVisibility(
+                        // false);
+                    }
+                });
+            }
+        }
 
-		@Override
-		public void startProgress() {
-			activity.runOnUiThread(new Runnable() {
+        @Override
+        public void startProgress() {
+            activity.runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					if (progress != null && canChangeUI()) {
-						progress.setVisibility(View.VISIBLE);
-					}
-				}
-			});
-		}
+                @Override
+                public void run() {
+                    if (progress != null && canChangeUI()) {
+                        progress.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+        }
 
-		@Override
-		public void stopProgress() {
-			activity.runOnUiThread(new Runnable() {
+        @Override
+        public void stopProgress() {
+            activity.runOnUiThread(new Runnable() {
 
-				@Override
-				public void run() {
-					if (progress != null && canChangeUI()) {
-						progress.setVisibility(View.GONE);
-					}
-				}
-			});
-		}
+                @Override
+                public void run() {
+                    if (progress != null && canChangeUI()) {
+                        progress.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
 
-	};
+    };
 
-	private void initializeFirmata() {
-		if ((getApplication().getRunningShields().get(getControllerTag())) == null)
-			getApplication().getRunningShields().put(
-					getControllerTag(),
-					new FacebookShield(activity, getControllerTag(), this,
-							savedInstanceState));
-		((FacebookShield) getApplication().getRunningShields().get(
-				getControllerTag())).setShieldFragment(this);
-		((FacebookShield) getApplication().getRunningShields().get(
-				getControllerTag()))
-				.setFacebookEventHandler(facebookEventHandler);
-		checkLogin();
-	}
+    private void initializeFirmata() {
+        if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+            getApplication().getRunningShields().put(
+                    getControllerTag(),
+                    new FacebookShield(activity, getControllerTag(), this,
+                            savedInstanceState));
+        ((FacebookShield) getApplication().getRunningShields().get(
+                getControllerTag())).setShieldFragment(this);
+        ((FacebookShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setFacebookEventHandler(facebookEventHandler);
+        checkLogin();
+    }
 
-	private void checkLogin() {
-		if ((getApplication().getRunningShields().get(getControllerTag())) != null
-				&& ((FacebookShield) getApplication().getRunningShields().get(
-						getControllerTag())).isFacebookLoggedInAlready()) {
-			buttonToLoggedIn();
-		} else {
-			buttonToLoggedOut();
-		}
-	}
+    private void checkLogin() {
+        if ((getApplication().getRunningShields().get(getControllerTag())) != null
+                && ((FacebookShield) getApplication().getRunningShields().get(
+                getControllerTag())).isFacebookLoggedInAlready()) {
+            buttonToLoggedIn();
+        } else {
+            buttonToLoggedOut();
+        }
+    }
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// TODO Auto-generated method stub
-		super.onCreateOptionsMenu(menu, inflater);
-	}
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Auto-generated method stub
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // TODO Auto-generated method stub
 
-		switch (item.getItemId()) {
-		case R.id.logout_from_facebook_menuitem:
-			logoutFromFacebook();
-			return true;
-		case R.id.login_to_facebook_menuitem:
-			loginToFacebook();
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+        switch (item.getItemId()) {
+            case R.id.logout_from_facebook_menuitem:
+                logoutFromFacebook();
+                return true;
+            case R.id.login_to_facebook_menuitem:
+                loginToFacebook();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-	private void logoutFromFacebook() {
-		((FacebookShield) getApplication().getRunningShields().get(
-				getControllerTag())).logoutFromFacebook();
-		buttonToLoggedOut();
-	}
+    private void logoutFromFacebook() {
+        ((FacebookShield) getApplication().getRunningShields().get(
+                getControllerTag())).logoutFromFacebook();
+        buttonToLoggedOut();
+    }
 
-	private void loginToFacebook() {
-		if (ConnectionDetector.isConnectingToInternet(activity))
+    private void loginToFacebook() {
+        if (ConnectionDetector.isConnectingToInternet(activity))
 
-			((FacebookShield) getApplication().getRunningShields().get(
-					getControllerTag())).loginToFacebook();
-		else
-			Toast.makeText(getApplication().getApplicationContext(),
-					"Please check your Internet connection and try again.",
-					Toast.LENGTH_SHORT).show();
-		// getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
-	}
+            ((FacebookShield) getApplication().getRunningShields().get(
+                    getControllerTag())).loginToFacebook();
+        else
+            Toast.makeText(getApplication().getApplicationContext(),
+                    "Please check your Internet connection and try again.",
+                    Toast.LENGTH_SHORT).show();
+        // getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
+    }
 
-	private void buttonToLoggedOut() {
-		if (facebookLogout != null)
-			facebookLogout.setVisibility(View.INVISIBLE);
-		if (facebookLogin != null)
-			facebookLogin.setVisibility(View.VISIBLE);
-		if (userNameTextView != null)
-			userNameTextView.setVisibility(View.INVISIBLE);
-		if (lastPostTextCont != null) {
-			lastPostTextCont.removeAllViews();
-			lastPostTextCont.setVisibility(View.INVISIBLE);
-		}
-	}
+    private void buttonToLoggedOut() {
+        if (facebookLogout != null)
+            facebookLogout.setVisibility(View.INVISIBLE);
+        if (facebookLogin != null)
+            facebookLogin.setVisibility(View.VISIBLE);
+        if (userNameTextView != null)
+            userNameTextView.setVisibility(View.INVISIBLE);
+        if (lastPostTextCont != null) {
+            lastPostTextCont.removeAllViews();
+            lastPostTextCont.setVisibility(View.INVISIBLE);
+        }
+    }
 
-	private void buttonToLoggedIn() {
-		if (facebookLogin != null)
-			facebookLogin.setVisibility(View.INVISIBLE);
-		if (facebookLogout != null)
-			facebookLogout.setVisibility(View.VISIBLE);
-		if (userNameTextView != null)
-			userNameTextView.setVisibility(View.VISIBLE);
-		if (lastPostTextCont != null) {
-			lastPostTextCont.removeAllViews();
-			lastPostTextCont.setVisibility(View.VISIBLE);
-		}
-		userNameTextView.setText("Logged in as: "
-				+ ((FacebookShield) getApplication().getRunningShields().get(
-						getControllerTag())).getUsername());
-	}
+    private void buttonToLoggedIn() {
+        if (facebookLogin != null)
+            facebookLogin.setVisibility(View.INVISIBLE);
+        if (facebookLogout != null)
+            facebookLogout.setVisibility(View.VISIBLE);
+        if (userNameTextView != null)
+            userNameTextView.setVisibility(View.VISIBLE);
+        if (lastPostTextCont != null) {
+            lastPostTextCont.removeAllViews();
+            lastPostTextCont.setVisibility(View.VISIBLE);
+        }
+        userNameTextView.setText("Logged in as: "
+                + ((FacebookShield) getApplication().getRunningShields().get(
+                getControllerTag())).getUsername());
+    }
 
-	@Override
-	public void doOnServiceConnected() {
-	}
+    @Override
+    public void doOnServiceConnected() {
+    }
 
 }

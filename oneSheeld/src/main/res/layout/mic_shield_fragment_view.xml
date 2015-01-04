@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,7 +12,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" >
+        android:layout_centerInParent="true">
 
         <RelativeLayout
             android:layout_width="wrap_content"
@@ -22,13 +22,13 @@
             android:layout_alignRight="@id/mic_shield_indicator"
             android:layout_alignTop="@id/mic_shield_indicator"
             android:layout_centerHorizontal="true"
-            android:layout_margin="1dp" >
+            android:layout_margin="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:weightSum="1" >
+                android:weightSum="1">
 
                 <TextView
                     android:layout_width="match_parent"

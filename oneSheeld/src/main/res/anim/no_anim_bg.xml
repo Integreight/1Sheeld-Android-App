@@ -4,7 +4,7 @@
     android:fillBefore="false"
     android:fillEnabled="true"
     android:interpolator="@android:anim/linear_interpolator"
-    android:shareInterpolator="true" >
+    android:shareInterpolator="true">
 
     <alpha
         android:duration="0"

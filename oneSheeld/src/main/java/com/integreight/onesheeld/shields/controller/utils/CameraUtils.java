@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -11,53 +9,61 @@ import android.provider.MediaStore;
 
 import com.integreight.onesheeld.utils.Log;
 
+import java.util.List;
+
 public class CameraUtils {
-	public static Camera.Size getBiggestPictureSize(
+    public static Camera.Size getBiggestPictureSize(
             Camera.Parameters parameters) {
-		Camera.Size result = null;
+        Camera.Size result = null;
 
-		for (Camera.Size size : parameters.getSupportedPictureSizes()) {
-			if (result == null) {
-				result = size;
-			} else {
-				int resultArea = result.width * result.height;
-				int newArea = size.width * size.height;
+        for (Camera.Size size : parameters.getSupportedPictureSizes()) {
+            if (result == null) {
+                result = size;
+            } else {
+                int resultArea = result.width * result.height;
+                int newArea = size.width * size.height;
 
-				if (newArea > resultArea) {
-					result = size;
-				}
-			}
-		}
+                if (newArea > resultArea) {
+                    result = size;
+                }
+            }
+        }
 
-		return (result);
-	}
+        return (result);
+    }
 
-	/** Check if this device has a camera */
-	public static boolean checkCameraHardware(Context context) {
-		if (context.getPackageManager().hasSystemFeature(
-				PackageManager.FEATURE_CAMERA)) {
-			// this device has a camera
-			return true;
-		} else {
-			// no camera on this device
-			return false;
-		}
-	}
+    /**
+     * Check if this device has a camera
+     */
+    public static boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
 
-	/** Check if this device has front camera */
-	public static boolean checkFrontCamera(Context context) {
-		if (context.getPackageManager().hasSystemFeature(
-				PackageManager.FEATURE_CAMERA_FRONT)) {
-			// this device has front camera
-			return true;
-		} else {
-			// no front camera on this device
-			return false;
-		}
-	}
-	
-	/** Check if this device has flash */
-	public static boolean hasFlash(Camera mCamera) {
+    /**
+     * Check if this device has front camera
+     */
+    public static boolean checkFrontCamera(Context context) {
+        if (context.getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA_FRONT)) {
+            // this device has front camera
+            return true;
+        } else {
+            // no front camera on this device
+            return false;
+        }
+    }
+
+    /**
+     * Check if this device has flash
+     */
+    public static boolean hasFlash(Camera mCamera) {
         if (mCamera == null) {
             return false;
         }
@@ -81,8 +87,8 @@ public class CameraUtils {
 
     public static String getLastCapturedImagePathFromCameraFolder(
             Activity activity) {
-        final String[] imageColumns = { MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATA };
+        final String[] imageColumns = {MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DATA};
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         Cursor imageCursor = activity.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns,
@@ -106,13 +112,13 @@ public class CameraUtils {
 
     public static String getLastCapturedImagePathFromOneSheeldFolder(
             Activity activity) {
-        final String[] imageColumns = { MediaStore.Images.Media._ID,
-                MediaStore.Images.Media.DATA };
+        final String[] imageColumns = {MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DATA};
         final String imageOrderBy = MediaStore.Images.Media._ID + " DESC";
         Cursor imageCursor = activity.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns,
                 MediaStore.Images.Media.DATA + " like ? ",
-                new String[] { "%OneSheeld%" }, imageOrderBy);
+                new String[]{"%OneSheeld%"}, imageOrderBy);
         imageCursor.moveToFirst();
         String fullPath = null;
         if (imageCursor.getCount() == 0)

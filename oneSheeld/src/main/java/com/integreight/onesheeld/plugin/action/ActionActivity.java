@@ -28,98 +28,98 @@ import com.integreight.onesheeld.plugin.PluginBundleManager;
 import com.integreight.onesheeld.utils.customviews.PluginConnectingPinsView;
 
 public final class ActionActivity extends AbstractPluginActivity {
-	private String[] output = { "High", "Low" };
-	Spinner outputSpinner;
-	int selectedPin = -1;
+    private String[] output = {"High", "Low"};
+    Spinner outputSpinner;
+    int selectedPin = -1;
 
-	@Override
-	protected void onResume() {
-		((PluginConnectingPinsView) getSupportFragmentManager()
-				.findFragmentByTag("Pins")).reset(
-				new PluginConnectingPinsView.OnPinSelectionListener() {
+    @Override
+    protected void onResume() {
+        ((PluginConnectingPinsView) getSupportFragmentManager()
+                .findFragmentByTag("Pins")).reset(
+                new PluginConnectingPinsView.OnPinSelectionListener() {
 
-					@Override
-					public void onUnSelect(ArduinoPin pin) {
-						selectedPin = -1;
-					}
+                    @Override
+                    public void onUnSelect(ArduinoPin pin) {
+                        selectedPin = -1;
+                    }
 
-					@Override
-					public void onSelect(ArduinoPin pin) {
-						if (pin != null)
-							selectedPin = pin.microHardwarePin;
-						else
-							selectedPin = -1;
-					}
-				}, selectedPin);
-		((OneSheeldApplication) this.getApplication()).getTracker().setScreenName("TASKER_SHIELD");
-		((OneSheeldApplication) this.getApplication()).getTracker().send(new HitBuilders.ScreenViewBuilder().build());
-		super.onResume();
-	}
+                    @Override
+                    public void onSelect(ArduinoPin pin) {
+                        if (pin != null)
+                            selectedPin = pin.microHardwarePin;
+                        else
+                            selectedPin = -1;
+                    }
+                }, selectedPin);
+        ((OneSheeldApplication) this.getApplication()).getTracker().setScreenName("TASKER_SHIELD");
+        ((OneSheeldApplication) this.getApplication()).getTracker().send(new HitBuilders.ScreenViewBuilder().build());
+        super.onResume();
+    }
 
-	@Override
-	protected void onCreate(final Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		BundleScrubber.scrub(getIntent());
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        BundleScrubber.scrub(getIntent());
 
-		final Bundle localeBundle = getIntent().getBundleExtra(
-				com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
-		BundleScrubber.scrub(localeBundle);
-		setContentView(R.layout.plugin_action_activity);
-		outputSpinner = (Spinner) findViewById(R.id.output_spinner);
-		ArrayAdapter<String> outputArrayAdapter = new ArrayAdapter<String>(
-				this, android.R.layout.simple_spinner_item, output);
-		outputSpinner.setAdapter(outputArrayAdapter);
+        final Bundle localeBundle = getIntent().getBundleExtra(
+                com.twofortyfouram.locale.Intent.EXTRA_BUNDLE);
+        BundleScrubber.scrub(localeBundle);
+        setContentView(R.layout.plugin_action_activity);
+        outputSpinner = (Spinner) findViewById(R.id.output_spinner);
+        ArrayAdapter<String> outputArrayAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_spinner_item, output);
+        outputSpinner.setAdapter(outputArrayAdapter);
 
-		if (null == savedInstanceState) {
-			if (PluginBundleManager.isActionBundleValid(localeBundle)) {
-				final boolean output = localeBundle
-						.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT);
-				selectedPin = localeBundle
-						.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
-				if (output)
-					outputSpinner.setSelection(0);
-				else
-					outputSpinner.setSelection(1);
-			}
-		}
-		PluginConnectingPinsView pluginPinsView = PluginConnectingPinsView
-				.getInstance();
-		getSupportFragmentManager().beginTransaction()
-				.replace(R.id.pluginPinsFrame, pluginPinsView, "Pins").commit();
-	}
+        if (null == savedInstanceState) {
+            if (PluginBundleManager.isActionBundleValid(localeBundle)) {
+                final boolean output = localeBundle
+                        .getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT);
+                selectedPin = localeBundle
+                        .getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER);
+                if (output)
+                    outputSpinner.setSelection(0);
+                else
+                    outputSpinner.setSelection(1);
+            }
+        }
+        PluginConnectingPinsView pluginPinsView = PluginConnectingPinsView
+                .getInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.pluginPinsFrame, pluginPinsView, "Pins").commit();
+    }
 
-	@Override
-	public void finish() {
-		if (!isCanceled()) {
-			final boolean output = (outputSpinner).getSelectedItem().toString()
-					.toLowerCase().equals("high") ? true : false;
-			final Intent resultIntent = new Intent();
-			final Bundle resultBundle = PluginBundleManager
-					.generateActionBundle(getApplicationContext(), selectedPin,
-							output);
-			resultIntent
-					.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE,
-							resultBundle);
-			final String blurb = selectedPin >= 0 ? (generateBlurb(
-					getApplicationContext(), "Pin " + selectedPin + " set to "
-							+ (output ? "High" : "Low"))) : generateBlurb(
-					getApplicationContext(), "No Pins Selected");
-			resultIntent.putExtra(
-					com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, blurb);
+    @Override
+    public void finish() {
+        if (!isCanceled()) {
+            final boolean output = (outputSpinner).getSelectedItem().toString()
+                    .toLowerCase().equals("high") ? true : false;
+            final Intent resultIntent = new Intent();
+            final Bundle resultBundle = PluginBundleManager
+                    .generateActionBundle(getApplicationContext(), selectedPin,
+                            output);
+            resultIntent
+                    .putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE,
+                            resultBundle);
+            final String blurb = selectedPin >= 0 ? (generateBlurb(
+                    getApplicationContext(), "Pin " + selectedPin + " set to "
+                            + (output ? "High" : "Low"))) : generateBlurb(
+                    getApplicationContext(), "No Pins Selected");
+            resultIntent.putExtra(
+                    com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, blurb);
 
-			setResult(RESULT_OK, resultIntent);
-		}
+            setResult(RESULT_OK, resultIntent);
+        }
 
-		super.finish();
-	}
+        super.finish();
+    }
 
-	static String generateBlurb(final Context context,
-			final String message) {
-		final int maxBlurbLength = context.getResources().getInteger(
-				R.integer.twofortyfouram_locale_maximum_blurb_length);
-		if (message.length() > maxBlurbLength) {
-			return message.substring(0, maxBlurbLength);
-		}
-		return message;
-	}
+    static String generateBlurb(final Context context,
+                                final String message) {
+        final int maxBlurbLength = context.getResources().getInteger(
+                R.integer.twofortyfouram_locale_maximum_blurb_length);
+        if (message.length() > maxBlurbLength) {
+            return message.substring(0, maxBlurbLength);
+        }
+        return message;
+    }
 }

@@ -19,93 +19,93 @@ import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener
 import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 
 public class ToggleButtonFragment extends
-		ShieldFragmentParent<ToggleButtonFragment> {
-	OneSheeldToggleButton toggleButtonButton;
-	Button connectButton;
+        ShieldFragmentParent<ToggleButtonFragment> {
+    OneSheeldToggleButton toggleButtonButton;
+    Button connectButton;
 
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		v = inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
-				container, false);
-		toggleButtonButton = (OneSheeldToggleButton) v
-				.findViewById(R.id.toggle_button_shield_button_toggle_button);
-		if ((ToggleButtonShield) getApplication().getRunningShields().get(
-				getControllerTag()) == null) {
-			getApplication().getRunningShields().put(getControllerTag(),
-					new ToggleButtonShield(activity, getControllerTag()));
-		}
-		toggleButtonButton
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        v = inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
+                container, false);
+        toggleButtonButton = (OneSheeldToggleButton) v
+                .findViewById(R.id.toggle_button_shield_button_toggle_button);
+        if ((ToggleButtonShield) getApplication().getRunningShields().get(
+                getControllerTag()) == null) {
+            getApplication().getRunningShields().put(getControllerTag(),
+                    new ToggleButtonShield(activity, getControllerTag()));
+        }
+        toggleButtonButton
+                .setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-							boolean isChecked) {
-						// TODO Auto-generated method stub
-						((ToggleButtonShield) getApplication()
-								.getRunningShields().get(getControllerTag()))
-								.setButton(isChecked);
+                    @Override
+                    public void onCheckedChanged(CompoundButton buttonView,
+                                                 boolean isChecked) {
+                        // TODO Auto-generated method stub
+                        ((ToggleButtonShield) getApplication()
+                                .getRunningShields().get(getControllerTag()))
+                                .setButton(isChecked);
 
-					}
-				});
-		if ((ToggleButtonShield) getApplication().getRunningShields().get(
-				getControllerTag()) != null)
-			toggleButtonButton.setEnabled(true);
+                    }
+                });
+        if ((ToggleButtonShield) getApplication().getRunningShields().get(
+                getControllerTag()) != null)
+            toggleButtonButton.setEnabled(true);
 
-		return v;
+        return v;
 
-	}
+    }
 
-	@Override
-	public void onStart() {
-		if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-			if (!reInitController())
-				return;
-		}
-		ConnectingPinsView.getInstance().reset(
-				getApplication().getRunningShields().get(getControllerTag()),
-				new OnPinSelectionListener() {
+    @Override
+    public void onStart() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        ConnectingPinsView.getInstance().reset(
+                getApplication().getRunningShields().get(getControllerTag()),
+                new OnPinSelectionListener() {
 
-					@Override
-					public void onSelect(ArduinoPin pin) {
-						if (pin != null) {
-							((ToggleButtonShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag()))
-									.setConnected(new ArduinoConnectedPin(
-											pin.microHardwarePin,
-											ArduinoFirmata.OUTPUT));
-							((ToggleButtonShield) getApplication()
-									.getRunningShields()
-									.get(getControllerTag()))
-									.setButton(toggleButtonButton.isChecked());
-							toggleButtonButton.setEnabled(true);
-						}
+                    @Override
+                    public void onSelect(ArduinoPin pin) {
+                        if (pin != null) {
+                            ((ToggleButtonShield) getApplication()
+                                    .getRunningShields()
+                                    .get(getControllerTag()))
+                                    .setConnected(new ArduinoConnectedPin(
+                                            pin.microHardwarePin,
+                                            ArduinoFirmata.OUTPUT));
+                            ((ToggleButtonShield) getApplication()
+                                    .getRunningShields()
+                                    .get(getControllerTag()))
+                                    .setButton(toggleButtonButton.isChecked());
+                            toggleButtonButton.setEnabled(true);
+                        }
 
-					}
+                    }
 
-					@Override
-					public void onUnSelect(ArduinoPin pin) {
-					}
-				});
-		super.onStart();
+                    @Override
+                    public void onUnSelect(ArduinoPin pin) {
+                    }
+                });
+        super.onStart();
 
-	}
+    }
 
-	@Override
-	public void onStop() {
-		super.onStop();
-	}
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
 
-	}
+    }
 
-	@Override
-	public void doOnServiceConnected() {
-	}
+    @Override
+    public void doOnServiceConnected() {
+    }
 
 }

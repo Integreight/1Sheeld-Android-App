@@ -4,7 +4,7 @@ package com.integreight.onesheeld.shields.controller.utils;
  * Encapsulation of a Foursquare Error: a Foursquare request that could not be
  * fulfilled.
  *
- *@author Mukesh Yadav
+ * @author Mukesh Yadav
  */
 public class FoursquareError extends Throwable {
 

@@ -9,23 +9,23 @@ import android.os.PowerManager;
  */
 public class WakeLocker {
 
-	private static PowerManager.WakeLock wakeLock;
+    private static PowerManager.WakeLock wakeLock;
 
-	public static void acquire(Context context) {
-		if (wakeLock != null)
-			wakeLock.release();
+    public static void acquire(Context context) {
+        if (wakeLock != null)
+            wakeLock.release();
 
-		PowerManager pm = (PowerManager) context
-				.getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
-				| PowerManager.ON_AFTER_RELEASE, "WakeLock");
-		wakeLock.acquire();
-	}
+        PowerManager pm = (PowerManager) context
+                .getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+                | PowerManager.ON_AFTER_RELEASE, "WakeLock");
+        wakeLock.acquire();
+    }
 
-	public static void release() {
-		if (wakeLock != null)
-			wakeLock.release();
-		wakeLock = null;
-	}
+    public static void release() {
+        if (wakeLock != null)
+            wakeLock.release();
+        wakeLock = null;
+    }
 
 }

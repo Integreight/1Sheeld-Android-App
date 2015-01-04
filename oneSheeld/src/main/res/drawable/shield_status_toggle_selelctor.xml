@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/shield_screen_connected_button" android:state_checked="true"/>
-    <item android:drawable="@drawable/shield_screen_unconnected_button" android:state_checked="false"/>
+    <item android:drawable="@drawable/shield_screen_connected_button" android:state_checked="true" />
+    <item android:drawable="@drawable/shield_screen_unconnected_button" android:state_checked="false" />
 
 </selector>

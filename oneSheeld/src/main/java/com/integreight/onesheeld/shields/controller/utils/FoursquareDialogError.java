@@ -15,7 +15,9 @@ public class FoursquareDialogError extends Throwable {
      */
     private int mErrorCode;
 
-    /** The URL that the dialog was trying to load */
+    /**
+     * The URL that the dialog was trying to load
+     */
     private String mFailingUrl;
 
     public FoursquareDialogError(String message, int errorCode, String failingUrl) {

@@ -1,7 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="fill_parent"
@@ -13,7 +13,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/constant_text"
@@ -74,7 +74,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content">
 
         <ProgressBar
             android:id="@+id/progress"
@@ -83,8 +83,7 @@
             android:layout_height="110dp"
             android:layout_centerInParent="true"
             android:indeterminateDrawable="@drawable/my_progress_indeterminate"
-            android:visibility="invisible" >
-        </ProgressBar>
+            android:visibility="invisible"></ProgressBar>
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/gmail_signin_dialog_auth_failed_tx"
@@ -101,7 +100,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
         android:orientation="horizontal"
-        android:weightSum="2" >
+        android:weightSum="2">
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/gmail_cancel_dialog"

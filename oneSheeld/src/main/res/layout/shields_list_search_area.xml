@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="100dp"
     android:background="@color/arduino_conn_gray_bg"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/fullControl"
         android:layout_width="match_parent"
         android:layout_height="35dp"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/selectAll"
@@ -40,7 +40,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp" >
+        android:layout_height="65dp">
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldEditText
             android:id="@+id/searchArea"
