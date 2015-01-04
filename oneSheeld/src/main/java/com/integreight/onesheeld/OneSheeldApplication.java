@@ -141,12 +141,12 @@ public class OneSheeldApplication extends Application {
 	public void endConnectionTimerAndReport() {
 		if (connectionTime == 0)
 			return;
-		Map<String, String> hit = new HitBuilders.TimingBuilder()
-				.setCategory("Connection Timing")
-				.setValue(System.currentTimeMillis() - connectionTime)
-				.setVariable("Connection").build();
-		// hit.put("&sc", "end");
-		getTracker().send(hit);
+        Map<String, String> hit = new HitBuilders.TimingBuilder()
+                .setCategory("Connection Timing")
+                .setValue(System.currentTimeMillis() - connectionTime)
+                .setVariable("Connection").build();
+        // hit.put("&sc", "end");
+        getTracker().send(hit);
 		connectionTime = 0;
 	}
 
