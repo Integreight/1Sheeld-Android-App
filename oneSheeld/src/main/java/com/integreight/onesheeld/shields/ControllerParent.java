@@ -232,7 +232,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         @Override
         public void onNewShieldFrameReceived(final ShieldFrame frame) {
             if (isALive && frame != null && matchedShieldPins.size() == 0)
-                if(frame.getShieldId()==AppShields.getInstance().getShieldByName(tag).id)
+                //if(frame.getShieldId()==AppShields.getInstance().getShieldByName(tag).id)
                     if(frame.getFunctionId()==IS_SHIELD_SELECTED) notifyHardwareOfShieldSelection();
                     else
                         actionHandler.post(new Runnable() {
