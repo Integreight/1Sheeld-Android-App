@@ -56,8 +56,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
     private static final byte TRACK_KEYWORD_METHOD_ID = (byte) 0x04;
     private static final byte STOP_TRACKING_KEYWORD_METHOD_ID = (byte) 0x05;
     private static final byte GET_TWEET = (byte) 0x01;
-    private static final byte IS_TWITTER_SELECTED = (byte) 0x02;
-
+    
     private boolean thereIsAConnectionRequest;
     private boolean isTwitterStreamConnecting;
     TwitterStream twitterStream;
@@ -95,10 +94,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         super();
     }
 
-    public void notifyHardwareOfTwitterSelection() {
-        activity.getThisApplication().getAppFirmata()
-                .sendShieldFrame(new ShieldFrame(UIShield.TWITTER_SHIELD.getId(), IS_TWITTER_SELECTED));
-    }
+
 
     @Override
     public ControllerParent<TwitterShield> setTag(String tag) {
@@ -109,7 +105,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         thereIsAConnectionRequest = false;
         isTwitterStreamConnecting = false;
 //		if(isTwitterLoggedInAlready())initTwitterListening();
-        notifyHardwareOfTwitterSelection();
         return super.setTag(tag);
     }
 
@@ -121,7 +116,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         trackedKeywords = new ArrayList<String>();
         thereIsAConnectionRequest = false;
         isTwitterStreamConnecting = false;
-        notifyHardwareOfTwitterSelection();
     }
 
     public void setTwitterEventHandler(TwitterEventHandler eventHandler) {
