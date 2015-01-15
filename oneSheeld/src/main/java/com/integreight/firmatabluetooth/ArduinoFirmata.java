@@ -57,6 +57,8 @@ public class ArduinoFirmata {
     private final byte BT_CONNECTED = (byte) 0x01;
     private final byte QUERY_LIBRARY_VERSION = (byte) 0x03;
     private final byte LIBRARY_VERSION_RESPONSE = (byte) 0x01;
+    
+    private final Object sysexLock=new Object();
 
     private final byte UART_BEGIN = (byte) 0x01;
     private final byte UART_END = (byte) 0x00;
@@ -72,7 +74,9 @@ public class ArduinoFirmata {
     }
 
     public void resetMicro() {
-        sysex(RESET_MICRO, new byte[]{});
+        synchronized (sysexLock) {
+            sysex(RESET_MICRO, new byte[]{});
+        }
     }
 
     public boolean isVersionQueried() {
@@ -217,7 +221,9 @@ public class ArduinoFirmata {
     }
 
     public void reportInputPinsValues() {
-        sysex(REPORT_INPUT_PINS, new byte[]{});
+        synchronized (sysexLock) {
+            sysex(REPORT_INPUT_PINS, new byte[]{});
+        }
     }
 
     public void setAllPinsAsInput() {
@@ -227,7 +233,9 @@ public class ArduinoFirmata {
     }
 
     public void respondToIsAlive() {
-        sysex(IS_ALIVE, new byte[]{});
+        synchronized (sysexLock) {
+            sysex(IS_ALIVE, new byte[]{});
+        }
     }
 
     public void notifyHardwareOfConnection() {
@@ -310,7 +318,9 @@ public class ArduinoFirmata {
     }
 
     public void initUart(BaudRate baud) {
-        sysex(UART_COMMAND, new byte[]{UART_BEGIN, baud.getValue()});
+        synchronized (sysexLock) {
+            sysex(UART_COMMAND, new byte[]{UART_BEGIN, baud.getValue()});
+        }
         isUartInit = true;
     }
 
@@ -319,9 +329,10 @@ public class ArduinoFirmata {
     }
 
     public void disableUart() {
-        sysex(UART_COMMAND, new byte[]{UART_END});
+        synchronized (sysexLock) {
+            sysex(UART_COMMAND, new byte[]{UART_END});
+        }
         isUartInit = false;
-
     }
 
     public boolean digitalRead(int pin) {
@@ -413,17 +424,19 @@ public class ArduinoFirmata {
                             }
                         }
 
-                        if (sysexCommand == BLUETOOTH_RESET) {
+                        else if (sysexCommand == BLUETOOTH_RESET) {
                             if (!isBootloader) {
-                                sysex(BLUETOOTH_RESET, new byte[]{0x01});
+                                synchronized (sysexLock) {
+                                    sysex(BLUETOOTH_RESET, new byte[]{0x01});
+                                }
                                 close();
                             }
                         }
 
-                        if (sysexCommand == IS_ALIVE) {
+                        else if (sysexCommand == IS_ALIVE) {
                             respondToIsAlive();
                         }
-
+                        else
                         for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
                             dataHandler.onSysex(sysexCommand, sysexData);
                         }
@@ -504,7 +517,9 @@ public class ArduinoFirmata {
                     sysexBytesCount = 0;
                     return;
                 } else
-                    sysex(BLUETOOTH_RESET, new byte[]{0x00});
+                    synchronized (sysexLock) {
+                        sysex(BLUETOOTH_RESET, new byte[]{0x00});
+                    }
                 sysexBytesCount = 0;
                 break;
 
@@ -535,17 +550,19 @@ public class ArduinoFirmata {
         if (!isUartInit || isBootloader)
             return;
         byte[] frameBytes = frame.getAllFrameAsBytes();
-        printFrameToLog(frameBytes, "Sent");
         int maxShieldFrameBytes = (MAX_OUTPUT_BYTES - 3) / 2;// The 3 is for
         // StartSysex,
         // EndSysex and
         // Uart_data
-        for (int i = 0; i < frameBytes.length; i += maxShieldFrameBytes) {
-            byte[] subArray = (i + maxShieldFrameBytes > frameBytes.length) ? ArrayUtils
-                    .copyOfRange(frameBytes, i, frameBytes.length) : ArrayUtils
-                    .copyOfRange(frameBytes, i, i + maxShieldFrameBytes);
-            sysex(UART_DATA, getByteArrayAs2SevenBitsBytesArray(subArray));
+        synchronized (sysexLock) {
+            for (int i = 0; i < frameBytes.length; i += maxShieldFrameBytes) {
+                byte[] subArray = (i + maxShieldFrameBytes > frameBytes.length) ? ArrayUtils
+                        .copyOfRange(frameBytes, i, frameBytes.length) : ArrayUtils
+                        .copyOfRange(frameBytes, i, i + maxShieldFrameBytes);
+                sysex(UART_DATA, subArray);
+            }
         }
+        printFrameToLog(frameBytes, "Sent");
     }
 
     public void prepareAppForSendingFirmware() {
@@ -571,11 +588,15 @@ public class ArduinoFirmata {
     }
 
     private void muteFirmata() {
-        sysex(MUTE_FIRMATA, new byte[]{1});
+        synchronized (sysexLock) {
+            sysex(MUTE_FIRMATA, new byte[]{1});
+        }
     }
 
     private void unMuteFirmata() {
-        sysex(MUTE_FIRMATA, new byte[]{0});
+        synchronized (sysexLock) {
+            sysex(MUTE_FIRMATA, new byte[]{0});
+        }
     }
 
     private void queryFirmwareVersion() {
