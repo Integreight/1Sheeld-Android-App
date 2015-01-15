@@ -712,8 +712,8 @@ public class ArduinoFirmata {
                 initUart();
                 onConnect();
                 queryFirmwareVersion();
-                notifyHardwareOfConnection();
                 respondToIsAlive();
+                notifyHardwareOfConnection();
                 queryLibraryVersion();
                 // String mConnectedDeviceName = device.getName();
                 // Toast.makeText(context, "Connected to " +
