@@ -304,8 +304,8 @@ public class ArduinoFirmata {
 
     private byte[] getByteAs2SevenBitsBytes(byte data) {
         byte[] temp = new byte[2];
-        temp[0] = (byte) (data & 127);
-        temp[1] = (byte) (data >> 7 & 127);
+        temp[0] = (byte) ((data&0xFF) & 127);
+        temp[1] = (byte) (((data&0xFF) >> 7) & 127);
         return temp;
     }
 
