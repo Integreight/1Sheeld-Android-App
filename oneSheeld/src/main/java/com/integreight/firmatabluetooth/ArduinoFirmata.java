@@ -582,8 +582,8 @@ public class ArduinoFirmata {
         reportInputPinsValues();
         initUart();
         queryFirmwareVersion();
-        notifyHardwareOfConnection();
         respondToIsAlive();
+        notifyHardwareOfConnection();
         queryLibraryVersion();
 
     }
