@@ -14,11 +14,13 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.utils.Log;
 
+import java.util.Hashtable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CameraAidlService extends Service {
     public Queue<CameraShield.CameraCapture> cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+    private Hashtable<Long, CameraShield.CameraCapture> tempCapturesTable = new Hashtable<>();
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -26,6 +28,7 @@ public class CameraAidlService extends Service {
                 getApplication().getApplicationContext()).registerReceiver(
                 mMessageReceiver, new IntentFilter("custom-event-name"));
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+        tempCapturesTable = new Hashtable<>();
         return binder;
     }
 
@@ -46,15 +49,18 @@ public class CameraAidlService extends Service {
             Log.d("receiver",
                     "cameraCaptureQueue size = " + cameraCaptureQueue.size());
 
-            while (cameraCaptureQueue.peek() != null
-                    && cameraCaptureQueue.peek().isTaken())
+            while (cameraCaptureQueue.peek() != null && cameraCaptureQueue.peek().isTaken()) {
+                tempCapturesTable.remove(cameraCaptureQueue.peek().getTag());
                 cameraCaptureQueue.poll();
-            if (!cameraCaptureQueue.isEmpty()) {
-                if (cameraCaptureQueue.peek().isFront())
-                    sendFrontCaptureImageIntent(cameraCaptureQueue.poll());
-                else
-                    sendCaptureImageIntent(cameraCaptureQueue.poll());
             }
+
+            if (!CameraHeadService.isRunning)
+                if (!cameraCaptureQueue.isEmpty()) {
+                    if (cameraCaptureQueue.peek().isFront())
+                        sendFrontCaptureImageIntent(cameraCaptureQueue.poll());
+                    else
+                        sendCaptureImageIntent(cameraCaptureQueue.poll());
+                }
             ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
         }
 
@@ -69,6 +75,7 @@ public class CameraAidlService extends Service {
                 intent.putExtra("Quality_Mode", camCapture.getQuality());
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 camCapture.setTaken();
+                tempCapturesTable.put(camCapture.getTag(), camCapture);
                 getApplication().getApplicationContext().startService(intent);
                 Log.d("ImageTakin", "OnTakeBack()");
             }
@@ -84,6 +91,7 @@ public class CameraAidlService extends Service {
                 front_translucent.putExtra("Quality_Mode",
                         camCapture.getQuality());
                 camCapture.setTaken();
+                tempCapturesTable.put(camCapture.getTag(), camCapture);
                 getApplication().getApplicationContext().startService(
                         front_translucent);
             }
@@ -92,9 +100,19 @@ public class CameraAidlService extends Service {
 
     public final Camera.Stub binder = new Camera.Stub() {
         @Override
-        public void add(String flash, boolean isFront, int quality) throws RemoteException {
-            cameraCaptureQueue.add(new CameraShield.CameraCapture(flash, isFront, quality));
+        public void add(String flash, boolean isFront, int quality, long tag) throws RemoteException {
+            cameraCaptureQueue.add(new CameraShield.CameraCapture(flash, isFront, quality, tag));
+            tempCapturesTable.put(tag, new CameraShield.CameraCapture(flash, isFront, quality, tag));
             ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
+        }
+
+        @Override
+        public void setTaken(long tag) throws RemoteException {
+            CameraShield.CameraCapture capture = tempCapturesTable.get(tag);
+            if (capture != null) {
+                capture.setTaken();
+                tempCapturesTable.put(tag, new CameraShield.CameraCapture(capture.getFlash(), capture.isFront(), capture.getQuality(), tag));
+            }
         }
     };
 

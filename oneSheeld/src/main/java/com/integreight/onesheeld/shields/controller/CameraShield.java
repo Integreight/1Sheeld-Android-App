@@ -17,9 +17,11 @@ import com.integreight.onesheeld.Camera;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraAidlService;
-import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
+import com.integreight.onesheeld.shields.controller.utils.CameraTempService;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.Log;
+
+import java.util.Date;
 
 public class CameraShield extends ControllerParent<CameraShield> implements
         CameraFragmentHandler {
@@ -35,35 +37,57 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     int numberOfFrames = 0;
     Handler UIHandler;
 
-    private void sendCaptureImageIntent(CameraCapture camCapture) {
-        if (camCapture != null) {
-            if (!camCapture.isTaken()) {
-                Intent intent = new Intent(getApplication()
-                        .getApplicationContext(), CameraHeadService.class);
-                intent.putExtra("FLASH", camCapture.getFlash());
-                intent.putExtra("Quality_Mode", camCapture.getQuality());
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                camCapture.setTaken();
-                getApplication().getApplicationContext().startService(intent);
-                Log.d("ImageTakin", "OnTakeBack()");
-            }
-        }
-    }
-
-    private void sendFrontCaptureImageIntent(CameraCapture camCapture) {
-        if (camCapture != null) {
-            if (!camCapture.isTaken()) {
-                Intent front_translucent = new Intent(getApplication()
-                        .getApplicationContext(), CameraHeadService.class);
-                front_translucent.putExtra("Front_Request", true);
-                front_translucent.putExtra("Quality_Mode",
-                        camCapture.getQuality());
-                camCapture.setTaken();
-                getApplication().getApplicationContext().startService(
-                        front_translucent);
-            }
-        }
-    }
+//    private void sendCaptureImageIntent(CameraCapture camCapture) {
+//        if (camCapture != null) {
+//            if (!camCapture.isTaken()) {
+//                Intent intent = new Intent(getApplication()
+//                        .getApplicationContext(), CameraHeadService.class);
+//                intent.putExtra("FLASH", camCapture.getFlash());
+//                intent.putExtra("Quality_Mode", camCapture.getQuality());
+//                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                camCapture.setTaken();
+//                if (!isAidlBound)
+//                    getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
+//                try {
+//                    if (aidlBinder == null)
+//                        throw new RemoteException();
+//                    aidlBinder.setTaken(camCapture.getTag());
+//                } catch (RemoteException e) {
+//                    if (!isAidlBound || aidlBinder == null)
+//                        getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
+//                    e.printStackTrace();
+//                }
+//                getApplication().getApplicationContext().startService(intent);
+//                Log.d("ImageTakin", "OnTakeBack()");
+//            }
+//        }
+//    }
+//
+//    private void sendFrontCaptureImageIntent(CameraCapture camCapture) {
+//        if (camCapture != null) {
+//            if (!camCapture.isTaken()) {
+//                Intent front_translucent = new Intent(getApplication()
+//                        .getApplicationContext(), CameraHeadService.class);
+//                front_translucent.putExtra("Front_Request", true);
+//                front_translucent.putExtra("Quality_Mode",
+//                        camCapture.getQuality());
+//                camCapture.setTaken();
+//                if (!isAidlBound)
+//                    getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
+//                try {
+//                    if (aidlBinder == null)
+//                        throw new RemoteException();
+//                    aidlBinder.setTaken(camCapture.getTag());
+//                } catch (RemoteException e) {
+//                    if (!isAidlBound || aidlBinder == null)
+//                        getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
+//                    e.printStackTrace();
+//                }
+//                getApplication().getApplicationContext().startService(
+//                        front_translucent);
+//            }
+//        }
+//    }
 
     public CameraShield() {
 
@@ -184,17 +208,19 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                     numberOfFrames++;
                     Log.d("Camera", "Frames number = " + numberOfFrames);
                     CameraCapture camCapture = new CameraCapture(FLASH_MODE, false,
-                            QUALITY_MODE);
-                    if (getApplication().getCameraCapturesSize() == 0) {
-                        sendCaptureImageIntent(camCapture);
-                    }
+                            QUALITY_MODE, new Date().getTime());
                     if (!isAidlBound)
                         getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
                     try {
-                        aidlBinder.add(FLASH_MODE, false,
-                                QUALITY_MODE);
+                        if (aidlBinder == null)
+                            throw new RemoteException();
+                        aidlBinder.add(camCapture.getFlash(), camCapture.isFront(),
+                                camCapture.getQuality(), camCapture.getTag());
+                        if (getApplication().getCameraCapturesSize() == 0) {
+                            getActivity().startService(new Intent(getActivity(), CameraTempService.class));
+                        }
                     } catch (RemoteException e) {
-                        if (!isAidlBound)
+                        if (!isAidlBound || aidlBinder == null)
                             getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
                         e.printStackTrace();
                     }
@@ -203,17 +229,19 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                     numberOfFrames++;
                     Log.d("Camera", "Frames number front = " + numberOfFrames);
                     CameraCapture frontCamCapture = new CameraCapture(FLASH_MODE,
-                            true, QUALITY_MODE);
-                    if (getApplication().getCameraCapturesSize() == 0) {
-                        sendFrontCaptureImageIntent(frontCamCapture);
-                    }
+                            true, QUALITY_MODE, new Date().getTime());
                     if (!isAidlBound)
                         getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
                     try {
-                        aidlBinder.add(FLASH_MODE, true,
-                                QUALITY_MODE);
+                        if (aidlBinder == null)
+                            throw new RemoteException();
+                        aidlBinder.add(frontCamCapture.getFlash(), frontCamCapture.isFront(),
+                                frontCamCapture.getQuality(), frontCamCapture.getTag());
+                        if (getApplication().getCameraCapturesSize() == 0) {
+                            getActivity().startService(new Intent(getActivity(), CameraTempService.class));
+                        }
                     } catch (RemoteException e) {
-                        if (!isAidlBound)
+                        if (!isAidlBound || aidlBinder == null)
                             getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
                         e.printStackTrace();
                     }
@@ -255,13 +283,16 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         private String flash;
         private boolean isTaken;
         private boolean isFrontCamera;
+
+        private long tag;
         private int mquality;
 
-        public CameraCapture(String flash, boolean isFront, int quality) {
+        public CameraCapture(String flash, boolean isFront, int quality, long tag) {
             this.flash = flash;
             isTaken = false;
             isFrontCamera = isFront;
             mquality = quality;
+            this.tag = tag;
         }
 
         public int getQuality() {
@@ -293,6 +324,15 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             mquality = in.readInt();
         }
 
+
+        public long getTag() {
+            return tag;
+        }
+
+        public void setTag(long tag) {
+            this.tag = tag;
+        }
+
         @Override
         public int describeContents() {
             return 0;
@@ -304,6 +344,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             dest.writeByte((byte) (isTaken ? 0x01 : 0x00));
             dest.writeByte((byte) (isFrontCamera ? 0x01 : 0x00));
             dest.writeInt(mquality);
+            dest.writeLong(tag);
         }
 
         @SuppressWarnings("unused")

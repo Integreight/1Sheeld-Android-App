@@ -66,6 +66,7 @@ public class CameraHeadService extends Service implements
     private static final int ORIENTATION_LANDSCAPE_INVERTED = 4;
     private OrientationEventListener mOrientationEventListener;
     private int mOrientation = -1;
+    public static boolean isRunning = false;
 
     /**
      * Called when the activity is first created.
@@ -263,7 +264,6 @@ public class CameraHeadService extends Service implements
                 }
 
             } else {
-
                 if (mCamera != null) {
                     mCamera.stopPreview();
                     mCamera.release();
@@ -334,6 +334,7 @@ public class CameraHeadService extends Service implements
     public int onStartCommand(Intent intent, int flags, int startId) {
         // sv = new SurfaceView(getApplicationContext());
         cameraIntent = intent;
+        isRunning = true;
         Log.d("ImageTakin", "StartCommand()");
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         editor = pref.edit();
@@ -562,6 +563,7 @@ public class CameraHeadService extends Service implements
         Intent intent = new Intent("custom-event-name");
         // You can also include some extra data.
         intent.putExtra("message", "This is my message!");
+        isRunning = false;
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 
         super.onDestroy();
@@ -577,7 +579,7 @@ public class CameraHeadService extends Service implements
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         if (cameraIntent != null)
-            new TakeImage().execute(cameraIntent);
+            takeImage(cameraIntent);
 
     }
 

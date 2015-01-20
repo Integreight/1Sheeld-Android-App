@@ -21,6 +21,7 @@ import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.Log;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;

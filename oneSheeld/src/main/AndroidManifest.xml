@@ -163,6 +163,10 @@
             android:label="My CameraHeadService"
             android:process=":camera"
             android:singleUser="true"></service>
+        <service
+            android:name="com.integreight.onesheeld.shields.controller.utils.CameraTempService"
+            android:process=":camera"
+            android:singleUser="true"></service>
 
         <service
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraAidlService"

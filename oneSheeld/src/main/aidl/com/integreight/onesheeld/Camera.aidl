@@ -8,5 +8,6 @@ interface Camera {
      * Demonstrates some basic types that you can use as parameters
      * and return values in AIDL.
      */
-    void add(String flash, boolean isFront, int quality);
+    void add(String flash, boolean isFront, int quality,long tag);
+    void setTaken(long tag);
 }
