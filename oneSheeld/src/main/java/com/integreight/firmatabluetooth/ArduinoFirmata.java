@@ -67,12 +67,6 @@ public class ArduinoFirmata {
 
     Handler uiThreadHandler;
 
-    boolean isUartInit = false;
-
-    public boolean isUartInit() {
-        return isUartInit;
-    }
-
     public void resetMicro() {
         synchronized (sysexLock) {
             sysex(RESET_MICRO, new byte[]{});
@@ -210,13 +204,11 @@ public class ArduinoFirmata {
 
     public void enableReporting() {
         for (byte i = 0; i < 6; i++) {
-            write((byte) (REPORT_ANALOG | i));
-            write((byte) 1);
+            write(new byte[]{(byte) (REPORT_ANALOG | i),1});
         }
 
         for (byte i = 0; i < 3; i++) {
-            write((byte) (REPORT_DIGITAL | i));
-            write((byte) 1);
+            write(new byte[]{(byte) (REPORT_DIGITAL | i),1});
         }
     }
 
@@ -278,13 +270,8 @@ public class ArduinoFirmata {
 
     }
 
-    public void write(byte writeData) {
-        if (isOpen())
-            bluetoothService.write(writeData);
-    }
-
     public void reset() {
-        write(SYSTEM_RESET);
+        write(new byte[]{SYSTEM_RESET});
     }
 
     public void sysex(byte command, byte[] bytes) {
@@ -316,24 +303,6 @@ public class ArduinoFirmata {
             temp[i + 1] = getByteAs2SevenBitsBytes(data[i / 2])[1];
         }
         return temp;
-    }
-
-    public void initUart(BaudRate baud) {
-        synchronized (sysexLock) {
-            sysex(UART_COMMAND, new byte[]{UART_BEGIN, baud.getValue()});
-        }
-        isUartInit = true;
-    }
-
-    public void initUart() {
-        initUart(BaudRate._57600);
-    }
-
-    public void disableUart() {
-        synchronized (sysexLock) {
-            sysex(UART_COMMAND, new byte[]{UART_END});
-        }
-        isUartInit = false;
     }
 
     public boolean digitalRead(int pin) {
@@ -548,7 +517,7 @@ public class ArduinoFirmata {
     }
 
     public synchronized void sendShieldFrame(ShieldFrame frame) {
-        if (!isUartInit || isBootloader)
+        if (isBootloader)
             return;
         byte[] frameBytes = frame.getAllFrameAsBytes();
         int maxShieldFrameBytes = (MAX_OUTPUT_BYTES - 3) / 2;// The 3 is for
@@ -580,12 +549,10 @@ public class ArduinoFirmata {
         enableReporting();
         setAllPinsAsInput();
         reportInputPinsValues();
-        initUart();
         queryFirmwareVersion();
         respondToIsAlive();
         notifyHardwareOfConnection();
         queryLibraryVersion();
-
     }
 
     private void muteFirmata() {
@@ -601,7 +568,7 @@ public class ArduinoFirmata {
     }
 
     private void queryFirmwareVersion() {
-        write(REPORT_VERSION);
+        write(new byte[]{REPORT_VERSION});
     }
 
     private void queryLibraryVersion() {
@@ -709,16 +676,11 @@ public class ArduinoFirmata {
                 enableReporting();
                 setAllPinsAsInput();
                 reportInputPinsValues();
-                initUart();
                 onConnect();
-                queryFirmwareVersion();
                 respondToIsAlive();
+                queryFirmwareVersion();
                 notifyHardwareOfConnection();
                 queryLibraryVersion();
-                // String mConnectedDeviceName = device.getName();
-                // Toast.makeText(context, "Connected to " +
-                // mConnectedDeviceName,
-                // Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -755,24 +717,6 @@ public class ArduinoFirmata {
 
     public void clearArduinoFirmataDataHandlers() {
         dataHandlers.clear();
-    }
-
-    public static enum BaudRate {
-        _1200((byte) 0x00), _2400((byte) 0x01), _4800((byte) 0x02), _9600(
-                (byte) 0x03), _14400((byte) 0x04), _19200((byte) 0x05), _28800(
-                (byte) 0x06), _38400((byte) 0x07), _57600((byte) 0x08), _115200(
-                (byte) 0x09);
-
-        byte value;
-
-        BaudRate(byte value) {
-            this.value = value;
-        }
-
-        public byte getValue() {
-            return value;
-        }
-
     }
 
     private class UartListeningThread extends Thread {
