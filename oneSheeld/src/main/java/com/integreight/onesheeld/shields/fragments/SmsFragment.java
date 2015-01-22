@@ -20,10 +20,7 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
     LinearLayout smsTextContainer;
-    MenuItem enableSerialMenuItem;
-    MenuItem disableSerialMenuItem;
-    Button sendSMS;
-
+    
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -97,49 +94,6 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
                     new SmsShield(activity, getControllerTag()));
         ((SmsShield) getApplication().getRunningShields().get(
                 getControllerTag())).setSmsEventHandler(smsEventHandler);
-        toggleMenuButtons();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        enableSerialMenuItem = (MenuItem) menu
-                .findItem(R.id.enable_serial_menuitem);
-        disableSerialMenuItem = (MenuItem) menu
-                .findItem(R.id.disable_serial_menuitem);
-        toggleMenuButtons();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        switch (item.getItemId()) {
-            case R.id.enable_serial_menuitem:
-                getApplication().getAppFirmata().initUart();
-                toggleMenuButtons();
-                return true;
-            case R.id.disable_serial_menuitem:
-                getApplication().getAppFirmata().disableUart();
-                toggleMenuButtons();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    private void toggleMenuButtons() {
-        if (getApplication().getAppFirmata() == null)
-            return;
-        if (getApplication().getAppFirmata().isUartInit()) {
-            if (disableSerialMenuItem != null)
-                disableSerialMenuItem.setVisible(true);
-            if (enableSerialMenuItem != null)
-                enableSerialMenuItem.setVisible(false);
-        } else {
-            if (disableSerialMenuItem != null)
-                disableSerialMenuItem.setVisible(false);
-            if (enableSerialMenuItem != null)
-                enableSerialMenuItem.setVisible(true);
-        }
     }
 
     @Override

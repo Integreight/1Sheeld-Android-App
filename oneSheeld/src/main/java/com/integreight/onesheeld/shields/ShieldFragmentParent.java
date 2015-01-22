@@ -53,19 +53,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         super.onDetach();
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        FragmentTransaction ft = activity.getSupportFragmentManager()
-                .beginTransaction();
-        ft.detach(this).commit();
-        super.onConfigurationChanged(newConfig);
-        FragmentTransaction ft1 = activity.getSupportFragmentManager()
-                .beginTransaction();
-        ft1.attach(this).commit();
-        activity = getAppActivity();
-        controllerTag = getControllerTag();
-    }
-
     public MainActivity getAppActivity() {
         return (MainActivity) getActivity();
     }
