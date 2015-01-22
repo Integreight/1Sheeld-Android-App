@@ -62,6 +62,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     private long selectionTime;
 
     private static final byte IS_SHIELD_SELECTED = (byte) 0xFF;
+    private static final byte SELECT_SHIELD = (byte) 0xFE;
+    private static final byte DESELECT_SHIELD = (byte) 0xFD;
 
     public void notifyHardwareOfShieldSelection() {
         if (isItARealShield())
@@ -243,6 +245,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                 if (frame.getShieldId() == getShieldId())
                     if (frame.getFunctionId() == IS_SHIELD_SELECTED)
                         notifyHardwareOfShieldSelection();
+                    else if(frame.getFunctionId() == SELECT_SHIELD){}
+                    else if(frame.getFunctionId() == DESELECT_SHIELD){}
                     else
                         actionHandler.post(new Runnable() {
 
