@@ -12,6 +12,7 @@ import com.integreight.onesheeld.utils.ArrayUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
 
+import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -524,13 +525,16 @@ public class ArduinoFirmata {
         // StartSysex,
         // EndSysex and
         // Uart_data
+        ArrayList<byte[]> subArrays=new ArrayList<byte[]>();
+        for (int i = 0; i < frameBytes.length; i += maxShieldFrameBytes) {
+            byte[] subArray = (i + maxShieldFrameBytes > frameBytes.length) ? ArrayUtils
+                    .copyOfRange(frameBytes, i, frameBytes.length) : ArrayUtils
+                    .copyOfRange(frameBytes, i, i + maxShieldFrameBytes);
+            subArrays.add(subArray);
+        }
         synchronized (sysexLock) {
-            for (int i = 0; i < frameBytes.length; i += maxShieldFrameBytes) {
-                byte[] subArray = (i + maxShieldFrameBytes > frameBytes.length) ? ArrayUtils
-                        .copyOfRange(frameBytes, i, frameBytes.length) : ArrayUtils
-                        .copyOfRange(frameBytes, i, i + maxShieldFrameBytes);
-                sysex(UART_DATA, subArray);
-            }
+            for(byte[] sub:subArrays)
+                sysex(UART_DATA, sub);
         }
         printFrameToLog(frameBytes, "Sent");
     }
