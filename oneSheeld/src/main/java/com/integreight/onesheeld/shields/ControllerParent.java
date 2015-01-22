@@ -13,6 +13,7 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
@@ -63,8 +64,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     private static final byte IS_SHIELD_SELECTED = (byte) 0xFF;
 
     public void notifyHardwareOfShieldSelection() {
+        if(isItARealShield())
         activity.getThisApplication().getAppFirmata()
-                .sendShieldFrame(new ShieldFrame(AppShields.getInstance().getShieldByName(tag).id, IS_SHIELD_SELECTED));
+                .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED));
     }
 
     public ControllerParent() {
@@ -225,13 +227,18 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         }
     };
 
+    private byte getShieldId(){
+        if(ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.id;
+        if(ControllerParent.this instanceof RemoteOneSheeldShield) return UIShield.REMOTEONESHEELD_SHIELD.id;
+        return AppShields.getInstance().getShieldByName(tag).id;
+    }
     // Interface implemented for listening to received Shields Frames
     public ArduinoFirmataShieldFrameHandler arduinoFirmataShieldFrameHandler = new ArduinoFirmataShieldFrameHandler() {
 
         @Override
         public void onNewShieldFrameReceived(final ShieldFrame frame) {
             if (isALive && frame != null && matchedShieldPins.size() == 0)
-                if(frame.getShieldId()==AppShields.getInstance().getShieldByName(tag).id)
+                if(frame.getShieldId()==getShieldId())
                     if(frame.getFunctionId()==IS_SHIELD_SELECTED) notifyHardwareOfShieldSelection();
                     else
                         actionHandler.post(new Runnable() {
@@ -284,8 +291,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 && getApplication().getRunningShields().size() > 0 ? getApplication()
                                 .getRunningShields().keySet().toString()
                                 : "No Running Shields");
-        if(!(ControllerParent.this instanceof TaskerShield)
-                && !(ControllerParent.this instanceof RemoteOneSheeldShield))
         notifyHardwareOfShieldSelection();
         return this;
     }
@@ -307,6 +312,11 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         return hasConnectedPins;
     }
 
+    private boolean isItARealShield(){
+        return !(ControllerParent.this instanceof TaskerShield)
+                && !(ControllerParent.this instanceof RemoteOneSheeldShield);
+    }
+    
     public void setHasConnectedPins(boolean hasConnectedPins) {
         this.hasConnectedPins = hasConnectedPins;
     }
