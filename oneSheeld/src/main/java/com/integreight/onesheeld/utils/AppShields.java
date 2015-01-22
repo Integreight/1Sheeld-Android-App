@@ -10,6 +10,7 @@ import java.util.Hashtable;
 public class AppShields {
     private static AppShields thisInstance;
     private Hashtable<String, Shield> shieldsTable;
+    private Hashtable<String, String> nameAndTagTable;
     private SparseArray<Shield> shieldsArray;
 
     private AppShields() {
@@ -47,11 +48,18 @@ public class AppShields {
         return shieldsTable.get(tag);
     }
 
+    public Shield getShieldByName(String name) {
+        if (nameAndTagTable == null || nameAndTagTable.size() == 0 || shieldsArray == null || shieldsArray.size() == 0)
+            initShields();
+        return shieldsTable.get(nameAndTagTable.get(name));
+    }
+
     public void putShield(int position, Shield shield) {
         if (shieldsArray == null || shieldsArray.size() == 0)
             initShields();
         shieldsArray.put(position, shield);
         shieldsTable.put(shield.tag, shield);
+        nameAndTagTable.put(shield.name,shield.tag);
     }
 
     public void putShield(String tag, Shield shield) {
@@ -59,6 +67,7 @@ public class AppShields {
             initShields();
         shieldsTable.put(tag, shield);
         shieldsArray.put(shield.position, shield);
+        nameAndTagTable.put(shield.name,shield.tag);
     }
 
     public Shield getShield(int position) {
@@ -71,12 +80,14 @@ public class AppShields {
         int i = 0;
         shieldsArray = new SparseArray();
         shieldsTable = new Hashtable();
+        nameAndTagTable=new Hashtable();
         for (UIShield shield : UIShield.valuesFiltered()) {
             shieldsTable.put(shield.name(), new Shield(shield.getId(), i,
                     shield.name, shield.getName(), shield.itemBackgroundColor,
                     shield.symbolId, shield.mainActivitySelection,
                     shield.shieldType, shield.isReleasable,
                     shield.isInvalidatable));
+            nameAndTagTable.put(shield.getName(),shield.name());
             shieldsArray.put(i,
                     new Shield(shield.getId(), i, shield.name, shield.getName(),
                             shield.itemBackgroundColor, shield.symbolId,

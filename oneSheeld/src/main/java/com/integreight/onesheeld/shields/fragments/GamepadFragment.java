@@ -21,9 +21,6 @@ import com.integreight.onesheeld.utils.customviews.Key;
 import com.integreight.onesheeld.utils.customviews.Key.KeyTouchEventListener;
 
 public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
-    MenuItem connectButton;
-    MenuItem enableSerialMenuItem;
-    MenuItem disableSerialMenuItem;
 
     private Key upArrowKey;
     private Key downArrowKey;
@@ -234,59 +231,10 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
         if ((getApplication().getRunningShields().get(getControllerTag())) == null)
             getApplication().getRunningShields().put(getControllerTag(),
                     new GamepadShield(activity, getControllerTag()));
-        toggleMenuButtons();
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.pin_shields_menu, menu);
-        connectButton = (MenuItem) menu
-                .findItem(R.id.connect_shield_pins_menuitem);
-        enableSerialMenuItem = (MenuItem) menu
-                .findItem(R.id.enable_serial_menuitem);
-        disableSerialMenuItem = (MenuItem) menu
-                .findItem(R.id.disable_serial_menuitem);
-        toggleMenuButtons();
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // TODO Auto-generated method stub
-        switch (item.getItemId()) {
-            case R.id.connect_shield_pins_menuitem:
-                showPinsSelectionMenus();
-                return true;
-            case R.id.enable_serial_menuitem:
-                getApplication().getAppFirmata().initUart();
-                toggleMenuButtons();
-                return true;
-            case R.id.disable_serial_menuitem:
-                getApplication().getAppFirmata().disableUart();
-                toggleMenuButtons();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void showPinsSelectionMenus() {
 
-    }
-
-    private void toggleMenuButtons() {
-        if (getApplication().getAppFirmata() == null)
-            return;
-        if (getApplication().getAppFirmata().isUartInit()) {
-            if (disableSerialMenuItem != null)
-                disableSerialMenuItem.setVisible(true);
-            if (enableSerialMenuItem != null)
-                enableSerialMenuItem.setVisible(false);
-        } else {
-            if (disableSerialMenuItem != null)
-                disableSerialMenuItem.setVisible(false);
-            if (enableSerialMenuItem != null)
-                enableSerialMenuItem.setVisible(true);
-        }
     }
 
     @Override
