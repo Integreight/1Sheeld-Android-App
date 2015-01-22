@@ -47,8 +47,8 @@ public class GravityShield extends ControllerParent<GravityShield> implements
     }
 
     @Override
-    public ControllerParent<GravityShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<GravityShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

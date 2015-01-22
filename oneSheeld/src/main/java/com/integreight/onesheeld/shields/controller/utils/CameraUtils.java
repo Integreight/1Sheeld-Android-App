@@ -12,6 +12,8 @@ import com.integreight.onesheeld.utils.Log;
 import java.util.List;
 
 public class CameraUtils {
+    public static String CAMERA_CAPTURE_RECEIVER_EVENT_NAME = "camera_capture_event_name";
+
     public static Camera.Size getBiggestPictureSize(
             Camera.Parameters parameters) {
         Camera.Size result = null;

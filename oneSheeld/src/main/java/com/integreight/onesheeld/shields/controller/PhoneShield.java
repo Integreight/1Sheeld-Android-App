@@ -29,14 +29,14 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
     }
 
     @Override
-    public ControllerParent<PhoneShield> setTag(String tag) {
+    public ControllerParent<PhoneShield> init(String tag) {
         phoneListener = new PhoneCallStateListener();
         phoneListener.setPhoneRingingEventHandler(phoneRingingEventHandler);
         telephonyManager = (TelephonyManager) getApplication()
                 .getSystemService(Context.TELEPHONY_SERVICE);
         telephonyManager.listen(phoneListener,
                 PhoneStateListener.LISTEN_CALL_STATE);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     @Override

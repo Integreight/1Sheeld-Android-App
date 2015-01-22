@@ -49,9 +49,9 @@ public class LcdShield extends ControllerParent<LcdShield> {
     }
 
     @Override
-    public ControllerParent<LcdShield> setTag(String tag) {
+    public ControllerParent<LcdShield> init(String tag) {
         setChars(new char[columns * rows]);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public void setLcdEventHandler(LcdEventHandler eventHandler) {

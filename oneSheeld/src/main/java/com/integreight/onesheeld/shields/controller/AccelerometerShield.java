@@ -47,8 +47,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
     }
 
     @Override
-    public ControllerParent<AccelerometerShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<AccelerometerShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

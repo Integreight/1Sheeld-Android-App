@@ -18,8 +18,8 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
     }
 
     @Override
-    public ControllerParent<KeypadShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<KeypadShield> init(String tag) {
+        return super.init(tag);
     }
 
     public KeypadShield() {

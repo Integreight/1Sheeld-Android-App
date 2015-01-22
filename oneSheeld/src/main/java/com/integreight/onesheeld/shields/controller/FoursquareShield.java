@@ -52,13 +52,13 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
     }
 
     @Override
-    public ControllerParent<FoursquareShield> setTag(String tag) {
+    public ControllerParent<FoursquareShield> init(String tag) {
         // getShareprefrences
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
 
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public FoursquareShield(Activity activity, String tag) {

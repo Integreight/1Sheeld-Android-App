@@ -17,7 +17,6 @@ import com.integreight.onesheeld.Camera;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraAidlService;
-import com.integreight.onesheeld.shields.controller.utils.CameraTempService;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.Log;
 
@@ -98,12 +97,12 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     @Override
-    public ControllerParent<CameraShield> setTag(String tag) {
+    public ControllerParent<CameraShield> init(String tag) {
         Intent intent = new Intent(getActivity(), CameraAidlService.class);
         getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
         getApplication().setCameraCapturesSize(0);
         UIHandler = new Handler();
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     @Override
@@ -216,10 +215,10 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                             throw new RemoteException();
                         aidlBinder.add(camCapture.getFlash(), camCapture.isFront(),
                                 camCapture.getQuality(), camCapture.getTag());
-                        if (getApplication().getCameraCapturesSize() == 0) {
-                            getActivity().startService(new Intent(getActivity(), CameraTempService.class));
-                        }
+                        Log.d("receiver", " " + getApplication().getCameraCapturesSize());
+                        Log.d("receiver", "%%  " + getApplication().getCameraCapturesSize());
                     } catch (RemoteException e) {
+                        Log.d("receiver", "Crashed  " + getApplication().getCameraCapturesSize());
                         if (!isAidlBound || aidlBinder == null)
                             getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
                         e.printStackTrace();
@@ -237,9 +236,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                             throw new RemoteException();
                         aidlBinder.add(frontCamCapture.getFlash(), frontCamCapture.isFront(),
                                 frontCamCapture.getQuality(), frontCamCapture.getTag());
-                        if (getApplication().getCameraCapturesSize() == 0) {
-                            getActivity().startService(new Intent(getActivity(), CameraTempService.class));
-                        }
                     } catch (RemoteException e) {
                         if (!isAidlBound || aidlBinder == null)
                             getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);

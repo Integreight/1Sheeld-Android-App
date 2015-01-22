@@ -48,7 +48,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     }
 
     @Override
-    public ControllerParent<GpsShield> setTag(String tag) {
+    public ControllerParent<GpsShield> init(String tag) {
         mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
@@ -62,7 +62,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
             if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
                 startGps();
         }
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public void setGpsEventHandler(GpsEventHandler eventHandler) {

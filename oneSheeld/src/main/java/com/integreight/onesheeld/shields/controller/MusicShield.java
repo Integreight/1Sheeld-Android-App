@@ -44,10 +44,10 @@ public class MusicShield extends ControllerParent<MusicShield> {
     }
 
     @Override
-    public ControllerParent<MusicShield> setTag(String tag) {
+    public ControllerParent<MusicShield> init(String tag) {
         checkMedia();
         checkMediaFilesList();
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public void setEventHandler(MusicEventHandler eventHandler) {

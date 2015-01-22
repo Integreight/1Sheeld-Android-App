@@ -32,9 +32,9 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
     }
 
     @Override
-    public ControllerParent<TextToSpeechShield> setTag(String tag) {
+    public ControllerParent<TextToSpeechShield> init(String tag) {
         myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public void setEventHandler(final TTsEventHandler eventHandler) {

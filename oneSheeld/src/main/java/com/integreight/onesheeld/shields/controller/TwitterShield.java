@@ -101,7 +101,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
     }
 
     @Override
-    public ControllerParent<TwitterShield> setTag(String tag) {
+    public ControllerParent<TwitterShield> init(String tag) {
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
@@ -110,7 +110,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         isTwitterStreamConnecting = false;
 //		if(isTwitterLoggedInAlready())initTwitterListening();
         notifyHardwareOfTwitterSelection();
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public TwitterShield(Activity activity, String tag) {

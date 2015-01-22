@@ -49,7 +49,7 @@ public class SpeechRecognitionShield extends
     };
 
     @Override
-    public ControllerParent<SpeechRecognitionShield> setTag(String tag) {
+    public ControllerParent<SpeechRecognitionShield> init(String tag) {
         activity.bindService(new Intent(activity,
                         SpeechRecognitionService.class), mServiceConnection,
                 Context.BIND_AUTO_CREATE);
@@ -60,7 +60,7 @@ public class SpeechRecognitionShield extends
                 + ",RECOGNIZER_BUSY=" + SpeechRecognizer.ERROR_RECOGNIZER_BUSY
                 + ",SERVER=" + SpeechRecognizer.ERROR_SERVER
                 + ",SPEECH_TIMEOUT=" + SpeechRecognizer.ERROR_SPEECH_TIMEOUT);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public void setEventHandler(final RecognitionEventHandler eventHandler) {

@@ -35,10 +35,10 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
     }
 
     @Override
-    public ControllerParent<TerminalShield> setTag(String tag) {
+    public ControllerParent<TerminalShield> init(String tag) {
         terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
         lastItemEndedWithNewLine = true;
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     @Override

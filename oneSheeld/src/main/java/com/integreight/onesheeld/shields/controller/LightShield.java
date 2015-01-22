@@ -47,8 +47,8 @@ public class LightShield extends ControllerParent<LightShield> implements
     }
 
     @Override
-    public ControllerParent<LightShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<LightShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

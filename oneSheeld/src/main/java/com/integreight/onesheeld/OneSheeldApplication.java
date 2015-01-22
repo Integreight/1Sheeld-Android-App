@@ -237,6 +237,7 @@ public class OneSheeldApplication extends Application {
 
     public void setCameraCapturesSize(int cameraCapturesSize) {
         appPreferences.edit().putInt(CAMERA_CAPTURES_SIZE, cameraCapturesSize).commit();
+        Log.d("cameraLog",cameraCapturesSize+"");
     }
 
     public int getMajorVersion() {

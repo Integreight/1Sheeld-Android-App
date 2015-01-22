@@ -34,7 +34,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
     }
 
     @Override
-    public ControllerParent<SmsShield> setTag(String tag) {
+    public ControllerParent<SmsShield> init(String tag) {
         smsListener = new SmsListener();
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.provider.Telephony.SMS_RECEIVED");
@@ -42,7 +42,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
         if (smsReceiveEventHandler != null)
             smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
         getActivity().registerReceiver(smsListener, filter);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     @Override

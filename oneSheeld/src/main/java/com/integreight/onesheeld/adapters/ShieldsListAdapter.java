@@ -176,11 +176,11 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
                             if (type != null) {
                                 if (shield.isInvalidatable == 1) {
                                     type.setActivity(activity)
-                                            .setTag(shield.tag)
+                                            .init(shield.tag)
                                             .invalidate(selectionAction, true);
                                 } else {
                                     selectionAction.onSuccess();
-                                    type.setActivity(activity).setTag(
+                                    type.setActivity(activity).init(
                                             shield.tag);
                                 }
                             }
@@ -295,10 +295,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
                             if (type != null) {
                                 if (shield.isInvalidatable == 1) {
                                     type.setActivity(activity)
-                                            .setTag(shield.tag)
+                                            .init(shield.tag)
                                             .invalidate(selectionAction, false);
                                 } else {
-                                    type.setActivity(activity).setTag(
+                                    type.setActivity(activity).init(
                                             shield.tag);
                                 }
                             }

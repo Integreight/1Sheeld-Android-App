@@ -47,8 +47,8 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
     }
 
     @Override
-    public ControllerParent<MagnetometerShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<MagnetometerShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

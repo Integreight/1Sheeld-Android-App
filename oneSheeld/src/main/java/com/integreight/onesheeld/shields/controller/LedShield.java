@@ -24,8 +24,8 @@ public class LedShield extends ControllerParent<LedShield> {
     }
 
     @Override
-    public ControllerParent<LedShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<LedShield> init(String tag) {
+        return super.init(tag);
     }
 
     public boolean isLedOn() {

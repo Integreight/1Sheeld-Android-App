@@ -57,7 +57,7 @@ public class ClockShield extends
     };
 
     @Override
-    public ControllerParent<ControllerParent<ClockShield>> setTag(String tag) {
+    public ControllerParent<ControllerParent<ClockShield>> init(String tag) {
         // TODO Auto-generated method stub
         intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
@@ -67,7 +67,7 @@ public class ClockShield extends
         if (updateClockSeconds != null)
             handler.post(updateClockSeconds);
 
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public ClockShield(Activity activity, String tag) {

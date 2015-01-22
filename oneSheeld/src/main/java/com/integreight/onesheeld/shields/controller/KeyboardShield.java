@@ -12,10 +12,10 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
     private static final byte KEYBOARD_VALUE = (byte) 0x01;
 
     @Override
-    public ControllerParent<KeyboardShield> setTag(String tag) {
+    public ControllerParent<KeyboardShield> init(String tag) {
         // TODO Auto-generated method stub
 
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public KeyboardShield(Activity activity, String tag) {

@@ -20,8 +20,8 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     }
 
     @Override
-    public ControllerParent<GamepadShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<GamepadShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override
