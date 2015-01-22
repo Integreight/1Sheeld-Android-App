@@ -50,9 +50,9 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
     }
 
     @Override
-    public ControllerParent<TemperatureShield> setTag(String tag) {
+    public ControllerParent<TemperatureShield> init(String tag) {
 
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     @SuppressLint("InlinedApi")

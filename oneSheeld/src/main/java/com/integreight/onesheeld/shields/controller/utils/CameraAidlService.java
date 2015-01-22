@@ -14,21 +14,18 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.utils.Log;
 
-import java.util.Hashtable;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CameraAidlService extends Service {
     public Queue<CameraShield.CameraCapture> cameraCaptureQueue = new ConcurrentLinkedQueue<>();
-    private Hashtable<Long, CameraShield.CameraCapture> tempCapturesTable = new Hashtable<>();
 
     @Override
     public IBinder onBind(Intent intent) {
         LocalBroadcastManager.getInstance(
                 getApplication().getApplicationContext()).registerReceiver(
-                mMessageReceiver, new IntentFilter("custom-event-name"));
+                mMessageReceiver, new IntentFilter(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME));
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();
-        tempCapturesTable = new Hashtable<>();
         return binder;
     }
 
@@ -45,23 +42,21 @@ public class CameraAidlService extends Service {
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             String message = intent.getStringExtra("message");
-            Log.d("receiver", "Got message: " + message);
+//            Log.d("receiver", "Got message: " + message);
             Log.d("receiver",
-                    "cameraCaptureQueue size = " + cameraCaptureQueue.size());
-
-            while (cameraCaptureQueue.peek() != null && cameraCaptureQueue.peek().isTaken()) {
-                tempCapturesTable.remove(cameraCaptureQueue.peek().getTag());
-                cameraCaptureQueue.poll();
-            }
-
+                    "Before" + cameraCaptureQueue.size());
             if (!CameraHeadService.isRunning)
                 if (!cameraCaptureQueue.isEmpty()) {
-                    if (cameraCaptureQueue.peek().isFront())
-                        sendFrontCaptureImageIntent(cameraCaptureQueue.poll());
-                    else
-                        sendCaptureImageIntent(cameraCaptureQueue.poll());
+                    final CameraShield.CameraCapture capture = cameraCaptureQueue.poll();
+                    if (capture.isFront()) {
+                        sendFrontCaptureImageIntent(capture);
+                    } else {
+                        sendCaptureImageIntent(capture);
+                    }
                 }
             ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
+            Log.d("receiver",
+                    "After" + cameraCaptureQueue.size());
         }
 
     };
@@ -75,7 +70,6 @@ public class CameraAidlService extends Service {
                 intent.putExtra("Quality_Mode", camCapture.getQuality());
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 camCapture.setTaken();
-                tempCapturesTable.put(camCapture.getTag(), camCapture);
                 getApplication().getApplicationContext().startService(intent);
                 Log.d("ImageTakin", "OnTakeBack()");
             }
@@ -91,7 +85,6 @@ public class CameraAidlService extends Service {
                 front_translucent.putExtra("Quality_Mode",
                         camCapture.getQuality());
                 camCapture.setTaken();
-                tempCapturesTable.put(camCapture.getTag(), camCapture);
                 getApplication().getApplicationContext().startService(
                         front_translucent);
             }
@@ -102,17 +95,19 @@ public class CameraAidlService extends Service {
         @Override
         public void add(String flash, boolean isFront, int quality, long tag) throws RemoteException {
             cameraCaptureQueue.add(new CameraShield.CameraCapture(flash, isFront, quality, tag));
-            tempCapturesTable.put(tag, new CameraShield.CameraCapture(flash, isFront, quality, tag));
             ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
+            if (!CameraHeadService.isRunning) {
+                Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
+                // You can also include some extra data.
+                intent1.putExtra("message", "This is my message!");
+                LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
+            }
+            Log.d("receiver",
+                    "All   " + cameraCaptureQueue.size());
         }
 
         @Override
         public void setTaken(long tag) throws RemoteException {
-            CameraShield.CameraCapture capture = tempCapturesTable.get(tag);
-            if (capture != null) {
-                capture.setTaken();
-                tempCapturesTable.put(tag, new CameraShield.CameraCapture(capture.getFlash(), capture.isFront(), capture.getQuality(), tag));
-            }
         }
     };
 

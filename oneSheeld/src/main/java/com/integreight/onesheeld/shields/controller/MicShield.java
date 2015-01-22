@@ -58,8 +58,8 @@ public class MicShield extends ControllerParent<MicShield> {
     }
 
     @Override
-    public ControllerParent<MicShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<MicShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

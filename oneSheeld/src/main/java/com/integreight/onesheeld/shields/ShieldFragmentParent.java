@@ -86,7 +86,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                 Log.e("TAG", "Exception", e);
             }
             if (type != null) {
-                type.setActivity(getAppActivity()).setTag(shield.tag);
+                type.setActivity(getAppActivity()).init(shield.tag);
                 getApplication().getRunningShields().get(getControllerTag())
                         .setHasForgroundView(true);
                 return true;

@@ -26,8 +26,8 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
     }
 
     @Override
-    public ControllerParent<SkypeShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<SkypeShield> init(String tag) {
+        return super.init(tag);
     }
 
     public SkypeShield(Activity activity, String tag) {

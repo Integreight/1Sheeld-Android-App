@@ -37,11 +37,11 @@ public class EmailShield extends ControllerParent<EmailShield> {
     }
 
     @Override
-    public ControllerParent<EmailShield> setTag(String tag) {
+    public ControllerParent<EmailShield> init(String tag) {
         mSharedPreferences = getActivity().getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public EmailShield(Activity activity, String tag) {

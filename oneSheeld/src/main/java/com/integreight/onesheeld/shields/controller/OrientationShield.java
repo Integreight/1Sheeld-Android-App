@@ -47,8 +47,8 @@ public class OrientationShield extends ControllerParent<OrientationShield>
     }
 
     @Override
-    public ControllerParent<OrientationShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<OrientationShield> init(String tag) {
+        return super.init(tag);
     }
 
     @SuppressWarnings("deprecation")

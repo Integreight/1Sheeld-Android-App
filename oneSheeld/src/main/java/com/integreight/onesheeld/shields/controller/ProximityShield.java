@@ -47,8 +47,8 @@ public class ProximityShield extends ControllerParent<ProximityShield>
     }
 
     @Override
-    public ControllerParent<ProximityShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<ProximityShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

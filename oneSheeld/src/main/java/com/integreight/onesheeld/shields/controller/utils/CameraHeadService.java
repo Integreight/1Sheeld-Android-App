@@ -560,7 +560,7 @@ public class CameraHeadService extends Service implements
         }
         if (sv != null)
             windowManager.removeView(sv);
-        Intent intent = new Intent("custom-event-name");
+        Intent intent = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
         // You can also include some extra data.
         intent.putExtra("message", "This is my message!");
         isRunning = false;

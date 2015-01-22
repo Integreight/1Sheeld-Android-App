@@ -61,7 +61,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
     }
 
     @Override
-    public ControllerParent<FacebookShield> setTag(String tag) {
+    public ControllerParent<FacebookShield> init(String tag) {
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
@@ -76,7 +76,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
         }
 
         session.addCallback(statusCallback);
-        return super.setTag(tag);
+        return super.init(tag);
     }
 
     public FacebookShield(Activity activity, String tag, Fragment fragment,

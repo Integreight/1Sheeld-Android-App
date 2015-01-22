@@ -79,7 +79,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      */
     public ControllerParent(Activity activity, String tag) {
         setActivity((MainActivity) activity);
-        setTag(tag);
+        init(tag);
     }
 
     /**
@@ -270,7 +270,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * @return instance of shield controller for Java reflection usage
      * (initialization)
      */
-    public ControllerParent<T> setTag(String tag) {
+    public ControllerParent<T> init(String tag) {
         this.tag = tag;
         isALive = true;
         if (getApplication().getRunningShields().get(tag) == null)

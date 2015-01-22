@@ -47,8 +47,8 @@ public class PressureShield extends ControllerParent<PressureShield> implements
     }
 
     @Override
-    public ControllerParent<PressureShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<PressureShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override

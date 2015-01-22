@@ -30,8 +30,8 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
     }
 
     @Override
-    public ControllerParent<SevenSegmentShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<SevenSegmentShield> init(String tag) {
+        return super.init(tag);
     }
 
     public Hashtable<String, Boolean> getSegmentsStatus() {

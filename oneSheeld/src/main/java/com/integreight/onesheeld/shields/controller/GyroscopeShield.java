@@ -47,8 +47,8 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
     }
 
     @Override
-    public ControllerParent<GyroscopeShield> setTag(String tag) {
-        return super.setTag(tag);
+    public ControllerParent<GyroscopeShield> init(String tag) {
+        return super.init(tag);
     }
 
     @Override
