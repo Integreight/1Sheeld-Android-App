@@ -73,12 +73,12 @@ public class AppShields {
         shieldsTable = new Hashtable();
         for (UIShield shield : UIShield.valuesFiltered()) {
             shieldsTable.put(shield.name(), new Shield(shield.getId(), i,
-                    shield.name, shield.getName(), shield.itemBackgroundColor,
+                    shield.name(), shield.getName(), shield.itemBackgroundColor,
                     shield.symbolId, shield.mainActivitySelection,
                     shield.shieldType, shield.isReleasable,
                     shield.isInvalidatable));
             shieldsArray.put(i,
-                    new Shield(shield.getId(), i, shield.name, shield.getName(),
+                    new Shield(shield.getId(), i, shield.name(), shield.getName(),
                             shield.itemBackgroundColor, shield.symbolId,
                             shield.mainActivitySelection, shield.shieldType,
                             shield.isReleasable, shield.isInvalidatable));

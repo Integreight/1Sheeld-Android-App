@@ -14,8 +14,11 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
+import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.Log;
 
 import java.util.Arrays;
 import java.util.Hashtable;

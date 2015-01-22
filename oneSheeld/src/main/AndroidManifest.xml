@@ -68,7 +68,6 @@
     <uses-feature
         android:name="android.hardware.microphone"
         android:required="false" />
-
     <application
         android:name="com.integreight.onesheeld.OneSheeldApplication"
         android:allowBackup="true"
