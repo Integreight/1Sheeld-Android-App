@@ -23,5 +23,16 @@
     <color name="voice_rec_circle_red">#e90027</color>
     <color name="voice_rec_circle_green">#00e800</color>
     <color name="terminal_encoding_default_color">#4D4D4D</color>
+    <!-- Lock Pattern-->
 
+    <attr name="color_lock_pattern_view_regular" format="reference" />
+    <attr name="color_lock_pattern_view_success" format="reference" />
+    <attr name="color_lock_pattern_view_error" format="reference" />
+
+    <color name="lock_pattern_view_regular_light">#ffffffff</color>
+    <color name="lock_pattern_view_success_light">#ffffffff</color>
+    <color name="lock_pattern_view_error_light">#fff4511e</color>
+    <color name="lock_pattern_view_regular_dark">#ff37474f</color>
+    <color name="lock_pattern_view_success_dark">#ff009688</color>
+    <color name="lock_pattern_view_error_dark">#fff4511e</color>
 </resources>
