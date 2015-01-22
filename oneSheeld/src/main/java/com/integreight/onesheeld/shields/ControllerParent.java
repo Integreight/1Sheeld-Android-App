@@ -231,7 +231,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         if (ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.id;
         if (ControllerParent.this instanceof RemoteOneSheeldShield)
             return UIShield.REMOTEONESHEELD_SHIELD.id;
-        return AppShields.getInstance().getShieldByName(tag).id;
+        return AppShields.getInstance().getShield(tag).id;
     }
 
     // Interface implemented for listening to received Shields Frames
