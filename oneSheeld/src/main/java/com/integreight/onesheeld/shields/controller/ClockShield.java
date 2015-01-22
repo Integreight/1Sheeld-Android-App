@@ -18,6 +18,7 @@ public class ClockShield extends
         ControllerParent<ControllerParent<ClockShield>> {
     private static final byte CLOCK_COMMAND = (byte) 0x21;
     private static final byte CLOCK_VALUE = (byte) 0x01;
+    private static final byte BEGIN_METHOD = (byte) 0x01;
     private Calendar calendar;
     private static int seconds, minutes, hour, day, month, year;
     private ClockEventHandler eventHandler;
@@ -81,7 +82,7 @@ public class ClockShield extends
     @Override
     public void onNewShieldFrameReceived(ShieldFrame clock_frame) {
 
-        if (clock_frame.getShieldId() == CLOCK_COMMAND) {
+        if (clock_frame.getShieldId() == CLOCK_COMMAND&&clock_frame.getFunctionId()==BEGIN_METHOD) {
             isClockBegin = true;
             ShieldFrame frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
 
