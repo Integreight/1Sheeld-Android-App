@@ -15,5 +15,8 @@
     <dimen name="pinNameTextSize">8sp</dimen>
     <dimen name="sensor_xcoor_top_margin">0dp</dimen>
     <dimen name="sensor_ycoor_top_margin">0dp</dimen>
-
+    <!-- Lock Pattern-->
+    <dimen name="lock_pattern_dot_line_width">3dp</dimen>
+    <dimen name="lock_pattern_dot_size">12dp</dimen>
+    <dimen name="lock_pattern_dot_size_activated">28dp</dimen>
 </resources>
