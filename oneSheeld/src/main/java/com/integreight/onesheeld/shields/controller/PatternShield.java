@@ -3,13 +3,17 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.customviews.LockPatternViewEx;
+
+import java.util.List;
 
 public class PatternShield extends
         ControllerParent<ControllerParent<PatternShield>> {
-    private static final byte CLOCK_COMMAND = (byte) 0x21;
-    private static final byte CLOCK_VALUE = (byte) 0x01;
-
+    private static final byte SEND_PATTERN = (byte) 0x01;
+    private ShieldFrame frame;
+    String patternPath="";
     @Override
     public ControllerParent<ControllerParent<PatternShield>> init(String tag) {
         // TODO Auto-generated method stub
@@ -27,6 +31,15 @@ public class PatternShield extends
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
 
+    }
+    public void onPatternDetected(List<LockPatternViewEx.Cell> pattern) {
+        frame=new ShieldFrame(UIShield.PATTERN_SHIELD.getId(),SEND_PATTERN);
+        patternPath="";
+        for (LockPatternViewEx.Cell cell:pattern)
+        {
+            patternPath+=cell.getRow()+""+cell.getColumn();
+        }
+        sendShieldFrame(frame);
     }
 
     @Override

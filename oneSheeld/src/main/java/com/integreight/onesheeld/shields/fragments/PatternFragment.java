@@ -7,7 +7,11 @@ import android.view.ViewGroup;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
+import com.integreight.onesheeld.shields.controller.PatternShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
+import com.integreight.onesheeld.utils.customviews.LockPatternViewEx;
+
+import java.util.List;
 
 public class PatternFragment extends ShieldFragmentParent<PatternFragment> {
 
@@ -27,7 +31,28 @@ public class PatternFragment extends ShieldFragmentParent<PatternFragment> {
             if (!reInitController())
                 return;
         }
+        if (getView() != null && getView().findViewById(R.id.lockPattern) != null)
+            ((LockPatternViewEx) getView().findViewById(R.id.lockPattern)).setOnPatternListener(new LockPatternViewEx.OnPatternListener() {
+                @Override
+                public void onPatternStart() {
 
+                }
+
+                @Override
+                public void onPatternCleared() {
+
+                }
+
+                @Override
+                public void onPatternCellAdded(List<LockPatternViewEx.Cell> pattern) {
+
+                }
+
+                @Override
+                public void onPatternDetected(List<LockPatternViewEx.Cell> pattern) {
+                    ((PatternShield) getApplication().getRunningShields().get(getControllerTag())).onPatternDetected(pattern);
+                }
+            });
         super.onStart();
     }
 
