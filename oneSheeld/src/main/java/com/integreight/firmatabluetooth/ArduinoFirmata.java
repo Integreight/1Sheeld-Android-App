@@ -517,7 +517,7 @@ public class ArduinoFirmata {
         Log.d(tag, s);
     }
 
-    public synchronized void sendShieldFrame(ShieldFrame frame) {
+    public void sendShieldFrame(ShieldFrame frame) {
         if (isBootloader)
             return;
         byte[] frameBytes = frame.getAllFrameAsBytes();
