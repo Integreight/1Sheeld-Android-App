@@ -13,7 +13,7 @@ public class PatternShield extends
         ControllerParent<ControllerParent<PatternShield>> {
     private static final byte SEND_PATTERN = (byte) 0x01;
     private ShieldFrame frame;
-    String patternPath="";
+    byte patternPath[];
     @Override
     public ControllerParent<ControllerParent<PatternShield>> init(String tag) {
         // TODO Auto-generated method stub
@@ -34,11 +34,12 @@ public class PatternShield extends
     }
     public void onPatternDetected(List<LockPatternViewEx.Cell> pattern) {
         frame=new ShieldFrame(UIShield.PATTERN_SHIELD.getId(),SEND_PATTERN);
-        patternPath="";
-        for (LockPatternViewEx.Cell cell:pattern)
+        patternPath=new byte[pattern.size()];
+        for (int i=0;i<pattern.size();i++)
         {
-            patternPath+=cell.getRow()+""+cell.getColumn();
+            patternPath[i]=(byte)((pattern.get(i).getRow())|((pattern.get(i).getColumn())<<4));
         }
+        frame.addArgument(patternPath);
         sendShieldFrame(frame);
     }
 
