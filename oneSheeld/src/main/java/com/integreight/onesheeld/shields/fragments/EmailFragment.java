@@ -49,20 +49,6 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
             if (!reInitController())
                 return;
         }
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Email Sheeld::OnActivityCreated()", "");
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
@@ -112,6 +98,20 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                 logoutGmailAccount();
             }
         });
+        super.onStart();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+        Log.d("Email Sheeld::OnActivityCreated()", "");
 
     }
 

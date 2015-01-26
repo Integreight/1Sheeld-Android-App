@@ -139,8 +139,9 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                     @Override
                     public void onDrawerOpened() {
-                        if (settingsSlidingView.isOpened())
-                            settingsSlidingView.animateOpen();
+                        if (getView() != null && settingsSlidingView != null)
+                            if (settingsSlidingView.isOpened())
+                                settingsSlidingView.animateOpen();
                         activity.disableMenu();
                     }
                 });
@@ -149,10 +150,11 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                     @Override
                     public void onDrawerClosed() {
-                        if (!settingsSlidingView.isOpened()
-                                && !((CheckBox) getView().findViewById(
-                                R.id.isMenuOpening)).isChecked())
-                            activity.enableMenu();
+                        if (getView() != null && settingsSlidingView != null && getView().findViewById(R.id.isMenuOpening) != null)
+                            if (!settingsSlidingView.isOpened()
+                                    && !((CheckBox) getView().findViewById(
+                                    R.id.isMenuOpening)).isChecked())
+                                activity.enableMenu();
                     }
                 });
         pinsSlidingView.setOnTouchListener(new View.OnTouchListener() {
@@ -168,7 +170,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                     @Override
                     public void onClick(View v) {
-                        settingsSlidingView.animateOpen();
+                        if (getView() != null && settingsSlidingView != null)
+                            settingsSlidingView.animateOpen();
                     }
                 });
         settingsSlidingView
@@ -176,7 +179,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                     @Override
                     public void onDrawerOpened() {
-                        if (pinsSlidingView.isOpened()) {
+                        if (getView() != null && pinsSlidingView != null && pinsSlidingView.isOpened()) {
                             pinsSlidingView.animateOpen();
                         }
                         activity.disableMenu();
@@ -187,10 +190,12 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                     @Override
                     public void onDrawerClosed() {
-                        if (!pinsSlidingView.isOpened()
-                                && !((CheckBox) getView().findViewById(
-                                R.id.isMenuOpening)).isChecked())
-                            activity.enableMenu();
+                        if (getView() != null && pinsSlidingView != null && getView().findViewById(
+                                R.id.isMenuOpening) != null)
+                            if (!pinsSlidingView.isOpened()
+                                    && !((CheckBox) getView().findViewById(
+                                    R.id.isMenuOpening)).isChecked())
+                                activity.enableMenu();
                     }
                 });
         settingsSlidingView.setOnTouchListener(new View.OnTouchListener() {

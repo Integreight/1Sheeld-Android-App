@@ -138,12 +138,14 @@ public class SpeechRecognitionShield extends
 
         @Override
         public void onBeginingOfSpeech() {
-            eventHandler.onBeginingOfSpeech();
+            if (eventHandler != null)
+                eventHandler.onBeginingOfSpeech();
         }
 
         @Override
         public void onRmsChanged(float rmsdB) {
-            eventHandler.onRmsChanged(rmsdB);
+            if (eventHandler != null)
+                eventHandler.onRmsChanged(rmsdB);
             Log.d("RMS", rmsdB + "");
         }
     };

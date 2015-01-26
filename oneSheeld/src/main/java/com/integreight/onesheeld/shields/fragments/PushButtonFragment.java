@@ -32,40 +32,6 @@ public class PushButtonFragment extends
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.push_button_shield_fragment_layout,
                 container, false);
-        if ((PushButtonShield) getApplication().getRunningShields().get(
-                getControllerTag()) == null) {
-            getApplication().getRunningShields().put(getControllerTag(),
-                    new PushButtonShield(activity, getControllerTag()));
-        }
-
-        push = (OneSheeldButton) v
-                .findViewById(R.id.push_button_shield_button_push_button);
-        menu = (AppSlidingLeftMenu) activity
-                .findViewById(R.id.sliding_pane_layout);
-        push.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View arg0, MotionEvent arg1) {
-                if (rect == null) {
-                    rect = new Rect(push.getLeft(), push.getTop(), push
-                            .getRight(), push.getBottom());
-                }
-                if (arg1.getAction() == MotionEvent.ACTION_DOWN
-                        || arg1.getAction() == MotionEvent.ACTION_MOVE) {
-                    if (rect.contains((int) arg1.getX() + rect.left,
-                            (int) arg1.getY() + rect.top)) {
-                        on(arg1);
-                    } else {
-                        off(arg1);
-                    }
-                    return true;
-                } else if (arg1.getAction() == MotionEvent.ACTION_UP) {
-                    off(arg1);
-                    return true;
-                }
-                return false;
-            }
-        });
         return v;
 
     }
@@ -112,6 +78,40 @@ public class PushButtonFragment extends
                     public void onUnSelect(ArduinoPin pin) {
                     }
                 });
+        if ((PushButtonShield) getApplication().getRunningShields().get(
+                getControllerTag()) == null) {
+            getApplication().getRunningShields().put(getControllerTag(),
+                    new PushButtonShield(activity, getControllerTag()));
+        }
+
+        push = (OneSheeldButton) v
+                .findViewById(R.id.push_button_shield_button_push_button);
+        menu = (AppSlidingLeftMenu) activity
+                .findViewById(R.id.sliding_pane_layout);
+        push.setOnTouchListener(new View.OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+                if (rect == null) {
+                    rect = new Rect(push.getLeft(), push.getTop(), push
+                            .getRight(), push.getBottom());
+                }
+                if (arg1.getAction() == MotionEvent.ACTION_DOWN
+                        || arg1.getAction() == MotionEvent.ACTION_MOVE) {
+                    if (rect.contains((int) arg1.getX() + rect.left,
+                            (int) arg1.getY() + rect.top)) {
+                        on(arg1);
+                    } else {
+                        off(arg1);
+                    }
+                    return true;
+                } else if (arg1.getAction() == MotionEvent.ACTION_UP) {
+                    off(arg1);
+                    return true;
+                }
+                return false;
+            }
+        });
         super.onStart();
 
     }
