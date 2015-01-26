@@ -58,6 +58,7 @@ public class ArduinoFirmata {
     private final byte BT_CONNECTED = (byte) 0x01;
     private final byte QUERY_LIBRARY_VERSION = (byte) 0x03;
     private final byte LIBRARY_VERSION_RESPONSE = (byte) 0x01;
+    private final byte IS_HARDWARE_CONNECTED_QUERY = (byte) 0x02;
     
     private final Object sysexLock=new Object();
 
@@ -802,6 +803,9 @@ public class ArduinoFirmata {
                         //1Sheeld configration from the library
                         if (functionId == LIBRARY_VERSION_RESPONSE) {
 
+                        }
+                        else if(functionId == IS_HARDWARE_CONNECTED_QUERY){
+                            notifyHardwareOfConnection();
                         }
                     } else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
                         frameHandler.onNewShieldFrameReceived(frame);
