@@ -1,11 +1,9 @@
 package com.integreight.onesheeld.shields;
 
 import android.app.Activity;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -106,15 +104,15 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         activity = getAppActivity();
         uiHandler = new Handler();
         /*
-		 * If the Shield lost it's controller instance within the application,
+         * If the Shield lost it's controller instance within the application,
 		 * then starts to re-init it
 		 */
         if (getApplication().getRunningShields().get(getControllerTag()) != null)
             getApplication().getRunningShields().get(getControllerTag())
                     .setHasForgroundView(true);
         else {
-            reInitController();
-            return;
+            if (!reInitController())
+                return;
         }
         if (getApplication().getAppFirmata() == null) {
             getApplication().addServiceEventHandler(
