@@ -98,8 +98,6 @@ public class CameraAidlService extends Service {
             ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
             if (!CameraHeadService.isRunning) {
                 Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
-                // You can also include some extra data.
-                intent1.putExtra("message", "This is my message!");
                 LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
             }
             Log.d("receiver",
