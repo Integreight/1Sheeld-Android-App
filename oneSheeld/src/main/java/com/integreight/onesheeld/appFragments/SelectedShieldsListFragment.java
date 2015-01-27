@@ -32,17 +32,18 @@ import com.integreight.onesheeld.shields.fragments.GamepadFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
 import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
+import com.integreight.onesheeld.shields.fragments.InternetFragment;
 import com.integreight.onesheeld.shields.fragments.KeyboardFragment;
 import com.integreight.onesheeld.shields.fragments.KeypadFragment;
 import com.integreight.onesheeld.shields.fragments.LcdFragment;
 import com.integreight.onesheeld.shields.fragments.LedFragment;
 import com.integreight.onesheeld.shields.fragments.LightFragment;
-import com.integreight.onesheeld.shields.fragments.PatternFragment;
 import com.integreight.onesheeld.shields.fragments.MagnetometerFragment;
 import com.integreight.onesheeld.shields.fragments.MicFragment;
 import com.integreight.onesheeld.shields.fragments.MusicPlayerFragment;
 import com.integreight.onesheeld.shields.fragments.NotificationFragment;
 import com.integreight.onesheeld.shields.fragments.OrientationFragment;
+import com.integreight.onesheeld.shields.fragments.PatternFragment;
 import com.integreight.onesheeld.shields.fragments.PhoneFragment;
 import com.integreight.onesheeld.shields.fragments.PressureFragment;
 import com.integreight.onesheeld.shields.fragments.ProximityFragment;
@@ -173,6 +174,8 @@ public class SelectedShieldsListFragment extends ListFragment {
             return addToCreatedListAndReturn(uiShield, new TerminalFragment());
         if (uiShield.id == UIShield.PATTERN_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new PatternFragment());
+        if (uiShield.id == UIShield.INTERNET_SHIELD.id)
+            return addToCreatedListAndReturn(uiShield, new InternetFragment());
 
         else {
             return new EmptyShieldFragment();

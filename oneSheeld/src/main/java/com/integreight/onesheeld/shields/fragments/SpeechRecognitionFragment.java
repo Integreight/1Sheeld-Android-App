@@ -138,7 +138,7 @@ public class SpeechRecognitionFragment extends
 
                     @Override
                     public void run() {
-                        recognizedResult.setText("");
+//                        recognizedResult.setText("");
                         setOff();
                     }
                 });

@@ -1120,7 +1120,6 @@ public class LockPatternViewEx extends View {
         mInStealthMode = ss.isInStealthMode();
         mEnableHapticFeedback = ss.isTactileFeedbackEnabled();
     }
-
     /**
      * The parecelable for saving and restoring a lock pattern view.
      */

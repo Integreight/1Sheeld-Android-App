@@ -14,6 +14,7 @@ import com.integreight.onesheeld.shields.controller.GamepadShield;
 import com.integreight.onesheeld.shields.controller.GpsShield;
 import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield;
+import com.integreight.onesheeld.shields.controller.InternetShield;
 import com.integreight.onesheeld.shields.controller.KeyboardShield;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.shields.controller.LcdShield;
@@ -145,7 +146,9 @@ public enum UIShield {
             R.drawable.shields_list_flashlight_symbol, false,
             RemoteOneSheeldShield.class, false), PATTERN_SHIELD((byte) 0x27, "Pattern",
             0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
-            PatternShield.class);
+            PatternShield.class), INTERNET_SHIELD((byte) 0x29, "Internet",
+            0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
+            InternetShield.class);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
             0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
