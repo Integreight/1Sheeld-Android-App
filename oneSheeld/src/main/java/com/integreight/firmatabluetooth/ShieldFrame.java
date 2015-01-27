@@ -65,6 +65,12 @@ public class ShieldFrame {
         return new String(arguments.get(n));
     }
 
+    public int getArgumentAsInteger(int n) {
+        if (n >= arguments.size()&&arguments.get(n).length!=2)
+            return 0;
+        return (arguments.get(n)[1]<<8)&arguments.get(n)[0];
+    }
+
     public float getArgumentAsFloat(int n) {
         byte[] b = getArgument(n);
         if (n >= arguments.size() || b.length != 4)
