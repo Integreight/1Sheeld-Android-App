@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:gravity="center"
+    android:orientation="vertical"
     android:layout_height="match_parent">
 
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:visibility="invisible"
-        android:layout_height="wrap_content"
-        android:background="@drawable/accelerometer_shield_screen_logo"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/internet_shield_screen_logo"
         android:contentDescription="@string/app_name" />
 
     <RelativeLayout
@@ -28,6 +29,7 @@
             android:text="@string/no_requests" />
 
         <ExpandableListView
+            android:cacheColorHint="@color/transparent"
             android:id="@+id/requestsList"
             android:divider="@color/textColorOnDark"
             android:dividerHeight=".5dp"
@@ -35,4 +37,4 @@
             android:layout_width="match_parent" />
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

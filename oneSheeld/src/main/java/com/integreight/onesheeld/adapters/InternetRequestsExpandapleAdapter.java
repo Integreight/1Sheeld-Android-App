@@ -113,6 +113,9 @@ public class InternetRequestsExpandapleAdapter extends BaseExpandableListAdapter
             prog.setVisibility(View.VISIBLE);
             status.setImageBitmap(null);
             status.setVisibility(View.INVISIBLE);
+        } else {
+            prog.setVisibility(View.INVISIBLE);
+            status.setVisibility(View.VISIBLE);
         }
         return convertView;
     }

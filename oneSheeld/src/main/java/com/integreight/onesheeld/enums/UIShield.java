@@ -145,9 +145,9 @@ public enum UIShield {
             "Remote 1Sheeld", 0xff0b4c8d,
             R.drawable.shields_list_flashlight_symbol, false,
             RemoteOneSheeldShield.class, false), PATTERN_SHIELD((byte) 0x27, "Pattern",
-            0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
+            0xffde1f26, R.drawable.shields_list_pattern_symbol, false,
             PatternShield.class), INTERNET_SHIELD((byte) 0x29, "Internet",
-            0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
+            0xffde1f26, R.drawable.shields_list_internet_symbol, false,
             InternetShield.class);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,

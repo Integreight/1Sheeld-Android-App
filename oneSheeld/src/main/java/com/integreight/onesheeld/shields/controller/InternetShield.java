@@ -47,28 +47,13 @@ public class InternetShield extends
     private static final byte GET_HEADER = (byte) 0x13;
 
     private ShieldFrame frame;
+    int i = 0;
 
-
-    @Override
-    public ControllerParent<ControllerParent<InternetShield>> init(String tag) {
-        // TODO Auto-generated method stub\
-        System.out.print("");
-        try {
-            InternetManager.getInstance();
-            if (InternetManager.getInstance().getCachDB() == null || !InternetManager.getInstance().getCachDB().isOpen())
-                InternetManager.getInstance().init(activity.getApplicationContext());
-            else {
-                if (!InternetManager.getInstance().getCachDB().isOpen()) {
-                    InternetManager.getInstance().close();
-                    InternetManager.resetInstance().init(activity.getApplicationContext());
-                }
-            }
-        } catch (SnappydbException e) {
-            e.printStackTrace();
-        }
+    public void addRequest() {
+        i = i + 1;
         InternetRequest request = new InternetRequest();
         request.setUrl("https://www.google.com.eg");
-        request.setId(1);
+        request.setId(i);
         request.addRegisteredCallbacks(InternetRequest.CALLBACK.ON_SUCCESS);
         request.setCallback(new AsyncHttpResponseHandler() {
             @Override
@@ -76,7 +61,7 @@ public class InternetShield extends
                 try {
                     String str = new String(responseBody, "UTF-8");
                     Log.d("res", str);
-                    InternetResponse response = InternetManager.getInstance().getRequest(1).getResponse();
+                    InternetResponse response = InternetManager.getInstance().getRequest(i).getResponse();
                     if (response != null)
                         Log.d("res", response.toString());
                 } catch (Exception e) {
@@ -95,8 +80,27 @@ public class InternetShield extends
                 super.onFailure(statusCode, headers, responseBody, error);
             }
         });
-        InternetManager.getInstance().putRequest(1, request);
-        InternetManager.getInstance().execute(1, InternetManager.REQUEST_TYPE.GET);
+        InternetManager.getInstance().putRequest(i, request);
+        InternetManager.getInstance().execute(i, InternetManager.REQUEST_TYPE.GET);
+    }
+
+    @Override
+    public ControllerParent<ControllerParent<InternetShield>> init(String tag) {
+        // TODO Auto-generated method stub\
+        System.out.print("");
+        try {
+            InternetManager.getInstance();
+            if (InternetManager.getInstance().getCachDB() == null || !InternetManager.getInstance().getCachDB().isOpen())
+                InternetManager.getInstance().init(activity.getApplicationContext());
+            else {
+                if (!InternetManager.getInstance().getCachDB().isOpen()) {
+                    InternetManager.getInstance().close();
+                    InternetManager.resetInstance().init(activity.getApplicationContext());
+                }
+            }
+        } catch (SnappydbException e) {
+            e.printStackTrace();
+        }
         return super.init(tag);
     }
 
@@ -212,8 +216,14 @@ public class InternetShield extends
             req.setContentType(mainReq.getContentType());
             req.setParams(mainReq.getParamsAsMap());
             req.setHeaders(mainReq.getParamsAsMap());
+            req.setStatus(mainReq.getStatus());
             ArrayList<Pair<String, String>> children = new ArrayList<>();
             children.add(new Pair<>("URL", req.getUrl()));
+            InternetResponse res = mainReq.getResponse();
+            if (mainReq.getStatus() == InternetRequest.REQUEST_STATUS.EXECUTED && res != null) {
+                String response = new String(res.getResponseBody());
+                children.add(new Pair<>("Response", response != null && response.length() >= 30 ? response.substring(0, 30) + "..." : response));
+            }
             children.add(new Pair<>("Content Type", req.getContentType() != null && req.getContentType().trim().length() > 0 ? req.getContentType() : "No Content Type"));
             if (req.getAuth() != null)
                 children.add(new Pair<>("Authentication", req.getAuth().first + " : " + req.getAuth().second));

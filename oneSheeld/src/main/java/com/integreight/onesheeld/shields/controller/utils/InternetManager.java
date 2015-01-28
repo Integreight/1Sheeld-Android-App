@@ -10,6 +10,8 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 
+import org.apache.http.Header;
+
 import java.util.Hashtable;
 
 /**
@@ -87,6 +89,8 @@ public class InternetManager {
 
     public void putRequest(int id, final InternetRequest request) {
         requests.put(id, request);
+        if (uiCallback != null)
+            uiCallback.onStart();
     }
 
     public AsyncHttpResponseHandler getUiCallback() {
@@ -126,6 +130,27 @@ public class InternetManager {
                 if (uiCallback != null)
                     uiCallback.onFinish();
                 super.onFinish();
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                if (request.getCallback() != null)
+                    request.getCallback().onFailure(statusCode, headers, responseBody, error);
+                super.onFailure(statusCode, headers, responseBody, error);
+            }
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                if (request.getCallback() != null)
+                    request.getCallback().onSuccess(statusCode, headers, responseBody);
+                super.onSuccess(statusCode, headers, responseBody);
+            }
+
+            @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+                if (request.getCallback() != null)
+                    request.getCallback().onProgress(bytesWritten, totalSize);
+                super.onProgress(bytesWritten, totalSize);
             }
         };
         switch (type) {

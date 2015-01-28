@@ -1,24 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:padding="10dp"
     android:gravity="center_vertical">
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/textColorOnDark"
-        android:textSize="15sp"
-        android:layout_marginLeft="50dp"
-        android:textStyle="bold"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:id="@+id/requestID"
-        android:singleLine="true" />
-
     <RelativeLayout
+        android:id="@+id/st"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center">
@@ -35,4 +25,18 @@
             style="@android:style/Widget.ProgressBar.Small.Inverse"
             android:id="@+id/executingRequest" />
     </RelativeLayout>
-</LinearLayout>
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/st"
+        android:textColor="@color/textColorOnDark"
+        android:textSize="15sp"
+        android:gravity="left|center_vertical"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="50dp"
+        android:paddingRight="10dp"
+        android:textStyle="bold"
+        android:id="@+id/requestID"
+        android:singleLine="true" />
+</RelativeLayout>
