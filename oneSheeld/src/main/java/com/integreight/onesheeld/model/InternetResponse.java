@@ -107,10 +107,6 @@ public class InternetResponse implements Parcelable, Serializable {
         }
     }
 
-    public enum RESPONSE_STATUS implements Serializable {
-        SUCCESSFUL, FAILURE, IN_QUEUE, DONE;
-    }
-
     protected InternetResponse(Parcel in) {
         currentBound = in.readInt();
         statusCode = in.readInt();
@@ -143,4 +139,8 @@ public class InternetResponse implements Parcelable, Serializable {
             return new InternetResponse[size];
         }
     };
+
+    public enum RESPONSE_STATUS implements Serializable {
+        SUCCESSFUL, FAILURE, IN_QUEUE, DONE;
+    }
 }

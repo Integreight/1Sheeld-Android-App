@@ -1,11 +1,13 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.util.Pair;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.InternetRequest;
 import com.integreight.onesheeld.model.InternetResponse;
+import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.integreight.onesheeld.utils.BitsUtils;
@@ -14,6 +16,9 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
 
 import org.apache.http.Header;
+
+import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class InternetShield extends
         ControllerParent<ControllerParent<InternetShield>> {
@@ -64,6 +69,7 @@ public class InternetShield extends
         InternetRequest request = new InternetRequest();
         request.setUrl("https://www.google.com.eg");
         request.setId(1);
+        request.addRegisteredCallbacks(InternetRequest.CALLBACK.ON_SUCCESS);
         request.setCallback(new AsyncHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
@@ -77,6 +83,11 @@ public class InternetShield extends
                     e.printStackTrace();
                 }
                 super.onSuccess(statusCode, headers, responseBody);
+            }
+
+            @Override
+            public void onFinish() {
+                super.onFinish();
             }
 
             @Override
@@ -160,7 +171,7 @@ public class InternetShield extends
                     break;
                 /////// RESPONSE
                 case DISPOSE:
-                    InternetManager.getInstance().disponseRequest(requestID);
+                    InternetManager.getInstance().disponseResponse(requestID);
                     break;
                 case GET_NEXT_BYTES:
                     InternetManager.getInstance().getRequest(requestID).getResponse().getBytes(0, 0);
@@ -181,6 +192,53 @@ public class InternetShield extends
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setUiCallback(AsyncHttpResponseHandler callback) {
+        InternetManager.getInstance().setUiCallback(callback);
+    }
+
+    public ArrayList<InternetUiRequest> getUiRequests() {
+        ArrayList<InternetUiRequest> requestsUI = new ArrayList<>();
+        Enumeration e = InternetManager.getInstance().getRequests().keys();
+        while (e.hasMoreElements()) {
+            Integer i = (Integer) e.nextElement();
+            InternetRequest mainReq = InternetManager.getInstance().getRequest(i);
+            InternetUiRequest req = new InternetUiRequest();
+            req.setId(mainReq.getId());
+            req.setUrl(mainReq.getUrl());
+            if (mainReq.getAuth() != null)
+                req.setAuth(mainReq.getAuth().first, mainReq.getAuth().second);
+            req.setContentType(mainReq.getContentType());
+            req.setParams(mainReq.getParamsAsMap());
+            req.setHeaders(mainReq.getParamsAsMap());
+            ArrayList<Pair<String, String>> children = new ArrayList<>();
+            children.add(new Pair<>("URL", req.getUrl()));
+            children.add(new Pair<>("Content Type", req.getContentType() != null && req.getContentType().trim().length() > 0 ? req.getContentType() : "No Content Type"));
+            if (req.getAuth() != null)
+                children.add(new Pair<>("Authentication", req.getAuth().first + " : " + req.getAuth().second));
+            else
+                children.add(new Pair<>("Authentication", "No Authentication"));
+            String params = "No Parameters";
+            if (req.getParams() != null && req.getParamsAsMap().size() > 0) {
+                params = "";
+                for (String key : req.getParamsAsMap().keySet()) {
+                    params += key + " : " + req.getParamsAsMap().get(key) + "\n";
+                }
+            }
+            children.add(new Pair<>("Parameters", params));
+            String headers = "No Headers";
+            if (req.getHeaders() != null) {
+                headers = "";
+                for (Header header : req.getHeaders()) {
+                    headers += header.getName() + " : " + header.getValue() + "\n";
+                }
+            }
+            children.add(new Pair<>("Headers", headers));
+            req.setUiChildren(children);
+            requestsUI.add(req);
+        }
+        return requestsUI;
     }
 
 

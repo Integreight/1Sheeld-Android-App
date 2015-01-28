@@ -24,7 +24,7 @@ public class InternetRequest {
     private REQUEST_STATUS status;
     private AsyncHttpResponseHandler mCallback;
     private Map<String, String> headers;
-    private RequestParams params;
+    private Map<String, String> params;
     private Pair<String, String> auth;
     private String contentType;
     private boolean isIgnored = false;
@@ -36,7 +36,7 @@ public class InternetRequest {
         mCallback = null;
         registeredCallbacks = new ArrayList<>();
         headers = new HashMap<>();
-        params = new RequestParams();
+        params = new HashMap<>();
         setCallback(new AsyncHttpResponseHandler());
     }
 
@@ -47,7 +47,7 @@ public class InternetRequest {
         this.mCallback = callback;
         setCallback(new AsyncHttpResponseHandler());
         this.headers = new HashMap<>();
-        this.params = new RequestParams();
+        this.params = new HashMap<>();
     }
 
     public String getUrl() {
@@ -85,7 +85,7 @@ public class InternetRequest {
                 status = REQUEST_STATUS.SENT;
 //                if (mCallback != null)
 //                    mCallback.onStart();
-                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ONSTART))
+                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_START.name()))
                     callback.onStart();
                 isIgnored = false;
                 super.onStart();
@@ -97,7 +97,7 @@ public class InternetRequest {
                 setResponse(new InternetResponse(responseBody, statusCode, InternetResponse.RESPONSE_STATUS.SUCCESSFUL, headers));
 //                if (mCallback != null)
 //                    mCallback.onSuccess(statusCode, headers, responseBody);
-                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ONSUCCESS))
+                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_SUCCESS.name()))
                     callback.onSuccess(statusCode, headers, responseBody);
                 isIgnored = false;
                 super.onSuccess(statusCode, headers, responseBody);
@@ -109,7 +109,7 @@ public class InternetRequest {
                 setResponse(new InternetResponse(responseBody, statusCode, InternetResponse.RESPONSE_STATUS.FAILURE, headers));
 //                if (mCallback != null)
 //                    mCallback.onFailure(statusCode, headers, responseBody, error);
-                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ONFAILURE))
+                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FAILURE.name()))
                     callback.onFailure(statusCode, headers, responseBody, error);
                 isIgnored = false;
                 super.onFailure(statusCode, headers, responseBody, error);
@@ -120,7 +120,7 @@ public class InternetRequest {
                 status = REQUEST_STATUS.EXECUTED;
 //                if (mCallback != null)
 //                    mCallback.onFinish();
-                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ONFINISH))
+                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FINISH.name()))
                     callback.onFinish();
                 isIgnored = false;
                 super.onFinish();
@@ -130,7 +130,7 @@ public class InternetRequest {
             public void onProgress(int bytesWritten, int totalSize) {
 //                if (mCallback != null)
 //                    mCallback.onProgress(bytesWritten, totalSize);
-                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ONPROGRESS))
+                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_PROGRESS.name()))
                     callback.onProgress(bytesWritten, totalSize);
                 isIgnored = false;
                 super.onProgress(bytesWritten, totalSize);
@@ -183,7 +183,7 @@ public class InternetRequest {
     }
 
     public void removeAllParams() {
-        params = new RequestParams();
+        params = new HashMap<>();
     }
 
     public Header[] getHeaders() {
@@ -214,7 +214,23 @@ public class InternetRequest {
     }
 
     public RequestParams getParams() {
-        return params;
+        RequestParams paramsI = new RequestParams();
+        for (final String key : params.keySet()) {
+            paramsI.add(key, params.get(key));
+        }
+        return paramsI;
+    }
+
+    public HashMap<String, String> getParamsAsMap() {
+        return new HashMap<>(params);
+    }
+
+    public void setParams(Map<String, String> params) {
+        this.params = params;
+    }
+
+    public void setHeaders(Map<String, String> headers) {
+        this.headers = headers;
     }
 
     public Pair<String, String> getAuth() {
@@ -241,10 +257,11 @@ public class InternetRequest {
         isIgnored = true;
     }
 
-    public void addRegisteredCallbacks(CALLBACK callback) {
+    public void addRegisteredCallbacks(CALLBACK... callbacks) {
         if (registeredCallbacks == null)
             registeredCallbacks = new ArrayList<>();
-        registeredCallbacks.add(callback.name());
+        for (CALLBACK callback : callbacks)
+            registeredCallbacks.add(callback.name());
     }
 
     public ArrayList<String> getRegisteredCallbacks() {
@@ -252,7 +269,7 @@ public class InternetRequest {
     }
 
     public enum CALLBACK {
-        ONSTART, ONFINISH, ONSUCCESS, ONFAILURE, ONPROGRESS
+        ON_START, ON_FINISH, ON_SUCCESS, ON_FAILURE, ON_PROGRESS
     }
 
     public static enum REQUEST_STATUS {

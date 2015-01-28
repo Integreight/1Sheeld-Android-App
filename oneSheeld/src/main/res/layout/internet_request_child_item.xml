@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textColor="@color/offWhite"
+        android:textSize="14sp"
+        android:singleLine="true"
+        android:textStyle="bold"
+        android:id="@+id/key" />
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:textColor="@color/offWhite"
+        android:textSize="14sp"
+        android:layout_marginLeft="60dp"
+        android:layout_below="@id/key"
+        android:id="@+id/value" />
+</RelativeLayout>
