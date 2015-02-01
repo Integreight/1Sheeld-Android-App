@@ -53,15 +53,25 @@ public class InternetResponse implements Parcelable, Serializable {
         return response;
     }
 
-    public byte[] getBytes(int index, int count) {
+    public ResponseBodyBytes getBytes(int index, int count) {
+        ResponseBodyBytes res = new ResponseBodyBytes();
         if (index > responseBody.length)
-            return null;
+            return new ResponseBodyBytes(null, RESPONSE_BODY_BYTES.INDEX_GREATER_THAN_LENGTH);
+        if (index < 0)
+            return new ResponseBodyBytes(null, RESPONSE_BODY_BYTES.INDEX_LESS_THAN_0);
+        if (count < 0)
+            return new ResponseBodyBytes(null, RESPONSE_BODY_BYTES.COUNT_LESS_THAN_0);
+        index = index > 255 ? 255 : index;
+        res.setBytes_status(RESPONSE_BODY_BYTES.SUCCESS);
         int targetBound = index + count;
-        targetBound = responseBody.length - index >= targetBound ? targetBound : responseBody.length - index;
+        if (responseBody.length < targetBound)
+            res.setBytes_status(RESPONSE_BODY_BYTES.NOT_ENOUGH_BYTES);
+        targetBound = responseBody.length >= targetBound ? count : responseBody.length - index;
         byte[] response = new byte[targetBound];
         for (int i = 0; i < response.length; i++)
             response[i] = responseBody[index + i];
-        return response;
+        res.setArray(response);
+        return res;
     }
 
     public byte[] getResponseBody() {
@@ -144,5 +154,39 @@ public class InternetResponse implements Parcelable, Serializable {
 
     public enum RESPONSE_STATUS implements Serializable {
         SUCCESSFUL, FAILURE, IN_QUEUE, DONE;
+    }
+
+    public class ResponseBodyBytes {
+        private byte[] array;
+        RESPONSE_BODY_BYTES bytes_status;
+
+        public ResponseBodyBytes() {
+
+        }
+
+        public ResponseBodyBytes(byte[] array, RESPONSE_BODY_BYTES bytes_status) {
+            this.array = array;
+            this.bytes_status = bytes_status;
+        }
+
+        public byte[] getArray() {
+            return array;
+        }
+
+        public void setArray(byte[] array) {
+            this.array = array;
+        }
+
+        public RESPONSE_BODY_BYTES getBytes_status() {
+            return bytes_status;
+        }
+
+        public void setBytes_status(RESPONSE_BODY_BYTES bytes_status) {
+            this.bytes_status = bytes_status;
+        }
+    }
+
+    public enum RESPONSE_BODY_BYTES {
+        SUCCESS, NOT_ENOUGH_BYTES, INDEX_LESS_THAN_0, INDEX_GREATER_THAN_LENGTH, COUNT_LESS_THAN_0
     }
 }

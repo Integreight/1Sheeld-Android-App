@@ -210,7 +210,7 @@ public class InternetManager {
     }
 
     public void setMaxSentBytes(int maxSentBytes) {
-        this.maxSentBytes = maxSentBytes;
+        this.maxSentBytes = maxSentBytes > 255 ? 255 : maxSentBytes;
     }
 
     public enum EXECUTION_TYPE {
