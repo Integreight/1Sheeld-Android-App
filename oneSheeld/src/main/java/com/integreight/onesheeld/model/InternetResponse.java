@@ -3,6 +3,8 @@ package com.integreight.onesheeld.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.integreight.onesheeld.shields.controller.utils.InternetManager;
+
 import org.apache.http.Header;
 
 import java.io.Serializable;
@@ -28,14 +30,14 @@ public class InternetResponse implements Parcelable, Serializable {
 
     public InternetResponse(byte[] responseBody, int statusCode, RESPONSE_STATUS status, Header[] headers) {
         this();
-        this.responseBody = responseBody;
+        this.responseBody = responseBody != null ? responseBody : new byte[0];
         this.statusCode = statusCode;
         this.status = status;
         this.setHeaders(headers);
     }
 
     public byte[] next() {
-        return next(255);
+        return next(InternetManager.getInstance().getMaxSentBytes());
     }
 
     public byte[] next(int targetBound) {
@@ -67,7 +69,7 @@ public class InternetResponse implements Parcelable, Serializable {
     }
 
     public void setResponseBody(byte[] responseBody) {
-        this.responseBody = responseBody;
+        this.responseBody = responseBody != null ? responseBody : new byte[0];
     }
 
     public int getCurrentBound() {

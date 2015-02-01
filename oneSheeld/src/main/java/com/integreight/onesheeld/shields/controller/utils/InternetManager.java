@@ -24,6 +24,8 @@ public class InternetManager {
     private DB cachDB;
     private Context context;
     private AsyncHttpResponseHandler uiCallback;
+    private String contentType = "";
+    private int maxSentBytes = 255;
 
 
     private InternetManager() {
@@ -70,6 +72,8 @@ public class InternetManager {
     }
 
     public AsyncHttpClient getHttpClient() {
+        if (httpClient == null)
+            httpClient = new AsyncHttpClient();
         return httpClient;
     }
 
@@ -88,6 +92,7 @@ public class InternetManager {
     }
 
     public void putRequest(int id, final InternetRequest request) {
+        request.setContentType(contentType);
         requests.put(id, request);
         if (uiCallback != null)
             uiCallback.onStart();
@@ -118,8 +123,8 @@ public class InternetManager {
             public void onStart() {
                 if (request.getCallback() != null)
                     request.getCallback().onStart();
-                if (uiCallback != null)
-                    uiCallback.onStart();
+                if (getUiCallback() != null)
+                    getUiCallback().onStart();
                 super.onStart();
             }
 
@@ -127,8 +132,8 @@ public class InternetManager {
             public void onFinish() {
                 if (request.getCallback() != null)
                     request.getCallback().onFinish();
-                if (uiCallback != null)
-                    uiCallback.onFinish();
+                if (getUiCallback() != null)
+                    getUiCallback().onFinish();
                 super.onFinish();
             }
 
@@ -152,19 +157,24 @@ public class InternetManager {
                     request.getCallback().onProgress(bytesWritten, totalSize);
                 super.onProgress(bytesWritten, totalSize);
             }
+
         };
+        getHttpClient().clearBasicAuth();
+        if (request.getAuth() != null && request.getAuth().first != null && request.getAuth().first.trim().length() > 0)
+            getHttpClient().setBasicAuth(request.getAuth().first, request.getAuth().second);
+
         switch (type) {
             case GET:
-                httpClient.get(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
+                getHttpClient().get(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
                 break;
             case POST:
-                httpClient.post(context, request.getUrl(), request.getHeaders(), request.getParams(), request.getContentType(), withUiCallBack);
+                getHttpClient().post(context, request.getUrl(), request.getHeaders(), request.getParams(), request.getContentType(), withUiCallBack);
                 break;
             case PUT:
-                httpClient.put(context, request.getUrl(), request.getParams(), withUiCallBack);
+                getHttpClient().put(context, request.getUrl(), request.getParams(), withUiCallBack);
                 break;
             case DELETE:
-                httpClient.delete(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
+                getHttpClient().delete(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
                 break;
         }
         getRequest(id).setStatus(InternetRequest.REQUEST_STATUS.CALLED);
@@ -185,6 +195,22 @@ public class InternetManager {
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public int getMaxSentBytes() {
+        return maxSentBytes;
+    }
+
+    public void setMaxSentBytes(int maxSentBytes) {
+        this.maxSentBytes = maxSentBytes;
     }
 
     public enum EXECUTION_TYPE {

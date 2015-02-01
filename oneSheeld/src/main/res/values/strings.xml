@@ -109,4 +109,5 @@
 
     <!-- Internet -->
     <string name="no_requests">No Requests Found</string>
+    <string name="cancel_popup">Cancel</string>
 </resources>

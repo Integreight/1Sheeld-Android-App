@@ -13,6 +13,7 @@ import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.InternetShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
+import com.integreight.onesheeld.shields.controller.utils.InternetResponsePopup;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
     ExpandableListView requestsList;
     ArrayList<InternetUiRequest> requests;
+    InternetResponsePopup popup;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,6 +74,16 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
         requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
         checkRequests();
         requestsList.setAdapter(new InternetRequestsExpandapleAdapter(activity, requests));
+        requestsList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i2, long l) {
+                if (requestsList.getExpandableListAdapter().getChildrenCount(i) == 6 && i2 == 1) {
+                    popup = new InternetResponsePopup(getActivity(), new String(requests.get(i).getResponse().getResponseBody()));
+                    popup.show();
+                }
+                return true;
+            }
+        });
         super.onStart();
     }
 
@@ -84,6 +96,8 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
 
     @Override
     public void onStop() {
+        if (popup != null && popup.isShowing())
+            popup.cancel();
         super.onStop();
     }
 

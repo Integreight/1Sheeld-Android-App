@@ -52,10 +52,15 @@ public class InternetShield extends
     public void addRequest() {
         i = i + 1;
         InternetRequest request = new InternetRequest();
-        request.setUrl("https://www.google.com.eg");
+        request.setUrl("http://www.twitter.com/");
         request.setId(i);
-        request.addRegisteredCallbacks(InternetRequest.CALLBACK.ON_SUCCESS);
+        request.addRegisteredCallbacks(InternetRequest.CALLBACK.ON_SUCCESS, InternetRequest.CALLBACK.ON_PROGRESS);
         request.setCallback(new AsyncHttpResponseHandler() {
+            @Override
+            public void onStart() {
+                super.onStart();
+            }
+
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 try {
@@ -78,6 +83,11 @@ public class InternetShield extends
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 super.onFailure(statusCode, headers, responseBody, error);
+            }
+
+            @Override
+            public void onProgress(int bytesWritten, int totalSize) {
+                super.onProgress(bytesWritten, totalSize);
             }
         });
         InternetManager.getInstance().putRequest(i, request);
@@ -220,7 +230,7 @@ public class InternetShield extends
             ArrayList<Pair<String, String>> children = new ArrayList<>();
             children.add(new Pair<>("URL", req.getUrl()));
             InternetResponse res = mainReq.getResponse();
-            if (mainReq.getStatus() == InternetRequest.REQUEST_STATUS.EXECUTED && res != null) {
+            if (mainReq.getStatus() == InternetRequest.REQUEST_STATUS.EXECUTED && res != null && res.getResponseBody() != null && res.getResponseBody().length > 0) {
                 String response = new String(res.getResponseBody());
                 children.add(new Pair<>("Response", response != null && response.length() >= 30 ? response.substring(0, 30) + "..." : response));
             }

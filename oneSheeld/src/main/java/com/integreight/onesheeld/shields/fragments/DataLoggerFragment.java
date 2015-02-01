@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,6 +50,7 @@ public class DataLoggerFragment extends
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         uiHandler = new Handler();
         loggerStatus = (OneSheeldTextView) v.findViewById(R.id.loggerStatus);
         keysContainer = (LinearLayout) v.findViewById(R.id.keysContainer);
@@ -68,7 +70,11 @@ public class DataLoggerFragment extends
                 getControllerTag())).setEventHandler(eventHandler);
         keysContainer.removeAllViews();
         valuesContainer.removeAllViews();
-        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

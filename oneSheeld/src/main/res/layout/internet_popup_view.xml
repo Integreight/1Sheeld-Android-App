@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@color/popup_semi_transparent_bg"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_margin="10dp"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <ScrollView
+            android:id="@+id/responseScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textSize="14sp"
+                android:textColor="@color/offWhite" />
+        </ScrollView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:visibility="invisible"
+            android:layout_height="match_parent">
+
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/responseWeb"></WebView>
+
+            <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/redirecting"
+                android:padding="10dp"
+                android:background="@color/popup_semi_transparent_bg"
+                android:textColor="@color/white"
+                android:visibility="invisible"
+                android:textSize="15sp"
+                android:gravity="center" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:id="@+id/responseToggle"
+            android:textOn="WEB"
+            android:textOff="TXT"
+            android:checked="false" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:layout_width="200dp"
+            android:layout_marginLeft="20dp"
+            android:layout_height="40dp"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/cancelPopup"
+            android:textStyle="bold"
+            android:text="@string/cancel_popup" />
+    </LinearLayout>
+</LinearLayout>
