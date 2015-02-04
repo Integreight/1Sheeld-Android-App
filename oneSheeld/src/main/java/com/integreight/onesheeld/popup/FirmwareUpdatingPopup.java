@@ -213,7 +213,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     }
 
                     @Override
-                    public void onSuccess(JSONObject response) {
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         try {
                             System.err.println(response);
                             ((OneSheeldApplication) activity.getApplication())
@@ -232,7 +232,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                             // TODO Auto-generated catch block
                             Log.e("TAG", "Exception", e);
                         }
-                        super.onSuccess(response);
+                        super.onSuccess(statusCode, headers, response);
                     }
                 });
     }
@@ -251,7 +251,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                         new BinaryHttpResponseHandler(new String[]{
                                 "application/octet-stream", "text/plain"}) {
                             @Override
-                            public void onSuccess(byte[] binaryData) {
+                            public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
                                 FirmwareUpdatingPopup.this.setCancelable(false);
                                 activity.getThisApplication().getAppFirmata()
                                         .prepareAppForSendingFirmware();
@@ -265,7 +265,6 @@ public class FirmwareUpdatingPopup extends Dialog {
                                 else
                                     changeSlogan("Please, Press reset!",
                                             COLOR.BLUE);
-                                super.onSuccess(binaryData);
                             }
 
                             @Override
@@ -282,8 +281,6 @@ public class FirmwareUpdatingPopup extends Dialog {
                                                 .setAction(
                                                         "Firmware download failed")
                                                 .build());
-                                super.onFailure(statusCode, headers,
-                                        binaryData, error);
                             }
 
                             @Override

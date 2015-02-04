@@ -6,9 +6,12 @@ import android.os.Parcelable;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 
 import org.apache.http.Header;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Hashtable;
+import java.util.Iterator;
 
 /**
  * Created by Saad on 1/26/15.
@@ -19,6 +22,9 @@ public class InternetResponse implements Parcelable, Serializable {
     private int statusCode = -1;
     private RESPONSE_STATUS status;
     private Hashtable<String, String> headers;
+    private Object jsonResponse;
+    private RESPONSE_TYPE responseType;
+
 
     public InternetResponse() {
         status = RESPONSE_STATUS.IN_QUEUE;
@@ -59,9 +65,9 @@ public class InternetResponse implements Parcelable, Serializable {
             return new ResponseBodyBytes(null, RESPONSE_BODY_BYTES.INDEX_GREATER_THAN_LENGTH);
         if (index < 0)
             return new ResponseBodyBytes(null, RESPONSE_BODY_BYTES.INDEX_LESS_THAN_0);
-        if (count < 0)
-            return new ResponseBodyBytes(null, RESPONSE_BODY_BYTES.COUNT_LESS_THAN_0);
-        index = index > 255 ? 255 : index;
+        if (count <= 0)
+            return new ResponseBodyBytes(new byte[0], RESPONSE_BODY_BYTES.COUNT_LESS_THAN_0);
+        count = count > 255 ? 255 : count;
         res.setBytes_status(RESPONSE_BODY_BYTES.SUCCESS);
         int targetBound = index + count;
         if (responseBody.length < targetBound)
@@ -72,6 +78,16 @@ public class InternetResponse implements Parcelable, Serializable {
             response[i] = responseBody[index + i];
         res.setArray(response);
         return res;
+    }
+
+    public String getValueOfJSONOBJECT(String...tree) throws JSONException {
+        String value = null;
+        JSONObject json=new JSONObject(new String(responseBody));
+        Iterator<String> iter = json.keys();
+        while (iter.hasNext()) {
+            String key = iter.next();
+        }
+        return value;
     }
 
     public byte[] getResponseBody() {
@@ -117,6 +133,14 @@ public class InternetResponse implements Parcelable, Serializable {
                 headers.put(header.getName(), header.getValue());
             }
         }
+    }
+
+    public RESPONSE_TYPE getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(RESPONSE_TYPE responseType) {
+        this.responseType = responseType;
     }
 
     protected InternetResponse(Parcel in) {
@@ -187,6 +211,15 @@ public class InternetResponse implements Parcelable, Serializable {
     }
 
     public enum RESPONSE_BODY_BYTES {
-        SUCCESS, NOT_ENOUGH_BYTES, INDEX_LESS_THAN_0, INDEX_GREATER_THAN_LENGTH, COUNT_LESS_THAN_0
+        SUCCESS(-1), NOT_ENOUGH_BYTES(3), INDEX_LESS_THAN_0(0), INDEX_GREATER_THAN_LENGTH(0), COUNT_LESS_THAN_0(4);
+        public int value = -1;
+
+        private RESPONSE_BODY_BYTES(int value) {
+            this.value = value;
+        }
+    }
+
+    public enum RESPONSE_TYPE {
+        HTML, JSON
     }
 }

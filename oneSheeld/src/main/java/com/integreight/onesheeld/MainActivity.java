@@ -117,23 +117,17 @@ public class MainActivity extends FragmentActivity {
                         ;
                 }
                 stopService();
-                new Thread(new Runnable() {
+                Intent in = new Intent(getIntent());
+                PendingIntent intent = PendingIntent
+                        .getActivity(getBaseContext(), 0, in,
+                                getIntent().getFlags());
 
-                    @Override
-                    public void run() {
-                        Intent in = new Intent(getIntent());
-                        PendingIntent intent = PendingIntent
-                                .getActivity(getBaseContext(), 0, in,
-                                        getIntent().getFlags());
-
-                        AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                        mgr.set(AlarmManager.RTC,
-                                System.currentTimeMillis() + 1000, intent);
-                        getThisApplication().setTutShownTimes(
-                                getThisApplication().getTutShownTimes() + 1);
-                        System.exit(0);
-                    }
-                }).start();
+                AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                mgr.set(AlarmManager.RTC,
+                        System.currentTimeMillis() + 1000, intent);
+                getThisApplication().setTutShownTimes(
+                        getThisApplication().getTutShownTimes() + 1);
+                System.exit(0);
             }
         };
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
@@ -253,7 +247,7 @@ public class MainActivity extends FragmentActivity {
                                                 public void onClick(View v) {
                                                     FirmwareUpdatingPopup fup = new FirmwareUpdatingPopup(
                                                             MainActivity.this/*
-																			 * ,
+                                                                             * ,
 																			 * false
 																			 */
                                                     );

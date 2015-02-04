@@ -68,7 +68,7 @@ public class ShieldFrame {
     public int getArgumentAsInteger(int n) {
         if (n >= arguments.size()&&arguments.get(n).length!=2)
             return 0;
-        return (arguments.get(n)[1]<<8)&arguments.get(n)[0];
+        return ((arguments.get(n)[1]<<8)&0xFF)|(arguments.get(n)[0]&0xFF);
     }
 
     public float getArgumentAsFloat(int n) {

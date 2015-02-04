@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.InternetRequest;
+import com.integreight.onesheeld.model.InternetResponse;
 import com.integreight.onesheeld.model.InternetUiRequest;
 
 import java.util.ArrayList;
@@ -108,13 +109,15 @@ public class InternetRequestsExpandapleAdapter extends BaseExpandableListAdapter
         if (request.getStatus() == InternetRequest.REQUEST_STATUS.IN_QUEUE) {
             prog.setVisibility(View.INVISIBLE);
             status.setImageBitmap(null);
-            status.setVisibility(View.INVISIBLE);
+            status.setBackgroundResource(android.R.drawable.ic_menu_add);
+            status.setVisibility(View.VISIBLE);
         } else if (request.getStatus() == InternetRequest.REQUEST_STATUS.SENT || request.getStatus() == InternetRequest.REQUEST_STATUS.CALLED) {
             prog.setVisibility(View.VISIBLE);
             status.setImageBitmap(null);
             status.setVisibility(View.INVISIBLE);
         } else {
             prog.setVisibility(View.INVISIBLE);
+            status.setBackgroundResource(request.getStatus() == InternetRequest.REQUEST_STATUS.EXECUTED && request.getResponse() != null && request.getResponse().getStatus() == InternetResponse.RESPONSE_STATUS.SUCCESSFUL ? android.R.drawable.stat_sys_download_done : android.R.drawable.ic_menu_close_clear_cancel);
             status.setVisibility(View.VISIBLE);
         }
         return convertView;

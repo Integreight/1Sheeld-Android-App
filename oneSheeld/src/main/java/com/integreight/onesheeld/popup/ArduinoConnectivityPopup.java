@@ -215,7 +215,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                     }
 
                     @Override
-                    public void onFailure(int arg0, Header[] arg1, byte[] arg2,
+                    public void onFailure(int arg0, Header[] arg1, String arg2,
                                           Throwable arg3) {
                         ((OneSheeldApplication) activity.getApplication())
                                 .setMajorVersion(-1);
@@ -225,7 +225,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                     }
 
                     @Override
-                    public void onSuccess(JSONObject response) {
+                    public void onSuccess(int statusCode, Header[] headers,JSONObject response) {
                         try {
                             System.err.println(response);
                             ((OneSheeldApplication) activity.getApplication())
@@ -243,7 +243,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                             // TODO Auto-generated catch block
                             Log.e("TAG", "Exception", e);
                         }
-                        super.onSuccess(response);
+                        super.onSuccess(statusCode,headers,response);
                     }
                 });
         super.onCreate(savedInstanceState);

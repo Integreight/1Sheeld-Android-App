@@ -16,6 +16,8 @@ import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.utils.InternetResponsePopup;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
+import org.apache.http.Header;
+
 import java.util.ArrayList;
 
 public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
@@ -53,22 +55,40 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
         ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).setUiCallback(new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
-                if (canChangeUI() && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
-                    requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
-                    checkRequests();
-                    ((InternetRequestsExpandapleAdapter) requestsList.getExpandableListAdapter()).updateRequests(requests);
-                }
-                super.onStart();
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (canChangeUI() && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
+                            requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
+                            checkRequests();
+                            ((InternetRequestsExpandapleAdapter) requestsList.getExpandableListAdapter()).updateRequests(requests);
+                        }
+                    }
+                });
             }
 
             @Override
             public void onFinish() {
-                if (canChangeUI() && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
-                    requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
-                    checkRequests();
-                    ((InternetRequestsExpandapleAdapter) requestsList.getExpandableListAdapter()).updateRequests(requests);
-                }
-                super.onFinish();
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (canChangeUI() && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
+                            requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
+                            checkRequests();
+                            ((InternetRequestsExpandapleAdapter) requestsList.getExpandableListAdapter()).updateRequests(requests);
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+
+            }
+
+            @Override
+            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+
             }
         });
         requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();

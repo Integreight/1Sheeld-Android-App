@@ -1,7 +1,6 @@
 package com.integreight.onesheeld.model;
 
-import android.util.Pair;
-
+import com.integreight.onesheeld.shields.controller.InternetShield;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -23,29 +22,54 @@ public class InternetRequest {
     private int id;
     private REQUEST_STATUS status;
     private AsyncHttpResponseHandler mCallback;
+    private InternetShield.CallBack shieldCallback;
     private Map<String, String> headers;
     private Map<String, String> params;
-    private Pair<String, String> auth;
     private String contentType;
     private boolean isIgnored = false;
     private ArrayList<String> registeredCallbacks;
 
     public InternetRequest() {
         status = REQUEST_STATUS.IN_QUEUE;
-        auth = null;
         mCallback = null;
         registeredCallbacks = new ArrayList<>();
         headers = new HashMap<>();
         params = new HashMap<>();
-        setCallback(new AsyncHttpResponseHandler());
+        shieldCallback = new InternetShield.CallBack() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int RequestID) {
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int RequestID) {
+
+            }
+
+            @Override
+            public void onFinish(int requestID) {
+
+            }
+
+            @Override
+            public void onStart(int requestID) {
+
+            }
+
+            @Override
+            public void onProgress(int bytesWritten, int totalSize, int RequestID) {
+
+            }
+        };
+        setCallback(shieldCallback);
     }
 
-    public InternetRequest(String url, int id, AsyncHttpResponseHandler callback) {
+    public InternetRequest(String url, int id, InternetShield.CallBack callback) {
         this();
         this.url = url;
         this.id = id;
-        this.mCallback = callback;
-        setCallback(new AsyncHttpResponseHandler());
+        this.shieldCallback = callback;
+        setCallback(shieldCallback);
         this.headers = new HashMap<>();
         this.params = new HashMap<>();
     }
@@ -78,7 +102,38 @@ public class InternetRequest {
         return mCallback;
     }
 
-    public void setCallback(final AsyncHttpResponseHandler callback) {
+    public void setCallback(final InternetShield.CallBack callback) {
+        this.shieldCallback = new InternetShield.CallBack() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int RequestID) {
+                if (callback != null)
+                    callback.onSuccess(statusCode, headers, responseBody, RequestID);
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int requestID) {
+                if (callback != null)
+                    callback.onFailure(statusCode, headers, responseBody, error, requestID);
+            }
+
+            @Override
+            public void onFinish(int requestID) {
+                if (callback != null)
+                    callback.onFinish(requestID);
+            }
+
+            @Override
+            public void onStart(int requestID) {
+                if (callback != null)
+                    callback.onStart(requestID);
+            }
+
+            @Override
+            public void onProgress(int bytesWritten, int totalSize, int requestID) {
+                if (callback != null)
+                    callback.onProgress(bytesWritten, totalSize, requestID);
+            }
+        };
         this.mCallback = new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
@@ -86,7 +141,7 @@ public class InternetRequest {
 //                if (mCallback != null)
 //                    mCallback.onStart();
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_START.name()))
-                    callback.onStart();
+                    shieldCallback.onStart(id);
                 isIgnored = false;
                 super.onStart();
             }
@@ -98,9 +153,8 @@ public class InternetRequest {
 //                if (mCallback != null)
 //                    mCallback.onSuccess(statusCode, headers, responseBody);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_SUCCESS.name()))
-                    callback.onSuccess(statusCode, headers, responseBody);
+                    shieldCallback.onSuccess(statusCode, headers, responseBody, id);
                 isIgnored = false;
-                super.onSuccess(statusCode, headers, responseBody);
             }
 
             @Override
@@ -110,9 +164,8 @@ public class InternetRequest {
 //                if (mCallback != null)
 //                    mCallback.onFailure(statusCode, headers, responseBody, error);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FAILURE.name()))
-                    callback.onFailure(statusCode, headers, responseBody, error);
+                    shieldCallback.onFailure(statusCode, headers, responseBody, error, id);
                 isIgnored = false;
-                super.onFailure(statusCode, headers, responseBody, error);
             }
 
             @Override
@@ -121,7 +174,7 @@ public class InternetRequest {
 //                if (mCallback != null)
 //                    mCallback.onFinish();
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FINISH.name()))
-                    callback.onFinish();
+                    shieldCallback.onFinish(id);
                 isIgnored = false;
                 super.onFinish();
             }
@@ -131,7 +184,7 @@ public class InternetRequest {
 //                if (mCallback != null)
 //                    mCallback.onProgress(bytesWritten, totalSize);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_PROGRESS.name()))
-                    callback.onProgress(bytesWritten, totalSize);
+                    shieldCallback.onProgress(bytesWritten, totalSize, id);
                 isIgnored = false;
                 super.onProgress(bytesWritten, totalSize);
             }
@@ -233,18 +286,6 @@ public class InternetRequest {
         this.headers = headers;
     }
 
-    public Pair<String, String> getAuth() {
-        return auth;
-    }
-
-    public void setAuth(String userName, String passWord) {
-        this.auth = new Pair<>(userName, passWord);
-    }
-
-    public void clearAuth() {
-        this.auth = null;
-    }
-
     public String getContentType() {
         return contentType;
     }
@@ -269,7 +310,7 @@ public class InternetRequest {
     }
 
     public enum CALLBACK {
-        ON_START, ON_FINISH, ON_SUCCESS, ON_FAILURE, ON_PROGRESS
+        ON_SUCCESS, ON_FAILURE, ON_START, ON_FINISH, ON_PROGRESS
     }
 
     public static enum REQUEST_STATUS {
