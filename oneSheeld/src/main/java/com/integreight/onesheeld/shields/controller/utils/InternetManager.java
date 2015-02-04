@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.integreight.onesheeld.model.InternetRequest;
 import com.integreight.onesheeld.utils.ConnectionDetector;
@@ -25,15 +26,17 @@ public class InternetManager {
     private Context context;
     private AsyncHttpResponseHandler uiCallback;
     private String contentType = "";
-    private int maxSentBytes = 255;
+    private int maxSentBytes = 64;
+    private Pair<String, String> basicAuth;
 
 
     private InternetManager() {
         httpClient = new AsyncHttpClient();
         requests = new Hashtable<>();
+        basicAuth = null;
     }
 
-    public static InternetManager getInstance() {
+    public static synchronized InternetManager getInstance() {
         if (ourInstance == null) {
             ourInstance = new InternetManager();
         }
@@ -81,18 +84,17 @@ public class InternetManager {
         return requests;
     }
 
-    public InternetRequest getRequest(int id) {
+    public synchronized InternetRequest getRequest(int id) {
         InternetRequest request = requests.get(id);
         if (request != null)
             return request;
         else {
-            putRequest(id, new InternetRequest());
-            return getRequest(id);
+            return null;
         }
     }
 
-    public void putRequest(int id, final InternetRequest request) {
-        request.setContentType(contentType);
+    public synchronized void putRequest(int id, final InternetRequest request) {
+//        request.setContentType(contentType);
         requests.put(id, request);
         if (uiCallback != null)
             uiCallback.onStart();
@@ -141,14 +143,12 @@ public class InternetManager {
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 if (request.getCallback() != null)
                     request.getCallback().onFailure(statusCode, headers, responseBody, error);
-                super.onFailure(statusCode, headers, responseBody, error);
             }
 
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 if (request.getCallback() != null)
                     request.getCallback().onSuccess(statusCode, headers, responseBody);
-                super.onSuccess(statusCode, headers, responseBody);
             }
 
             @Override
@@ -159,9 +159,8 @@ public class InternetManager {
             }
 
         };
-        getHttpClient().clearBasicAuth();
-        if (request.getAuth() != null && request.getAuth().first != null && request.getAuth().first.trim().length() > 0)
-            getHttpClient().setBasicAuth(request.getAuth().first, request.getAuth().second);
+        if (InternetManager.getInstance().getBasicAuth() != null && InternetManager.getInstance().getBasicAuth().first != null && InternetManager.getInstance().getBasicAuth().first.trim().length() > 0)
+            getHttpClient().setBasicAuth(InternetManager.getInstance().getBasicAuth().first, InternetManager.getInstance().getBasicAuth().second);
 
         switch (type) {
             case GET:
@@ -195,6 +194,8 @@ public class InternetManager {
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
+        if (uiCallback != null)
+            uiCallback.onStart();
     }
 
     public String getContentType() {
@@ -213,8 +214,25 @@ public class InternetManager {
         this.maxSentBytes = maxSentBytes > 255 ? 255 : maxSentBytes;
     }
 
+    public Pair<String, String> getBasicAuth() {
+        return basicAuth;
+    }
+
+    public void setBasicAuth(Pair<String, String> basicAuth) {
+        this.basicAuth = basicAuth;
+    }
+
+    public void clearBasicAuth() {
+        this.basicAuth = null;
+    }
+
     public enum EXECUTION_TYPE {
-        NO_INTERNET, SUCCESSFUL, REQUEST_NOT_FOUND, ALREADY_EXECUTING, NO_URL, NO_CALLBACKS
+        NO_INTERNET(0), SUCCESSFUL(-1), REQUEST_NOT_FOUND(1), ALREADY_EXECUTING(3), NO_URL(2);
+        public int value = -1;
+
+        private EXECUTION_TYPE(int value) {
+            this.value = value;
+        }
     }
 
     public enum REQUEST_TYPE {
