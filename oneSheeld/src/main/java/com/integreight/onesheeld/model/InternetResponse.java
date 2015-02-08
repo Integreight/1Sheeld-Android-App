@@ -6,12 +6,12 @@ import android.os.Parcelable;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 
 import org.apache.http.Header;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
 import java.util.Hashtable;
-import java.util.Iterator;
 
 /**
  * Created by Saad on 1/26/15.
@@ -80,13 +80,34 @@ public class InternetResponse implements Parcelable, Serializable {
         return res;
     }
 
-    public String getValueOfJSONOBJECT(String...tree) throws JSONException {
+    public String getValueOf(JSONObject json, String... tree) throws JSONException {
         String value = null;
-        JSONObject json=new JSONObject(new String(responseBody));
-        Iterator<String> iter = json.keys();
-        while (iter.hasNext()) {
-            String key = iter.next();
+        if (tree.length == 1)
+            return json.getString(tree[0]);
+        int i = 0;
+        for (String item : tree) {
+            if (item != null) {
+                Object obj = json.get(item);
+                if (obj != null) {
+                    if (obj instanceof JSONObject) {
+                        tree[i] = null;
+                        try {
+                            return getValueOf(new JSONObject(obj.toString()), tree);
+                        } catch (JSONException e) {
+                            if (i == tree.length - 1)
+                                return obj.toString();
+                        }
+                    } else if (obj instanceof JSONArray) {
+
+                    }
+                }
+            }
+            i++;
         }
+//        Iterator<String> iter = json.keys();
+//        while (iter.hasNext()) {
+//            String key = iter.next();
+//        }
         return value;
     }
 
