@@ -17,6 +17,11 @@ public class BitsUtils {
         return (b & (1 << bit)) > 0;
     }
 
+    public static boolean isBitSet(int b, int bit) {
+        if (bit < 0 || bit >= 32) return false;
+        return (b & (1 << bit)) > 0;
+    }
+
     public static int byteArrayToInt(byte[] b) {
         return b[3] & 0xFF |
                 (b[2] & 0xFF) << 8 |
