@@ -3,7 +3,9 @@ package com.integreight.onesheeld.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
+import com.integreight.onesheeld.utils.BitsUtils;
 
 import org.apache.http.Header;
 import org.json.JSONArray;
@@ -11,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -80,35 +83,43 @@ public class InternetResponse implements Parcelable, Serializable {
         return res;
     }
 
-    public String getValueOf(JSONObject json, String... tree) throws JSONException {
-        String value = null;
-        if (tree.length == 1)
-            return json.getString(tree[0]);
-        int i = 0;
-        for (String item : tree) {
-            if (item != null) {
-                Object obj = json.get(item);
-                if (obj != null) {
-                    if (obj instanceof JSONObject) {
-                        tree[i] = null;
-                        try {
-                            return getValueOf(new JSONObject(obj.toString()), tree);
-                        } catch (JSONException e) {
-                            if (i == tree.length - 1)
-                                return obj.toString();
-                        }
-                    } else if (obj instanceof JSONArray) {
-
-                    }
-                }
-            }
-            i++;
+    public ArrayList<JsonNode> getNodes(ShieldFrame frame) {
+        ArrayList<JsonNode> nodes = new ArrayList<>();
+        int dataType = frame.getArgumentAsInteger(1);
+        for (int i = 2; i < frame.getArguments().size(); i++) {
+//            JsonNode node = new JsonNode();
+//            if (BitsUtils.isBitSet(dataType, i - 2)) {
+//                node.setDataType(JsonNode.NODE_DATA_TYPE.OBJECT);
+//                node.setKey(frame.getArgumentAsString(i));
+//            } else {
+//                node.setDataType(JsonNode.NODE_DATA_TYPE.ARRAY);
+//                node.setIndex(frame.getArgumentAsInteger(i));
+//            }
+//            nodes.add(node);
         }
-//        Iterator<String> iter = json.keys();
-//        while (iter.hasNext()) {
-//            String key = iter.next();
-//        }
-        return value;
+        return nodes;
+    }
+
+    public String getValueOf(Object object, ArrayList<JsonNode> tree) throws JSONException {
+        final JsonNode node = tree.get(0);
+        if (node.getDataType() == JsonNode.NODE_DATA_TYPE.OBJECT) {
+            JSONObject jsonObject = (JSONObject) object;
+            if (tree.size() == 1)
+                return jsonObject.getString(node.getKey());
+            else {
+                tree.remove(0);
+                return getValueOf(jsonObject.get(node.getKey()), tree);
+            }
+        } else if (node.getDataType() == JsonNode.NODE_DATA_TYPE.ARRAY) {
+            JSONArray jsonArray = (JSONArray) object;
+            if (tree.size() == 1)
+                return jsonArray.getString(node.getIndex());
+            else {
+                tree.remove(0);
+                return getValueOf(jsonArray.get(node.getIndex()), tree);
+            }
+        }
+        return null;
     }
 
     public byte[] getResponseBody() {
@@ -242,5 +253,49 @@ public class InternetResponse implements Parcelable, Serializable {
 
     public enum RESPONSE_TYPE {
         HTML, JSON
+    }
+
+    public static class JsonNode {
+        private NODE_DATA_TYPE nodeDataType;
+        private String key;
+        private int index = -1;
+
+        public JsonNode(NODE_DATA_TYPE nodeDataType, String key) {
+            this.nodeDataType = nodeDataType;
+            this.key = key;
+        }
+
+        public JsonNode(NODE_DATA_TYPE nodeDataType, int index) {
+            this.nodeDataType = nodeDataType;
+            this.index = index;
+        }
+
+        public NODE_DATA_TYPE getDataType() {
+            return nodeDataType;
+        }
+
+        public void setDataType(NODE_DATA_TYPE nodeDataType) {
+            this.nodeDataType = nodeDataType;
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public static enum NODE_DATA_TYPE {
+            OBJECT, ARRAY
+        }
     }
 }

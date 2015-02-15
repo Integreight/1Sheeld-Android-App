@@ -17,6 +17,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
 
 import org.apache.http.Header;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -49,6 +50,7 @@ public class InternetShield extends
     private static final byte DISPOSE = (byte) 0x11;
     private static final byte GET_NEXT_BYTES = (byte) 0x12;
     private static final byte GET_HEADER = (byte) 0x13;
+    private static final byte GET_JSON_RESPONSE = (byte) 0x14;
 
     ////// SENT FRAMES
     private static final byte ON_SUCCESS = (byte) 0x01;
@@ -61,6 +63,7 @@ public class InternetShield extends
     /// Response
 
     private static final byte RESPONSE_ON_ERROR = (byte) 0x08;
+    private static final byte RESPONSE_JSON = (byte) 0x0A;
 
     private ShieldFrame frame;
     int i = 0;
@@ -69,7 +72,7 @@ public class InternetShield extends
     public void addRequest() {
         i = i + 1;
         final InternetRequest request = new InternetRequest();
-        request.setUrl("http://api.openweathermap.org/data/2.5/weather?q="+locs[(i-1)%5]);
+        request.setUrl("http://api.openweathermap.org/data/2.5/weather?q=" + locs[(i - 1) % 5]);
         request.setId(i);
         request.addRegisteredCallbacks(InternetRequest.CALLBACK.ON_SUCCESS, InternetRequest.CALLBACK.ON_PROGRESS, InternetRequest.CALLBACK.ON_FAILURE);
         request.setCallback(new CallBack() {
@@ -84,8 +87,14 @@ public class InternetShield extends
                     String str = new String(responseBody, "UTF-8");
                     Log.d("res", str);
                     InternetResponse response = InternetManager.getInstance().getRequest(i).getResponse();
-                    if (response != null)
-                        Log.d("res", response.toString());
+                    ArrayList<InternetResponse.JsonNode> nodes = new ArrayList<>();
+                    nodes.add(new InternetResponse.JsonNode(InternetResponse.JsonNode.NODE_DATA_TYPE.OBJECT, "weather"));
+                    nodes.add(new InternetResponse.JsonNode(InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY, 0));
+                    nodes.add(new InternetResponse.JsonNode(InternetResponse.JsonNode.NODE_DATA_TYPE.OBJECT, "main"));
+                    if (response != null) {
+                        String jsonRes = response.getValueOf(new JSONObject(new String(str)), nodes);
+                        Log.d("res", jsonRes);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -397,6 +406,25 @@ public class InternetShield extends
                         sendShieldFrame(frame2);
                     }
                     break;
+                case GET_JSON_RESPONSE:
+                    requestID = frame.getArgumentAsInteger(0);
+                    ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE_JSON);
+                    frameJson.addIntegerArgument(1, false, requestID);
+                    if (InternetManager.getInstance().getRequest(requestID) != null) {
+                        InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
+                        if (response != null) {
+                            final int jsonNodesTree = frame.getArgumentAsInteger(0, 1);
+                            final ArrayList<InternetResponse.JsonNode> jsonNodes = response.getNodes(frame);
+                        } else {//no response
+                            frameJson.addIntegerArgument(1, false, 4);
+                            sendShieldFrame(frameJson);
+                        }
+                    } else// no request
+                    {
+                        frameJson.addIntegerArgument(1, false, 1);
+                        sendShieldFrame(frameJson);
+                    }
+                    break;
                 default:
                     break;
             }
@@ -427,7 +455,7 @@ public class InternetShield extends
             req.setUrl(mainReq.getUrl());
             req.setContentType(mainReq.getContentType());
             req.setParams(mainReq.getParamsAsMap());
-            req.setHeaders(mainReq.getParamsAsMap());
+            req.setHeaders(mainReq.getHeadersAsMap());
             req.setStatus(mainReq.getStatus());
             ArrayList<Pair<String, String>> children = new ArrayList<>();
             children.add(new Pair<>("URL", req.getUrl()));

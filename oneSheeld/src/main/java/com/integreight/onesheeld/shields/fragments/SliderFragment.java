@@ -58,7 +58,14 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
         if (((SliderShield) getApplication().getRunningShields().get(
                 getControllerTag())) != null)
             seekBar.setEnabled(true);
-
+        ((SliderShield) getApplication().getRunningShields().get(
+                getControllerTag())).setSliderHandler(new SliderShield.SliderHandler() {
+            @Override
+            public void setSliderValue(int value) {
+                if (seekBar != null && value > 0 && value <= 255)
+                    seekBar.setProgress(value);
+            }
+        });
         return v;
 
     }

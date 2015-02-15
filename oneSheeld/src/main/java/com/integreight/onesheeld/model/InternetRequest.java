@@ -227,12 +227,12 @@ public class InternetRequest {
     }
 
     public void addParam(String key, String value) {
-        headers.put(key, value);
+        params.put(key, value);
     }
 
     public void removeParam(String key) {
-        if (headers.get(key) != null)
-            headers.remove(key);
+        if (params.get(key) != null)
+            params.remove(key);
     }
 
     public void removeAllParams() {
@@ -280,6 +280,10 @@ public class InternetRequest {
 
     public void setParams(Map<String, String> params) {
         this.params = params;
+    }
+
+    public HashMap<String, String> getHeadersAsMap() {
+        return new HashMap<>(headers);
     }
 
     public void setHeaders(Map<String, String> headers) {

@@ -12,7 +12,9 @@ public class SliderShield extends ControllerParent<SliderShield> {
     private int sliderValue;
     private ShieldFrame sf;
     private static final byte DATA_IN = 0x01;
+    private static final byte SLIDER_VALUE = 0x01;
     private byte sValue = 0;
+    private SliderHandler sliderHandler;
 
     public SliderShield() {
         super();
@@ -36,25 +38,39 @@ public class SliderShield extends ControllerParent<SliderShield> {
     }
 
     public void setSliderValue(int sliderValue) {
-        this.sliderValue = sliderValue;
-        analogWrite(connectedPin, sliderValue);
-        sValue = (byte) sliderValue;
-        sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(sValue);
-        sendShieldFrame(sf);
-
+        if (sliderValue != this.sliderValue) {
+            this.sliderValue = sliderValue;
+            analogWrite(connectedPin, sliderValue);
+            sValue = (byte) sliderValue;
+            sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
+            sf.addByteArgument(sValue);
+            sendShieldFrame(sf);
+        }
     }
 
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
-        // TODO Auto-generated method stub
-
+        if (frame.getShieldId() == UIShield.SLIDER_SHIELD.getId()) {
+            if (frame.getFunctionId() == SLIDER_VALUE) {
+                sliderValue = frame.getArgumentAsInteger(1, 0);
+                if (sliderHandler != null && isHasForgroundView())
+                    sliderHandler.setSliderValue(frame.getArgumentAsInteger(1, 0));
+            }
+        }
     }
 
     @Override
     public void reset() {
         // TODO Auto-generated method stub
         sf = null;
+    }
+
+    public void setSliderHandler(SliderHandler sliderHandler) {
+        this.sliderHandler = sliderHandler;
+    }
+
+    public interface SliderHandler {
+        public void setSliderValue(int value);
     }
 
 }
