@@ -13,6 +13,8 @@ import com.snappydb.SnappydbException;
 
 import org.apache.http.Header;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Hashtable;
 
 /**
@@ -219,7 +221,12 @@ public class InternetManager {
     }
 
     public void setBasicAuth(Pair<String, String> basicAuth) {
-        this.basicAuth = basicAuth;
+        try {
+            this.basicAuth = new Pair<>(URLEncoder.encode(basicAuth.first, "UTF-8"), URLEncoder.encode(basicAuth.second, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            this.basicAuth = new Pair<>(basicAuth.first, basicAuth.second);
+            e.printStackTrace();
+        }
     }
 
     public void clearBasicAuth() {

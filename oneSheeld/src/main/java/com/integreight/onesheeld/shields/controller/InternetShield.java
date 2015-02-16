@@ -428,6 +428,8 @@ public class InternetShield extends
                 default:
                     break;
             }
+            if (InternetManager.getInstance().getUiCallback() != null)
+                InternetManager.getInstance().getUiCallback().onStart();
         }
     }
 
