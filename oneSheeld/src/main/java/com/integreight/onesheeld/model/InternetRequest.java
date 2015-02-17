@@ -10,6 +10,8 @@ import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.ParseException;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -80,6 +82,10 @@ public class InternetRequest {
 
     public void setUrl(String url) {
         this.url = url;
+        if (url != null) {
+            this.url = this.url.replace(" ", "");
+            this.url = this.url.replace("\\", "/");
+        }
     }
 
     public int getId() {
@@ -212,7 +218,12 @@ public class InternetRequest {
     }
 
     public void addHeader(String key, String value) {
-        headers.put(key, value);
+        try {
+            headers.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            headers.put(key, value);
+            e.printStackTrace();
+        }
     }
 
     public void removeHeader(String key) {
@@ -227,12 +238,17 @@ public class InternetRequest {
     }
 
     public void addParam(String key, String value) {
-        headers.put(key, value);
+        try {
+            params.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            params.put(key, value);
+            e.printStackTrace();
+        }
     }
 
     public void removeParam(String key) {
-        if (headers.get(key) != null)
-            headers.remove(key);
+        if (params.get(key) != null)
+            params.remove(key);
     }
 
     public void removeAllParams() {
@@ -280,6 +296,10 @@ public class InternetRequest {
 
     public void setParams(Map<String, String> params) {
         this.params = params;
+    }
+
+    public HashMap<String, String> getHeadersAsMap() {
+        return new HashMap<>(headers);
     }
 
     public void setHeaders(Map<String, String> headers) {
