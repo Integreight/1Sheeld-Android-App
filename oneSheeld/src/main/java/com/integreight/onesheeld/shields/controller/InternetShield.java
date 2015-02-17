@@ -52,12 +52,15 @@ public class InternetShield extends
     private static final byte GET_HEADER = (byte) 0x13;
     private static final byte GET_JSON_RESPONSE = (byte) 0x14;
 
+
     ////// SENT FRAMES
     private static final byte ON_SUCCESS = (byte) 0x01;
     private static final byte ON_FAILURE = (byte) 0x02;
     private static final byte ON_START = (byte) 0x03;
     private static final byte ON_PROGRESS = (byte) 0x04;
     private static final byte ON_FINISH = (byte) 0x05;
+    private static final byte SEND_GET_NEXT_BYTES = (byte) 0x09;
+    private static final byte SEND_GET_HEADER = (byte) 0x07;
     // Internet
     private static final byte ON_ERROR = (byte) 0x06;
     /// Response
@@ -346,45 +349,55 @@ public class InternetShield extends
                     break;
                 case GET_NEXT_BYTES:
                     requestID = frame.getArgumentAsInteger(0);
-                    ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, RESPONSE_ON_ERROR);
-                    frame1.addIntegerArgument(1, false, requestID);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
                             InternetResponse.ResponseBodyBytes bodyBytes = response.getBytes(frame.getArgumentAsInteger(1), frame.getArgumentAsInteger(2));
                             if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.NOT_ENOUGH_BYTES) {
                                 if (bodyBytes.getArray() != null && bodyBytes.getArray().length > 0) {
-                                    frame1.addArgument(bodyBytes.getArray());
-                                    frame1.addIntegerArgument(1, false, 3);
-                                    sendShieldFrame(frame1);
+                                    ShieldFrame frameSentNotEnough = new ShieldFrame(SHIELD_ID, SEND_GET_NEXT_BYTES);
+                                    frameSentNotEnough.addIntegerArgument(2, false, requestID);
+                                    frameSentNotEnough.addArgument(bodyBytes.getArray());
+                                    frameSentNotEnough.addIntegerArgument(1, false, 3);
+                                    sendShieldFrame(frameSentNotEnough);
                                 }
                             } else if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.INDEX_GREATER_THAN_LENGTH || bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.INDEX_LESS_THAN_0) {
-                                frame1.addIntegerArgument(1, false, 0);
-                                sendShieldFrame(frame1);
+                                ShieldFrame frameSentIndexOut = new ShieldFrame(SHIELD_ID, RESPONSE_ON_ERROR);
+                                frameSentIndexOut.addIntegerArgument(2, false, requestID);
+                                frameSentIndexOut.addIntegerArgument(1, false, 0);
+                                sendShieldFrame(frameSentIndexOut);
                             } else if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.COUNT_LESS_THAN_0) {
-                                frame1.addIntegerArgument(1, false, 5);
-                                sendShieldFrame(frame1);
+                                ShieldFrame frameSentcountOut = new ShieldFrame(SHIELD_ID, RESPONSE_ON_ERROR);
+                                frameSentcountOut.addIntegerArgument(2, false, requestID);
+                                frameSentcountOut.addIntegerArgument(1, false, 5);
+                                sendShieldFrame(frameSentcountOut);
                             } else {
                                 if (bodyBytes.getArray() != null && bodyBytes.getArray().length > 0) {
-                                    frame1.addArgument(bodyBytes.getArray());
-                                    sendShieldFrame(frame1);
+                                    ShieldFrame frameSent = new ShieldFrame(SHIELD_ID, SEND_GET_NEXT_BYTES);
+                                    frameSent.addIntegerArgument(2, false, requestID);
+                                    frameSent.addArgument(bodyBytes.getArray());
+                                    sendShieldFrame(frameSent);
                                 }
                             }
                         } else {//no response
-                            frame1.addIntegerArgument(1, false, 4);
-                            sendShieldFrame(frame1);
+                            ShieldFrame frameSentNotRes = new ShieldFrame(SHIELD_ID, RESPONSE_ON_ERROR);
+                            frameSentNotRes.addIntegerArgument(2, false, requestID);
+                            frameSentNotRes.addIntegerArgument(1, false, 4);
+                            sendShieldFrame(frameSentNotRes);
                         }
                     } else// no request
                     {
-                        frame1.addIntegerArgument(1, false, 1);
-                        sendShieldFrame(frame1);
+                        ShieldFrame frameSentNotReq = new ShieldFrame(SHIELD_ID, RESPONSE_ON_ERROR);
+                        frameSentNotReq.addIntegerArgument(2, false, requestID);
+                        frameSentNotReq.addIntegerArgument(1, false, 1);
+                        sendShieldFrame(frameSentNotReq);
                     }
                     break;
                 case GET_HEADER:
                     requestID = frame.getArgumentAsInteger(0);
                     String key = frame.getArgumentAsString(1);
                     ShieldFrame frame2 = new ShieldFrame(SHIELD_ID, (byte) 0x08);
-                    frame2.addIntegerArgument(1, false, requestID);
+                    frame2.addIntegerArgument(2, false, requestID);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
@@ -392,9 +405,11 @@ public class InternetShield extends
                                 frame2.addIntegerArgument(1, false, 2);
                                 sendShieldFrame(frame2);
                             } else {
-                                frame2.addStringArgument(key);
-                                frame2.addStringArgument(response.getHeaders().get(key));
-                                sendShieldFrame(frame2);
+                                ShieldFrame frameSent = new ShieldFrame(SHIELD_ID, SEND_GET_HEADER);
+                                frameSent.addIntegerArgument(2, false, requestID);
+                                frameSent.addStringArgument(key);
+                                frameSent.addStringArgument(response.getHeaders().get(key));
+                                sendShieldFrame(frameSent);
                             }
                         } else {//no response
                             frame2.addIntegerArgument(1, false, 4);
@@ -409,7 +424,7 @@ public class InternetShield extends
                 case GET_JSON_RESPONSE:
                     requestID = frame.getArgumentAsInteger(0);
                     ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE_JSON);
-                    frameJson.addIntegerArgument(1, false, requestID);
+                    frameJson.addIntegerArgument(2, false, requestID);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
@@ -459,6 +474,8 @@ public class InternetShield extends
             req.setParams(mainReq.getParamsAsMap());
             req.setHeaders(mainReq.getHeadersAsMap());
             req.setStatus(mainReq.getStatus());
+            if (mainReq.isCancelled())
+                req.setCancelled();
             ArrayList<Pair<String, String>> children = new ArrayList<>();
             children.add(new Pair<>("URL", req.getUrl()));
             InternetResponse res = mainReq.getResponse();

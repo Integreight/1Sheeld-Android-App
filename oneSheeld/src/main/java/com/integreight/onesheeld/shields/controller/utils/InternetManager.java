@@ -13,8 +13,7 @@ import com.snappydb.SnappydbException;
 
 import org.apache.http.Header;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
+import java.util.Enumeration;
 import java.util.Hashtable;
 
 /**
@@ -72,6 +71,13 @@ public class InternetManager {
     }
 
     public void cancelAllRequests() {
+        if (requests != null && requests.size() > 0) {
+            Enumeration e = requests.keys();
+            while (e.hasMoreElements()) {
+                Integer i = (Integer) e.nextElement();
+                requests.get(i).setCancelled();
+            }
+        }
         if (httpClient != null)
             httpClient.cancelRequests(context, true);
     }
@@ -221,12 +227,15 @@ public class InternetManager {
     }
 
     public void setBasicAuth(Pair<String, String> basicAuth) {
-        try {
-            this.basicAuth = new Pair<>(URLEncoder.encode(basicAuth.first, "UTF-8"), URLEncoder.encode(basicAuth.second, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
+//        try {
+//            this.basicAuth = new Pair<>(URLEncoder.encode(basicAuth.first, "UTF-8"), URLEncoder.encode(basicAuth.second, "UTF-8"));
+//        } catch (UnsupportedEncodingException e) {
+        if (basicAuth != null && basicAuth.first != null && basicAuth.first.trim().length() > 0 && basicAuth.second != null && basicAuth.second.trim().length() > 0)
             this.basicAuth = new Pair<>(basicAuth.first, basicAuth.second);
-            e.printStackTrace();
-        }
+        else
+            this.basicAuth = null;
+//            e.printStackTrace();
+//        }
     }
 
     public void clearBasicAuth() {

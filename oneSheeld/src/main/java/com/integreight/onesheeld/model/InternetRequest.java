@@ -10,8 +10,6 @@ import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.ParseException;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +20,7 @@ import java.util.Map;
 public class InternetRequest {
     private String url;
     private int id;
+    private boolean isCancelled = false;
     private REQUEST_STATUS status;
     private AsyncHttpResponseHandler mCallback;
     private InternetShield.CallBack shieldCallback;
@@ -218,12 +217,12 @@ public class InternetRequest {
     }
 
     public void addHeader(String key, String value) {
-        try {
-            headers.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            headers.put(key, value);
-            e.printStackTrace();
-        }
+//        try {
+//            headers.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
+//        } catch (UnsupportedEncodingException e) {
+        headers.put(key, value);
+//            e.printStackTrace();
+//        }
     }
 
     public void removeHeader(String key) {
@@ -238,12 +237,12 @@ public class InternetRequest {
     }
 
     public void addParam(String key, String value) {
-        try {
-            params.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            params.put(key, value);
-            e.printStackTrace();
-        }
+//        try {
+//            params.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
+//        } catch (UnsupportedEncodingException e) {
+        params.put(key, value);
+//            e.printStackTrace();
+//        }
     }
 
     public void removeParam(String key) {
@@ -323,6 +322,14 @@ public class InternetRequest {
             registeredCallbacks = new ArrayList<>();
         for (CALLBACK callback : callbacks)
             registeredCallbacks.add(callback.name());
+    }
+
+    public void setCancelled() {
+        this.isCancelled = true;
+    }
+
+    public boolean isCancelled() {
+        return isCancelled;
     }
 
     public ArrayList<String> getRegisteredCallbacks() {
