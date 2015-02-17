@@ -87,15 +87,15 @@ public class InternetResponse implements Parcelable, Serializable {
         ArrayList<JsonNode> nodes = new ArrayList<>();
         int dataType = frame.getArgumentAsInteger(1);
         for (int i = 2; i < frame.getArguments().size(); i++) {
-//            JsonNode node = new JsonNode();
-//            if (BitsUtils.isBitSet(dataType, i - 2)) {
-//                node.setDataType(JsonNode.NODE_DATA_TYPE.OBJECT);
-//                node.setKey(frame.getArgumentAsString(i));
-//            } else {
-//                node.setDataType(JsonNode.NODE_DATA_TYPE.ARRAY);
-//                node.setIndex(frame.getArgumentAsInteger(i));
-//            }
-//            nodes.add(node);
+            JsonNode node = new JsonNode();
+            if (BitsUtils.isBitSet(dataType, i - 2)) {
+                node.setDataType(JsonNode.NODE_DATA_TYPE.OBJECT);
+                node.setKey(frame.getArgumentAsString(i));
+            } else {
+                node.setDataType(JsonNode.NODE_DATA_TYPE.ARRAY);
+                node.setIndex(frame.getArgumentAsInteger(i));
+            }
+            nodes.add(node);
         }
         return nodes;
     }
@@ -268,6 +268,9 @@ public class InternetResponse implements Parcelable, Serializable {
         public JsonNode(NODE_DATA_TYPE nodeDataType, int index) {
             this.nodeDataType = nodeDataType;
             this.index = index;
+        }
+
+        public JsonNode() {
         }
 
         public NODE_DATA_TYPE getDataType() {

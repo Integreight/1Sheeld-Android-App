@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Pair;
 
 import com.integreight.onesheeld.model.InternetRequest;
+import com.integreight.onesheeld.shields.controller.InternetShield;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -12,7 +13,9 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 
 import org.apache.http.Header;
+import org.apache.http.entity.StringEntity;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -84,7 +87,7 @@ public class InternetManager {
 
     public AsyncHttpClient getHttpClient() {
         if (httpClient == null)
-            httpClient = new AsyncHttpClient(true,80,443);
+            httpClient = new AsyncHttpClient(true, 80, 443);
         return httpClient;
     }
 
@@ -116,7 +119,7 @@ public class InternetManager {
         this.uiCallback = uiCallback;
     }
 
-    public EXECUTION_TYPE execute(int id, REQUEST_TYPE type) {
+    public EXECUTION_TYPE execute(int id, REQUEST_TYPE type) throws UnsupportedEncodingException {
         if (!ConnectionDetector.isConnectingToInternet(context))
             return EXECUTION_TYPE.NO_INTERNET;
         final InternetRequest request = requests.get(id);
@@ -175,10 +178,17 @@ public class InternetManager {
                 getHttpClient().get(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
                 break;
             case POST:
-                getHttpClient().post(context, request.getUrl(), request.getHeaders(), request.getParams(), request.getContentType(), withUiCallBack);
+                if (request.getEntity() == null)
+                    getHttpClient().post(context, request.getUrl(), request.getHeaders(), request.getParams(), request.getContentType(), withUiCallBack);
+                else {
+                    getHttpClient().post(context, request.getUrl(), request.getHeaders(), new StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
+                }
                 break;
             case PUT:
-                getHttpClient().put(context, request.getUrl(), request.getParams(), withUiCallBack);
+                if (request.getEntity() == null)
+                    getHttpClient().put(context, request.getUrl(), request.getParams(), withUiCallBack);
+                else
+                    getHttpClient().put(context, request.getUrl(), request.getHeaders(), new StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
                 break;
             case DELETE:
                 getHttpClient().delete(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
@@ -243,7 +253,7 @@ public class InternetManager {
     }
 
     public enum EXECUTION_TYPE {
-        NO_INTERNET(0), SUCCESSFUL(-1), REQUEST_NOT_FOUND(1), ALREADY_EXECUTING(3), NO_URL(2);
+        NO_INTERNET(InternetShield.INTERNET.NOT_CONNECTED_TO_NETWORK), SUCCESSFUL(-1), REQUEST_NOT_FOUND(InternetShield.INTERNET.REQUEST_CAN_NOT_BE_FOUND), ALREADY_EXECUTING(InternetShield.INTERNET.ALREADY_EXECUTING_REQUEST), NO_URL(InternetShield.INTERNET.URL_IS_NOT_FOUND);
         public int value = -1;
 
         private EXECUTION_TYPE(int value) {

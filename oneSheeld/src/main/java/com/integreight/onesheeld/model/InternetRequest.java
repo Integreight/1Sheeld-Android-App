@@ -29,6 +29,7 @@ public class InternetRequest {
     private String contentType;
     private boolean isIgnored = false;
     private ArrayList<String> registeredCallbacks;
+    private String entity = null;
 
     public InternetRequest() {
         status = REQUEST_STATUS.IN_QUEUE;
@@ -330,6 +331,14 @@ public class InternetRequest {
 
     public boolean isCancelled() {
         return isCancelled;
+    }
+
+    public String getEntity() {
+        return entity;
+    }
+
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 
     public ArrayList<String> getRegisteredCallbacks() {

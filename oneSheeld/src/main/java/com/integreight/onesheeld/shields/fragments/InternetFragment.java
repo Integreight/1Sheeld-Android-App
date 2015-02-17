@@ -9,6 +9,7 @@ import android.widget.ExpandableListView;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.InternetRequestsExpandapleAdapter;
+import com.integreight.onesheeld.model.InternetResponse;
 import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.InternetShield;
@@ -19,6 +20,7 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.apache.http.Header;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
     ExpandableListView requestsList;
@@ -98,7 +100,14 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
             @Override
             public boolean onChildClick(ExpandableListView expandableListView, View view, int i, int i2, long l) {
                 if (requestsList.getExpandableListAdapter().getChildrenCount(i) == 6 && i2 == 1) {
-                    popup = new InternetResponsePopup(getActivity(), new String(requests.get(i).getResponse().getResponseBody()));
+                    InternetResponse response = requests.get(i).getResponse();
+                    String headers = "";
+                    Enumeration e = response.getHeaders().keys();
+                    while (e.hasMoreElements()) {
+                        String key = (String) e.nextElement();
+                        headers += "      " + key + " : " + response.getHeaders().get(key) + "\n";
+                    }
+                    popup = new InternetResponsePopup(getActivity(), "Status code: " + response.getStatusCode() + "\n" + "Headers : \n" + headers+"Response Body: \n" + new String(response.getResponseBody()));
                     popup.show();
                 }
                 return true;

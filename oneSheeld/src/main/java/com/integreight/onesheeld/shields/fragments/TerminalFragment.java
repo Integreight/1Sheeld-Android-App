@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,11 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.terminal_shield_fragment_layout,
                 container, false);
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         output = (ListView) v.findViewById(R.id.terminalOutput);
         outputAdapter = new TerminalLinesAdapter(activity,
                 new ArrayList<TerminalPrintedLine>());
@@ -191,7 +197,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
             });
             i++;
         }
-        return v;
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
