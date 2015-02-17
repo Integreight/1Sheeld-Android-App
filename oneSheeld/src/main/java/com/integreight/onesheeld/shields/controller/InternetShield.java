@@ -347,7 +347,7 @@ public class InternetShield extends
                 case GET_NEXT_BYTES:
                     requestID = frame.getArgumentAsInteger(0);
                     ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, RESPONSE_ON_ERROR);
-                    frame1.addIntegerArgument(1, false, requestID);
+                    frame1.addIntegerArgument(2, false, requestID);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
