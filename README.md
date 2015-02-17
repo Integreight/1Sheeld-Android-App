@@ -1,8 +1,8 @@
-The repo is an Android Studio project, tested on the its latest stable version (1.0.2)
+The repo is an Android Studio project, tested on the its latest stable version (1.1)
 
 To set it up in your development environment, clone the project, open Android Studio and click on Import Non-Android Studio Project, pick the cloned directory and you are good to go.
 
-You can download the app's latest release directly from [Google Play store](http://bit.ly/1sheeld).
+You can download the app's latest release directly from [Google Play store](https://play.google.com/store/apps/details?id=com.integreight.onesheeld&hl=en).
 
 If you need more help, don't hesitate posting a question on our [website's forum](http://www.1sheeld.com/forum).
 

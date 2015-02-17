@@ -32,7 +32,7 @@ public class InternetManager {
 
 
     private InternetManager() {
-        httpClient = new AsyncHttpClient();
+        httpClient = new AsyncHttpClient(true, 80, 443);
         requests = new Hashtable<>();
         basicAuth = null;
     }
@@ -84,7 +84,7 @@ public class InternetManager {
 
     public AsyncHttpClient getHttpClient() {
         if (httpClient == null)
-            httpClient = new AsyncHttpClient();
+            httpClient = new AsyncHttpClient(true,80,443);
         return httpClient;
     }
 
