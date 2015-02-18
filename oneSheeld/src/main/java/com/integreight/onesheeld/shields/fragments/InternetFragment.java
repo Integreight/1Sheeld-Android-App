@@ -107,7 +107,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
                         String key = (String) e.nextElement();
                         headers += "      " + key + " : " + response.getHeaders().get(key) + "\n";
                     }
-                    popup = new InternetResponsePopup(getActivity(), "Status code: " + response.getStatusCode() + "\n" + "Headers : \n" + headers+"Response Body: \n" + new String(response.getResponseBody()));
+                    popup = new InternetResponsePopup(getActivity(), new String(response.getResponseBody()), "Status code: " + response.getStatusCode() + "\n\n" + "Headers : \n" + headers + "\n" + "Response Body: \n" + new String(response.getResponseBody()));
                     popup.show();
                 }
                 return true;

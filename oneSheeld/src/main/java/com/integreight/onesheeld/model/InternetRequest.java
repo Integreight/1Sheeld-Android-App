@@ -30,6 +30,7 @@ public class InternetRequest {
     private boolean isIgnored = false;
     private ArrayList<String> registeredCallbacks;
     private String entity = null;
+    private String encoding = null;
 
     public InternetRequest() {
         status = REQUEST_STATUS.IN_QUEUE;
@@ -253,6 +254,7 @@ public class InternetRequest {
 
     public void removeAllParams() {
         params = new HashMap<>();
+        entity=null;
     }
 
     public Header[] getHeaders() {
@@ -284,6 +286,8 @@ public class InternetRequest {
 
     public RequestParams getParams() {
         RequestParams paramsI = new RequestParams();
+        if (getEncoding() != null)
+            paramsI.setContentEncoding(getEncoding());
         for (final String key : params.keySet()) {
             paramsI.add(key, params.get(key));
         }
@@ -339,6 +343,14 @@ public class InternetRequest {
 
     public void setEntity(String entity) {
         this.entity = entity;
+    }
+
+    public String getEncoding() {
+        return encoding;
+    }
+
+    public void setEncoding(String encoding) {
+        this.encoding = encoding;
     }
 
     public ArrayList<String> getRegisteredCallbacks() {

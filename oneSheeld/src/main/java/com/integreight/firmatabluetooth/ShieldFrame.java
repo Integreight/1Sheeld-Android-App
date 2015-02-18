@@ -70,7 +70,7 @@ public class ShieldFrame {
             return 0;
         int value=0;
         for (int i=0;i<bytes;i++){
-            value|=((arguments.get(n)[i]<<(8*i))&0xFF);
+            value|=((arguments.get(n)[i]<<(8*i))&((0xFF)<<(8*i)));
         }
         return value;
     }
@@ -125,7 +125,7 @@ public class ShieldFrame {
                 break;
             case 4:
                 arguments.add(new byte[]{(byte) data, (byte) (data >> 8),
-                        (byte) (data >> 16), (byte) (data >> 24)});
+                        (byte) (data >> 16), (byte) (data >>> 24)});
                 break;
             default:
                 return;

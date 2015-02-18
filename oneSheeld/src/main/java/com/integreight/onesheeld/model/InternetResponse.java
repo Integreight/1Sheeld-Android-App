@@ -122,8 +122,33 @@ public class InternetResponse implements Parcelable, Serializable {
         return null;
     }
 
+    public int getJSONArrayLength(Object object, ArrayList<JsonNode> tree) throws JSONException {
+        final JsonNode node = tree.get(0);
+        if (node.getDataType() == JsonNode.NODE_DATA_TYPE.OBJECT) {
+            JSONObject jsonObject = (JSONObject) object;
+//            if (tree.size() == 1)
+//                return jsonObject.getString(node.getKey());
+//            else {
+            tree.remove(0);
+            return getJSONArrayLength(jsonObject.get(node.getKey()), tree);
+//        }
+        } else if (node.getDataType() == JsonNode.NODE_DATA_TYPE.ARRAY)
+
+        {
+            JSONArray jsonArray = (JSONArray) object;
+            if (tree.size() == 1)
+                return jsonArray.length();
+            else {
+                tree.remove(0);
+                return getJSONArrayLength(jsonArray.get(node.getIndex()), tree);
+            }
+        }
+
+        return -1;
+    }
+
     public byte[] getResponseBody() {
-        return responseBody;
+        return responseBody == null ? new byte[]{} : responseBody;
     }
 
     public void setResponseBody(byte[] responseBody) {

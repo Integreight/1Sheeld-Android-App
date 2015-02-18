@@ -100,7 +100,14 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
                     public void onUnSelect(ArduinoPin pin) {
                     }
                 }); // TODO Auto-generated method stub
-
+        ((SliderShield) getApplication().getRunningShields().get(
+                getControllerTag())).setSliderHandler(new SliderShield.SliderHandler() {
+            @Override
+            public void setSliderValue(int value) {
+                if (seekBar != null)
+                    seekBar.setProgress(value);
+            }
+        });
         super.onStart();
 
     }

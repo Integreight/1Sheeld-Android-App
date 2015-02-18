@@ -22,11 +22,13 @@ public class InternetResponsePopup extends Dialog {
     WebView webView;
     ScrollView scroll;
     String response;
+    String webResponse;
 
-    public InternetResponsePopup(Activity activity, String value) {
+    public InternetResponsePopup(Activity activity, String webResponse, String value) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.activity = activity;
         this.response = value;
+        this.webResponse = webResponse;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class InternetResponsePopup extends Dialog {
                     String mime = "text/html";
                     String encoding = "utf-8";
                     webView.getSettings().setJavaScriptEnabled(true);
-                    webView.loadDataWithBaseURL(null, response, mime, encoding, null);
+                    webView.loadDataWithBaseURL(null, webResponse, mime, encoding, null);
                 } else {
                     scroll.setVisibility(View.VISIBLE);
                     ((ViewGroup) webView.getParent()).setVisibility(View.INVISIBLE);
