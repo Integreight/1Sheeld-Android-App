@@ -126,12 +126,12 @@ public class InternetResponse implements Parcelable, Serializable {
         final JsonNode node = tree.get(0);
         if (node.getDataType() == JsonNode.NODE_DATA_TYPE.OBJECT) {
             JSONObject jsonObject = (JSONObject) object;
-//            if (tree.size() == 1)
-//                return jsonObject.getString(node.getKey());
-//            else {
-            tree.remove(0);
-            return getJSONArrayLength(jsonObject.get(node.getKey()), tree);
-//        }
+            if (tree.size() == 1)
+                return jsonObject.getJSONArray(node.getKey()).length();
+            else {
+                tree.remove(0);
+                return getJSONArrayLength(jsonObject.get(node.getKey()), tree);
+            }
         } else if (node.getDataType() == JsonNode.NODE_DATA_TYPE.ARRAY)
 
         {
