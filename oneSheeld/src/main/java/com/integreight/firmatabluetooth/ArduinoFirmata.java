@@ -24,6 +24,7 @@ public class ArduinoFirmata {
     UartListeningThread uartListeningThread;
     BluetoothBufferListeningThread bluetoothBufferListeningThread;
     TimeOut ShieldFrameTimeout;
+    TimeOut callbackEnteringTimeout;
     boolean isBootloader = false;
 
     public static final byte INPUT = 0;
@@ -59,6 +60,8 @@ public class ArduinoFirmata {
     private final byte QUERY_LIBRARY_VERSION = (byte) 0x03;
     private final byte LIBRARY_VERSION_RESPONSE = (byte) 0x01;
     private final byte IS_HARDWARE_CONNECTED_QUERY = (byte) 0x02;
+    private final byte IS_CALLBACK_ENTERED = (byte) 0x03;
+    private final byte IS_CALLBACK_EXITED = (byte) 0x04;
     
     private final Object sysexLock=new Object();
 
@@ -96,6 +99,7 @@ public class ArduinoFirmata {
     private CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler> frameHandlers;
     private CopyOnWriteArrayList<FirmwareVersionQueryHandler> firmwareVersionQueryHandlers;
     private CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler> arduinoLibraryVersionChangeHandlers;
+    private CopyOnWriteArrayList<ArduinoCallbackStatusHandler> arduinoCallbackStatusHandler;
 
     public void addEventHandler(ArduinoFirmataEventHandler handler) {
         if (handler != null && !eventHandlers.contains(handler))
@@ -141,6 +145,13 @@ public class ArduinoFirmata {
             arduinoLibraryVersionChangeHandlers.add(handler);
     }
 
+    public void addArduinoCallbackStatusHandler(
+            ArduinoCallbackStatusHandler handler) {
+        if (handler != null
+                && !arduinoCallbackStatusHandler.contains(handler))
+            arduinoCallbackStatusHandler.add(handler);
+    }
+
     public void enableBootloaderMode() {
         isBootloader = true;
     }
@@ -172,7 +183,11 @@ public class ArduinoFirmata {
     private Context context;
     private boolean isBluetoothBufferWaiting;
     private boolean isUartBufferWaiting;
+    private boolean isInACallback;
 
+    public boolean isInACallback(){
+        return  isInACallback;   
+    }
     public int getBTState() {
         return bluetoothService.getState();
     }
@@ -195,6 +210,7 @@ public class ArduinoFirmata {
         frameHandlers = new CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler>();
         firmwareVersionQueryHandlers = new CopyOnWriteArrayList<FirmwareVersionQueryHandler>();
         arduinoLibraryVersionChangeHandlers = new CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler>();
+        arduinoCallbackStatusHandler=new CopyOnWriteArrayList<ArduinoCallbackStatusHandler>();
         this.context = context;
         bluetoothService.addBluetoothServiceHandler(handler);
         uiThreadHandler = new Handler(Looper.getMainLooper());
@@ -711,7 +727,38 @@ public class ArduinoFirmata {
         dataHandlers.clear();
         frameHandlers.clear();
     }
+    
+    private void callbackEntered(){
+        if(!isInACallback){
+            isInACallback=true;
+            for (ArduinoCallbackStatusHandler handler : arduinoCallbackStatusHandler) {
+                handler.onCallbackEntered();
+            }
+            if(callbackEnteringTimeout!=null)callbackEnteringTimeout.stopTimer();
+            callbackEnteringTimeout=new TimeOut(5,new TimeOut.TimeoutHandler() {
+                @Override
+                public void onTimeout() {
+                    callbackExited();
+                }
 
+                @Override
+                public void onTick(int secondsLeft) {
+
+                }
+            });
+        }
+    }
+    
+    private void callbackExited(){
+        if(isInACallback){
+            isInACallback=false;
+            if(callbackEnteringTimeout!=null)callbackEnteringTimeout.stopTimer();
+            for (ArduinoCallbackStatusHandler handler : arduinoCallbackStatusHandler) {
+                handler.onCallbackExited();
+            }
+        }
+    }
+    
     public void clearArduinoFirmataEventHandlers() {
         eventHandlers.clear();
     }
@@ -806,6 +853,12 @@ public class ArduinoFirmata {
                         }
                         else if(functionId == IS_HARDWARE_CONNECTED_QUERY){
                             notifyHardwareOfConnection();
+                        }
+                        else if(functionId == IS_CALLBACK_ENTERED){
+                            callbackEntered();
+                        }
+                        else if(functionId == IS_CALLBACK_EXITED){
+                            callbackExited();
                         }
                     } else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
                         frameHandler.onNewShieldFrameReceived(frame);
