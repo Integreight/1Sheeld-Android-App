@@ -245,9 +245,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                 if (frame.getShieldId() == getShieldId())
                     if (frame.getFunctionId() == IS_SHIELD_SELECTED)
                         notifyHardwareOfShieldSelection();
-                    else if(frame.getFunctionId() == SELECT_SHIELD){}
-                    else if(frame.getFunctionId() == DESELECT_SHIELD){}
-                    else
+                    else if (frame.getFunctionId() == SELECT_SHIELD) {
+                    } else if (frame.getFunctionId() == DESELECT_SHIELD) {
+                    } else
                         actionHandler.post(new Runnable() {
 
                             @Override
@@ -401,6 +401,16 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                     .sendShieldFrame(frame);
     }
 
+    /**
+     * @param frame target frame queuing frame to Arduino Onesheeld
+     */
+    public void queueShieldFrame(ShieldFrame frame) {
+        if (isInteractive) {
+            activity.getThisApplication().getAppFirmata()
+                    .queueShieldFrame(frame);
+        }
+    }
+
     public void digitalWrite(int pin, boolean value) {
         if (isInteractive)
             activity.getThisApplication().getAppFirmata()
@@ -430,5 +440,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
         public void onFailure();
     }
+
 
 }

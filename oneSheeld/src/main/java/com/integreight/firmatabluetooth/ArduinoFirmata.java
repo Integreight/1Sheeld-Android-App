@@ -13,6 +13,8 @@ import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -62,8 +64,8 @@ public class ArduinoFirmata {
     private final byte IS_HARDWARE_CONNECTED_QUERY = (byte) 0x02;
     private final byte IS_CALLBACK_ENTERED = (byte) 0x03;
     private final byte IS_CALLBACK_EXITED = (byte) 0x04;
-    
-    private final Object sysexLock=new Object();
+
+    private final Object sysexLock = new Object();
 
     private final byte UART_BEGIN = (byte) 0x01;
     private final byte UART_END = (byte) 0x00;
@@ -99,7 +101,7 @@ public class ArduinoFirmata {
     private CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler> frameHandlers;
     private CopyOnWriteArrayList<FirmwareVersionQueryHandler> firmwareVersionQueryHandlers;
     private CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler> arduinoLibraryVersionChangeHandlers;
-    private CopyOnWriteArrayList<ArduinoCallbackStatusHandler> arduinoCallbackStatusHandler;
+    private static Queue<ShieldFrame> queuedFrames;
 
     public void addEventHandler(ArduinoFirmataEventHandler handler) {
         if (handler != null && !eventHandlers.contains(handler))
@@ -147,9 +149,9 @@ public class ArduinoFirmata {
 
     public void addArduinoCallbackStatusHandler(
             ArduinoCallbackStatusHandler handler) {
-        if (handler != null
-                && !arduinoCallbackStatusHandler.contains(handler))
-            arduinoCallbackStatusHandler.add(handler);
+//        if (handler != null
+//                && !arduinoCallbackStatusHandler.contains(handler))
+//            arduinoCallbackStatusHandler.add(handler);
     }
 
     public void enableBootloaderMode() {
@@ -185,9 +187,10 @@ public class ArduinoFirmata {
     private boolean isUartBufferWaiting;
     private boolean isInACallback;
 
-    public boolean isInACallback(){
-        return  isInACallback;   
+    public boolean isInACallback() {
+        return isInACallback;
     }
+
     public int getBTState() {
         return bluetoothService.getState();
     }
@@ -210,7 +213,8 @@ public class ArduinoFirmata {
         frameHandlers = new CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler>();
         firmwareVersionQueryHandlers = new CopyOnWriteArrayList<FirmwareVersionQueryHandler>();
         arduinoLibraryVersionChangeHandlers = new CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler>();
-        arduinoCallbackStatusHandler=new CopyOnWriteArrayList<ArduinoCallbackStatusHandler>();
+        queuedFrames = new ConcurrentLinkedQueue<>();
+//        arduinoCallbackStatusHandler = new CopyOnWriteArrayList<ArduinoCallbackStatusHandler>();
         this.context = context;
         bluetoothService.addBluetoothServiceHandler(handler);
         uiThreadHandler = new Handler(Looper.getMainLooper());
@@ -222,11 +226,11 @@ public class ArduinoFirmata {
 
     public void enableReporting() {
         for (byte i = 0; i < 6; i++) {
-            write(new byte[]{(byte) (REPORT_ANALOG | i),1});
+            write(new byte[]{(byte) (REPORT_ANALOG | i), 1});
         }
 
         for (byte i = 0; i < 3; i++) {
-            write(new byte[]{(byte) (REPORT_DIGITAL | i),1});
+            write(new byte[]{(byte) (REPORT_DIGITAL | i), 1});
         }
     }
 
@@ -294,7 +298,7 @@ public class ArduinoFirmata {
 
     public void sysex(byte command, byte[] bytes) {
         // http://firmata.org/wiki/V2.1ProtocolDetails#Sysex_Message_Format
-        byte[] data= getByteArrayAs2SevenBitsBytesArray(bytes);
+        byte[] data = getByteArrayAs2SevenBitsBytesArray(bytes);
         if (data.length > 32)
             return;
         byte[] writeData = new byte[data.length + 3];
@@ -309,8 +313,8 @@ public class ArduinoFirmata {
 
     private byte[] getByteAs2SevenBitsBytes(byte data) {
         byte[] temp = new byte[2];
-        temp[0] = (byte) ((data&0xFF) & 127);
-        temp[1] = (byte) (((data&0xFF) >> 7) & 127);
+        temp[0] = (byte) ((data & 0xFF) & 127);
+        temp[1] = (byte) (((data & 0xFF) >> 7) & 127);
         return temp;
     }
 
@@ -410,24 +414,19 @@ public class ArduinoFirmata {
                             for (byte b : fixedSysexData) {
                                 uartBuffer.add(b);
                             }
-                        }
-
-                        else if (sysexCommand == BLUETOOTH_RESET) {
+                        } else if (sysexCommand == BLUETOOTH_RESET) {
                             if (!isBootloader) {
                                 synchronized (sysexLock) {
                                     sysex(BLUETOOTH_RESET, new byte[]{0x01});
                                 }
                                 close();
                             }
-                        }
-
-                        else if (sysexCommand == IS_ALIVE) {
+                        } else if (sysexCommand == IS_ALIVE) {
                             respondToIsAlive();
-                        }
-                        else
-                        for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
-                            dataHandler.onSysex(sysexCommand, sysexData);
-                        }
+                        } else
+                            for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
+                                dataHandler.onSysex(sysexCommand, sysexData);
+                            }
                     }
                 } else {
                     for (ArduinoFirmataDataHandler dataHandler : dataHandlers) {
@@ -542,7 +541,7 @@ public class ArduinoFirmata {
         // StartSysex,
         // EndSysex and
         // Uart_data
-        ArrayList<byte[]> subArrays=new ArrayList<byte[]>();
+        ArrayList<byte[]> subArrays = new ArrayList<byte[]>();
         for (int i = 0; i < frameBytes.length; i += maxShieldFrameBytes) {
             byte[] subArray = (i + maxShieldFrameBytes > frameBytes.length) ? ArrayUtils
                     .copyOfRange(frameBytes, i, frameBytes.length) : ArrayUtils
@@ -550,7 +549,7 @@ public class ArduinoFirmata {
             subArrays.add(subArray);
         }
         synchronized (sysexLock) {
-            for(byte[] sub:subArrays)
+            for (byte[] sub : subArrays)
                 sysex(UART_DATA, sub);
         }
         printFrameToLog(frameBytes, "Sent");
@@ -727,15 +726,12 @@ public class ArduinoFirmata {
         dataHandlers.clear();
         frameHandlers.clear();
     }
-    
-    private void callbackEntered(){
-        if(!isInACallback){
-            isInACallback=true;
-            for (ArduinoCallbackStatusHandler handler : arduinoCallbackStatusHandler) {
-                handler.onCallbackEntered();
-            }
-            if(callbackEnteringTimeout!=null)callbackEnteringTimeout.stopTimer();
-            callbackEnteringTimeout=new TimeOut(5,new TimeOut.TimeoutHandler() {
+
+    private void callbackEntered() {
+        if (!isInACallback) {
+            isInACallback = true;
+            if (callbackEnteringTimeout != null) callbackEnteringTimeout.stopTimer();
+            callbackEnteringTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
                 @Override
                 public void onTimeout() {
                     callbackExited();
@@ -748,17 +744,26 @@ public class ArduinoFirmata {
             });
         }
     }
-    
-    private void callbackExited(){
-        if(isInACallback){
-            isInACallback=false;
-            if(callbackEnteringTimeout!=null)callbackEnteringTimeout.stopTimer();
-            for (ArduinoCallbackStatusHandler handler : arduinoCallbackStatusHandler) {
-                handler.onCallbackExited();
-            }
+
+    private void callbackExited() {
+        if (isInACallback) {
+            isInACallback = false;
+            if (callbackEnteringTimeout != null) callbackEnteringTimeout.stopTimer();
+            if (queuedFrames != null && queuedFrames.size() > 0)
+                sendShieldFrame(queuedFrames.poll());
         }
     }
-    
+
+    public void queueShieldFrame(ShieldFrame frame) {
+        if (!isInACallback)
+            sendShieldFrame(frame);
+        else {
+            if (queuedFrames == null)
+                queuedFrames = new ConcurrentLinkedQueue<>();
+            queuedFrames.add(frame);
+        }
+    }
+
     public void clearArduinoFirmataEventHandlers() {
         eventHandlers.clear();
     }
@@ -850,14 +855,11 @@ public class ArduinoFirmata {
                         //1Sheeld configration from the library
                         if (functionId == LIBRARY_VERSION_RESPONSE) {
 
-                        }
-                        else if(functionId == IS_HARDWARE_CONNECTED_QUERY){
+                        } else if (functionId == IS_HARDWARE_CONNECTED_QUERY) {
                             notifyHardwareOfConnection();
-                        }
-                        else if(functionId == IS_CALLBACK_ENTERED){
+                        } else if (functionId == IS_CALLBACK_ENTERED) {
                             callbackEntered();
-                        }
-                        else if(functionId == IS_CALLBACK_EXITED){
+                        } else if (functionId == IS_CALLBACK_EXITED) {
                             callbackExited();
                         }
                     } else for (ArduinoFirmataShieldFrameHandler frameHandler : frameHandlers) {
