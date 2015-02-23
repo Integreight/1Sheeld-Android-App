@@ -9,6 +9,7 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.model.TerminalPrintedLine;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.fragments.TerminalFragment;
+import com.integreight.onesheeld.utils.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -123,6 +124,8 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
                         break;
                 }
             }
+
+            Log.d("internetLog", "Terminal " + outputTxt);
         }
     }
 
