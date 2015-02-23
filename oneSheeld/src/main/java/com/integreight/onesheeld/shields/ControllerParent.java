@@ -404,10 +404,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     /**
      * @param frame target frame queuing frame to Arduino Onesheeld
      */
-    public void queueShieldFrame(ShieldFrame frame) {
+    public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
         if (isInteractive) {
             activity.getThisApplication().getAppFirmata()
-                    .queueShieldFrame(frame);
+                    .sendShieldFrame(frame,waitIfInACallback);
         }
     }
 

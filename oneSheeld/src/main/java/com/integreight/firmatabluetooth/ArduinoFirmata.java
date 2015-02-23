@@ -66,7 +66,7 @@ public class ArduinoFirmata {
     private final byte IS_CALLBACK_EXITED = (byte) 0x04;
 
     private final Object sysexLock = new Object();
-
+    
     private final byte UART_BEGIN = (byte) 0x01;
     private final byte UART_END = (byte) 0x00;
 
@@ -147,13 +147,6 @@ public class ArduinoFirmata {
             arduinoLibraryVersionChangeHandlers.add(handler);
     }
 
-    public void addArduinoCallbackStatusHandler(
-            ArduinoCallbackStatusHandler handler) {
-//        if (handler != null
-//                && !arduinoCallbackStatusHandler.contains(handler))
-//            arduinoCallbackStatusHandler.add(handler);
-    }
-
     public void enableBootloaderMode() {
         isBootloader = true;
     }
@@ -214,7 +207,6 @@ public class ArduinoFirmata {
         firmwareVersionQueryHandlers = new CopyOnWriteArrayList<FirmwareVersionQueryHandler>();
         arduinoLibraryVersionChangeHandlers = new CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler>();
         queuedFrames = new ConcurrentLinkedQueue<>();
-//        arduinoCallbackStatusHandler = new CopyOnWriteArrayList<ArduinoCallbackStatusHandler>();
         this.context = context;
         bluetoothService.addBluetoothServiceHandler(handler);
         uiThreadHandler = new Handler(Looper.getMainLooper());
@@ -533,7 +525,24 @@ public class ArduinoFirmata {
         Log.d(tag, s);
     }
 
+    public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
+        if (waitIfInACallback && isInACallback)
+        {
+                if (queuedFrames == null)
+                    queuedFrames = new ConcurrentLinkedQueue<>();
+                queuedFrames.add(frame);
+        }
+        else {
+            sendFrame(frame);
+        }
+    }
+
     public void sendShieldFrame(ShieldFrame frame) {
+        sendShieldFrame(frame,false);
+    }
+
+    private void sendFrame(ShieldFrame frame)
+    {
         if (isBootloader)
             return;
         byte[] frameBytes = frame.getAllFrameAsBytes();
@@ -554,7 +563,6 @@ public class ArduinoFirmata {
         }
         printFrameToLog(frameBytes, "Sent");
     }
-
     public void prepareAppForSendingFirmware() {
         muteFirmata();
         clearAllBuffers();
@@ -749,18 +757,8 @@ public class ArduinoFirmata {
         if (isInACallback) {
             isInACallback = false;
             if (callbackEnteringTimeout != null) callbackEnteringTimeout.stopTimer();
-            if (queuedFrames != null && queuedFrames.size() > 0)
+            if (queuedFrames != null && !queuedFrames.isEmpty())
                 sendShieldFrame(queuedFrames.poll());
-        }
-    }
-
-    public void queueShieldFrame(ShieldFrame frame) {
-        if (!isInACallback)
-            sendShieldFrame(frame);
-        else {
-            if (queuedFrames == null)
-                queuedFrames = new ConcurrentLinkedQueue<>();
-            queuedFrames.add(frame);
         }
     }
 
