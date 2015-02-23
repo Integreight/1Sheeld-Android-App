@@ -67,6 +67,7 @@ public class ArduinoFirmata {
     private final Object sysexLock = new Object();
     private final Object arduinoCallbacksLock = new Object();
     private Thread exitingCallbacksThread, enteringCallbacksThread;
+    private TimeOut callbacksTimeout;
     private final byte UART_BEGIN = (byte) 0x01;
     private final byte UART_END = (byte) 0x00;
 
@@ -764,6 +765,21 @@ public class ArduinoFirmata {
                     synchronized (arduinoCallbacksLock) {
                         isInACallback = true;
                         Log.d("internetLog", "Entered Callback " + queuedFrames.size());
+                        if (callbacksTimeout == null || (callbacksTimeout != null && !callbacksTimeout.isAlive())) {
+                            callbacksTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
+                                @Override
+                                public void onTimeout() {
+                                    callbackExited();
+                                }
+
+                                @Override
+                                public void onTick(int secondsLeft) {
+
+                                }
+                            });
+                        }
+                        else
+                            callbacksTimeout.resetTimer();
                     }
                 }
             }
