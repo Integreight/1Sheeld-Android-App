@@ -26,7 +26,6 @@ public class ArduinoFirmata {
     UartListeningThread uartListeningThread;
     BluetoothBufferListeningThread bluetoothBufferListeningThread;
     TimeOut ShieldFrameTimeout;
-    TimeOut callbackEnteringTimeout;
     boolean isBootloader = false;
 
     public static final byte INPUT = 0;
@@ -66,6 +65,8 @@ public class ArduinoFirmata {
     private final byte IS_CALLBACK_EXITED = (byte) 0x04;
 
     private final Object sysexLock = new Object();
+    private final Object arduinoCallbacksLock = new Object();
+    private Thread exitingCallbacksThread;
     
     private final byte UART_BEGIN = (byte) 0x01;
     private final byte UART_END = (byte) 0x00;
@@ -179,10 +180,6 @@ public class ArduinoFirmata {
     private boolean isBluetoothBufferWaiting;
     private boolean isUartBufferWaiting;
     private boolean isInACallback;
-
-    public boolean isInACallback() {
-        return isInACallback;
-    }
 
     public int getBTState() {
         return bluetoothService.getState();
@@ -526,7 +523,11 @@ public class ArduinoFirmata {
     }
 
     public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
-        if (waitIfInACallback && isInACallback)
+        boolean inACallback;
+        synchronized (arduinoCallbacksLock){
+            inACallback=isInACallback;
+        }
+        if (waitIfInACallback && inACallback)
         {
                 if (queuedFrames == null)
                     queuedFrames = new ConcurrentLinkedQueue<>();
@@ -737,29 +738,34 @@ public class ArduinoFirmata {
 
     private void callbackEntered() {
         if (!isInACallback) {
-            isInACallback = true;
-            if (callbackEnteringTimeout != null) callbackEnteringTimeout.stopTimer();
-            callbackEnteringTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
-                @Override
-                public void onTimeout() {
-                    callbackExited();
-                }
-
-                @Override
-                public void onTick(int secondsLeft) {
-
-                }
-            });
+            synchronized (arduinoCallbacksLock) {
+                isInACallback = true;
+            }
         }
     }
 
     private void callbackExited() {
-        if (isInACallback) {
-            isInACallback = false;
-            if (callbackEnteringTimeout != null) callbackEnteringTimeout.stopTimer();
-            if (queuedFrames != null && !queuedFrames.isEmpty())
-                sendShieldFrame(queuedFrames.poll());
-        }
+        if(exitingCallbacksThread!=null&&exitingCallbacksThread.isAlive())return;
+        exitingCallbacksThread=new Thread(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (arduinoCallbacksLock){
+                    isInACallback = false;
+                }
+                while(queuedFrames != null && !queuedFrames.isEmpty()) {
+                    synchronized (arduinoCallbacksLock) {
+                        if (!isInACallback) {
+                            sendFrame(queuedFrames.poll());
+                            try {
+                                Thread.sleep(50);
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    }
+                }
+            }
+        });
+       
     }
 
     public void clearArduinoFirmataEventHandlers() {
