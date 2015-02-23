@@ -259,6 +259,7 @@ public class ArduinoFirmata {
         clearArduinoFirmataShieldFrameHandlers();
         stopBuffersThreads();
         arduinoLibraryVersion = -1;
+        if(callbacksTimeout!=null)callbacksTimeout.stopTimer();
         if (exitingCallbacksThread != null && exitingCallbacksThread.isAlive())
             exitingCallbacksThread.interrupt();
         if (enteringCallbacksThread != null && enteringCallbacksThread.isAlive())
