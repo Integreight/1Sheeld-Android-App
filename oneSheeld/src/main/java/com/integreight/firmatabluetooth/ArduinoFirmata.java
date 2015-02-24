@@ -451,8 +451,8 @@ public class ArduinoFirmata {
                         break;
                     case REPORT_VERSION:
                         setVersion(storedInputData[0], storedInputData[1]);
-                        Log.d("oll", storedInputData[0] + "     "
-                                + storedInputData[1]);
+//                        Log.d("oll", storedInputData[0] + "     "
+//                                + storedInputData[1]);
                         isVersionQueried = true;
                         break;
                 }
@@ -530,27 +530,29 @@ public class ArduinoFirmata {
     }
 
     public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
-        boolean inACallback;
-        synchronized (arduinoCallbacksLock) {
-            inACallback = isInACallback;
+        boolean inACallback=false;
+        if(waitIfInACallback){
+            synchronized (arduinoCallbacksLock) {
+                inACallback = isInACallback;
+            }
         }
         if (waitIfInACallback && inACallback) {
             if (queuedFrames == null)
                 queuedFrames = new ConcurrentLinkedQueue<>();
             queuedFrames.add(frame);
-            Log.d("internetLog", "Queue Added " + queuedFrames.size());
+//            Log.d("internetLog", "Queue Added " + queuedFrames.size());
         } else {
             if (queuedFrames != null) {
                 if (queuedFrames.isEmpty()) {
                     sendFrame(frame);
-                    Log.d("internetLog", "Send " + queuedFrames.size());
+//                    Log.d("internetLog", "Send " + queuedFrames.size());
                 } else {
                     queuedFrames.add(frame);
-                    Log.d("internetLog", "Queue AddedX " + queuedFrames.size());
+//                    Log.d("internetLog", "Queue AddedX " + queuedFrames.size());
                 }
             } else {
                 sendFrame(frame);
-                Log.d("internetLog", "Send " + queuedFrames.size());
+//                Log.d("internetLog", "Send " + queuedFrames.size());
             }
         }
     }
@@ -754,18 +756,18 @@ public class ArduinoFirmata {
     }
 
     private void callbackEntered() {
-        Log.d("internetLog", "EnterX " + queuedFrames.size());
+//        Log.d("internetLog", "EnterX " + queuedFrames.size());
         if (enteringCallbacksThread != null && enteringCallbacksThread.isAlive())
             return;
         enteringCallbacksThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                Log.d("internetLog", "EnterY " + queuedFrames.size());
+//                Log.d("internetLog", "EnterY " + queuedFrames.size());
                 if (!isInACallback) {
-                    Log.d("internetLog", "EnterZ " + queuedFrames.size());
+//                    Log.d("internetLog", "EnterZ " + queuedFrames.size());
                     synchronized (arduinoCallbacksLock) {
                         isInACallback = true;
-                        Log.d("internetLog", "Entered Callback " + queuedFrames.size());
+//                        Log.d("internetLog", "Entered Callback " + queuedFrames.size());
                         if (callbacksTimeout == null || (callbacksTimeout != null && !callbacksTimeout.isAlive())) {
                             callbacksTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
                                 @Override
@@ -790,7 +792,7 @@ public class ArduinoFirmata {
     }
 
     private void callbackExited() {
-        Log.d("internetLog", "Exit " + queuedFrames.size());
+//        Log.d("internetLog", "Exit " + queuedFrames.size());
         synchronized (arduinoCallbacksLock) {
             isInACallback = false;
         }
@@ -806,7 +808,7 @@ public class ArduinoFirmata {
                         if (!isInACallback) {
                             sendFrame(queuedFrames.poll());
                             sent = true;
-                            Log.d("internetLog", "SendX " + queuedFrames.size());
+//                            Log.d("internetLog", "SendX " + queuedFrames.size());
                         }
                     }
                     if (sent)
