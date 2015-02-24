@@ -583,7 +583,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    static boolean hasCrashlyticsApiKey(Context context) {
+    public static boolean hasCrashlyticsApiKey(Context context) {
 
         boolean hasValidKey = false;
         try {

@@ -100,29 +100,31 @@ public class InternetResponse implements Parcelable, Serializable {
         return nodes;
     }
 
-    public String getValueOf(Object object, ArrayList<JsonNode> tree) throws JSONException {
+    public String getValueOf(Object object, ArrayList<JsonNode> tree) throws JSONException, ClassCastException {
         final JsonNode node = tree.get(0);
-        if (node.getDataType() == JsonNode.NODE_DATA_TYPE.OBJECT) {
-            JSONObject jsonObject = (JSONObject) object;
-            if (tree.size() == 1)
-                return jsonObject.getString(node.getKey());
-            else {
-                tree.remove(0);
-                return getValueOf(jsonObject.get(node.getKey()), tree);
-            }
-        } else if (node.getDataType() == JsonNode.NODE_DATA_TYPE.ARRAY) {
-            JSONArray jsonArray = (JSONArray) object;
-            if (tree.size() == 1)
-                return jsonArray.getString(node.getIndex());
-            else {
-                tree.remove(0);
-                return getValueOf(jsonArray.get(node.getIndex()), tree);
+        if (node != null && object != null) {
+            if (node.getDataType() == JsonNode.NODE_DATA_TYPE.OBJECT) {
+                JSONObject jsonObject = (JSONObject) object;
+                if (tree.size() == 1)
+                    return jsonObject.getString(node.getKey());
+                else {
+                    tree.remove(0);
+                    return getValueOf(jsonObject.get(node.getKey()), tree);
+                }
+            } else if (node.getDataType() == JsonNode.NODE_DATA_TYPE.ARRAY) {
+                JSONArray jsonArray = (JSONArray) object;
+                if (tree.size() == 1)
+                    return jsonArray.getString(node.getIndex());
+                else {
+                    tree.remove(0);
+                    return getValueOf(jsonArray.get(node.getIndex()), tree);
+                }
             }
         }
         return null;
     }
 
-    public int getJSONArrayLength(Object object, ArrayList<JsonNode> tree) throws JSONException {
+    public int getJSONArrayLength(Object object, ArrayList<JsonNode> tree) throws JSONException, ClassCastException {
         final JsonNode node = tree.get(0);
         if (node.getDataType() == JsonNode.NODE_DATA_TYPE.OBJECT) {
             JSONObject jsonObject = (JSONObject) object;

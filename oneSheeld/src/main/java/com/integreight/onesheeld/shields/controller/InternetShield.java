@@ -97,67 +97,9 @@ public class InternetShield extends
         public static final int JSON_KEYCHAIN_IS_WRONG = 7;
     }
 
-    int i = 0;
-    private final String[] locs = new String[]{"Egypt", "London", "NYC", "Egypt", "Al-Qanater"};
-
-    public void addRequest() {
-        i = i + 1;
-        final InternetRequest request = new InternetRequest();
-        request.setUrl("http://api.openweathermap.org/data/2.5/weather?q=" + locs[(i - 1) % 5]);
-        request.setId(i);
-        request.addRegisteredCallbacks(InternetRequest.CALLBACK.ON_SUCCESS, InternetRequest.CALLBACK.ON_PROGRESS, InternetRequest.CALLBACK.ON_FAILURE);
-        request.setCallback(new CallBack() {
-            @Override
-            public void onStart(int requestID) {
-
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int requestID) {
-                try {
-                    String str = new String(responseBody, "UTF-8");
-                    Log.d("res", str);
-                    InternetResponse response = InternetManager.getInstance().getRequest(i).getResponse();
-                    ArrayList<InternetResponse.JsonNode> nodes = new ArrayList<>();
-                    nodes.add(new InternetResponse.JsonNode(InternetResponse.JsonNode.NODE_DATA_TYPE.OBJECT, "weather"));
-                    nodes.add(new InternetResponse.JsonNode(InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY, 0));
-                    nodes.add(new InternetResponse.JsonNode(InternetResponse.JsonNode.NODE_DATA_TYPE.OBJECT, "main"));
-                    if (response != null) {
-                        String jsonRes = response.getValueOf(new JSONObject(new String(str)), nodes);
-                        Log.d("res", jsonRes);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-            @Override
-            public void onFinish(int requestID) {
-                System.out.print(requestID + "");
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int requestID) {
-                System.out.print(requestID + "");
-            }
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize, int requestID) {
-                System.out.print(requestID + "");
-            }
-        });
-        InternetManager.getInstance().putRequest(i, request);
-        try {
-            InternetManager.getInstance().execute(i, InternetManager.REQUEST_TYPE.GET);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-    }
-
     @Override
     public ControllerParent<ControllerParent<InternetShield>> init(String tag) {
         // TODO Auto-generated method stub\
-        System.out.print("");
         try {
             InternetManager.getInstance();
             if (InternetManager.getInstance().getCachDB() == null || !InternetManager.getInstance().getCachDB().isOpen())
@@ -516,6 +458,11 @@ public class InternetShield extends
                                     frameJson.addIntegerArgument(2, false, requestID);
                                     frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                     sendShieldFrame(frameJson, true);
+                                } catch (ClassCastException e) {
+                                    ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
+                                    frameJson.addIntegerArgument(2, false, requestID);
+                                    frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                    sendShieldFrame(frameJson, true);
                                 }
                             } else {
 
@@ -559,6 +506,11 @@ public class InternetShield extends
                                         sendShieldFrame(frameJsonSent, true);
                                     }
                                 } catch (JSONException e) {
+                                    ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
+                                    frameJson.addIntegerArgument(2, false, requestID);
+                                    frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                    sendShieldFrame(frameJson, true);
+                                } catch (ClassCastException e) {
                                     ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
                                     frameJson.addIntegerArgument(2, false, requestID);
                                     frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);

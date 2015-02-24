@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields;
 import android.app.Activity;
 import android.os.Handler;
 import android.view.View;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -256,7 +257,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                     if (isInteractive)
                                         ((T) ControllerParent.this)
                                                 .onNewShieldFrameReceived(frame);
-                                } catch (NullPointerException e) {
+                                } catch (Exception e) {
+                                    Toast.makeText(getActivity(), "Unexpected Behaviour", Toast.LENGTH_SHORT).show();
                                     Crashlytics.logException(e);
                                 }
                             }
@@ -407,7 +409,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
         if (isInteractive) {
             activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(frame,waitIfInACallback);
+                    .sendShieldFrame(frame, waitIfInACallback);
         }
     }
 

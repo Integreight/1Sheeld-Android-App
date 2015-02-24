@@ -91,6 +91,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                         outputAdapter
                                 .updateLines(new ArrayList<TerminalPrintedLine>());
                         ((TerminalShield) getApplication().getRunningShields()
+                                .get(getControllerTag())).lastItemEndedWithNewLine = true;
+                        ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
                         ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();

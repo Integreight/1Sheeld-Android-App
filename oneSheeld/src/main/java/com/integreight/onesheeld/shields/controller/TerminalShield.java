@@ -23,7 +23,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
             R.id.binary, R.id.hex};
     public int selectedEnMth = 0;
     public CopyOnWriteArrayList<TerminalPrintedLine> terminalPrintedLines;
-    private boolean lastItemEndedWithNewLine = true;
+    public boolean lastItemEndedWithNewLine = true;
     public CopyOnWriteArrayList<TerminalPrintedLine> tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
     public boolean isTimeOn = true, isAutoScrolling = true;
 

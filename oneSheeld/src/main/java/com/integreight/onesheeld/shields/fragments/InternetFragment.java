@@ -48,12 +48,6 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
             if (!reInitController())
                 return;
         }
-        ((ViewGroup) getView()).getChildAt(0).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).addRequest();
-            }
-        });
         ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).setUiCallback(new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
