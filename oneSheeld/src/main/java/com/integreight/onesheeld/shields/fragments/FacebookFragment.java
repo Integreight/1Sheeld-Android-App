@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.Session;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
@@ -76,8 +77,11 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Session.getActiveSession().onActivityResult(activity, requestCode,
-                resultCode, data);
+        if (activity == null)
+            activity = (MainActivity) getActivity();
+        if (Session.getActiveSession() != null)
+            Session.getActiveSession().onActivityResult(activity, requestCode,
+                    resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
