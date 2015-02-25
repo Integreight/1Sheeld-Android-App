@@ -69,7 +69,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public void notifyHardwareOfShieldSelection() {
         if (isItARealShield())
             activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED));
+                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED),true);
     }
 
     public ControllerParent() {
