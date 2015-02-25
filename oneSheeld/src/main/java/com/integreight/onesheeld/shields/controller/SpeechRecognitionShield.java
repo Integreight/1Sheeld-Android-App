@@ -80,7 +80,7 @@ public class SpeechRecognitionShield extends
                 String recognized = result.get(0);
                 sf.addStringArgument(recognized.toLowerCase());
                 Log.d("Frame", sf.toString());
-                sendShieldFrame(sf);
+                sendShieldFrame(sf,true);
             } else {
                 onError("No Matching result", SpeechRecognizer.ERROR_NO_MATCH);
             }
@@ -127,7 +127,7 @@ public class SpeechRecognitionShield extends
                     SEND_ERROR);
             sf.addIntegerArgument(1, false, errorSent);
             Log.d("Frame", sf.toString());
-            sendShieldFrame(sf);
+            sendShieldFrame(sf,true);
         }
 
         @Override

@@ -623,8 +623,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                         UIShield.TWITTER_SHIELD.getId(), GET_TWEET);
                 frame.addStringArgument(arg0.getUser().getName());
                 frame.addStringArgument(arg0.getText());
-                activity.getThisApplication().getAppFirmata()
-                        .sendShieldFrame(frame);
+                sendShieldFrame(frame,true);
             }
 
             @Override

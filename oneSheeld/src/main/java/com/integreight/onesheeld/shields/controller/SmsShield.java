@@ -126,7 +126,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
             frame.addStringArgument(sms_body);
 
             Log.d("Fram", frame.getArgumentAsString(1));
-            sendShieldFrame(frame);
+            sendShieldFrame(frame,true);
         }
 
         @Override

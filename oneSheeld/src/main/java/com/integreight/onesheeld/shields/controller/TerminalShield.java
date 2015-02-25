@@ -52,7 +52,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
     public void input(String input) {
         sf = new ShieldFrame(UIShield.TERMINAL_SHIELD.getId(), DATA_IN);
         sf.addStringArgument(input);
-        sendShieldFrame(sf);
+        sendShieldFrame(sf,true);
     }
 
     @Override

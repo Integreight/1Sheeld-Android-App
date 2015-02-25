@@ -132,7 +132,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
                             frame.addByteArgument(pinAndValue);
                         }
                     }
-                    app.getAppFirmata().sendShieldFrame(frame);
+                    app.getAppFirmata().sendShieldFrame(frame,true);
 
                 } else if (action.equals(AnalogWritePushMessageAction)) {
                     app.getAppFirmata().pinMode(json.getInt("pin"),
@@ -146,7 +146,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
                     frame.addStringArgument(from);
                     frame.addStringArgument(json.getString("key"));
                     frame.addFloatArgument((float) json.getDouble("value"));
-                    app.getAppFirmata().sendShieldFrame(frame);
+                    app.getAppFirmata().sendShieldFrame(frame,true);
                 } else if (action.equals(KeyValueStringPushMessageAction)) {
                     ShieldFrame frame = new ShieldFrame(
                             UIShield.REMOTEONESHEELD_SHIELD.getId(),
@@ -154,7 +154,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
                     frame.addStringArgument(from);
                     frame.addStringArgument(json.getString("key"));
                     frame.addStringArgument(json.getString("value"));
-                    app.getAppFirmata().sendShieldFrame(frame);
+                    app.getAppFirmata().sendShieldFrame(frame,true);
                 } else if (action
                         .equals(SubscribeToDigitalPinPushMessageAction)) {
                     List<Integer> pins = new ArrayList<Integer>();
@@ -201,7 +201,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
                             frame.addByteArgument(pinAndValue);
                         }
                     }
-                    app.getAppFirmata().sendShieldFrame(frame);
+                    app.getAppFirmata().sendShieldFrame(frame,true);
                 } else {
                     return;
                 }

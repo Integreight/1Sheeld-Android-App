@@ -40,7 +40,7 @@ public class PatternShield extends
             patternPath[i]=(byte)((pattern.get(i).getRow())|((pattern.get(i).getColumn())<<4));
         }
         frame.addArgument(patternPath);
-        sendShieldFrame(frame);
+        sendShieldFrame(frame,true);
     }
 
     @Override

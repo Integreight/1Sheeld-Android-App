@@ -118,7 +118,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             Log.d("Phone::Controller::SendIncomingNum", phoneNumber);
             frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x02);
             frame.addStringArgument(phoneNumber);
-            sendShieldFrame(frame);
+            sendShieldFrame(frame,true);
             if (eventHandler != null)
                 eventHandler.onReceiveACall(phoneNumber);
         }
@@ -133,7 +133,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             } else {
                 frame.addByteArgument((byte) 0);
             }
-            sendShieldFrame(frame);
+            sendShieldFrame(frame,true);
         }
     };
 
