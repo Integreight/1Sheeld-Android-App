@@ -145,7 +145,7 @@ public class InternetShield extends
             switch (frame.getFunctionId()) {
                 case REQUEST.NEW_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    InternetRequest request = new InternetRequest();
+                    final InternetRequest request = new InternetRequest();
                     request.setId(requestID);
                     request.setUrl(frame.getArgumentAsString(1));
                     request.setCallback(new CallBack() {
@@ -176,10 +176,20 @@ public class InternetShield extends
                         }
 
                         @Override
-                        public void onFinish(int requestID) {
-                            ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
-                            frame1.addIntegerArgument(2, false, requestID);///0=id
-                            sendShieldFrame(frame1, true);
+                        public void onFinish(final int requestID) {
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
+                                        try {
+                                            Thread.sleep(100);
+                                        } catch (InterruptedException e) {
+                                        }
+                                    ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
+                                    frame1.addIntegerArgument(2, false, requestID);///0=id
+                                    sendShieldFrame(frame1, true);
+                                }
+                            }).start();
                         }
 
                         @Override
