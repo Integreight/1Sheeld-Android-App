@@ -258,7 +258,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                         ((T) ControllerParent.this)
                                                 .onNewShieldFrameReceived(frame);
                                 } catch (Exception e) {
-                                    Toast.makeText(getActivity(), "Unexpected Behaviour", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
                                     Crashlytics.logException(e);
                                 }
                             }
