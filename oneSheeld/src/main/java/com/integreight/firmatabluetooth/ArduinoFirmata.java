@@ -274,7 +274,8 @@ public class ArduinoFirmata {
             enteringCallbacksThread.interrupt();
         if (bluetoothService != null && isOpen())
             bluetoothService.stopConnection();
-        queuedFrames = null;
+//        queuedFrames = null;
+        while(queuedFrames!=null&&!queuedFrames.isEmpty())queuedFrames.poll();
         isInACallback = false;
 
         return true;
