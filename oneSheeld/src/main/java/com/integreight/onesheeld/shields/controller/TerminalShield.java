@@ -125,7 +125,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
                 }
             }
 
-            Log.d("internetLog", "Terminal " + outputTxt);
+//            Log.d("internetLog", "Terminal " + outputTxt);
         }
     }
 

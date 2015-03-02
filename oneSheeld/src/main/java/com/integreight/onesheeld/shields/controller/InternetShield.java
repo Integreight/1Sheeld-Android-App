@@ -11,7 +11,6 @@ import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.integreight.onesheeld.utils.BitsUtils;
-import com.integreight.onesheeld.utils.Log;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
 
@@ -177,19 +176,21 @@ public class InternetShield extends
 
                         @Override
                         public void onFinish(final int requestID) {
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
-                                        try {
-                                            Thread.sleep(100);
-                                        } catch (InterruptedException e) {
-                                        }
-                                    ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
-                                    frame1.addIntegerArgument(2, false, requestID);///0=id
-                                    sendShieldFrame(frame1, true);
-                                }
-                            }).start();
+//                            new Thread(new Runnable() {
+//                                @Override
+//                                public void run() {
+                            ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
+                            frame1.addIntegerArgument(2, false, requestID);///0=id
+//                            sendShieldFrame(frame1, true);
+                            if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
+//                                        try {
+//                                            Thread.sleep(100);
+//                                        } catch (InterruptedException e) {
+//                                        }
+                                queueShieldFrame(frame1);
+                            else sendShieldFrame(frame1, true);
+//                                }
+//                            }).start();
                         }
 
                         @Override
@@ -445,16 +446,17 @@ public class InternetShield extends
                     }
                     break;
                 case RESPONSE.GET_JSON_RESPONSE:
+//                    Log.d("internetLog", "Json Frame Came");
                     requestID = frame.getArgumentAsInteger(0);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
-                            Log.d("internetLog", "Parsing");
+//                            Log.d("internetLog", "Parsing");
                             final ArrayList<InternetResponse.JsonNode> jsonNodes = response.getNodes(frame);
                             if (jsonNodes.size() > 0) {
                                 try {
                                     String result = response.getValueOf(jsonNodes.get(0).getDataType() == InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY ? new JSONArray(new String(response.getResponseBody())) : new JSONObject(new String(response.getResponseBody())), jsonNodes);
-                                    Log.d("internetLog", jsonNodes.get((jsonNodes.size() - 1)).getKey() + "      " + result);
+//                                    Log.d("internetLog", jsonNodes.get((jsonNodes.size() - 1)).getKey() + "      " + result);
                                     ShieldFrame frameJsonSent = new ShieldFrame(SHIELD_ID, RESPONSE.RESPONSE_JSON);
                                     frameJsonSent.addIntegerArgument(2, false, requestID);
                                     frameJsonSent.addStringArgument(result);
@@ -475,7 +477,10 @@ public class InternetShield extends
                                     sendShieldFrame(frameJson, true);
                                 }
                             } else {
-
+                                ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
+                                frameJson.addIntegerArgument(2, false, requestID);
+                                frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                sendShieldFrame(frameJson, true);
                             }
                         } else {//no response
                             ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
