@@ -41,7 +41,7 @@ import java.util.Map;
  */
 public class OneSheeldApplication extends Application {
     private SharedPreferences appPreferences;
-    public static int ARDUINO_LIBRARY_VERSION = 4;
+    public static int ARDUINO_LIBRARY_VERSION = 5;
     private final String APP_PREF_NAME = "oneSheeldPreference";
     private final String LAST_DEVICE = "lastConnectedDevice";
     private final String MAJOR_VERSION = "majorVersion";
