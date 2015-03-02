@@ -21,6 +21,7 @@ import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragment
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -52,7 +53,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     public ControllerParent<CameraShield> init(String tag) {
         Intent intent = new Intent(getActivity(), CameraAidlService.class);
         getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
-        getApplication().setCameraCapturesSize(0);
         UIHandler = new Handler();
         return super.init(tag);
     }
@@ -84,7 +84,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 if (capturesQueue == null)
                     capturesQueue = new ConcurrentLinkedQueue<>();
                 if (msg.getData() != null && msg.getData().getSerializable("queue") != null) {
-                    CameraCapture[] captures = (CameraCapture[]) msg.getData().getSerializable("queue");
+                    CameraCapture[] captures = Arrays.copyOf(((Object[]) msg.getData().getSerializable("queue")), ((Object[]) msg.getData().getSerializable("queue")).length, CameraCapture[].class);
                     for (CameraCapture capture : captures) {
                         capturesQueue.add(capture);
                     }
@@ -114,10 +114,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             }
             try {
                 aidlBinder.send(msg);
-                getApplication().setCameraCapturesSize(capturesQueue == null || capturesQueue.isEmpty() ? 0 : 1);
                 capturesQueue = new ConcurrentLinkedQueue<>();
             } catch (RemoteException e) {
-                getApplication().setCameraCapturesSize(capturesQueue == null || capturesQueue.isEmpty() ? 0 : 1);
                 e.printStackTrace();
             }
             isAidlBound = true;
@@ -218,11 +216,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                             }
                             msgBack.replyTo = mMessenger;
                             aidlBinder.send(msgBack);
-                            Log.d("receiver", " " + getApplication().getCameraCapturesSize());
-                            Log.d("receiver", "%%  " + getApplication().getCameraCapturesSize());
                         }
                     } catch (RemoteException e) {
-                        Log.d("receiver", "Crashed  " + getApplication().getCameraCapturesSize());
 //                        if (!isAidlBound || aidlBinder == null)
 //                            getActivity().bindService(new Intent(getActivity(), CameraAidlService.class), myAidlConnection, Context.BIND_AUTO_CREATE);
 //                        e.printStackTrace();
@@ -289,7 +284,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 //                mMessageReceiver);
         if (isAidlBound)
             getActivity().unbindService(myAidlConnection);
-        getApplication().setCameraCapturesSize(0);
+        capturesQueue = new ConcurrentLinkedQueue<>();
 
     }
 
