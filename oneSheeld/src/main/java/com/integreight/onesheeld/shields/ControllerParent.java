@@ -398,6 +398,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 && getApplication().getRunningShields().size() > 0 ? getApplication()
                                 .getRunningShields().keySet().toString()
                                 : "No Running Shields");
+        cachedArduinoCallbackStatus = false;
     }
 
     /**
