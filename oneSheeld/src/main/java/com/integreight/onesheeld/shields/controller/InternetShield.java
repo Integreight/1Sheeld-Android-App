@@ -65,6 +65,7 @@ public class InternetShield extends
         public static final int NOT_CONNECTED_TO_NETWORK = 0;
         public static final int URL_IS_NOT_FOUND = 2;
         public static final int ALREADY_EXECUTING_REQUEST = 3;
+        public static final int URL_IS_WRONG = 4;
     }
 
     /////// RESPONSE
@@ -146,7 +147,15 @@ public class InternetShield extends
                     requestID = frame.getArgumentAsInteger(0);
                     final InternetRequest request = new InternetRequest();
                     request.setId(requestID);
-                    request.setUrl(frame.getArgumentAsString(1));
+                    String url = frame.getArgumentAsString(1);
+                    if (!url.contains(" ")) {
+                        request.setUrl(url);
+                    } else {
+                        ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
+                        frame1.addIntegerArgument(2, false, requestID);
+                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);///0=id
+                        sendShieldFrame(frame1, true);
+                    }
                     request.setCallback(new CallBack() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int requestID) {
@@ -213,8 +222,16 @@ public class InternetShield extends
                     break;
                 case REQUEST.SET_URL:
                     requestID = frame.getArgumentAsInteger(0);
-                    if (InternetManager.getInstance().getRequest(requestID) != null)
-                        InternetManager.getInstance().getRequest(requestID).setUrl("");
+                    String reqURL = frame.getArgumentAsString(1);
+                    if (reqURL.contains(" ")) {
+                        if (InternetManager.getInstance().getRequest(requestID) != null)
+                            InternetManager.getInstance().getRequest(requestID).setUrl(reqURL);
+                    } else {
+                        ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
+                        frame1.addIntegerArgument(2, false, requestID);
+                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);///0=id
+                        sendShieldFrame(frame1, true);
+                    }
                     break;
                 case REQUEST.ADD_HEADER:
                     requestID = frame.getArgumentAsInteger(0);
