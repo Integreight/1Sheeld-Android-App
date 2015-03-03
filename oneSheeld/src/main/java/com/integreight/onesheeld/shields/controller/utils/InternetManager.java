@@ -129,6 +129,8 @@ public class InternetManager {
             return EXECUTION_TYPE.ALREADY_EXECUTING;
         if (request.getUrl() == null || request.getUrl().trim().length() == 0)
             return EXECUTION_TYPE.NO_URL;
+        if (request.getUrl().contains(" "))
+            return EXECUTION_TYPE.URL_IS_WRONG;
 //        if (request.getRegisteredCallbacks() == null || request.getRegisteredCallbacks().size() == 0)
 //            return EXECUTION_TYPE.NO_CALLBACKS;
         final AsyncHttpResponseHandler withUiCallBack = new AsyncHttpResponseHandler() {
@@ -253,7 +255,7 @@ public class InternetManager {
     }
 
     public enum EXECUTION_TYPE {
-        NO_INTERNET(InternetShield.INTERNET.NOT_CONNECTED_TO_NETWORK), SUCCESSFUL(-1), REQUEST_NOT_FOUND(InternetShield.INTERNET.REQUEST_CAN_NOT_BE_FOUND), ALREADY_EXECUTING(InternetShield.INTERNET.ALREADY_EXECUTING_REQUEST), NO_URL(InternetShield.INTERNET.URL_IS_NOT_FOUND);
+        NO_INTERNET(InternetShield.INTERNET.NOT_CONNECTED_TO_NETWORK), SUCCESSFUL(-1), REQUEST_NOT_FOUND(InternetShield.INTERNET.REQUEST_CAN_NOT_BE_FOUND), ALREADY_EXECUTING(InternetShield.INTERNET.ALREADY_EXECUTING_REQUEST), NO_URL(InternetShield.INTERNET.URL_IS_NOT_FOUND), URL_IS_WRONG(InternetShield.INTERNET.URL_IS_WRONG);
         public int value = -1;
 
         private EXECUTION_TYPE(int value) {
