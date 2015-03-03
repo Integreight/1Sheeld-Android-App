@@ -94,6 +94,20 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
                     public void onUnSelect(ArduinoPin pin) {
                     }
                 }); // TODO Auto-generated method stub
+        seekBar.removeCallbacks(null);
+        seekBar.post(new Runnable() {
+            @Override
+            public void run() {
+                if (seekBar != null && ((SliderShield) getApplication().getRunningShields().get(
+                        getControllerTag())).getSliderValue() > 0 && ((SliderShield) getApplication().getRunningShields().get(
+                        getControllerTag())).getSliderValue() <= 255) {
+                    seekBar.setProgress(((SliderShield) getApplication().getRunningShields().get(
+                            getControllerTag())).getSliderValue());
+                    seekBar.refreshDrawableState();
+                    seekBar.updateThumb();
+                }
+            }
+        });
         ((SliderShield) getApplication().getRunningShields().get(
                 getControllerTag())).setSliderHandler(new SliderShield.SliderHandler() {
             @Override
