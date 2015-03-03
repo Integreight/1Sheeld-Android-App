@@ -573,7 +573,7 @@ public class ArduinoFirmata {
     }
 
     private void sendFrame(ShieldFrame frame) {
-        if (isBootloader)
+        if (isBootloader||frame==null)
             return;
         byte[] frameBytes = frame.getAllFrameAsBytes();
         int maxShieldFrameBytes = (MAX_OUTPUT_BYTES - 3) / 2;// The 3 is for
