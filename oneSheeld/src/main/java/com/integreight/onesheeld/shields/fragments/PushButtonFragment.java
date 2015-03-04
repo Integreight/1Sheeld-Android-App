@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -84,6 +85,13 @@ public class PushButtonFragment extends
                     new PushButtonShield(activity, getControllerTag()));
         }
 
+        super.onStart();
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         push = (OneSheeldButton) v
                 .findViewById(R.id.push_button_shield_button_push_button);
         menu = (AppSlidingLeftMenu) activity
@@ -112,8 +120,6 @@ public class PushButtonFragment extends
                 return false;
             }
         });
-        super.onStart();
-
     }
 
     @Override

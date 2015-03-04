@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,15 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                                 .get(getControllerTag())).stopBuzzer();
                     }
                 });
+        ((SpeakerShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setSpeakerEventHandler(speakerEventHandler);
+        super.onStart();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         buzzerSpeaker = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         buzzerSpeaker
@@ -117,7 +127,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                 }
             }
         });
-        super.onStart();
     }
 
     private int getBuzzerVolumeResource(float volume) {
@@ -164,9 +173,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
 
     @Override
     public void onResume() {
-        ((SpeakerShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setSpeakerEventHandler(speakerEventHandler);
         ((SpeakerShield) getApplication().getRunningShields().get(
                 getControllerTag())).doOnResume();
         super.onResume();

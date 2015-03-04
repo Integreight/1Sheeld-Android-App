@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,9 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
                 return;
         }
         ((PressureShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setPressureEventHandler(pressureEventHandler);
+        ((PressureShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -52,6 +56,12 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
         super.onActivityCreated(savedInstanceState);
         Log.d("Pressure Sheeld::OnActivityCreated()", "");
 
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         pressure_float = (TextView) v.findViewById(R.id.pressure_float_txt);
         pressure_byte = (TextView) v.findViewById(R.id.pressure_byte_txt);
 
@@ -85,7 +95,6 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 
             }
         });
-
     }
 
     private PressureEventHandler pressureEventHandler = new PressureEventHandler() {
@@ -151,9 +160,6 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((PressureShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setPressureEventHandler(pressureEventHandler);
 
     }
 }

@@ -4,6 +4,7 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -69,14 +70,12 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
-        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         super.setUserVisibleHint(isVisibleToUser);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mEt1 = (EditText) v.findViewById(R.id.keyboard_myEdit_txt);
         mEt1.setMaxLines(Integer.MAX_VALUE);
         mEt1.setSingleLine(false);
@@ -109,6 +108,12 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
             }
         });
 
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
     }
 
     public void setKeyboardEventHandler(

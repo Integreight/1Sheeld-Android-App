@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
             if (!reInitController())
                 return;
         }
+        ((ClockShield) getApplication().getRunningShields().get(
+                getControllerTag())).setClockEventHandler(clockEventHandler);
         super.onStart();
 
     }
@@ -43,6 +46,11 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         time_tx = (TextView) v.findViewById(R.id.time_txt);
     }
 
@@ -78,8 +86,6 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((ClockShield) getApplication().getRunningShields().get(
-                getControllerTag())).setClockEventHandler(clockEventHandler);
     }
 
     @Override

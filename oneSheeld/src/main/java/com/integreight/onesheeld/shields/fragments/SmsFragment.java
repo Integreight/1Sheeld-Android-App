@@ -1,13 +1,10 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -20,7 +17,7 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
 
     LinearLayout smsTextContainer;
-    
+
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -37,6 +34,8 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
             if (!reInitController())
                 return;
         }
+        ((SmsShield) getApplication().getRunningShields().get(
+                getControllerTag())).setSmsEventHandler(smsEventHandler);
         super.onStart();
 
     }
@@ -50,6 +49,11 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         smsTextContainer = (LinearLayout) v
                 .findViewById(R.id.sms_shield_text_container);
     }

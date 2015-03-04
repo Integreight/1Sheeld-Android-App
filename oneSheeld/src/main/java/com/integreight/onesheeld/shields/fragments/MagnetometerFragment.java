@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class MagnetometerFragment extends
                 return;
         }
         ((MagnetometerShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setMagnetometerEventHandler(magnetometerEventHandler);
+        ((MagnetometerShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -51,6 +55,12 @@ public class MagnetometerFragment extends
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         Log.d("Magnetometer Sheeld::OnActivityCreated()", "");
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         x = (TextView) v.findViewById(R.id.x_value_txt);
         y = (TextView) v.findViewById(R.id.y_value_txt);
@@ -82,7 +92,6 @@ public class MagnetometerFragment extends
 
             }
         });
-
     }
 
     private MagnetometerEventHandler magnetometerEventHandler = new MagnetometerEventHandler() {
@@ -160,9 +169,6 @@ public class MagnetometerFragment extends
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((MagnetometerShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setMagnetometerEventHandler(magnetometerEventHandler);
 
     }
 }

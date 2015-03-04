@@ -33,6 +33,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
             if (!reInitController())
                 return;
         }
+        ((CameraShield) getApplication().getRunningShields().get(
+                getControllerTag())).setCameraEventHandler(cameraEventHandler);
         super.onStart();
 
     }
@@ -107,8 +109,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((CameraShield) getApplication().getRunningShields().get(
-                getControllerTag())).setCameraEventHandler(cameraEventHandler);
 
     }
 

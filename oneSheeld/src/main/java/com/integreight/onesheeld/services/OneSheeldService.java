@@ -13,17 +13,17 @@ import android.support.v4.app.NotificationCompat;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
-import com.integreight.firmatabluetooth.BluetoothService;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.utils.WakeLocker;
 
 public class OneSheeldService extends Service {
     public static boolean isBound = false;
     SharedPreferences sharedPrefs;
     private BluetoothAdapter mBluetoothAdapter = null;
-    private String deviceAddress;
+    private String deviceAddress, deviceName;
     private ArduinoFirmataEventHandler arduinoEventHandler = new ArduinoFirmataEventHandler() {
 
         @Override
@@ -61,7 +61,9 @@ public class OneSheeldService extends Service {
         // TODO Auto-generated method stub
         if (intent.getExtras() != null) {
             deviceAddress = intent.getExtras().getString(
-                    BluetoothService.EXTRA_DEVICE_ADDRESS);
+                    ArduinoConnectivityPopup.EXTRA_DEVICE_ADDRESS);
+            deviceName = intent.getExtras().getString(
+                    ArduinoConnectivityPopup.EXTRA_DEVICE_NAME);
             BluetoothDevice device = mBluetoothAdapter
                     .getRemoteDevice(deviceAddress);
             // Attempt to connect to the device
@@ -101,8 +103,8 @@ public class OneSheeldService extends Service {
         NotificationCompat.Builder build = new NotificationCompat.Builder(this);
         build.setSmallIcon(R.drawable.white_ee_icon);
         build.setContentText("The service is running!");
-        build.setContentTitle("1Sheeld is connected");
-        build.setTicker("1Sheeld is connected!");
+        build.setContentTitle("1Sheeld is connected ");
+        build.setTicker("to " + deviceName);
         build.setWhen(System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

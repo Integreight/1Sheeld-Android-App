@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,14 @@ public class ToggleButtonFragment extends
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
                 container, false);
+
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         toggleButtonButton = (OneSheeldToggleButton) v
                 .findViewById(R.id.toggle_button_shield_button_toggle_button);
         if ((ToggleButtonShield) getApplication().getRunningShields().get(
@@ -51,9 +60,6 @@ public class ToggleButtonFragment extends
         if ((ToggleButtonShield) getApplication().getRunningShields().get(
                 getControllerTag()) != null)
             toggleButtonButton.setEnabled(true);
-
-        return v;
-
     }
 
     @Override

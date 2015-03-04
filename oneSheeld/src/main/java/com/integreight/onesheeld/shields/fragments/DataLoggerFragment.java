@@ -40,6 +40,8 @@ public class DataLoggerFragment extends
             if (!reInitController())
                 return;
         }
+        ((DataLoggerShield) getApplication().getRunningShields().get(
+                getControllerTag())).setEventHandler(eventHandler);
         super.onStart();
     }
 
@@ -51,6 +53,12 @@ public class DataLoggerFragment extends
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         uiHandler = new Handler();
         loggerStatus = (OneSheeldTextView) v.findViewById(R.id.loggerStatus);
         keysContainer = (LinearLayout) v.findViewById(R.id.keysContainer);
@@ -66,15 +74,8 @@ public class DataLoggerFragment extends
         loggerStatus
                 .setText(status == DataLoggerShield.READ_FOR_LOGGING ? R.string.readyToLog
                         : R.string.logging);
-        ((DataLoggerShield) getApplication().getRunningShields().get(
-                getControllerTag())).setEventHandler(eventHandler);
         keysContainer.removeAllViews();
         valuesContainer.removeAllViews();
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

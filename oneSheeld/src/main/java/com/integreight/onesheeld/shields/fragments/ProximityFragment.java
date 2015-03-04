@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,9 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
                 return;
         }
         ((ProximityShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setProximityEventHandler(proximityEventHandler);
+        ((ProximityShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -50,6 +54,11 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         Log.d("Proximity Sheeld::OnActivityCreated()", "");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         distance_float = (TextView) v.findViewById(R.id.distance_float_txt);
         distance_byte = (TextView) v.findViewById(R.id.distance_byte_txt);
@@ -149,9 +158,6 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((ProximityShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setProximityEventHandler(proximityEventHandler);
 
     }
 }

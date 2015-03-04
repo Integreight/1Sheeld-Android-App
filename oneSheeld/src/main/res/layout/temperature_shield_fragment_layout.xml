@@ -53,13 +53,13 @@
                 android:layout_marginTop="20dp"
                 android:singleLine="true"
                 android:textColor="@color/offWhite"
-                android:textSize="80sp" />
+                android:textSize="40sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="3dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="2dp"
                 android:background="@drawable/celesuis_symbol" />
         </LinearLayout>
     </LinearLayout>

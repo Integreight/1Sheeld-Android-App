@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,11 @@ public class FoursquareFragment extends
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mSharedPreferences = getApplication().getSharedPreferences(
                 "com.integreight.onesheeld", Context.MODE_PRIVATE);
         login = (Button) v.findViewById(R.id.foursquare_shiled_login_bt);
@@ -163,6 +169,9 @@ public class FoursquareFragment extends
             if (!reInitController())
                 return;
         }
+        ((FoursquareShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setFoursquareEventHandler(foursquareEventHandler);
         super.onStart();
     }
 
@@ -176,10 +185,6 @@ public class FoursquareFragment extends
         if (getApplication().getRunningShields().get(getControllerTag()) == null)
             getApplication().getRunningShields().put(getControllerTag(),
                     new FoursquareShield(activity, getControllerTag()));
-
-        ((FoursquareShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setFoursquareEventHandler(foursquareEventHandler);
     }
 
     @Override

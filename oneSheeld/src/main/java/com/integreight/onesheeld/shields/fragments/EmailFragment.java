@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,11 +45,8 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
@@ -98,6 +96,22 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                 logoutGmailAccount();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        ((EmailShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setEmailEventHandler(emailEventHandler);
         super.onStart();
 
     }

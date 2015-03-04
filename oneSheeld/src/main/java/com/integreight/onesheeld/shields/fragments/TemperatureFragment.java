@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class TemperatureFragment extends
                 return;
         }
         ((TemperatureShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setTemperatureEventHandler(temperatureEventHandler);
+        ((TemperatureShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -51,6 +55,12 @@ public class TemperatureFragment extends
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         Log.d("Temperature Sheeld::OnActivityCreated()", "");
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         temperature_float = (TextView) v
                 .findViewById(R.id.temperature_float_txt);
@@ -86,7 +96,6 @@ public class TemperatureFragment extends
 
             }
         });
-
     }
 
     private TemperatureEventHandler temperatureEventHandler = new TemperatureEventHandler() {
@@ -153,10 +162,6 @@ public class TemperatureFragment extends
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (getApplication().getRunningShields().get(getControllerTag()) != null)
-            ((TemperatureShield) getApplication().getRunningShields().get(
-                    getControllerTag()))
-                    .setTemperatureEventHandler(temperatureEventHandler);
 
     }
 }

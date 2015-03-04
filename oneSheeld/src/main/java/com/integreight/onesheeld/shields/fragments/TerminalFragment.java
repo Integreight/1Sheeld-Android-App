@@ -47,6 +47,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         output = (ListView) v.findViewById(R.id.terminalOutput);
         outputAdapter = new TerminalLinesAdapter(activity,
                 new ArrayList<TerminalPrintedLine>());
@@ -199,7 +200,6 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
             });
             i++;
         }
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override

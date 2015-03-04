@@ -30,6 +30,9 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
             if (!reInitController())
                 return;
         }
+        ((SkypeShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setSkypeEventHandler(skypeEventHandler);
         super.onStart();
 
     }

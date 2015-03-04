@@ -10,7 +10,6 @@ import com.integreight.onesheeld.model.InternetResponse;
 import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
-import com.integreight.onesheeld.utils.BitsUtils;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
 
@@ -197,7 +196,8 @@ public class InternetShield extends
 //                                        } catch (InterruptedException e) {
 //                                        }
                                 queueShieldFrame(frame1);
-                            else sendShieldFrame(frame1, true);
+                            else
+                                sendShieldFrame(frame1, true);
 //                                }
 //                            }).start();
                         }
@@ -266,7 +266,7 @@ public class InternetShield extends
                     requestID = frame.getArgumentAsInteger(0);
                     InternetManager.EXECUTION_TYPE getExecutionType = null;
                     try {
-                        getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET,frame.getArgument(1)[0]);
+                        getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET, frame.getArgument(1)[0]);
                         if (getExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -284,7 +284,7 @@ public class InternetShield extends
                 case INTERNET.POST_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
                     try {
-                        InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST,frame.getArgument(1)[0]);
+                        InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST, frame.getArgument(1)[0]);
                         if (postExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -302,7 +302,7 @@ public class InternetShield extends
                 case INTERNET.PUT_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
                     try {
-                        InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT,frame.getArgument(1)[0]);
+                        InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT, frame.getArgument(1)[0]);
                         if (putExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -320,7 +320,7 @@ public class InternetShield extends
                 case INTERNET.DELETE_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
                     try {
-                        InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE,frame.getArgument(1)[0]);
+                        InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE, frame.getArgument(1)[0]);
                         if (deleteExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);

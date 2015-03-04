@@ -39,7 +39,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        requestsList = (ExpandableListView) getView().findViewById(R.id.requestsList);
+        requestsList = (ExpandableListView) v.findViewById(R.id.requestsList);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (canChangeUI() && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
+                        if (canChangeUI() && requestsList != null && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
                             requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
                             checkRequests();
                             ((InternetRequestsExpandapleAdapter) requestsList.getExpandableListAdapter()).updateRequests(requests);
@@ -68,7 +68,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (canChangeUI() && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
+                        if (canChangeUI() && requestsList != null && requestsList.getExpandableListAdapter() != null && requestsList.getExpandableListAdapter() instanceof InternetRequestsExpandapleAdapter) {
                             requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
                             checkRequests();
                             ((InternetRequestsExpandapleAdapter) requestsList.getExpandableListAdapter()).updateRequests(requests);

@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -146,6 +147,13 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
         v = inflater.inflate(R.layout.gamepad_shield_fragment_layout,
                 container, false);
+        setHasOptionsMenu(true);
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         upArrowKey = (Key) v.findViewById(R.id.gamepad_up_arrow_key);
         downArrowKey = (Key) v.findViewById(R.id.gamepad_down_arrow_key);
         leftArrowKey = (Key) v.findViewById(R.id.gamepad_left_arrow_key);
@@ -163,8 +171,6 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
         redArrowKey.setEventListener(touchEventListener);
         greenArrowKey.setEventListener(touchEventListener);
         blueArrowKey.setEventListener(touchEventListener);
-        setHasOptionsMenu(true);
-        return v;
     }
 
     @Override
@@ -209,7 +215,6 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-        initializeKeysEventHandler((ViewGroup) v);
 
     }
 

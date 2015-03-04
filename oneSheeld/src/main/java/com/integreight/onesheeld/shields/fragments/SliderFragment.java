@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,13 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.slider_shield_fragment_layout, container,
                 false);
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         seekBar = (VerticalSeekBar) v.findViewById(R.id.slider_fragment_seekbar);
         seekBar.setEnabled(false);
         seekBar.setMax(255);
@@ -60,8 +68,6 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
         if (((SliderShield) getApplication().getRunningShields().get(
                 getControllerTag())) != null)
             seekBar.setEnabled(true);
-        return v;
-
     }
 
     @Override
