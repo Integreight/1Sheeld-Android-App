@@ -68,10 +68,7 @@ public class ArduinoFirmata {
     private final Object arduinoCallbacksLock = new Object();
     private Thread exitingCallbacksThread, enteringCallbacksThread;
     private TimeOut callbacksTimeout;
-        private boolean justSentQueuedFrame;
-    private final byte UART_BEGIN = (byte) 0x01;
-    private final byte UART_END = (byte) 0x00;
-
+    private long lastTimeCallbacksExited;
     private int sysexBytesCount = 0;
 
     Handler uiThreadHandler;
@@ -773,16 +770,14 @@ public class ArduinoFirmata {
             @Override
             public void run() {
                 synchronized (arduinoCallbacksLock) {
-                    if (!isInACallback) {
                         isInACallback = true;
-                    }
                 }
 
                 if (callbacksTimeout == null || (callbacksTimeout != null && !callbacksTimeout.isAlive())) {
                     callbacksTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
                         @Override
                         public void onTimeout() {
-                            callbackExited();
+                                callbackExited();
                         }
 
                         @Override
@@ -802,12 +797,10 @@ public class ArduinoFirmata {
 
     private void callbackExited() {
         synchronized (arduinoCallbacksLock) {
-            if(isInACallback&&queuedFrames != null&&!queuedFrames.isEmpty()){
-                justSentQueuedFrame=true;
-                sendFrame(queuedFrames.poll());
-            }
             isInACallback = false;
+            lastTimeCallbacksExited=System.currentTimeMillis();
         }
+        if (callbacksTimeout != null && !callbacksTimeout.isAlive())callbacksTimeout.stopTimer();
         if (exitingCallbacksThread != null && exitingCallbacksThread.isAlive())
             return;
         exitingCallbacksThread = new Thread(new Runnable() {
@@ -819,14 +812,13 @@ public class ArduinoFirmata {
                     boolean isInCallback;
                     synchronized (arduinoCallbacksLock) {
                         isInCallback = isInACallback;
-
                     }
-                    if (!isInCallback&&!justSentQueuedFrame) {
+
+                    if (!isInCallback&&lastTimeCallbacksExited!=0&&(System.currentTimeMillis()-lastTimeCallbacksExited>100)) {
                         sendFrame(queuedFrames.poll());
                         sent = true;
                     }
-                        if(justSentQueuedFrame)sent=true;
-                        justSentQueuedFrame=false;
+                    
                     if (sent)
                         try {
                             Thread.sleep(100);
