@@ -132,8 +132,6 @@ public class InternetShield extends
 
         public void onStart(int requestID);
 
-        public void onProgress(int bytesWritten, int totalSize, int RequestID);
-
     }
 
     int requestID = 0;
@@ -147,14 +145,7 @@ public class InternetShield extends
                     final InternetRequest request = new InternetRequest();
                     request.setId(requestID);
                     String url = frame.getArgumentAsString(1);
-//                    if (!url.contains(" ")) {
                     request.setUrl(url);
-//                    } else {
-//                        ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-//                        frame1.addIntegerArgument(2, false, requestID);
-//                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);///0=id
-//                        sendShieldFrame(frame1, true);
-//                    }
                     request.setCallback(new CallBack() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int requestID) {
@@ -184,37 +175,18 @@ public class InternetShield extends
 
                         @Override
                         public void onFinish(final int requestID) {
-//                            new Thread(new Runnable() {
-//                                @Override
-//                                public void run() {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
                             frame1.addIntegerArgument(2, false, requestID);///0=id
-//                            sendShieldFrame(frame1, true);
                             if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
-//                                        try {
-//                                            Thread.sleep(100);
-//                                        } catch (InterruptedException e) {
-//                                        }
                                 queueShieldFrame(frame1);
                             else
                                 sendShieldFrame(frame1, true);
-//                                }
-//                            }).start();
                         }
 
                         @Override
                         public void onStart(int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_START);
                             frame1.addIntegerArgument(2, false, requestID);///0=id
-                            sendShieldFrame(frame1, true);
-                        }
-
-                        @Override
-                        public void onProgress(int bytesWritten, int totalSize, int requestID) {
-                            ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_PROGRESS);
-                            frame1.addIntegerArgument(2, false, requestID);///0=id
-                            frame1.addIntegerArgument(2, false, bytesWritten);
-                            frame1.addIntegerArgument(2, false, totalSize);
                             sendShieldFrame(frame1, true);
                         }
                     });

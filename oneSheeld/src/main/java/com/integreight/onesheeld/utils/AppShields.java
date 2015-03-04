@@ -5,12 +5,14 @@ import android.util.SparseArray;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.Shield;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class AppShields {
     private static AppShields thisInstance;
     private Hashtable<String, Shield> shieldsTable;
     private SparseArray<Shield> shieldsArray;
+    private String rememberedShields;
 
     private AppShields() {
         // TODO Auto-generated constructor stub
@@ -25,13 +27,15 @@ public class AppShields {
 
     ;
 
-    public void init() {
+    public void init(String selectedCach) {
+        this.rememberedShields = selectedCach;
         initShields();
     }
 
     public Hashtable<String, Shield> getShieldsTable() {
-        if (shieldsTable == null || shieldsTable.size() == 0)
+        if (shieldsTable == null || shieldsTable.size() == 0) {
             initShields();
+        }
         return shieldsTable;
     }
 
@@ -73,20 +77,41 @@ public class AppShields {
         return shieldsArray.get(position);
     }
 
+    public ArrayList<Byte> getRememberedShields() {
+        if (rememberedShields == null || rememberedShields.length() == 0)
+            return new ArrayList<>();
+        String[] arrString = rememberedShields.split(",");
+        ArrayList<Byte> bytes = new ArrayList<>();
+        for (int i = 0; i < arrString.length; i++) {
+            bytes.add(Byte.parseByte(arrString[i]));
+        }
+        return bytes;
+    }
+
+    public String getSelectedShields() {
+        String selected = "";
+        for (int i = 0; i < shieldsArray.size(); i++) {
+            Shield shield = shieldsArray.get(i);
+            selected += (shield.mainActivitySelection ? shield.id + "," : "");
+        }
+        return selected.trim().length() == 0 ? selected : selected.substring(0, selected.length() - 1);
+    }
+
     private void initShields() {
         int i = 0;
         shieldsArray = new SparseArray();
         shieldsTable = new Hashtable();
+        ArrayList<Byte> remembered = getRememberedShields();
         for (UIShield shield : UIShield.valuesFiltered()) {
             shieldsTable.put(shield.name(), new Shield(shield.getId(), i,
                     shield.name(), shield.getName(), shield.itemBackgroundColor,
-                    shield.symbolId, shield.mainActivitySelection,
+                    shield.symbolId, remembered.contains(shield.id) ? true : shield.mainActivitySelection,
                     shield.shieldType, shield.isReleasable,
                     shield.isInvalidatable));
             shieldsArray.put(i,
                     new Shield(shield.getId(), i, shield.name(), shield.getName(),
                             shield.itemBackgroundColor, shield.symbolId,
-                            shield.mainActivitySelection, shield.shieldType,
+                            remembered.contains(shield.id) ? true : shield.mainActivitySelection, shield.shieldType,
                             shield.isReleasable, shield.isInvalidatable));
             i++;
         }

@@ -175,13 +175,6 @@ public class InternetManager {
                     request.getCallback().onSuccess(statusCode, headers, responseBody);
             }
 
-            @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-                if (request.getCallback() != null)
-                    request.getCallback().onProgress(bytesWritten, totalSize);
-                super.onProgress(bytesWritten, totalSize);
-            }
-
         };
         if (InternetManager.getInstance().getBasicAuth() != null && InternetManager.getInstance().getBasicAuth().first != null && InternetManager.getInstance().getBasicAuth().first.trim().length() > 0)
             getHttpClient().setBasicAuth(InternetManager.getInstance().getBasicAuth().first, InternetManager.getInstance().getBasicAuth().second);

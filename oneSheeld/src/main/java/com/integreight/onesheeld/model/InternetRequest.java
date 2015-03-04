@@ -58,11 +58,6 @@ public class InternetRequest {
             public void onStart(int requestID) {
 
             }
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize, int RequestID) {
-
-            }
         };
         setCallback(shieldCallback);
     }
@@ -134,12 +129,6 @@ public class InternetRequest {
                 if (callback != null)
                     callback.onStart(requestID);
             }
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize, int requestID) {
-                if (callback != null)
-                    callback.onProgress(bytesWritten, totalSize, requestID);
-            }
         };
         this.mCallback = new AsyncHttpResponseHandler() {
             @Override
@@ -182,15 +171,6 @@ public class InternetRequest {
                     shieldCallback.onFinish(id);
                 isIgnored = false;
                 super.onFinish();
-            }
-
-            @Override
-            public void onProgress(int bytesWritten, int totalSize) {
-//                if (mCallback != null)
-//                    mCallback.onProgress(bytesWritten, totalSize);
-                if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_PROGRESS.name()))
-                    shieldCallback.onProgress(bytesWritten, totalSize, id);
-                super.onProgress(bytesWritten, totalSize);
             }
         };
     }
@@ -251,7 +231,7 @@ public class InternetRequest {
 
     public void removeAllParams() {
         params = new HashMap<>();
-        entity=null;
+        entity = null;
     }
 
     public Header[] getHeaders() {

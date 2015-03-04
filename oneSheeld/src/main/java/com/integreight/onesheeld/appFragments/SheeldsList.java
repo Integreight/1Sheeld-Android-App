@@ -245,6 +245,14 @@ public class SheeldsList extends Fragment {
         searchBox = (OneSheeldEditText) v.findViewById(R.id.searchArea);
         searchBox.setAdapter(adapter);
         searchBox.setDropDownHeight(0);
+        v.findViewById(R.id.remember).setOnClickListener(
+                new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View arg0) {
+                        ((OneSheeldApplication) getActivity().getApplication()).setRememberedShields(AppShields.getInstance().getSelectedShields());
+                    }
+                });
         v.findViewById(R.id.selectAll).setOnClickListener(
                 new View.OnClickListener() {
 

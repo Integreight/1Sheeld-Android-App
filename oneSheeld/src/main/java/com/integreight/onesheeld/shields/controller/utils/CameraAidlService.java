@@ -152,7 +152,7 @@ public class CameraAidlService extends Service {
     }
 
     private void sendFrontCaptureImageIntent(CameraShield.CameraCapture camCapture) {
-        if (camCapture != null) {
+            if (camCapture != null) {
             if (!camCapture.isTaken()) {
                 Intent front_translucent = new Intent(getApplication()
                         .getApplicationContext(), CameraHeadService.class);

@@ -51,6 +51,7 @@ public class OneSheeldApplication extends Application {
     private final String SHOWTUTORIALS_AGAIN = "showTutAgain";
     private final String TASKER_CONDITION_PIN = "taskerConditionPin";
     private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
+    private final String REMEMBER_SHIELDS = "rememberedShields";
     private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
     private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
     public static final Hashtable<String, String> shieldsFragmentsTags = new Hashtable<String, String>();
@@ -129,7 +130,7 @@ public class OneSheeldApplication extends Application {
                 .contains("dev")))
             ParsePush.subscribeInBackground("dev");
         connectionTime = 0;
-        AppShields.getInstance().init();
+        AppShields.getInstance().init(getRememberedShields());
         super.onCreate();
     }
 
@@ -293,7 +294,13 @@ public class OneSheeldApplication extends Application {
     public boolean getShowTutAgain() {
         return appPreferences.getBoolean(SHOWTUTORIALS_AGAIN, true);
     }
+    public void setRememberedShields(String shields) {
+        appPreferences.edit().putString(REMEMBER_SHIELDS, shields).commit();
+    }
 
+    public String getRememberedShields() {
+        return appPreferences.getString(REMEMBER_SHIELDS, null);
+    }
     public Hashtable<String, ControllerParent<?>> getRunningShields() {
         return runningSheelds;
     }

@@ -36,6 +36,19 @@
             android:text="@string/reset"
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/remember"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft=".5dp"
+            android:layout_weight="1"
+            android:background="@drawable/search_area_buttons_selector"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="@string/remember"
+            android:textColor="@color/textColorOnDark"
+            android:textSize="15sp" />
     </LinearLayout>
 
     <RelativeLayout
