@@ -223,7 +223,7 @@ public class InternetShield extends
                 case REQUEST.SET_URL:
                     requestID = frame.getArgumentAsInteger(0);
                     String reqURL = frame.getArgumentAsString(1);
-                    if (reqURL.contains(" ")) {
+                    if (!reqURL.contains(" ")) {
                         if (InternetManager.getInstance().getRequest(requestID) != null)
                             InternetManager.getInstance().getRequest(requestID).setUrl(reqURL);
                     } else {
@@ -266,22 +266,12 @@ public class InternetShield extends
                     requestID = frame.getArgumentAsInteger(0);
                     InternetManager.EXECUTION_TYPE getExecutionType = null;
                     try {
-                        getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET);
+                        getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET,frame.getArgument(1)[0]);
                         if (getExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
                             frame1.addIntegerArgument(1, false, getExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
-                        } else {
-                            byte callbacks = frame.getArgument(1)[0];
-                            if (InternetManager.getInstance().getRequest(requestID) != null) {
-                                int j = 0;
-                                for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                                    if (BitsUtils.isBitSet(callbacks, j))
-                                        InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                                    j++;
-                                }
-                            }
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
@@ -294,22 +284,12 @@ public class InternetShield extends
                 case INTERNET.POST_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
                     try {
-                        InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST);
+                        InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST,frame.getArgument(1)[0]);
                         if (postExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
                             frame1.addIntegerArgument(1, false, postExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
-                        } else {
-                            byte callbacks1 = frame.getArgument(1)[0];
-                            if (InternetManager.getInstance().getRequest(requestID) != null) {
-                                int j = 0;
-                                for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                                    if (BitsUtils.isBitSet(callbacks1, j))
-                                        InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                                    j++;
-                                }
-                            }
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
@@ -322,22 +302,12 @@ public class InternetShield extends
                 case INTERNET.PUT_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
                     try {
-                        InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT);
+                        InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT,frame.getArgument(1)[0]);
                         if (putExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
                             frame1.addIntegerArgument(1, false, putExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
-                        } else {
-                            byte callbacks2 = frame.getArgument(1)[0];
-                            if (InternetManager.getInstance().getRequest(requestID) != null) {
-                                int j = 0;
-                                for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                                    if (BitsUtils.isBitSet(callbacks2, j))
-                                        InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                                    j++;
-                                }
-                            }
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
@@ -350,22 +320,12 @@ public class InternetShield extends
                 case INTERNET.DELETE_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
                     try {
-                        InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE);
+                        InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE,frame.getArgument(1)[0]);
                         if (deleteExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
                             frame1.addIntegerArgument(1, false, deleteExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
-                        } else {
-                            byte callbacks3 = frame.getArgument(1)[0];
-                            if (InternetManager.getInstance().getRequest(requestID) != null) {
-                                int j = 0;
-                                for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                                    if (BitsUtils.isBitSet(callbacks3, j))
-                                        InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                                    j++;
-                                }
-                            }
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
