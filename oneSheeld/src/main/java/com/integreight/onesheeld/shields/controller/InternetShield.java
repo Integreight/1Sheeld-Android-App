@@ -427,17 +427,14 @@ public class InternetShield extends
                     }
                     break;
                 case RESPONSE.GET_JSON_RESPONSE:
-//                    Log.d("internetLog", "Json Frame Came");
                     requestID = frame.getArgumentAsInteger(0);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
-//                            Log.d("internetLog", "Parsing");
                             final ArrayList<InternetResponse.JsonNode> jsonNodes = response.getNodes(frame);
                             if (jsonNodes.size() > 0) {
                                 try {
                                     String result = response.getValueOf(jsonNodes.get(0).getDataType() == InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY ? new JSONArray(new String(response.getResponseBody())) : new JSONObject(new String(response.getResponseBody())), jsonNodes);
-//                                    Log.d("internetLog", jsonNodes.get((jsonNodes.size() - 1)).getKey() + "      " + result);
                                     ShieldFrame frameJsonSent = new ShieldFrame(SHIELD_ID, RESPONSE.RESPONSE_JSON);
                                     frameJsonSent.addIntegerArgument(2, false, requestID);
                                     frameJsonSent.addStringArgument(result);
