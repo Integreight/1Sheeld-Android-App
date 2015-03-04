@@ -102,9 +102,9 @@ public class OneSheeldService extends Service {
     private void showNotification() {
         NotificationCompat.Builder build = new NotificationCompat.Builder(this);
         build.setSmallIcon(R.drawable.white_ee_icon);
-        build.setContentText("The service is running!");
-        build.setContentTitle("1Sheeld is connected ");
-        build.setTicker("to " + deviceName);
+        build.setContentText("To: " + deviceName);
+        build.setContentTitle("1Sheeld is connected! ");
+        build.setTicker("1Sheeld is connected!");
         build.setWhen(System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
