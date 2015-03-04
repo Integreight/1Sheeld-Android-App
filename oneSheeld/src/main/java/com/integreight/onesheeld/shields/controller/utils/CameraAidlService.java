@@ -117,15 +117,12 @@ public class CameraAidlService extends Service {
         return super.onUnbind(intent);
     }
 
-    CameraShield.CameraCapture capture;
-    int i = 0;
+    public static CameraShield.CameraCapture capture;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             capture = null;
-//            if (i == 10)
-//                throw new ClassCastException();
             if (!CameraHeadService.isRunning)
                 if (!cameraCaptureQueue.isEmpty()) {
                     capture = cameraCaptureQueue.poll();
@@ -135,7 +132,6 @@ public class CameraAidlService extends Service {
                         sendCaptureImageIntent(capture);
                     }
                 }
-            i = i + 1;
         }
 
     };
