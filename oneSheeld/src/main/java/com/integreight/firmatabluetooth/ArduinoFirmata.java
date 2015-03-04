@@ -809,19 +809,23 @@ public class ArduinoFirmata {
                 boolean sent = false;
                 while (queuedFrames != null && !queuedFrames.isEmpty()) {
                     sent = false;
-                    boolean isInCallback;
+//                    boolean isInCallback;
                     synchronized (arduinoCallbacksLock) {
-                        isInCallback = isInACallback;
+//                        isInCallback = isInACallback;
+                        if (!isInACallback&&lastTimeCallbacksExited!=0&&(System.currentTimeMillis()-lastTimeCallbacksExited>200)) {
+                            sendFrame(queuedFrames.poll());
+                            sent = true;
+                        }
                     }
 
-                    if (!isInCallback&&lastTimeCallbacksExited!=0&&(System.currentTimeMillis()-lastTimeCallbacksExited>100)) {
-                        sendFrame(queuedFrames.poll());
-                        sent = true;
-                    }
+//                    if (!isInCallback&&lastTimeCallbacksExited!=0&&(System.currentTimeMillis()-lastTimeCallbacksExited>100)) {
+//                        sendFrame(queuedFrames.poll());
+//                        sent = true;
+//                    }
                     
                     if (sent)
                         try {
-                            Thread.sleep(100);
+                            Thread.sleep(200);
                         } catch (InterruptedException e) {
                         }
                 }
