@@ -54,7 +54,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
             if (frame.getFunctionId() == SLIDER_VALUE) {
                 sliderValue = frame.getArgumentAsInteger(1, 0);
                 if (sliderHandler != null && isHasForgroundView())
-                    sliderHandler.setSliderValue(frame.getArgumentAsInteger(1, 0));
+                    sliderHandler.setSliderValue(sliderValue);
             }
         }
     }

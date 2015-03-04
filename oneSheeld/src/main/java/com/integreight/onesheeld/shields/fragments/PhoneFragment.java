@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
             if (!reInitController())
                 return;
         }
+        ((PhoneShield) getApplication().getRunningShields().get(
+                getControllerTag())).setPhoneEventHandler(phoneEventHandler);
         super.onStart();
 
     }
@@ -45,8 +48,11 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
-        ((PhoneShield) getApplication().getRunningShields().get(
-                getControllerTag())).setPhoneEventHandler(phoneEventHandler);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         callsLogContainer = (LinearLayout) v.findViewById(R.id.callsCont);
     }
 

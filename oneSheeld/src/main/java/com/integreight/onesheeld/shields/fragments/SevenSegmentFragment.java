@@ -64,6 +64,10 @@ public class SevenSegmentFragment extends
             if (!reInitController())
                 return;
         }
+        if (getControllerTag() != null)
+            ((SevenSegmentShield) getApplication().getRunningShields().get(
+                    getControllerTag()))
+                    .setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
         refreshSegments(((SevenSegmentShield) getApplication()
                 .getRunningShields().get(getControllerTag())).refreshSegments());
         LinearLayout colorChooseCont = (LinearLayout) v
@@ -124,10 +128,6 @@ public class SevenSegmentFragment extends
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        if (getControllerTag() != null)
-            ((SevenSegmentShield) getApplication().getRunningShields().get(
-                    getControllerTag()))
-                    .setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
         super.onActivityCreated(savedInstanceState);
 
     }

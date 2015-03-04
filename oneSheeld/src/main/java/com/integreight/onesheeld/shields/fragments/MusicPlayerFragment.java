@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -186,6 +187,11 @@ public class MusicPlayerFragment extends
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         musicFileName = (TextView) v.findViewById(R.id.playingMusic);
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
         playingBtn = (ImageView) v.findViewById(R.id.playingBtn);

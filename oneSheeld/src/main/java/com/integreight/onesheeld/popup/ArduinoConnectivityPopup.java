@@ -53,6 +53,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private boolean isConnecting = false;
     private Hashtable<String, BluetoothDevice> foundDevicesTable;
     public static String EXTRA_DEVICE_ADDRESS = "device_address";
+    public static String EXTRA_DEVICE_NAME = "device_name";
 
     public ArduinoConnectivityPopup(Activity context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -225,7 +226,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                     }
 
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers,JSONObject response) {
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         try {
                             System.err.println(response);
                             ((OneSheeldApplication) activity.getApplication())
@@ -243,7 +244,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                             // TODO Auto-generated catch block
                             Log.e("TAG", "Exception", e);
                         }
-                        super.onSuccess(statusCode,headers,response);
+                        super.onSuccess(statusCode, headers, response);
                     }
                 });
         super.onCreate(savedInstanceState);
@@ -503,7 +504,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         }
     };
 
-    private void startService(String address) {
+    private void startService(String address, String name) {
         if (!isConnecting) {
             isConnecting = true;
             if (mBtAdapter != null && mBtAdapter.isDiscovering())
@@ -521,6 +522,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                     COLOR.GREEN);
             Intent intent = new Intent(activity, OneSheeldService.class);
             intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+            intent.putExtra(EXTRA_DEVICE_NAME, name);
             activity.startService(intent);
             isConnecting = true;
         }
@@ -539,10 +541,11 @@ public class ArduinoConnectivityPopup extends Dialog {
         mBtAdapter.startDiscovery();
     }
 
-    private void addFoundDevice(String name, final String address,
+    private void addFoundDevice(String name1, final String address,
                                 boolean isPaired) {
-        if (name == null)
-            name = "";
+        if (name1 == null)
+            name1 = "";
+        final String name=name1;
         if (name.trim().length() > 0
                 && (name.toLowerCase().contains("1sheeld") || address
                 .equals(name))
@@ -551,7 +554,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                     .getLastConnectedDevice() != null
                     && ((OneSheeldApplication) activity.getApplication())
                     .getLastConnectedDevice().equals(address)) {
-                startService(address);
+                startService(address,name);
             } else {
                 OneSheeldTextView item = new OneSheeldTextView(activity, null);
                 item.setLayoutParams(new LinearLayout.LayoutParams(
@@ -584,7 +587,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                 ((OneSheeldApplication) activity
                                         .getApplication())
                                         .setLastConnectedDevice(address);
-                            startService(address);
+                            startService(address,name);
                         } else {
                             if (mBtAdapter != null
                                     && mBtAdapter.isDiscovering())
@@ -602,7 +605,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                                 ((OneSheeldApplication) activity
                                                         .getApplication())
                                                         .setLastConnectedDevice(address);
-                                            startService(address);
+                                            startService(address,name);
                                         }
                                     });
                             Intent enableIntent = new Intent(

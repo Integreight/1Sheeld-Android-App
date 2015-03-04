@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class OrientationFragment extends
                 return;
         }
         ((OrientationShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setOrientationEventHandler(orientationEventHandler);
+        ((OrientationShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -51,6 +55,12 @@ public class OrientationFragment extends
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         Log.d("Gravity Sheeld::OnActivityCreated()", "");
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         x = (TextView) v.findViewById(R.id.x_value_txt);
         y = (TextView) v.findViewById(R.id.y_value_txt);
@@ -82,7 +92,6 @@ public class OrientationFragment extends
 
             }
         });
-
     }
 
     private OrientationEventHandler orientationEventHandler = new OrientationEventHandler() {
@@ -143,9 +152,6 @@ public class OrientationFragment extends
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((OrientationShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setOrientationEventHandler(orientationEventHandler);
 
     }
 }

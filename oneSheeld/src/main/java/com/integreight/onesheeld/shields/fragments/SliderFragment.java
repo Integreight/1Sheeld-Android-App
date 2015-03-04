@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,27 @@ import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
+import com.integreight.onesheeld.utils.customviews.VerticalSeekBar;
 
 public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
-    SeekBar seekBar;
+    VerticalSeekBar seekBar;
     Button connectButton;
+
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.slider_shield_fragment_layout, container,
                 false);
-        seekBar = (SeekBar) v.findViewById(R.id.slider_fragment_seekbar);
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        seekBar = (VerticalSeekBar) v.findViewById(R.id.slider_fragment_seekbar);
         seekBar.setEnabled(false);
         seekBar.setMax(255);
         seekBar.setProgress(0);
@@ -58,16 +68,6 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
         if (((SliderShield) getApplication().getRunningShields().get(
                 getControllerTag())) != null)
             seekBar.setEnabled(true);
-        ((SliderShield) getApplication().getRunningShields().get(
-                getControllerTag())).setSliderHandler(new SliderShield.SliderHandler() {
-            @Override
-            public void setSliderValue(int value) {
-                if (seekBar != null && value > 0 && value <= 255)
-                    seekBar.setProgress(value);
-            }
-        });
-        return v;
-
     }
 
     @Override
@@ -100,12 +100,35 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
                     public void onUnSelect(ArduinoPin pin) {
                     }
                 }); // TODO Auto-generated method stub
+        seekBar.removeCallbacks(null);
+        seekBar.post(new Runnable() {
+            @Override
+            public void run() {
+                if (seekBar != null && ((SliderShield) getApplication().getRunningShields().get(
+                        getControllerTag())).getSliderValue() > 0 && ((SliderShield) getApplication().getRunningShields().get(
+                        getControllerTag())).getSliderValue() <= 255) {
+                    seekBar.setProgress(((SliderShield) getApplication().getRunningShields().get(
+                            getControllerTag())).getSliderValue());
+                    seekBar.refreshDrawableState();
+                    seekBar.updateThumb();
+                }
+            }
+        });
         ((SliderShield) getApplication().getRunningShields().get(
                 getControllerTag())).setSliderHandler(new SliderShield.SliderHandler() {
             @Override
-            public void setSliderValue(int value) {
-                if (seekBar != null)
-                    seekBar.setProgress(value);
+            public void setSliderValue(final int value) {
+                seekBar.removeCallbacks(null);
+                seekBar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (seekBar != null && value > 0 && value <= 255) {
+                            seekBar.setProgress(value);
+                            seekBar.refreshDrawableState();
+                            seekBar.updateThumb();
+                        }
+                    }
+                });
             }
         });
         super.onStart();

@@ -37,7 +37,6 @@ public class BluetoothService {
     // Debugging
     private static final String TAG = "BluetoothService";
     private static final boolean D = true;
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
     private BluetoothDevice mmDevice;
 
     public static interface BluetoothServiceHandler {

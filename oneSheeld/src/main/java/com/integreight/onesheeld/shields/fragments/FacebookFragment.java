@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -96,6 +97,11 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
         userNameTextView = (TextView) v
                 .findViewById(R.id.facebook_shield_username_textview);

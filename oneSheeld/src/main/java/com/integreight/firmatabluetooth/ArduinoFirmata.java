@@ -68,9 +68,7 @@ public class ArduinoFirmata {
     private final Object arduinoCallbacksLock = new Object();
     private Thread exitingCallbacksThread, enteringCallbacksThread;
     private TimeOut callbacksTimeout;
-    private final byte UART_BEGIN = (byte) 0x01;
-    private final byte UART_END = (byte) 0x00;
-
+    private long lastTimeCallbacksExited;
     private int sysexBytesCount = 0;
 
     Handler uiThreadHandler;
@@ -194,6 +192,13 @@ public class ArduinoFirmata {
         sysexBytesRead = 0;
     }
 
+    public boolean getCallbackStatus() {
+        synchronized (arduinoCallbacksLock) {
+            return isInACallback;
+        }
+
+    }
+
     public ArduinoFirmata(Context context) {
         uartBuffer = new LinkedBlockingQueue<Byte>();
         bluetoothBuffer = new LinkedBlockingQueue<Byte>();
@@ -246,10 +251,6 @@ public class ArduinoFirmata {
     }
 
     public boolean isOpen() {
-        Log.sysOut(bluetoothService.getState() + "    "
-                + BluetoothService.STATE_CONNECTING + "    "
-                + BluetoothService.STATE_CONNECTED + "    "
-                + BluetoothService.STATE_NONE);
         return bluetoothService != null
                 && bluetoothService.getState() == BluetoothService.STATE_CONNECTED;
     }
@@ -259,14 +260,15 @@ public class ArduinoFirmata {
         clearArduinoFirmataShieldFrameHandlers();
         stopBuffersThreads();
         arduinoLibraryVersion = -1;
-        if(callbacksTimeout!=null)callbacksTimeout.stopTimer();
+        if (callbacksTimeout != null) callbacksTimeout.stopTimer();
         if (exitingCallbacksThread != null && exitingCallbacksThread.isAlive())
             exitingCallbacksThread.interrupt();
         if (enteringCallbacksThread != null && enteringCallbacksThread.isAlive())
             enteringCallbacksThread.interrupt();
         if (bluetoothService != null && isOpen())
             bluetoothService.stopConnection();
-        queuedFrames = null;
+//        queuedFrames = null;
+        while(queuedFrames!=null&&!queuedFrames.isEmpty())queuedFrames.poll();
         isInACallback = false;
 
         return true;
@@ -451,8 +453,6 @@ public class ArduinoFirmata {
                         break;
                     case REPORT_VERSION:
                         setVersion(storedInputData[0], storedInputData[1]);
-//                        Log.d("oll", storedInputData[0] + "     "
-//                                + storedInputData[1]);
                         isVersionQueried = true;
                         break;
                 }
@@ -529,30 +529,38 @@ public class ArduinoFirmata {
         Log.d(tag, s);
     }
 
-    public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
-        boolean inACallback=false;
-        if(waitIfInACallback){
-            synchronized (arduinoCallbacksLock) {
-                inACallback = isInACallback;
-            }
+    public void queueShieldFrame(ShieldFrame frame) {
+        if (queuedFrames != null) {
+            queuedFrames.add(frame);
+            callbackEntered();
         }
-        if (waitIfInACallback && inACallback) {
+    }
+
+    public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
+        if (!waitIfInACallback) {
+            sendFrame(frame);
+            return;
+        }
+
+        boolean inACallback = false;
+
+        synchronized (arduinoCallbacksLock) {
+            inACallback = isInACallback;
+        }
+
+        if (inACallback) {
             if (queuedFrames == null)
                 queuedFrames = new ConcurrentLinkedQueue<>();
             queuedFrames.add(frame);
-//            Log.d("internetLog", "Queue Added " + queuedFrames.size());
         } else {
             if (queuedFrames != null) {
                 if (queuedFrames.isEmpty()) {
                     sendFrame(frame);
-//                    Log.d("internetLog", "Send " + queuedFrames.size());
                 } else {
                     queuedFrames.add(frame);
-//                    Log.d("internetLog", "Queue AddedX " + queuedFrames.size());
                 }
             } else {
                 sendFrame(frame);
-//                Log.d("internetLog", "Send " + queuedFrames.size());
             }
         }
     }
@@ -562,7 +570,7 @@ public class ArduinoFirmata {
     }
 
     private void sendFrame(ShieldFrame frame) {
-        if (isBootloader)
+        if (isBootloader||frame==null)
             return;
         byte[] frameBytes = frame.getAllFrameAsBytes();
         int maxShieldFrameBytes = (MAX_OUTPUT_BYTES - 3) / 2;// The 3 is for
@@ -756,35 +764,31 @@ public class ArduinoFirmata {
     }
 
     private void callbackEntered() {
-//        Log.d("internetLog", "EnterX " + queuedFrames.size());
         if (enteringCallbacksThread != null && enteringCallbacksThread.isAlive())
             return;
         enteringCallbacksThread = new Thread(new Runnable() {
             @Override
             public void run() {
-//                Log.d("internetLog", "EnterY " + queuedFrames.size());
-                if (!isInACallback) {
-//                    Log.d("internetLog", "EnterZ " + queuedFrames.size());
-                    synchronized (arduinoCallbacksLock) {
+                synchronized (arduinoCallbacksLock) {
                         isInACallback = true;
-//                        Log.d("internetLog", "Entered Callback " + queuedFrames.size());
-                        if (callbacksTimeout == null || (callbacksTimeout != null && !callbacksTimeout.isAlive())) {
-                            callbacksTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
-                                @Override
-                                public void onTimeout() {
-                                    callbackExited();
-                                }
-
-                                @Override
-                                public void onTick(int secondsLeft) {
-
-                                }
-                            });
-                        }
-                        else
-                            callbacksTimeout.resetTimer();
-                    }
                 }
+
+                if (callbacksTimeout == null || (callbacksTimeout != null && !callbacksTimeout.isAlive())) {
+                    callbacksTimeout = new TimeOut(5, new TimeOut.TimeoutHandler() {
+                        @Override
+                        public void onTimeout() {
+                                callbackExited();
+                        }
+
+                        @Override
+                        public void onTick(int secondsLeft) {
+
+                        }
+                    });
+                } else
+                    callbacksTimeout.resetTimer();
+
+
             }
         });
         enteringCallbacksThread.start();
@@ -792,10 +796,11 @@ public class ArduinoFirmata {
     }
 
     private void callbackExited() {
-//        Log.d("internetLog", "Exit " + queuedFrames.size());
         synchronized (arduinoCallbacksLock) {
             isInACallback = false;
+            lastTimeCallbacksExited=System.currentTimeMillis();
         }
+        if (callbacksTimeout != null && !callbacksTimeout.isAlive())callbacksTimeout.stopTimer();
         if (exitingCallbacksThread != null && exitingCallbacksThread.isAlive())
             return;
         exitingCallbacksThread = new Thread(new Runnable() {
@@ -804,13 +809,16 @@ public class ArduinoFirmata {
                 boolean sent = false;
                 while (queuedFrames != null && !queuedFrames.isEmpty()) {
                     sent = false;
+                    boolean isInCallback;
                     synchronized (arduinoCallbacksLock) {
-                        if (!isInACallback) {
-                            sendFrame(queuedFrames.poll());
-                            sent = true;
-//                            Log.d("internetLog", "SendX " + queuedFrames.size());
-                        }
+                        isInCallback = isInACallback;
                     }
+
+                    if (!isInCallback&&lastTimeCallbacksExited!=0&&(System.currentTimeMillis()-lastTimeCallbacksExited>100)) {
+                        sendFrame(queuedFrames.poll());
+                        sent = true;
+                    }
+                    
                     if (sent)
                         try {
                             Thread.sleep(100);

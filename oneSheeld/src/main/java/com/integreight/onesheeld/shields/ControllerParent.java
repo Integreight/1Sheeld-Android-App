@@ -66,10 +66,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     private static final byte SELECT_SHIELD = (byte) 0xFE;
     private static final byte DESELECT_SHIELD = (byte) 0xFD;
 
+    public boolean cachedArduinoCallbackStatus = false;
+
     public void notifyHardwareOfShieldSelection() {
         if (isItARealShield())
             activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED),true);
+                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
     }
 
     public ControllerParent() {
@@ -248,7 +250,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                         notifyHardwareOfShieldSelection();
                     else if (frame.getFunctionId() == SELECT_SHIELD) {
                     } else if (frame.getFunctionId() == DESELECT_SHIELD) {
-                    } else
+                    } else {
+                        cachedArduinoCallbackStatus = getApplication().getAppFirmata().getCallbackStatus();
                         actionHandler.post(new Runnable() {
 
                             @Override
@@ -257,12 +260,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                     if (isInteractive)
                                         ((T) ControllerParent.this)
                                                 .onNewShieldFrameReceived(frame);
+                                    cachedArduinoCallbackStatus = false;
                                 } catch (Exception e) {
-                                    Toast.makeText(getActivity(), "Unexpected Behaviour", Toast.LENGTH_SHORT).show();
+                                    cachedArduinoCallbackStatus = false;
+                                    Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
                                     Crashlytics.logException(e);
                                 }
                             }
                         });
+                    }
         }
     };
 
@@ -392,6 +398,16 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 && getApplication().getRunningShields().size() > 0 ? getApplication()
                                 .getRunningShields().keySet().toString()
                                 : "No Running Shields");
+        cachedArduinoCallbackStatus = false;
+    }
+
+    /**
+     * @param frame target frame sending frame to Arduino Onesheeld
+     */
+    public void queueShieldFrame(ShieldFrame frame) {
+        if (isInteractive)
+            activity.getThisApplication().getAppFirmata()
+                    .queueShieldFrame(frame);
     }
 
     /**

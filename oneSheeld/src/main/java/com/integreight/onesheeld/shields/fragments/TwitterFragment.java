@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,14 +85,19 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         lastTweetTextContainer = (LinearLayout) v.findViewById(R.id.tweetsCont);
         userNameTextView = (OneSheeldTextView) v
                 .findViewById(R.id.twitter_shield_username_textview);
         twitterLogin = (Button) v.findViewById(R.id.login);
         twitterLogout = (Button) v.findViewById(R.id.logout);
         progress = (ProgressBar) v.findViewById(R.id.progress);
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     private TwitterEventHandler twitterEventHandler = new TwitterEventHandler() {

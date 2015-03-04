@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.fragments;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,12 @@ public class TextToSpeechFragment extends
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.tts_shield_fragment_layout, container,
                 false);
+        return v;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         speakerLevel = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         femaleBtn = (Button) v.findViewById(R.id.increaseBtn);
@@ -35,7 +42,6 @@ public class TextToSpeechFragment extends
         ttsText = (OneSheeldTextView) v.findViewById(R.id.ttsText);
         ttsText.setMovementMethod(new ScrollingMovementMethod());
         animation = (AnimationDrawable) speakerLevel.getBackground();
-        return v;
     }
 
     private Runnable runAnimation = new Runnable() {

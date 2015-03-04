@@ -10,8 +10,6 @@ import com.integreight.onesheeld.model.InternetResponse;
 import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
-import com.integreight.onesheeld.utils.BitsUtils;
-import com.integreight.onesheeld.utils.Log;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
 
@@ -66,6 +64,7 @@ public class InternetShield extends
         public static final int NOT_CONNECTED_TO_NETWORK = 0;
         public static final int URL_IS_NOT_FOUND = 2;
         public static final int ALREADY_EXECUTING_REQUEST = 3;
+        public static final int URL_IS_WRONG = 4;
     }
 
     /////// RESPONSE
@@ -145,9 +144,17 @@ public class InternetShield extends
             switch (frame.getFunctionId()) {
                 case REQUEST.NEW_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    InternetRequest request = new InternetRequest();
+                    final InternetRequest request = new InternetRequest();
                     request.setId(requestID);
-                    request.setUrl(frame.getArgumentAsString(1));
+                    String url = frame.getArgumentAsString(1);
+//                    if (!url.contains(" ")) {
+                    request.setUrl(url);
+//                    } else {
+//                        ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
+//                        frame1.addIntegerArgument(2, false, requestID);
+//                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);///0=id
+//                        sendShieldFrame(frame1, true);
+//                    }
                     request.setCallback(new CallBack() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int requestID) {
@@ -176,10 +183,23 @@ public class InternetShield extends
                         }
 
                         @Override
-                        public void onFinish(int requestID) {
+                        public void onFinish(final int requestID) {
+//                            new Thread(new Runnable() {
+//                                @Override
+//                                public void run() {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
                             frame1.addIntegerArgument(2, false, requestID);///0=id
-                            sendShieldFrame(frame1, true);
+//                            sendShieldFrame(frame1, true);
+                            if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
+//                                        try {
+//                                            Thread.sleep(100);
+//                                        } catch (InterruptedException e) {
+//                                        }
+                                queueShieldFrame(frame1);
+                            else
+                                sendShieldFrame(frame1, true);
+//                                }
+//                            }).start();
                         }
 
                         @Override
@@ -202,8 +222,16 @@ public class InternetShield extends
                     break;
                 case REQUEST.SET_URL:
                     requestID = frame.getArgumentAsInteger(0);
-                    if (InternetManager.getInstance().getRequest(requestID) != null)
-                        InternetManager.getInstance().getRequest(requestID).setUrl("");
+                    String reqURL = frame.getArgumentAsString(1);
+                    if (!reqURL.contains(" ")) {
+                        if (InternetManager.getInstance().getRequest(requestID) != null)
+                            InternetManager.getInstance().getRequest(requestID).setUrl(reqURL);
+                    } else {
+                        ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
+                        frame1.addIntegerArgument(2, false, requestID);
+                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);///0=id
+                        sendShieldFrame(frame1, true);
+                    }
                     break;
                 case REQUEST.ADD_HEADER:
                     requestID = frame.getArgumentAsInteger(0);
@@ -236,18 +264,9 @@ public class InternetShield extends
                 //////// INTERNET
                 case INTERNET.GET_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    byte callbacks = frame.getArgument(1)[0];
-                    if (InternetManager.getInstance().getRequest(requestID) != null) {
-                        int j = 0;
-                        for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                            if (BitsUtils.isBitSet(callbacks, j))
-                                InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                            j++;
-                        }
-                    }
                     InternetManager.EXECUTION_TYPE getExecutionType = null;
                     try {
-                        getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET);
+                        getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET, frame.getArgument(1)[0]);
                         if (getExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -264,17 +283,8 @@ public class InternetShield extends
                     break;
                 case INTERNET.POST_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    byte callbacks1 = frame.getArgument(1)[0];
-                    if (InternetManager.getInstance().getRequest(requestID) != null) {
-                        int j = 0;
-                        for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                            if (BitsUtils.isBitSet(callbacks1, j))
-                                InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                            j++;
-                        }
-                    }
                     try {
-                        InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST);
+                        InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST, frame.getArgument(1)[0]);
                         if (postExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -291,17 +301,8 @@ public class InternetShield extends
                     break;
                 case INTERNET.PUT_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    byte callbacks2 = frame.getArgument(1)[0];
-                    if (InternetManager.getInstance().getRequest(requestID) != null) {
-                        int j = 0;
-                        for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                            if (BitsUtils.isBitSet(callbacks2, j))
-                                InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                            j++;
-                        }
-                    }
                     try {
-                        InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT);
+                        InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT, frame.getArgument(1)[0]);
                         if (putExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -318,17 +319,8 @@ public class InternetShield extends
                     break;
                 case INTERNET.DELETE_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    byte callbacks3 = frame.getArgument(1)[0];
-                    if (InternetManager.getInstance().getRequest(requestID) != null) {
-                        int j = 0;
-                        for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
-                            if (BitsUtils.isBitSet(callbacks3, j))
-                                InternetManager.getInstance().getRequest(requestID).addRegisteredCallbacks(callback);
-                            j++;
-                        }
-                    }
                     try {
-                        InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE);
+                        InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE, frame.getArgument(1)[0]);
                         if (deleteExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
@@ -439,12 +431,10 @@ public class InternetShield extends
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
-                            Log.d("internetLog", "Parsing");
                             final ArrayList<InternetResponse.JsonNode> jsonNodes = response.getNodes(frame);
                             if (jsonNodes.size() > 0) {
                                 try {
                                     String result = response.getValueOf(jsonNodes.get(0).getDataType() == InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY ? new JSONArray(new String(response.getResponseBody())) : new JSONObject(new String(response.getResponseBody())), jsonNodes);
-                                    Log.d("internetLog", jsonNodes.get((jsonNodes.size() - 1)).getKey() + "      " + result);
                                     ShieldFrame frameJsonSent = new ShieldFrame(SHIELD_ID, RESPONSE.RESPONSE_JSON);
                                     frameJsonSent.addIntegerArgument(2, false, requestID);
                                     frameJsonSent.addStringArgument(result);
@@ -465,7 +455,10 @@ public class InternetShield extends
                                     sendShieldFrame(frameJson, true);
                                 }
                             } else {
-
+                                ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
+                                frameJson.addIntegerArgument(2, false, requestID);
+                                frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                sendShieldFrame(frameJson, true);
                             }
                         } else {//no response
                             ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);

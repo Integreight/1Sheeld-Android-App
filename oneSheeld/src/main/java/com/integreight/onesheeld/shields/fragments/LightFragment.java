@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
                 return;
         }
         ((LightShield) getApplication().getRunningShields().get(
+                getControllerTag())).setLightEventHandler(lightEventHandler);
+        ((LightShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -49,6 +52,12 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
     public void onActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         Log.d("Light Sheeld::OnActivityCreated()", "");
 
         light_float = (TextView) v.findViewById(R.id.light_float_txt);
@@ -84,7 +93,6 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
             }
         });
-
     }
 
     private LightEventHandler lightEventHandler = new LightEventHandler() {
@@ -143,8 +151,6 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
     @Override
     public void onResume() {
-        ((LightShield) getApplication().getRunningShields().get(
-                getControllerTag())).setLightEventHandler(lightEventHandler);
         super.onResume();
 
     }

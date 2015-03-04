@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,9 @@ public class AccelerometerFragment extends
                 return;
         }
         ((AccelerometerShield) getApplication().getRunningShields().get(
+                getControllerTag()))
+                .setAccelerometerEventHandler(accelerometerEventHandler);
+        ((AccelerometerShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
 
     }
@@ -48,10 +52,8 @@ public class AccelerometerFragment extends
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Gravity Sheeld::OnActivityCreated()", "");
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         x = (TextView) v.findViewById(R.id.x_value_txt);
         y = (TextView) v.findViewById(R.id.y_value_txt);
@@ -83,6 +85,13 @@ public class AccelerometerFragment extends
 
             }
         });
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        // TODO Auto-generated method stub
+        super.onActivityCreated(savedInstanceState);
+        Log.d("Gravity Sheeld::OnActivityCreated()", "");
 
     }
 
@@ -145,9 +154,6 @@ public class AccelerometerFragment extends
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        ((AccelerometerShield) getApplication().getRunningShields().get(
-                getControllerTag()))
-                .setAccelerometerEventHandler(accelerometerEventHandler);
 
     }
 }

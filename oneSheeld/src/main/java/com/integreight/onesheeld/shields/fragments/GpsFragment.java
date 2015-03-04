@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.integreight.onesheeld.utils.Log;
 public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
     TextView Latit, Longit;
     Button startGps, stopGps;
+    String lat;
+    String lng;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
             if (!reInitController())
                 return;
         }
+        ((GpsShield) getApplication().getRunningShields().get(
+                getControllerTag())).setGpsEventHandler(gpsEventHandler);
         super.onStart();
     }
 
@@ -45,6 +50,12 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
         // TODO Auto-generated method stub
         super.onActivityCreated(savedInstanceState);
         Log.d("Gps Sheeld::OnActivityCreated()", "");
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         Latit = (TextView) v.findViewById(R.id.lat_value_txt);
         Longit = (TextView) v.findViewById(R.id.lang_value_txt);
@@ -73,7 +84,6 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 
             }
         });
-
     }
 
     private GpsEventHandler gpsEventHandler = new GpsEventHandler() {
@@ -81,27 +91,31 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
         @Override
         public void onLatChanged(final String lat) {
             // TODO Auto-generated method stub
-            Latit.post(new Runnable() {
+            if (lat != null && lat.length() > 0)
+                Latit.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    if (canChangeUI())
-                        Latit.setText("Latitude\n" + lat);
-                }
-            });
+                    @Override
+                    public void run() {
+                        GpsFragment.this.lat = lat;
+                        if (canChangeUI())
+                            Latit.setText("Latitude\n" + lat);
+                    }
+                });
         }
 
         @Override
         public void onLangChanged(final String lang) {
             // TODO Auto-generated method stub
-            Longit.post(new Runnable() {
+            if (lang != null && lang.length() > 0)
+                Longit.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    if (canChangeUI())
-                        Longit.setText("Longitude\n" + lang);
-                }
-            });
+                    @Override
+                    public void run() {
+                        GpsFragment.this.lng = lng;
+                        if (canChangeUI())
+                            Longit.setText("Longitude\n" + lang);
+                    }
+                });
         }
     };
 
@@ -125,9 +139,19 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
         // TODO Auto-generated method stub
         super.onResume();
         ((GpsShield) getApplication().getRunningShields().get(
-                getControllerTag())).setGpsEventHandler(gpsEventHandler);
-        ((GpsShield) getApplication().getRunningShields().get(
                 getControllerTag())).isGooglePlayServicesAvailableWithDialog();
+        if (((GpsShield) getApplication().getRunningShields().get(
+                getControllerTag())).getLastKnownLocation() != null) {
+            lat = ((GpsShield) getApplication().getRunningShields().get(
+                    getControllerTag())).getLastKnownLocation().getLatitude() + "";
+            lng = ((GpsShield) getApplication().getRunningShields().get(
+                    getControllerTag())).getLastKnownLocation().getLongitude() + "";
+        }
+        if (lat != null && lng != null && canChangeUI()) {
+            Latit.setText("Latitude\n" + lat);
+            Longit.setText("Longitude\n" + lng);
+
+        }
 
     }
 

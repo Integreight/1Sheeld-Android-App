@@ -84,7 +84,7 @@ public class InternetRequest {
     public void setUrl(String url) {
         this.url = url;
         if (url != null) {
-            this.url = this.url.replace(" ", "");
+//            this.url = this.url.replace(" ", "");
             this.url = this.url.replace("\\", "/");
         }
     }
@@ -161,7 +161,6 @@ public class InternetRequest {
 //                    mCallback.onSuccess(statusCode, headers, responseBody);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_SUCCESS.name()))
                     shieldCallback.onSuccess(statusCode, headers, responseBody, id);
-                isIgnored = false;
             }
 
             @Override
@@ -172,7 +171,6 @@ public class InternetRequest {
 //                    mCallback.onFailure(statusCode, headers, responseBody, error);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FAILURE.name()))
                     shieldCallback.onFailure(statusCode, headers, responseBody, error, id);
-                isIgnored = false;
             }
 
             @Override
@@ -192,7 +190,6 @@ public class InternetRequest {
 //                    mCallback.onProgress(bytesWritten, totalSize);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_PROGRESS.name()))
                     shieldCallback.onProgress(bytesWritten, totalSize, id);
-                isIgnored = false;
                 super.onProgress(bytesWritten, totalSize);
             }
         };

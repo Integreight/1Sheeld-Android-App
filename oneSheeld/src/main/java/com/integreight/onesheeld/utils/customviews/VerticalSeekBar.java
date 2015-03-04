@@ -37,6 +37,10 @@ public class VerticalSeekBar extends SeekBar {
         super.onDraw(c);
     }
 
+    public void updateThumb() {
+        onSizeChanged(getWidth(), getHeight(), 0, 0);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (!isEnabled()) {

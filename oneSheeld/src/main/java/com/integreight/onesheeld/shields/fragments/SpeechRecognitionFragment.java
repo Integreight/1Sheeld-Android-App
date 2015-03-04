@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,13 @@ public class SpeechRecognitionFragment extends
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.voice_recognition_shield_fragment_view,
                 container, false);
+        return v;
+
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         statusCircle = v.findViewById(R.id.statusCircle);
         statusHint = (OneSheeldTextView) v.findViewById(R.id.statusHint);
         rmsIndicator = (TextView) v.findViewById(R.id.rmsLevelIndicator);
@@ -47,8 +55,6 @@ public class SpeechRecognitionFragment extends
                             stepValue = statusCircle.getHeight() / 10;
                     }
                 });
-        return v;
-
     }
 
     @Override

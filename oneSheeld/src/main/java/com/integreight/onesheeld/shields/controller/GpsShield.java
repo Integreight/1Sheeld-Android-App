@@ -37,6 +37,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     private static final int SERVICE_VERSION_UPDATE_REQUIRED = 2,
             SERVICE_MISSING = 1, SERVICE_DISABLED = 3, CANCELED = 13,
             SUCCESS = 0;
+    private Location lastKnownLocation;
 
     int PERIOD = 5000;
 
@@ -245,6 +246,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     public void onLocationChanged(Location arg0) {
         // TODO Auto-generated method stub
         if (eventHandler != null && mLocationClient.isConnected()) {
+            lastKnownLocation=arg0;
             eventHandler.onLangChanged(arg0.getLongitude() + "");
             eventHandler.onLatChanged(arg0.getLatitude() + "");
         }
@@ -257,6 +259,10 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         // TODO Auto-generated method stub
         Log.d("GPS Location Failed", arg0.toString());
 
+    }
+
+    public Location getLastKnownLocation() {
+        return lastKnownLocation;
     }
 
     @Override

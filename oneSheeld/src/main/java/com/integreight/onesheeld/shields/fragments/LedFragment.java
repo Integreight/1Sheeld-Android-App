@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,21 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.led_shield_fragment_layout, container,
                 false);
-        ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
         return v;
 
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        toggleLed(((LedShield) getApplication().getRunningShields().get(
+                getControllerTag())).refreshLed());
     }
 
     @Override
@@ -40,8 +53,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
         }
         ((LedShield) getApplication().getRunningShields().get(
                 getControllerTag())).setLedEventHandler(ledEventHandler);
-        toggleLed(((LedShield) getApplication().getRunningShields().get(
-                getControllerTag())).refreshLed());
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
