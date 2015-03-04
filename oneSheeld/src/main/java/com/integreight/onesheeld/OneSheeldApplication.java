@@ -21,7 +21,6 @@ import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.Log;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -45,7 +44,6 @@ public class OneSheeldApplication extends Application {
     private final String APP_PREF_NAME = "oneSheeldPreference";
     private final String LAST_DEVICE = "lastConnectedDevice";
     private final String MAJOR_VERSION = "majorVersion";
-    private final String CAMERA_CAPTURES_SIZE = "camera_captures";
     private final String MINOR_VERSION = "minorVersion";
     private final String VERSION_WEB_RESULT = "versionWebResult";
     private final String BUZZER_SOUND_KEY = "buzerSound";
@@ -229,15 +227,6 @@ public class OneSheeldApplication extends Application {
     public void setLastConnectedDevice(String lastConnectedDevice) {
         appPreferences.edit().putString(LAST_DEVICE, lastConnectedDevice)
                 .commit();
-    }
-
-    public int getCameraCapturesSize() {
-        return appPreferences.getInt(CAMERA_CAPTURES_SIZE, -1);
-    }
-
-    public void setCameraCapturesSize(int cameraCapturesSize) {
-        appPreferences.edit().putInt(CAMERA_CAPTURES_SIZE, cameraCapturesSize).commit();
-        Log.d("cameraLog",cameraCapturesSize+"");
     }
 
     public int getMajorVersion() {

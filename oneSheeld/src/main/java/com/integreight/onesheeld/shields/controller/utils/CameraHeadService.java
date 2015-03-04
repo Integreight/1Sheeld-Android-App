@@ -532,6 +532,7 @@ public class CameraHeadService extends Service implements
                             .show();
                 }
             });
+            CameraAidlService.capture = null;
             stopSelf();
         }
     };

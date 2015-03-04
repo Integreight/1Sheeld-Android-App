@@ -5,20 +5,69 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.Process;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.Camera;
-import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.utils.Log;
 
+import java.util.Arrays;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CameraAidlService extends Service {
     public Queue<CameraShield.CameraCapture> cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+    public static final int SET_REPLYTO = 1;
+    public static final int ADD_TO_QUEUE = 2;
+    public static final int CRASHED = 3;
+    private Messenger replyTo;
+
+    private final Messenger mMesesenger = new Messenger(new Handler() {
+
+        public void handleMessage(Message msg) {
+            if (msg.replyTo != null)
+                replyTo = msg.replyTo;
+            if (msg.what == SET_REPLYTO) {
+                replyTo = msg.replyTo;
+                if (msg.getData() != null && msg.getData().getSerializable("queue") != null) {
+                    CameraShield.CameraCapture[] captures = Arrays.copyOf(((Object[]) msg.getData().getSerializable("queue")), ((Object[]) msg.getData().getSerializable("queue")).length, CameraShield.CameraCapture[].class);
+                    if (cameraCaptureQueue == null)
+                        cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+                    for (CameraShield.CameraCapture capture : captures) {
+                        cameraCaptureQueue.add(capture);
+                    }
+                    if (!CameraHeadService.isRunning && captures.length > 0) {
+                        Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
+                        LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
+                    }
+                }
+            } else if (msg.what == ADD_TO_QUEUE) {
+                if (cameraCaptureQueue == null)
+                    cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+                if (msg.getData() != null && msg.getData().getSerializable("queue") != null) {
+                    CameraShield.CameraCapture[] captures = (CameraShield.CameraCapture[]) msg.getData().getSerializable("queue");
+                    for (CameraShield.CameraCapture capture : captures) {
+                        cameraCaptureQueue.add(capture);
+                    }
+                }
+                cameraCaptureQueue.add((CameraShield.CameraCapture) msg.getData().getSerializable("capture"));//new CameraShield.CameraCapture(msg.getData().getString("flash"), msg.getData().getBoolean("isFront"), msg.getData().getInt("quality"), msg.getData().getLong("tag")));
+                if (!CameraHeadService.isRunning) {
+                    Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
+                    LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
+                }
+            }
+
+        }
+    });
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -26,37 +75,63 @@ public class CameraAidlService extends Service {
                 getApplication().getApplicationContext()).registerReceiver(
                 mMessageReceiver, new IntentFilter(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME));
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();
-        return binder;
+        initCrashlyticsAndUncaughtThreadHandler();
+        return mMesesenger.getBinder();
+    }
+
+    private void initCrashlyticsAndUncaughtThreadHandler() {
+        Thread.UncaughtExceptionHandler myHandler = new Thread.UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException(Thread arg0, final Throwable arg1) {
+                Message msg = Message.obtain(null, CRASHED);
+                if (capture != null)
+                    cameraCaptureQueue.add(capture);
+                Bundle b = new Bundle();
+                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+                arr = cameraCaptureQueue.toArray(arr);
+                b.putSerializable("queue", arr);
+                msg.setData(b);
+                try {
+                    replyTo.send(msg);
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                    stopSelf();
+                }
+                CameraHeadService.isRunning = false;
+                android.os.Process.killProcess(Process.myPid());
+            }
+        };
+        Thread.setDefaultUncaughtExceptionHandler(myHandler);
+        if (MainActivity.hasCrashlyticsApiKey(this)) {
+            Crashlytics.start(this);
+        }
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         LocalBroadcastManager.getInstance(getApplication()).unregisterReceiver(
                 mMessageReceiver);
-        ((OneSheeldApplication) getApplication()).setCameraCapturesSize(0);
+        cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+        capture = null;
         return super.onUnbind(intent);
     }
 
+    public static CameraShield.CameraCapture capture;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            String message = intent.getStringExtra("message");
-//            Log.d("receiver", "Got message: " + message);
-            Log.d("receiver",
-                    "Before" + cameraCaptureQueue.size());
+            capture = null;
             if (!CameraHeadService.isRunning)
                 if (!cameraCaptureQueue.isEmpty()) {
-                    final CameraShield.CameraCapture capture = cameraCaptureQueue.poll();
+                    capture = cameraCaptureQueue.poll();
                     if (capture.isFront()) {
                         sendFrontCaptureImageIntent(capture);
                     } else {
                         sendCaptureImageIntent(capture);
                     }
                 }
-            ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
-            Log.d("receiver",
-                    "After" + cameraCaptureQueue.size());
         }
 
     };
@@ -95,7 +170,6 @@ public class CameraAidlService extends Service {
         @Override
         public void add(String flash, boolean isFront, int quality, long tag) throws RemoteException {
             cameraCaptureQueue.add(new CameraShield.CameraCapture(flash, isFront, quality, tag));
-            ((OneSheeldApplication) getApplication()).setCameraCapturesSize(cameraCaptureQueue.size());
             if (!CameraHeadService.isRunning) {
                 Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
                 LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
