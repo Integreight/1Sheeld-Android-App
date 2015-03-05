@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CameraAidlService extends Service {
     public Queue<CameraShield.CameraCapture> cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+    public Queue<CameraShield.CameraCapture> tempQueue = new ConcurrentLinkedQueue<>();
     public static final int SET_REPLYTO = 1;
     public static final int ADD_TO_QUEUE = 2;
     public static final int CRASHED = 3;
@@ -114,6 +115,10 @@ public class CameraAidlService extends Service {
                 mMessageReceiver);
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();
         capture = null;
+        Intent intent1 = new Intent(getApplication()
+                .getApplicationContext(), CameraHeadService.class);
+        getApplication().getApplicationContext().stopService(intent1);
+        android.os.Process.killProcess(Process.myPid());
         return super.onUnbind(intent);
     }
 
@@ -122,7 +127,18 @@ public class CameraAidlService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            capture = null;
+            if (intent.getBooleanExtra("takenSuccessfuly", true))
+                capture = null;
+            else {
+                tempQueue = new ConcurrentLinkedQueue<>();
+                tempQueue.add(capture);
+                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+                arr = cameraCaptureQueue.toArray(arr);
+                for (CameraShield.CameraCapture tempCapture : arr) {
+                    tempQueue.add(tempCapture);
+                }
+                cameraCaptureQueue = new ConcurrentLinkedQueue<>(tempQueue);
+            }
             if (!CameraHeadService.isRunning)
                 if (!cameraCaptureQueue.isEmpty()) {
                     capture = cameraCaptureQueue.poll();
@@ -152,7 +168,7 @@ public class CameraAidlService extends Service {
     }
 
     private void sendFrontCaptureImageIntent(CameraShield.CameraCapture camCapture) {
-            if (camCapture != null) {
+        if (camCapture != null) {
             if (!camCapture.isTaken()) {
                 Intent front_translucent = new Intent(getApplication()
                         .getApplicationContext(), CameraHeadService.class);

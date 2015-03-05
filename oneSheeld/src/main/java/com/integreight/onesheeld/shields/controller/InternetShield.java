@@ -128,8 +128,8 @@ public class InternetShield extends
         } catch (SnappydbException e) {
             e.printStackTrace();
         }
-        if (true)
-            throw new ClassCastException();
+//        if (true)
+//            throw new ClassCastException();
         return super.init(tag);
     }
 

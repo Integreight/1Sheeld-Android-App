@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Process;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -39,6 +40,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -111,6 +113,15 @@ public class MainActivity extends FragmentActivity {
                 arg1.printStackTrace();
                 ArduinoConnectivityPopup.isOpened = false;
                 moveTaskToBack(true);
+
+                Enumeration<String> enumKey = ((OneSheeldApplication) getApplication()).getRunningShields().keys();
+                while (enumKey.hasMoreElements()) {
+                    String key = enumKey.nextElement();
+                    ((OneSheeldApplication) getApplication())
+                            .getRunningShields().get(key).resetThis();
+                    ((OneSheeldApplication) getApplication())
+                            .getRunningShields().remove(key);
+                }
                 if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
                     while (!((OneSheeldApplication) getApplication())
                             .getAppFirmata().close())
@@ -393,7 +404,7 @@ public class MainActivity extends FragmentActivity {
 //            if (packageInfo.packageName.equals("com.integreight.onesheeld"))
 //                mActivityManager.killBackgroundProcesses(packageInfo.packageName);
 //        }
-        System.exit(0);
+        android.os.Process.killProcess(Process.myPid());
     }
 
     public void replaceCurrentFragment(int container, Fragment targetFragment,
@@ -449,6 +460,15 @@ public class MainActivity extends FragmentActivity {
 //                @Override
 //                public void run() {
             // tryToSendNotificationsToAdmins(arg1);
+            Enumeration<String> enumKey = ((OneSheeldApplication)
+                    getApplication()).getRunningShields().keys();
+            while (enumKey.hasMoreElements()) {
+                String key = enumKey.nextElement();
+                ((OneSheeldApplication) getApplication())
+                        .getRunningShields().get(key).resetThis();
+                ((OneSheeldApplication) getApplication())
+                        .getRunningShields().remove(key);
+            }
             Intent in = new Intent(getIntent());
             PendingIntent intent = PendingIntent.getActivity(
                     getBaseContext(), 0, in, getIntent().getFlags());
@@ -460,7 +480,7 @@ public class MainActivity extends FragmentActivity {
 //                }
 //            }).start();
         } else
-            System.exit(0);
+            killAllProcesses();
         isBackPressed = false;
         super.onDestroy();
     }

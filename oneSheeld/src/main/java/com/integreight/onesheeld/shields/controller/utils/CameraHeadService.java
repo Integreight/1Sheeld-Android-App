@@ -67,6 +67,7 @@ public class CameraHeadService extends Service implements
     private OrientationEventListener mOrientationEventListener;
     private int mOrientation = -1;
     public static boolean isRunning = false;
+    private boolean takenSuccessfully = false;
 
     /**
      * Called when the activity is first created.
@@ -175,7 +176,7 @@ public class CameraHeadService extends Service implements
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
-
+                            takenSuccessfully=false;
                             stopSelf();
                         }
                         Camera.Parameters parameters = mCamera.getParameters();
@@ -204,6 +205,7 @@ public class CameraHeadService extends Service implements
                                         Toast.LENGTH_LONG).show();
                             }
                         });
+                        takenSuccessfully=false;
 
                         stopSelf();
                     }
@@ -227,7 +229,7 @@ public class CameraHeadService extends Service implements
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
-
+                                takenSuccessfully=false;
                                 stopSelf();
                             }
                             Camera.Parameters parameters = mCamera
@@ -256,6 +258,7 @@ public class CameraHeadService extends Service implements
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
+                            takenSuccessfully=false;
                             stopSelf();
                         }
 
@@ -300,6 +303,8 @@ public class CameraHeadService extends Service implements
                                         Toast.LENGTH_LONG).show();
                             }
                         });
+                        takenSuccessfully=false;
+                        stopSelf();
 
                     }
                     // return 4;
@@ -322,6 +327,7 @@ public class CameraHeadService extends Service implements
                             Toast.LENGTH_LONG).show();
                 }
             });
+            takenSuccessfully=false;
             stopSelf();
         }
 
@@ -333,6 +339,7 @@ public class CameraHeadService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // sv = new SurfaceView(getApplicationContext());
+        takenSuccessfully = false;
         cameraIntent = intent;
         isRunning = true;
         Log.d("ImageTakin", "StartCommand()");
@@ -532,7 +539,7 @@ public class CameraHeadService extends Service implements
                             .show();
                 }
             });
-            CameraAidlService.capture = null;
+            takenSuccessfully = true;
             stopSelf();
         }
     };
@@ -562,6 +569,7 @@ public class CameraHeadService extends Service implements
         if (sv != null)
             windowManager.removeView(sv);
         Intent intent = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
+        intent.putExtra("takenSuccessfuly", takenSuccessfully);
         isRunning = false;
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
 

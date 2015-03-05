@@ -285,6 +285,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         if (isAidlBound)
             getActivity().unbindService(myAidlConnection);
         capturesQueue = new ConcurrentLinkedQueue<>();
+        isAidlBound = false;
 
     }
 
