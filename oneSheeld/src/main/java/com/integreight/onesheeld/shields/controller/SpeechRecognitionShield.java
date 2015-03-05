@@ -5,9 +5,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -63,6 +66,32 @@ public class SpeechRecognitionShield extends
         return super.init(tag);
     }
 
+    @Override
+    public ControllerParent<SpeechRecognitionShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        if (!isSpeechRecognitionActivityPresented(activity)) {
+            if (isToastable)
+                Toast.makeText(activity, "Please, install voice search from google play", Toast.LENGTH_SHORT).show();
+            selectionAction.onFailure();
+        } else
+            selectionAction.onSuccess();
+        return super.invalidate(selectionAction, isToastable);
+    }
+
+    boolean isSpeechRecognitionActivityPresented(Activity callerActivity) {
+        try {
+            PackageManager pm = callerActivity.getPackageManager();
+            List activities = pm.queryIntentActivities(new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+            if (activities.size() != 0) {
+                return true;
+            }
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
     public void setEventHandler(final RecognitionEventHandler eventHandler) {
         this.eventHandler = eventHandler;
     }
@@ -80,7 +109,7 @@ public class SpeechRecognitionShield extends
                 String recognized = result.get(0);
                 sf.addStringArgument(recognized.toLowerCase());
                 Log.d("Frame", sf.toString());
-                sendShieldFrame(sf,true);
+                sendShieldFrame(sf, true);
             } else {
                 onError("No Matching result", SpeechRecognizer.ERROR_NO_MATCH);
             }
@@ -127,7 +156,7 @@ public class SpeechRecognitionShield extends
                     SEND_ERROR);
             sf.addIntegerArgument(1, false, errorSent);
             Log.d("Frame", sf.toString());
-            sendShieldFrame(sf,true);
+            sendShieldFrame(sf, true);
         }
 
         @Override

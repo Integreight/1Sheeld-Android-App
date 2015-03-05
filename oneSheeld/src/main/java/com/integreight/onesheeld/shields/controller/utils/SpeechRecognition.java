@@ -38,11 +38,12 @@ public class SpeechRecognition implements RecognitionListener {
         mSpeechRecognizer.setRecognitionListener(this);
     }
 
-    public void stop() {
+    public synchronized void stop() {
         if (mSpeechRecognizer != null) {
             mSpeechRecognizer.stopListening();
             mSpeechRecognizer.cancel();
             mSpeechRecognizer.destroy();
+            mSpeechRecognizer = null;
         }
     }
 

@@ -127,7 +127,7 @@ public class MainActivity extends FragmentActivity {
                         System.currentTimeMillis() + 1000, intent);
                 getThisApplication().setTutShownTimes(
                         getThisApplication().getTutShownTimes() + 1);
-                System.exit(0);
+                killAllProcesses();
             }
         };
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
@@ -380,6 +380,22 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    private void killAllProcesses() {
+//        List<ApplicationInfo> packages;
+//        PackageManager pm;
+//        pm = getPackageManager();
+//        //get a list of installed apps.
+//        packages = pm.getInstalledApplications(0);
+//
+//        ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//
+//        for (ApplicationInfo packageInfo : packages) {
+//            if (packageInfo.packageName.equals("com.integreight.onesheeld"))
+//                mActivityManager.killBackgroundProcesses(packageInfo.packageName);
+//        }
+        System.exit(0);
+    }
+
     public void replaceCurrentFragment(int container, Fragment targetFragment,
                                        String tag, boolean addToBackStack, boolean animate) {
         // String backStateName = tag;
@@ -428,23 +444,23 @@ public class MainActivity extends FragmentActivity {
         }
         // // unExpeted
         if (!isBackPressed) {
-            new Thread(new Runnable() {
+//            new Thread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+            // tryToSendNotificationsToAdmins(arg1);
+            Intent in = new Intent(getIntent());
+            PendingIntent intent = PendingIntent.getActivity(
+                    getBaseContext(), 0, in, getIntent().getFlags());
 
-                @Override
-                public void run() {
-                    // tryToSendNotificationsToAdmins(arg1);
-                    Intent in = new Intent(getIntent());
-                    PendingIntent intent = PendingIntent.getActivity(
-                            getBaseContext(), 0, in, getIntent().getFlags());
-
-                    AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
-                            intent);
-                    android.os.Process.killProcess(android.os.Process.myPid());
-                }
-            }).start();
+            AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
+                    intent);
+            killAllProcesses();
+//                }
+//            }).start();
         } else
-            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
         isBackPressed = false;
         super.onDestroy();
     }

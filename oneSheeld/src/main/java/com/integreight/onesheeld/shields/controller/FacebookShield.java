@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.LoggingBehavior;
@@ -191,7 +192,14 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                         Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
                                 fragment, PERMISSIONS);
                         if (newPermissionsRequest != null)
-                            session.requestNewPublishPermissions(newPermissionsRequest);
+                            try {
+                                session.requestNewPublishPermissions(newPermissionsRequest);
+                            } catch (Exception e) {
+                                Crashlytics.logException(e);
+                                if (eventHandler != null)
+                                    eventHandler
+                                            .onFacebookError("Failed to login, Please try again!");
+                            }
                         else {
                             if (eventHandler != null)
                                 eventHandler

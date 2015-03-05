@@ -134,7 +134,7 @@ public enum UIShield {
             false, TextToSpeechShield.class), SPEECH_RECOGNIZER_SHIELD(
             (byte) 0x24, "Voice Recognizer", 0xffde1f26,
             R.drawable.shields_list_voice_recognition_symbol, false,
-            SpeechRecognitionShield.class), DATA_LOGGER((byte) 0x25,
+            SpeechRecognitionShield.class, 1), DATA_LOGGER((byte) 0x25,
             "Data Logger", 0xffde1f26,
             R.drawable.shields_list_data_logger_symbol, false,
             DataLoggerShield.class), TERMINAL_SHIELD((byte) 0x26, "Terminal",
