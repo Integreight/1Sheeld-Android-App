@@ -22,6 +22,8 @@ import java.util.Hashtable;
 
 /**
  * Created by Saad on 1/26/15.
+ * <p/>
+ * SingleTone class for Internet Shield, has most of the logic for internet
  */
 public class InternetManager {
     private static InternetManager ourInstance;
@@ -30,7 +32,6 @@ public class InternetManager {
     private DB cachDB;
     private Context context;
     private AsyncHttpResponseHandler uiCallback;
-    private String contentType = "";
     private int maxSentBytes = 64;
     private Pair<String, String> basicAuth;
 
@@ -134,7 +135,7 @@ public class InternetManager {
             return EXECUTION_TYPE.URL_IS_WRONG;
 //        if (request.getRegisteredCallbacks() == null || request.getRegisteredCallbacks().size() == 0)
 //            return EXECUTION_TYPE.NO_CALLBACKS;
-
+        // registering callback according excution request parameter
         if (InternetManager.getInstance().getRequest(id) != null) {
             int j = 0;
             for (InternetRequest.CALLBACK callback : InternetRequest.CALLBACK.values()) {
@@ -143,7 +144,9 @@ public class InternetManager {
                 j++;
             }
         }
-        InternetManager.getInstance().putRequest(id,request);
+        //update request after registering callback
+        InternetManager.getInstance().putRequest(id, request);
+        // using given callback for UI updates
         final AsyncHttpResponseHandler withUiCallBack = new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
@@ -209,10 +212,6 @@ public class InternetManager {
     }
 
     public void disponseResponse(int id) {
-//        if (requests.contains(id)) {
-//            requests.get(id).ignoreResponse();
-//            requests.remove(id);
-//        }
         try {
             cachDB.del(id + "");
         } catch (SnappydbException e) {
@@ -220,14 +219,6 @@ public class InternetManager {
         }
         if (uiCallback != null)
             uiCallback.onStart();
-    }
-
-    public String getContentType() {
-        return contentType;
-    }
-
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
     }
 
     public int getMaxSentBytes() {
@@ -243,15 +234,10 @@ public class InternetManager {
     }
 
     public void setBasicAuth(Pair<String, String> basicAuth) {
-//        try {
-//            this.basicAuth = new Pair<>(URLEncoder.encode(basicAuth.first, "UTF-8"), URLEncoder.encode(basicAuth.second, "UTF-8"));
-//        } catch (UnsupportedEncodingException e) {
         if (basicAuth != null && basicAuth.first != null && basicAuth.first.trim().length() > 0 && basicAuth.second != null && basicAuth.second.trim().length() > 0)
             this.basicAuth = new Pair<>(basicAuth.first, basicAuth.second);
         else
             this.basicAuth = null;
-//            e.printStackTrace();
-//        }
     }
 
     public void clearBasicAuth() {

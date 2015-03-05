@@ -22,10 +22,19 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+/*
+* author Saad
+*
+* Internet shield depends on a major single to class called InternetManager which contains most of the logic,
+* receiving and sending frames only here
+* */
 public class InternetShield extends
         ControllerParent<ControllerParent<InternetShield>> {
     private static final byte SHIELD_ID = UIShield.INTERNET_SHIELD.id;
 
+    /*
+        * a static final class that caontains sent/received frames related to request frames
+    * */
     /////////
     private final static class REQUEST {
         public static final byte NEW_REQUEST = (byte) 0x01;
@@ -47,6 +56,9 @@ public class InternetShield extends
         private static final byte ON_FINISH = (byte) 0x05;
     }
 
+    /*
+        * a static final class that caontains sent/received frames related to internet funs. frames
+    * */
     //////// INTERNET
     public final static class INTERNET {
         public static final byte GET_REQUEST = (byte) 0x09;
@@ -67,6 +79,9 @@ public class InternetShield extends
         public static final int URL_IS_WRONG = 4;
     }
 
+    /*
+        * a static final class that caontains sent/received frames related to response frames
+    * */
     /////// RESPONSE
     private final static class RESPONSE {
         public static final byte DISPOSE = (byte) 0x11;
@@ -101,6 +116,7 @@ public class InternetShield extends
         // TODO Auto-generated method stub\
         try {
             InternetManager.getInstance();
+            // initializing local db for fetched responses
             if (InternetManager.getInstance().getCachDB() == null || !InternetManager.getInstance().getCachDB().isOpen())
                 InternetManager.getInstance().init(activity.getApplicationContext());
             else {
@@ -163,7 +179,7 @@ public class InternetShield extends
                         @Override
                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FAILURE);
-                            frame1.addIntegerArgument(2, false, requestID);///0=id
+                            frame1.addIntegerArgument(2, false, requestID);
                             frame1.addIntegerArgument(2, false, statusCode);//
                             frame1.addIntegerArgument(4, false, responseBody != null ? responseBody.length : 0);
                             InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
@@ -176,7 +192,7 @@ public class InternetShield extends
                         @Override
                         public void onFinish(final int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
-                            frame1.addIntegerArgument(2, false, requestID);///0=id
+                            frame1.addIntegerArgument(2, false, requestID);
                             if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
                                 queueShieldFrame(frame1);
                             else
@@ -186,7 +202,7 @@ public class InternetShield extends
                         @Override
                         public void onStart(int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_START);
-                            frame1.addIntegerArgument(2, false, requestID);///0=id
+                            frame1.addIntegerArgument(2, false, requestID);
                             sendShieldFrame(frame1, true);
                         }
                     });
@@ -201,7 +217,7 @@ public class InternetShield extends
                     } else {
                         ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                         frame1.addIntegerArgument(2, false, requestID);
-                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);///0=id
+                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);
                         sendShieldFrame(frame1, true);
                     }
                     break;
@@ -239,13 +255,15 @@ public class InternetShield extends
                     InternetManager.EXECUTION_TYPE getExecutionType = null;
                     try {
                         getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET, frame.getArgument(1)[0]);
+                        //request excutes only in case of success
                         if (getExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                             frame1.addIntegerArgument(2, false, requestID);
-                            frame1.addIntegerArgument(1, false, getExecutionType.value);///0=id
+                            frame1.addIntegerArgument(1, false, getExecutionType.value);
                             sendShieldFrame(frame1, true);
                         }
                     } catch (UnsupportedEncodingException e) {
+                        //dummy catch that only used for requests the accept custom entity
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
                         entityError.addIntegerArgument(2, false, requestID);
                         entityError.addIntegerArgument(1, false, RESPONSE.UNSUPPORTED_ENTITY_ENCODING);
@@ -320,11 +338,11 @@ public class InternetShield extends
                     InternetManager.getInstance().setMaxSentBytes(frame.getArgumentAsInteger(0));
                     break;
                 /////// RESPONSE
-                case RESPONSE.DISPOSE:
+                case RESPONSE.DISPOSE:// remove response from database
                     requestID = frame.getArgumentAsInteger(0);
                     InternetManager.getInstance().disponseResponse(requestID);
                     break;
-                case RESPONSE.GET_NEXT_BYTES:
+                case RESPONSE.GET_NEXT_BYTES: // get a byte array for the response from index to another
                     requestID = frame.getArgumentAsInteger(0);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
@@ -348,7 +366,7 @@ public class InternetShield extends
                                 frameSentcountOut.addIntegerArgument(2, false, requestID);
                                 frameSentcountOut.addIntegerArgument(1, false, RESPONSE.SIZE_OF_REQUEST_CAN_NOT_BE_ZERO);
                                 sendShieldFrame(frameSentcountOut, true);
-                            } else {
+                            } else { // successfully getten fully
                                 if (bodyBytes.getArray() != null && bodyBytes.getArray().length > 0) {
                                     ShieldFrame frameSent = new ShieldFrame(SHIELD_ID, RESPONSE.SEND_GET_NEXT_BYTES);
                                     frameSent.addIntegerArgument(2, false, requestID);
@@ -529,6 +547,9 @@ public class InternetShield extends
         InternetManager.getInstance().setUiCallback(callback);
     }
 
+    /*
+    * get a list of request to show in the fragment
+    * */
     public ArrayList<InternetUiRequest> getUiRequests() {
         ArrayList<InternetUiRequest> requestsUI = new ArrayList<>();
         Enumeration e = InternetManager.getInstance().getRequests().keys();

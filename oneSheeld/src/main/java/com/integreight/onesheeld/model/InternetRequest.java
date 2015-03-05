@@ -134,8 +134,6 @@ public class InternetRequest {
             @Override
             public void onStart() {
                 status = REQUEST_STATUS.SENT;
-//                if (mCallback != null)
-//                    mCallback.onStart();
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_START.name()))
                     shieldCallback.onStart(id);
                 isIgnored = false;
@@ -146,8 +144,6 @@ public class InternetRequest {
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                 status = REQUEST_STATUS.EXECUTED;
                 setResponse(new InternetResponse(responseBody, statusCode, InternetResponse.RESPONSE_STATUS.SUCCESSFUL, headers));
-//                if (mCallback != null)
-//                    mCallback.onSuccess(statusCode, headers, responseBody);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_SUCCESS.name()))
                     shieldCallback.onSuccess(statusCode, headers, responseBody, id);
             }
@@ -156,8 +152,6 @@ public class InternetRequest {
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                 status = REQUEST_STATUS.EXECUTED;
                 setResponse(new InternetResponse(responseBody, statusCode, InternetResponse.RESPONSE_STATUS.FAILURE, headers));
-//                if (mCallback != null)
-//                    mCallback.onFailure(statusCode, headers, responseBody, error);
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FAILURE.name()))
                     shieldCallback.onFailure(statusCode, headers, responseBody, error, id);
             }
@@ -165,18 +159,12 @@ public class InternetRequest {
             @Override
             public void onFinish() {
                 status = REQUEST_STATUS.EXECUTED;
-//                if (mCallback != null)
-//                    mCallback.onFinish();
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FINISH.name()))
                     shieldCallback.onFinish(id);
                 isIgnored = false;
                 super.onFinish();
             }
         };
-    }
-
-    public void updateCallback(AsyncHttpResponseHandler mCallback) {
-        this.mCallback = mCallback;
     }
 
     public InternetResponse getResponse() {
@@ -216,12 +204,7 @@ public class InternetRequest {
     }
 
     public void addParam(String key, String value) {
-//        try {
-//            params.put(URLEncoder.encode(key, "UTF-8"), URLEncoder.encode(value, "UTF-8"));
-//        } catch (UnsupportedEncodingException e) {
         params.put(key, value);
-//            e.printStackTrace();
-//        }
     }
 
     public void removeParam(String key) {
