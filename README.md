@@ -10,6 +10,19 @@ Pull requests are welcomed. If you want to contribute, fork, create an issue, re
 
 Change Log:
 
+--------- Version 1.2.0 (150308) -----------
+
+- Added our most advanced - and most requested - shield ever, the Internet Shield.
+- Added an Android pattern shield.
+- Fixed a bug in Bluetooth connection status reporting.
+- Fixed major bugs related to sending frames to Arduino.
+- Revamped the camera shield implementation. (Now, it works in its own process.)
+- Queued frames if Arduino is in one of our callbacks.
+- Added the name of the connected 1Sheeld in the notifications.
+- Fixed bugs with the voice recognizer and Facebook shields.
+- Added a button to remember the list of selected shields.
+- Increased overall app stability.
+
 --------- Version 1.1.3 (141225) -----------
 
 - Fixed front camera orientation problem.
