@@ -108,10 +108,10 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
                 return true;
             }
         });
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
-        requestsList.setIndicatorBounds(width - getPixelFromDips(30), width - getPixelFromDips(30));
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//        int width = metrics.widthPixels;
+        requestsList.setIndicatorBounds(getPixelFromDips(10),  getPixelFromDips(40));
         super.onStart();
     }
 
