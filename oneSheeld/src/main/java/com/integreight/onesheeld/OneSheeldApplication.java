@@ -298,7 +298,7 @@ public class OneSheeldApplication extends Application {
 
     public void setRememberedShields(String shields) {
         appPreferences.edit().putString(REMEMBER_SHIELDS, shields).commit();
-        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.remove_remembered : R.string.remember), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.remove_remembered : R.string.remembered), Toast.LENGTH_SHORT).show();
     }
 
     public String getRememberedShields() {
