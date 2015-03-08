@@ -76,6 +76,7 @@ public class CameraAidlService extends Service {
                 getApplication().getApplicationContext()).registerReceiver(
                 mMessageReceiver, new IntentFilter(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME));
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();
+        cameraCaptureQueue = null;
         initCrashlyticsAndUncaughtThreadHandler();
         return mMesesenger.getBinder();
     }
@@ -99,6 +100,8 @@ public class CameraAidlService extends Service {
                     e.printStackTrace();
                     stopSelf();
                 }
+
+                stopService(new Intent(CameraAidlService.this, CameraHeadService.class));
                 CameraHeadService.isRunning = false;
                 android.os.Process.killProcess(Process.myPid());
             }
@@ -122,16 +125,17 @@ public class CameraAidlService extends Service {
         return super.onUnbind(intent);
     }
 
-    public static CameraShield.CameraCapture capture;
+    CameraShield.CameraCapture capture;
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            if (intent.getBooleanExtra("takenSuccessfuly", true))
+            if (intent == null || intent.getExtras() == null || intent.getExtras().get("takenSuccessfuly") == null || intent.getBooleanExtra("takenSuccessfuly", false))
                 capture = null;
             else {
                 tempQueue = new ConcurrentLinkedQueue<>();
-                tempQueue.add(capture);
+                if (capture != null)
+                    tempQueue.add(capture);
                 CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
                 arr = cameraCaptureQueue.toArray(arr);
                 for (CameraShield.CameraCapture tempCapture : arr) {
@@ -141,11 +145,11 @@ public class CameraAidlService extends Service {
             }
             if (!CameraHeadService.isRunning)
                 if (!cameraCaptureQueue.isEmpty()) {
-                    capture = cameraCaptureQueue.poll();
+                    capture = cameraCaptureQueue.peek();
                     if (capture.isFront()) {
-                        sendFrontCaptureImageIntent(capture);
+                        sendFrontCaptureImageIntent(cameraCaptureQueue.poll());
                     } else {
-                        sendCaptureImageIntent(capture);
+                        sendCaptureImageIntent(cameraCaptureQueue.poll());
                     }
                 }
         }
@@ -154,31 +158,25 @@ public class CameraAidlService extends Service {
 
     private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {
         if (camCapture != null) {
-            if (!camCapture.isTaken()) {
-                Intent intent = new Intent(getApplication()
-                        .getApplicationContext(), CameraHeadService.class);
-                intent.putExtra("FLASH", camCapture.getFlash());
-                intent.putExtra("Quality_Mode", camCapture.getQuality());
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                camCapture.setTaken();
-                getApplication().getApplicationContext().startService(intent);
-                Log.d("ImageTakin", "OnTakeBack()");
-            }
+            Intent intent = new Intent(getApplication()
+                    .getApplicationContext(), CameraHeadService.class);
+            intent.putExtra("FLASH", camCapture.getFlash());
+            intent.putExtra("Quality_Mode", camCapture.getQuality());
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            getApplication().getApplicationContext().startService(intent);
+            Log.d("ImageTakin", "OnTakeBack()");
         }
     }
 
     private void sendFrontCaptureImageIntent(CameraShield.CameraCapture camCapture) {
         if (camCapture != null) {
-            if (!camCapture.isTaken()) {
-                Intent front_translucent = new Intent(getApplication()
-                        .getApplicationContext(), CameraHeadService.class);
-                front_translucent.putExtra("Front_Request", true);
-                front_translucent.putExtra("Quality_Mode",
-                        camCapture.getQuality());
-                camCapture.setTaken();
-                getApplication().getApplicationContext().startService(
-                        front_translucent);
-            }
+            Intent front_translucent = new Intent(getApplication()
+                    .getApplicationContext(), CameraHeadService.class);
+            front_translucent.putExtra("Front_Request", true);
+            front_translucent.putExtra("Quality_Mode",
+                    camCapture.getQuality());
+            getApplication().getApplicationContext().startService(
+                    front_translucent);
         }
     }
 

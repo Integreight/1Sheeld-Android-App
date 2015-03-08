@@ -15,6 +15,8 @@
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled</string>
     <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
     <string name="title_not_connected">not connected</string>
+    <string name="remembered">Shields selection has been saved</string>
+    <string name="remove_remembered">Shields selection has been cleared</string>
 
     <!-- DeviceListActivity -->
     <string name="select_device">select a device to connect</string>

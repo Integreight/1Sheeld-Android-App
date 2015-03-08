@@ -176,7 +176,7 @@ public class CameraHeadService extends Service implements
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
-                            takenSuccessfully=false;
+                            takenSuccessfully = false;
                             stopSelf();
                         }
                         Camera.Parameters parameters = mCamera.getParameters();
@@ -205,7 +205,7 @@ public class CameraHeadService extends Service implements
                                         Toast.LENGTH_LONG).show();
                             }
                         });
-                        takenSuccessfully=false;
+                        takenSuccessfully = false;
 
                         stopSelf();
                     }
@@ -215,7 +215,6 @@ public class CameraHeadService extends Service implements
                         mCamera = openFrontFacingCameraGingerbread();
 
                         if (mCamera != null) {
-
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
                             } catch (IOException e) {
@@ -229,7 +228,7 @@ public class CameraHeadService extends Service implements
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
-                                takenSuccessfully=false;
+                                takenSuccessfully = false;
                                 stopSelf();
                             }
                             Camera.Parameters parameters = mCamera
@@ -258,7 +257,7 @@ public class CameraHeadService extends Service implements
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
-                            takenSuccessfully=false;
+                            takenSuccessfully = false;
                             stopSelf();
                         }
 
@@ -303,7 +302,7 @@ public class CameraHeadService extends Service implements
                                         Toast.LENGTH_LONG).show();
                             }
                         });
-                        takenSuccessfully=false;
+                        takenSuccessfully = false;
                         stopSelf();
 
                     }
@@ -327,7 +326,7 @@ public class CameraHeadService extends Service implements
                             Toast.LENGTH_LONG).show();
                 }
             });
-            takenSuccessfully=false;
+            takenSuccessfully = false;
             stopSelf();
         }
 

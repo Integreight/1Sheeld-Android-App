@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +108,18 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
                 return true;
             }
         });
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+        requestsList.setIndicatorBounds(width - getPixelFromDips(30), width - getPixelFromDips(30));
         super.onStart();
+    }
+
+    public int getPixelFromDips(float pixels) {
+        // Get the screen's density scale
+        final float scale = getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (pixels * scale + 0.5f);
     }
 
     private void checkRequests() {

@@ -31,8 +31,10 @@
         <ExpandableListView
             android:cacheColorHint="@color/transparent"
             android:id="@+id/requestsList"
+            android:paddingBottom="70dp"
             android:divider="@color/textColorOnDark"
             android:dividerHeight=".5dp"
+            android:groupIndicator="@drawable/internet_expandable_indicator"
             android:layout_height="match_parent"
             android:layout_width="match_parent" />
     </RelativeLayout>
