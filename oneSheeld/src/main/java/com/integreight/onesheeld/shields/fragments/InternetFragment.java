@@ -2,12 +2,13 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 
+import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.InternetRequestsExpandapleAdapter;
 import com.integreight.onesheeld.model.InternetResponse;
@@ -90,6 +91,13 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
         });
         requests = ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).getUiRequests();
         checkRequests();
+        try {
+            View footer = new View(getActivity());
+            footer.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, getPixelFromDips(50)));
+            requestsList.addFooterView(footer);
+        } catch (Exception e) {
+            Crashlytics.logException(e);
+        }
         requestsList.setAdapter(new InternetRequestsExpandapleAdapter(activity, requests));
         requestsList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
@@ -111,7 +119,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
 //        DisplayMetrics metrics = new DisplayMetrics();
 //        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
 //        int width = metrics.widthPixels;
-        requestsList.setIndicatorBounds(getPixelFromDips(10),  getPixelFromDips(40));
+        requestsList.setIndicatorBounds(getPixelFromDips(10), getPixelFromDips(40));
         super.onStart();
     }
 
