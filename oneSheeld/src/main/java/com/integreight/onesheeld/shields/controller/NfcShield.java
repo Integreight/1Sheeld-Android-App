@@ -28,7 +28,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
 
     private static final byte RECORD_QUERY_DATA = 0x11;
     private static final byte RECORD_QUERY_PARSED_DATA = 0x12;
-    private static final byte RECORD_QUERY_TYPE = 0x13;
+    private static final byte RECORD_QUERY_TYPE = 0x14;
 
     private NFCEventHandler eventHandler;
     //private ShieldFrame sf;
@@ -78,11 +78,34 @@ public class NfcShield extends ControllerParent<NfcShield>{
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (frame.getShieldId() == UIShield.NFC_SHIELD.getId()) {
             if (frame.getArguments() != null && frame.getArguments().size() > 0){
+                int record,start,size;
+                String data;
+                ShieldFrame sf;
                 switch (frame.getFunctionId()) {
+                    case RECORD_QUERY_DATA:
+                        record = frame.getArgumentAsInteger(1,0);
+                        start = frame.getArgumentAsInteger(2,1);
+                        size = frame.getArgumentAsInteger(1,2);
+                        data = readNdefRecordData(record,start,size);
+                        sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
+                        sf.addIntegerArgument(1,false,record);
+                        sf.addStringArgument(data);
+                        sendShieldFrame(sf);
+                        break;
                     case RECORD_QUERY_PARSED_DATA:
-                        int record = frame.getArgumentAsInteger(1,0);
-                        String data = readNdefRecordParsedData(record,0,256);
-                        ShieldFrame sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
+                        record = frame.getArgumentAsInteger(1,0);
+                        data = readNdefRecordParsedData(record,0,256);
+                        sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
+                        sf.addIntegerArgument(1,false,record);
+                        sf.addStringArgument(data);
+                        sendShieldFrame(sf);
+                        break;
+                    case RECORD_QUERY_TYPE:
+                        record = frame.getArgumentAsInteger(1,0);
+                        start = frame.getArgumentAsInteger(2,1);
+                        size = frame.getArgumentAsInteger(1,2);
+                        data = readNdefRecordType(record,start,size);
+                        sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
                         sf.addIntegerArgument(1,false,record);
                         sf.addStringArgument(data);
                         sendShieldFrame(sf);
@@ -309,6 +332,21 @@ public class NfcShield extends ControllerParent<NfcShield>{
             }
         }
         return length;
+    }
+
+    private String readNdefRecordType(int recordNumber,int memoryIndex,int dataLength) {
+        String dataString = "";
+        if (currentTag != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                Ndef ndef = Ndef.get(currentTag);
+                dataString = new String(ndef.getCachedNdefMessage().getRecords()[recordNumber].getType());
+            }
+        }
+        if(dataLength < dataString.length()-memoryIndex) {
+            return dataString.substring(memoryIndex, memoryIndex + dataLength);
+        }else{
+            return dataString.substring(memoryIndex);
+        }
     }
 
     private String readNdefRecordData(int recordNumber,int memoryIndex,int dataLength) {
