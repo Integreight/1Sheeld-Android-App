@@ -41,6 +41,7 @@ import com.integreight.onesheeld.shields.fragments.LightFragment;
 import com.integreight.onesheeld.shields.fragments.MagnetometerFragment;
 import com.integreight.onesheeld.shields.fragments.MicFragment;
 import com.integreight.onesheeld.shields.fragments.MusicPlayerFragment;
+import com.integreight.onesheeld.shields.fragments.NfcFragment;
 import com.integreight.onesheeld.shields.fragments.NotificationFragment;
 import com.integreight.onesheeld.shields.fragments.OrientationFragment;
 import com.integreight.onesheeld.shields.fragments.PatternFragment;
@@ -176,6 +177,8 @@ public class SelectedShieldsListFragment extends ListFragment {
             return addToCreatedListAndReturn(uiShield, new PatternFragment());
         if (uiShield.id == UIShield.INTERNET_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new InternetFragment());
+        if (uiShield.id == UIShield.NFC_SHIELD.id)
+            return addToCreatedListAndReturn(uiShield, new NfcFragment());
 
         else {
             return new EmptyShieldFragment();

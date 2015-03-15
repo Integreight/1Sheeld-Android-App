@@ -32,6 +32,8 @@
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.NFC" />
+
 
     <permission
         android:name="com.integreight.onesheeld.permission.C2D_MESSAGE"
@@ -69,6 +71,9 @@
     <uses-feature
         android:name="android.hardware.microphone"
         android:required="false" />
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
     <application
         android:name="com.integreight.onesheeld.OneSheeldApplication"
@@ -136,6 +141,69 @@
                 <action android:name="com.twofortyfouram.locale.intent.action.EDIT_CONDITION" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".shields.controller.utils.NfcUtils"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.Transparent">
+        </activity>
+
+        <activity-alias
+            android:name="NFCUtils-alias"
+            android:targetActivity=".shields.controller.utils.NfcUtils"
+            android:exported="true"
+            android:enabled="true">
+
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="*/*"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:scheme="tel"/>
+                <data android:scheme="mailto"/>
+                <data android:scheme="ftp"/>
+                <data android:scheme="ftps"/>
+                <data android:scheme="sftp"/>
+                <data android:scheme="smb"/>
+                <data android:scheme="nfs"/>
+                <data android:scheme="dav"/>
+                <data android:scheme="news"/>
+                <data android:scheme="telnet"/>
+                <data android:scheme="imap"/>
+                <data android:scheme="rtsp"/>
+                <data android:scheme="urn"/>
+                <data android:scheme="pop"/>
+                <data android:scheme="sip"/>
+                <data android:scheme="sips"/>
+                <data android:scheme="tftp"/>
+                <data android:scheme="btspp"/>
+                <data android:scheme="btl2cap"/>
+                <data android:scheme="btgoep"/>
+                <data android:scheme="tcpobex"/>
+                <data android:scheme="irdaobex"/>
+                <data android:scheme="file"/>
+                <data android:scheme="urn:epc:id"/>
+                <data android:scheme="urn:epc:tag"/>
+                <data android:scheme="urn:epc:pat"/>
+                <data android:scheme="urn:epc:raw"/>
+                <data android:scheme="urn:epc"/>
+                <data android:scheme="urn:nfc"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_supported_technologies" />
+        </activity-alias>
 
 
         <receiver

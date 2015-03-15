@@ -23,6 +23,7 @@ import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.MicShield;
 import com.integreight.onesheeld.shields.controller.MusicShield;
+import com.integreight.onesheeld.shields.controller.NfcShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.OrientationShield;
 import com.integreight.onesheeld.shields.controller.PatternShield;
@@ -148,7 +149,8 @@ public enum UIShield {
             0xffde1f26, R.drawable.shields_list_pattern_symbol, false,
             PatternShield.class), INTERNET_SHIELD((byte) 0x29, "Internet",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
-            InternetShield.class);
+            InternetShield.class), NFC_SHIELD((byte) 0x16, "NFC", 0xff03d203,
+            R.drawable.shields_list_nfc_symbol, false, NfcShield.class, 1);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
             0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
