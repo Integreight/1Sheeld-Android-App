@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -294,13 +295,16 @@ public class OneSheeldApplication extends Application {
     public boolean getShowTutAgain() {
         return appPreferences.getBoolean(SHOWTUTORIALS_AGAIN, true);
     }
+
     public void setRememberedShields(String shields) {
         appPreferences.edit().putString(REMEMBER_SHIELDS, shields).commit();
+        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.remove_remembered : R.string.remembered), Toast.LENGTH_SHORT).show();
     }
 
     public String getRememberedShields() {
         return appPreferences.getString(REMEMBER_SHIELDS, null);
     }
+
     public Hashtable<String, ControllerParent<?>> getRunningShields() {
         return runningSheelds;
     }

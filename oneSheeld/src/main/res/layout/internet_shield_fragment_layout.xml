@@ -33,6 +33,8 @@
             android:id="@+id/requestsList"
             android:divider="@color/textColorOnDark"
             android:dividerHeight=".5dp"
+            android:footerDividersEnabled="false"
+            android:groupIndicator="@drawable/internet_expandable_indicator"
             android:layout_height="match_parent"
             android:layout_width="match_parent" />
     </RelativeLayout>

@@ -110,7 +110,7 @@ public class InternetRequestsExpandapleAdapter extends BaseExpandableListAdapter
             if (request.getStatus() == InternetRequest.REQUEST_STATUS.IN_QUEUE) {
                 prog.setVisibility(View.INVISIBLE);
                 status.setImageBitmap(null);
-                status.setBackgroundResource(android.R.drawable.ic_menu_add);
+                status.setBackgroundResource(R.drawable.internet_shield_yellow);
                 status.setVisibility(View.VISIBLE);
             } else if (request.getStatus() == InternetRequest.REQUEST_STATUS.SENT || request.getStatus() == InternetRequest.REQUEST_STATUS.CALLED) {
                 prog.setVisibility(View.VISIBLE);
@@ -118,7 +118,7 @@ public class InternetRequestsExpandapleAdapter extends BaseExpandableListAdapter
                 status.setVisibility(View.INVISIBLE);
             } else {
                 prog.setVisibility(View.INVISIBLE);
-                status.setBackgroundResource(request.getStatus() == InternetRequest.REQUEST_STATUS.EXECUTED && request.getResponse() != null && request.getResponse().getStatus() == InternetResponse.RESPONSE_STATUS.SUCCESSFUL ? android.R.drawable.stat_sys_download_done : android.R.drawable.ic_menu_close_clear_cancel);
+                status.setBackgroundResource(request.getStatus() == InternetRequest.REQUEST_STATUS.EXECUTED && request.getResponse() != null && request.getResponse().getStatus() == InternetResponse.RESPONSE_STATUS.SUCCESSFUL ? R.drawable.internet_shield_green : R.drawable.internet_shield_red);
                 status.setVisibility(View.VISIBLE);
             }
         } else {

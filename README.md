@@ -1,4 +1,4 @@
-The repo is an Android Studio project, tested on the its latest stable version (1.1)
+The repo is an Android Studio project, tested on the its latest stable version (1.1.0)
 
 To set it up in your development environment, clone the project, open Android Studio and click on Import Non-Android Studio Project, pick the cloned directory and you are good to go.
 
@@ -9,6 +9,19 @@ If you need more help, don't hesitate posting a question on our [website's forum
 Pull requests are welcomed. If you want to contribute, fork, create an issue, resolve the issue, submit a pull request.
 
 Change Log:
+
+--------- Version 1.2.0 (150308) -----------
+
+- Added our most advanced - and most requested - shield ever, the Internet Shield.
+- Added an Android pattern shield.
+- Fixed a bug in Bluetooth connection status reporting.
+- Fixed major bugs related to sending frames to Arduino.
+- Revamped the camera shield implementation. (Now, it works in its own process.)
+- Queued frames if Arduino is in one of our callbacks.
+- Added the name of the connected 1Sheeld in the notifications.
+- Fixed bugs with the voice recognizer and Facebook shields.
+- Added a button to remember the list of selected shields.
+- Increased overall app stability.
 
 --------- Version 1.1.3 (141225) -----------
 
