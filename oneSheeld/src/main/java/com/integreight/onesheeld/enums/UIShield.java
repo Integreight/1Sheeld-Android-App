@@ -116,8 +116,7 @@ public enum UIShield {
             0xff6d0347, R.drawable.shields_list_camera_symbol, false,
             CameraShield.class, 1), PHONE_SHIELD((byte) 0x20, "Phone",
             0xffe9bd03, R.drawable.shields_list_phone_symbol, false,
-            PhoneShield.class, 1), NFC((byte) 0x20, "NFC", 0xff127303,
-            R.drawable.shields_list_nfc_symbol, false, EmptyShield.class, false), WIFI(
+            PhoneShield.class, 1), WIFI(
             (byte) 0x20, "WIFI", 0xff08bbb2,
             R.drawable.shields_list_wifi_symbol, false, EmptyShield.class,
             false), GSM((byte) 0x20, "GSM", 0xff5a0303,

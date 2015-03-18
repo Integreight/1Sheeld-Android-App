@@ -26,9 +26,14 @@ import java.util.Arrays;
  */
 public class NfcShield extends ControllerParent<NfcShield>{
 
-    private static final byte RECORD_QUERY_DATA = 0x11;
-    private static final byte RECORD_QUERY_PARSED_DATA = 0x12;
-    private static final byte RECORD_QUERY_TYPE = 0x14;
+    private static final byte RECORD_QUERY_DATA = 0x01;
+    private static final byte RECORD_QUERY_PARSED_DATA = 0x03;
+    private static final byte RECORD_QUERY_TYPE = 0x02;
+
+    private static final byte NEW_TAG_FRAME = 0x01;
+    private static final byte RECORD_QUERY_DATA_FRAME = 0x05;
+    private static final byte RECORD_QUERY_PARSED_DATA_FRAME = 0x04;
+    private static final byte RECORD_QUERY_TYPE_FRAME = 0x03;
 
     private NFCEventHandler eventHandler;
     //private ShieldFrame sf;
@@ -87,28 +92,28 @@ public class NfcShield extends ControllerParent<NfcShield>{
                         start = frame.getArgumentAsInteger(2,1);
                         size = frame.getArgumentAsInteger(1,2);
                         data = readNdefRecordData(record,start,size);
-                        sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
+                        sf = new ShieldFrame(UIShield.NFC_SHIELD.getId(),RECORD_QUERY_DATA_FRAME);
                         sf.addIntegerArgument(1,false,record);
                         sf.addStringArgument(data);
-                        sendShieldFrame(sf);
+                        sendShieldFrame(sf,true);
                         break;
                     case RECORD_QUERY_PARSED_DATA:
                         record = frame.getArgumentAsInteger(1,0);
                         data = readNdefRecordParsedData(record,0,256);
-                        sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
+                        sf = new ShieldFrame(UIShield.NFC_SHIELD.getId(),RECORD_QUERY_PARSED_DATA_FRAME);
                         sf.addIntegerArgument(1,false,record);
                         sf.addStringArgument(data);
-                        sendShieldFrame(sf);
+                        sendShieldFrame(sf,true);
                         break;
                     case RECORD_QUERY_TYPE:
                         record = frame.getArgumentAsInteger(1,0);
                         start = frame.getArgumentAsInteger(2,1);
                         size = frame.getArgumentAsInteger(1,2);
                         data = readNdefRecordType(record,start,size);
-                        sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x12);
+                        sf = new ShieldFrame(UIShield.NFC_SHIELD.getId(),RECORD_QUERY_TYPE_FRAME);
                         sf.addIntegerArgument(1,false,record);
                         sf.addStringArgument(data);
-                        sendShieldFrame(sf);
+                        sendShieldFrame(sf,true);
                         break;
                     default:
                         break;
@@ -184,9 +189,10 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private void sendNewTagFrame(){
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                ShieldFrame sf = new ShieldFrame((byte) 0x16, (byte) 0x00, (byte) 0x01);
+                ShieldFrame sf = new ShieldFrame(UIShield.NFC_SHIELD.getId(),NEW_TAG_FRAME);
                 sf.addArgument(currentTag.getId());
                 sf.addIntegerArgument(2, false, getNdefMaxSize());
+                sf.addIntegerArgument(1,false,getNdefRecordCount());
                 sf.addIntegerArgument(2, false, getNdefUsedSize());
 
                 int recordCount = getNdefRecordCount();
@@ -199,7 +205,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     recordByte[4] = (byte) (getNdefRecordDataLength(i) >> 8);
                     sf.addArgument(recordByte);
                 }
-                sendShieldFrame(sf);
+                sendShieldFrame(sf,true);
             }
         }
     }
@@ -265,6 +271,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 Ndef ndef = Ndef.get(currentTag);
                 recordCount = ndef.getCachedNdefMessage().getRecords().length;
             }
+        }
+        if(recordCount > 256){
+            recordCount = 256;
         }
         return recordCount;
     }
