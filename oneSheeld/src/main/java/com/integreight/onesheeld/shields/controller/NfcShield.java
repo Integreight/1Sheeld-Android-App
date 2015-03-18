@@ -35,6 +35,16 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private static final byte RECORD_QUERY_PARSED_DATA_FRAME = 0x04;
     private static final byte RECORD_QUERY_TYPE_FRAME = 0x03;
 
+    private static final int UNKNOWN_TYPE = 0;
+    private static final int EMPTY_TYPE = 1;
+    private static final int EXTERNAL_TYPE = 2;
+    private static final int MIME_MEDIA_TYPE = 3;
+    private static final int UNCHANGED_TYPE = 4;
+    private static final int ABSOLUTE_URI_TYPE = 5;
+    private static final int TEXT_TYPE = 6;
+    private static final int URI_TYPE = 7;
+    private static final int UNSUPPORTED_TYPE = 8;
+
     private NFCEventHandler eventHandler;
     //private ShieldFrame sf;
 
@@ -190,7 +200,11 @@ public class NfcShield extends ControllerParent<NfcShield>{
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 ShieldFrame sf = new ShieldFrame(UIShield.NFC_SHIELD.getId(),NEW_TAG_FRAME);
-                sf.addArgument(currentTag.getId());
+                byte[] currentTagId = currentTag.getId();
+                if(currentTagId.length == 0)
+                    currentTagId = new byte[]{0x00};
+
+                sf.addArgument(currentTagId);
                 sf.addIntegerArgument(2, false, getNdefMaxSize());
                 sf.addIntegerArgument(1,false,getNdefRecordCount());
                 sf.addIntegerArgument(2, false, getNdefUsedSize());
@@ -287,31 +301,31 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 int tnfType = record.getTnf();
                 switch (tnfType) {
                     case NdefRecord.TNF_EMPTY:
-                        type = 1;
+                        type = EMPTY_TYPE;
                         break;
                     case NdefRecord.TNF_WELL_KNOWN:
                         if (Arrays.equals(record.getType(), NdefRecord.RTD_URI)){
-                            type = 7;
+                            type = URI_TYPE;
                         }else if(Arrays.equals(record.getType(), NdefRecord.RTD_TEXT)){
-                            type = 7;
+                            type = TEXT_TYPE;
                         }else{
-                            type = 9;
+                            type = UNSUPPORTED_TYPE;
                         }
                         break;
                     case NdefRecord.TNF_ABSOLUTE_URI:
-                        type = 3;
+                        type = ABSOLUTE_URI_TYPE;
                         break;
                     case NdefRecord.TNF_EXTERNAL_TYPE:
-                        type = 4;
+                        type = EXTERNAL_TYPE;
                         break;
                     case NdefRecord.TNF_MIME_MEDIA:
-                        type = 5;
+                        type = MIME_MEDIA_TYPE;
                         break;
                     case NdefRecord.TNF_UNCHANGED:
-                        type = 6;
+                        type = UNCHANGED_TYPE;
                         break;
                     case NdefRecord.TNF_UNKNOWN:
-                        type = 7;
+                        type = UNKNOWN_TYPE;
                         break;
                 }
             }
