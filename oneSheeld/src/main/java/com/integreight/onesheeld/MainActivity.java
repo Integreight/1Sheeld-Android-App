@@ -638,7 +638,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         String action = intent.getAction();
-        if(action.equals(NfcAdapter.ACTION_NDEF_DISCOVERED) || action.equals(NfcAdapter.ACTION_TECH_DISCOVERED) || action.equals(NfcAdapter.ACTION_TAG_DISCOVERED))
+        if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
             NfcOnNewIntent(intent);
         super.onNewIntent(intent);
     }
