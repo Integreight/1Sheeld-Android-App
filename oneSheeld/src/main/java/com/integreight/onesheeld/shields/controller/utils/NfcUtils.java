@@ -27,20 +27,20 @@ public class NfcUtils extends Activity{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
             Intent intent = getIntent();
-            if(nfcAdapter.isEnabled()){
+            if(nfcAdapter!=null&&nfcAdapter.isEnabled()){
                 if(((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null){
                     ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
-                    finish();
                 }
             }else{
                 Toast.makeText(getApplicationContext(),"Nfc Disabled",Toast.LENGTH_SHORT).show();
             }
         }
+        finish();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        finish();
+//        finish();
     }
 }
