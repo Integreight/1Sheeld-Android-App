@@ -54,8 +54,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private static final byte TAG_READING_ERROR = 0x04;
     private static final byte RECORD_NOT_FOUND = 0x05;
 
-
-
+    private boolean isTagSupported = false;
     private NFCEventHandler eventHandler;
 
     private Tag currentTag;
@@ -168,6 +167,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
     }
 
     public void resetTechnologyFlags() {
+        isTagSupported = false;
         isNdef_Flag = false;
     }
 
@@ -184,7 +184,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
         switch (action) {
             case NfcAdapter.ACTION_NDEF_DISCOVERED:
                 setCurrentTag(tag);
+                isTagSupported = true;
                 isNdef_Flag = true;
+                Display();
                 sendNewTagFrame();
                 break;
             case NfcAdapter.ACTION_TECH_DISCOVERED:
@@ -192,17 +194,28 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                     String[] techList = tag.getTechList();
                     for (String tech : techList) {
-                        if (Ndef.class.getName().equals(tech)) {
-                            isNdef_Flag = false;
-                            //Display();
-                            sendNewEmptyTagFrame();
-                        }else if (NdefFormatable.class.getName().equals(tech)){
-                            isNdef_Flag = false;
-                            //Display();
-                            sendNewEmptyTagFrame();
+                        if (!isTagSupported) {
+                            if (Ndef.class.getName().equals(tech)) {
+                                isNdef_Flag = false;
+                                isTagSupported = true;
+                                //Display();
+                                if (getNdefRecordCount() == 0)
+                                    sendNewEmptyTagFrame();
+                                else {
+                                    isNdef_Flag = true;
+                                    sendNewTagFrame();
+                                }
+                            } else if (NdefFormatable.class.getName().equals(tech)) {
+                                isNdef_Flag = false;
+                                isTagSupported = true;
+                                //Display();
+                                sendNewEmptyTagFrame();
+                            }
                         }else
-                            sendError(TAG_NOT_SUPPORTED);
+                            break;
                     }
+                    if (!isTagSupported)
+                        sendError(TAG_NOT_SUPPORTED);
                 }
                 break;
             case NfcAdapter.ACTION_TAG_DISCOVERED:
@@ -337,8 +350,12 @@ public class NfcShield extends ControllerParent<NfcShield>{
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 Ndef ndef = Ndef.get(currentTag);
+
                 if (ndef != null) {
-                    recordCount = ndef.getCachedNdefMessage().getRecords().length;
+                    if (ndef.getCachedNdefMessage() != null)
+                        recordCount = ndef.getCachedNdefMessage().getRecords().length;
+                    else
+                        recordCount = 0;
                 }else
                     sendError(TAG_READING_ERROR);
                 try {
