@@ -105,39 +105,42 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 int record,start,size;
                 String data;
                 ShieldFrame sf;
-                switch (frame.getFunctionId()) {
-                    case RECORD_QUERY_DATA:
-                        record = frame.getArgumentAsInteger(1,0);
-                        start = frame.getArgumentAsInteger(2,1);
-                        size = frame.getArgumentAsInteger(1,2);
-                        data = readNdefRecordData(record,start,size);
-                        sf = new ShieldFrame(SHIELD_ID,RECORD_QUERY_DATA_FRAME);
-                        sf.addIntegerArgument(1,false,record);
-                        sf.addStringArgument(data);
-                        sendShieldFrame(sf,true);
-                        break;
-                    case RECORD_QUERY_PARSED_DATA:
-                        record = frame.getArgumentAsInteger(1,0);
-                        data = readNdefRecordParsedData(record,0,256);
-                        sf = new ShieldFrame(SHIELD_ID,RECORD_QUERY_PARSED_DATA_FRAME);
-                        sf.addIntegerArgument(1,false,record);
-                        sf.addStringArgument(data);
-                        sendShieldFrame(sf,true);
-                        break;
-                    case RECORD_QUERY_TYPE:
-                        record = frame.getArgumentAsInteger(1,0);
-                        start = frame.getArgumentAsInteger(2,1);
-                        size = frame.getArgumentAsInteger(1,2);
-                        data = readNdefRecordType(record,start,size);
-                        sf = new ShieldFrame(SHIELD_ID,RECORD_QUERY_TYPE_FRAME);
-                        sf.addIntegerArgument(1,false,record);
-                        sf.addStringArgument(data);
-                        sendShieldFrame(sf,true);
-                        break;
-                    default:
-                        break;
+                if(isNdef_Flag) {
+                    switch (frame.getFunctionId()) {
+                        case RECORD_QUERY_DATA:
+                            record = frame.getArgumentAsInteger(1, 0);
+                            start = frame.getArgumentAsInteger(2, 1);
+                            size = frame.getArgumentAsInteger(1, 2);
+                            data = readNdefRecordData(record, start, size);
+                            sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_DATA_FRAME);
+                            sf.addIntegerArgument(1, false, record);
+                            sf.addStringArgument(data);
+                            sendShieldFrame(sf, true);
+                            break;
+                        case RECORD_QUERY_PARSED_DATA:
+                            record = frame.getArgumentAsInteger(1, 0);
+                            data = readNdefRecordParsedData(record, 0, 256);
+                            sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_PARSED_DATA_FRAME);
+                            sf.addIntegerArgument(1, false, record);
+                            sf.addStringArgument(data);
+                            sendShieldFrame(sf, true);
+                            break;
+                        case RECORD_QUERY_TYPE:
+                            record = frame.getArgumentAsInteger(1, 0);
+                            start = frame.getArgumentAsInteger(2, 1);
+                            size = frame.getArgumentAsInteger(1, 2);
+                            data = readNdefRecordType(record, start, size);
+                            sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_TYPE_FRAME);
+                            sf.addIntegerArgument(1, false, record);
+                            sf.addStringArgument(data);
+                            sendShieldFrame(sf, true);
+                            break;
+                        default:
+                            break;
+                    }
+                }else{
+                    sendError(RECORD_NOT_FOUND);
                 }
-
                 //if (eventHandler != null) {
                     //eventHandler.onNFCRx(outputTxt);
                 //}
@@ -169,7 +172,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
     }
 
     public void handleIntent(Intent intent) {
-        Toast.makeText(activity.getApplicationContext(),"Frame Recived.",Toast.LENGTH_SHORT).show();
+        Toast.makeText(activity.getApplicationContext(),"Tag Recived.",Toast.LENGTH_SHORT).show();
         String action = intent.getAction();
         if(action==null)return;
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -182,6 +185,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
             case NfcAdapter.ACTION_NDEF_DISCOVERED:
                 setCurrentTag(tag);
                 isNdef_Flag = true;
+                sendNewTagFrame();
                 break;
             case NfcAdapter.ACTION_TECH_DISCOVERED:
                 setCurrentTag(tag);
@@ -189,13 +193,13 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     String[] techList = tag.getTechList();
                     for (String tech : techList) {
                         if (Ndef.class.getName().equals(tech)) {
-                            isNdef_Flag = true;
-                            Display();
-                            sendNewTagFrame();
+                            isNdef_Flag = false;
+                            //Display();
+                            sendNewEmptyTagFrame();
                         }else if (NdefFormatable.class.getName().equals(tech)){
-                            isNdef_Flag = true;
-                            Display();
-                            sendNewTagFrame();
+                            isNdef_Flag = false;
+                            //Display();
+                            sendNewEmptyTagFrame();
                         }else
                             sendError(TAG_NOT_SUPPORTED);
                     }
@@ -239,6 +243,23 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     recordByte[4] = (byte) (getNdefRecordDataLength(i) >> 8);
                     sf.addArgument(recordByte);
                 }
+                sendShieldFrame(sf,true);
+            }
+        }
+    }
+
+    private void sendNewEmptyTagFrame(){
+        if (currentTag != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                ShieldFrame sf = new ShieldFrame(SHIELD_ID,NEW_TAG_FRAME);
+                byte[] currentTagId = currentTag.getId();
+                if(currentTagId.length == 0)
+                    currentTagId = new byte[]{0x00};
+
+                sf.addArgument(currentTagId);
+                sf.addIntegerArgument(2, false, 0);
+                sf.addIntegerArgument(1,false,0);
+                sf.addIntegerArgument(2, false, 0);
                 sendShieldFrame(sf,true);
             }
         }
@@ -522,7 +543,10 @@ public class NfcShield extends ControllerParent<NfcShield>{
                                 if (type == "Text")
                                     dataString = parseTextNdefRecord(record);
                                 else if (type == "Uri"){
-                                    dataString = UriTypes[record.getPayload()[0]] + new String(record.getPayload()).substring(1);
+                                    if(Integer.valueOf(record.getPayload()[0]) < UriTypes.length)
+                                        dataString = UriTypes[record.getPayload()[0]] + new String(record.getPayload()).substring(1);
+                                    else
+                                        sendError(RECORD_CAN_NOT_BE_PARSED);
                                 }else{
                                     sendError(RECORD_CAN_NOT_BE_PARSED);
                                 }
