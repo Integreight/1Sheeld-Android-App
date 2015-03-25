@@ -572,8 +572,8 @@ public class MainActivity extends FragmentActivity {
 
     private void NfcOnResumeFragments() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
-            if (nfcAdapter != null)
+            //NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
+            //if (nfcAdapter != null)
                 if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
                     PackageManager packageManager = getPackageManager();
                     packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld","com.integreight.onesheeld.NFCUtils-alias"),PackageManager.COMPONENT_ENABLED_STATE_DISABLED,BIND_NOT_FOREGROUND);
@@ -619,9 +619,9 @@ public class MainActivity extends FragmentActivity {
 
     private void NfcOnPause() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
-            if (nfcAdapter != null)
-                if (nfcAdapter.isEnabled())
+            //NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
+            //if (nfcAdapter != null)
+                //if (nfcAdapter.isEnabled())
                     if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
                         PackageManager packageManager = getPackageManager();
                         packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld","com.integreight.onesheeld.NFCUtils-alias"),PackageManager.COMPONENT_ENABLED_STATE_ENABLED,BIND_NOT_FOREGROUND);
@@ -645,9 +645,9 @@ public class MainActivity extends FragmentActivity {
         String action = intent.getAction();
         if(action != null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
-                if (nfcAdapter != null)
-                    if (nfcAdapter.isEnabled())
+                //NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
+                //if (nfcAdapter != null)
+                    //if (nfcAdapter.isEnabled())
                         if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
                             NfcOnNewIntent(intent);
             }

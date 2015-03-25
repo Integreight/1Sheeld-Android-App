@@ -100,7 +100,6 @@ public class NfcShield extends ControllerParent<NfcShield>{
 
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
-        Toast.makeText(activity.getApplicationContext(),"Frame Recived.",Toast.LENGTH_SHORT).show();
         if (frame.getShieldId() == SHIELD_ID) {
             if (frame.getArguments() != null && frame.getArguments().size() > 0){
                 int record,start,size;
@@ -170,6 +169,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
     }
 
     public void handleIntent(Intent intent) {
+        Toast.makeText(activity.getApplicationContext(),"Frame Recived.",Toast.LENGTH_SHORT).show();
         String action = intent.getAction();
         if(action==null)return;
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
