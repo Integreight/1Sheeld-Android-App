@@ -16,6 +16,7 @@ import android.os.Build;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ import java.util.Arrays;
  */
 public class NfcShield extends ControllerParent<NfcShield>{
 
-    private static final byte SHIELD_ID = 0X16;
+    private static final byte SHIELD_ID = UIShield.NFC_SHIELD.getId();
 
     private static final byte RECORD_QUERY_DATA = 0x01;
     private static final byte RECORD_QUERY_PARSED_DATA = 0x03;
