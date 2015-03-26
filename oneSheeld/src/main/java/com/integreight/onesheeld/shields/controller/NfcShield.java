@@ -2,8 +2,10 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -54,11 +56,12 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private static final byte TAG_READING_ERROR = 0x04;
     private static final byte RECORD_NOT_FOUND = 0x05;
 
-    private boolean isTagSupported = false;
     private NFCEventHandler eventHandler;
 
     private Tag currentTag;
     private boolean isNdef_Flag = false;
+    private boolean isTagSupported = false;
+    private boolean isForeground = false;
 
     private static final String[] UriTypes = {"","http://www.","https://www.","http://","https://","tel:","mailto:","ftp://anonymous:anonymous@","ftp://ftp.","ftps://","sftp://","smb://","nfs://","ftp://","dav://","news:","telnet://","imap:","rtsp://","urn:","pop:","sip:","sips:","tftp:","btspp://","btl2cap://","btgoep://","tcpobex://","irdaobex://","file://","urn:epc:id:","urn:epc:tag:","urn:epc:pat:","urn:epc:raw:","urn:epc:","urn:nfc:"};
 
@@ -151,7 +154,12 @@ public class NfcShield extends ControllerParent<NfcShield>{
     public void reset() { }
     @Override
     public void resetThis() {
-        stopForegroundDispatch(activity);
+        if (isForeground)
+            stopForegroundDispatch(activity);
+        else {
+            PackageManager packageManager = activity.getPackageManager();
+            packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, activity.BIND_NOT_FOREGROUND);
+        }
         super.resetThis();
     }
 
@@ -315,16 +323,24 @@ public class NfcShield extends ControllerParent<NfcShield>{
             filters[1] = new IntentFilter();
             filters[1].addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
             filters[1].addCategory(Intent.CATEGORY_DEFAULT);
-            if (nfcAdapter != null)
-                nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
+            if (nfcAdapter != null) {
+                if (!isForeground) {
+                    nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
+                    isForeground = true;
+                }
+            }
         }
     }
 
     public void stopForegroundDispatch(final Activity Mactivity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
-            if (nfcAdapter != null)
-                nfcAdapter.disableForegroundDispatch(activity);
+            if (nfcAdapter != null) {
+                if (isForeground) {
+                    nfcAdapter.disableForegroundDispatch(activity);
+                    isForeground = false;
+                }
+            }
         }
 
     }
