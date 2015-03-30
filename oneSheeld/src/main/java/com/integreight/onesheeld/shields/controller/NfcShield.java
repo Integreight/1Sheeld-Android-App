@@ -208,9 +208,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
                                 isNdef_Flag = false;
                                 isTagSupported = true;
                                 //Display();
-                                if (getNdefRecordCount() == 0)
+                                if (getNdefRecordCount() == 0) {
                                     sendNewEmptyTagFrame();
-                                else {
+                                }else {
                                     isNdef_Flag = true;
                                     sendNewTagFrame();
                                 }

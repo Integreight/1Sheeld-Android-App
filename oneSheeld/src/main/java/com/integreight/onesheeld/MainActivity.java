@@ -642,22 +642,22 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        getNfcIntent(intent);
+        super.onNewIntent(intent);
+    }
+
+    private void getNfcIntent(Intent intent) {
         String action = intent.getAction();
         if(action != null)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 //NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
                 //if (nfcAdapter != null)
-                    //if (nfcAdapter.isEnabled())
-                        if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
-                            NfcOnNewIntent(intent);
+                //if (nfcAdapter.isEnabled())
+                if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
+                    if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
+                        ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
+                    }
             }
-        super.onNewIntent(intent);
-    }
-
-    private void NfcOnNewIntent(Intent intent) {
-        if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
-            ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
-        }
     }
 
     public void showToast(String msg) {
