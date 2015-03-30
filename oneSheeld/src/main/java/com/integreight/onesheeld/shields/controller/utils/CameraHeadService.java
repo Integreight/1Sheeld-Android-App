@@ -126,19 +126,6 @@ public class CameraHeadService extends Service implements
 
     Handler handler = new Handler();
 
-    private class TakeImage extends AsyncTask<Intent, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Intent... params) {
-            takeImage(params[0]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-        }
-    }
-
     private synchronized void takeImage(Intent intent) {
 
         if (CameraUtils.checkCameraHardware(getApplicationContext())) {
