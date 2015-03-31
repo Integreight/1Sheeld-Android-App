@@ -158,8 +158,8 @@ public class NfcShield extends ControllerParent<NfcShield>{
         if (isForeground)
             stopForegroundDispatch(activity);
         else {
-            PackageManager packageManager = activity.getPackageManager();
-            packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, activity.BIND_NOT_FOREGROUND);
+            PackageManager packageManager = activity.getApplicationContext().getPackageManager();
+            packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED,PackageManager.DONT_KILL_APP);
         }
         super.resetThis();
     }
