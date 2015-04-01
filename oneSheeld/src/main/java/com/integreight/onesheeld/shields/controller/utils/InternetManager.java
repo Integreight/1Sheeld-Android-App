@@ -122,11 +122,11 @@ public class InternetManager {
     }
 
     public EXECUTION_TYPE execute(int id, REQUEST_TYPE type, byte callbacks) throws UnsupportedEncodingException {
-        if (!ConnectionDetector.isConnectingToInternet(context))
-            return EXECUTION_TYPE.NO_INTERNET;
         final InternetRequest request = requests.get(id);
         if (request == null)
             return EXECUTION_TYPE.REQUEST_NOT_FOUND;
+        if (!ConnectionDetector.isConnectingToInternet(context))
+            return EXECUTION_TYPE.NO_INTERNET;
         if (request.getStatus() == InternetRequest.REQUEST_STATUS.SENT || request.getStatus() == InternetRequest.REQUEST_STATUS.CALLED)
             return EXECUTION_TYPE.ALREADY_EXECUTING;
         if (request.getUrl() == null || request.getUrl().trim().length() == 0)
