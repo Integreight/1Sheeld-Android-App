@@ -52,6 +52,8 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import hotchemi.android.rate.AppRate;
+
 public class SheeldsList extends Fragment {
     View v;
     boolean isInflated = false;
@@ -375,6 +377,7 @@ public class SheeldsList extends Fragment {
                 if (adapter != null)
                     adapter.applyToControllerTable();
             }
+            if(!activity.getThisApplication().isDebuggable())AppRate.showRateDialogIfMeetsConditions(activity);
         }
 
         @Override
