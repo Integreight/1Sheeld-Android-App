@@ -12,12 +12,13 @@ import android.hardware.Camera.Parameters;
 import android.hardware.SensorManager;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.Display;
 import android.view.Gravity;
@@ -55,7 +56,6 @@ public class CameraHeadService extends Service implements
     private SurfaceHolder sHolder;
     private WindowManager windowManager;
     WindowManager.LayoutParams params;
-    public Intent cameraIntent;
     SharedPreferences pref;
     Editor editor;
     int width = 0, height = 0;
@@ -68,6 +68,7 @@ public class CameraHeadService extends Service implements
     private int mOrientation = -1;
     public static boolean isRunning = false;
     private boolean takenSuccessfully = false;
+    public static final int GET_RESULT = 1, CAPTURE_IMAGE = 3;
 
     /**
      * Called when the activity is first created.
@@ -93,7 +94,7 @@ public class CameraHeadService extends Service implements
                 try {
                     cam = Camera.open(camIdx);
                 } catch (RuntimeException e) {
-                    Log.e("Camera",
+                    Log.e("cameraS",
                             "Camera failed to open: " + e.getLocalizedMessage());
                 }
             }
@@ -126,10 +127,12 @@ public class CameraHeadService extends Service implements
 
     Handler handler = new Handler();
 
-    private synchronized void takeImage(Intent intent) {
+    private synchronized void takeImage(Bundle extras) {
 
         if (CameraUtils.checkCameraHardware(getApplicationContext())) {
-            Bundle extras = intent.getExtras();
+            takenSuccessfully = false;
+            isRunning = true;
+//            Bundle extras = intent.getExtras();
             if (extras != null) {
                 String flash_mode = extras.getString("FLASH");
                 FLASH_MODE = flash_mode;
@@ -164,7 +167,8 @@ public class CameraHeadService extends Service implements
                                 }
                             });
                             takenSuccessfully = false;
-                            stopSelf();
+                            notifyFinished();
+                            return;
                         }
                         Camera.Parameters parameters = mCamera.getParameters();
                         pictureSize = CameraUtils
@@ -194,7 +198,9 @@ public class CameraHeadService extends Service implements
                         });
                         takenSuccessfully = false;
 
-                        stopSelf();
+
+                        notifyFinished();
+                        return;
                     }
 
                 } else {
@@ -216,7 +222,8 @@ public class CameraHeadService extends Service implements
                                     }
                                 });
                                 takenSuccessfully = false;
-                                stopSelf();
+                                notifyFinished();
+                                return;
                             }
                             Camera.Parameters parameters = mCamera
                                     .getParameters();
@@ -245,7 +252,8 @@ public class CameraHeadService extends Service implements
                                 }
                             });
                             takenSuccessfully = false;
-                            stopSelf();
+                            notifyFinished();
+                            return;
                         }
 
                     }
@@ -277,7 +285,7 @@ public class CameraHeadService extends Service implements
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
-                        Log.d("ImageTakin", "OnTake()");
+                        Log.d("cameraS", "OnTake()");
                         mCamera.takePicture(null, null, mCall);
                     } else {
                         handler.post(new Runnable() {
@@ -290,8 +298,8 @@ public class CameraHeadService extends Service implements
                             }
                         });
                         takenSuccessfully = false;
-                        stopSelf();
-
+                        notifyFinished();
+                        return;
                     }
                     // return 4;
 
@@ -314,20 +322,16 @@ public class CameraHeadService extends Service implements
                 }
             });
             takenSuccessfully = false;
-            stopSelf();
+            notifyFinished();
+            return;
         }
 
         // return super.onStartCommand(intent, flags, startId);
 
     }
 
-    @SuppressWarnings("deprecation")
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        // sv = new SurfaceView(getApplicationContext());
-        takenSuccessfully = false;
-        cameraIntent = intent;
-        isRunning = true;
+    private void start(Intent intent) {
+//        isRunning = true;
         Log.d("ImageTakin", "StartCommand()");
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         editor = pref.edit();
@@ -413,6 +417,12 @@ public class CameraHeadService extends Service implements
         // replaced
         if (Build.VERSION.SDK_INT < 11)
             sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        // sv = new SurfaceView(getApplicationContext());
+        start(intent);
         return 1;
     }
 
@@ -526,13 +536,37 @@ public class CameraHeadService extends Service implements
                 }
             });
             takenSuccessfully = true;
-            stopSelf();
+            notifyFinished();
+            return;
         }
     };
 
+    private void notifyFinished() {
+        Intent intent = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
+        intent.putExtra("takenSuccessfuly", takenSuccessfully);
+        isRunning = false;
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private final Messenger mMesesenger = new Messenger(new Handler() {
+
+        public void handleMessage(Message msg) {
+//            if (msg.replyTo != null && msg.what == GET_RESULT) {
+//                colorDetectionMessenger = msg.replyTo;
+//            } else if (msg.what == ColorDetectionShield.UNBIND_COLOR_DETECTOR) {
+//                unBindColorDetector();
+//            }
+            if (msg.what == CAPTURE_IMAGE) {
+                isRunning = true;
+                takeImage(msg.getData());
+            }
+        }
+    });
+
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        start(intent);
+        return mMesesenger.getBinder();
     }
 
     public static Camera getCameraInstance() {
@@ -571,8 +605,8 @@ public class CameraHeadService extends Service implements
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        if (cameraIntent != null)
-            takeImage(cameraIntent);
+//        if (cameraIntent != null)
+//            takeImage(cameraIntent);
 
     }
 

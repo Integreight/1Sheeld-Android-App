@@ -5,6 +5,7 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ClockShield;
+import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.shields.controller.DataLoggerShield;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmptyShield;
@@ -148,7 +149,9 @@ public enum UIShield {
             0xffde1f26, R.drawable.shields_list_pattern_symbol, false,
             PatternShield.class), INTERNET_SHIELD((byte) 0x29, "Internet",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
-            InternetShield.class);
+            InternetShield.class), COLOR_DETECTION_SHIELD((byte) 0x30, "Color Detector",
+            0xffde1f26, R.drawable.shields_list_internet_symbol, false,
+            ColorDetectionShield.class);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
             0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
