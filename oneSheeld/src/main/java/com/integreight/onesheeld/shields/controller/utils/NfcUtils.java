@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.NfcShield;
-import com.integreight.onesheeld.utils.Log;
 
 /**
  * Created by Mouso on 3/11/2015.
