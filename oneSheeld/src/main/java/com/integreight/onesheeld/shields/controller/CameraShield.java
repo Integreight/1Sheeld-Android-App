@@ -17,6 +17,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraAidlService;
+import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.Log;
 
@@ -34,7 +35,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private static String FLASH_MODE;
     private static int QUALITY_MODE = 0;
     private Messenger aidlBinder;
-    private boolean isAidlBound;
+    private static boolean isAidlBound;
     private Queue<CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
 
     private static final byte FRONT_CAPTURE = (byte) 0x03;
@@ -52,6 +53,41 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     @Override
     public ControllerParent<CameraShield> init(String tag) {
         Intent intent = new Intent(getActivity(), CameraAidlService.class);
+        if (!getApplication().getRunningShields().containsKey(UIShield.COLOR_DETECTION_SHIELD.name()))
+            getActivity().stopService(new Intent(getActivity(), CameraHeadService.class));
+        getActivity().stopService(new Intent(getActivity(), CameraAidlService.class));
+        if (myAidlConnection != null && isAidlBound)
+            getActivity().unbindService(myAidlConnection);
+        myAidlConnection = new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                aidlBinder = new Messenger(service);
+                Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
+                msg.replyTo = mMessenger;
+                if (capturesQueue != null && !capturesQueue.isEmpty()) {
+                    Bundle b = new Bundle();
+                    CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+                    arr = capturesQueue.toArray(arr);
+                    b.putSerializable("queue", arr);
+                    msg.setData(b);
+                }
+                try {
+                    aidlBinder.send(msg);
+                    capturesQueue = new ConcurrentLinkedQueue<>();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                isAidlBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                aidlBinder = null;
+                isAidlBound = false;
+            }
+
+        };
         getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
         UIHandler = new Handler();
         return super.init(tag);
@@ -98,36 +134,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
         ;
     });
-    private ServiceConnection myAidlConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            aidlBinder = new Messenger(service);
-            Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
-            msg.replyTo = mMessenger;
-            if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                Bundle b = new Bundle();
-                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                arr = capturesQueue.toArray(arr);
-                b.putSerializable("queue", arr);
-                msg.setData(b);
-            }
-            try {
-                aidlBinder.send(msg);
-                capturesQueue = new ConcurrentLinkedQueue<>();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-            isAidlBound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            aidlBinder = null;
-            isAidlBound = false;
-        }
-
-    };
+    private static ServiceConnection myAidlConnection;
 
     /**
      * Check if this device has a camera
@@ -306,6 +313,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             return isFrontCamera;
 
         }
+
         public long getTag() {
             return tag;
         }

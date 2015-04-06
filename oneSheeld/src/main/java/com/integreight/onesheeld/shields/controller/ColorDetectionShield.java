@@ -15,6 +15,8 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 
+import java.util.ArrayList;
+
 public class ColorDetectionShield extends
         ControllerParent<ControllerParent<ColorDetectionShield>> {
     private static final byte SHIELD_ID = (byte) 0x30;
@@ -22,6 +24,7 @@ public class ColorDetectionShield extends
     boolean isCameraBound = false;
     private Messenger mService;
     public static final int UNBIND_COLOR_DETECTOR = 2;
+    private RECEIVED_FRAMES recevedFramesType = RECEIVED_FRAMES.CENTER;
 
     @Override
     public ControllerParent<ControllerParent<ColorDetectionShield>> init(String tag) {
@@ -59,7 +62,8 @@ public class ColorDetectionShield extends
         Message msg = Message.obtain(null, UNBIND_COLOR_DETECTOR);
         msg.replyTo = mMessenger;
         try {
-            mService.send(msg);
+            if (mService != null)
+                mService.send(msg);
         } catch (RemoteException e) {
         }
         getActivity().unbindService(mConnection);
@@ -70,7 +74,8 @@ public class ColorDetectionShield extends
         public void handleMessage(Message msg) {
             if (msg.what == CameraHeadService.GET_RESULT && msg.getData() != null) {
                 if (colorEventHandler != null) {
-                    colorEventHandler.onColorChanged(msg.getData().getInt("common"), msg.getData().getInt("dominant"));
+                    ArrayList<CameraHeadService.PreviewCell> detected = (ArrayList<CameraHeadService.PreviewCell>) msg.getData().getSerializable("detected");
+                    colorEventHandler.onColorChanged(detected.get(4).common, detected.get(4).average);
                 }
             } else {
                 super.handleMessage(msg);
@@ -98,5 +103,18 @@ public class ColorDetectionShield extends
             isCameraBound = false;
         }
     };
+
+    public static enum RECEIVED_FRAMES {
+        CENTER(0), NINE_FRAMES(1);
+        public int type;
+
+        private RECEIVED_FRAMES(int type) {
+            this.type = type;
+        }
+
+        public RECEIVED_FRAMES getEnum(int type) {
+            return type == 0 ? CENTER : NINE_FRAMES;
+        }
+    }
 
 }

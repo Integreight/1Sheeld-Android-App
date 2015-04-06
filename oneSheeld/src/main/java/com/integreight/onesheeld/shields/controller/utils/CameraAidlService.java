@@ -12,12 +12,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
-import android.os.Process;
 import android.os.RemoteException;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.crashlytics.android.Crashlytics;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.utils.Log;
 
@@ -34,6 +31,7 @@ public class CameraAidlService extends Service {
     private Messenger replyTo;
     private Messenger mService;
     boolean isCameraBound = false;
+    public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5;
 
     private final Messenger mMesesenger = new Messenger(new Handler() {
 
@@ -78,6 +76,27 @@ public class CameraAidlService extends Service {
         Log.d("cameraS", "Bound");
         Intent camIntent = new Intent(this, CameraHeadService.class);
         camIntent.putExtra("isCamera", true);
+        if (mConnection != null)
+            unbindService(mConnection);
+        mConnection = new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName className,
+                                           IBinder binder) {
+//            CameraHeadService.MyBinder b = (CameraHeadService.MyBinder) binder;
+                mService = new Messenger(binder);
+                Message msg = Message.obtain(null, BIND_CAMERA_CAPTURE);
+                try {
+                    mService.send(msg);
+                } catch (RemoteException e) {
+                }
+                isCameraBound = true;
+                LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME));
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                isCameraBound = false;
+            }
+        };
         bindService(camIntent, mConnection,
                 Context.BIND_AUTO_CREATE);
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();
@@ -85,47 +104,35 @@ public class CameraAidlService extends Service {
         LocalBroadcastManager.getInstance(
                 getApplication().getApplicationContext()).registerReceiver(
                 mMessageReceiver, new IntentFilter(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME));
-        initCrashlyticsAndUncaughtThreadHandler();
         Log.d("cameraS", "BoundDone");
         return mMesesenger.getBinder();
     }
 
-    private void initCrashlyticsAndUncaughtThreadHandler() {
-        Thread.UncaughtExceptionHandler myHandler = new Thread.UncaughtExceptionHandler() {
-
-            @Override
-            public void uncaughtException(Thread arg0, final Throwable arg1) {
-                arg1.printStackTrace();
-                Log.d("cameraS", "Crashed  " + arg1.getMessage());
-                Message msg = Message.obtain(null, CRASHED);
-                if (capture != null)
-                    cameraCaptureQueue.add(capture);
-                Bundle b = new Bundle();
-                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                arr = cameraCaptureQueue.toArray(arr);
-                b.putSerializable("queue", arr);
-                msg.setData(b);
-                try {
-                    replyTo.send(msg);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                    stopSelf();
-                }
-
-                stopService(new Intent(CameraAidlService.this, CameraHeadService.class));
-                CameraHeadService.isRunning = false;
-                android.os.Process.killProcess(Process.myPid());
-            }
-        };
-        Thread.setDefaultUncaughtExceptionHandler(myHandler);
-        if (MainActivity.hasCrashlyticsApiKey(this)) {
-            Crashlytics.start(this);
+    private void crashed() {
+        Message msg = Message.obtain(null, CRASHED);
+        if (capture != null)
+            cameraCaptureQueue.add(capture);
+        Bundle b = new Bundle();
+        CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+        arr = cameraCaptureQueue.toArray(arr);
+        b.putSerializable("queue", arr);
+        msg.setData(b);
+        try {
+            replyTo.send(msg);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+            stopSelf();
         }
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d("cameraS", "UnBound");
+        Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
+        try {
+            mService.send(msg);
+        } catch (RemoteException e) {
+        }
         unbindService(mConnection);
         LocalBroadcastManager.getInstance(getApplication()).unregisterReceiver(
                 mMessageReceiver);
@@ -144,6 +151,10 @@ public class CameraAidlService extends Service {
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
             Log.d("cameraS", "Received Frame " + CameraHeadService.isRunning);
+            if (intent != null && intent.getExtras() != null && intent.getBooleanExtra("crashed", false)) {
+                crashed();
+                return;
+            }
             if (intent == null || intent.getExtras() == null || intent.getExtras().get("takenSuccessfuly") == null || intent.getBooleanExtra("takenSuccessfuly", false))
                 capture = null;
             else {
@@ -173,20 +184,7 @@ public class CameraAidlService extends Service {
 
     };
 
-    private ServiceConnection mConnection = new ServiceConnection() {
-
-        public void onServiceConnected(ComponentName className,
-                                       IBinder binder) {
-//            CameraHeadService.MyBinder b = (CameraHeadService.MyBinder) binder;
-            mService = new Messenger(binder);
-            isCameraBound = true;
-            LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME));
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            isCameraBound = false;
-        }
-    };
+    private static ServiceConnection mConnection;
 
     private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {
         Log.d("cameraS", "Ask to capture " + CameraHeadService.isRunning);

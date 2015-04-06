@@ -109,7 +109,7 @@ public class ImageUtils {
         return bitmap;
     }
 
-    public static int getRGBFromColor(Bitmap bitmap) {
+    public static int getAverageColor(Bitmap bitmap) {
         int redBucket = 0;
         int greenBucket = 0;
         int blueBucket = 0;
@@ -132,7 +132,7 @@ public class ImageUtils {
         return RGB;
     }
 
-    public static int getMostCommonColor(Bitmap bm/* , Activity activity */) {
+    public static int getMostDominantColor(Bitmap bm/* , Activity activity */) {
 
         // Bitmap bm = ImageTester.getBitmapFromAsset(
         // activity.getApplicationContext(), "colors.bmp");
@@ -182,26 +182,26 @@ public class ImageUtils {
 
     }
 
-    public static int convert32Colorto2(int color) {
-        int a, r, g, b;
-        a = Color.alpha(color);
-        r = Color.red(color);
-        g = Color.green(color);
-        b = Color.blue(color);
-        if (r >> 7 == 1)
-            r = 0xff;
-        else
-            r = 0x00;
-        if (g >> 7 == 1)
-            g = 0xff;
-        else
-            g = 0x00;
-        if (b >> 7 == 1)
-            b = 0xff;
-        else
-            b = 0x00;
-        return (a << 24) | (r << 16) | (g << 8) | (b);
-    }
+//    public static int convert32Colorto2(int color) {
+//        int a, r, g, b;
+//        a = Color.alpha(color);
+//        r = Color.red(color);
+//        g = Color.green(color);
+//        b = Color.blue(color);
+//        if (r >> 7 == 1)
+//            r = 0xff;
+//        else
+//            r = 0x00;
+//        if (g >> 7 == 1)
+//            g = 0xff;
+//        else
+//            g = 0x00;
+//        if (b >> 7 == 1)
+//            b = 0xff;
+//        else
+//            b = 0x00;
+//        return (a << 24) | (r << 16) | (g << 8) | (b);
+//    }
 
     public static String getHexColor(int color) {
         String hexColor = String.format("#%06X", 0xFFFFFF & color);
