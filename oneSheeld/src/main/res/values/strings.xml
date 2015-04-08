@@ -113,4 +113,10 @@
     <!-- Internet -->
     <string name="no_requests">No Requests Found</string>
     <string name="cancel_popup">Cancel</string>
+
+    <string name="rate_dialog_title">Did you like 1Sheeld?</string>
+    <string name="rate_dialog_message">If you enjoy playing with 1Sheeld app, would you mind taking a moment to rate it? We appreciate your awesome support!</string>
+    <string name="rate_dialog_ok">Rate It Now</string>
+    <string name="rate_dialog_cancel">Maybe Later</string>
+    <string name="rate_dialog_no">No, Thanks</string>
 </resources>
