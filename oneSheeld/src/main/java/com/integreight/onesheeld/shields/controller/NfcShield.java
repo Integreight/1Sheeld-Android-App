@@ -106,7 +106,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
         if (frame.getShieldId() == SHIELD_ID) {
             if (frame.getArguments() != null && frame.getArguments().size() > 0){
                 int record,start,size;
-                String data;
+                byte[] data;
                 ShieldFrame sf;
                 if(isNdef_Flag) {
                     switch (frame.getFunctionId()) {
@@ -115,20 +115,20 @@ public class NfcShield extends ControllerParent<NfcShield>{
                             start = frame.getArgumentAsInteger(2, 1);
                             size = frame.getArgumentAsInteger(1, 2);
                             data = readNdefRecordData(record, start, size);
-                            if(data != "" && data != null) {
+                            if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_DATA_FRAME);
                                 sf.addIntegerArgument(1, false, record);
-                                sf.addArgument(data.getBytes());
+                                sf.addArgument(data);
                                 sendShieldFrame(sf, true);
                             }
                             break;
                         case RECORD_QUERY_PARSED_DATA:
                             record = frame.getArgumentAsInteger(1, 0);
                             data = readNdefRecordParsedData(record, 0, 256);
-                            if(data != "" && data != null) {
+                            if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_PARSED_DATA_FRAME);
                                 sf.addIntegerArgument(1, false, record);
-                                sf.addStringArgument(data);
+                                sf.addArgument(data);
                                 sendShieldFrame(sf, true);
                             }
                             break;
@@ -137,10 +137,10 @@ public class NfcShield extends ControllerParent<NfcShield>{
                             start = frame.getArgumentAsInteger(2, 1);
                             size = frame.getArgumentAsInteger(1, 2);
                             data = readNdefRecordType(record, start, size);
-                            if(data != "" && data != null) {
+                            if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_TYPE_FRAME);
                                 sf.addIntegerArgument(1, false, record);
-                                sf.addStringArgument(data);
+                                sf.addArgument(data);
                                 sendShieldFrame(sf, true);
                             }
                             break;
@@ -243,7 +243,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
         int recordCount = getNdefRecordCount();
         for(int i=0;i<recordCount;i++){
             if (eventHandler != null)
-                eventHandler.ReadNdef(readNdefRecordData(i, 0, 64).getBytes());
+                eventHandler.ReadNdef(readNdefRecordData(i, 0, 64));
             //Toast.makeText(getActivity().getApplicationContext(),new String(readNdefRecordData(i, 0, 64)),Toast.LENGTH_SHORT).show();
         }
     }
@@ -505,8 +505,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
         return length;
     }
 
-    private String readNdefRecordType(int recordNumber,int memoryIndex,int dataLength) {
+    private byte[] readNdefRecordType(int recordNumber,int memoryIndex,int dataLength) {
         String dataString = "";
+        if(dataLength > 255) dataLength = 255;
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 Ndef ndef = Ndef.get(currentTag);
@@ -527,21 +528,23 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 }
             }
         }
-        if (memoryIndex < dataString.length() && dataString.length() > 0 && dataLength > 0) {
-            if(dataLength < dataString.length()-memoryIndex) {
-                return dataString.substring(memoryIndex, memoryIndex + dataLength);
+        byte[] data = dataString.getBytes();
+        if (memoryIndex < data.length && data.length > 0 && dataLength > 0) {
+            if(dataLength < data.length-memoryIndex) {
+                return Arrays.copyOfRange(data,memoryIndex,memoryIndex+dataLength);
             }else{
                 sendError(NO_ENOUGH_BYTES);
-                return dataString.substring(memoryIndex);
+                return data;
             }
         }else {
             sendError(INDEX_OUT_OF_BOUNDS);
-            return "";
+            return data;
         }
     }
 
-    private String readNdefRecordData(int recordNumber,int memoryIndex,int dataLength) {
+    private byte[] readNdefRecordData(int recordNumber,int memoryIndex,int dataLength) {
         String dataString = "";
+        if(dataLength > 255) dataLength = 255;
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 Ndef ndef = Ndef.get(currentTag);
@@ -562,21 +565,23 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 }
             }
         }
-        if (memoryIndex < dataString.length() && dataString.length() > 0 && dataLength > 0) {
-            if(dataLength < dataString.length()-memoryIndex) {
-                return dataString.substring(memoryIndex, memoryIndex + dataLength);
+        byte[] data = dataString.getBytes();
+        if (memoryIndex < data.length && data.length > 0 && dataLength > 0) {
+            if(dataLength < data.length-memoryIndex) {
+                return Arrays.copyOfRange(data, memoryIndex, memoryIndex + dataLength);
             }else{
                 sendError(NO_ENOUGH_BYTES);
-                return dataString.substring(memoryIndex);
+                return data;
             }
         }else {
             sendError(INDEX_OUT_OF_BOUNDS);
-            return "";
+            return data;
         }
     }
 
-    private String readNdefRecordParsedData(int recordNumber,int memoryIndex,int dataLength) {
+    private byte[] readNdefRecordParsedData(int recordNumber,int memoryIndex,int dataLength) {
         String dataString = "";
+        if(dataLength > 255) dataLength = 255;
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 Ndef ndef = Ndef.get(currentTag);
@@ -596,7 +601,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                                         type = "Text";
                                     else {
                                         sendError(RECORD_CAN_NOT_BE_PARSED);
-                                        return "";
+                                        return new byte[0];
                                     }
 
                                     if (type == "Text")
@@ -631,22 +636,23 @@ public class NfcShield extends ControllerParent<NfcShield>{
                 }
             }
         }
-        if (memoryIndex < dataString.length() && dataString.length() > 0 && dataLength > 0) {
-            if(dataLength < dataString.length()-memoryIndex) {
-                return dataString.substring(memoryIndex, memoryIndex + dataLength);
+        byte[] data = dataString.getBytes();
+        if (memoryIndex < data.length && data.length > 0 && dataLength > 0) {
+            if(dataLength < data.length-memoryIndex) {
+                return Arrays.copyOfRange(data, memoryIndex, memoryIndex + dataLength);
             }else{
                 sendError(NO_ENOUGH_BYTES);
-                return dataString.substring(memoryIndex);
+                return data;
             }
         }else {
             sendError(INDEX_OUT_OF_BOUNDS);
-            return "";
+            return data;
         }
     }
 
     private String parseTextNdefRecord(NdefRecord ndefRecord) throws UnsupportedEncodingException {
         byte[] payload = ndefRecord.getPayload();
-        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-6";
+        String textEncoding = ((payload[0] & 128) == 0) ? "UTF-8" : "UTF-16";
         int languageCodeLength = payload[0] & 0063;
         String plainData = new String(payload, languageCodeLength + 1, payload.length - languageCodeLength - 1, textEncoding);
         return plainData;
