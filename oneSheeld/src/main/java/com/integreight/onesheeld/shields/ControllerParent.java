@@ -261,7 +261,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                         ((T) ControllerParent.this)
                                                 .onNewShieldFrameReceived(frame);
                                     cachedArduinoCallbackStatus = false;
-                                } catch (Exception e) {
+                                } catch (RuntimeException e) {
                                     cachedArduinoCallbackStatus = false;
                                     Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
                                     Crashlytics.logException(e);
