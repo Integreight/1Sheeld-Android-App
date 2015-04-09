@@ -50,9 +50,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private static final int URI_TYPE = 7;
     private static final int UNSUPPORTED_TYPE = 8;
 
-    private static final byte TAG_NOT_SUPPORTED = 0x00;
+    private static final byte TAG_NOT_SUPPORTED = 0x02;
     private static final byte RECORD_CAN_NOT_BE_PARSED = 0x01;
-    private static final byte INDEX_OUT_OF_BOUNDS = 0x02;
+    private static final byte INDEX_OUT_OF_BOUNDS = 0x00;
     private static final byte NO_ENOUGH_BYTES = 0x03;
     private static final byte TAG_READING_ERROR = 0x04;
     private static final byte RECORD_NOT_FOUND = 0x05;
@@ -124,7 +124,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                             break;
                         case RECORD_QUERY_PARSED_DATA:
                             record = frame.getArgumentAsInteger(1, 0);
-                            data = readNdefRecordParsedData(record, 0, 256);
+                            data = readNdefRecordParsedData(record, 0, 255);
                             if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_PARSED_DATA_FRAME);
                                 sf.addIntegerArgument(1, false, record);
@@ -538,7 +538,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
             }
         }else {
             sendError(INDEX_OUT_OF_BOUNDS);
-            return data;
+            return new byte[0];
         }
     }
 
@@ -575,7 +575,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
             }
         }else {
             sendError(INDEX_OUT_OF_BOUNDS);
-            return data;
+            return new byte[0];
         }
     }
 
@@ -638,15 +638,10 @@ public class NfcShield extends ControllerParent<NfcShield>{
         }
         byte[] data = dataString.getBytes();
         if (memoryIndex < data.length && data.length > 0 && dataLength > 0) {
-            if(dataLength < data.length-memoryIndex) {
-                return Arrays.copyOfRange(data, memoryIndex, memoryIndex + dataLength);
-            }else{
-                sendError(NO_ENOUGH_BYTES);
-                return data;
-            }
+            return Arrays.copyOfRange(data, memoryIndex, memoryIndex + data.length);
         }else {
             sendError(INDEX_OUT_OF_BOUNDS);
-            return data;
+            return new byte[0];
         }
     }
 
@@ -661,6 +656,6 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private void sendError(byte errorCode){
         ShieldFrame sf = new ShieldFrame(SHIELD_ID,TAG_ERROR_FRAME);
         sf.addByteArgument(errorCode);
-        sendShieldFrame(sf);
+        sendShieldFrame(sf, true);
     }
 }
