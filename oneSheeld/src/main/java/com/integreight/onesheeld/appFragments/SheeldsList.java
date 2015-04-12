@@ -38,7 +38,6 @@ import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.popup.ValidationPopup.ValidationAction;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
@@ -344,10 +343,6 @@ public class SheeldsList extends Fragment {
                     && activity.getThisApplication().taskerController != null) {
                 activity.getThisApplication().taskerController.reset();
             }
-            if (activity != null
-                    && activity.getThisApplication().remoteOneSheeldController != null) {
-                activity.getThisApplication().remoteOneSheeldController.reset();
-            }
             ((OneSheeldApplication) activity.getApplication())
                     .endConnectionTimerAndReport();
             UIShield.setConnected(false);
@@ -365,8 +360,6 @@ public class SheeldsList extends Fragment {
         public void onConnect() {
             activity.getThisApplication().taskerController = new TaskerShield(
                     activity, UIShield.TASKER_SHIELD.name());
-            activity.getThisApplication().remoteOneSheeldController = new RemoteOneSheeldShield(
-                    activity, UIShield.REMOTEONESHEELD_SHIELD.name());
             Log.e(TAG, "- ARDUINO CONNECTED -");
             ((OneSheeldApplication) activity.getApplication()).getTracker()
                     .send(new HitBuilders.ScreenViewBuilder().setNewSession()
@@ -385,10 +378,6 @@ public class SheeldsList extends Fragment {
             if (activity != null) {
                 if (activity.getThisApplication().taskerController != null) {
                     activity.getThisApplication().taskerController.reset();
-                }
-                if (activity.getThisApplication().remoteOneSheeldController != null) {
-                    activity.getThisApplication().remoteOneSheeldController
-                            .reset();
                 }
                 ((OneSheeldApplication) activity.getApplication())
                         .endConnectionTimerAndReport();
