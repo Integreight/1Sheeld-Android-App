@@ -27,12 +27,15 @@ import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 public class ShieldsOperations extends BaseContainerFragment {
     private View v;
     private static ShieldsOperations thisInstance;
     protected SelectedShieldsListFragment mFrag;
     private ShieldFragmentParent<?> mContent;
     private MainActivity activity;
+    private CopyOnWriteArrayList<OnChangeListener> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
 
     public static ShieldsOperations getInstance() {
         if (thisInstance == null) {
@@ -75,6 +78,11 @@ public class ShieldsOperations extends BaseContainerFragment {
                             activity.disableMenu();
                         } else
                             activity.enableMenu();
+                        if (onChangeSlidingLockListeners != null && onChangeSlidingLockListeners.size() > 0) {
+                            for (OnChangeListener onChangeListener : onChangeSlidingLockListeners) {
+                                onChangeListener.onChange(arg1);
+                            }
+                        }
                     }
                 });
         new Handler().postDelayed(new Runnable() {
@@ -338,5 +346,16 @@ public class ShieldsOperations extends BaseContainerFragment {
             }
         }, 500);
         super.onResume();
+    }
+
+    public void addOnSlidingLocksListener(OnChangeListener listener) {
+        if (onChangeSlidingLockListeners == null)
+            onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
+        if (!onChangeSlidingLockListeners.contains(listener))
+            onChangeSlidingLockListeners.add(listener);
+    }
+
+    public static interface OnChangeListener {
+        public void onChange(boolean isChecked);
     }
 }

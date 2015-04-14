@@ -4,16 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
 
 import java.io.FileOutputStream;
 
-public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
+public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener {
     FileOutputStream fo;
     private CameraFragmentHandler fragmentHandler;
 
@@ -23,6 +25,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.camera_shield_fragment_layout, container,
                 false);
+        if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
+            ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
         setHasOptionsMenu(true);
         return v;
     }
@@ -33,11 +37,13 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
             if (!reInitController())
                 return;
         }
+
         ((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(cameraEventHandler);
         super.onStart();
 
     }
+
 
     @Override
     public void onStop() {
@@ -108,8 +114,31 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> {
     @Override
     public void onResume() {
         // TODO Auto-generated method stub
+        if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+            ((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).showPreview();
         super.onResume();
 
+    }
+
+    @Override
+    public void onPause() {
+        ((CameraShield) getApplication().getRunningShields().get(
+                getControllerTag())).hidePreview();
+        super.onPause();
+    }
+
+    @Override
+    public void onChange(boolean isChecked) {
+        if (getView() != null && getApplication().getRunningShields().get(
+                getControllerTag()) != null) {
+            if (isChecked)
+                ((CameraShield) getApplication().getRunningShields().get(
+                        getControllerTag())).showPreview();
+            else
+                ((CameraShield) getApplication().getRunningShields().get(
+                        getControllerTag())).hidePreview();
+        }
     }
 
     public static interface CameraFragmentHandler {

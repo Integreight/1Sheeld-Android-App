@@ -37,6 +37,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private Messenger aidlBinder;
     private static boolean isAidlBound;
     private Queue<CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
+    public static int SHOW_PREVIEW = 7;
+    public static int HIDE_PREVIEW = 8;
 
     private static final byte FRONT_CAPTURE = (byte) 0x03;
     int numberOfFrames = 0;
@@ -153,6 +155,25 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     public void setCameraEventHandler(CameraEventHandler eventHandler) {
         // this.eventHandler = eventHandler;
 
+    }
+
+    public void showPreview() {
+        Message msg = Message.obtain(null, SHOW_PREVIEW);
+        msg.replyTo = mMessenger;
+        try {
+            aidlBinder.send(msg);
+        } catch (RemoteException e) {
+        }
+    }
+
+    public void hidePreview() {
+        Message msg = Message.obtain(null, HIDE_PREVIEW);
+        msg.replyTo = mMessenger;
+        try {
+            if(aidlBinder!=null)
+            aidlBinder.send(msg);
+        } catch (RemoteException e) {
+        }
     }
 
     @Override

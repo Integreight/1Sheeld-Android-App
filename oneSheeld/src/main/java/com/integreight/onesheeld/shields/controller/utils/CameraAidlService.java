@@ -66,6 +66,13 @@ public class CameraAidlService extends Service {
                     Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
                     LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
                 }
+            } else if (msg.what == CameraShield.SHOW_PREVIEW || msg.what == CameraShield.HIDE_PREVIEW) {
+                try {
+                    Message msgSent = Message.obtain(null, msg.what);
+                    if (mService != null)
+                        mService.send(msgSent);
+                } catch (RemoteException e) {
+                }
             }
 
         }
@@ -130,7 +137,8 @@ public class CameraAidlService extends Service {
         Log.d("cameraS", "UnBound");
         Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
         try {
-            mService.send(msg);
+            if (mService != null)
+                mService.send(msg);
         } catch (RemoteException e) {
         }
         unbindService(mConnection);

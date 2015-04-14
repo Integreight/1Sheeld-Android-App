@@ -27,11 +27,13 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
+import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
@@ -360,6 +362,10 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("Test","Back Pressed");
+        ///// Camera Preview
+        if (getThisApplication().getRunningShields().contains(UIShield.CAMERA_SHIELD.name()))
+            ((CameraShield) getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
         resetSlidingMenu();
         MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
         MultiDirectionSlidingDrawer settingsView = (MultiDirectionSlidingDrawer) findViewById(R.id.settingsSlidingView);

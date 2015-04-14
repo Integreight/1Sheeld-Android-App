@@ -167,9 +167,6 @@ public class ImageUtils {
 
         Map.Entry me = (Map.Entry) list.get(list.size() - 1);
         int[] rgb = getRGBArr((Integer) me.getKey());
-        Log.d("RGB",
-                Integer.toHexString(rgb[0]) + " " + Integer.toHexString(rgb[1])
-                        + " " + Integer.toHexString(rgb[2]));
         return Color.rgb(rgb[0], rgb[1], rgb[2]);
         // return getMostCommonColour(m);
     }
