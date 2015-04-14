@@ -17,7 +17,6 @@ import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
-import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
@@ -63,7 +62,6 @@ public class OneSheeldApplication extends Application {
     // private GoogleAnalytics googleAnalyticsInstance;
     // private Tracker appGaTracker;
     public TaskerShield taskerController;
-    public RemoteOneSheeldShield remoteOneSheeldController;
     public SparseArray<Boolean> taskerPinsStatus;
 
     public static final String FIRMWARE_UPGRADING_URL = "http://1sheeld.parseapp.com/firmware/version.json";

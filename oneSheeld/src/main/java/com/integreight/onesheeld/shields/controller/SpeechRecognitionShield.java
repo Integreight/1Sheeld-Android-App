@@ -154,7 +154,7 @@ public class SpeechRecognitionShield extends
             }
             sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
                     SEND_ERROR);
-            sf.addIntegerArgument(1, false, errorSent);
+            sf.addIntegerArgument(1, errorSent);
             Log.d("Frame", sf.toString());
             sendShieldFrame(sf, true);
         }

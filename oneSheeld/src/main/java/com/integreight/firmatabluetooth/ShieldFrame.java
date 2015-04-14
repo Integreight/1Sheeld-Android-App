@@ -3,6 +3,7 @@ package com.integreight.firmatabluetooth;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ShieldFrame {
     public static final byte START_OF_FRAME = (byte) 0xFF;
@@ -92,7 +93,7 @@ public class ShieldFrame {
     }
 
     public void addArgument(byte[] argument) {
-        arguments.add(argument);
+        arguments.add(Arrays.copyOfRange(argument,0,(argument.length>255)?255:argument.length));
     }
 
     public void addByteArgument(byte data) {
@@ -107,9 +108,7 @@ public class ShieldFrame {
         arguments.add(new byte[]{(byte) (data ? 1 : 0)});
     }
 
-    public void addIntegerArgument(int bytes, boolean isSigned, int data) {
-        if (!isSigned)
-            data = Math.abs(data);
+    public void addIntegerArgument(int bytes, int data) {
         switch (bytes) {
             case 0:
                 return;
