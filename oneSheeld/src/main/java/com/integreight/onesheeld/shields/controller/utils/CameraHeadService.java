@@ -1001,6 +1001,8 @@ public class CameraHeadService extends Service implements
             }
         }
     };
+    private final int quality = 50;
+    private final int frameDimen = 20;
 
     private void addColorCell(byte[] data1, final Camera camera, int i, int j) {
         out = new ByteArrayOutputStream();
@@ -1012,7 +1014,7 @@ public class CameraHeadService extends Service implements
         // bWidth and bHeight define the size of the bitmap you wish the
         // fill with the preview image
         yuv.compressToJpeg(new Rect(0, 0, size.width, size.height),
-                50, out);
+                quality, out);
         bytes = out.toByteArray();
         resizebitmap = BitmapFactory.decodeByteArray(bytes, 0,
                 bytes.length);
@@ -1020,7 +1022,7 @@ public class CameraHeadService extends Service implements
 //                ((resizebitmap.getWidth() / 2) - 25) * i, ((resizebitmap.getHeight() / 2) - 25) * j, 50, 50);
         Matrix matrix = new Matrix();
         matrix.postRotate(90);
-        resizebitmap = Bitmap.createBitmap(resizebitmap, ((resizebitmap.getWidth() / 2) - 10) * i, ((resizebitmap.getHeight() / 2) - 10) * j, 20, 20, matrix, true);
+        resizebitmap = Bitmap.createBitmap(resizebitmap, ((resizebitmap.getWidth() / 2) - (frameDimen / 2)) * i, ((resizebitmap.getHeight() / 2) - (frameDimen / 2)) * j, frameDimen, frameDimen, matrix, true);
 //        if (i == 1 && j == 1)
 //            iv.setImageBitmap(resizebitmap);
 //        int commonColor = ImageUtils.getMostDominantColor(resizebitmap);

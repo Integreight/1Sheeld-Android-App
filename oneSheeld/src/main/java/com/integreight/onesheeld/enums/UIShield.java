@@ -149,7 +149,7 @@ public enum UIShield {
             0xffde1f26, R.drawable.shields_list_pattern_symbol, false,
             PatternShield.class), INTERNET_SHIELD((byte) 0x29, "Internet",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
-            InternetShield.class), COLOR_DETECTION_SHIELD((byte) 0x30, "Color Detector",
+            InternetShield.class), COLOR_DETECTION_SHIELD((byte) 0x05, "Color Detector",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
             ColorDetectionShield.class);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
