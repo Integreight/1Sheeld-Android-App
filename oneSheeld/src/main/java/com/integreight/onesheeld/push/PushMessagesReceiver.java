@@ -7,25 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-
 import com.crashlytics.android.Crashlytics;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.utils.Log;
-import com.parse.ParseInstallation;
 import com.parse.ParsePushBroadcastReceiver;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+
 
 public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
     private static final String TAG = "PushMessagesReceiver";
