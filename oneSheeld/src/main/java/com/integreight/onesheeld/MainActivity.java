@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -44,7 +45,11 @@ import org.json.JSONObject;
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import hotchemi.android.rate.AppRate;
+import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends FragmentActivity {
     public AppSlidingLeftMenu appSlidingMenu;
@@ -77,6 +82,38 @@ public class MainActivity extends FragmentActivity {
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
             startActivity(new Intent(this, Tutorial.class));
+        AppRate.with(this)
+                .setInstallDays(7)
+                .setLaunchTimes(5)
+                .setRemindInterval(2)
+                .setDebug(true)
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Map<String,String> hit=null;
+                        switch (which) {
+                            case Dialog.BUTTON_NEGATIVE:
+                                hit=new HitBuilders.EventBuilder()
+                                    .setCategory("App Rating Dialog")
+                                    .setAction("No")
+                                    .build();break;
+                            case Dialog.BUTTON_NEUTRAL:
+                                hit=new HitBuilders.EventBuilder()
+                                    .setCategory("App Rating Dialog")
+                                    .setAction("Later")
+                                    .build();break;
+                            case Dialog.BUTTON_POSITIVE:
+                                hit=new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("Yes")
+                                        .build();break;
+                        }
+                        if(hit!=null)getThisApplication()
+                                .getTracker()
+                                .send(hit);
+                    }
+                })
+                .monitor();
     }
 
     public Thread looperThread;

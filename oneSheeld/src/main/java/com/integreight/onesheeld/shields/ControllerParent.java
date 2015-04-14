@@ -16,7 +16,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 
@@ -199,8 +198,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
             @Override
             public void run() {
                 if (hasConnectedPins
-                        || ((T) ControllerParent.this) instanceof TaskerShield
-                        || ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)
+                        || ((T) ControllerParent.this) instanceof TaskerShield)
                     ((T) ControllerParent.this).onDigital(portNumber, portData);
             }
         };
@@ -234,8 +232,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     private byte getShieldId() {
         if (ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.id;
-        if (ControllerParent.this instanceof RemoteOneSheeldShield)
-            return UIShield.REMOTEONESHEELD_SHIELD.id;
         return AppShields.getInstance().getShield(tag).id;
     }
 
@@ -261,7 +257,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                         ((T) ControllerParent.this)
                                                 .onNewShieldFrameReceived(frame);
                                     cachedArduinoCallbackStatus = false;
-                                } catch (Exception e) {
+                                } catch (RuntimeException e) {
                                     cachedArduinoCallbackStatus = false;
                                     Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
                                     Crashlytics.logException(e);
@@ -328,8 +324,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     private boolean isItARealShield() {
-        return !(ControllerParent.this instanceof TaskerShield)
-                && !(ControllerParent.this instanceof RemoteOneSheeldShield);
+        return !(ControllerParent.this instanceof TaskerShield);
     }
 
     public void setHasConnectedPins(boolean hasConnectedPins) {
@@ -374,8 +369,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                 }
             });
         }
-        if (selectionTime != 0 && !(((T) ControllerParent.this) instanceof TaskerShield
-                || ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)) {
+        if (selectionTime != 0 && !(((T) ControllerParent.this) instanceof TaskerShield)) {
             getApplication().getTracker().send(new HitBuilders.TimingBuilder()
                     .setCategory("Shields Selection Timing")
                     .setValue(System.currentTimeMillis() - selectionTime)

@@ -168,9 +168,9 @@ public class InternetShield extends
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_SUCCESS);
-                            frame1.addIntegerArgument(2, false, requestID);///0=id
-                            frame1.addIntegerArgument(2, false, statusCode);//
-                            frame1.addIntegerArgument(4, false, responseBody != null ? responseBody.length : 0);
+                            frame1.addIntegerArgument(2, requestID);///0=id
+                            frame1.addIntegerArgument(2, statusCode);//
+                            frame1.addIntegerArgument(4, responseBody != null ? responseBody.length : 0);
                             InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                             if (response != null) {
                                 frame1.addArgument(response.getBytes(0, InternetManager.getInstance().getMaxSentBytes()).getArray());
@@ -181,9 +181,9 @@ public class InternetShield extends
                         @Override
                         public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FAILURE);
-                            frame1.addIntegerArgument(2, false, requestID);
-                            frame1.addIntegerArgument(2, false, statusCode);//
-                            frame1.addIntegerArgument(4, false, responseBody != null ? responseBody.length : 0);
+                            frame1.addIntegerArgument(2, requestID);
+                            frame1.addIntegerArgument(2, statusCode);//
+                            frame1.addIntegerArgument(4, responseBody != null ? responseBody.length : 0);
                             InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                             if (response != null) {
                                 frame1.addArgument(response.getBytes(0, InternetManager.getInstance().getMaxSentBytes()).getArray());
@@ -194,7 +194,7 @@ public class InternetShield extends
                         @Override
                         public void onFinish(final int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FINISH);
-                            frame1.addIntegerArgument(2, false, requestID);
+                            frame1.addIntegerArgument(2, requestID);
                             if (request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_SUCCESS.name()) || request.getRegisteredCallbacks().contains(InternetRequest.CALLBACK.ON_FAILURE.name()))
                                 queueShieldFrame(frame1);
                             else
@@ -204,7 +204,7 @@ public class InternetShield extends
                         @Override
                         public void onStart(int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_START);
-                            frame1.addIntegerArgument(2, false, requestID);
+                            frame1.addIntegerArgument(2, requestID);
                             sendShieldFrame(frame1, true);
                         }
                     });
@@ -218,8 +218,8 @@ public class InternetShield extends
                             InternetManager.getInstance().getRequest(requestID).setUrl(reqURL);
                     } else {
                         ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                        frame1.addIntegerArgument(2, false, requestID);
-                        frame1.addIntegerArgument(1, false, INTERNET.URL_IS_WRONG);
+                        frame1.addIntegerArgument(2, requestID);
+                        frame1.addIntegerArgument(1, INTERNET.URL_IS_WRONG);
                         sendShieldFrame(frame1, true);
                     }
                     break;
@@ -260,15 +260,15 @@ public class InternetShield extends
                         //request excutes only in case of success
                         if (getExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                            frame1.addIntegerArgument(2, false, requestID);
-                            frame1.addIntegerArgument(1, false, getExecutionType.value);
+                            frame1.addIntegerArgument(2, requestID);
+                            frame1.addIntegerArgument(1, getExecutionType.value);
                             sendShieldFrame(frame1, true);
                         }
                     } catch (UnsupportedEncodingException e) {
                         //dummy catch that only used for requests the accept custom entity
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                        entityError.addIntegerArgument(2, false, requestID);
-                        entityError.addIntegerArgument(1, false, RESPONSE.UNSUPPORTED_ENTITY_ENCODING);
+                        entityError.addIntegerArgument(2, requestID);
+                        entityError.addIntegerArgument(1, RESPONSE.UNSUPPORTED_ENTITY_ENCODING);
                         sendShieldFrame(entityError, true);
                         e.printStackTrace();
                     }
@@ -279,14 +279,14 @@ public class InternetShield extends
                         InternetManager.EXECUTION_TYPE postExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.POST, frame.getArgument(1)[0]);
                         if (postExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                            frame1.addIntegerArgument(2, false, requestID);
-                            frame1.addIntegerArgument(1, false, postExecutionType.value);///0=id
+                            frame1.addIntegerArgument(2, requestID);
+                            frame1.addIntegerArgument(1, postExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                        entityError.addIntegerArgument(2, false, requestID);
-                        entityError.addIntegerArgument(1, false, RESPONSE.UNSUPPORTED_ENTITY_ENCODING);
+                        entityError.addIntegerArgument(2, requestID);
+                        entityError.addIntegerArgument(1, RESPONSE.UNSUPPORTED_ENTITY_ENCODING);
                         sendShieldFrame(entityError, true);
                         e.printStackTrace();
                     }
@@ -297,14 +297,14 @@ public class InternetShield extends
                         InternetManager.EXECUTION_TYPE putExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.PUT, frame.getArgument(1)[0]);
                         if (putExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                            frame1.addIntegerArgument(2, false, requestID);
-                            frame1.addIntegerArgument(1, false, putExecutionType.value);///0=id
+                            frame1.addIntegerArgument(2, requestID);
+                            frame1.addIntegerArgument(1, putExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                        entityError.addIntegerArgument(2, false, requestID);
-                        entityError.addIntegerArgument(1, false, 6);
+                        entityError.addIntegerArgument(2, requestID);
+                        entityError.addIntegerArgument(1, 6);
                         sendShieldFrame(entityError, true);
                         e.printStackTrace();
                     }
@@ -315,14 +315,14 @@ public class InternetShield extends
                         InternetManager.EXECUTION_TYPE deleteExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.DELETE, frame.getArgument(1)[0]);
                         if (deleteExecutionType != InternetManager.EXECUTION_TYPE.SUCCESSFUL) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                            frame1.addIntegerArgument(2, false, requestID);
-                            frame1.addIntegerArgument(1, false, deleteExecutionType.value);///0=id
+                            frame1.addIntegerArgument(2, requestID);
+                            frame1.addIntegerArgument(1, deleteExecutionType.value);///0=id
                             sendShieldFrame(frame1, true);
                         }
                     } catch (UnsupportedEncodingException e) {
                         ShieldFrame entityError = new ShieldFrame(SHIELD_ID, INTERNET.ON_ERROR);
-                        entityError.addIntegerArgument(2, false, requestID);
-                        entityError.addIntegerArgument(1, false, 6);
+                        entityError.addIntegerArgument(2, requestID);
+                        entityError.addIntegerArgument(1, 6);
                         sendShieldFrame(entityError, true);
                         e.printStackTrace();
                     }
@@ -353,40 +353,40 @@ public class InternetShield extends
                             if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.NOT_ENOUGH_BYTES) {
                                 if (bodyBytes.getArray() != null && bodyBytes.getArray().length > 0) {
                                     ShieldFrame frameSentNotEnough = new ShieldFrame(SHIELD_ID, RESPONSE.SEND_GET_NEXT_BYTES);
-                                    frameSentNotEnough.addIntegerArgument(2, false, requestID);
+                                    frameSentNotEnough.addIntegerArgument(2, requestID);
                                     frameSentNotEnough.addArgument(bodyBytes.getArray());
-                                    frameSentNotEnough.addIntegerArgument(1, false, RESPONSE.NO_ENOUGH_BYTES);
+                                    frameSentNotEnough.addIntegerArgument(1, RESPONSE.NO_ENOUGH_BYTES);
                                     sendShieldFrame(frameSentNotEnough, true);
                                 }
                             } else if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.INDEX_GREATER_THAN_LENGTH || bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.INDEX_LESS_THAN_0) {
                                 ShieldFrame frameSentIndexOut = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                frameSentIndexOut.addIntegerArgument(2, false, requestID);
-                                frameSentIndexOut.addIntegerArgument(1, false, RESPONSE.INDEX_OUT_OF_BOUNDS);
+                                frameSentIndexOut.addIntegerArgument(2, requestID);
+                                frameSentIndexOut.addIntegerArgument(1, RESPONSE.INDEX_OUT_OF_BOUNDS);
                                 sendShieldFrame(frameSentIndexOut, true);
                             } else if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.COUNT_LESS_THAN_0) {
                                 ShieldFrame frameSentcountOut = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                frameSentcountOut.addIntegerArgument(2, false, requestID);
-                                frameSentcountOut.addIntegerArgument(1, false, RESPONSE.SIZE_OF_REQUEST_CAN_NOT_BE_ZERO);
+                                frameSentcountOut.addIntegerArgument(2, requestID);
+                                frameSentcountOut.addIntegerArgument(1, RESPONSE.SIZE_OF_REQUEST_CAN_NOT_BE_ZERO);
                                 sendShieldFrame(frameSentcountOut, true);
                             } else { // successfully getten fully
                                 if (bodyBytes.getArray() != null && bodyBytes.getArray().length > 0) {
                                     ShieldFrame frameSent = new ShieldFrame(SHIELD_ID, RESPONSE.SEND_GET_NEXT_BYTES);
-                                    frameSent.addIntegerArgument(2, false, requestID);
+                                    frameSent.addIntegerArgument(2, requestID);
                                     frameSent.addArgument(bodyBytes.getArray());
                                     sendShieldFrame(frameSent, true);
                                 }
                             }
                         } else {//no response
                             ShieldFrame frameSentNotRes = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                            frameSentNotRes.addIntegerArgument(2, false, requestID);
-                            frameSentNotRes.addIntegerArgument(1, false, RESPONSE.REQUEST_HAS_NO_RESPONSE);
+                            frameSentNotRes.addIntegerArgument(2, requestID);
+                            frameSentNotRes.addIntegerArgument(1, RESPONSE.REQUEST_HAS_NO_RESPONSE);
                             sendShieldFrame(frameSentNotRes, true);
                         }
                     } else// no request
                     {
                         ShieldFrame frameSentNotReq = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                        frameSentNotReq.addIntegerArgument(2, false, requestID);
-                        frameSentNotReq.addIntegerArgument(1, false, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
+                        frameSentNotReq.addIntegerArgument(2, requestID);
+                        frameSentNotReq.addIntegerArgument(1, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
                         sendShieldFrame(frameSentNotReq, true);
                     }
                     break;
@@ -394,27 +394,27 @@ public class InternetShield extends
                     requestID = frame.getArgumentAsInteger(0);
                     String key = frame.getArgumentAsString(1);
                     ShieldFrame frame2 = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                    frame2.addIntegerArgument(2, false, requestID);
+                    frame2.addIntegerArgument(2, requestID);
                     if (InternetManager.getInstance().getRequest(requestID) != null) {
                         InternetResponse response = InternetManager.getInstance().getRequest(requestID).getResponse();
                         if (response != null) {
                             if (response.getHeaders() == null || response.getHeaders().get(key) == null) {
-                                frame2.addIntegerArgument(1, false, RESPONSE.HEADER_CAN_NOT_BE_FOUND);
+                                frame2.addIntegerArgument(1, RESPONSE.HEADER_CAN_NOT_BE_FOUND);
                                 sendShieldFrame(frame2, true);
                             } else {
                                 ShieldFrame frameSent = new ShieldFrame(SHIELD_ID, RESPONSE.SEND_GET_HEADER);
-                                frameSent.addIntegerArgument(2, false, requestID);
+                                frameSent.addIntegerArgument(2, requestID);
                                 frameSent.addStringArgument(key);
                                 frameSent.addStringArgument(response.getHeaders().get(key));
                                 sendShieldFrame(frameSent, true);
                             }
                         } else {//no response
-                            frame2.addIntegerArgument(1, false, RESPONSE.REQUEST_HAS_NO_RESPONSE);
+                            frame2.addIntegerArgument(1, RESPONSE.REQUEST_HAS_NO_RESPONSE);
                             sendShieldFrame(frame2, true);
                         }
                     } else// no request
                     {
-                        frame2.addIntegerArgument(1, false, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
+                        frame2.addIntegerArgument(1, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
                         sendShieldFrame(frame2, true);
                     }
                     break;
@@ -428,7 +428,7 @@ public class InternetShield extends
                                 try {
                                     String result = response.getValueOf(jsonNodes.get(0).getDataType() == InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY ? new JSONArray(new String(response.getResponseBody())) : new JSONObject(new String(response.getResponseBody())), jsonNodes);
                                     ShieldFrame frameJsonSent = new ShieldFrame(SHIELD_ID, RESPONSE.RESPONSE_JSON);
-                                    frameJsonSent.addIntegerArgument(2, false, requestID);
+                                    frameJsonSent.addIntegerArgument(2, requestID);
                                     frameJsonSent.addStringArgument(result);
                                     frameJsonSent.addArgument(frame.getArgument(1));
                                     for (int arg = 2; arg < frame.getArguments().size(); arg++) {
@@ -437,32 +437,32 @@ public class InternetShield extends
                                     sendShieldFrame(frameJsonSent, true);
                                 } catch (JSONException e) {
                                     ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                    frameJson.addIntegerArgument(2, false, requestID);
-                                    frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                    frameJson.addIntegerArgument(2, requestID);
+                                    frameJson.addIntegerArgument(1, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                     sendShieldFrame(frameJson, true);
                                 } catch (ClassCastException e) {
                                     ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                    frameJson.addIntegerArgument(2, false, requestID);
-                                    frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                    frameJson.addIntegerArgument(2, requestID);
+                                    frameJson.addIntegerArgument(1, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                     sendShieldFrame(frameJson, true);
                                 }
                             } else {
                                 ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                frameJson.addIntegerArgument(2, false, requestID);
-                                frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                frameJson.addIntegerArgument(2, requestID);
+                                frameJson.addIntegerArgument(1, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                 sendShieldFrame(frameJson, true);
                             }
                         } else {//no response
                             ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                            frameJson.addIntegerArgument(2, false, requestID);
-                            frameJson.addIntegerArgument(1, false, RESPONSE.REQUEST_HAS_NO_RESPONSE);
+                            frameJson.addIntegerArgument(2, requestID);
+                            frameJson.addIntegerArgument(1, RESPONSE.REQUEST_HAS_NO_RESPONSE);
                             sendShieldFrame(frameJson, true);
                         }
                     } else// no request
                     {
                         ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                        frameJson.addIntegerArgument(2, false, requestID);
-                        frameJson.addIntegerArgument(1, false, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
+                        frameJson.addIntegerArgument(2, requestID);
+                        frameJson.addIntegerArgument(1, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
                         sendShieldFrame(frameJson, true);
                     }
                     break;
@@ -477,13 +477,13 @@ public class InternetShield extends
                                     int result = response.getJSONArrayLength(jsonNodes.get(0).getDataType() == InternetResponse.JsonNode.NODE_DATA_TYPE.ARRAY ? new JSONArray(new String(response.getResponseBody())) : new JSONObject(new String(response.getResponseBody())), jsonNodes);
                                     if (result == -1) {
                                         ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                        frameJson.addIntegerArgument(2, false, requestID);
-                                        frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                        frameJson.addIntegerArgument(2, requestID);
+                                        frameJson.addIntegerArgument(1, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                         sendShieldFrame(frameJson, true);
                                     } else {
                                         ShieldFrame frameJsonSent = new ShieldFrame(SHIELD_ID, RESPONSE.RESPONSE_JSON_ARRAY);
-                                        frameJsonSent.addIntegerArgument(2, false, requestID);
-                                        frameJsonSent.addIntegerArgument(4, false, result);
+                                        frameJsonSent.addIntegerArgument(2, requestID);
+                                        frameJsonSent.addIntegerArgument(4, result);
                                         frameJsonSent.addArgument(frame.getArgument(1));
                                         for (int arg = 2; arg < frame.getArguments().size(); arg++) {
                                             frameJsonSent.addArgument(frame.getArgument(arg));
@@ -492,13 +492,13 @@ public class InternetShield extends
                                     }
                                 } catch (JSONException e) {
                                     ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                    frameJson.addIntegerArgument(2, false, requestID);
-                                    frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                    frameJson.addIntegerArgument(2, requestID);
+                                    frameJson.addIntegerArgument(1, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                     sendShieldFrame(frameJson, true);
                                 } catch (ClassCastException e) {
                                     ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                                    frameJson.addIntegerArgument(2, false, requestID);
-                                    frameJson.addIntegerArgument(1, false, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
+                                    frameJson.addIntegerArgument(2, requestID);
+                                    frameJson.addIntegerArgument(1, RESPONSE.JSON_KEYCHAIN_IS_WRONG);
                                     sendShieldFrame(frameJson, true);
                                 }
                             } else {
@@ -506,15 +506,15 @@ public class InternetShield extends
                             }
                         } else {//no response
                             ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                            frameJson.addIntegerArgument(2, false, requestID);
-                            frameJson.addIntegerArgument(1, false, RESPONSE.REQUEST_HAS_NO_RESPONSE);
+                            frameJson.addIntegerArgument(2, requestID);
+                            frameJson.addIntegerArgument(1, RESPONSE.REQUEST_HAS_NO_RESPONSE);
                             sendShieldFrame(frameJson, true);
                         }
                     } else// no request
                     {
                         ShieldFrame frameJson = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
-                        frameJson.addIntegerArgument(2, false, requestID);
-                        frameJson.addIntegerArgument(1, false, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
+                        frameJson.addIntegerArgument(2, requestID);
+                        frameJson.addIntegerArgument(1, RESPONSE.RESPONSE_CAN_NOT_BE_FOUND);
                         sendShieldFrame(frameJson, true);
                     }
                     break;
