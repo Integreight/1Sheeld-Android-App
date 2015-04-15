@@ -161,9 +161,6 @@ public class ColorDetectionShield extends
         public void handleMessage(Message msg) {
             if (msg.what == CameraHeadService.GET_RESULT && msg.getData() != null) {
                 detected = msg.getData().getIntArray("detected");
-                if (colorEventHandler != null) {
-                    colorEventHandler.onColorChanged(detected);
-                }
                 if (!isSendingAframe && (System.currentTimeMillis() - lastSentMS >= 100)) {
                     isSendingAframe = true;
                     hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
@@ -179,6 +176,8 @@ public class ColorDetectionShield extends
                             int s = Math.round(hsv[i][1] * 100);
                             int v = Math.round(hsv[i][2] * 100);
                             int hsvColor = h << 16 | s << 8 | v;
+                            if (currentPallete.isGrayscale())
+                                detected[i] = hsvColor;
                             frame.addIntegerArgument(4, hsvColor);
                         } else {
                             fullFrame = false;
@@ -186,8 +185,12 @@ public class ColorDetectionShield extends
                         }
                         i++;
                     }
-                    if (fullFrame)
+                    if (fullFrame) {
+                        if (colorEventHandler != null) {
+                            colorEventHandler.onColorChanged(detected);
+                        }
                         sendShieldFrame(frame);
+                    }
                     isSendingAframe = false;
                     lastSentMS = System.currentTimeMillis();
                 }
