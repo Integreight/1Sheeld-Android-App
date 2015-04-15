@@ -180,21 +180,4 @@ public class CameraAidlService extends Service {
         }
     }
 
-    public final Camera.Stub binder = new Camera.Stub() {
-        @Override
-        public void add(String flash, boolean isFront, int quality, long tag) throws RemoteException {
-            cameraCaptureQueue.add(new CameraShield.CameraCapture(flash, isFront, quality, tag));
-            if (!CameraHeadService.isRunning) {
-                Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
-                LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
-            }
-            Log.d("receiver",
-                    "All   " + cameraCaptureQueue.size());
-        }
-
-        @Override
-        public void setTaken(long tag) throws RemoteException {
-        }
-    };
-
 }
