@@ -74,7 +74,7 @@ public class ClockShield extends
             frame.addByteArgument((byte) hour);
             frame.addByteArgument((byte) day);
             frame.addByteArgument((byte) month);
-            frame.addIntegerArgument(2, false, Math.round(year));
+            frame.addIntegerArgument(2, Math.round(year));
 
             // frame.addByteArgument((byte) year);
             sendShieldFrame(frame);
