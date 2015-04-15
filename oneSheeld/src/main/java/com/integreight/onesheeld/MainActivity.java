@@ -401,7 +401,7 @@ public class MainActivity extends FragmentActivity {
     public void onBackPressed() {
         Log.d("Test","Back Pressed");
         ///// Camera Preview
-        if (getThisApplication().getRunningShields().contains(UIShield.CAMERA_SHIELD.name()))
+        if (getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())!=null)
             ((CameraShield) getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
         resetSlidingMenu();
         MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);

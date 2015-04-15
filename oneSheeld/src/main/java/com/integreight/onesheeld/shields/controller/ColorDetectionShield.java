@@ -26,20 +26,30 @@ public class ColorDetectionShield extends
     private static final byte SEND_FULL_COLORS = (byte) 0x02;
     private static final byte ENABLE_FULL_COLORS = (byte) 0x02;
     private static final byte ENABLE_NORMAL_COLOR = (byte) 0x03;
+    private static final byte SET_CALC_MODE = (byte) 0x04;
+    private static final byte SET_PATCH_SIZE = (byte) 0x05;
+    private static final byte SMALL_PATCH = (byte) 0x01;
+    private static final byte MED_PATCH = (byte) 0x02;
+    private static final byte LARGE_PATCH = (byte) 0x03;
+    private static final byte COMMON_COLOR = (byte) 0x01;
+    private static final byte AVERAGE_COLOR = (byte) 0x02;
     private static final byte SET_PALLETE = (byte) 0x01;
     private ColorDetectionEventHandler colorEventHandler;
     boolean isCameraBound = false;
     private Messenger mService;
-    public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_TYPE = 10;
-    private RECEIVED_FRAMES recevedFramesType = RECEIVED_FRAMES.CENTER;
+    public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_OPERATION = 10, SET_COLOR_DETECTION_TYPE = 11;
+    private RECEIVED_FRAMES recevedFramesOperation = RECEIVED_FRAMES.NINE_FRAMES;
+    private COLOR_TYPE colorType = COLOR_TYPE.COMMON;
     private long lastSentMS = System.currentTimeMillis();
     private boolean isSendingAframe = false;
     private ShieldFrame frame;
     int[] detected;
     ColorPalette currentPallete = ColorPalette._24_BIT_RGB;
     private float[][] hsv = null;
+    private PATCH_SIZE patchSize = PATCH_SIZE.LARGE;
 
     @Override
+
     public ControllerParent<ControllerParent<ColorDetectionShield>> init(String tag) {
         // TODO Auto-generated method stub
         getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
@@ -54,11 +64,23 @@ public class ColorDetectionShield extends
         super();
     }
 
-    private void notifyColorDetectionType() {
-        Message msg = Message.obtain(null, CameraHeadService.GET_RESULT);
+    private void notifyColorDetectionOperation() {
+        Message msg = Message.obtain(null, SET_COLOR_DETECTION_OPERATION);
         msg.replyTo = mMessenger;
         Bundle data = new Bundle();
-        data.putInt("type", recevedFramesType.type);
+        data.putInt("type", recevedFramesOperation.type);
+        msg.setData(data);
+        try {
+            mService.send(msg);
+        } catch (RemoteException e) {
+        }
+    }
+
+    private void notifyColorDetectionType() {
+        Message msg = Message.obtain(null, SET_COLOR_DETECTION_TYPE);
+        msg.replyTo = mMessenger;
+        Bundle data = new Bundle();
+        data.putInt("type", colorType.type);
         msg.setData(data);
         try {
             mService.send(msg);
@@ -71,15 +93,24 @@ public class ColorDetectionShield extends
         if (frame.getShieldId() == SHIELD_ID) {
             switch (frame.getFunctionId()) {
                 case ENABLE_FULL_COLORS:
-                    recevedFramesType = RECEIVED_FRAMES.NINE_FRAMES;
-                    notifyColorDetectionType();
+                    if (colorEventHandler != null) {
+                        colorEventHandler.enableFullColor();
+                    }
+                    recevedFramesOperation = RECEIVED_FRAMES.NINE_FRAMES;
+                    notifyColorDetectionOperation();
                     break;
                 case ENABLE_NORMAL_COLOR:
-                    recevedFramesType = RECEIVED_FRAMES.CENTER;
-                    notifyColorDetectionType();
+                    if (colorEventHandler != null) {
+                        colorEventHandler.enableNormalColor();
+                    }
+                    recevedFramesOperation = RECEIVED_FRAMES.CENTER;
+                    notifyColorDetectionOperation();
                     break;
                 case SET_PALLETE:
                     currentPallete = ColorPalette.get(frame.getArgument(0)[0]);
+                    if (colorEventHandler != null) {
+                        colorEventHandler.setPallete(currentPallete);
+                    }
                     break;
             }
         }
@@ -92,6 +123,24 @@ public class ColorDetectionShield extends
 
     public static interface ColorDetectionEventHandler {
         void onColorChanged(int... color);
+
+        void enableFullColor();
+
+        void enableNormalColor();
+
+        void setPallete(ColorPalette pallete);
+    }
+
+    public void setCurrentPallete(ColorPalette currentPallete) {
+        this.currentPallete = currentPallete;
+    }
+
+    public ColorPalette getCurrentPallete() {
+        return currentPallete;
+    }
+
+    public RECEIVED_FRAMES getRecevedFramesOperation() {
+        return recevedFramesOperation;
     }
 
     @Override
@@ -106,6 +155,7 @@ public class ColorDetectionShield extends
         getActivity().unbindService(mConnection);
     }
 
+    boolean fullFrame = true;
     private Messenger mMessenger = new Messenger(new Handler() {
 
         public void handleMessage(Message msg) {
@@ -116,21 +166,28 @@ public class ColorDetectionShield extends
                 }
                 if (!isSendingAframe && (System.currentTimeMillis() - lastSentMS >= 100)) {
                     isSendingAframe = true;
-                    hsv = new float[recevedFramesType == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
-                    frame = new ShieldFrame(SHIELD_ID, recevedFramesType == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
+                    hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
+                    frame = new ShieldFrame(SHIELD_ID, recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
                     int i = 0;
                     for (int det : detected) {
                         int color = getColorInRange(det, currentPallete);
-                        frame.addIntegerArgument(3, true, color);
-                        Color.colorToHSV(color, hsv[i]);
-                        int h = Math.round(hsv[i][0]);
-                        int s = Math.round(hsv[i][1] * 100);
-                        int v = Math.round(hsv[i][2] * 100);
-                        int hsvColor = h << 16 | s << 8 | v;
-                        frame.addIntegerArgument(4, true, hsvColor);
+                        frame.addIntegerArgument(3, color);
+                        fullFrame = true;
+                        if (i < hsv.length) {
+                            Color.colorToHSV(color, hsv[i]);
+                            int h = Math.round(hsv[i][0]);
+                            int s = Math.round(hsv[i][1] * 100);
+                            int v = Math.round(hsv[i][2] * 100);
+                            int hsvColor = h << 16 | s << 8 | v;
+                            frame.addIntegerArgument(4, hsvColor);
+                        } else {
+                            fullFrame = false;
+                            break;
+                        }
                         i++;
                     }
-                    sendShieldFrame(frame);
+                    if (fullFrame)
+                        sendShieldFrame(frame);
                     isSendingAframe = false;
                     lastSentMS = System.currentTimeMillis();
                 }
@@ -159,8 +216,18 @@ public class ColorDetectionShield extends
         }
     };
 
-    public void setRecevedFramesType(RECEIVED_FRAMES recevedFramesType) {
-        this.recevedFramesType = recevedFramesType;
+    public void setRecevedFramesOperation(RECEIVED_FRAMES recevedFramesOperation) {
+        this.recevedFramesOperation = recevedFramesOperation;
+        notifyColorDetectionOperation();
+    }
+
+    public COLOR_TYPE getColorType() {
+        return colorType;
+    }
+
+    public void setColorType(COLOR_TYPE colorType) {
+        this.colorType = colorType;
+        notifyColorDetectionType();
     }
 
     int getColorInRange(int color, ColorPalette palette) {
@@ -258,4 +325,29 @@ public class ColorDetectionShield extends
         }
     }
 
+    public static enum COLOR_TYPE {
+        COMMON(0), AVERAGE(1);
+        public int type;
+
+        private COLOR_TYPE(int type) {
+            this.type = type;
+        }
+
+        public static COLOR_TYPE getEnum(int type) {
+            return type == 0 ? COMMON : AVERAGE;
+        }
+    }
+
+    public static enum PATCH_SIZE {
+        SMALL(4), MEDIUM(2), LARGE(1);
+        public int type;
+
+        private PATCH_SIZE(int type) {
+            this.type = type;
+        }
+
+        public static PATCH_SIZE getEnum(byte type) {
+            return type == SMALL_PATCH ? SMALL : type == MED_PATCH ? MEDIUM : LARGE;
+        }
+    }
 }

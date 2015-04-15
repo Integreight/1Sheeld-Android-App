@@ -113,22 +113,23 @@ public class ImageUtils {
         int redBucket = 0;
         int greenBucket = 0;
         int blueBucket = 0;
-        int pixelCount = 0;
+//        int pixelCount = 0;
+        int intArray[] = new int[bitmap.getWidth() * bitmap.getHeight()];
+        bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight());
+        for (int y = 0; y < intArray.length; y++) {
+//            for (int x = 0; x < bitmap.getWidth(); x++) {
+            int c = intArray[y];
 
-        for (int y = 0; y < bitmap.getHeight(); y++) {
-            for (int x = 0; x < bitmap.getWidth(); x++) {
-                int c = bitmap.getPixel(x, y);
-
-                pixelCount++;
-                redBucket += Color.red(c);
-                greenBucket += Color.green(c);
-                blueBucket += Color.blue(c);
-                // does alpha matter?
-            }
+//                pixelCount++;
+            redBucket += Color.red(c);
+            greenBucket += Color.green(c);
+            blueBucket += Color.blue(c);
+            // does alpha matter?
+//            }
         }
 
-        int RGB = Color.rgb(redBucket / pixelCount, greenBucket / pixelCount,
-                blueBucket / pixelCount);
+        int RGB = Color.rgb(redBucket / intArray.length, greenBucket / intArray.length,
+                blueBucket / intArray.length);
         return RGB;
     }
 
@@ -175,7 +176,7 @@ public class ImageUtils {
         int red = (color >> 16) & 0xff;
         int green = (color >> 8) & 0xff;
         int blue = (color) & 0xff;
-        return new int[] { red, green, blue };
+        return new int[]{red, green, blue};
 
     }
 
@@ -205,7 +206,6 @@ public class ImageUtils {
         return hexColor;
 
     }
-
 
 
 }

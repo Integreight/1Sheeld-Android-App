@@ -30,7 +30,7 @@ public class CameraAidlService extends Service {
     public static final int CRASHED = 3;
     private Messenger replyTo;
     private Messenger mService;
-    boolean isCameraBound = false;
+    static boolean isCameraBound = false;
     public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5;
 
     private final Messenger mMesesenger = new Messenger(new Handler() {
@@ -81,9 +81,10 @@ public class CameraAidlService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d("cameraS", "Bound");
+        Log.d("dCamera", "boundAIDL");
         Intent camIntent = new Intent(this, CameraHeadService.class);
         camIntent.putExtra("isCamera", true);
-        if (mConnection != null)
+        if (mConnection != null && isCameraBound)
             unbindService(mConnection);
         mConnection = new ServiceConnection() {
 
@@ -135,13 +136,15 @@ public class CameraAidlService extends Service {
     @Override
     public boolean onUnbind(Intent intent) {
         Log.d("cameraS", "UnBound");
+        Log.d("dCamera", "unboundAIDL");
         Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
         try {
             if (mService != null)
                 mService.send(msg);
         } catch (RemoteException e) {
         }
-        unbindService(mConnection);
+        if (mConnection != null && isCameraBound)
+            unbindService(mConnection);
         LocalBroadcastManager.getInstance(getApplication()).unregisterReceiver(
                 mMessageReceiver);
         cameraCaptureQueue = new ConcurrentLinkedQueue<>();

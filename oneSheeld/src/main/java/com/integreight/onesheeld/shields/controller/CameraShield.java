@@ -54,44 +54,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     @Override
     public ControllerParent<CameraShield> init(String tag) {
-        Intent intent = new Intent(getActivity(), CameraAidlService.class);
-        if (!getApplication().getRunningShields().containsKey(UIShield.COLOR_DETECTION_SHIELD.name()))
-            getActivity().stopService(new Intent(getActivity(), CameraHeadService.class));
-        getActivity().stopService(new Intent(getActivity(), CameraAidlService.class));
-        if (myAidlConnection != null && isAidlBound)
-            getActivity().unbindService(myAidlConnection);
-        myAidlConnection = new ServiceConnection() {
-
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                aidlBinder = new Messenger(service);
-                Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
-                msg.replyTo = mMessenger;
-                if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                    Bundle b = new Bundle();
-                    CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                    arr = capturesQueue.toArray(arr);
-                    b.putSerializable("queue", arr);
-                    msg.setData(b);
-                }
-                try {
-                    aidlBinder.send(msg);
-                    capturesQueue = new ConcurrentLinkedQueue<>();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                isAidlBound = true;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                aidlBinder = null;
-                isAidlBound = false;
-            }
-
-        };
-        getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
-        UIHandler = new Handler();
         return super.init(tag);
     }
 
@@ -108,7 +70,44 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         } else {
             if (selectionAction != null)
                 selectionAction.onSuccess();
+            Intent intent = new Intent(getActivity(), CameraAidlService.class);
+            if (!getApplication().getRunningShields().containsKey(UIShield.COLOR_DETECTION_SHIELD.name()))
+                getActivity().stopService(new Intent(getActivity(), CameraHeadService.class));
+            getActivity().stopService(new Intent(getActivity(), CameraAidlService.class));
+            if (myAidlConnection != null && isAidlBound)
+                getActivity().unbindService(myAidlConnection);
+            myAidlConnection = new ServiceConnection() {
 
+                @Override
+                public void onServiceConnected(ComponentName name, IBinder service) {
+                    aidlBinder = new Messenger(service);
+                    Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
+                    msg.replyTo = mMessenger;
+                    if (capturesQueue != null && !capturesQueue.isEmpty()) {
+                        Bundle b = new Bundle();
+                        CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+                        arr = capturesQueue.toArray(arr);
+                        b.putSerializable("queue", arr);
+                        msg.setData(b);
+                    }
+                    try {
+                        aidlBinder.send(msg);
+                        capturesQueue = new ConcurrentLinkedQueue<>();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                    isAidlBound = true;
+                }
+
+                @Override
+                public void onServiceDisconnected(ComponentName name) {
+                    aidlBinder = null;
+                    isAidlBound = false;
+                }
+
+            };
+            getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
+            UIHandler = new Handler();
         }
         return super.invalidate(selectionAction, isToastable);
     }
@@ -170,8 +169,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         Message msg = Message.obtain(null, HIDE_PREVIEW);
         msg.replyTo = mMessenger;
         try {
-            if(aidlBinder!=null)
-            aidlBinder.send(msg);
+            if (aidlBinder != null)
+                aidlBinder.send(msg);
         } catch (RemoteException e) {
         }
     }
@@ -297,6 +296,9 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     public void reset() {
         if (isAidlBound)
             getActivity().unbindService(myAidlConnection);
+        Intent intent1 = new Intent(getApplication()
+                .getApplicationContext(), CameraHeadService.class);
+        getApplication().getApplicationContext().stopService(intent1);
         capturesQueue = new ConcurrentLinkedQueue<>();
         isAidlBound = false;
 
