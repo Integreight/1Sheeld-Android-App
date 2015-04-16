@@ -634,6 +634,8 @@ public class CameraHeadService extends Service implements
                 recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.getEnum(msg.getData().getInt("type"));
             } else if (msg.what == ColorDetectionShield.SET_COLOR_DETECTION_TYPE) {
                 colorType = ColorDetectionShield.COLOR_TYPE.getEnum(msg.getData().getInt("type"));
+            } else if (msg.what == ColorDetectionShield.SET_COLOR_PATCH_SIZE) {
+                cellSize = msg.getData().getInt("size");
             } else if (msg.what == ColorDetectionShield.UNBIND_COLOR_DETECTOR) {
                 unBindColorDetector();
             } else if (msg.what == CameraAidlService.UNBIND_CAMERA_CAPTURE) {

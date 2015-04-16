@@ -37,7 +37,7 @@ public class ColorDetectionShield extends
     private ColorDetectionEventHandler colorEventHandler;
     boolean isCameraBound = false;
     private Messenger mService;
-    public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_OPERATION = 10, SET_COLOR_DETECTION_TYPE = 11;
+    public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_OPERATION = 10, SET_COLOR_DETECTION_TYPE = 11, SET_COLOR_PATCH_SIZE = 12;
     private RECEIVED_FRAMES recevedFramesOperation = RECEIVED_FRAMES.NINE_FRAMES;
     private COLOR_TYPE colorType = COLOR_TYPE.COMMON;
     private long lastSentMS = System.currentTimeMillis();
@@ -62,6 +62,18 @@ public class ColorDetectionShield extends
 
     public ColorDetectionShield() {
         super();
+    }
+
+    private void notifyPatchSize() {
+        Message msg = Message.obtain(null, SET_COLOR_PATCH_SIZE);
+        msg.replyTo = mMessenger;
+        Bundle data = new Bundle();
+        data.putInt("size", patchSize.value);
+        msg.setData(data);
+        try {
+            mService.send(msg);
+        } catch (RemoteException e) {
+        }
     }
 
     private void notifyColorDetectionOperation() {
@@ -123,6 +135,7 @@ public class ColorDetectionShield extends
                     if (colorEventHandler != null) {
                         colorEventHandler.changePathSize(patchSize);
                     }
+                    notifyPatchSize();
                     break;
             }
         }
@@ -358,10 +371,10 @@ public class ColorDetectionShield extends
 
     public static enum PATCH_SIZE {
         SMALL(4), MEDIUM(2), LARGE(1);
-        public int type;
+        public int value;
 
-        private PATCH_SIZE(int type) {
-            this.type = type;
+        private PATCH_SIZE(int value) {
+            this.value = value;
         }
 
         public static PATCH_SIZE getEnum(byte type) {
