@@ -33,13 +33,14 @@ public class SpeechRecognitionShield extends
     }
 
     public SpeechRecognitionShield(Activity activity, String tag) {
-        super(activity, tag);
+        super(activity, tag, true);
     }
 
     private ServiceConnection mServiceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            notifyHardwareOfShieldSelection();
             mSpeechRecognitionService = ((SpeechRecognitionService.LocalBinder) service)
                     .getService();
         }
@@ -63,7 +64,7 @@ public class SpeechRecognitionShield extends
                 + ",RECOGNIZER_BUSY=" + SpeechRecognizer.ERROR_RECOGNIZER_BUSY
                 + ",SERVER=" + SpeechRecognizer.ERROR_SERVER
                 + ",SPEECH_TIMEOUT=" + SpeechRecognizer.ERROR_SPEECH_TIMEOUT);
-        return super.init(tag);
+        return super.init(tag, true);
     }
 
     @Override

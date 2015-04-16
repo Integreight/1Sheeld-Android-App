@@ -53,11 +53,11 @@ public class ColorDetectionShield extends
     public ControllerParent<ColorDetectionShield> init(String tag) {
         // TODO Auto-generated method stub
         getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
-        return super.init(tag);
+        return super.init(tag, true);
     }
 
     public ColorDetectionShield(Activity activity, String tag) {
-        super(activity, tag);
+        super(activity, tag, true);
     }
 
     public ColorDetectionShield() {
@@ -232,6 +232,7 @@ public class ColorDetectionShield extends
 
         public void onServiceConnected(ComponentName className,
                                        IBinder binder) {
+            notifyHardwareOfShieldSelection();
             mService = new Messenger(binder);
             Message msg = Message.obtain(null, CameraHeadService.GET_RESULT);
             msg.replyTo = mMessenger;
@@ -290,10 +291,10 @@ public class ColorDetectionShield extends
     }
 
     public enum ColorPalette {
-        _1_BIT_GRAYSCALE(true, 1,0), _2_BIT_GRAYSCALE(true, 2,1), _4_BIT_GRAYSCALE(
-                true, 4,2), _8_BIT_GRAYSCALE(true, 8,3), _3_BIT_RGB(3,0), _6_BIT_RGB(
-                6,1), _9_BIT_RGB(9,2), _12_BIT_RGB(12,3), _15_BIT_RGB(15,4), _18_BIT_RGB(
-                18,5), _24_BIT_RGB(24,6);
+        _1_BIT_GRAYSCALE(true, 1, 0), _2_BIT_GRAYSCALE(true, 2, 1), _4_BIT_GRAYSCALE(
+                true, 4, 2), _8_BIT_GRAYSCALE(true, 8, 3), _3_BIT_RGB(3, 0), _6_BIT_RGB(
+                6, 1), _9_BIT_RGB(9, 2), _12_BIT_RGB(12, 3), _15_BIT_RGB(15, 4), _18_BIT_RGB(
+                18, 5), _24_BIT_RGB(24, 6);
         private boolean isGrayscale;
         private int numberOfBits;
         private int index;

@@ -49,12 +49,48 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public CameraShield(Activity activity, String tag) {
-        super(activity, tag);
+        super(activity, tag, true);
     }
 
     @Override
     public ControllerParent<CameraShield> init(String tag) {
-        return super.init(tag);
+        Intent intent = new Intent(getActivity(), CameraAidlService.class);
+        if (myAidlConnection != null && isAidlBound)
+            getActivity().unbindService(myAidlConnection);
+        myAidlConnection = new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                notifyHardwareOfShieldSelection();
+                aidlBinder = new Messenger(service);
+                Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
+                msg.replyTo = mMessenger;
+                if (capturesQueue != null && !capturesQueue.isEmpty()) {
+                    Bundle b = new Bundle();
+                    CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+                    arr = capturesQueue.toArray(arr);
+                    b.putSerializable("queue", arr);
+                    msg.setData(b);
+                }
+                try {
+                    aidlBinder.send(msg);
+                    capturesQueue = new ConcurrentLinkedQueue<>();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
+                isAidlBound = true;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+                aidlBinder = null;
+                isAidlBound = false;
+            }
+
+        };
+        getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
+        UIHandler = new Handler();
+        return super.init(tag, true);
     }
 
     @Override

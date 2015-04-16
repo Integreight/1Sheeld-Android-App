@@ -123,8 +123,10 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
     @Override
     public void onPause() {
-        ((CameraShield) getApplication().getRunningShields().get(
-                getControllerTag())).hidePreview();
+        if (getApplication().getRunningShields().get(
+                getControllerTag()) != null)
+            ((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).hidePreview();
         super.onPause();
     }
 
