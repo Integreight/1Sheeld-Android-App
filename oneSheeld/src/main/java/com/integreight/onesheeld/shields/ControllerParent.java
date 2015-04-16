@@ -74,7 +74,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         if (isItARealShield())
             activity.getThisApplication().getAppFirmata()
                     .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
-        isInit=true;
+        isInit = true;
     }
 
     public ControllerParent() {
@@ -91,12 +91,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     /**
-            * @param activity MainActivity instance
-    * @param tag      Shield unique name gotten from UIShield ENUM
-    */
+     * @param activity MainActivity instance
+     * @param tag      Shield unique name gotten from UIShield ENUM
+     */
     public ControllerParent(Activity activity, String tag, boolean manageShieldSelectionFrameManually) {
         setActivity((MainActivity) activity);
-        init(tag,manageShieldSelectionFrameManually);
+        init(tag, manageShieldSelectionFrameManually);
     }
 
     /**
@@ -215,8 +215,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                     ((T) ControllerParent.this).onDigital(portNumber, portData);
             }
         };
-        private int portNumber
-                ,
+        private int portNumber,
                 portData;
 
         @Override
@@ -253,9 +252,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
         @Override
         public void onNewShieldFrameReceived(final ShieldFrame frame) {
-            if (isALive && frame != null && matchedShieldPins.size() == 0)
+            if (isALive && frame != null && matchedShieldPins.size() == 0 && isInit)
                 if (frame.getShieldId() == getShieldId())
-                    if (frame.getFunctionId() == IS_SHIELD_SELECTED && isInit)
+                    if (frame.getFunctionId() == IS_SHIELD_SELECTED)
                         notifyHardwareOfShieldSelection();
                     else if (frame.getFunctionId() == SELECT_SHIELD) {
                     } else if (frame.getFunctionId() == DESELECT_SHIELD) {
@@ -295,7 +294,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * (initialization)
      */
     public ControllerParent<T> init(String tag) {
-        return init(tag,false);
+        return init(tag, false);
     }
 
     /**
@@ -324,7 +323,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 && getApplication().getRunningShields().size() > 0 ? getApplication()
                                 .getRunningShields().keySet().toString()
                                 : "No Running Shields");
-        if(!manageShieldSelectionFrameManually)notifyHardwareOfShieldSelection();
+        if (!manageShieldSelectionFrameManually) notifyHardwareOfShieldSelection();
         return this;
     }
 
