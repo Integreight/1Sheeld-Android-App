@@ -4,6 +4,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.SystemClock;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
@@ -798,7 +799,7 @@ public class ArduinoFirmata {
     private void callbackExited() {
         synchronized (arduinoCallbacksLock) {
             isInACallback = false;
-            lastTimeCallbacksExited=System.currentTimeMillis();
+            lastTimeCallbacksExited= SystemClock.elapsedRealtime();
         }
         if (callbacksTimeout != null && !callbacksTimeout.isAlive())callbacksTimeout.stopTimer();
         if (exitingCallbacksThread != null && exitingCallbacksThread.isAlive())
@@ -812,7 +813,7 @@ public class ArduinoFirmata {
 //                    boolean isInCallback;
                     synchronized (arduinoCallbacksLock) {
 //                        isInCallback = isInACallback;
-                        if (!isInACallback&&lastTimeCallbacksExited!=0&&(System.currentTimeMillis()-lastTimeCallbacksExited>200)) {
+                        if (!isInACallback&&lastTimeCallbacksExited!=0&&(SystemClock.elapsedRealtime()-lastTimeCallbacksExited>200)) {
                             sendFrame(queuedFrames.poll());
                             sent = true;
                         }

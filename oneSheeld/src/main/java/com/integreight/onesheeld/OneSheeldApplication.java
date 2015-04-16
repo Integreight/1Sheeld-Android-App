@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
+import android.os.SystemClock;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -73,7 +74,7 @@ public class OneSheeldApplication extends Application {
     private long connectionTime;
 
     public void startConnectionTimer() {
-        connectionTime = System.currentTimeMillis();
+        connectionTime = SystemClock.elapsedRealtime();
     }
 
     public void endConnectionTimerAndReport() {
@@ -81,7 +82,7 @@ public class OneSheeldApplication extends Application {
             return;
         Map<String, String> hit = new HitBuilders.TimingBuilder()
                 .setCategory("Connection Timing")
-                .setValue(System.currentTimeMillis() - connectionTime)
+                .setValue(SystemClock.elapsedRealtime() - connectionTime)
                 .setVariable("Connection").build();
         // hit.put("&sc", "end");
         getTracker().send(hit);

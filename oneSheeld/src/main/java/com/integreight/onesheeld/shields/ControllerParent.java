@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Toast;
 
@@ -307,7 +308,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         isALive = true;
         if (getApplication().getRunningShields().get(tag) == null)
             getApplication().getRunningShields().put(tag, this);
-        selectionTime = System.currentTimeMillis();
+        selectionTime = SystemClock.elapsedRealtime();
         Crashlytics
                 .setString(
                         "Number of running shields",
@@ -393,7 +394,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         if (selectionTime != 0 && !(((T) ControllerParent.this) instanceof TaskerShield)) {
             getApplication().getTracker().send(new HitBuilders.TimingBuilder()
                     .setCategory("Shields Selection Timing")
-                    .setValue(System.currentTimeMillis() - selectionTime)
+                    .setValue(SystemClock.elapsedRealtime() - selectionTime)
                     .setVariable(tag)
                     .build());
             selectionTime = 0;
