@@ -67,10 +67,13 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     public boolean cachedArduinoCallbackStatus = false;
 
+    private boolean isInit = false;
+
     public void notifyHardwareOfShieldSelection() {
         if (isItARealShield())
             activity.getThisApplication().getAppFirmata()
                     .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
+        isInit=true;
     }
 
     public ControllerParent() {
@@ -84,6 +87,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public ControllerParent(Activity activity, String tag) {
         setActivity((MainActivity) activity);
         init(tag);
+    }
+
+    /**
+            * @param activity MainActivity instance
+    * @param tag      Shield unique name gotten from UIShield ENUM
+    */
+    public ControllerParent(Activity activity, String tag, boolean manageShieldSelectionFrameManually) {
+        setActivity((MainActivity) activity);
+        init(tag,manageShieldSelectionFrameManually);
     }
 
     /**
@@ -242,7 +254,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         public void onNewShieldFrameReceived(final ShieldFrame frame) {
             if (isALive && frame != null && matchedShieldPins.size() == 0)
                 if (frame.getShieldId() == getShieldId())
-                    if (frame.getFunctionId() == IS_SHIELD_SELECTED)
+                    if (frame.getFunctionId() == IS_SHIELD_SELECTED && isInit)
                         notifyHardwareOfShieldSelection();
                     else if (frame.getFunctionId() == SELECT_SHIELD) {
                     } else if (frame.getFunctionId() == DESELECT_SHIELD) {
@@ -282,6 +294,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * (initialization)
      */
     public ControllerParent<T> init(String tag) {
+        return init(tag,false);
+    }
+
+    /**
+     * @param tag unique shield name
+     * @return instance of shield controller for Java reflection usage
+     * (initialization)
+     */
+    public ControllerParent<T> init(String tag, boolean manageShieldSelectionFrameManually) {
         this.tag = tag;
         isALive = true;
         if (getApplication().getRunningShields().get(tag) == null)
@@ -302,7 +323,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 && getApplication().getRunningShields().size() > 0 ? getApplication()
                                 .getRunningShields().keySet().toString()
                                 : "No Running Shields");
-        notifyHardwareOfShieldSelection();
+        if(!manageShieldSelectionFrameManually)notifyHardwareOfShieldSelection();
         return this;
     }
 
