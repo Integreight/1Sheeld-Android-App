@@ -29,14 +29,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         return v;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        normalColor = view.findViewById(R.id.normalColor);
-        fullColor = (LinearLayout) view.findViewById(R.id.fullColor);
-        operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
-        scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
-        typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
+    private void applyListeners() {
         operationToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -56,10 +49,10 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (b) {
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).setRecevedFramesOperation(ColorDetectionShield.RECEIVED_FRAMES.CENTER);
+                            getControllerTag())).setCurrentPallete(ColorDetectionShield.ColorPalette._24_BIT_RGB);
                 } else {
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).setRecevedFramesOperation(ColorDetectionShield.RECEIVED_FRAMES.NINE_FRAMES);
+                            getControllerTag())).setCurrentPallete(ColorDetectionShield.ColorPalette._8_BIT_GRAYSCALE);
                 }
             }
         });
@@ -71,6 +64,34 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
             }
         });
+    }
+
+    private void removeListeners() {
+        operationToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            }
+        });
+        scaleToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            }
+        });
+        typeToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            }
+        });
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        normalColor = view.findViewById(R.id.normalColor);
+        fullColor = (LinearLayout) view.findViewById(R.id.fullColor);
+        operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
+        scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
+        typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
         ((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).setColorEventHandler(this);
     }
@@ -81,11 +102,17 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             if (!reInitController())
                 return;
         }
+        removeListeners();
         if (((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getRecevedFramesOperation() == ColorDetectionShield.RECEIVED_FRAMES.CENTER)
             enableNormalColor();
         else
             enableFullColor();
+        scaleToggle.setChecked(!((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).getCurrentPallete().isGrayscale());
+        typeToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).getColorType() == ColorDetectionShield.COLOR_TYPE.COMMON);
+        applyListeners();
         super.onStart();
 
     }
@@ -208,10 +235,33 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        if (scaleToggle != null && getView() != null)
+                        if (scaleToggle != null && getView() != null) {
+                            removeListeners();
                             scaleToggle.setChecked(!pallete.isGrayscale());
+                            applyListeners();
+                        }
                     }
                 });
         }
+    }
+
+    @Override
+    public void changeCalculationMode(final ColorDetectionShield.COLOR_TYPE type) {
+        if (typeToggle != null && getView() != null) {
+            if (uiHandler != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        removeListeners();
+                        typeToggle.setChecked(type == ColorDetectionShield.COLOR_TYPE.COMMON);
+                        applyListeners();
+                    }
+                });
+        }
+    }
+
+    @Override
+    public void changePathSize(ColorDetectionShield.PATCH_SIZE patchSize) {
+
     }
 }

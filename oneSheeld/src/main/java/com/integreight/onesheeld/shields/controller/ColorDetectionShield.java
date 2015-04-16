@@ -112,6 +112,18 @@ public class ColorDetectionShield extends
                         colorEventHandler.setPallete(currentPallete);
                     }
                     break;
+                case SET_CALC_MODE:
+                    colorType = frame.getArgument(0)[0] == AVERAGE_COLOR ? COLOR_TYPE.AVERAGE : COLOR_TYPE.COMMON;
+                    if (colorEventHandler != null) {
+                        colorEventHandler.changeCalculationMode(colorType);
+                    }
+                    break;
+                case SET_PATCH_SIZE:
+                    patchSize = frame.getArgument(0)[0] == SMALL_PATCH ? PATCH_SIZE.SMALL : frame.getArgument(0)[0] == MED_PATCH ? PATCH_SIZE.MEDIUM : PATCH_SIZE.LARGE;
+                    if (colorEventHandler != null) {
+                        colorEventHandler.changePathSize(patchSize);
+                    }
+                    break;
             }
         }
     }
@@ -129,6 +141,10 @@ public class ColorDetectionShield extends
         void enableNormalColor();
 
         void setPallete(ColorPalette pallete);
+
+        void changeCalculationMode(COLOR_TYPE type);
+
+        void changePathSize(PATCH_SIZE patchSize);
     }
 
     public void setCurrentPallete(ColorPalette currentPallete) {
@@ -168,6 +184,7 @@ public class ColorDetectionShield extends
                     int i = 0;
                     for (int det : detected) {
                         int color = getColorInRange(det, currentPallete);
+                        detected[i] = color;
                         frame.addIntegerArgument(3, color);
                         fullFrame = true;
                         if (i < hsv.length) {
@@ -176,8 +193,6 @@ public class ColorDetectionShield extends
                             int s = Math.round(hsv[i][1] * 100);
                             int v = Math.round(hsv[i][2] * 100);
                             int hsvColor = h << 16 | s << 8 | v;
-                            if (currentPallete.isGrayscale())
-                                detected[i] = hsvColor;
                             frame.addIntegerArgument(4, hsvColor);
                         } else {
                             fullFrame = false;
