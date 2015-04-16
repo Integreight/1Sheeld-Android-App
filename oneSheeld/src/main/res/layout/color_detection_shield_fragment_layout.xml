@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cbs="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -106,6 +107,8 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:orientation="horizontal">
 
             <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
@@ -137,5 +140,21 @@
                 android:textOff="Average"
                 android:checked="true" />
         </LinearLayout>
+
+        <com.integreight.onesheeld.utils.customviews.ComboSeekBar
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:id="@+id/scaleSeekBar"
+            cbs:textSize="14sp"
+            cbs:myColor="@color/offWhite"
+            android:layout_height="wrap_content" />
+
+        <com.integreight.onesheeld.utils.customviews.ComboSeekBar
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:id="@+id/patchSeekBar"
+            cbs:textSize="14sp"
+            cbs:myColor="@color/offWhite"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>

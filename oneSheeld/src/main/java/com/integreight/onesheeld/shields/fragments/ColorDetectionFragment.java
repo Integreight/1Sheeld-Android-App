@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.utils.customviews.ComboSeekBar;
 import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
+
+import java.util.Arrays;
 
 public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionFragment> implements ColorDetectionShield.ColorDetectionEventHandler {
     View normalColor;
@@ -18,6 +22,11 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     OneSheeldToggleButton operationToggle;
     OneSheeldToggleButton scaleToggle;
     OneSheeldToggleButton typeToggle;
+    ComboSeekBar scaleSeekBar;
+    ComboSeekBar patchSizeSeekBar;
+    private String[] grayScale = new String[]{"1 Bit", "2 Bit", "4 Bit", "8 Bit"};
+    private String[] rgbScale = new String[]{"3 Bit", "6 Bit", "9 Bit", "12 Bit", "15 Bit", "18 Bit", "24 Bit"};
+    private String[] patchSizes = new String[]{"Small", "Medium", "Large"};
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,6 +63,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
                             getControllerTag())).setCurrentPallete(ColorDetectionShield.ColorPalette._8_BIT_GRAYSCALE);
                 }
+                scaleSeekBar.setAdapter(Arrays.asList(b ? rgbScale : grayScale));
+                scaleSeekBar.setSelection((b ? rgbScale : grayScale).length - 1);
             }
         });
         typeToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -62,6 +73,20 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 ((ColorDetectionShield) getApplication().getRunningShields().get(
                         getControllerTag())).setColorType(b ? ColorDetectionShield.COLOR_TYPE.COMMON : ColorDetectionShield.COLOR_TYPE.AVERAGE);
 
+            }
+        });
+        scaleSeekBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((ColorDetectionShield) getApplication().getRunningShields().get(
+                        getControllerTag())).setCurrentPallete(ColorDetectionShield.ColorPalette.get((byte) ((scaleToggle.isChecked() ? 4 : 0) + 1 + i)));
+            }
+        });
+        patchSizeSeekBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((ColorDetectionShield) getApplication().getRunningShields().get(
+                        getControllerTag())).setPatchSize(i == 0 ? ColorDetectionShield.PATCH_SIZE.SMALL : i == 1 ? ColorDetectionShield.PATCH_SIZE.MEDIUM : ColorDetectionShield.PATCH_SIZE.LARGE);
             }
         });
     }
@@ -82,6 +107,18 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
             }
         });
+        scaleSeekBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
+        patchSizeSeekBar.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
     }
 
     @Override
@@ -92,6 +129,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
         scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
         typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
+        scaleSeekBar = (ComboSeekBar) view.findViewById(R.id.scaleSeekBar);
+        patchSizeSeekBar = (ComboSeekBar) view.findViewById(R.id.patchSeekBar);
         ((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).setColorEventHandler(this);
     }
@@ -112,6 +151,13 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 getControllerTag())).getCurrentPallete().isGrayscale());
         typeToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getColorType() == ColorDetectionShield.COLOR_TYPE.COMMON);
+        scaleSeekBar.setAdapter(Arrays.asList(scaleToggle.isChecked() ? rgbScale : grayScale));
+        scaleSeekBar.setSelection(((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).getCurrentPallete().getIndex());
+        patchSizeSeekBar.setAdapter(Arrays.asList(patchSizes));
+        patchSizeSeekBar.setSelection(((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : ((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
         applyListeners();
         super.onStart();
 
@@ -144,7 +190,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
     @Override
     public void onColorChanged(final int... color) {
-        if (normalColor != null && fullColor != null && getApplication().getRunningShields().get(
+        if (normalColor != null && getView() != null && getApplication().getRunningShields().get(
                 getControllerTag()) != null) {
             if (((ColorDetectionShield) getApplication().getRunningShields().get(
                     getControllerTag())).getRecevedFramesOperation() == ColorDetectionShield.RECEIVED_FRAMES.CENTER && color.length > 0) {
@@ -179,7 +225,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     }
 
     public void notifyFullColor() {
-        if (normalColor != null && fullColor != null) {
+        if (normalColor != null && getView() != null) {
             uiHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -191,7 +237,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     }
 
     public void notifyNormalColor() {
-        if (normalColor != null && fullColor != null) {
+        if (normalColor != null && getView() != null) {
             uiHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -204,33 +250,37 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
     @Override
     public void enableFullColor() {
-        notifyFullColor();
-        if (uiHandler != null)
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (operationToggle != null && getView() != null)
-                        operationToggle.setChecked(false);
-                }
-            });
+        if (operationToggle != null && getView() != null) {
+            notifyFullColor();
+            if (uiHandler != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (operationToggle != null && getView() != null)
+                            operationToggle.setChecked(false);
+                    }
+                });
+        }
     }
 
     @Override
     public void enableNormalColor() {
-        notifyNormalColor();
-        if (uiHandler != null)
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (operationToggle != null && getView() != null)
-                        operationToggle.setChecked(true);
-                }
-            });
+        if (operationToggle != null && getView() != null) {
+            notifyNormalColor();
+            if (uiHandler != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (operationToggle != null && getView() != null)
+                            operationToggle.setChecked(true);
+                    }
+                });
+        }
     }
 
     @Override
     public void setPallete(final ColorDetectionShield.ColorPalette pallete) {
-        if (normalColor != null && fullColor != null) {
+        if (normalColor != null && getView() != null) {
             if (uiHandler != null)
                 uiHandler.post(new Runnable() {
                     @Override
@@ -238,6 +288,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                         if (scaleToggle != null && getView() != null) {
                             removeListeners();
                             scaleToggle.setChecked(!pallete.isGrayscale());
+                            scaleSeekBar.setAdapter(Arrays.asList(scaleToggle.isChecked() ? rgbScale : grayScale));
+                            scaleSeekBar.setSelection(pallete.getIndex());
                             applyListeners();
                         }
                     }
@@ -261,7 +313,17 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     }
 
     @Override
-    public void changePathSize(ColorDetectionShield.PATCH_SIZE patchSize) {
-
+    public void changePatchSize(final ColorDetectionShield.PATCH_SIZE patchSize) {
+        if (scaleSeekBar != null && getView() != null) {
+            if (uiHandler != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+            removeListeners();
+            patchSizeSeekBar.setSelection(patchSize == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : patchSize == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
+            applyListeners();
+                    }
+                });
+        }
     }
 }

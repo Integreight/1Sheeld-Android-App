@@ -20,7 +20,7 @@ import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import java.text.DecimalFormat;
 
 public class ColorDetectionShield extends
-        ControllerParent<ControllerParent<ColorDetectionShield>> {
+        ControllerParent<ColorDetectionShield> {
     private static final byte SHIELD_ID = (byte) 0x05;
     private static final byte SEND_NORMAL_COLOR = (byte) 0x01;
     private static final byte SEND_FULL_COLORS = (byte) 0x02;
@@ -38,7 +38,7 @@ public class ColorDetectionShield extends
     boolean isCameraBound = false;
     private Messenger mService;
     public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_OPERATION = 10, SET_COLOR_DETECTION_TYPE = 11, SET_COLOR_PATCH_SIZE = 12;
-    private RECEIVED_FRAMES recevedFramesOperation = RECEIVED_FRAMES.NINE_FRAMES;
+    private RECEIVED_FRAMES recevedFramesOperation = RECEIVED_FRAMES.CENTER;
     private COLOR_TYPE colorType = COLOR_TYPE.COMMON;
     private long lastSentMS = System.currentTimeMillis();
     private boolean isSendingAframe = false;
@@ -50,7 +50,7 @@ public class ColorDetectionShield extends
 
     @Override
 
-    public ControllerParent<ControllerParent<ColorDetectionShield>> init(String tag) {
+    public ControllerParent<ColorDetectionShield> init(String tag) {
         // TODO Auto-generated method stub
         getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
         return super.init(tag);
@@ -133,7 +133,7 @@ public class ColorDetectionShield extends
                 case SET_PATCH_SIZE:
                     patchSize = frame.getArgument(0)[0] == SMALL_PATCH ? PATCH_SIZE.SMALL : frame.getArgument(0)[0] == MED_PATCH ? PATCH_SIZE.MEDIUM : PATCH_SIZE.LARGE;
                     if (colorEventHandler != null) {
-                        colorEventHandler.changePathSize(patchSize);
+                        colorEventHandler.changePatchSize(patchSize);
                     }
                     notifyPatchSize();
                     break;
@@ -157,7 +157,7 @@ public class ColorDetectionShield extends
 
         void changeCalculationMode(COLOR_TYPE type);
 
-        void changePathSize(PATCH_SIZE patchSize);
+        void changePatchSize(PATCH_SIZE patchSize);
     }
 
     public void setCurrentPallete(ColorPalette currentPallete) {
@@ -280,22 +280,38 @@ public class ColorDetectionShield extends
         return Color.rgb(newR, newG, newB);
     }
 
+    public PATCH_SIZE getPatchSize() {
+        return patchSize;
+    }
+
+    public void setPatchSize(PATCH_SIZE patchSize) {
+        this.patchSize = patchSize;
+        notifyPatchSize();
+    }
+
     public enum ColorPalette {
-        _1_BIT_GRAYSCALE(true, 1), _2_BIT_GRAYSCALE(true, 2), _4_BIT_GRAYSCALE(
-                true, 4), _8_BIT_GRAYSCALE(true, 8), _3_BIT_RGB(3), _6_BIT_RGB(
-                6), _9_BIT_RGB(9), _12_BIT_RGB(12), _15_BIT_RGB(15), _18_BIT_RGB(
-                18), _24_BIT_RGB(24);
+        _1_BIT_GRAYSCALE(true, 1,0), _2_BIT_GRAYSCALE(true, 2,1), _4_BIT_GRAYSCALE(
+                true, 4,2), _8_BIT_GRAYSCALE(true, 8,3), _3_BIT_RGB(3,0), _6_BIT_RGB(
+                6,1), _9_BIT_RGB(9,2), _12_BIT_RGB(12,3), _15_BIT_RGB(15,4), _18_BIT_RGB(
+                18,5), _24_BIT_RGB(24,6);
         private boolean isGrayscale;
         private int numberOfBits;
+        private int index;
 
-        ColorPalette(int numberOfBits) {
+        ColorPalette(int numberOfBits, int index) {
             this.isGrayscale = false;
             this.numberOfBits = numberOfBits;
+            this.index = index;
         }
 
-        ColorPalette(boolean isGrayscale, int numberOfBits) {
+        ColorPalette(boolean isGrayscale, int numberOfBits, int index) {
             this.isGrayscale = isGrayscale;
             this.numberOfBits = numberOfBits;
+            this.index = index;
+        }
+
+        public int getIndex() {
+            return index;
         }
 
         public boolean isGrayscale() {

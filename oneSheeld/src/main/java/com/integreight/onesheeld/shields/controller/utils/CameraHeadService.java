@@ -878,7 +878,7 @@ public class CameraHeadService extends Service implements
 
     int[] previewCells;
     int currentColorIndex = 0;
-    private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.NINE_FRAMES;
+    private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
     private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
