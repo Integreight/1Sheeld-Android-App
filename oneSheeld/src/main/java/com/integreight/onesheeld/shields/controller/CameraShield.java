@@ -136,6 +136,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
             });
             getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
+            notifyHardwareOfShieldSelection();
             UIHandler = new Handler();
         }
         return super.invalidate(selectionAction, isToastable);
@@ -194,12 +195,17 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public void showPreview() {
+//        actionHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
         Message msg = Message.obtain(null, SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         try {
             aidlBinder.send(msg);
         } catch (RemoteException e) {
         }
+//            }
+//        }, 100);
     }
 
     public void hidePreview() {

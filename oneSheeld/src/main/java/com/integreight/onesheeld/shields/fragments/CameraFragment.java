@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
@@ -15,7 +16,7 @@ import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHand
 
 import java.io.FileOutputStream;
 
-public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener {
+public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
     FileOutputStream fo;
     private CameraFragmentHandler fragmentHandler;
 
@@ -27,6 +28,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 false);
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
+        activity.registerSlidingMenuListner(this);
         setHasOptionsMenu(true);
         return v;
     }
@@ -117,6 +119,9 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
             ((CameraShield) getApplication().getRunningShields().get(
                     getControllerTag())).showPreview();
+        else
+            ((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).hidePreview();
         super.onResume();
 
     }
@@ -127,6 +132,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 getControllerTag()) != null)
             ((CameraShield) getApplication().getRunningShields().get(
                     getControllerTag())).hidePreview();
+        getView().invalidate();
         super.onPause();
     }
 
@@ -134,7 +140,20 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     public void onChange(boolean isChecked) {
         if (getView() != null && getApplication().getRunningShields().get(
                 getControllerTag()) != null) {
-            if (isChecked)
+            if (isChecked && !activity.isMenuOpened())
+                ((CameraShield) getApplication().getRunningShields().get(
+                        getControllerTag())).showPreview();
+            else if (!isChecked || activity.isMenuOpened())
+                ((CameraShield) getApplication().getRunningShields().get(
+                        getControllerTag())).hidePreview();
+        }
+    }
+
+    @Override
+    public void onMenuClosed() {
+        if (getView() != null && getApplication().getRunningShields().get(
+                getControllerTag()) != null) {
+            if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
                 ((CameraShield) getApplication().getRunningShields().get(
                         getControllerTag())).showPreview();
             else

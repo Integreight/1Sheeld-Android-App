@@ -90,6 +90,8 @@ public class ShieldsOperations extends BaseContainerFragment {
             @Override
             public void run() {
                 activity.openMenu();
+                ((CheckBox) getView().findViewById(R.id.isMenuOpening))
+                        .setChecked(false);
             }
         }, 500);
 
@@ -267,8 +269,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 
     @Override
     public void onResume() {
-        ((CheckBox) getView().findViewById(R.id.isMenuOpening))
-                .setChecked(false);
         activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
         if (((OneSheeldApplication) activity.getApplication()).getAppFirmata() == null
                 || !((OneSheeldApplication) activity.getApplication())

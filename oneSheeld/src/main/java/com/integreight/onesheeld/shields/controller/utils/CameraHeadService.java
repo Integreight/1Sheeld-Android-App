@@ -91,6 +91,18 @@ public class CameraHeadService extends Service implements
     byte[] bytes;
     Bitmap bitmap;
     Bitmap resizebitmap;
+    Handler handler = new Handler();
+    public Messenger colorDetectionMessenger;
+    int[] previewCells;
+    int currentColorIndex = 0;
+    private final int quality = 50;
+    int w = 0;
+    int h = 0;
+    int x = 0;
+    int y = 0;
+    private int cellSize = 1;
+    private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
+    private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
 
     /**
      * Called when the activity is first created.
@@ -125,7 +137,7 @@ public class CameraHeadService extends Service implements
             }
         }
         cam.setDisplayOrientation(90);
-        if (registeredShieldsIDs.size() == 2)
+        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             cam.setPreviewCallback(previewCallback);
         return cam;
     }
@@ -156,8 +168,11 @@ public class CameraHeadService extends Service implements
     private void showPreview() {
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        params.width = metrics.widthPixels - ((int) (60 * metrics.density + .5f));
-        params.height = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedWidth = (int) ((expectedHeight * metrics.widthPixels) / metrics.heightPixels);
+        params.width = expectedWidth;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
+        params.height = expectedHeight;
+        params.x = (int) ((metrics.widthPixels / 2) - params.width / 2);
 //        sv.setLayoutParams(params);
 //        sv.requestLayout();
         windowManager.updateViewLayout(sv, params);
@@ -169,7 +184,6 @@ public class CameraHeadService extends Service implements
         windowManager.updateViewLayout(sv, params);
     }
 
-    Handler handler = new Handler();
 
     private synchronized void takeImage(Bundle extras) {
 
@@ -224,7 +238,8 @@ public class CameraHeadService extends Service implements
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
-                        mCamera.setPreviewCallback(previewCallback);
+                        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                            mCamera.setPreviewCallback(previewCallback);
                         mCamera.takePicture(null, null, mCall);
 
                         // return 4;
@@ -281,7 +296,8 @@ public class CameraHeadService extends Service implements
                             // set camera parameters
                             mCamera.setParameters(parameters);
                             mCamera.startPreview();
-                            mCamera.setPreviewCallback(previewCallback);
+                            if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                                mCamera.setPreviewCallback(previewCallback);
                             mCamera.takePicture(null, null, mCall);
                             // return 4;
 
@@ -319,7 +335,8 @@ public class CameraHeadService extends Service implements
                 try {
                     if (mCamera != null) {
                         mCamera.setDisplayOrientation(90);
-                        mCamera.setPreviewCallback(previewCallback);
+                        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                            mCamera.setPreviewCallback(previewCallback);
                         mCamera.setPreviewDisplay(sv.getHolder());
                         parameters = mCamera.getParameters();
                         if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
@@ -392,13 +409,14 @@ public class CameraHeadService extends Service implements
             mCamera = Camera.open();
         } else
             mCamera = getCameraInstance();
-        mCamera.setPreviewCallback(previewCallback);
+        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+            mCamera.setPreviewCallback(previewCallback);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.RGBX_8888);
 
         params.gravity = Gravity.TOP | Gravity.LEFT;
@@ -658,7 +676,6 @@ public class CameraHeadService extends Service implements
         }
     });
 
-    public Messenger colorDetectionMessenger;
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -737,7 +754,8 @@ public class CameraHeadService extends Service implements
             mCamera.setPreviewDisplay(sHolder);
             mCamera.setDisplayOrientation(90);
             mCamera.startPreview();
-            mCamera.setPreviewCallback(previewCallback);
+            if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                mCamera.setPreviewCallback(previewCallback);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -809,10 +827,6 @@ public class CameraHeadService extends Service implements
         }
     }
 
-    int[] previewCells;
-    int currentColorIndex = 0;
-    private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
-    private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data1, final Camera camera) {
@@ -859,6 +873,7 @@ public class CameraHeadService extends Service implements
                                     colorDetectionMessenger.send(msg);
                                 }
                             } catch (Exception e) {
+                                Crashlytics.logException(e);
                             }
                         }
                     }
@@ -866,32 +881,28 @@ public class CameraHeadService extends Service implements
             }
         }
     };
-    private final int quality = 50;
-    int w = 0;
-    int h = 0;
-    int x = 0;
-    int y = 0;
-    private int cellSize = 1;
 
     private void addColorCell(int i, int j) {
-        w = (bitmap.getWidth() / 3) / cellSize;
-        h = (bitmap.getHeight() / 3) / cellSize;
-        x = ((bitmap.getWidth() / 2) - (w / 2)) * i;
-        y = ((bitmap.getHeight() / 2) - (h / 2)) * (2 - j);
-        if (bitmap.getWidth() - x < w) w = bitmap.getWidth() - x;
-        if (bitmap.getHeight() - y < h) h = bitmap.getHeight() - y;
-        resizebitmap = Bitmap.createBitmap(bitmap, x, y, w, h, null, false);
-        if (colorType == ColorDetectionShield.COLOR_TYPE.COMMON) {
-            resizebitmap = Bitmap.createScaledBitmap(resizebitmap, 1, 1, true);
-            int dominant = resizebitmap.getPixel(0, 0);
-            int dominantColor = Color.rgb(Color.red(dominant), Color.green(dominant)
-                    , Color.blue(dominant));
-            previewCells[currentColorIndex] = dominantColor;
-        } else {
-            int average = ImageUtils.getAverageColor(resizebitmap);
-            int averageColor = Color.rgb(Color.red(average), Color.green(average)
-                    , Color.blue(average));
-            previewCells[currentColorIndex] = averageColor;
+        if (bitmap != null) {
+            w = (bitmap.getWidth() / 3) / cellSize;
+            h = (bitmap.getHeight() / 3) / cellSize;
+            x = ((bitmap.getWidth() / 2) - (w / 2)) * i;
+            y = ((bitmap.getHeight() / 2) - (h / 2)) * (2 - j);
+            if (bitmap.getWidth() - x < w) w = bitmap.getWidth() - x;
+            if (bitmap.getHeight() - y < h) h = bitmap.getHeight() - y;
+            resizebitmap = Bitmap.createBitmap(bitmap, x, y, w, h, null, false);
+            if (colorType == ColorDetectionShield.COLOR_TYPE.COMMON) {
+                resizebitmap = Bitmap.createScaledBitmap(resizebitmap, 1, 1, true);
+                int dominant = resizebitmap.getPixel(0, 0);
+                int dominantColor = Color.rgb(Color.red(dominant), Color.green(dominant)
+                        , Color.blue(dominant));
+                previewCells[currentColorIndex] = dominantColor;
+            } else {
+                int average = ImageUtils.getAverageColor(resizebitmap);
+                int averageColor = Color.rgb(Color.red(average), Color.green(average)
+                        , Color.blue(average));
+                previewCells[currentColorIndex] = averageColor;
+            }
         }
     }
 }
