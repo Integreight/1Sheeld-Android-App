@@ -103,8 +103,11 @@ public class CameraHeadService extends Service implements
 
     private Camera openFrontFacingCameraGingerbread() {
         if (mCamera != null) {
+            queue.removeCallbacks(null);
+            mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
             mCamera.release();
+//            mCamera = Camera.open();
         }
         int cameraCount = 0;
         Camera cam = null;
@@ -122,6 +125,8 @@ public class CameraHeadService extends Service implements
             }
         }
         cam.setDisplayOrientation(90);
+        if (registeredShieldsIDs.size() == 2)
+            cam.setPreviewCallback(previewCallback);
         return cam;
     }
 
@@ -159,8 +164,8 @@ public class CameraHeadService extends Service implements
     }
 
     private void hidePreview() {
-        params.width = 0;
-        params.height = 0;
+        params.width = 100;
+        params.height = 100;
         windowManager.updateViewLayout(sv, params);
     }
 
@@ -475,7 +480,8 @@ public class CameraHeadService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // sv = new SurfaceView(getApplicationContext());
-        start(intent != null && intent.getExtras() != null && intent.getBooleanExtra("isCamera", false));
+        if (sv == null)
+            start(intent != null && intent.getExtras() != null && intent.getBooleanExtra("isCamera", false));
         registeredShieldsIDs = new ArrayList<>();
         return 1;
     }
@@ -695,93 +701,12 @@ public class CameraHeadService extends Service implements
             registeredShieldsIDs.remove(UIShield.CAMERA_SHIELD.name());
     }
 
-    //    public void recursiveTouch(final View v) {
-//        if (v instanceof ViewGroup) {
-//            ViewGroup vg = (ViewGroup) v;
-//            if (vg.findViewById(R.id.camera_preview) != null) {
-//                sv = (SurfaceView) vg.findViewById(R.id.camera_preview);
-//                sHolder = sv.getHolder();
-//                sHolder.addCallback(CameraHeadService.this);
-//                sv.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mCamera != null)
-//                            try {
-//                                mCamera.setPreviewDisplay(sHolder);
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                    }
-//                });
-//                Log.d("dones", sHolder.toString());
-//                return;
-//            }
-//            for (int i = 0; i < vg.getChildCount(); i++) {
-//                recursiveTouch(vg.getChildAt(i));
-//            }
-//        }
-//
-//    }
-//
-//    private void resetSurfaceView() {
-//        try {
-//            Class c = Class.forName("android.view.WindowManagerGlobal");
-//            // Field[] fs = c.getDeclaredFields();
-//            // for (int i = 0; i < fs.length; i++) {
-//            // System.out.println("@#@#   " + i + "   " + fs[i].getName());
-//            // }
-//            Method m = c.getMethod("getInstance", null);
-//            Object o = m.invoke(c, null);
-//
-//            Field f = c.getDeclaredField("mViews");
-//            f.setAccessible(true);
-//            final View[] views = (View[]) f.get(o);
-//            new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    while (true) {
-//                        for (View view : views) {
-//                            try {
-//                                if (view.getParent() != null)
-//                                    Log.d("d", (view.getParent() instanceof ViewGroup) + "");
-////                                    recursiveTouch((ViewGroup) (view.getParent().getParent() != null ?
-////                                            view.getParent().getParent() : view.getParent()));
-//                            } catch (ClassCastException e) {
-//                            }
-//                        }
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                            break;
-//                        }
-//                    }
-//                }
-//            }).start();
-//            System.out.println("@#@#  "
-//                    + ((ViewGroup) ((ViewGroup) views[0]).getChildAt(0))
-//                    .getChildCount());
-//            // Method[] methods = c.getMethods();
-//            // for (int i = 0; i < methods.length; i++) {
-//            // Method m1 = methods[i];
-//            // m1.setAccessible(true);
-//            // System.out.println("public method: " + m1.getName() + "    "
-//            // + c.getModifiers());
-//            // }
-//        } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
-
     @Override
     public IBinder onBind(Intent intent) {
         Log.d("dCamera", "boundHead");
         initCrashlyticsAndUncaughtThreadHandler();
         Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
         start(intent.getBooleanExtra("isCamera", false));
-//        resetSurfaceView();
         return mMesesenger.getBinder();
     }
 
@@ -842,7 +767,8 @@ public class CameraHeadService extends Service implements
             if (sv != null)
                 windowManager.removeView(sv);
         } catch (Exception e) {
-
+            Crashlytics.logException(e);
+            e.printStackTrace();
         }
         isRunning = false;
         android.os.Process.killProcess(android.os.Process.myPid());
@@ -873,6 +799,13 @@ public class CameraHeadService extends Service implements
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
+            try {
+                if (sv != null)
+                    windowManager.removeView(sv);
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+                e.printStackTrace();
+            }
         }
     }
 
