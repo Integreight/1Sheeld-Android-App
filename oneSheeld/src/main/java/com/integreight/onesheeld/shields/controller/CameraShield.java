@@ -46,7 +46,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public CameraShield(Activity activity, String tag) {
-        super(activity, tag);
+        super(activity, tag,true);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         Intent intent = new Intent(getActivity(), CameraAidlService.class);
         getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
         UIHandler = new Handler();
-        return super.init(tag);
+        return super.init(tag,true);
     }
 
     @Override
@@ -102,6 +102,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            notifyHardwareOfShieldSelection();
             aidlBinder = new Messenger(service);
             Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
             msg.replyTo = mMessenger;
@@ -306,6 +307,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             return isFrontCamera;
 
         }
+
         public long getTag() {
             return tag;
         }
