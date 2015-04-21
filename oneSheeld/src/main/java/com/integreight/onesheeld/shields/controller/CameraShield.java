@@ -34,9 +34,9 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private static final byte QUALITY_METHOD_ID = (byte) 0x04;
     private static String FLASH_MODE;
     private static int QUALITY_MODE = 0;
-    private Messenger aidlBinder;
+    private static Messenger aidlBinder;
     private static boolean isAidlBound;
-    private Queue<CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
+    private static Queue<CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
     public static int SHOW_PREVIEW = 7;
     public static int HIDE_PREVIEW = 8;
 
@@ -54,41 +54,41 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     @Override
     public ControllerParent<CameraShield> init(String tag) {
-        Intent intent = new Intent(getActivity(), CameraAidlService.class);
-        if (myAidlConnection != null && isAidlBound)
-            getActivity().unbindService(myAidlConnection);
-        myAidlConnection = new ServiceConnection() {
-
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                notifyHardwareOfShieldSelection();
-                aidlBinder = new Messenger(service);
-                Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
-                msg.replyTo = mMessenger;
-                if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                    Bundle b = new Bundle();
-                    CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                    arr = capturesQueue.toArray(arr);
-                    b.putSerializable("queue", arr);
-                    msg.setData(b);
-                }
-                try {
-                    aidlBinder.send(msg);
-                    capturesQueue = new ConcurrentLinkedQueue<>();
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
-                isAidlBound = true;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                aidlBinder = null;
-                isAidlBound = false;
-            }
-
-        };
-        getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
+//        Intent intent = new Intent(getActivity(), CameraAidlService.class);
+//        if (myAidlConnection != null && isAidlBound)
+//            getActivity().unbindService(myAidlConnection);
+//        myAidlConnection = new ServiceConnection() {
+//
+//            @Override
+//            public void onServiceConnected(ComponentName name, IBinder service) {
+//                notifyHardwareOfShieldSelection();
+//                aidlBinder = new Messenger(service);
+//                Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
+//                msg.replyTo = mMessenger;
+//                if (capturesQueue != null && !capturesQueue.isEmpty()) {
+//                    Bundle b = new Bundle();
+//                    CameraShield.CameraCapture[  ] arr = new CameraShield.CameraCapture[]{};
+//                    arr = capturesQueue.toArray(arr);
+//                    b.putSerializable("queue", arr);
+//                    msg.setData(b);
+//                }
+//                try {
+//                    aidlBinder.send(msg);
+//                    capturesQueue = new ConcurrentLinkedQueue<>();
+//                } catch (RemoteException e) {
+//                    e.printStackTrace();
+//                }
+//                isAidlBound = true;
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName name) {
+//                aidlBinder = null;
+//                isAidlBound = false;
+//            }
+//
+//        };
+//        getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
         UIHandler = new Handler();
         return super.init(tag, true);
     }
@@ -112,66 +112,68 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             getActivity().stopService(new Intent(getActivity(), CameraAidlService.class));
             if (myAidlConnection != null && isAidlBound)
                 getActivity().unbindService(myAidlConnection);
-            myAidlConnection = new ServiceConnection() {
+            mMessenger = new Messenger(new Handler() {
 
-                @Override
-                public void onServiceConnected(ComponentName name, IBinder service) {
-                    aidlBinder = new Messenger(service);
-                    Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
-                    msg.replyTo = mMessenger;
-                    if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                        Bundle b = new Bundle();
-                        CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                        arr = capturesQueue.toArray(arr);
-                        b.putSerializable("queue", arr);
-                        msg.setData(b);
+                public void handleMessage(Message msg) {
+                    if (msg.what == CameraAidlService.CRASHED) {
+                        aidlBinder = null;
+                        isAidlBound = false;
+                        if (capturesQueue == null)
+                            capturesQueue = new ConcurrentLinkedQueue<>();
+                        if (msg.getData() != null && msg.getData().getSerializable("queue") != null) {
+                            CameraCapture[] captures = Arrays.copyOf(((Object[]) msg.getData().getSerializable("queue")), ((Object[]) msg.getData().getSerializable("queue")).length, CameraCapture[].class);
+                            for (CameraCapture capture : captures) {
+                                capturesQueue.add(capture);
+                            }
+                        }
+                        Intent intent = new Intent(getActivity(), CameraAidlService.class);
+                        getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
+                    } else {
+                        super.handleMessage(msg);
                     }
-                    try {
-                        aidlBinder.send(msg);
-                        capturesQueue = new ConcurrentLinkedQueue<>();
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                    isAidlBound = true;
                 }
 
-                @Override
-                public void onServiceDisconnected(ComponentName name) {
-                    aidlBinder = null;
-                    isAidlBound = false;
-                }
 
-            };
+            });
             getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
+            notifyHardwareOfShieldSelection();
             UIHandler = new Handler();
         }
         return super.invalidate(selectionAction, isToastable);
     }
 
-    private Messenger mMessenger = new Messenger(new Handler() {
+    private static Messenger mMessenger;
+    private final static ServiceConnection myAidlConnection = new ServiceConnection() {
 
-        public void handleMessage(Message msg) {
-            if (msg.what == CameraAidlService.CRASHED) {
-                aidlBinder = null;
-                isAidlBound = false;
-                if (capturesQueue == null)
-                    capturesQueue = new ConcurrentLinkedQueue<>();
-                if (msg.getData() != null && msg.getData().getSerializable("queue") != null) {
-                    CameraCapture[] captures = Arrays.copyOf(((Object[]) msg.getData().getSerializable("queue")), ((Object[]) msg.getData().getSerializable("queue")).length, CameraCapture[].class);
-                    for (CameraCapture capture : captures) {
-                        capturesQueue.add(capture);
-                    }
-                }
-                Intent intent = new Intent(getActivity(), CameraAidlService.class);
-                getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
-            } else {
-                super.handleMessage(msg);
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            aidlBinder = new Messenger(service);
+            Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
+            msg.replyTo = mMessenger;
+            if (capturesQueue != null && !capturesQueue.isEmpty()) {
+                Bundle b = new Bundle();
+                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
+                arr = capturesQueue.toArray(arr);
+                b.putSerializable("queue", arr);
+                msg.setData(b);
             }
+            try {
+                aidlBinder.send(msg);
+                capturesQueue = new ConcurrentLinkedQueue<>();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+            isAidlBound = true;
         }
 
-        ;
-    });
-    private static ServiceConnection myAidlConnection;
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            aidlBinder = null;
+            isAidlBound = false;
+        }
+
+    };
+    ;
 
     /**
      * Check if this device has a camera
@@ -193,12 +195,17 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public void showPreview() {
+//        actionHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
         Message msg = Message.obtain(null, SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         try {
             aidlBinder.send(msg);
         } catch (RemoteException e) {
         }
+//            }
+//        }, 100);
     }
 
     public void hidePreview() {

@@ -91,6 +91,18 @@ public class CameraHeadService extends Service implements
     byte[] bytes;
     Bitmap bitmap;
     Bitmap resizebitmap;
+    Handler handler = new Handler();
+    public Messenger colorDetectionMessenger;
+    int[] previewCells;
+    int currentColorIndex = 0;
+    private final int quality = 50;
+    int w = 0;
+    int h = 0;
+    int x = 0;
+    int y = 0;
+    private int cellSize = 1;
+    private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
+    private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
 
     /**
      * Called when the activity is first created.
@@ -103,8 +115,11 @@ public class CameraHeadService extends Service implements
 
     private Camera openFrontFacingCameraGingerbread() {
         if (mCamera != null) {
+            queue.removeCallbacks(null);
+            mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
             mCamera.release();
+//            mCamera = Camera.open();
         }
         int cameraCount = 0;
         Camera cam = null;
@@ -122,6 +137,8 @@ public class CameraHeadService extends Service implements
             }
         }
         cam.setDisplayOrientation(90);
+        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+            cam.setPreviewCallback(previewCallback);
         return cam;
     }
 
@@ -151,20 +168,22 @@ public class CameraHeadService extends Service implements
     private void showPreview() {
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        params.width = metrics.widthPixels - ((int) (60 * metrics.density + .5f));
-        params.height = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedWidth = (int) ((expectedHeight * metrics.widthPixels) / metrics.heightPixels);
+        params.width = expectedWidth;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
+        params.height = expectedHeight;
+        params.x = (int) ((metrics.widthPixels / 2) - params.width / 2);
 //        sv.setLayoutParams(params);
 //        sv.requestLayout();
         windowManager.updateViewLayout(sv, params);
     }
 
     private void hidePreview() {
-        params.width = 0;
-        params.height = 0;
+        params.width = 100;
+        params.height = 100;
         windowManager.updateViewLayout(sv, params);
     }
 
-    Handler handler = new Handler();
 
     private synchronized void takeImage(Bundle extras) {
 
@@ -219,7 +238,8 @@ public class CameraHeadService extends Service implements
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
-                        mCamera.setPreviewCallback(previewCallback);
+                        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                            mCamera.setPreviewCallback(previewCallback);
                         mCamera.takePicture(null, null, mCall);
 
                         // return 4;
@@ -276,7 +296,8 @@ public class CameraHeadService extends Service implements
                             // set camera parameters
                             mCamera.setParameters(parameters);
                             mCamera.startPreview();
-                            mCamera.setPreviewCallback(previewCallback);
+                            if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                                mCamera.setPreviewCallback(previewCallback);
                             mCamera.takePicture(null, null, mCall);
                             // return 4;
 
@@ -314,7 +335,8 @@ public class CameraHeadService extends Service implements
                 try {
                     if (mCamera != null) {
                         mCamera.setDisplayOrientation(90);
-                        mCamera.setPreviewCallback(previewCallback);
+                        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                            mCamera.setPreviewCallback(previewCallback);
                         mCamera.setPreviewDisplay(sv.getHolder());
                         parameters = mCamera.getParameters();
                         if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
@@ -387,13 +409,14 @@ public class CameraHeadService extends Service implements
             mCamera = Camera.open();
         } else
             mCamera = getCameraInstance();
-        mCamera.setPreviewCallback(previewCallback);
+        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+            mCamera.setPreviewCallback(previewCallback);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.TYPE_SYSTEM_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                WindowManager.LayoutParams.TYPE_PHONE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.RGBX_8888);
 
         params.gravity = Gravity.TOP | Gravity.LEFT;
@@ -475,7 +498,8 @@ public class CameraHeadService extends Service implements
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // sv = new SurfaceView(getApplicationContext());
-        start(intent != null && intent.getExtras() != null && intent.getBooleanExtra("isCamera", false));
+        if (sv == null)
+            start(intent != null && intent.getExtras() != null && intent.getBooleanExtra("isCamera", false));
         registeredShieldsIDs = new ArrayList<>();
         return 1;
     }
@@ -652,7 +676,6 @@ public class CameraHeadService extends Service implements
         }
     });
 
-    public Messenger colorDetectionMessenger;
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -695,93 +718,12 @@ public class CameraHeadService extends Service implements
             registeredShieldsIDs.remove(UIShield.CAMERA_SHIELD.name());
     }
 
-    //    public void recursiveTouch(final View v) {
-//        if (v instanceof ViewGroup) {
-//            ViewGroup vg = (ViewGroup) v;
-//            if (vg.findViewById(R.id.camera_preview) != null) {
-//                sv = (SurfaceView) vg.findViewById(R.id.camera_preview);
-//                sHolder = sv.getHolder();
-//                sHolder.addCallback(CameraHeadService.this);
-//                sv.post(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        if (mCamera != null)
-//                            try {
-//                                mCamera.setPreviewDisplay(sHolder);
-//                            } catch (IOException e) {
-//                                e.printStackTrace();
-//                            }
-//                    }
-//                });
-//                Log.d("dones", sHolder.toString());
-//                return;
-//            }
-//            for (int i = 0; i < vg.getChildCount(); i++) {
-//                recursiveTouch(vg.getChildAt(i));
-//            }
-//        }
-//
-//    }
-//
-//    private void resetSurfaceView() {
-//        try {
-//            Class c = Class.forName("android.view.WindowManagerGlobal");
-//            // Field[] fs = c.getDeclaredFields();
-//            // for (int i = 0; i < fs.length; i++) {
-//            // System.out.println("@#@#   " + i + "   " + fs[i].getName());
-//            // }
-//            Method m = c.getMethod("getInstance", null);
-//            Object o = m.invoke(c, null);
-//
-//            Field f = c.getDeclaredField("mViews");
-//            f.setAccessible(true);
-//            final View[] views = (View[]) f.get(o);
-//            new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    while (true) {
-//                        for (View view : views) {
-//                            try {
-//                                if (view.getParent() != null)
-//                                    Log.d("d", (view.getParent() instanceof ViewGroup) + "");
-////                                    recursiveTouch((ViewGroup) (view.getParent().getParent() != null ?
-////                                            view.getParent().getParent() : view.getParent()));
-//                            } catch (ClassCastException e) {
-//                            }
-//                        }
-//                        try {
-//                            Thread.sleep(1000);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                            break;
-//                        }
-//                    }
-//                }
-//            }).start();
-//            System.out.println("@#@#  "
-//                    + ((ViewGroup) ((ViewGroup) views[0]).getChildAt(0))
-//                    .getChildCount());
-//            // Method[] methods = c.getMethods();
-//            // for (int i = 0; i < methods.length; i++) {
-//            // Method m1 = methods[i];
-//            // m1.setAccessible(true);
-//            // System.out.println("public method: " + m1.getName() + "    "
-//            // + c.getModifiers());
-//            // }
-//        } catch (Exception e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//    }
-
     @Override
     public IBinder onBind(Intent intent) {
         Log.d("dCamera", "boundHead");
         initCrashlyticsAndUncaughtThreadHandler();
         Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
         start(intent.getBooleanExtra("isCamera", false));
-//        resetSurfaceView();
         return mMesesenger.getBinder();
     }
 
@@ -812,7 +754,8 @@ public class CameraHeadService extends Service implements
             mCamera.setPreviewDisplay(sHolder);
             mCamera.setDisplayOrientation(90);
             mCamera.startPreview();
-            mCamera.setPreviewCallback(previewCallback);
+            if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                mCamera.setPreviewCallback(previewCallback);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -842,7 +785,8 @@ public class CameraHeadService extends Service implements
             if (sv != null)
                 windowManager.removeView(sv);
         } catch (Exception e) {
-
+            Crashlytics.logException(e);
+            e.printStackTrace();
         }
         isRunning = false;
         android.os.Process.killProcess(android.os.Process.myPid());
@@ -873,13 +817,16 @@ public class CameraHeadService extends Service implements
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
+            try {
+                if (sv != null)
+                    windowManager.removeView(sv);
+            } catch (Exception e) {
+                Crashlytics.logException(e);
+                e.printStackTrace();
+            }
         }
     }
 
-    int[] previewCells;
-    int currentColorIndex = 0;
-    private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
-    private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data1, final Camera camera) {
@@ -926,6 +873,7 @@ public class CameraHeadService extends Service implements
                                     colorDetectionMessenger.send(msg);
                                 }
                             } catch (Exception e) {
+                                Crashlytics.logException(e);
                             }
                         }
                     }
@@ -933,32 +881,28 @@ public class CameraHeadService extends Service implements
             }
         }
     };
-    private final int quality = 50;
-    int w = 0;
-    int h = 0;
-    int x = 0;
-    int y = 0;
-    private int cellSize = 1;
 
     private void addColorCell(int i, int j) {
-        w = (bitmap.getWidth() / 3) / cellSize;
-        h = (bitmap.getHeight() / 3) / cellSize;
-        x = ((bitmap.getWidth() / 2) - (w / 2)) * i;
-        y = ((bitmap.getHeight() / 2) - (h / 2)) * (2 - j);
-        if (bitmap.getWidth() - x < w) w = bitmap.getWidth() - x;
-        if (bitmap.getHeight() - y < h) h = bitmap.getHeight() - y;
-        resizebitmap = Bitmap.createBitmap(bitmap, x, y, w, h, null, false);
-        if (colorType == ColorDetectionShield.COLOR_TYPE.COMMON) {
-            resizebitmap = Bitmap.createScaledBitmap(resizebitmap, 1, 1, true);
-            int dominant = resizebitmap.getPixel(0, 0);
-            int dominantColor = Color.rgb(Color.red(dominant), Color.green(dominant)
-                    , Color.blue(dominant));
-            previewCells[currentColorIndex] = dominantColor;
-        } else {
-            int average = ImageUtils.getAverageColor(resizebitmap);
-            int averageColor = Color.rgb(Color.red(average), Color.green(average)
-                    , Color.blue(average));
-            previewCells[currentColorIndex] = averageColor;
+        if (bitmap != null) {
+            w = (bitmap.getWidth() / 3) / cellSize;
+            h = (bitmap.getHeight() / 3) / cellSize;
+            x = ((bitmap.getWidth() / 2) - (w / 2)) * i;
+            y = ((bitmap.getHeight() / 2) - (h / 2)) * (2 - j);
+            if (bitmap.getWidth() - x < w) w = bitmap.getWidth() - x;
+            if (bitmap.getHeight() - y < h) h = bitmap.getHeight() - y;
+            resizebitmap = Bitmap.createBitmap(bitmap, x, y, w, h, null, false);
+            if (colorType == ColorDetectionShield.COLOR_TYPE.COMMON) {
+                resizebitmap = Bitmap.createScaledBitmap(resizebitmap, 1, 1, true);
+                int dominant = resizebitmap.getPixel(0, 0);
+                int dominantColor = Color.rgb(Color.red(dominant), Color.green(dominant)
+                        , Color.blue(dominant));
+                previewCells[currentColorIndex] = dominantColor;
+            } else {
+                int average = ImageUtils.getAverageColor(resizebitmap);
+                int averageColor = Color.rgb(Color.red(average), Color.green(average)
+                        , Color.blue(average));
+                previewCells[currentColorIndex] = averageColor;
+            }
         }
     }
 }
