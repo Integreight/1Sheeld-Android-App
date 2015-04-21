@@ -28,13 +28,13 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
     }
 
     public TextToSpeechShield(Activity activity, String tag) {
-        super(activity, tag);
+        super(activity, tag, true);
     }
 
     @Override
     public ControllerParent<TextToSpeechShield> init(String tag) {
         myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
-        return super.init(tag);
+        return super.init(tag, true);
     }
 
     public void setEventHandler(final TTsEventHandler eventHandler) {
@@ -118,6 +118,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
         switch (status) {
             case TextToSpeech.SUCCESS:
+                notifyHardwareOfShieldSelection();
                 configureTTSLocale();
                 break;
 

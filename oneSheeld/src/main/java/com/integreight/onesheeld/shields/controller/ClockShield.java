@@ -64,9 +64,39 @@ public class ClockShield extends
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
         getActivity().registerReceiver(m_timeChangedReceiver, intentFilter);
 
-        handler = new Handler();
-        if (updateClockSeconds != null)
-            handler.post(updateClockSeconds);
+        isClockBegin = true;
+        ShieldFrame frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
+
+        if (frame != null) {
+            setTime();
+            frame.addByteArgument((byte) seconds);
+            frame.addByteArgument((byte) minutes);
+            frame.addByteArgument((byte) hour);
+            frame.addByteArgument((byte) day);
+            frame.addByteArgument((byte) month);
+            frame.addIntegerArgument(2, Math.round(year));
+
+            // frame.addByteArgument((byte) year);
+            sendShieldFrame(frame);
+            String hour = calendar.get(Calendar.HOUR_OF_DAY) + "";
+            String min = calendar.get(Calendar.MINUTE) + "";
+            String sec = calendar.get(Calendar.SECOND) + "";
+            if (eventHandler != null)
+                eventHandler.onTimeChanged(""
+                                + (hour.length() == 1 ? "0" + hour : hour) + ":"
+                                + (min.length() == 1 ? "0" + min : min) + ":"
+                                + (sec.length() == 1 ? "0" + sec : sec) + "",
+                        calendar.get(Calendar.AM_PM) == Calendar.AM);
+
+            handler = new Handler();
+            if (updateClockSeconds != null)
+                handler.post(updateClockSeconds);
+
+        }
+
+        //handler = new Handler();
+        //if (updateClockSeconds != null)
+        //    handler.post(updateClockSeconds);
 
         return super.init(tag);
     }
@@ -93,7 +123,7 @@ public class ClockShield extends
                 frame.addByteArgument((byte) hour);
                 frame.addByteArgument((byte) day);
                 frame.addByteArgument((byte) month);
-                frame.addIntegerArgument(2, false, Math.round(year));
+                frame.addIntegerArgument(2, Math.round(year));
 
                 // frame.addByteArgument((byte) year);
                 sendShieldFrame(frame);

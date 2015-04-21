@@ -31,7 +31,6 @@ import com.integreight.onesheeld.shields.controller.PhoneShield;
 import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.ProximityShield;
 import com.integreight.onesheeld.shields.controller.PushButtonShield;
-import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SliderShield;
@@ -141,10 +140,7 @@ public enum UIShield {
             0xffde1f26, R.drawable.shields_list_terminal_symbol, false,
             TerminalShield.class), TASKER_SHIELD((byte) 0x0, "Tasker",
             0xff0b4c8d, R.drawable.shields_list_flashlight_symbol, false,
-            TaskerShield.class, false), REMOTEONESHEELD_SHIELD((byte) 0x28,
-            "Remote 1Sheeld", 0xff0b4c8d,
-            R.drawable.shields_list_flashlight_symbol, false,
-            RemoteOneSheeldShield.class, false), PATTERN_SHIELD((byte) 0x27, "Pattern",
+            TaskerShield.class, false), PATTERN_SHIELD((byte) 0x27, "Pattern",
             0xffde1f26, R.drawable.shields_list_pattern_symbol, false,
             PatternShield.class), INTERNET_SHIELD((byte) 0x29, "Internet",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,

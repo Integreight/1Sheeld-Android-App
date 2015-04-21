@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields;
 
 import android.app.Activity;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Toast;
 
@@ -16,7 +17,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
-import com.integreight.onesheeld.shields.controller.RemoteOneSheeldShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 
@@ -68,10 +68,13 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     public boolean cachedArduinoCallbackStatus = false;
 
+    private boolean isInit = false;
+
     public void notifyHardwareOfShieldSelection() {
         if (isItARealShield())
             activity.getThisApplication().getAppFirmata()
                     .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
+        isInit = true;
     }
 
     public ControllerParent() {
@@ -85,6 +88,15 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public ControllerParent(Activity activity, String tag) {
         setActivity((MainActivity) activity);
         init(tag);
+    }
+
+    /**
+     * @param activity MainActivity instance
+     * @param tag      Shield unique name gotten from UIShield ENUM
+     */
+    public ControllerParent(Activity activity, String tag, boolean manageShieldSelectionFrameManually) {
+        setActivity((MainActivity) activity);
+        init(tag, manageShieldSelectionFrameManually);
     }
 
     /**
@@ -199,13 +211,11 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
             @Override
             public void run() {
                 if (hasConnectedPins
-                        || ((T) ControllerParent.this) instanceof TaskerShield
-                        || ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)
+                        || ((T) ControllerParent.this) instanceof TaskerShield)
                     ((T) ControllerParent.this).onDigital(portNumber, portData);
             }
         };
-        private int portNumber
-                ,
+        private int portNumber,
                 portData;
 
         @Override
@@ -234,8 +244,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     private byte getShieldId() {
         if (ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.id;
-        if (ControllerParent.this instanceof RemoteOneSheeldShield)
-            return UIShield.REMOTEONESHEELD_SHIELD.id;
         return AppShields.getInstance().getShield(tag).id;
     }
 
@@ -244,7 +252,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
         @Override
         public void onNewShieldFrameReceived(final ShieldFrame frame) {
-            if (isALive && frame != null && matchedShieldPins.size() == 0)
+            if (isALive && frame != null && matchedShieldPins.size() == 0 && isInit)
                 if (frame.getShieldId() == getShieldId())
                     if (frame.getFunctionId() == IS_SHIELD_SELECTED)
                         notifyHardwareOfShieldSelection();
@@ -286,11 +294,20 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * (initialization)
      */
     public ControllerParent<T> init(String tag) {
+        return init(tag, false);
+    }
+
+    /**
+     * @param tag unique shield name
+     * @return instance of shield controller for Java reflection usage
+     * (initialization)
+     */
+    public ControllerParent<T> init(String tag, boolean manageShieldSelectionFrameManually) {
         this.tag = tag;
         isALive = true;
         if (getApplication().getRunningShields().get(tag) == null)
             getApplication().getRunningShields().put(tag, this);
-        selectionTime = System.currentTimeMillis();
+        selectionTime = SystemClock.elapsedRealtime();
         Crashlytics
                 .setString(
                         "Number of running shields",
@@ -306,7 +323,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 && getApplication().getRunningShields().size() > 0 ? getApplication()
                                 .getRunningShields().keySet().toString()
                                 : "No Running Shields");
-        notifyHardwareOfShieldSelection();
+        if (!manageShieldSelectionFrameManually) notifyHardwareOfShieldSelection();
         return this;
     }
 
@@ -328,8 +345,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     private boolean isItARealShield() {
-        return !(ControllerParent.this instanceof TaskerShield)
-                && !(ControllerParent.this instanceof RemoteOneSheeldShield);
+        return !(ControllerParent.this instanceof TaskerShield);
     }
 
     public void setHasConnectedPins(boolean hasConnectedPins) {
@@ -374,11 +390,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                 }
             });
         }
-        if (selectionTime != 0 && !(((T) ControllerParent.this) instanceof TaskerShield
-                || ((T) ControllerParent.this) instanceof RemoteOneSheeldShield)) {
+        if (selectionTime != 0 && !(((T) ControllerParent.this) instanceof TaskerShield)) {
             getApplication().getTracker().send(new HitBuilders.TimingBuilder()
                     .setCategory("Shields Selection Timing")
-                    .setValue(System.currentTimeMillis() - selectionTime)
+                    .setValue(SystemClock.elapsedRealtime() - selectionTime)
                     .setVariable(tag)
                     .build());
             selectionTime = 0;

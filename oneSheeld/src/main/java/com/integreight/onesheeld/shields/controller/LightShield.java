@@ -88,7 +88,7 @@ public class LightShield extends ControllerParent<LightShield> implements
             isFirstTime = false;
             frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
             oldInput = event.values[0];
-            frame.addIntegerArgument(3, false, Math.round(event.values[0]));
+            frame.addIntegerArgument(3, Math.round(event.values[0]));
             sendShieldFrame(frame);
             flag = false;
         }
