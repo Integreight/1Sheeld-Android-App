@@ -117,7 +117,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                             data = readNdefRecordData(record, start, size);
                             if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_DATA_FRAME);
-                                sf.addIntegerArgument(1, false, record);
+                                sf.addIntegerArgument(1, record);
                                 sf.addArgument(data);
                                 sendShieldFrame(sf, true);
                             }
@@ -127,7 +127,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                             data = readNdefRecordParsedData(record, 0, 255);
                             if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_PARSED_DATA_FRAME);
-                                sf.addIntegerArgument(1, false, record);
+                                sf.addIntegerArgument(1, record);
                                 sf.addArgument(data);
                                 sendShieldFrame(sf, true);
                             }
@@ -139,7 +139,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                             data = readNdefRecordType(record, start, size);
                             if(data.length != 0 && data != null) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_TYPE_FRAME);
-                                sf.addIntegerArgument(1, false, record);
+                                sf.addIntegerArgument(1, record);
                                 sf.addArgument(data);
                                 sendShieldFrame(sf, true);
                             }
@@ -257,9 +257,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     currentTagId = new byte[]{0x00};
 
                 sf.addArgument(currentTagId);
-                sf.addIntegerArgument(2, false, getNdefMaxSize());
-                sf.addIntegerArgument(1,false,getNdefRecordCount());
-                sf.addIntegerArgument(2, false, getNdefUsedSize());
+                sf.addIntegerArgument(2, getNdefMaxSize());
+                sf.addIntegerArgument(1,getNdefRecordCount());
+                sf.addIntegerArgument(2, getNdefUsedSize());
 
                 int recordCount = getNdefRecordCount();
                 for (int i = 0; i < recordCount; i++) {
@@ -285,9 +285,9 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     currentTagId = new byte[]{0x00};
 
                 sf.addArgument(currentTagId);
-                sf.addIntegerArgument(2, false, 0);
-                sf.addIntegerArgument(1,false,0);
-                sf.addIntegerArgument(2, false, 0);
+                sf.addIntegerArgument(2, 0);
+                sf.addIntegerArgument(1,0);
+                sf.addIntegerArgument(2, 0);
                 sendShieldFrame(sf,true);
             }
         }
