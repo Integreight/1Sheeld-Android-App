@@ -51,13 +51,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
         ((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(cameraEventHandler);
-        uiHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (activity != null && activity.findViewById(R.id.isMenuOpening) != null)
-                    ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
-            }
-        }, 500);
         super.onStart();
 
     }

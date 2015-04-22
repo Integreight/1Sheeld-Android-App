@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.os.SystemClock;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -40,8 +41,7 @@ public class ColorDetectionShield extends
     public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_OPERATION = 10, SET_COLOR_DETECTION_TYPE = 11, SET_COLOR_PATCH_SIZE = 12;
     private RECEIVED_FRAMES recevedFramesOperation = RECEIVED_FRAMES.CENTER;
     private COLOR_TYPE colorType = COLOR_TYPE.COMMON;
-    private long lastSentMS = System.currentTimeMillis();
-    private boolean isSendingAframe = false;
+    private long lastSentMS = SystemClock.elapsedRealtime();
     private ShieldFrame frame;
     int[] detected;
     ColorPalette currentPallete = ColorPalette._24_BIT_RGB;
@@ -72,7 +72,8 @@ public class ColorDetectionShield extends
         data.putInt("size", patchSize.value);
         msg.setData(data);
         try {
-            mService.send(msg);
+            if (mService != null)
+                mService.send(msg);
         } catch (RemoteException e) {
         }
     }
@@ -84,7 +85,8 @@ public class ColorDetectionShield extends
         data.putInt("type", recevedFramesOperation.type);
         msg.setData(data);
         try {
-            mService.send(msg);
+            if (mService != null)
+                mService.send(msg);
         } catch (RemoteException e) {
         }
     }
@@ -96,7 +98,8 @@ public class ColorDetectionShield extends
         data.putInt("type", colorType.type);
         msg.setData(data);
         try {
-            mService.send(msg);
+            if (mService != null)
+                mService.send(msg);
         } catch (RemoteException e) {
         }
     }
@@ -193,37 +196,33 @@ public class ColorDetectionShield extends
         public void handleMessage(Message msg) {
             if (msg.what == CameraHeadService.GET_RESULT && msg.getData() != null) {
                 detected = msg.getData().getIntArray("detected");
-                if (!isSendingAframe && (System.currentTimeMillis() - lastSentMS >= 100)) {
-                    isSendingAframe = true;
-                    hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
-                    frame = new ShieldFrame(SHIELD_ID, recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
-                    int i = 0;
-                    for (int det : detected) {
-                        int color = getColorInRange(det, currentPallete);
-                        detected[i] = color;
-                        frame.addIntegerArgument(3, color);
-                        fullFrame = true;
-                        if (i < hsv.length) {
-                            Color.colorToHSV(color, hsv[i]);
-                            int h = Math.round(hsv[i][0]);
-                            int s = Math.round(hsv[i][1] * 100);
-                            int v = Math.round(hsv[i][2] * 100);
-                            int hsvColor = h << 16 | s << 8 | v;
-                            frame.addIntegerArgument(4, hsvColor);
-                        } else {
-                            fullFrame = false;
-                            break;
-                        }
-                        i++;
+                hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
+                frame = new ShieldFrame(SHIELD_ID, recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
+                int i = 0;
+                for (int det : detected) {
+                    int color = getColorInRange(det, currentPallete);
+                    detected[i] = color;
+                    frame.addIntegerArgument(3, color);
+                    fullFrame = true;
+                    if (i < hsv.length) {
+                        Color.colorToHSV(color, hsv[i]);
+                        int h = Math.round(hsv[i][0]);
+                        int s = Math.round(hsv[i][1] * 100);
+                        int v = Math.round(hsv[i][2] * 100);
+                        int hsvColor = h << 16 | s << 8 | v;
+                        frame.addIntegerArgument(4, hsvColor);
+                    } else {
+                        fullFrame = false;
+                        break;
                     }
-                    if (fullFrame) {
-                        if (colorEventHandler != null) {
-                            colorEventHandler.onColorChanged(detected);
-                        }
-                        sendShieldFrame(frame);
-                    }
-                    isSendingAframe = false;
-                    lastSentMS = System.currentTimeMillis();
+                    i++;
+                }
+                if (fullFrame && colorEventHandler != null) {
+                    colorEventHandler.onColorChanged(detected);
+                }
+                if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= 100) {
+                    sendShieldFrame(frame);
+                    lastSentMS = SystemClock.elapsedRealtime();
                 }
             } else if (msg.what == CameraHeadService.CRASHED) {
                 getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
@@ -232,7 +231,7 @@ public class ColorDetectionShield extends
                 isBackPreview = msg.getData().getBoolean("isBack");
                 if (colorEventHandler != null)
                     colorEventHandler.onCameraPreviewTypeChanged(isBackPreview);
-                isChangingPreview=false;
+                isChangingPreview = false;
             }
             super.handleMessage(msg);
         }
@@ -243,10 +242,11 @@ public class ColorDetectionShield extends
     }
 
     private boolean isChangingPreview = false;
+
     public boolean setCameraToPreview(boolean isBack) {
-        if(isChangingPreview)
+        if (isChangingPreview)
             return false;
-        isChangingPreview=true;
+        isChangingPreview = true;
         Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
         msg.replyTo = mMessenger;
         Bundle b = new Bundle();
@@ -271,6 +271,9 @@ public class ColorDetectionShield extends
             msg.replyTo = mMessenger;
             try {
                 mService.send(msg);
+                notifyPatchSize();
+                notifyColorDetectionType();
+                notifyColorDetectionOperation();
             } catch (RemoteException e) {
             }
             isCameraBound = true;

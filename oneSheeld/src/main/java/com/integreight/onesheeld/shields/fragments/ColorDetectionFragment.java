@@ -180,13 +180,6 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         patchSizeSeekBar.setSelection(((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : ((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
-        uiHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if(activity!=null&&activity.findViewById(R.id.isMenuOpening)!=null)
-                    ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
-            }
-        },500);
         applyListeners();
         super.onStart();
 
