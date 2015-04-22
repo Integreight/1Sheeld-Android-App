@@ -157,4 +157,14 @@
             cbs:myColor="@color/offWhite"
             android:layout_height="wrap_content" />
     </LinearLayout>
+    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textOn="Back"
+        android:textOff="Front"
+        android:layout_margin="1dp"
+        android:checked="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/frontBackToggle" />
 </RelativeLayout>

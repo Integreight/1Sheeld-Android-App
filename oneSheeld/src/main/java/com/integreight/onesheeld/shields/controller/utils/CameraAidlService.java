@@ -29,10 +29,10 @@ public class CameraAidlService extends Service {
     public static final int SET_REPLYTO = 1;
     public static final int ADD_TO_QUEUE = 2;
     public static final int CRASHED = 3;
+    public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5;
     private Messenger replyTo;
     private static Messenger mService;
     static boolean isCameraBound = false;
-    public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5;
     private static Context context;
 
     private final Messenger mMesesenger = new Messenger(new Handler() {
@@ -204,11 +204,8 @@ public class CameraAidlService extends Service {
     };;
 
     private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {
-        Log.d("cameraS", "Ask to capture " + CameraHeadService.isRunning);
         if (camCapture != null) {
-            Log.d("cameraS", "Is Camera Bound " + CameraHeadService.isRunning);
             if (isCameraBound) {
-                Log.d("cameraS", "Ask to capture from Service " + CameraHeadService.isRunning);
                 Bundle intent = new Bundle();
                 intent.putString("FLASH", camCapture.getFlash());
                 intent.putInt("Quality_Mode", camCapture.getQuality());
@@ -216,13 +213,10 @@ public class CameraAidlService extends Service {
                 msg.setData(intent);
                 try {
                     mService.send(msg);
-                    Log.d("cameraS", "Sent request " + CameraHeadService.isRunning);
                 } catch (RemoteException e) {
-                    Log.d("cameraS", "failed to send request " + CameraHeadService.isRunning);
                 }
             } else bindService(new Intent(this, CameraHeadService.class), mConnection,
                     Context.BIND_AUTO_CREATE);
-            Log.d("ImageTakin", "OnTakeBack()");
         }
     }
 

@@ -47,6 +47,7 @@ public class ColorDetectionShield extends
     ColorPalette currentPallete = ColorPalette._24_BIT_RGB;
     private float[][] hsv = null;
     private PATCH_SIZE patchSize = PATCH_SIZE.LARGE;
+    public boolean isBackPreview = true;
 
     @Override
 
@@ -158,6 +159,8 @@ public class ColorDetectionShield extends
         void changeCalculationMode(COLOR_TYPE type);
 
         void changePatchSize(PATCH_SIZE patchSize);
+
+        void onCameraPreviewTypeChanged(final boolean isBack);
     }
 
     public void setCurrentPallete(ColorPalette currentPallete) {
@@ -222,11 +225,41 @@ public class ColorDetectionShield extends
                     isSendingAframe = false;
                     lastSentMS = System.currentTimeMillis();
                 }
-            } else {
-                super.handleMessage(msg);
+            } else if (msg.what == CameraHeadService.CRASHED) {
+                getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+
+            } else if (msg.what == CameraHeadService.SET_CAMERA_PREVIEW_TYPE) {
+                isBackPreview = msg.getData().getBoolean("isBack");
+                if (colorEventHandler != null)
+                    colorEventHandler.onCameraPreviewTypeChanged(isBackPreview);
+                isChangingPreview=false;
             }
+            super.handleMessage(msg);
         }
     });
+
+    public boolean isBackPreview() {
+        return isBackPreview;
+    }
+
+    private boolean isChangingPreview = false;
+    public boolean setCameraToPreview(boolean isBack) {
+        if(isChangingPreview)
+            return false;
+        isChangingPreview=true;
+        Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
+        msg.replyTo = mMessenger;
+        Bundle b = new Bundle();
+        b.putBoolean("isBack", isBack);
+        msg.setData(b);
+        try {
+            mService.send(msg);
+        } catch (RemoteException e) {
+            return false;
+        }
+        isBackPreview = isBack;
+        return true;
+    }
 
     private ServiceConnection mConnection = new ServiceConnection() {
 

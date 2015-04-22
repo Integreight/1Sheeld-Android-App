@@ -5,8 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
@@ -22,6 +24,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     OneSheeldToggleButton operationToggle;
     OneSheeldToggleButton scaleToggle;
     OneSheeldToggleButton typeToggle;
+    private ToggleButton cameraPreviewToggle;
     ComboSeekBar scaleSeekBar;
     ComboSeekBar patchSizeSeekBar;
     private String[] grayScale = new String[]{"1 Bit", "2 Bit", "4 Bit", "8 Bit"};
@@ -89,6 +92,18 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                         getControllerTag())).setPatchSize(i == 0 ? ColorDetectionShield.PATCH_SIZE.SMALL : i == 1 ? ColorDetectionShield.PATCH_SIZE.MEDIUM : ColorDetectionShield.PATCH_SIZE.LARGE);
             }
         });
+        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                boolean feeback = ((ColorDetectionShield) getApplication().getRunningShields().get(
+                        getControllerTag())).setCameraToPreview(b);
+                if (!feeback) {
+                    removeListeners();
+                    cameraPreviewToggle.setChecked(!b);
+                    applyListeners();
+                }
+            }
+        });
     }
 
     private void removeListeners() {
@@ -119,6 +134,12 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
             }
         });
+        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+
+            }
+        });
     }
 
     @Override
@@ -129,6 +150,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
         scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
         typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
+        cameraPreviewToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
         scaleSeekBar = (ComboSeekBar) view.findViewById(R.id.scaleSeekBar);
         patchSizeSeekBar = (ComboSeekBar) view.findViewById(R.id.patchSeekBar);
         ((ColorDetectionShield) getApplication().getRunningShields().get(
@@ -158,6 +180,13 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         patchSizeSeekBar.setSelection(((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : ((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
+        uiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(activity!=null&&activity.findViewById(R.id.isMenuOpening)!=null)
+                    ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
+            }
+        },500);
         applyListeners();
         super.onStart();
 
@@ -180,6 +209,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
+        cameraPreviewToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).isBackPreview());
 
     }
 
@@ -319,11 +350,24 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
-            removeListeners();
-            patchSizeSeekBar.setSelection(patchSize == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : patchSize == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
-            applyListeners();
+                        removeListeners();
+                        patchSizeSeekBar.setSelection(patchSize == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : patchSize == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
+                        applyListeners();
                     }
                 });
         }
+    }
+
+    @Override
+    public void onCameraPreviewTypeChanged(final boolean isBack) {
+        if (canChangeUI() && getView() != null && cameraPreviewToggle != null)
+            uiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    removeListeners();
+                    cameraPreviewToggle.setChecked(isBack);
+                    applyListeners();
+                }
+            });
     }
 }
