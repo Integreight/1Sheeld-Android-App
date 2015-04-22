@@ -210,14 +210,9 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     }
 
-    Handler previewSizeHandler = new Handler();
 
     public void showPreview() {
-        previewSizeHandler.removeMessages(CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
-        previewSizeHandler.removeMessages(SHOW_PREVIEW);
-        previewSizeHandler.removeMessages(HIDE_PREVIEW);
-        previewSizeHandler.removeCallbacksAndMessages(null);
-        Message msg = Message.obtain(previewSizeHandler, SHOW_PREVIEW);
+        Message msg = Message.obtain(null, SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         if (cameraBinder != null)
             try {
@@ -228,11 +223,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public void hidePreview() {
-        previewSizeHandler.removeMessages(CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
-        previewSizeHandler.removeMessages(SHOW_PREVIEW);
-        previewSizeHandler.removeMessages(HIDE_PREVIEW);
-        previewSizeHandler.removeCallbacksAndMessages(null);
-        Message msg = Message.obtain(previewSizeHandler, HIDE_PREVIEW);
+        Message msg = Message.obtain(null, HIDE_PREVIEW);
         msg.replyTo = mMessenger;
         try {
             if (cameraBinder != null)

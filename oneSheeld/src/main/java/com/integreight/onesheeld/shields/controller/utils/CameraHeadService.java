@@ -31,8 +31,6 @@ import android.view.OrientationEventListener;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -49,8 +47,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 public class CameraHeadService extends Service implements
@@ -180,7 +176,7 @@ public class CameraHeadService extends Service implements
         int expectedWidth = (int) ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
         params.width = expectedWidth;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
         params.height = expectedHeight;
-        params.x = (int) ((metrics.widthPixels / 2) - params.width / 2);
+//        params.x = (int) ((metrics.widthPixels / 2) - params.width / 2);
 //        sv.setLayoutParams(params);
 //        sv.requestLayout();
         try {
@@ -190,8 +186,8 @@ public class CameraHeadService extends Service implements
     }
 
     private void hidePreview() {
-        params.width = 100;
-        params.height = 100;
+        params.width = 0;
+        params.height = 0;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -420,53 +416,6 @@ public class CameraHeadService extends Service implements
 
     }
 
-    public void recursiveTouch(final View v) {
-        // new AsyncTask<Void, Void, Void>() {
-        // @Override
-        // protected Void doInBackground(Void... params) {
-        if (v instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup) v;
-            for (int i = 0; i < vg.getChildCount(); i++) {
-                recursiveTouch(vg.getChildAt(i));
-            }
-        }
-
-    }
-
-    private void resetPreviewThread() {
-        try {
-            Class c = Class.forName("android.view.WindowManagerGlobal");
-            // Field[] fs = c.getDeclaredFields();
-            // for (int i = 0; i < fs.length; i++) {
-            // System.out.println("@#@#   " + i + "   " + fs[i].getName());
-            // }
-            Method m = c.getMethod("getInstance", null);
-            Object o = m.invoke(c, null);
-
-            Field f = c.getDeclaredField("mViews");
-            f.setAccessible(true);
-            final View[] views = (View[]) f.get(o);
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    while (true) {
-                        for (View view : views) {
-                            recursiveTouch(view.getRootView());
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            break;
-                        }
-                    }
-                }
-            }).start();
-        } catch (Exception e) {
-        }
-    }
-
     private void start(final boolean isCamera) {
         Log.d("ImageTakin", "StartCommand()");
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
@@ -494,9 +443,11 @@ public class CameraHeadService extends Service implements
         params.gravity = Gravity.TOP | Gravity.LEFT;
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        params.width = 100;
-        params.height = 100;
-        params.x = (int) (30 * metrics.density + .5f);
+        int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedWidth = (int) ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
+        params.width = 0;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
+        params.height = 0;
+        params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);
         sv = new SurfaceView(getApplicationContext());
         windowManager.addView(sv, params);
@@ -796,7 +747,7 @@ public class CameraHeadService extends Service implements
             } else if (msg.what == CameraShield.SHOW_PREVIEW) showPreview();
             else if (msg.what == CameraShield.HIDE_PREVIEW) hidePreview();
             else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
-                if(!isCapturing) {
+                if (!isCapturing) {
                     if (msg.getData().getBoolean("isBack")) {
                         if (mCamera != null) {
                             queue.removeCallbacks(null);
@@ -837,8 +788,8 @@ public class CameraHeadService extends Service implements
                         }
                         notifyPreviewTypeChanged(isBackPreview, true);
                     }
-                }else
-                    notifyPreviewTypeChanged(isBackPreview,true);
+                } else
+                    notifyPreviewTypeChanged(isBackPreview, true);
             }
         }
     });

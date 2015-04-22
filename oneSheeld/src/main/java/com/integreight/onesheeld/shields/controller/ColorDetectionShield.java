@@ -66,42 +66,53 @@ public class ColorDetectionShield extends
     }
 
     private void notifyPatchSize() {
-        Message msg = Message.obtain(null, SET_COLOR_PATCH_SIZE);
-        msg.replyTo = mMessenger;
-        Bundle data = new Bundle();
-        data.putInt("size", patchSize.value);
-        msg.setData(data);
-        try {
-            if (mService != null)
-                mService.send(msg);
-        } catch (RemoteException e) {
-        }
+        if (isCameraBound) {
+            Message msg = Message.obtain(null, SET_COLOR_PATCH_SIZE);
+            msg.replyTo = mMessenger;
+            Bundle data = new Bundle();
+            data.putInt("size", patchSize.value);
+            msg.setData(data);
+            try {
+                if (mService != null)
+                    mService.send(msg);
+            } catch (RemoteException e) {
+            }
+        } else
+            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     private void notifyColorDetectionOperation() {
-        Message msg = Message.obtain(null, SET_COLOR_DETECTION_OPERATION);
-        msg.replyTo = mMessenger;
-        Bundle data = new Bundle();
-        data.putInt("type", recevedFramesOperation.type);
-        msg.setData(data);
-        try {
-            if (mService != null)
-                mService.send(msg);
-        } catch (RemoteException e) {
-        }
+        if (isCameraBound) {
+            Message msg = Message.obtain(null, SET_COLOR_DETECTION_OPERATION);
+            msg.replyTo = mMessenger;
+            Bundle data = new Bundle();
+            data.putInt("type", recevedFramesOperation.type);
+            msg.setData(data);
+            try {
+                if (mService != null)
+                    mService.send(msg);
+            } catch (RemoteException e) {
+            }
+        } else
+            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void notifyColorDetectionType() {
-        Message msg = Message.obtain(null, SET_COLOR_DETECTION_TYPE);
-        msg.replyTo = mMessenger;
-        Bundle data = new Bundle();
-        data.putInt("type", colorType.type);
-        msg.setData(data);
-        try {
-            if (mService != null)
-                mService.send(msg);
-        } catch (RemoteException e) {
-        }
+        if (isCameraBound) {
+            Message msg = Message.obtain(null, SET_COLOR_DETECTION_TYPE);
+            msg.replyTo = mMessenger;
+            Bundle data = new Bundle();
+            data.putInt("type", colorType.type);
+            msg.setData(data);
+            try {
+                if (mService != null)
+                    mService.send(msg);
+            } catch (RemoteException e) {
+            }
+        } else
+            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+
     }
 
     @Override

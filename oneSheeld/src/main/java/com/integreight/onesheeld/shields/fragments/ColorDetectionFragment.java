@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
@@ -218,6 +217,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 getControllerTag()) != null) {
             if (((ColorDetectionShield) getApplication().getRunningShields().get(
                     getControllerTag())).getRecevedFramesOperation() == ColorDetectionShield.RECEIVED_FRAMES.CENTER && color.length > 0) {
+                uiHandler.removeCallbacks(null);
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -250,11 +250,13 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
     public void notifyFullColor() {
         if (normalColor != null && getView() != null) {
-            uiHandler.post(new Runnable() {
+            normalColor.post(new Runnable() {
                 @Override
                 public void run() {
+                    removeListeners();
                     normalColor.setVisibility(View.INVISIBLE);
                     fullColor.setVisibility(View.VISIBLE);
+                    applyListeners();
                 }
             });
         }
@@ -262,11 +264,13 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
     public void notifyNormalColor() {
         if (normalColor != null && getView() != null) {
-            uiHandler.post(new Runnable() {
+            normalColor.post(new Runnable() {
                 @Override
                 public void run() {
+                    removeListeners();
                     normalColor.setVisibility(View.VISIBLE);
                     fullColor.setVisibility(View.INVISIBLE);
+                    applyListeners();
                 }
             });
         }
@@ -276,14 +280,15 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     public void enableFullColor() {
         if (operationToggle != null && getView() != null) {
             notifyFullColor();
-            if (uiHandler != null)
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (operationToggle != null && getView() != null)
-                            operationToggle.setChecked(false);
-                    }
-                });
+            operationToggle.post(new Runnable() {
+                @Override
+                public void run() {
+                    removeListeners();
+                    if (operationToggle != null && getView() != null)
+                        operationToggle.setChecked(false);
+                    applyListeners();
+                }
+            });
         }
     }
 
@@ -291,70 +296,67 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     public void enableNormalColor() {
         if (operationToggle != null && getView() != null) {
             notifyNormalColor();
-            if (uiHandler != null)
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (operationToggle != null && getView() != null)
-                            operationToggle.setChecked(true);
-                    }
-                });
+            operationToggle.post(new Runnable() {
+                @Override
+                public void run() {removeListeners();
+                    if (operationToggle != null && getView() != null)
+                        operationToggle.setChecked(true);
+                    applyListeners();
+                }
+            });
         }
     }
 
     @Override
     public void setPallete(final ColorDetectionShield.ColorPalette pallete) {
-        if (normalColor != null && getView() != null) {
-            if (uiHandler != null)
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (scaleToggle != null && getView() != null) {
-                            removeListeners();
-                            scaleToggle.setChecked(!pallete.isGrayscale());
-                            scaleSeekBar.setAdapter(Arrays.asList(scaleToggle.isChecked() ? rgbScale : grayScale));
-                            scaleSeekBar.setSelection(pallete.getIndex());
-                            applyListeners();
-                        }
+        if (scaleToggle != null && getView() != null) {
+            scaleToggle.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (scaleToggle != null && getView() != null) {
+                        removeListeners();
+                        scaleToggle.setChecked(!pallete.isGrayscale());
+                        scaleSeekBar.setAdapter(Arrays.asList(scaleToggle.isChecked() ? rgbScale : grayScale));
+                        scaleSeekBar.setSelection(pallete.getIndex());
+                        applyListeners();
                     }
-                });
+                }
+            });
         }
     }
 
     @Override
     public void changeCalculationMode(final ColorDetectionShield.COLOR_TYPE type) {
         if (typeToggle != null && getView() != null) {
-            if (uiHandler != null)
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeListeners();
-                        typeToggle.setChecked(type == ColorDetectionShield.COLOR_TYPE.COMMON);
-                        applyListeners();
-                    }
-                });
+            typeToggle.post(new Runnable() {
+                @Override
+                public void run() {
+                    removeListeners();
+                    typeToggle.setChecked(type == ColorDetectionShield.COLOR_TYPE.COMMON);
+                    applyListeners();
+                }
+            });
         }
     }
 
     @Override
     public void changePatchSize(final ColorDetectionShield.PATCH_SIZE patchSize) {
-        if (scaleSeekBar != null && getView() != null) {
-            if (uiHandler != null)
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeListeners();
-                        patchSizeSeekBar.setSelection(patchSize == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : patchSize == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
-                        applyListeners();
-                    }
-                });
+        if (patchSizeSeekBar != null && getView() != null) {
+            patchSizeSeekBar.post(new Runnable() {
+                @Override
+                public void run() {
+                    removeListeners();
+                    patchSizeSeekBar.setSelection(patchSize == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : patchSize == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
+                    applyListeners();
+                }
+            });
         }
     }
 
     @Override
     public void onCameraPreviewTypeChanged(final boolean isBack) {
         if (canChangeUI() && getView() != null && cameraPreviewToggle != null)
-            uiHandler.post(new Runnable() {
+            cameraPreviewToggle.post(new Runnable() {
                 @Override
                 public void run() {
                     removeListeners();

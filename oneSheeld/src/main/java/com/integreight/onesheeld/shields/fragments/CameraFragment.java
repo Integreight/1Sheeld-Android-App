@@ -169,7 +169,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     ((CameraShield) getApplication().getRunningShields().get(
                             getControllerTag())).showPreview();
                 }
-            }, 150);
+            }, 500);
         else
             ((CameraShield) getApplication().getRunningShields().get(
                     getControllerTag())).hidePreview();
