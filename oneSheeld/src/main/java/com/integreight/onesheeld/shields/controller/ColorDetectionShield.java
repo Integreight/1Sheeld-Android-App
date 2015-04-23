@@ -241,7 +241,7 @@ public class ColorDetectionShield extends
                                 colorEventHandler.onColorChanged(detected);
                             }
                             if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= 100) {
-//                    sendShieldFrame(frame);
+                                sendShieldFrame(frame);
                                 lastSentMS = SystemClock.elapsedRealtime();
                             }
                         } else if (msg.what == CameraHeadService.CRASHED) {
