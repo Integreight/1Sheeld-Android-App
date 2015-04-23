@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.integreight.onesheeld.utils.customviews.OneSheeldTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nfc_txt"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="left|center_vertical"
+    android:paddingBottom="7dp"
+    android:paddingLeft="10dp"
+    android:paddingTop="7dp"
+    android:textColor="@color/offWhite"
+    android:textSize="15sp" />

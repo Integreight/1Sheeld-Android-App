@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp">
 
     <ImageView
-        android:id="@+id/NfcImageView"
-        android:layout_width="wrap_content"
+        android:id="@+id/nfc_shield_logo_imageview"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/internet_shield_screen_logo" />
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/nfc_card_details"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/nfc_mark"/>
+        android:gravity="left|center_vertical"
+        android:layout_below="@id/nfc_shield_logo_imageview"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="15dp"
+        android:textColor="@color/textColorOnDark"
+        android:textSize="15sp" />
 
-    <TextView
-        android:id="@+id/NfcReadDisplayText"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:text="Approach your card"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/nfc_card_details"
+        android:fillViewport="true"
+        android:layout_marginTop="10dp">
 
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical">
+            <ExpandableListView
+                android:id="@+id/nfc_Records_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"></ExpandableListView>
+        </LinearLayout>
+    </ScrollView>
+
+</RelativeLayout>

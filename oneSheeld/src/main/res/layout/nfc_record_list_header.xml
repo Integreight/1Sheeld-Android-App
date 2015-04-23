@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:padding="10dp"
+    android:gravity="center_vertical">
+<com.integreight.onesheeld.utils.customviews.OneSheeldTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/nfc_txt"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="left|center_vertical"
+    android:paddingLeft="30dp"
+    android:textColor="@color/textColorOnDark"
+    android:layout_gravity="left|center_vertical"
+    android:textStyle="bold"
+    android:textSize="15sp" />
+
+</RelativeLayout>
