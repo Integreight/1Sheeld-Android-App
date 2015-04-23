@@ -778,15 +778,22 @@ public class CameraHeadService extends Service implements
                         if (mCamera != null) {
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                try {
+                                    mCamera.startPreview();
+                                } catch (Exception e) {
+                                }
+                                notifyPreviewTypeChanged(isBackPreview, true);
+                                isBackPreview = false;
                             } catch (IOException e) {
+                                handler.post(new Runnable() {
+
+                                                 @Override
+                                                 public void run() {
+                                                     Toast.makeText(getApplicationContext(),
+                                                             "API dosen't support front camera",
+                                                             Toast.LENGTH_LONG).show();}});
                             }
-                            try {
-                                mCamera.startPreview();
-                            } catch (Exception e) {
-                            }
-                            isBackPreview = false;
                         }
-                        notifyPreviewTypeChanged(isBackPreview, true);
                     }
                 } else
                     notifyPreviewTypeChanged(isBackPreview, true);
