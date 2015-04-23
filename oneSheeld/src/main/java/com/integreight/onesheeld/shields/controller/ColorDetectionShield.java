@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
@@ -53,6 +54,7 @@ public class ColorDetectionShield extends
 
     public ControllerParent<ColorDetectionShield> init(String tag) {
         // TODO Auto-generated method stub
+        initMessenger();
         getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
         return super.init(tag, true);
     }
@@ -202,51 +204,62 @@ public class ColorDetectionShield extends
     }
 
     boolean fullFrame = true;
-    private Messenger mMessenger = new Messenger(new Handler() {
+    private Messenger mMessenger;
 
-        public void handleMessage(Message msg) {
-            if (msg.what == CameraHeadService.GET_RESULT && msg.getData() != null) {
-                detected = msg.getData().getIntArray("detected");
-                hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
-                frame = new ShieldFrame(SHIELD_ID, recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
-                int i = 0;
-                for (int det : detected) {
-                    int color = getColorInRange(det, currentPallete);
-                    detected[i] = color;
-                    frame.addIntegerArgument(3, color);
-                    fullFrame = true;
-                    if (i < hsv.length) {
-                        Color.colorToHSV(color, hsv[i]);
-                        int h = Math.round(hsv[i][0]);
-                        int s = Math.round(hsv[i][1] * 100);
-                        int v = Math.round(hsv[i][2] * 100);
-                        int hsvColor = h << 16 | s << 8 | v;
-                        frame.addIntegerArgument(4, hsvColor);
-                    } else {
-                        fullFrame = false;
-                        break;
+    private void initMessenger() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                mMessenger = new Messenger(new Handler() {
+
+                    public void handleMessage(Message msg) {
+                        if (msg.what == CameraHeadService.GET_RESULT && msg.getData() != null) {
+                            detected = msg.getData().getIntArray("detected");
+                            hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
+                            frame = new ShieldFrame(SHIELD_ID, recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
+                            int i = 0;
+                            for (int det : detected) {
+                                int color = getColorInRange(det, currentPallete);
+                                detected[i] = color;
+                                frame.addIntegerArgument(3, color);
+                                fullFrame = true;
+                                if (i < hsv.length) {
+                                    Color.colorToHSV(color, hsv[i]);
+                                    int h = Math.round(hsv[i][0]);
+                                    int s = Math.round(hsv[i][1] * 100);
+                                    int v = Math.round(hsv[i][2] * 100);
+                                    int hsvColor = h << 16 | s << 8 | v;
+                                    frame.addIntegerArgument(4, hsvColor);
+                                } else {
+                                    fullFrame = false;
+                                    break;
+                                }
+                                i++;
+                            }
+                            if (fullFrame && colorEventHandler != null) {
+                                colorEventHandler.onColorChanged(detected);
+                            }
+                            if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= 100) {
+//                    sendShieldFrame(frame);
+                                lastSentMS = SystemClock.elapsedRealtime();
+                            }
+                        } else if (msg.what == CameraHeadService.CRASHED) {
+                            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+
+                        } else if (msg.what == CameraHeadService.SET_CAMERA_PREVIEW_TYPE) {
+                            isBackPreview = msg.getData().getBoolean("isBack");
+                            if (colorEventHandler != null)
+                                colorEventHandler.onCameraPreviewTypeChanged(isBackPreview);
+                            isChangingPreview = false;
+                        }
+                        super.handleMessage(msg);
                     }
-                    i++;
-                }
-                if (fullFrame && colorEventHandler != null) {
-                    colorEventHandler.onColorChanged(detected);
-                }
-                if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= 100) {
-                    sendShieldFrame(frame);
-                    lastSentMS = SystemClock.elapsedRealtime();
-                }
-            } else if (msg.what == CameraHeadService.CRASHED) {
-                getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
-
-            } else if (msg.what == CameraHeadService.SET_CAMERA_PREVIEW_TYPE) {
-                isBackPreview = msg.getData().getBoolean("isBack");
-                if (colorEventHandler != null)
-                    colorEventHandler.onCameraPreviewTypeChanged(isBackPreview);
-                isChangingPreview = false;
+                });
+                Looper.loop();
             }
-            super.handleMessage(msg);
-        }
-    });
+        }).start();
+    }
 
     public boolean isBackPreview() {
         return isBackPreview;
