@@ -782,7 +782,6 @@ public class CameraHeadService extends Service implements
                                     mCamera.startPreview();
                                 } catch (Exception e) {
                                 }
-                                notifyPreviewTypeChanged(isBackPreview, true);
                                 isBackPreview = false;
                             } catch (IOException e) {
                                 handler.post(new Runnable() {
@@ -794,6 +793,7 @@ public class CameraHeadService extends Service implements
                                                              Toast.LENGTH_LONG).show();}});
                             }
                         }
+                        notifyPreviewTypeChanged(isBackPreview, true);
                     }
                 } else
                     notifyPreviewTypeChanged(isBackPreview, true);
