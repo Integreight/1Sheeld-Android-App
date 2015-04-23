@@ -18,6 +18,7 @@ import android.os.SystemClock;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 
 import java.text.DecimalFormat;
 
@@ -54,9 +55,27 @@ public class ColorDetectionShield extends
     public ControllerParent<ColorDetectionShield> init(String tag) {
         // TODO Auto-generated method stub
         initMessenger();
-        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
         return super.init(tag, true);
     }
+
+    @Override
+    public ControllerParent<ColorDetectionShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        if (!CameraUtils.checkCameraHardware(getApplication().getApplicationContext())) {
+            if (selectionAction != null)
+                selectionAction.onFailure();
+            if (isToastable)
+                activity.showToast("Camera is unavailable, maybe it's used by another application !");
+        } else {
+            if (selectionAction != null)
+                selectionAction.onSuccess();
+            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+        }
+        return super.invalidate(selectionAction, isToastable);
+    }
+
 
     public ColorDetectionShield(Activity activity, String tag) {
         super(activity, tag, true);
@@ -255,6 +274,8 @@ public class ColorDetectionShield extends
     private boolean isChangingPreview = false;
 
     public boolean setCameraToPreview(boolean isBack) {
+        if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
+            return false;
         if (isChangingPreview)
             return false;
         isChangingPreview = true;

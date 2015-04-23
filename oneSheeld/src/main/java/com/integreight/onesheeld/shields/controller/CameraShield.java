@@ -17,6 +17,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.Log;
 
@@ -135,6 +136,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private boolean isChangingPreview = false;
 
     public boolean setCameraToPreview(boolean isBack) {
+        if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
+            return false;
         if (isChangingPreview)
             return false;
         isChangingPreview=true;
