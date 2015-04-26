@@ -3,10 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <SurfaceView
-        android:id="@+id/camera_preview"
-        android:layout_width="1dp"
-        android:layout_height="1dp" />
+    <!--<SurfaceView-->
+    <!--android:id="@+id/camera_preview"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_margin="30dp"-->
+    <!--android:layout_centerInParent="true"-->
+    <!--android:layout_height="match_parent" />-->
 
     <ImageView
         android:id="@+id/camera_log"
@@ -15,5 +17,16 @@
         android:layout_centerInParent="true"
         android:background="@drawable/camera_shield_screen_logo"
         android:contentDescription="@string/app_name" />
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textOn="Back"
+        android:textOff="Front"
+        android:layout_margin="1dp"
+        android:checked="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/frontBackToggle" />
 
 </RelativeLayout>

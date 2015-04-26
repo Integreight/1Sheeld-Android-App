@@ -16,12 +16,12 @@ import android.os.RemoteException;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
-import com.integreight.onesheeld.shields.controller.utils.CameraAidlService;
+import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -33,28 +33,79 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private static final byte QUALITY_METHOD_ID = (byte) 0x04;
     private static String FLASH_MODE;
     private static int QUALITY_MODE = 0;
-    private Messenger aidlBinder;
-    private boolean isAidlBound;
-    private Queue<CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
+    private Messenger cameraBinder;
+    private boolean isCameraBound;
+    public Queue<CameraShield.CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
+    public Queue<CameraShield.CameraCapture> tempQueue = new ConcurrentLinkedQueue<>();
+    public static final int SET_REPLYTO = 1;
+    public static final int ADD_TO_QUEUE = 2;
+    public static final int CRASHED = 3;
+    public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5, NEXT_CAPTURE = 14;
+    CameraCapture capture;
+    private boolean isCameraCapturing = false;
 
     private static final byte FRONT_CAPTURE = (byte) 0x03;
     int numberOfFrames = 0;
     Handler UIHandler;
+    public boolean isBackPreview = true;
+    private CameraEventHandler eventHandler;
 
     public CameraShield() {
 
     }
 
     public CameraShield(Activity activity, String tag) {
-        super(activity, tag,true);
+        super(activity, tag, true);
     }
 
     @Override
     public ControllerParent<CameraShield> init(String tag) {
-        Intent intent = new Intent(getActivity(), CameraAidlService.class);
-        getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
         UIHandler = new Handler();
-        return super.init(tag,true);
+        return super.init(tag, true);
+    }
+
+    private Messenger mMessenger = new Messenger(new Handler() {
+
+        public void handleMessage(Message msg) {
+            if (msg.what == CRASHED) {
+                cameraBinder = null;
+                isCameraBound = false;
+                if (capturesQueue == null)
+                    capturesQueue = new ConcurrentLinkedQueue<>();
+                if (capture != null)
+                    capturesQueue.add(capture);
+                bindService();
+            } else if (msg.what == NEXT_CAPTURE) {
+                if (msg.getData().getBoolean("takenSuccessfuly")) {
+                    capture = null;
+                } else {
+                    if (capture != null)
+                        capturesQueue.add(capture);
+                }
+                isCameraCapturing = false;
+                checkQueue();
+            } else if (msg.what == CameraHeadService.SET_CAMERA_PREVIEW_TYPE) {
+                isBackPreview = msg.getData().getBoolean("isBack");
+                if (eventHandler != null)
+                    eventHandler.setOnCameraPreviewTypeChanged(isBackPreview);
+                isChangingPreview=false;
+            }
+            super.handleMessage(msg);
+        }
+
+
+    });
+
+    void bindService() {
+//        if (!getApplication().getRunningShields().containsKey(UIShield.COLOR_DETECTION_SHIELD.name()))
+//            getActivity().stopService(new Intent(getActivity(), CameraHeadService.class));
+////        getActivity().stopService(new Intent(getActivity(), CameraAidlService.class));
+//        try {
+//            if (cameraServiceConnector != null)
+//                getActivity().unbindService(cameraServiceConnector);
+//        } catch (Exception e) {
+//        }
+        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -70,70 +121,81 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         } else {
             if (selectionAction != null)
                 selectionAction.onSuccess();
-
+            bindService();
+            UIHandler = new Handler();
         }
         return super.invalidate(selectionAction, isToastable);
     }
 
-    private Messenger mMessenger = new Messenger(new Handler() {
+    public boolean isBackPreview() {
+        return isBackPreview;
+    }
 
-        public void handleMessage(Message msg) {
-            if (msg.what == CameraAidlService.CRASHED) {
-                aidlBinder = null;
-                isAidlBound = false;
-                if (capturesQueue == null)
-                    capturesQueue = new ConcurrentLinkedQueue<>();
-                if (msg.getData() != null && msg.getData().getSerializable("queue") != null) {
-                    CameraCapture[] captures = Arrays.copyOf(((Object[]) msg.getData().getSerializable("queue")), ((Object[]) msg.getData().getSerializable("queue")).length, CameraCapture[].class);
-                    for (CameraCapture capture : captures) {
-                        capturesQueue.add(capture);
-                    }
-                }
-                Intent intent = new Intent(getActivity(), CameraAidlService.class);
-                getActivity().bindService(intent, myAidlConnection, Context.BIND_AUTO_CREATE);
-            } else {
-                super.handleMessage(msg);
-            }
+    private boolean isChangingPreview = false;
+
+    public boolean setCameraToPreview(boolean isBack) {
+        if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
+            return false;
+        if (isChangingPreview)
+            return false;
+        isChangingPreview=true;
+        Log.d("Acc", isBack + "   **");
+        Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
+        msg.replyTo = mMessenger;
+        Bundle b = new Bundle();
+        b.putBoolean("isBack", isBack);
+        msg.setData(b);
+        try {
+            cameraBinder.send(msg);
+        } catch (RemoteException e) {
+            return false;
         }
+        isBackPreview = isBack;
+        return true;
+    }
 
-        ;
-    });
-    private ServiceConnection myAidlConnection = new ServiceConnection() {
+    private ServiceConnection cameraServiceConnector = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+            isCameraCapturing = false;
             notifyHardwareOfShieldSelection();
-            aidlBinder = new Messenger(service);
-            Message msg = Message.obtain(null, CameraAidlService.SET_REPLYTO);
+            cameraBinder = new Messenger(service);
+            Message msg = Message.obtain(null, BIND_CAMERA_CAPTURE);
             msg.replyTo = mMessenger;
-            if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                Bundle b = new Bundle();
-                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                arr = capturesQueue.toArray(arr);
-                b.putSerializable("queue", arr);
-                msg.setData(b);
-            }
             try {
-                aidlBinder.send(msg);
-                capturesQueue = new ConcurrentLinkedQueue<>();
+                cameraBinder.send(msg);
+//                capturesQueue = new ConcurrentLinkedQueue<>();
             } catch (RemoteException e) {
-                e.printStackTrace();
             }
-            isAidlBound = true;
+            isCameraBound = true;
+            checkQueue();
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            aidlBinder = null;
-            isAidlBound = false;
+            cameraBinder = null;
+            isCameraBound = false;
         }
 
     };
 
+    private synchronized void checkQueue() {
+        if (capturesQueue != null && !capturesQueue.isEmpty() && !isCameraCapturing) {
+            if (isCameraBound) {
+                capture = capturesQueue.poll();
+                if (capture.isFront())
+                    sendFrontCaptureImageIntent(capture);
+                else
+                    sendCaptureImageIntent(capture);
+            } else bindService();
+        }
+    }
+
     /**
      * Check if this device has a camera
      */
-    private boolean checkCameraHardware(Context context) {
+    private synchronized boolean checkCameraHardware(Context context) {
         if (context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA)) {
             // this device has a camera
@@ -145,8 +207,30 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public void setCameraEventHandler(CameraEventHandler eventHandler) {
-        // this.eventHandler = eventHandler;
+        this.eventHandler = eventHandler;
 
+    }
+
+
+    public void showPreview() {
+        Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
+        msg.replyTo = mMessenger;
+        if (cameraBinder != null)
+            try {
+                cameraBinder.send(msg);
+            } catch (RemoteException e) {
+            }
+        else bindService();
+    }
+
+    public void hidePreview() {
+        Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
+        msg.replyTo = mMessenger;
+        try {
+            if (cameraBinder != null)
+                cameraBinder.send(msg);
+        } catch (RemoteException e) {
+        }
     }
 
     @Override
@@ -195,58 +279,24 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                     Log.d("Camera", "Frames number = " + numberOfFrames);
                     CameraCapture camCapture = new CameraCapture(FLASH_MODE, false,
                             QUALITY_MODE, new Date().getTime());
-                    try {
-                        if (aidlBinder == null || !isAidlBound) {
-                            if (capturesQueue == null)
-                                capturesQueue = new ConcurrentLinkedQueue<>();
-                            capturesQueue.add(camCapture);
-                        } else {
-                            Message msgBack = Message.obtain(null, CameraAidlService.ADD_TO_QUEUE);
-                            Bundle b = new Bundle();
-                            b.putSerializable("capture", camCapture);
-                            msgBack.setData(b);
-                            if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                                arr = capturesQueue.toArray(arr);
-                                b.putSerializable("queue", arr);
-                            }
-                            msgBack.replyTo = mMessenger;
-                            aidlBinder.send(msgBack);
-                        }
-                    } catch (RemoteException e) {
-                        if (capturesQueue != null)
-                            capturesQueue.add(camCapture);
-                    }
+                    if (capturesQueue == null)
+                        capturesQueue = new ConcurrentLinkedQueue<>();
+                    capturesQueue.add(camCapture);
+                    checkQueue();
                     break;
                 case FRONT_CAPTURE:
                     numberOfFrames++;
                     Log.d("Camera", "Frames number front = " + numberOfFrames);
                     CameraCapture frontCamCapture = new CameraCapture(FLASH_MODE,
                             true, QUALITY_MODE, new Date().getTime());
-                    try {
-
-                        if (aidlBinder == null || !isAidlBound) {
-                            if (capturesQueue == null)
-                                capturesQueue = new ConcurrentLinkedQueue<>();
-                            capturesQueue.add(frontCamCapture);
-                        } else {
-                            Message msgFront = Message.obtain(null, CameraAidlService.ADD_TO_QUEUE);
-                            Bundle b = new Bundle();
-                            b.putSerializable("capture", frontCamCapture);
-                            msgFront.setData(b);
-                            if (capturesQueue != null && !capturesQueue.isEmpty()) {
-                                CameraShield.CameraCapture[] arr = new CameraShield.CameraCapture[]{};
-                                arr = capturesQueue.toArray(arr);
-                                b.putSerializable("queue", arr);
-                            }
-                            msgFront.replyTo = mMessenger;
-                            aidlBinder.send(msgFront);
-                            capturesQueue = new ConcurrentLinkedQueue<>();
-                        }
-                    } catch (RemoteException e) {
-                        if (capturesQueue != null)
-                            capturesQueue.add(frontCamCapture);
-                    }
+//                    if ((cameraBinder == null || !isCameraBound) || activity.getThisApplication().isCameraCapturing()) {
+                    if (capturesQueue == null)
+                        capturesQueue = new ConcurrentLinkedQueue<>();
+                    capturesQueue.add(frontCamCapture);
+                    checkQueue();
+//                    } else {
+//                        sendFrontCaptureImageIntent(frontCamCapture);
+//                    }
                     break;
 
                 default:
@@ -256,7 +306,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     }
 
-    public static interface CameraEventHandler {
+    public interface CameraEventHandler {
         void OnPictureTaken();
 
         void checkCameraHardware(boolean isHasCamera);
@@ -264,15 +314,63 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         void takePicture();
 
         void setFlashMode(String flash_mode);
+
+        void setOnCameraPreviewTypeChanged(boolean isBack);
     }
 
     @Override
     public void reset() {
-        if (isAidlBound)
-            getActivity().unbindService(myAidlConnection);
+        Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
+        try {
+            if (cameraBinder != null)
+                cameraBinder.send(msg);
+        } catch (RemoteException e) {
+        }
+        getActivity().unbindService(cameraServiceConnector);
         capturesQueue = new ConcurrentLinkedQueue<>();
-        isAidlBound = false;
+        isCameraBound = false;
 
+    }
+
+    private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {
+        if (camCapture != null) {
+            if (isCameraBound) {
+                isCameraCapturing = true;
+                Bundle intent = new Bundle();
+                intent.putString("FLASH", camCapture.getFlash());
+                intent.putInt("Quality_Mode", camCapture.getQuality());
+                Message msg = Message.obtain(null, CameraHeadService.CAPTURE_IMAGE);
+                msg.setData(intent);
+                try {
+                    cameraBinder.send(msg);
+                } catch (RemoteException e) {
+                    capturesQueue.add(camCapture);
+                }
+            } else bindService();
+            Log.d("ImageTakin", "OnTakeBack()");
+        }
+    }
+
+    private void sendFrontCaptureImageIntent(CameraShield.CameraCapture camCapture) {
+        if (camCapture != null) {
+            if (isCameraBound) {
+                isCameraCapturing = true;
+                Bundle intent = new Bundle();
+                intent.putInt("Quality_Mode", camCapture.getQuality());
+                intent.putBoolean("Front_Request", true);
+                Message msg = Message.obtain(null, CameraHeadService.CAPTURE_IMAGE);
+                msg.setData(intent);
+                try {
+                    cameraBinder.send(msg);
+                } catch (RemoteException e) {
+                    if (capturesQueue != null)
+                        capturesQueue.add(camCapture);
+                }
+//                    service.takeImage(front_translucent);
+            } else {
+                bindService();
+            }
+        }
     }
 
     @Override
@@ -280,7 +378,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     }
 
-    public static class CameraCapture implements Serializable {
+    public class CameraCapture implements Serializable {
         private String flash;
         private boolean isFrontCamera;
 

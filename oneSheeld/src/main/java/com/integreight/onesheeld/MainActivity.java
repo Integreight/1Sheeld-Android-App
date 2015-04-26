@@ -22,8 +22,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -38,6 +40,8 @@ import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.NfcShield;
+import com.integreight.onesheeld.shields.controller.CameraShield;
+import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
@@ -49,6 +53,7 @@ import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import hotchemi.android.rate.AppRate;
@@ -61,6 +66,8 @@ public class MainActivity extends FragmentActivity {
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
     private boolean isBackPressed = false;
+
+    private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
 
     public OneSheeldApplication getThisApplication() {
         return (OneSheeldApplication) getApplication();
@@ -93,25 +100,28 @@ public class MainActivity extends FragmentActivity {
                 .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
                     @Override
                     public void onClickButton(int which) {
-                        Map<String,String> hit=null;
+                        Map<String, String> hit = null;
                         switch (which) {
                             case Dialog.BUTTON_NEGATIVE:
-                                hit=new HitBuilders.EventBuilder()
-                                    .setCategory("App Rating Dialog")
-                                    .setAction("No")
-                                    .build();break;
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("No")
+                                        .build();
+                                break;
                             case Dialog.BUTTON_NEUTRAL:
-                                hit=new HitBuilders.EventBuilder()
-                                    .setCategory("App Rating Dialog")
-                                    .setAction("Later")
-                                    .build();break;
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("Later")
+                                        .build();
+                                break;
                             case Dialog.BUTTON_POSITIVE:
-                                hit=new HitBuilders.EventBuilder()
+                                hit = new HitBuilders.EventBuilder()
                                         .setCategory("App Rating Dialog")
                                         .setAction("Yes")
-                                        .build();break;
+                                        .build();
+                                break;
                         }
-                        if(hit!=null)getThisApplication()
+                        if (hit != null) getThisApplication()
                                 .getTracker()
                                 .send(hit);
                     }
@@ -402,6 +412,12 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
+        Log.d("Test", "Back Pressed");
+        ///// Camera Preview
+        if (getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
+            ((CameraShield) getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+        if (getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
+            ((ColorDetectionShield) getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
         resetSlidingMenu();
         MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
         MultiDirectionSlidingDrawer settingsView = (MultiDirectionSlidingDrawer) findViewById(R.id.settingsSlidingView);
@@ -419,6 +435,9 @@ public class MainActivity extends FragmentActivity {
                                 public void onClick(View v) {
                                 }
                             });
+                    if (findViewById(R.id.isMenuOpening) != null)
+                        ((CheckBox) findViewById(R.id.isMenuOpening))
+                                .setChecked(false);
                     getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     getSupportFragmentManager().executePendingTransactions();
                 } else {
@@ -531,7 +550,10 @@ public class MainActivity extends FragmentActivity {
         resetSlidingMenu();
         appSlidingMenu.openPane();
     }
-
+    public boolean isMenuOpened() {
+        resetSlidingMenu();
+        return appSlidingMenu.isOpen();
+    }
     public void closeMenu() {
         resetSlidingMenu();
         appSlidingMenu.closePane();
@@ -551,6 +573,26 @@ public class MainActivity extends FragmentActivity {
     private void resetSlidingMenu() {
         if (appSlidingMenu == null) {
             appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
+            appSlidingMenu.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+                @Override
+                public void onPanelSlide(View panel, float slideOffset) {
+
+                }
+
+                @Override
+                public void onPanelOpened(View panel) {
+
+                }
+
+                @Override
+                public void onPanelClosed(View panel) {
+                    if (onChangeSlidingLockListeners != null && onChangeSlidingLockListeners.size() > 0) {
+                        for (OnSlidingMenueChangeListner onChangeListener : onChangeSlidingLockListeners) {
+                            onChangeListener.onMenuClosed();
+                        }
+                    }
+                }
+            });
         }
     }
 
@@ -732,4 +774,12 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+    public void registerSlidingMenuListner(OnSlidingMenueChangeListner listner) {
+        if (!onChangeSlidingLockListeners.contains(listner))
+            onChangeSlidingLockListeners.add(listner);
+    }
+
+    public interface OnSlidingMenueChangeListner {
+        public void onMenuClosed();
+    }
 }

@@ -22,10 +22,14 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
+import com.integreight.onesheeld.shields.controller.CameraShield;
+import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
+
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ShieldsOperations extends BaseContainerFragment {
     private View v;
@@ -33,6 +37,7 @@ public class ShieldsOperations extends BaseContainerFragment {
     protected SelectedShieldsListFragment mFrag;
     private ShieldFragmentParent<?> mContent;
     private MainActivity activity;
+    private CopyOnWriteArrayList<OnChangeListener> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
 
     public static ShieldsOperations getInstance() {
         if (thisInstance == null) {
@@ -75,6 +80,11 @@ public class ShieldsOperations extends BaseContainerFragment {
                             activity.disableMenu();
                         } else
                             activity.enableMenu();
+                        if (onChangeSlidingLockListeners != null && onChangeSlidingLockListeners.size() > 0) {
+                            for (OnChangeListener onChangeListener : onChangeSlidingLockListeners) {
+                                onChangeListener.onChange(arg1);
+                            }
+                        }
                     }
                 });
         new Handler().postDelayed(new Runnable() {
@@ -82,6 +92,8 @@ public class ShieldsOperations extends BaseContainerFragment {
             @Override
             public void run() {
                 activity.openMenu();
+                ((CheckBox) getView().findViewById(R.id.isMenuOpening))
+                        .setChecked(false);
             }
         }, 500);
 
@@ -259,8 +271,6 @@ public class ShieldsOperations extends BaseContainerFragment {
 
     @Override
     public void onResume() {
-        ((CheckBox) getView().findViewById(R.id.isMenuOpening))
-                .setChecked(false);
         activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
         if (((OneSheeldApplication) activity.getApplication()).getAppFirmata() == null
                 || !((OneSheeldApplication) activity.getApplication())
@@ -280,6 +290,10 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                                 @Override
                                 public void onClick(View v) {
+                                    if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
+                                        ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                                    if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
+                                        ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
                                     activity.closeMenu();
                                     if (activity.getSupportFragmentManager()
                                             .getBackStackEntryCount() > 1) {
@@ -338,5 +352,16 @@ public class ShieldsOperations extends BaseContainerFragment {
             }
         }, 500);
         super.onResume();
+    }
+
+    public void addOnSlidingLocksListener(OnChangeListener listener) {
+        if (onChangeSlidingLockListeners == null)
+            onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
+        if (!onChangeSlidingLockListeners.contains(listener))
+            onChangeSlidingLockListeners.add(listener);
+    }
+
+    public static interface OnChangeListener {
+        public void onChange(boolean isChecked);
     }
 }

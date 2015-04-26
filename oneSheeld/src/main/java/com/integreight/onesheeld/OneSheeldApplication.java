@@ -52,6 +52,7 @@ public class OneSheeldApplication extends Application {
     private final String SHOWTUTORIALS_AGAIN = "showTutAgain";
     private final String TASKER_CONDITION_PIN = "taskerConditionPin";
     private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
+    private final String CAMERA_CAPTURING = "cameraCapturing";
     private final String REMEMBER_SHIELDS = "rememberedShields";
     private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
     private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
@@ -286,6 +287,14 @@ public class OneSheeldApplication extends Application {
     public boolean getTaskConditionStatus() {
         return appPreferences.getBoolean(TASKER_CONDITION_STATUS, true);
     }
+//    public void setCameraCapturing(boolean flag) {
+//        appPreferences.edit().putBoolean(CAMERA_CAPTURING, flag)
+//                .commit();
+//    }
+//
+//    public boolean isCameraCapturing() {
+//        return appPreferences.getBoolean(CAMERA_CAPTURING, false);
+//    }
 
     public void setShownTutAgain(boolean flag) {
         appPreferences.edit().putBoolean(SHOWTUTORIALS_AGAIN, !flag).commit();

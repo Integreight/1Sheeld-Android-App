@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cbs="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:id="@+id/colorsContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <View
+                android:layout_width="150dp"
+                android:layout_centerInParent="true"
+                android:id="@+id/normalColor"
+                android:background="@color/black"
+                android:layout_height="150dp" />
+
+            <LinearLayout
+                android:id="@+id/fullColor"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:background="@color/black"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:id="@+id/row1">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:id="@+id/row2">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:id="@+id/row3">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:orientation="horizontal">
+
+            <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/operation"
+                android:textOn="Normal"
+                android:textOff="Full"
+                android:layout_weight="1"
+                android:checked="true" />
+
+            <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/scale"
+                android:textOn="Colored"
+                android:layout_weight="1"
+                android:layout_marginLeft="15dp"
+                android:textOff="Gray"
+                android:checked="true" />
+
+            <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/type"
+                android:layout_marginLeft="15dp"
+                android:layout_weight="1"
+                android:textOn="Common"
+                android:textOff="Average"
+                android:checked="true" />
+        </LinearLayout>
+
+        <com.integreight.onesheeld.utils.customviews.ComboSeekBar
+            android:layout_width="match_parent"
+            android:layout_marginTop="15dp"
+            android:id="@+id/scaleSeekBar"
+            cbs:textSize="14sp"
+            cbs:myColor="@color/offWhite"
+            android:layout_height="wrap_content" />
+
+        <com.integreight.onesheeld.utils.customviews.ComboSeekBar
+            android:layout_width="match_parent"
+            android:layout_marginTop="10dp"
+            android:id="@+id/patchSeekBar"
+            cbs:textSize="14sp"
+            cbs:myColor="@color/offWhite"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <!--<com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton-->
+        <!--android:layout_width="80dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:textOn="Back"-->
+        <!--android:textOff="Front"-->
+        <!--android:layout_margin="1dp"-->
+        <!--android:checked="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_alignParentBottom="true"-->
+        <!--android:id="@+id/camera_preview_toggle" />-->
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textOn="Back"
+        android:textOff="Front"
+        android:layout_margin="1dp"
+        android:checked="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/frontBackToggle" />
+</RelativeLayout>

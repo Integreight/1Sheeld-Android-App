@@ -23,6 +23,7 @@ import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.shields.fragments.BuzzerFragment;
 import com.integreight.onesheeld.shields.fragments.CameraFragment;
 import com.integreight.onesheeld.shields.fragments.ClockFragment;
+import com.integreight.onesheeld.shields.fragments.ColorDetectionFragment;
 import com.integreight.onesheeld.shields.fragments.DataLoggerFragment;
 import com.integreight.onesheeld.shields.fragments.EmailFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
@@ -179,6 +180,8 @@ public class SelectedShieldsListFragment extends ListFragment {
             return addToCreatedListAndReturn(uiShield, new InternetFragment());
         if (uiShield.id == UIShield.NFC_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new NfcFragment());
+        if (uiShield.id == UIShield.COLOR_DETECTION_SHIELD.id)
+            return addToCreatedListAndReturn(uiShield, new ColorDetectionFragment());
 
         else {
             return new EmptyShieldFragment();

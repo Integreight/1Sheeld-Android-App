@@ -35,4 +35,9 @@
         <attr name="strokeWidthC" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="ComboSeekBar">
+        <attr name="multiline" format="boolean" />
+        <attr name="myColor" format="color" />
+        <attr name="textSize" format="dimension" />
+    </declare-styleable>
 </resources>
