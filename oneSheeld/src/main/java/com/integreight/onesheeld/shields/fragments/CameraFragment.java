@@ -1,9 +1,11 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
@@ -15,12 +17,12 @@ import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
-
-import java.io.FileOutputStream;
+import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
-    FileOutputStream fo;
     private CameraFragmentHandler fragmentHandler;
+    private ToggleButton frontBackToggle;
     private ToggleButton cameraPreviewToggle;
 
     @Override
@@ -39,7 +41,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cameraPreviewToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
+        frontBackToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
+        cameraPreviewToggle = (OneSheeldToggleButton) view.findViewById(R.id.camera_preview_toggle);
     }
 
     @Override
@@ -48,7 +51,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             if (!reInitController())
                 return;
         }
-
         ((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(cameraEventHandler);
         super.onStart();
@@ -56,25 +58,48 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     }
 
     private void removeListners() {
-        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        frontBackToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
             }
         });
+        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            }
+        });
     }
 
     private void applyListeners() {
-        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        frontBackToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 boolean feeback = ((CameraShield) getApplication().getRunningShields().get(
                         getControllerTag())).setCameraToPreview(b);
                 if (!feeback) {
                     removeListners();
-                    cameraPreviewToggle.setChecked(!b);
+                    frontBackToggle.setChecked(!b);
                     applyListeners();
                 }
+            }
+        });
+        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    if (!((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                        ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
+                    else {
+                        Rect rectangle = new Rect();
+                        Window window = getActivity().getWindow();
+                        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+                        ((CameraShield) getApplication().getRunningShields().get(
+                                getControllerTag())).showPreview();
+                    }
+                } else
+                    ((CameraShield) getApplication().getRunningShields().get(
+                            getControllerTag())).hidePreview();
             }
         });
     }
@@ -131,12 +156,12 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
         @Override
         public void setOnCameraPreviewTypeChanged(final boolean isBack) {
-            if (canChangeUI() && cameraPreviewToggle != null && getView() != null)
+            if (canChangeUI() && frontBackToggle != null && getView() != null)
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         removeListners();
-                        cameraPreviewToggle.setChecked(isBack);
+                        frontBackToggle.setChecked(isBack);
                         applyListeners();
                     }
                 });
@@ -166,17 +191,22 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             @Override
             public void run() {
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
-                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
+                        Rect rectangle = new Rect();
+                        Window window = getActivity().getWindow();
+                        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                         ((CameraShield) getApplication().getRunningShields().get(
                                 getControllerTag())).showPreview();
-                    else
+                    } else
                         ((CameraShield) getApplication().getRunningShields().get(
                                 getControllerTag())).hidePreview();
                 }
             }
         }, 500);
+        ((CameraShield) getApplication().getRunningShields().get(
+                getControllerTag())).invalidatePreview();
         removeListners();
-        cameraPreviewToggle.setChecked(((CameraShield) getApplication().getRunningShields().get(
+        frontBackToggle.setChecked(((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).isBackPreview());
         applyListeners();
     }
@@ -196,12 +226,18 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         if (canChangeUI() && getView() != null && getApplication().getRunningShields().get(
                 getControllerTag()) != null) {
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
-                if (isChecked && !activity.isMenuOpened())
+                if (isChecked && !activity.isMenuOpened() && cameraPreviewToggle.isChecked())
                     ((CameraShield) getApplication().getRunningShields().get(
                             getControllerTag())).showPreview();
-                else if (!isChecked || activity.isMenuOpened())
+                else if (!isChecked || activity.isMenuOpened()) {
                     ((CameraShield) getApplication().getRunningShields().get(
                             getControllerTag())).hidePreview();
+                    if (!isChecked && !activity.isMenuOpened()) {
+                        removeListners();
+                        cameraPreviewToggle.setChecked(false);
+                        applyListeners();
+                    }
+                }
             }
         }
     }
@@ -211,7 +247,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         if (canChangeUI() && getView() != null && getApplication().getRunningShields().get(
                 getControllerTag()) != null) {
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
-                if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && cameraPreviewToggle.isChecked())
                     ((CameraShield) getApplication().getRunningShields().get(
                             getControllerTag())).showPreview();
                 else

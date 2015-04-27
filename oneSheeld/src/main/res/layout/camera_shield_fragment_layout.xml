@@ -21,6 +21,17 @@
     <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
         android:layout_width="80dp"
         android:layout_height="wrap_content"
+        android:textOn="ON"
+        android:textOff="OFF"
+        android:layout_margin="1dp"
+        android:checked="false"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/camera_preview_toggle" />
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
         android:textOn="Back"
         android:textOff="Front"
         android:layout_margin="1dp"

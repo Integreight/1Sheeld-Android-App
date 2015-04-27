@@ -8,6 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:layout_marginTop="10dp"
         android:layout_centerInParent="true"
         android:orientation="vertical">
 
@@ -103,72 +104,84 @@
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_marginTop="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/operation"
-                android:textOn="Normal"
-                android:textOff="Full"
-                android:layout_weight="1"
-                android:checked="true" />
+                android:orientation="vertical"
+                android:paddingBottom="50dp">
 
-            <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/scale"
-                android:textOn="Colored"
-                android:layout_weight="1"
-                android:layout_marginLeft="15dp"
-                android:textOff="Gray"
-                android:checked="true" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:orientation="horizontal">
 
-            <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/type"
-                android:layout_marginLeft="15dp"
-                android:layout_weight="1"
-                android:textOn="Common"
-                android:textOff="Average"
-                android:checked="true" />
-        </LinearLayout>
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/operation"
+                        android:textOn="Normal"
+                        android:textOff="Full"
+                        android:layout_weight="1"
+                        android:checked="true" />
 
-        <com.integreight.onesheeld.utils.customviews.ComboSeekBar
-            android:layout_width="match_parent"
-            android:layout_marginTop="15dp"
-            android:id="@+id/scaleSeekBar"
-            cbs:textSize="14sp"
-            cbs:myColor="@color/offWhite"
-            android:layout_height="wrap_content" />
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/scale"
+                        android:textOn="Colored"
+                        android:layout_weight="1"
+                        android:layout_marginLeft="15dp"
+                        android:textOff="Gray"
+                        android:checked="true" />
 
-        <com.integreight.onesheeld.utils.customviews.ComboSeekBar
-            android:layout_width="match_parent"
-            android:layout_marginTop="10dp"
-            android:id="@+id/patchSeekBar"
-            cbs:textSize="14sp"
-            cbs:myColor="@color/offWhite"
-            android:layout_height="wrap_content" />
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/type"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:textOn="Common"
+                        android:textOff="Average"
+                        android:checked="true" />
+                </LinearLayout>
+
+                <com.integreight.onesheeld.utils.customviews.ComboSeekBar
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="15dp"
+                    android:id="@+id/scaleSeekBar"
+                    cbs:textSize="14sp"
+                    cbs:myColor="@color/offWhite"
+                    android:layout_height="wrap_content" />
+
+                <com.integreight.onesheeld.utils.customviews.ComboSeekBar
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:id="@+id/patchSeekBar"
+                    cbs:textSize="14sp"
+                    cbs:myColor="@color/offWhite"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
 
-    <!--<com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton-->
-        <!--android:layout_width="80dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:textOn="Back"-->
-        <!--android:textOff="Front"-->
-        <!--android:layout_margin="1dp"-->
-        <!--android:checked="true"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_alignParentBottom="true"-->
-        <!--android:id="@+id/camera_preview_toggle" />-->
+    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:textOn="ON"
+        android:textOff="OFF"
+        android:layout_margin="1dp"
+        android:checked="false"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/camera_preview_toggle" />
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
         android:layout_width="80dp"

@@ -96,6 +96,7 @@ public class CameraHeadService extends Service implements
     private Messenger colorDetectionMessenger;
     private Messenger cameraMessenger;
     int[] previewCells;
+    int[] lastPreviewCells;
     int currentColorIndex = 0;
     private final int quality = 50;
     int w = 0;
@@ -109,6 +110,7 @@ public class CameraHeadService extends Service implements
     private boolean isCapturing = false;
     public final static int SHOW_PREVIEW = 7;
     public final static int HIDE_PREVIEW = 8;
+    public final static int INVALIDATE_PREVIEW = 16;
 
     /**
      * Called when the activity is first created.
@@ -175,19 +177,11 @@ public class CameraHeadService extends Service implements
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
         int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
-        int expectedWidth =((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
+        int expectedWidth = ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
         params.x = ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);
-        try {
-            windowManager.updateViewLayout(sv, params);
-        } catch (IllegalArgumentException e) {
-        }
-        if(sv!=null)
-            sv.invalidate();
         params.width = expectedWidth;
         params.height = expectedHeight;
-//        params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
-//        params.y = (int) (150 * metrics.density + .5f);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -195,20 +189,40 @@ public class CameraHeadService extends Service implements
     }
 
     private void showPreview(float x, float y, int w, int h) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        params.width = w;
+        params.height = h + ((int) (1 * getResources().getDisplayMetrics().density + .5f));
         params.x = (int) x;
-        params.y = (int) (y - (25 * getResources().getDisplayMetrics().density + .5f));
+        params.y = (int) (y);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
         }
-        if(sv!=null)
-            sv.invalidate();
+    }
+
+    private void invalidateView() {
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        params.width = w;
-        params.height = h+((int)(1 * getResources().getDisplayMetrics().density + .5f));
-//        params.x = (int) x;
-//        params.y = (int) (y - (25 * getResources().getDisplayMetrics().density + .5f));
+        int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedWidth = ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
+        params.x = ((metrics.widthPixels / 2) - expectedWidth / 2);
+        params.y = (int) (150 * metrics.density + .5f);
+        params.width = 0;
+        params.height = 0;
+        try {
+            windowManager.updateViewLayout(sv, params);
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    private void invalidateView(float x, float y) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        params.width = 0;
+        params.height = 0;
+        params.x = (int) x;
+        params.y = (int) (y);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -233,7 +247,6 @@ public class CameraHeadService extends Service implements
         if (CameraUtils.checkCameraHardware(getApplicationContext())) {
             takenSuccessfully = false;
             isCapturing = true;
-//            Bundle extras = intent.getExtras();
             if (extras != null) {
                 String flash_mode = extras.getString("FLASH");
                 FLASH_MODE = flash_mode;
@@ -246,8 +259,6 @@ public class CameraHeadService extends Service implements
             }
 
             if (isFrontCamRequest) {
-//                if (true)
-//                    throw new ClassCastException();
                 // set flash 0ff
                 FLASH_MODE = "off";
                 // only for gingerbread and newer versions
@@ -458,8 +469,11 @@ public class CameraHeadService extends Service implements
             mCamera = Camera.open();
         } else
             mCamera = getCameraInstance();
-
         parameters = mCamera.getParameters();
+//        if (parameters.getSupportedFocusModes().contains(
+//                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
+//            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+//        }
         size = parameters.getPreviewSize();
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             mCamera.setPreviewCallback(previewCallback);
@@ -474,7 +488,7 @@ public class CameraHeadService extends Service implements
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
         int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
-        int expectedWidth = (int) ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
+        int expectedWidth = ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
         params.width = 0;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
         params.height = 0;
         params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
@@ -779,6 +793,11 @@ public class CameraHeadService extends Service implements
                     showPreview();
                 else
                     showPreview(msg.getData().getFloat("x"), msg.getData().getFloat("y"), msg.getData().getInt("w"), msg.getData().getInt("h"));
+            } else if (msg.what == INVALIDATE_PREVIEW) {
+                if (msg.getData() == null || msg.getData().get("x") == null)
+                    invalidateView();
+                else
+                    invalidateView(msg.getData().getFloat("x"), msg.getData().getFloat("y"));
             } else if (msg.what == HIDE_PREVIEW) hidePreview();
             else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
                 if (!isCapturing) {
@@ -992,6 +1011,19 @@ public class CameraHeadService extends Service implements
         }
     }
 
+    private boolean isEqualColors() {
+        if (previewCells == null || lastPreviewCells == null)
+            return false;
+        if (previewCells.length == lastPreviewCells.length) {
+            for (int i = 0; i < previewCells.length; i++) {
+                if (previewCells[i] != lastPreviewCells[i])
+                    return false;
+            }
+            return true;
+        } else
+            return false;
+    }
+
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data1, final Camera camera) {
@@ -1030,12 +1062,13 @@ public class CameraHeadService extends Service implements
                                             currentColorIndex += 1;
                                         }
                                 }
-                                if (colorDetectionMessenger != null) {
+                                if (colorDetectionMessenger != null && !isEqualColors()) {
                                     Bundle b = new Bundle();
                                     b.putIntArray("detected", previewCells);
                                     Message msg = Message.obtain(null, GET_RESULT);
                                     msg.setData(b);
                                     colorDetectionMessenger.send(msg);
+                                    lastPreviewCells = previewCells;
                                 }
                             } catch (Exception e) {
                                 Crashlytics.logException(e);

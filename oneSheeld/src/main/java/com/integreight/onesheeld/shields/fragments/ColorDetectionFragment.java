@@ -1,9 +1,11 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,7 +30,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     private OneSheeldToggleButton scaleToggle;
     private OneSheeldToggleButton typeToggle;
     private ToggleButton frontBackPreviewToggle;
-    //    private ToggleButton cameraPreviewToggle;
+    private ToggleButton cameraPreviewToggle;
     private ComboSeekBar scaleSeekBar;
     private ComboSeekBar patchSizeSeekBar;
     private String[] grayScale = new String[]{"1 Bit", "2 Bit", "4 Bit", "8 Bit"};
@@ -112,18 +114,27 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 }
             }
         });
-//        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                removeListeners();
-//                if (b)
-//                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-//                            getControllerTag())).showPreview();
-//                else ((ColorDetectionShield) getApplication().getRunningShields().get(
-//                        getControllerTag())).hidePreview();
-//                applyListeners();
-//            }
-//        });
+        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    if (!((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                        ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
+                    else {
+                        Rect rectangle = new Rect();
+                        Window window = getActivity().getWindow();
+                        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+                        colorsContainer.getLocationInWindow(colorsViewLocation);
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                    }
+                } else
+                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+                            getControllerTag())).hidePreview();
+            }
+        });
     }
 
     private void removeListeners() {
@@ -160,12 +171,11 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
             }
         });
-//        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//
-//            }
-//        });
+        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            }
+        });
     }
 
     @Override
@@ -175,7 +185,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         fullColor = (LinearLayout) view.findViewById(R.id.fullColor);
         operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
         scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
-//        cameraPreviewToggle = (OneSheeldToggleButton) view.findViewById(R.id.camera_preview_toggle);
+        cameraPreviewToggle = (OneSheeldToggleButton) view.findViewById(R.id.camera_preview_toggle);
         typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
         frontBackPreviewToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
         scaleSeekBar = (ComboSeekBar) view.findViewById(R.id.scaleSeekBar);
@@ -192,7 +202,6 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 return;
         }
         removeListeners();
-        colorsContainer.getLocationInWindow(colorsViewLocation);
         if (((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getRecevedFramesOperation() == ColorDetectionShield.RECEIVED_FRAMES.CENTER)
             enableNormalColor();
@@ -235,16 +244,25 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             @Override
             public void run() {
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
-                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked()) {
+                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked()&&!activity.isMenuOpened()&&cameraPreviewToggle.isChecked()) {
+                        Rect rectangle = new Rect();
+                        Window window = getActivity().getWindow();
+                        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                         colorsContainer.getLocationInWindow(colorsViewLocation);
                         ((ColorDetectionShield) getApplication().getRunningShields().get(
-                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1], colorsContainer.getWidth(), colorsContainer.getHeight());
+                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
                     } else
                         ((ColorDetectionShield) getApplication().getRunningShields().get(
                                 getControllerTag())).hidePreview();
                 }
             }
         }, 500);
+        Rect rectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        colorsContainer.getLocationInWindow(colorsViewLocation);
+        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
         removeListeners();
         frontBackPreviewToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).isBackPreview());
@@ -423,12 +441,22 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 getControllerTag()) != null) {
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 colorsContainer.getLocationInWindow(colorsViewLocation);
-                if (isChecked && !activity.isMenuOpened())
+                if (isChecked && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
+                    Rect rectangle = new Rect();
+                    Window window = getActivity().getWindow();
+                    window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+                    colorsContainer.getLocationInWindow(colorsViewLocation);
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1], colorsContainer.getWidth(), colorsContainer.getHeight());
-                else if (!isChecked || activity.isMenuOpened())
+                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                } else if (!isChecked || activity.isMenuOpened()) {
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
                             getControllerTag())).hidePreview();
+                    if (!isChecked && !activity.isMenuOpened()) {
+                        removeListeners();
+                        cameraPreviewToggle.setChecked(false);
+                        applyListeners();
+                    }
+                }
             }
         }
     }
@@ -439,10 +467,16 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 getControllerTag()) != null) {
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 colorsContainer.getLocationInWindow(colorsViewLocation);
-                if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && cameraPreviewToggle.isChecked()) {
+                    Rect rectangle = new Rect();
+                    Window window = getActivity().getWindow();
+                    window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+                    colorsContainer.getLocationInWindow(colorsViewLocation);
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1], colorsContainer.getWidth(), colorsContainer.getHeight());
-                else
+                            getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
+                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                } else
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
                             getControllerTag())).hidePreview();
             }

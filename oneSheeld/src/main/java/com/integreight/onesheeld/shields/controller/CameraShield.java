@@ -88,7 +88,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 isBackPreview = msg.getData().getBoolean("isBack");
                 if (eventHandler != null)
                     eventHandler.setOnCameraPreviewTypeChanged(isBackPreview);
-                isChangingPreview=false;
+                isChangingPreview = false;
             }
             super.handleMessage(msg);
         }
@@ -138,7 +138,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             return false;
         if (isChangingPreview)
             return false;
-        isChangingPreview=true;
+        isChangingPreview = true;
         Log.d("Acc", isBack + "   **");
         Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
         msg.replyTo = mMessenger;
@@ -214,6 +214,17 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     public void showPreview() {
         Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
+        msg.replyTo = mMessenger;
+        if (cameraBinder != null)
+            try {
+                cameraBinder.send(msg);
+            } catch (RemoteException e) {
+            }
+        else bindService();
+    }
+
+    public void invalidatePreview() {
+        Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
         msg.replyTo = mMessenger;
         if (cameraBinder != null)
             try {

@@ -199,7 +199,22 @@ public class ColorDetectionShield extends
             getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
+    public void invalidatePreview(float x, float y) {
+        Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
+        msg.replyTo = mMessenger;
+        Bundle b = new Bundle();
+        b.putFloat("x", x);
+        b.putFloat("y", y);
+        msg.setData(b);
+        if (mService != null)
+            try {
+                mService.send(msg);
+            } catch (RemoteException e) {
+            }
+        else
+            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
+    }
     public void hidePreview() {
         Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
