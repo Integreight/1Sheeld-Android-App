@@ -72,15 +72,11 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 isCameraBound = false;
                 if (capturesQueue == null)
                     capturesQueue = new ConcurrentLinkedQueue<>();
-                if (capture != null)
-                    capturesQueue.add(capture);
                 bindService();
             } else if (msg.what == NEXT_CAPTURE) {
                 if (msg.getData().getBoolean("takenSuccessfuly")) {
-                    capture = null;
-                } else {
-                    if (capture != null)
-                        capturesQueue.add(capture);
+                   if(capturesQueue!=null&&!capturesQueue.isEmpty())
+                       capturesQueue.poll();
                 }
                 isCameraCapturing = false;
                 checkQueue();
@@ -97,14 +93,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     });
 
     void bindService() {
-//        if (!getApplication().getRunningShields().containsKey(UIShield.COLOR_DETECTION_SHIELD.name()))
-//            getActivity().stopService(new Intent(getActivity(), CameraHeadService.class));
-////        getActivity().stopService(new Intent(getActivity(), CameraAidlService.class));
-//        try {
-//            if (cameraServiceConnector != null)
-//                getActivity().unbindService(cameraServiceConnector);
-//        } catch (Exception e) {
-//        }
         getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
     }
 
@@ -183,7 +171,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private synchronized void checkQueue() {
         if (capturesQueue != null && !capturesQueue.isEmpty() && !isCameraCapturing) {
             if (isCameraBound) {
-                capture = capturesQueue.poll();
+                capture = capturesQueue.peek();
                 if (capture.isFront())
                     sendFrontCaptureImageIntent(capture);
                 else
@@ -355,7 +343,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 try {
                     cameraBinder.send(msg);
                 } catch (RemoteException e) {
-                    capturesQueue.add(camCapture);
+//                    capturesQueue.add(camCapture);
+                    checkQueue();
                 }
             } else bindService();
             Log.d("ImageTakin", "OnTakeBack()");
@@ -374,8 +363,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 try {
                     cameraBinder.send(msg);
                 } catch (RemoteException e) {
-                    if (capturesQueue != null)
-                        capturesQueue.add(camCapture);
+                  checkQueue();
                 }
 //                    service.takeImage(front_translucent);
             } else {
