@@ -41,8 +41,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     public static final int ADD_TO_QUEUE = 2;
     public static final int CRASHED = 3;
     public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5, NEXT_CAPTURE = 14;
-    public final static int SHOW_PREVIEW = 7;
-    public final static int HIDE_PREVIEW = 8;
     CameraCapture capture;
     private boolean isCameraCapturing = false;
 
@@ -215,7 +213,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
 
     public void showPreview() {
-        Message msg = Message.obtain(null, SHOW_PREVIEW);
+        Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         if (cameraBinder != null)
             try {
@@ -226,7 +224,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
     public void hidePreview() {
-        Message msg = Message.obtain(null, HIDE_PREVIEW);
+        Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
         try {
             if (cameraBinder != null)

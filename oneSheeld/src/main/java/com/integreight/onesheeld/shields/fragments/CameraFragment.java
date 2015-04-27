@@ -162,17 +162,19 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
-            uiHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    ((CameraShield) getApplication().getRunningShields().get(
-                            getControllerTag())).showPreview();
+        uiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
+                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                        ((CameraShield) getApplication().getRunningShields().get(
+                                getControllerTag())).showPreview();
+                    else
+                        ((CameraShield) getApplication().getRunningShields().get(
+                                getControllerTag())).hidePreview();
                 }
-            }, 500);
-        else
-            ((CameraShield) getApplication().getRunningShields().get(
-                    getControllerTag())).hidePreview();
+            }
+        }, 500);
         removeListners();
         cameraPreviewToggle.setChecked(((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).isBackPreview());

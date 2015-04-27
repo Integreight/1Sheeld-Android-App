@@ -5,11 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.customviews.ComboSeekBar;
@@ -17,18 +20,21 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 
 import java.util.Arrays;
 
-public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionFragment> implements ColorDetectionShield.ColorDetectionEventHandler {
-    View normalColor;
-    LinearLayout fullColor;
-    OneSheeldToggleButton operationToggle;
-    OneSheeldToggleButton scaleToggle;
-    OneSheeldToggleButton typeToggle;
-    private ToggleButton cameraPreviewToggle;
-    ComboSeekBar scaleSeekBar;
-    ComboSeekBar patchSizeSeekBar;
+public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionFragment> implements ColorDetectionShield.ColorDetectionEventHandler, ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
+    private View normalColor;
+    private LinearLayout fullColor;
+    private View colorsContainer;
+    private OneSheeldToggleButton operationToggle;
+    private OneSheeldToggleButton scaleToggle;
+    private OneSheeldToggleButton typeToggle;
+    private ToggleButton frontBackPreviewToggle;
+    //    private ToggleButton cameraPreviewToggle;
+    private ComboSeekBar scaleSeekBar;
+    private ComboSeekBar patchSizeSeekBar;
     private String[] grayScale = new String[]{"1 Bit", "2 Bit", "4 Bit", "8 Bit"};
     private String[] rgbScale = new String[]{"3 Bit", "6 Bit", "9 Bit", "12 Bit", "15 Bit", "18 Bit", "24 Bit"};
     private String[] patchSizes = new String[]{"Small", "Medium", "Large"};
+    private int[] colorsViewLocation = new int[2];
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -36,6 +42,9 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         // Inflate the layout for this fragment
         v = inflater.inflate(R.layout.color_detection_shield_fragment_layout, container,
                 false);
+        if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
+            ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
+        activity.registerSlidingMenuListner(this);
         setHasOptionsMenu(true);
         return v;
     }
@@ -91,18 +100,30 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                         getControllerTag())).setPatchSize(i == 0 ? ColorDetectionShield.PATCH_SIZE.SMALL : i == 1 ? ColorDetectionShield.PATCH_SIZE.MEDIUM : ColorDetectionShield.PATCH_SIZE.LARGE);
             }
         });
-        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        frontBackPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 boolean feeback = ((ColorDetectionShield) getApplication().getRunningShields().get(
                         getControllerTag())).setCameraToPreview(b);
                 if (!feeback) {
                     removeListeners();
-                    cameraPreviewToggle.setChecked(!b);
+                    frontBackPreviewToggle.setChecked(!b);
                     applyListeners();
                 }
             }
         });
+//        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                removeListeners();
+//                if (b)
+//                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+//                            getControllerTag())).showPreview();
+//                else ((ColorDetectionShield) getApplication().getRunningShields().get(
+//                        getControllerTag())).hidePreview();
+//                applyListeners();
+//            }
+//        });
     }
 
     private void removeListeners() {
@@ -133,12 +154,18 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
             }
         });
-        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        frontBackPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
 
             }
         });
+//        cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//
+//            }
+//        });
     }
 
     @Override
@@ -148,10 +175,12 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         fullColor = (LinearLayout) view.findViewById(R.id.fullColor);
         operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
         scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
+//        cameraPreviewToggle = (OneSheeldToggleButton) view.findViewById(R.id.camera_preview_toggle);
         typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
-        cameraPreviewToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
+        frontBackPreviewToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
         scaleSeekBar = (ComboSeekBar) view.findViewById(R.id.scaleSeekBar);
         patchSizeSeekBar = (ComboSeekBar) view.findViewById(R.id.patchSeekBar);
+        colorsContainer = view.findViewById(R.id.colorsContainer);
         ((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).setColorEventHandler(this);
     }
@@ -163,6 +192,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 return;
         }
         removeListeners();
+        colorsContainer.getLocationInWindow(colorsViewLocation);
         if (((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getRecevedFramesOperation() == ColorDetectionShield.RECEIVED_FRAMES.CENTER)
             enableNormalColor();
@@ -201,13 +231,33 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-        cameraPreviewToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
+        uiHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
+                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked()) {
+                        colorsContainer.getLocationInWindow(colorsViewLocation);
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1], colorsContainer.getWidth(), colorsContainer.getHeight());
+                    } else
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).hidePreview();
+                }
+            }
+        }, 500);
+        removeListeners();
+        frontBackPreviewToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).isBackPreview());
-
+        applyListeners();
     }
 
     @Override
     public void onPause() {
+        if (getApplication().getRunningShields().get(
+                getControllerTag()) != null)
+            ((ColorDetectionShield) getApplication().getRunningShields().get(
+                    getControllerTag())).hidePreview();
+        getView().invalidate();
         super.onPause();
     }
 
@@ -298,7 +348,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             notifyNormalColor();
             operationToggle.post(new Runnable() {
                 @Override
-                public void run() {removeListeners();
+                public void run() {
+                    removeListeners();
                     if (operationToggle != null && getView() != null)
                         operationToggle.setChecked(true);
                     applyListeners();
@@ -355,14 +406,46 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
 
     @Override
     public void onCameraPreviewTypeChanged(final boolean isBack) {
-        if (canChangeUI() && getView() != null && cameraPreviewToggle != null)
-            cameraPreviewToggle.post(new Runnable() {
+        if (canChangeUI() && getView() != null && frontBackPreviewToggle != null)
+            frontBackPreviewToggle.post(new Runnable() {
                 @Override
                 public void run() {
                     removeListeners();
-                    cameraPreviewToggle.setChecked(isBack);
+                    frontBackPreviewToggle.setChecked(isBack);
                     applyListeners();
                 }
             });
+    }
+
+    @Override
+    public void onChange(boolean isChecked) {
+        if (canChangeUI() && getView() != null && getApplication().getRunningShields().get(
+                getControllerTag()) != null) {
+            if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
+                colorsContainer.getLocationInWindow(colorsViewLocation);
+                if (isChecked && !activity.isMenuOpened())
+                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1], colorsContainer.getWidth(), colorsContainer.getHeight());
+                else if (!isChecked || activity.isMenuOpened())
+                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+                            getControllerTag())).hidePreview();
+            }
+        }
+    }
+
+    @Override
+    public void onMenuClosed() {
+        if (canChangeUI() && getView() != null && getApplication().getRunningShields().get(
+                getControllerTag()) != null) {
+            if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
+                colorsContainer.getLocationInWindow(colorsViewLocation);
+                if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
+                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1], colorsContainer.getWidth(), colorsContainer.getHeight());
+                else
+                    ((ColorDetectionShield) getApplication().getRunningShields().get(
+                            getControllerTag())).hidePreview();
+            }
+        }
     }
 }

@@ -68,7 +68,7 @@ public class CameraAidlService extends Service {
                     Intent intent1 = new Intent(CameraUtils.CAMERA_CAPTURE_RECEIVER_EVENT_NAME);
                     LocalBroadcastManager.getInstance(CameraAidlService.this).sendBroadcast(intent1);
                 }
-            } else if (msg.what == CameraShield.SHOW_PREVIEW || msg.what == CameraShield.HIDE_PREVIEW) {
+            } else if (msg.what == CameraHeadService.SHOW_PREVIEW || msg.what == CameraHeadService.HIDE_PREVIEW) {
                 try {
                     Message msgSent = Message.obtain(null, msg.what);
                     if (mService != null)

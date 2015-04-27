@@ -107,6 +107,8 @@ public class CameraHeadService extends Service implements
     private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
     private boolean isBackPreview = true;
     private boolean isCapturing = false;
+    public final static int SHOW_PREVIEW = 7;
+    public final static int HIDE_PREVIEW = 8;
 
     /**
      * Called when the activity is first created.
@@ -173,12 +175,40 @@ public class CameraHeadService extends Service implements
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
         int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
-        int expectedWidth = (int) ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
-        params.width = expectedWidth;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
+        int expectedWidth =((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
+        params.x = ((metrics.widthPixels / 2) - expectedWidth / 2);
+        params.y = (int) (150 * metrics.density + .5f);
+        try {
+            windowManager.updateViewLayout(sv, params);
+        } catch (IllegalArgumentException e) {
+        }
+        if(sv!=null)
+            sv.invalidate();
+        params.width = expectedWidth;
         params.height = expectedHeight;
-//        params.x = (int) ((metrics.widthPixels / 2) - params.width / 2);
-//        sv.setLayoutParams(params);
-//        sv.requestLayout();
+//        params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
+//        params.y = (int) (150 * metrics.density + .5f);
+        try {
+            windowManager.updateViewLayout(sv, params);
+        } catch (IllegalArgumentException e) {
+        }
+    }
+
+    private void showPreview(float x, float y, int w, int h) {
+        params.x = (int) x;
+        params.y = (int) (y - (25 * getResources().getDisplayMetrics().density + .5f));
+        try {
+            windowManager.updateViewLayout(sv, params);
+        } catch (IllegalArgumentException e) {
+        }
+        if(sv!=null)
+            sv.invalidate();
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        params.width = w;
+        params.height = h+((int)(1 * getResources().getDisplayMetrics().density + .5f));
+//        params.x = (int) x;
+//        params.y = (int) (y - (25 * getResources().getDisplayMetrics().density + .5f));
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -744,8 +774,12 @@ public class CameraHeadService extends Service implements
             } else if (msg.what == CAPTURE_IMAGE) {
                 isCapturing = true;
                 takeImage(msg.getData());
-            } else if (msg.what == CameraShield.SHOW_PREVIEW) showPreview();
-            else if (msg.what == CameraShield.HIDE_PREVIEW) hidePreview();
+            } else if (msg.what == SHOW_PREVIEW) {
+                if (msg.getData() == null || msg.getData().get("x") == null)
+                    showPreview();
+                else
+                    showPreview(msg.getData().getFloat("x"), msg.getData().getFloat("y"), msg.getData().getInt("w"), msg.getData().getInt("h"));
+            } else if (msg.what == HIDE_PREVIEW) hidePreview();
             else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
                 if (!isCapturing) {
                     if (msg.getData().getBoolean("isBack")) {
@@ -786,11 +820,13 @@ public class CameraHeadService extends Service implements
                             } catch (IOException e) {
                                 handler.post(new Runnable() {
 
-                                                 @Override
-                                                 public void run() {
-                                                     Toast.makeText(getApplicationContext(),
-                                                             "API dosen't support front camera",
-                                                             Toast.LENGTH_LONG).show();}});
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "API dosen't support front camera",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
                             }
                         }
                         notifyPreviewTypeChanged(isBackPreview, true);
