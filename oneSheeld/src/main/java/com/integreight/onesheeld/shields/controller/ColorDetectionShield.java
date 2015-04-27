@@ -47,7 +47,6 @@ public class ColorDetectionShield extends
     private ShieldFrame frame;
     int[] detected;
     ColorPalette currentPallete = ColorPalette._24_BIT_RGB;
-    private float[][] hsv = null;
     private PATCH_SIZE patchSize = PATCH_SIZE.LARGE;
     public boolean isBackPreview = true;
 
@@ -264,7 +263,6 @@ public class ColorDetectionShield extends
                     public void handleMessage(Message msg) {
                         if (msg.what == CameraHeadService.GET_RESULT && msg.getData() != null) {
                             detected = msg.getData().getIntArray("detected");
-                            hsv = new float[recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? 9 : 1][3];
                             frame = new ShieldFrame(SHIELD_ID, recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES ? SEND_FULL_COLORS : SEND_NORMAL_COLOR);
                             int i = 0;
                             for (int det : detected) {
@@ -272,23 +270,12 @@ public class ColorDetectionShield extends
                                 detected[i] = color;
                                 frame.addIntegerArgument(3, color);
                                 fullFrame = true;
-                                if (i < hsv.length) {
-                                    Color.colorToHSV(color, hsv[i]);
-                                    int h = Math.round(hsv[i][0]);
-                                    int s = Math.round(hsv[i][1] * 100);
-                                    int v = Math.round(hsv[i][2] * 100);
-                                    int hsvColor = h << 16 | s << 8 | v;
-                                    frame.addIntegerArgument(4, hsvColor);
-                                } else {
-                                    fullFrame = false;
-                                    break;
-                                }
                                 i++;
                             }
                             if (fullFrame && colorEventHandler != null) {
                                 colorEventHandler.onColorChanged(detected);
                             }
-                            if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= 100) {
+                            if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= (recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES?200:100)) {
                                 sendShieldFrame(frame);
                                 lastSentMS = SystemClock.elapsedRealtime();
                             }
