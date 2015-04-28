@@ -182,6 +182,8 @@ public class CameraHeadService extends Service implements
         params.y = (int) (150 * metrics.density + .5f);
         params.width = expectedWidth;
         params.height = expectedHeight;
+//        if (sv!=null)
+//            sv.setVisibility(View.VISIBLE);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -195,6 +197,8 @@ public class CameraHeadService extends Service implements
         params.height = h + ((int) (1 * getResources().getDisplayMetrics().density + .5f));
         params.x = (int) x;
         params.y = (int) (y);
+//        if (sv!=null)
+//            sv.setVisibility(View.VISIBLE);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -210,6 +214,8 @@ public class CameraHeadService extends Service implements
         params.y = (int) (150 * metrics.density + .5f);
         params.width = 0;
         params.height = 0;
+//        if (sv!=null)
+//            sv.setVisibility(View.INVISIBLE);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -223,6 +229,8 @@ public class CameraHeadService extends Service implements
         params.height = 0;
         params.x = (int) x;
         params.y = (int) (y);
+//        if (sv!=null)
+//            sv.setVisibility(View.INVISIBLE);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -232,6 +240,8 @@ public class CameraHeadService extends Service implements
     private void hidePreview() {
         params.width = 0;
         params.height = 0;
+//        if (sv!=null)
+//        sv.setVisibility(View.INVISIBLE);
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -498,6 +508,7 @@ public class CameraHeadService extends Service implements
         params = (WindowManager.LayoutParams) sv.getLayoutParams();
         sHolder = sv.getHolder();
         sHolder.addCallback(this);
+//        sv.setVisibility(View.INVISIBLE);
 
         mOrientationEventListener = new OrientationEventListener(this,
                 SensorManager.SENSOR_DELAY_NORMAL) {
@@ -735,6 +746,7 @@ public class CameraHeadService extends Service implements
                 cameraMessenger.send(msg);
         } catch (RemoteException e) {
         }
+        resetPreview(true);
     }
 
     private void notifyPreviewTypeChanged(boolean isBack, boolean forCamerShield) {
@@ -915,26 +927,15 @@ public class CameraHeadService extends Service implements
             // preview surface does not exist
             return;
         }
-
-        // stop preview before making changes
-//        try {
-//            queue.removeCallbacks(null);
-//            mCamera.setPreviewCallback(null);
-//            mCamera.stopPreview();
-//        } catch (Exception e) {
-//            // ignore: tried to stop a non-existent preview
-//        }
-
-        // set preview size and make any resize, rotate or
-        // reformatting changes here
-
-        // start preview with new settings
         if (mCamera == null)
             start(isCamera);
         else {
             try {
                 mCamera.setPreviewDisplay(sHolder);
-                mCamera.setDisplayOrientation(90);
+                try {
+                    mCamera.setDisplayOrientation(90);
+                } catch (RuntimeException e) {
+                }
                 try {
                     mCamera.startPreview();
                 } catch (Exception e) {

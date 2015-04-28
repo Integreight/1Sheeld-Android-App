@@ -341,6 +341,7 @@ public class ColorDetectionShield extends
         public void onServiceConnected(ComponentName className,
                                        IBinder binder) {
             notifyHardwareOfShieldSelection();
+            isCameraBound = true;
             mService = new Messenger(binder);
             Message msg = Message.obtain(null, CameraHeadService.GET_RESULT);
             msg.replyTo = mMessenger;
@@ -351,7 +352,6 @@ public class ColorDetectionShield extends
                 notifyColorDetectionOperation();
             } catch (RemoteException e) {
             }
-            isCameraBound = true;
         }
 
         public void onServiceDisconnected(ComponentName className) {

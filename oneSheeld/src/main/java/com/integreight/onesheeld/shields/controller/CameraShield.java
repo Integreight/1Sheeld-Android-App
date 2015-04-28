@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -49,6 +50,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     Handler UIHandler;
     public boolean isBackPreview = true;
     private CameraEventHandler eventHandler;
+    private boolean hasFrontCamera = false;
 
     public CameraShield() {
 
@@ -75,8 +77,8 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 bindService();
             } else if (msg.what == NEXT_CAPTURE) {
                 if (msg.getData().getBoolean("takenSuccessfuly")) {
-                   if(capturesQueue!=null&&!capturesQueue.isEmpty())
-                       capturesQueue.poll();
+                    if (capturesQueue != null && !capturesQueue.isEmpty())
+                        capturesQueue.poll();
                 }
                 isCameraCapturing = false;
                 checkQueue();
@@ -109,6 +111,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         } else {
             if (selectionAction != null)
                 selectionAction.onSuccess();
+            hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
             bindService();
             UIHandler = new Handler();
         }
@@ -172,10 +175,21 @@ public class CameraShield extends ControllerParent<CameraShield> implements
         if (capturesQueue != null && !capturesQueue.isEmpty() && !isCameraCapturing) {
             if (isCameraBound) {
                 capture = capturesQueue.peek();
-                if (capture.isFront())
-                    sendFrontCaptureImageIntent(capture);
-                else
+                if (capture.isFront()) {
+                    if (hasFrontCamera)
+                        sendFrontCaptureImageIntent(capture);
+                    else {
+                        Toast.makeText(getActivity(), "Your device doesn't have a front camera", Toast.LENGTH_SHORT).show();
+                        capturesQueue.poll();
+                    }
+                } else {
+//                    if (CameraUtils.checkCameraHardware(getActivity().getApplicationContext())) {
                     sendCaptureImageIntent(capture);
+//                    } else {
+//                        Toast.makeText(getActivity(), "Your device doesn't have a camera", Toast.LENGTH_SHORT).show();
+//                        capturesQueue.poll();
+//                    }
+                }
             } else bindService();
         }
     }
@@ -363,7 +377,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 try {
                     cameraBinder.send(msg);
                 } catch (RemoteException e) {
-                  checkQueue();
+                    checkQueue();
                 }
 //                    service.takeImage(front_translucent);
             } else {
