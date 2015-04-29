@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.fragments;
 import android.nfc.NdefRecord;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -11,12 +12,14 @@ import android.widget.ExpandableListView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.NfcNdefRecordsExpandableAdapter;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.NfcShield;
 import com.integreight.onesheeld.shields.controller.NfcShield.NFCEventHandler;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 import java.util.ArrayList;
@@ -30,7 +33,7 @@ import java.util.List;
 public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
 
     ExpandableListView nfcRecords;
-    OneSheeldTextView cardDetails;
+    OneSheeldTextView cardDetails,noCard;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -43,6 +46,14 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
         super.onViewCreated(view, savedInstanceState);
         nfcRecords =(ExpandableListView) v.findViewById(R.id.nfc_Records_list);
         cardDetails =(OneSheeldTextView) v.findViewById(R.id.nfc_card_details);
+        noCard = (OneSheeldTextView) v.findViewById(R.id.nfc_no_card);
+
+        nfcRecords.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                return true;
+            }
+        });
     }
 
     @Override
@@ -70,6 +81,7 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
     public void onResume() {
         ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(nfcEventHandler);
         super.onResume();
+        ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).displayData();
     }
 
     @Override
@@ -82,12 +94,14 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
         @Override
         public void ReadNdef(String id,int maxSize,int usedSize,NdefRecord[] data) {
             //handle data display
-            cardDetails.setText("Tag ID :     \t"+id);
+            noCard.setVisibility(View.GONE);
+            cardDetails.setText("Tag ID :     \t" + id);
             cardDetails.append("\n");
-            cardDetails.append("Max Size :\t"+String.valueOf(maxSize)+" bytes \t\t Used Size : "+String.valueOf(usedSize)+" bytes");
+            cardDetails.append("Max Size :\t"+String.valueOf(maxSize)+" bytes ");
             cardDetails.append("\n");
-            cardDetails.append("No. of Records : "+String.valueOf(data.length)+" record(s)");
-
+            cardDetails.append("Used Size : "+String.valueOf(usedSize)+" bytes");
+            cardDetails.append("\n");
+            cardDetails.append("No. of Records : " + String.valueOf(data.length) + " record(s)");
 
             ArrayList<NdefRecord> Records = new ArrayList<NdefRecord>();
 
