@@ -148,7 +148,7 @@ public enum UIShield {
             InternetShield.class), NFC_SHIELD((byte) 0x16, "NFC", 0xff03d203,
             R.drawable.shields_list_nfc_symbol, false, NfcShield.class, 1),
             COLOR_DETECTION_SHIELD((byte) 0x05, "Color Detector",
-            0xffde1f26, R.drawable.shields_list_internet_symbol, false,
+            0xffde1f26, R.drawable.shields_list_color_detector_symbol, false,
             ColorDetectionShield.class, 1);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,

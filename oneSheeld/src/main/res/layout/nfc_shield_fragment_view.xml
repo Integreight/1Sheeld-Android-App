@@ -11,7 +11,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/internet_shield_screen_logo" />
+        android:src="@drawable/nfc_shield_screen_logo" />
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldTextView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/nfc_card_details"
