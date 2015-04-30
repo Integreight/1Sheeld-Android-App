@@ -18,26 +18,27 @@
         android:background="@drawable/camera_shield_screen_logo"
         android:contentDescription="@string/app_name" />
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:textOn="ON"
-        android:textOff="OFF"
-        android:layout_margin="1dp"
-        android:checked="false"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/camera_preview_toggle" />
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-        android:layout_width="80dp"
+    <CheckBox
+        android:id="@+id/frontBackToggle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="Back"
-        android:textOff="Front"
-        android:layout_margin="1dp"
-        android:checked="true"
-        android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:id="@+id/frontBackToggle" />
+        android:layout_alignParentRight="true"
+        android:layout_margin="3dp"
+        android:background="@drawable/camera_frontback_checkbox_selelctor"
+        android:button="@null" />
+
+    <CheckBox
+        android:id="@+id/camera_preview_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@id/frontBackToggle"
+        android:background="@drawable/camera_preview_checkbox_selelctor"
+        android:button="@null"
+        android:checked="false" />
 
 </RelativeLayout>

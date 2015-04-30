@@ -176,7 +176,7 @@ public class CameraHeadService extends Service implements
     private void showPreview() {
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
+        int expectedHeight = metrics.heightPixels - ((int) (280 * metrics.density + .5f));
         int expectedWidth = ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
         params.x = ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);

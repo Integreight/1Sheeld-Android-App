@@ -29,8 +29,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     private OneSheeldToggleButton operationToggle;
     private OneSheeldToggleButton scaleToggle;
     private OneSheeldToggleButton typeToggle;
-    private ToggleButton frontBackPreviewToggle;
-    private ToggleButton cameraPreviewToggle;
+    private CheckBox frontBackPreviewToggle;
+    private CheckBox cameraPreviewToggle;
     private ComboSeekBar scaleSeekBar;
     private ComboSeekBar patchSizeSeekBar;
     private String[] grayScale = new String[]{"1 Bit", "2 Bit", "4 Bit", "8 Bit"};
@@ -185,9 +185,9 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         fullColor = (LinearLayout) view.findViewById(R.id.fullColor);
         operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
         scaleToggle = (OneSheeldToggleButton) view.findViewById(R.id.scale);
-        cameraPreviewToggle = (OneSheeldToggleButton) view.findViewById(R.id.camera_preview_toggle);
+        cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         typeToggle = (OneSheeldToggleButton) view.findViewById(R.id.type);
-        frontBackPreviewToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
+        frontBackPreviewToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
         scaleSeekBar = (ComboSeekBar) view.findViewById(R.id.scaleSeekBar);
         patchSizeSeekBar = (ComboSeekBar) view.findViewById(R.id.patchSeekBar);
         colorsContainer = view.findViewById(R.id.colorsContainer);

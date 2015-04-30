@@ -21,8 +21,8 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
     private CameraFragmentHandler fragmentHandler;
-    private ToggleButton frontBackToggle;
-    private ToggleButton cameraPreviewToggle;
+    private CheckBox frontBackToggle;
+    private CheckBox cameraPreviewToggle;
     private View camerLogo;
 
     @Override
@@ -41,8 +41,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        frontBackToggle = (ToggleButton) view.findViewById(R.id.frontBackToggle);
-        cameraPreviewToggle = (OneSheeldToggleButton) view.findViewById(R.id.camera_preview_toggle);
+        frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
+        cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         camerLogo = view.findViewById(R.id.camera_log);
     }
 

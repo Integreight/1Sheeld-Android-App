@@ -7,9 +7,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_marginTop="10dp"
         android:layout_centerInParent="true"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -18,96 +18,96 @@
             android:layout_height="wrap_content">
 
             <View
-                android:layout_width="150dp"
-                android:layout_centerInParent="true"
                 android:id="@+id/normalColor"
-                android:background="@color/black"
-                android:layout_height="150dp" />
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                android:background="@color/black" />
 
             <LinearLayout
                 android:id="@+id/fullColor"
-                android:visibility="gone"
-                android:layout_centerInParent="true"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
+                android:layout_centerInParent="true"
                 android:background="@color/black"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <LinearLayout
+                    android:id="@+id/row1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:id="@+id/row1">
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/row2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:id="@+id/row2">
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/row3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:orientation="horizontal"
-                    android:id="@+id/row3">
+                    android:orientation="horizontal">
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_weight="1"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_marginTop="20dp"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="20dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -119,78 +119,78 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
+                    android:orientation="horizontal"
                     android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:orientation="horizontal">
+                    android:paddingRight="10dp">
 
                     <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:id="@+id/operation"
-                        android:textOn="Normal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:checked="true"
                         android:textOff="Full"
-                        android:layout_weight="1"
-                        android:checked="true" />
+                        android:textOn="Normal" />
 
                     <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:id="@+id/scale"
-                        android:textOn="Colored"
-                        android:layout_weight="1"
-                        android:layout_marginLeft="15dp"
-                        android:textOff="Gray"
-                        android:checked="true" />
-
-                    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:id="@+id/type"
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
-                        android:textOn="Common"
+                        android:checked="true"
+                        android:textOff="Gray"
+                        android:textOn="Colored" />
+
+                    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+                        android:id="@+id/type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_weight="1"
+                        android:checked="true"
                         android:textOff="Average"
-                        android:checked="true" />
+                        android:textOn="Common" />
                 </LinearLayout>
 
                 <com.integreight.onesheeld.utils.customviews.ComboSeekBar
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="15dp"
                     android:id="@+id/scaleSeekBar"
-                    cbs:textSize="14sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
                     cbs:myColor="@color/offWhite"
-                    android:layout_height="wrap_content" />
+                    cbs:textSize="14sp" />
 
                 <com.integreight.onesheeld.utils.customviews.ComboSeekBar
-                    android:layout_width="match_parent"
-                    android:layout_marginTop="10dp"
                     android:id="@+id/patchSeekBar"
-                    cbs:textSize="14sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     cbs:myColor="@color/offWhite"
-                    android:layout_height="wrap_content" />
+                    cbs:textSize="14sp" />
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-        android:layout_width="80dp"
+    <CheckBox
+        android:id="@+id/frontBackToggle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textOn="ON"
-        android:textOff="OFF"
-        android:layout_margin="1dp"
-        android:checked="false"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:id="@+id/camera_preview_toggle" />
-
-    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
-        android:layout_width="80dp"
-        android:layout_height="wrap_content"
-        android:textOn="Back"
-        android:textOff="Front"
-        android:layout_margin="1dp"
-        android:checked="true"
         android:layout_alignParentRight="true"
+        android:layout_margin="3dp"
+        android:background="@drawable/camera_frontback_checkbox_selelctor"
+        android:button="@null" />
+
+    <CheckBox
+        android:id="@+id/camera_preview_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/frontBackToggle" />
+        android:layout_marginBottom="3dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@id/frontBackToggle"
+        android:background="@drawable/camera_preview_checkbox_selelctor"
+        android:button="@null"
+        android:checked="false" />
 </RelativeLayout>
