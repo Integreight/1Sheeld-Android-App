@@ -224,7 +224,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                 && getControllerTag() != null
                 && getApplication().getRunningShields().get(getControllerTag()) != null && getApplication()
                 .getRunningShields().get(getControllerTag())
-                .isHasForgroundView());
+                .isHasForgroundView() && getView() != null);
     }
 
     @Override

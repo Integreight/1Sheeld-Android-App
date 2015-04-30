@@ -235,11 +235,13 @@ public class InternetShield extends
                     break;
                 case REQUEST.DEL_ALL_HEADERS:
                     requestID = frame.getArgumentAsInteger(0);
-                    InternetManager.getInstance().getRequest(requestID).removeAllHeaders();
+                    if (InternetManager.getInstance().getRequest(requestID) != null)
+                        InternetManager.getInstance().getRequest(requestID).removeAllHeaders();
                     break;
                 case REQUEST.DEL_ALL_PARAMS:
                     requestID = frame.getArgumentAsInteger(0);
-                    InternetManager.getInstance().getRequest(requestID).removeAllParams();
+                    if (InternetManager.getInstance().getRequest(requestID) != null)
+                        InternetManager.getInstance().getRequest(requestID).removeAllParams();
                     break;
                 case REQUEST.SET_CONTENT_TYPE:
                     requestID = frame.getArgumentAsInteger(0);
