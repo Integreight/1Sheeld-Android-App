@@ -117,13 +117,14 @@ public class ShieldsOperations extends BaseContainerFragment {
                     public void run() {
                         TextView shieldName = (OneSheeldTextView) activity
                                 .findViewById(R.id.shieldName);
+                        if(shieldName!=null){
                         shieldName
                                 .setVisibility(((ShieldFragmentParent<?>) mContent).shieldName
                                         .equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
                                                 .getName()) ? View.GONE
                                         : View.VISIBLE);
                         shieldName
-                                .setText(((ShieldFragmentParent<?>) mContent).shieldName);
+                                .setText(((ShieldFragmentParent<?>) mContent).shieldName);}
                     }
                 });
             } catch (Exception e) {

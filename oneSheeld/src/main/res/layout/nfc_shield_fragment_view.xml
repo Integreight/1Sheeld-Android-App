@@ -11,35 +11,55 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/internet_shield_screen_logo" />
+        android:src="@drawable/nfc_shield_screen_logo" />
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldTextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/nfc_card_details"
+        android:id="@+id/nfc_no_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="left|center_vertical"
-        android:layout_below="@id/nfc_shield_logo_imageview"
+        android:gravity="center"
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
-        android:paddingTop="15dp"
+        android:paddingTop="20dp"
+        android:layout_below="@+id/nfc_shield_logo_imageview"
         android:textColor="@color/textColorOnDark"
-        android:textSize="15sp" />
+        android:textSize="25sp"
+        android:text="Approach NFC tag!"/>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/nfc_card_details"
+        android:layout_below="@id/nfc_no_card"
+        android:paddingBottom="30dp"
         android:fillViewport="true"
         android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <com.integreight.onesheeld.utils.customviews.OneSheeldTextView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/nfc_card_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left|center_vertical"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="15dp"
+                android:textColor="@color/textColorOnDark"
+                android:textSize="15sp"/>
+
+
             <ExpandableListView
                 android:id="@+id/nfc_Records_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></ExpandableListView>
+                android:layout_height="wrap_content"
+                android:cacheColorHint="@color/transparent"
+                android:divider="@color/textColorOnDark"
+                android:dividerHeight=".5dp"
+                android:footerDividersEnabled="false"
+                android:groupIndicator="@drawable/internet_expandable_indicator"></ExpandableListView>
         </LinearLayout>
     </ScrollView>
 

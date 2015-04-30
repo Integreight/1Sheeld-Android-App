@@ -12,7 +12,6 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.NfcShield;
-import com.integreight.onesheeld.utils.Log;
 
 import java.util.ArrayList;
 
@@ -22,9 +21,9 @@ import java.util.ArrayList;
 public class NfcNdefRecordsExpandableAdapter extends BaseExpandableListAdapter{
 
     private Context _context;
-    private ArrayList<NdefRecord> _listNdefRecords;
+    private ArrayList<ArrayList<String>> _listNdefRecords;
 
-    public NfcNdefRecordsExpandableAdapter(Context context,ArrayList<NdefRecord> listNdefRecords){
+    public NfcNdefRecordsExpandableAdapter(Context context,ArrayList<ArrayList<String>> listNdefRecords){
         this._context = context;
         this._listNdefRecords = listNdefRecords;
     }
@@ -36,7 +35,7 @@ public class NfcNdefRecordsExpandableAdapter extends BaseExpandableListAdapter{
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        return 2;
+        return this._listNdefRecords.get(groupPosition).size();
     }
 
     @Override
@@ -46,19 +45,7 @@ public class NfcNdefRecordsExpandableAdapter extends BaseExpandableListAdapter{
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        switch (childPosition){
-            case 0:
-                if (((NfcShield) ((OneSheeldApplication) this._context.getApplicationContext()).getRunningShields().get(UIShield.NFC_SHIELD.name()))  != null) {
-                    String type = ((NfcShield) ((OneSheeldApplication) this._context.getApplicationContext()).getRunningShields().get(UIShield.NFC_SHIELD.name())).getRecordType(groupPosition);
-                    return type.getBytes();
-                }else{
-                    return (this._listNdefRecords.get(groupPosition)).getType();
-                }
-            case 1:
-                return (this._listNdefRecords.get(groupPosition)).getPayload();
-            default:
-                return new byte[0];
-        }
+        return this._listNdefRecords.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -89,7 +76,7 @@ public class NfcNdefRecordsExpandableAdapter extends BaseExpandableListAdapter{
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        String recordData = new String((byte[]) getChild(groupPosition,childPosition));
+        String recordData = (String) getChild(groupPosition,childPosition);
         if (convertView == null){
             LayoutInflater layoutInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = layoutInflater.inflate(R.layout.nfc_record_details,null);
