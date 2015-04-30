@@ -256,6 +256,12 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
     }
 
     @Override
+    public void onPause() {
+        getAppActivity().hideSoftKeyboard();
+        super.onPause();
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 

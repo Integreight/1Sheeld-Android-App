@@ -182,6 +182,7 @@ public class CameraHeadService extends Service implements
         params.y = (int) (150 * metrics.density + .5f);
         params.width = expectedWidth;
         params.height = expectedHeight;
+        params.alpha=1.0f;
 //        if (sv!=null)
 //            sv.setVisibility(View.VISIBLE);
         try {
@@ -197,6 +198,7 @@ public class CameraHeadService extends Service implements
         params.height = h + ((int) (1 * getResources().getDisplayMetrics().density + .5f));
         params.x = (int) x;
         params.y = (int) (y);
+        params.alpha=1.0f;
 //        if (sv!=null)
 //            sv.setVisibility(View.VISIBLE);
         try {
@@ -214,6 +216,7 @@ public class CameraHeadService extends Service implements
         params.y = (int) (150 * metrics.density + .5f);
         params.width = 0;
         params.height = 0;
+        params.alpha=0.0f;
 //        if (sv!=null)
 //            sv.setVisibility(View.INVISIBLE);
         try {
@@ -229,6 +232,7 @@ public class CameraHeadService extends Service implements
         params.height = 0;
         params.x = (int) x;
         params.y = (int) (y);
+        params.alpha=0.0f;
 //        if (sv!=null)
 //            sv.setVisibility(View.INVISIBLE);
         try {
@@ -239,7 +243,8 @@ public class CameraHeadService extends Service implements
 
     private void hidePreview() {
         params.width = 0;
-        params.height = 0;
+        params.height =0;
+        params.alpha=0.0f;
 //        if (sv!=null)
 //        sv.setVisibility(View.INVISIBLE);
         try {
@@ -295,6 +300,10 @@ public class CameraHeadService extends Service implements
                             return;
                         }
                         Camera.Parameters parameters = mCamera.getParameters();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                        }
                         pictureSize = CameraUtils
                                 .getBiggestPictureSize(parameters);
                         if (pictureSize != null)
@@ -354,6 +363,10 @@ public class CameraHeadService extends Service implements
                             }
                             Camera.Parameters parameters = mCamera
                                     .getParameters();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                            }
                             pictureSize = CameraUtils
                                     .getBiggestPictureSize(parameters);
                             if (pictureSize != null)
@@ -407,6 +420,10 @@ public class CameraHeadService extends Service implements
                         mCamera.setPreviewDisplay(sv.getHolder());
                         notifyPreviewTypeChanged(true, true);
                         parameters = mCamera.getParameters();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                        }
                         if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
                             FLASH_MODE = "auto";
                         }
@@ -480,18 +497,18 @@ public class CameraHeadService extends Service implements
         } else
             mCamera = getCameraInstance();
         parameters = mCamera.getParameters();
-//        if (parameters.getSupportedFocusModes().contains(
-//                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-//            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        }
         size = parameters.getPreviewSize();
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             mCamera.setPreviewCallback(previewCallback);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
         params = new WindowManager.LayoutParams(
-                WindowManager.LayoutParams.WRAP_CONTENT,
-                WindowManager.LayoutParams.WRAP_CONTENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.TYPE_PRIORITY_PHONE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.RGBX_8888);
         params.gravity = Gravity.TOP | Gravity.LEFT;
@@ -503,6 +520,7 @@ public class CameraHeadService extends Service implements
         params.height = 0;
         params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);
+        params.alpha=0.0f;
         sv = new SurfaceView(getApplicationContext());
         windowManager.addView(sv, params);
         params = (WindowManager.LayoutParams) sv.getLayoutParams();
@@ -1039,6 +1057,10 @@ public class CameraHeadService extends Service implements
                                 Log.e("", "onPreviewFrame pass");
                                 out = new ByteArrayOutputStream();
                                 parameters = camera.getParameters();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                                }
                                 size = parameters.getPreviewSize();
                                 yuv = new YuvImage(data, ImageFormat.NV21, size.width,
                                         size.height, null);

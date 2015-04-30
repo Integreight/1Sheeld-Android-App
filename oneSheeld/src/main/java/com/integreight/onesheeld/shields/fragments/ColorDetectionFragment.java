@@ -37,6 +37,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     private String[] rgbScale = new String[]{"3 Bit", "6 Bit", "9 Bit", "12 Bit", "15 Bit", "18 Bit", "24 Bit"};
     private String[] patchSizes = new String[]{"Small", "Medium", "Large"};
     private int[] colorsViewLocation = new int[2];
+    Window window;
+    Rect rectangle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,8 +127,6 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                         Window window = getActivity().getWindow();
                         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                         colorsContainer.getLocationInWindow(colorsViewLocation);
-                        ((ColorDetectionShield) getApplication().getRunningShields().get(
-                                getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
                         ((ColorDetectionShield) getApplication().getRunningShields().get(
                                 getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
                     }
@@ -244,9 +244,9 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             @Override
             public void run() {
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
-                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked()&&!activity.isMenuOpened()&&cameraPreviewToggle.isChecked()) {
-                        Rect rectangle = new Rect();
-                        Window window = getActivity().getWindow();
+                    if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
+                        rectangle = new Rect();
+                        window = getActivity().getWindow();
                         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                         colorsContainer.getLocationInWindow(colorsViewLocation);
                         ((ColorDetectionShield) getApplication().getRunningShields().get(
@@ -257,12 +257,6 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 }
             }
         }, 500);
-        Rect rectangle = new Rect();
-        Window window = getActivity().getWindow();
-        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
-        colorsContainer.getLocationInWindow(colorsViewLocation);
-        ((ColorDetectionShield) getApplication().getRunningShields().get(
-                getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
         removeListeners();
         frontBackPreviewToggle.setChecked(((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).isBackPreview());
@@ -442,8 +436,8 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 colorsContainer.getLocationInWindow(colorsViewLocation);
                 if (isChecked && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
-                    Rect rectangle = new Rect();
-                    Window window = getActivity().getWindow();
+                    rectangle = new Rect();
+                    window = getActivity().getWindow();
                     window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                     colorsContainer.getLocationInWindow(colorsViewLocation);
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
@@ -461,21 +455,27 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         }
     }
 
+
     @Override
     public void onMenuClosed() {
         if (canChangeUI() && getView() != null && getApplication().getRunningShields().get(
                 getControllerTag()) != null) {
+            rectangle = new Rect();
+            window = getActivity().getWindow();
+            window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+            colorsContainer.getLocationInWindow(colorsViewLocation);
+            ((ColorDetectionShield) getApplication().getRunningShields().get(
+                    getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 colorsContainer.getLocationInWindow(colorsViewLocation);
                 if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && cameraPreviewToggle.isChecked()) {
-                    Rect rectangle = new Rect();
-                    Window window = getActivity().getWindow();
-                    window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
-                    colorsContainer.getLocationInWindow(colorsViewLocation);
-                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
-                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                    uiHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                    getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                        }
+                    }, 100);
                 } else
                     ((ColorDetectionShield) getApplication().getRunningShields().get(
                             getControllerTag())).hidePreview();

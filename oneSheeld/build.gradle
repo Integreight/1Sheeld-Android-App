@@ -56,7 +56,7 @@ dependencies {
     compile files('libs/bolts-android-1.1.4.jar')
     compile files('libs/mail.jar')
     compile files('libs/Parse-1.8.0.jar')
-    compile files('libs/super-csv-2.2.0.jar')
+    compile files('libs/super-csv-2.3.1.jar')
     compile files('libs/twitter4j-async-4.0.2.jar')
     compile files('libs/twitter4j-core-4.0.2.jar')
     compile files('libs/twitter4j-stream-4.0.2.jar')
