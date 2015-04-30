@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.nfc.NdefRecord;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +35,10 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         nfcRecords =(ExpandableListView) v.findViewById(R.id.nfc_Records_list);
-        cardDetails =(OneSheeldTextView) v.findViewById(R.id.nfc_card_details);
+        cardDetails = new OneSheeldTextView(activity);
+        cardDetails.setTextColor(getResources().getColor(R.color.textColorOnDark));
+        cardDetails.setTextSize(15);
+        nfcRecords.addHeaderView(cardDetails,null,false);
         noCard = (OneSheeldTextView) v.findViewById(R.id.nfc_no_card);
 
         nfcRecords.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
