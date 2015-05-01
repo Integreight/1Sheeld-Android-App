@@ -38,4 +38,5 @@
 
     <!--Internet-->
     <color name="popup_semi_transparent_bg">#C1000000</color>
+    <color name="popup_semi_transparent_white_bg">#C1fffad7</color>
 </resources>

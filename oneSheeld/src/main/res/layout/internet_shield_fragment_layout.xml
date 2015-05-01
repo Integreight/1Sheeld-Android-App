@@ -29,10 +29,11 @@
             android:text="@string/no_requests" />
 
         <ExpandableListView
-            android:cacheColorHint="@color/transparent"
             android:id="@+id/requestsList"
+            android:cacheColorHint="@color/transparent"
             android:divider="@color/textColorOnDark"
             android:dividerHeight=".5dp"
+            android:listSelector="@drawable/internet_requests_list_item_selector"
             android:footerDividersEnabled="false"
             android:groupIndicator="@drawable/internet_expandable_indicator"
             android:layout_height="match_parent"
