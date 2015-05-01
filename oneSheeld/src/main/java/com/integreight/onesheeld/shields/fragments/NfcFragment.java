@@ -11,7 +11,6 @@ import com.integreight.onesheeld.adapters.NfcNdefRecordsExpandableAdapter;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.NfcShield;
 import com.integreight.onesheeld.shields.controller.NfcShield.NFCEventHandler;
-
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import java.util.ArrayList;
 public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
 
     ExpandableListView nfcRecords;
-    OneSheeldTextView cardDetails,noCard;
+    OneSheeldTextView cardDetails, noCard;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -34,11 +33,13 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        nfcRecords =(ExpandableListView) v.findViewById(R.id.nfc_Records_list);
+        nfcRecords = (ExpandableListView) v.findViewById(R.id.nfc_Records_list);
         cardDetails = new OneSheeldTextView(activity);
         cardDetails.setTextColor(getResources().getColor(R.color.textColorOnDark));
         cardDetails.setTextSize(15);
-        nfcRecords.addHeaderView(cardDetails,null,false);
+        int tenDP = (int) (10 * getResources().getDisplayMetrics().density + .5f);
+        cardDetails.setPadding(0, tenDP, 0, tenDP);
+        nfcRecords.addHeaderView(cardDetails, null, false);
         noCard = (OneSheeldTextView) v.findViewById(R.id.nfc_no_card);
 
         nfcRecords.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
@@ -85,19 +86,19 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
 
     private NFCEventHandler nfcEventHandler = new NFCEventHandler() {
         @Override
-        public void ReadNdef(String id,int maxSize,int usedSize,ArrayList<ArrayList<String>> data) {
+        public void ReadNdef(String id, int maxSize, int usedSize, ArrayList<ArrayList<String>> data) {
             //handle data display
             noCard.setVisibility(View.GONE);
             cardDetails.setText("Tag ID :     \t" + id);
             cardDetails.append("\n");
-            cardDetails.append("Max Size :\t"+String.valueOf(maxSize)+" bytes ");
+            cardDetails.append("Max Size :\t" + String.valueOf(maxSize) + " bytes ");
             cardDetails.append("\n");
-            cardDetails.append("Used Size : "+String.valueOf(usedSize)+" bytes");
+            cardDetails.append("Used Size : " + String.valueOf(usedSize) + " bytes");
             cardDetails.append("\n");
             cardDetails.append("No. of Records : " + String.valueOf(data.size()) + " record(s)");
 
             if (canChangeUI()) {
-                NfcNdefRecordsExpandableAdapter nfcNdefRecordsExpandableAdapter = new NfcNdefRecordsExpandableAdapter(activity,data);
+                NfcNdefRecordsExpandableAdapter nfcNdefRecordsExpandableAdapter = new NfcNdefRecordsExpandableAdapter(activity, data);
                 nfcRecords.setAdapter(nfcNdefRecordsExpandableAdapter);
             }
         }
