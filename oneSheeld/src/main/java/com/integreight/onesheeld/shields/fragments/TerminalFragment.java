@@ -282,29 +282,30 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
         @Override
         public void onPrint(final String outputTxt,
                             final boolean clearBeforeWriting) {
-            uiHandler.post(new Runnable() {
+            if (canChangeUI())
+                uiHandler.post(new Runnable() {
 
-                @SuppressWarnings("unchecked")
-                @Override
-                public void run() {
-                    if (output != null && canChangeUI()) {
-                        outputAdapter
-                                .updateLines((List<TerminalPrintedLine>) ((TerminalShield) getApplication()
-                                        .getRunningShields().get(
-                                                getControllerTag())).tempLines
-                                        .clone());
-                        if (((TerminalShield) getApplication()
-                                .getRunningShields().get(getControllerTag())).tempLines
-                                .size() > 0
-                                && ((TerminalShield) getApplication()
-                                .getRunningShields().get(
-                                        getControllerTag())).isAutoScrolling)
-                            output.setSelection(((TerminalShield) getApplication()
-                                    .getRunningShields()
-                                    .get(getControllerTag())).tempLines.size() - 1);
+                    @SuppressWarnings("unchecked")
+                    @Override
+                    public void run() {
+                        if (output != null && canChangeUI()) {
+                            outputAdapter
+                                    .updateLines((List<TerminalPrintedLine>) ((TerminalShield) getApplication()
+                                            .getRunningShields().get(
+                                                    getControllerTag())).tempLines
+                                            .clone());
+                            if (((TerminalShield) getApplication()
+                                    .getRunningShields().get(getControllerTag())).tempLines
+                                    .size() > 0
+                                    && ((TerminalShield) getApplication()
+                                    .getRunningShields().get(
+                                            getControllerTag())).isAutoScrolling)
+                                output.setSelection(((TerminalShield) getApplication()
+                                        .getRunningShields()
+                                        .get(getControllerTag())).tempLines.size() - 1);
+                        }
                     }
-                }
-            });
+                });
         }
     };
 
