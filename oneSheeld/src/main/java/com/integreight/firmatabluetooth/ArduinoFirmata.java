@@ -415,8 +415,10 @@ public class ArduinoFirmata {
                             }
                         } else if (sysexCommand == BLUETOOTH_RESET) {
                             if (!isBootloader) {
+                                byte randomVal=(byte)(Math.random()*255);
+                                byte complement=(byte)(255-randomVal&0xFF);
                                 synchronized (sysexLock) {
-                                    sysex(BLUETOOTH_RESET, new byte[]{0x01});
+                                    sysex(BLUETOOTH_RESET, new byte[]{0x01,randomVal,complement});
                                 }
                                 close();
                             }

@@ -290,7 +290,7 @@ public class ColorDetectionShield extends
                             if (fullFrame && colorEventHandler != null) {
                                 colorEventHandler.onColorChanged(detected);
                             }
-                            if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= (recevedFramesOperation == RECEIVED_FRAMES.NINE_FRAMES?200:100)) {
+                            if (fullFrame && SystemClock.elapsedRealtime() - lastSentMS >= 100) {
                                 sendShieldFrame(frame);
                                 lastSentMS = SystemClock.elapsedRealtime();
                             }
