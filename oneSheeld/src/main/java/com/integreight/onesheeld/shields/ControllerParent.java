@@ -79,6 +79,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     public ControllerParent() {
         // TODO Auto-generated constructor stub
+        tag = AppShields.getInstance().getShieldTag(((T) (this)).getClass().getName());
     }
 
     /**

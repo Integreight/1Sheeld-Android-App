@@ -68,7 +68,7 @@ import java.util.Map;
 
 public class SelectedShieldsListFragment extends ListFragment {
     private static SelectedShieldsListAdapter UIShieldAdapter;
-    Map<String, ShieldFragmentParent<?>> creadtedShields = new HashMap<String, ShieldFragmentParent<?>>();
+    Map<String, ShieldFragmentParent<?>> creadtedShields = new HashMap<>();
     private MainActivity activity;
 
     public static SelectedShieldsListFragment newInstance(Activity activity) {

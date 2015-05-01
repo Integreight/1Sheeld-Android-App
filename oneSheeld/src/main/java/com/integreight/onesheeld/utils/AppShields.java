@@ -11,6 +11,7 @@ import java.util.Hashtable;
 public class AppShields {
     private static AppShields thisInstance;
     private Hashtable<String, Shield> shieldsTable;
+    private Hashtable<String, String> shieldsTags;
     private SparseArray<Shield> shieldsArray;
     private String rememberedShields;
 
@@ -101,6 +102,7 @@ public class AppShields {
         int i = 0;
         shieldsArray = new SparseArray();
         shieldsTable = new Hashtable();
+        shieldsTags = new Hashtable();
         ArrayList<Byte> remembered = getRememberedShields();
         for (UIShield shield : UIShield.valuesFiltered()) {
             shieldsTable.put(shield.name(), new Shield(shield.getId(), i,
@@ -113,7 +115,12 @@ public class AppShields {
                             shield.itemBackgroundColor, shield.symbolId,
                             remembered.contains(shield.id) ? true : shield.mainActivitySelection, shield.shieldType,
                             shield.isReleasable, shield.isInvalidatable));
+            shieldsTags.put(shield.shieldType.getName(), shield.name());
             i++;
         }
+    }
+
+    public String getShieldTag(String key) {
+        return shieldsTags.get(key);
     }
 }

@@ -161,7 +161,7 @@ public enum UIShield {
             0xff142218, 0xffc9a302, 0xffa57378, 0xff3354af, 0xff282742,
             0xff381616};
     public byte id;
-    public String name;
+    public String shieldName;
     public int itemBackgroundColor;
     public int symbolId;
     public boolean mainActivitySelection;
@@ -177,25 +177,25 @@ public enum UIShield {
     }
 
     public String getName() {
-        return name;
+        return shieldName;
     }
 
-    private UIShield(byte id, String name, int mainImageStripId, int symbolId,
+    private UIShield(byte id, String shieldName, int mainImageStripId, int symbolId,
                      boolean mainActivitySelection,
                      Class<? extends ControllerParent<?>> shieldType) {
         this.id = id;
-        this.name = name;
+        this.shieldName = shieldName;
         this.itemBackgroundColor = mainImageStripId;
         this.symbolId = symbolId;
         this.mainActivitySelection = mainActivitySelection;
         this.shieldType = shieldType;
     }
 
-    private UIShield(byte id, String name, int mainImageStripId, int symbolId,
+    private UIShield(byte id, String shieldName, int mainImageStripId, int symbolId,
                      boolean mainActivitySelection,
                      Class<? extends ControllerParent<?>> shieldType, int isInvalidatable) {
         this.id = id;
-        this.name = name;
+        this.shieldName = shieldName;
         this.itemBackgroundColor = mainImageStripId;
         this.symbolId = symbolId;
         this.mainActivitySelection = mainActivitySelection;
@@ -203,12 +203,12 @@ public enum UIShield {
         this.isInvalidatable = isInvalidatable;
     }
 
-    private UIShield(byte id, String name, int mainImageStripId, int symbolId,
+    private UIShield(byte id, String shieldName, int mainImageStripId, int symbolId,
                      boolean mainActivitySelection,
                      Class<? extends ControllerParent<?>> shieldType,
                      boolean isReleasable) {
         this.id = id;
-        this.name = name;
+        this.shieldName = shieldName;
         this.itemBackgroundColor = mainImageStripId;
         this.symbolId = symbolId;
         this.mainActivitySelection = mainActivitySelection;
