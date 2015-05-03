@@ -98,6 +98,7 @@ public class SelectedShieldsListFragment extends ListFragment {
                 if (uiShield.shieldFragment != null)
                     return addToCreatedListAndReturn(uiShield, uiShield.shieldFragment.newInstance());
                 else {
+                    if(activity!=null)
                     activity.getThisApplication()
                             .getTracker()
                             .send(new HitBuilders.EventBuilder()
