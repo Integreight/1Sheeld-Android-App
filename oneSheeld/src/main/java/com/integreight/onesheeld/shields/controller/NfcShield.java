@@ -758,7 +758,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
     private String parsedPrintedText(String text){
         //replace all unprintable chars with printable one
         for (int i=0;i<32;i++) {
-            text = text.replace((char) i, '\u22c5');
+            text = text.replace((char) i, '\ufffd');
         }
         return text;
     }
