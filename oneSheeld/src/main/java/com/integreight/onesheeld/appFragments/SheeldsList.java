@@ -479,35 +479,6 @@ public class SheeldsList extends Fragment {
             int versionCode = pInfo.versionCode;
             String installationIdString = "";
             ValidationAction shareConnectionId = null;
-            if (ParseInstallation.getCurrentInstallation() != null
-                    && ParseInstallation.getCurrentInstallation()
-                    .getInstallationId() != null) {
-                installationIdString = "Connect using: "
-                        + ParseInstallation.getCurrentInstallation()
-                        .getInstallationId() + "\n\n";
-                shareConnectionId = new ValidationPopup.ValidationAction(
-                        "Share Id!", new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View v) {
-                        String shareBody = "Connect to my 1Sheeld using this address: "
-                                + ParseInstallation
-                                .getCurrentInstallation()
-                                .getInstallationId();
-                        Intent sharingIntent = new Intent(
-                                android.content.Intent.ACTION_SEND);
-                        sharingIntent.setType("text/plain");
-                        sharingIntent.putExtra(
-                                android.content.Intent.EXTRA_SUBJECT,
-                                "My 1Sheeld Address");
-                        sharingIntent.putExtra(
-                                android.content.Intent.EXTRA_TEXT,
-                                shareBody);
-                        startActivity(Intent.createChooser(
-                                sharingIntent, "Share Using"));
-                    }
-                }, false);
-            }
             String firmwareVersion = "";
             if ((((OneSheeldApplication) activity.getApplication())
                     .getAppFirmata() != null && ((OneSheeldApplication) activity
