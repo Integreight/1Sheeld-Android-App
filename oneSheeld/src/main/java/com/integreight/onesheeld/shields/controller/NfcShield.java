@@ -302,14 +302,13 @@ public class NfcShield extends ControllerParent<NfcShield>{
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 Ndef ndef = Ndef.get(currentTag);
-                if(ndef.getCachedNdefMessage() != null)
+                if(ndef!=null&&ndef.getCachedNdefMessage() != null)
                     size = ndef.getCachedNdefMessage().toByteArray().length;
                 else
                     size = 0;
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
             }
         }
@@ -368,7 +367,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     //return 0;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -393,7 +392,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     return 0;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -458,7 +457,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     //return UNKNOWN_TYPE;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -524,7 +523,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     //return 0;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -556,7 +555,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     //return 0;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -588,7 +587,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     return null;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -631,7 +630,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     return null;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -711,7 +710,7 @@ public class NfcShield extends ControllerParent<NfcShield>{
                     return null;
                 }
                 try {
-                    ndef.close();
+                    if(ndef!=null)ndef.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
