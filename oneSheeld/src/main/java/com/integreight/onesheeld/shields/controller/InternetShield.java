@@ -99,6 +99,7 @@ public class InternetShield extends
 
         /// ERROR
         public static final byte ON_ERROR = (byte) 0x08; //fun ID
+        public static final byte ON_NOT_ENOUGH_BYTES = (byte) 0x06;
 
         //errors type
         public static final int INDEX_OUT_OF_BOUNDS = 0;
@@ -354,9 +355,12 @@ public class InternetShield extends
                             final InternetResponse.ResponseBodyBytes bodyBytes = response.getBytes(frame.getArgumentAsInteger(4, 1), frame.getArgumentAsInteger(2));
                             if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.NOT_ENOUGH_BYTES) {
                                 if (bodyBytes.getArray() != null && bodyBytes.getArray().length > 0) {
-                                    ShieldFrame frameSentNotEnough = new ShieldFrame(SHIELD_ID, RESPONSE.SEND_GET_NEXT_BYTES);
+                                    ShieldFrame frameSent = new ShieldFrame(SHIELD_ID, RESPONSE.SEND_GET_NEXT_BYTES);
+                                    frameSent.addIntegerArgument(2, requestID);
+                                    frameSent.addArgument(bodyBytes.getArray());
+                                    sendShieldFrame(frameSent, true);
+                                    ShieldFrame frameSentNotEnough = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
                                     frameSentNotEnough.addIntegerArgument(2, requestID);
-                                    frameSentNotEnough.addArgument(bodyBytes.getArray());
                                     frameSentNotEnough.addIntegerArgument(1, RESPONSE.NO_ENOUGH_BYTES);
                                     sendShieldFrame(frameSentNotEnough, true);
                                 }

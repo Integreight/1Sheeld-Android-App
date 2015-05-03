@@ -56,7 +56,6 @@ public class OneSheeldApplication extends Application {
     private final String REMEMBER_SHIELDS = "rememberedShields";
     private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
     private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
-    public static final Hashtable<String, String> shieldsFragmentsTags = new Hashtable<String, String>();
     private ArduinoFirmata appFirmata;
     private ConnectionDetector connectionHandler;
     private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
