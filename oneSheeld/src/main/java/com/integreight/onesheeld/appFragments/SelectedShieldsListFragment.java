@@ -12,8 +12,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
@@ -92,6 +92,32 @@ public class SelectedShieldsListFragment extends ListFragment {
         Shield uiShield = UIShieldAdapter.getItem(position);
         if (creadtedShields.containsKey(uiShield.tag))
             return creadtedShields.get(uiShield.tag);
+        else {
+            try {
+                if (uiShield.shieldFragment != null)
+                    return addToCreatedListAndReturn(uiShield, uiShield.shieldFragment.newInstance());
+                else {
+                    if(activity!=null)
+                    activity.getThisApplication()
+                            .getTracker()
+                            .send(new HitBuilders.EventBuilder()
+                                    .setCategory("Extreme Cases")
+                                    .setAction(
+                                            "Initialize fragments without reflection")
+                                    .build());
+                    return generateShieldFragment(uiShield);
+                }
+            } catch (java.lang.InstantiationException e) {
+                Crashlytics.logException(e);
+                return generateShieldFragment(uiShield);
+            } catch (IllegalAccessException e) {
+                Crashlytics.logException(e);
+                return generateShieldFragment(uiShield);
+            }
+        }
+    }
+
+    private ShieldFragmentParent<?> generateShieldFragment(Shield uiShield) {
         if (uiShield.id == UIShield.LED_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new LedFragment());
         if (uiShield.id == UIShield.ACCELEROMETER_SHIELD.id)
@@ -191,8 +217,6 @@ public class SelectedShieldsListFragment extends ListFragment {
     private ShieldFragmentParent<?> addToCreatedListAndReturn(Shield uiShield,
                                                               ShieldFragmentParent<?> fragment) {
         fragment.setControllerTag(uiShield.tag);
-        OneSheeldApplication.shieldsFragmentsTags.put(fragment.getClassName(),
-                uiShield.tag);
         Bundle b = new Bundle();
         b.putString("tag", uiShield.tag);
         fragment.setArguments(b);

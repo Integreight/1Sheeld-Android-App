@@ -26,8 +26,6 @@ public class AppShields {
         return thisInstance;
     }
 
-    ;
-
     public void init(String selectedCach) {
         this.rememberedShields = selectedCach;
         initShields();
@@ -108,19 +106,22 @@ public class AppShields {
             shieldsTable.put(shield.name(), new Shield(shield.getId(), i,
                     shield.name(), shield.getName(), shield.itemBackgroundColor,
                     shield.symbolId, remembered.contains(shield.id) ? true : shield.mainActivitySelection,
-                    shield.shieldType, shield.isReleasable,
+                    shield.shieldType, shield.shieldFragment, shield.isReleasable,
                     shield.isInvalidatable));
             shieldsArray.put(i,
                     new Shield(shield.getId(), i, shield.name(), shield.getName(),
                             shield.itemBackgroundColor, shield.symbolId,
-                            remembered.contains(shield.id) ? true : shield.mainActivitySelection, shield.shieldType,
+                            remembered.contains(shield.id) ? true : shield.mainActivitySelection, shield.shieldType, shield.shieldFragment,
                             shield.isReleasable, shield.isInvalidatable));
             shieldsTags.put(shield.shieldType.getName(), shield.name());
+            shieldsTags.put(shield.shieldFragment.getName(), shield.name());
             i++;
         }
     }
 
-    public String getShieldTag(String key) {
+    public synchronized String getShieldTag(String key) {
+        if (shieldsTags == null || shieldsTags.size() == 0)
+            initShields();
         return shieldsTags.get(key);
     }
 }
