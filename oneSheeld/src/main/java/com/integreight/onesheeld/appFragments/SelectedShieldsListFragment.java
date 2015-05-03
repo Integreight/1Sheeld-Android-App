@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -96,10 +97,21 @@ public class SelectedShieldsListFragment extends ListFragment {
             try {
                 if (uiShield.shieldFragment != null)
                     return addToCreatedListAndReturn(uiShield, uiShield.shieldFragment.newInstance());
-                else return generateShieldFragment(uiShield);
+                else {
+                    activity.getThisApplication()
+                            .getTracker()
+                            .send(new HitBuilders.EventBuilder()
+                                    .setCategory("Extreme Cases")
+                                    .setAction(
+                                            "Initialize fragments without reflection")
+                                    .build());
+                    return generateShieldFragment(uiShield);
+                }
             } catch (java.lang.InstantiationException e) {
+                Crashlytics.logException(e);
                 return generateShieldFragment(uiShield);
             } catch (IllegalAccessException e) {
+                Crashlytics.logException(e);
                 return generateShieldFragment(uiShield);
             }
         }
