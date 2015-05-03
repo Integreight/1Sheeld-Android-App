@@ -39,6 +39,10 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     // shields
     public View v;
 
+    public ShieldFragmentParent() {
+        controllerTag = AppShields.getInstance().getShieldTag(((T) (this)).getClass().getName());
+    }
+
     @Override
     public void onAttach(Activity activity) {
         this.activity = (MainActivity) activity;
@@ -167,22 +171,24 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
      * iterate and ignore null backups and reset them all
      */
     public String getControllerTag() {
-        String tagFromApp = OneSheeldApplication.shieldsFragmentsTags
-                .get(((T) this).getClass().getName());
-        controllerTag = (tagFromApp != null ? tagFromApp
-                : controllerTag != null ? controllerTag
-                : (getArguments() != null && getArguments().getString(
-                "tag") != null) ? getArguments().getString(
-                "tag") : getTag());
-        if (controllerTag == null)
-            Crashlytics
-                    .log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
-                            .getClass().getName() : "");
-        Log.test("TAG", controllerTag + "  Tag from app:  " + tagFromApp
-                + "  Frag Tag:  " + getTag() + "  Arg:  "
-                + getArguments().getString("tag"));
-        OneSheeldApplication.shieldsFragmentsTags.put(((T) this).getClass()
-                .getName(), controllerTag);
+        if (controllerTag == null || controllerTag.trim().length() == 0) {
+            String tagFromApp = OneSheeldApplication.shieldsFragmentsTags
+                    .get(((T) this).getClass().getName());
+            controllerTag = (tagFromApp != null ? tagFromApp
+                    : controllerTag != null ? controllerTag
+                    : (getArguments() != null && getArguments().getString(
+                    "tag") != null) ? getArguments().getString(
+                    "tag") : getTag());
+            if (controllerTag == null)
+                Crashlytics
+                        .log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
+                                .getClass().getName() : "");
+            Log.test("TAG", controllerTag + "  Tag from app:  " + tagFromApp
+                    + "  Frag Tag:  " + getTag() + "  Arg:  "
+                    + getArguments().getString("tag"));
+            OneSheeldApplication.shieldsFragmentsTags.put(((T) this).getClass()
+                    .getName(), controllerTag);
+        }
         getArguments().putString("tag", controllerTag);
         return controllerTag;
     }

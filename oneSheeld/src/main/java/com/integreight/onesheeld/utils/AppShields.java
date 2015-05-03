@@ -116,6 +116,7 @@ public class AppShields {
                             remembered.contains(shield.id) ? true : shield.mainActivitySelection, shield.shieldType, shield.shieldFragment,
                             shield.isReleasable, shield.isInvalidatable));
             shieldsTags.put(shield.shieldType.getName(), shield.name());
+            shieldsTags.put(shield.shieldFragment.getName(), shield.name());
             i++;
         }
     }

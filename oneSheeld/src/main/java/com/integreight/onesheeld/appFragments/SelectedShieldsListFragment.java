@@ -92,6 +92,20 @@ public class SelectedShieldsListFragment extends ListFragment {
         Shield uiShield = UIShieldAdapter.getItem(position);
         if (creadtedShields.containsKey(uiShield.tag))
             return creadtedShields.get(uiShield.tag);
+        else {
+            try {
+                if (uiShield.shieldFragment != null)
+                    return addToCreatedListAndReturn(uiShield, uiShield.shieldFragment.newInstance());
+                else return generateShieldFragment(uiShield);
+            } catch (java.lang.InstantiationException e) {
+                return generateShieldFragment(uiShield);
+            } catch (IllegalAccessException e) {
+                return generateShieldFragment(uiShield);
+            }
+        }
+    }
+
+    private ShieldFragmentParent<?> generateShieldFragment(Shield uiShield) {
         if (uiShield.id == UIShield.LED_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new LedFragment());
         if (uiShield.id == UIShield.ACCELEROMETER_SHIELD.id)
