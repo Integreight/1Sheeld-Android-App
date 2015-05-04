@@ -26,8 +26,6 @@ public class AppShields {
         return thisInstance;
     }
 
-    ;
-
     public void init(String selectedCach) {
         this.rememberedShields = selectedCach;
         initShields();
@@ -121,7 +119,9 @@ public class AppShields {
         }
     }
 
-    public String getShieldTag(String key) {
+    public synchronized String getShieldTag(String key) {
+        if (shieldsTags == null || shieldsTags.size() == 0)
+            initShields();
         return shieldsTags.get(key);
     }
 }

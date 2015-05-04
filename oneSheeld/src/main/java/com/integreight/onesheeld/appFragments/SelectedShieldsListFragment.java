@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.SelectedShieldsListAdapter;
 import com.integreight.onesheeld.enums.UIShield;
@@ -205,8 +204,6 @@ public class SelectedShieldsListFragment extends ListFragment {
     private ShieldFragmentParent<?> addToCreatedListAndReturn(Shield uiShield,
                                                               ShieldFragmentParent<?> fragment) {
         fragment.setControllerTag(uiShield.tag);
-        OneSheeldApplication.shieldsFragmentsTags.put(fragment.getClassName(),
-                uiShield.tag);
         Bundle b = new Bundle();
         b.putString("tag", uiShield.tag);
         fragment.setArguments(b);
