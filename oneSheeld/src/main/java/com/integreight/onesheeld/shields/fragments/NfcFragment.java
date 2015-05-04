@@ -86,21 +86,28 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
 
     private NFCEventHandler nfcEventHandler = new NFCEventHandler() {
         @Override
-        public void ReadNdef(String id, int maxSize, int usedSize, ArrayList<ArrayList<String>> data) {
+        public void ReadNdef(final String id, final int maxSize, final int usedSize, final ArrayList<ArrayList<String>> data) {
             //handle data display
-            noCard.setVisibility(View.GONE);
-            cardDetails.setText("Tag ID :     \t" + id);
-            cardDetails.append("\n");
-            cardDetails.append("Max Size :\t" + String.valueOf(maxSize) + " bytes ");
-            cardDetails.append("\n");
-            cardDetails.append("Used Size : " + String.valueOf(usedSize) + " bytes");
-            cardDetails.append("\n");
-            cardDetails.append("No. of Records : " + String.valueOf(data.size()) + " record(s)");
+            if (canChangeUI() && uiHandler != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (canChangeUI() && noCard != null && cardDetails != null) {
+                            noCard.setVisibility(View.GONE);
+                            cardDetails.setText("Tag ID :     \t" + id);
+                            cardDetails.append("\n");
+                            cardDetails.append("Max Size :\t" + String.valueOf(maxSize) + " bytes ");
+                            cardDetails.append("\n");
+                            cardDetails.append("Used Size : " + String.valueOf(usedSize) + " bytes");
+                            cardDetails.append("\n");
+                            cardDetails.append("No. of Records : " + String.valueOf(data.size()) + " record(s)");
 
-            if (canChangeUI()) {
-                NfcNdefRecordsExpandableAdapter nfcNdefRecordsExpandableAdapter = new NfcNdefRecordsExpandableAdapter(activity, data);
-                nfcRecords.setAdapter(nfcNdefRecordsExpandableAdapter);
-            }
+                            NfcNdefRecordsExpandableAdapter nfcNdefRecordsExpandableAdapter = new NfcNdefRecordsExpandableAdapter(activity, data);
+                            nfcRecords.setAdapter(nfcNdefRecordsExpandableAdapter);
+                        }
+                    }
+                });
+
         }
     };
 }

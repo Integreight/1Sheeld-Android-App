@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -16,7 +15,7 @@ import com.integreight.onesheeld.shields.controller.NfcShield;
 /**
  * Created by Mouso on 3/11/2015.
  */
-public class NfcUtils extends Activity{
+public class NfcUtils extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -26,12 +25,12 @@ public class NfcUtils extends Activity{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(this);
             Intent intent = getIntent();
-            if(nfcAdapter!=null&&nfcAdapter.isEnabled()){
-                if(((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null){
+            if (nfcAdapter != null && nfcAdapter.isEnabled()) {
+                if (((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
                     ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
                 }
-            }else{
-                Toast.makeText(getApplicationContext(),"Nfc Disabled",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getApplicationContext(), "Nfc Disabled", Toast.LENGTH_SHORT).show();
             }
         }
         finish();

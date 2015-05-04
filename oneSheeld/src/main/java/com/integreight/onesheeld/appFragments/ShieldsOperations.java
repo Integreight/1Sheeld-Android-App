@@ -57,8 +57,13 @@ public class ShieldsOperations extends BaseContainerFragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        initView(savedInstanceState);
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(savedInstanceState);
     }
 
     MultiDirectionSlidingDrawer pinsSlidingView;
@@ -91,9 +96,11 @@ public class ShieldsOperations extends BaseContainerFragment {
 
             @Override
             public void run() {
-                activity.openMenu();
-                ((CheckBox) getView().findViewById(R.id.isMenuOpening))
-                        .setChecked(false);
+                if (activity != null && getView() != null && getView().findViewById(R.id.isMenuOpening) != null) {
+                    activity.openMenu();
+                    ((CheckBox) getView().findViewById(R.id.isMenuOpening))
+                            .setChecked(false);
+                }
             }
         }, 500);
 
@@ -117,14 +124,15 @@ public class ShieldsOperations extends BaseContainerFragment {
                     public void run() {
                         TextView shieldName = (OneSheeldTextView) activity
                                 .findViewById(R.id.shieldName);
-                        if(shieldName!=null){
-                        shieldName
-                                .setVisibility(((ShieldFragmentParent<?>) mContent).shieldName
-                                        .equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
-                                                .getName()) ? View.GONE
-                                        : View.VISIBLE);
-                        shieldName
-                                .setText(((ShieldFragmentParent<?>) mContent).shieldName);}
+                        if (shieldName != null && mContent != null && mContent.shieldName != null) {
+                            shieldName
+                                    .setVisibility(((ShieldFragmentParent<?>) mContent).shieldName
+                                            .equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
+                                                    .getName()) ? View.GONE
+                                            : View.VISIBLE);
+                            shieldName
+                                    .setText(((ShieldFragmentParent<?>) mContent).shieldName);
+                        }
                     }
                 });
             } catch (Exception e) {

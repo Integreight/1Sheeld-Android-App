@@ -42,9 +42,9 @@ import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBlu
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
 import com.integreight.onesheeld.services.OneSheeldService;
-import com.integreight.onesheeld.shields.controller.NfcShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.shields.controller.NfcShield;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
@@ -79,7 +79,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle arg0) {
         super.onCreate(arg0);
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -559,10 +559,12 @@ public class MainActivity extends FragmentActivity {
         resetSlidingMenu();
         appSlidingMenu.openPane();
     }
+
     public boolean isMenuOpened() {
         resetSlidingMenu();
         return appSlidingMenu.isOpen();
     }
+
     public void closeMenu() {
         resetSlidingMenu();
         appSlidingMenu.closePane();
@@ -660,11 +662,11 @@ public class MainActivity extends FragmentActivity {
 
     private void resumeNfcMainActivityFragments() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
-                    PackageManager packageManager = thisInstance.getApplicationContext().getPackageManager();
-                    packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED,PackageManager.DONT_KILL_APP);
-                    ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).setupForegroundDispatch(thisInstance);
-                }
+            if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
+                PackageManager packageManager = thisInstance.getApplicationContext().getPackageManager();
+                packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
+                ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).setupForegroundDispatch(thisInstance);
+            }
         }
     }
 
@@ -681,7 +683,7 @@ public class MainActivity extends FragmentActivity {
         float seconds = TimeUnit.MILLISECONDS.toHours(System
                 .currentTimeMillis() - pausingTime);
         Crashlytics.setString("isBackground", "since " + hours + " hours - "
-                + minutes + " minutes - " + seconds + " seocnds");
+                + minutes + " minutes - " + seconds + " seconds");
         new Thread(new Runnable() {
 
             @Override
@@ -705,11 +707,11 @@ public class MainActivity extends FragmentActivity {
 
     private void pauseMainActivityNfc() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                    if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
-                        PackageManager packageManager = thisInstance.getApplicationContext().getPackageManager();
-                        packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld","com.integreight.onesheeld.NFCUtils-alias"),PackageManager.COMPONENT_ENABLED_STATE_ENABLED,PackageManager.DONT_KILL_APP);
-                        ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).stopForegroundDispatch(thisInstance);
-                    }
+            if (((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
+                PackageManager packageManager = thisInstance.getApplicationContext().getPackageManager();
+                packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
+                ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).stopForegroundDispatch(thisInstance);
+            }
         }
     }
 
@@ -730,17 +732,19 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void getNfcIntent(Intent intent) {
-        String action = intent.getAction();
-        if(action != null)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                //NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
-                //if (nfcAdapter != null)
-                //if (nfcAdapter.isEnabled())
-                if(NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
-                    if (((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())) != null) {
-                        ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
-                    }
-            }
+        if (intent != null) {
+            String action = intent.getAction();
+            if (action != null)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                    //NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(thisInstance);
+                    //if (nfcAdapter != null)
+                    //if (nfcAdapter.isEnabled())
+                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
+                        if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
+                            ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
+                        }
+                }
+        }
     }
 
     public void showToast(String msg) {
