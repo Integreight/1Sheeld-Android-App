@@ -84,71 +84,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                     }
                     break;
                 case STOP_LOGGING:
-                    if (isStarted) {
-                        isStarted = false;
-                        ICsvMapWriter mapWriter = null;
-                        try {
-                            currentStatus = STOPPED_LOGGING;
-                            if (eventHandler != null) {
-                                eventHandler.onStopLogging(dataSet);
-                            }
-                            File folder = new File(
-                                    Environment.getExternalStorageDirectory()
-                                            + "/OneSheeld");
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-                            folder = new File(
-                                    Environment.getExternalStorageDirectory()
-                                            + "/OneSheeld/DataLogger");
-                            if (!folder.exists()) {
-                                folder.mkdirs();
-                            }
-                            mapWriter = new CsvMapWriter(
-                                    new FileWriter(
-                                            Environment
-                                                    .getExternalStorageDirectory()
-                                                    + "/OneSheeld/DataLogger/"
-                                                    + (fileName == null
-                                                    || fileName.length() == 0 ? new Date()
-                                                    .getTime() + ""
-                                                    : fileName + " - " + new Date()
-                                                    .getTime()) + ".csv"),
-                                    CsvPreference.STANDARD_PREFERENCE);
-                            final CellProcessor[] processors = new CellProcessor[headerList
-                                    .size()];
-                            for (int i = 0; i < processors.length; i++) {
-                                processors[i] = new Optional();
-                            }
-
-                            // write the header
-                            header = new String[headerList.size()];
-                            int i = 0;
-                            for (String headerItem : headerList) {
-                                header[i] = headerItem;
-                                i++;
-                            }
-                            mapWriter.writeHeader(header);
-
-                            // write the customer Maps
-                            for (Map<String, String> value : dataSet) {
-                                mapWriter.write(value, header, processors);
-                            }
-                        } catch (IOException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        } finally {
-                            if (mapWriter != null) {
-                                try {
-                                    mapWriter.close();
-                                } catch (IOException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
-                                // reset();
-                            }
-                        }
-                    }
+                    saveData();
                     break;
                 case ADD_STRING:
                     if (isStarted) {
@@ -180,15 +116,15 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                     if (isStarted) {
                         currentStatus = LOGGING;
                         if (eventHandler != null) {
-                            eventHandler.onLog(new HashMap<String, String>(rowData));
+                            eventHandler.onLog(new HashMap<>(rowData));
                         }
                         if (!headerList.contains("Time")) headerList.add("Time");
                         rowData.put("Time",
                                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).format(new Date())
                                         .toString());
                         //rowData.remove("Time");
-                        dataSet.add(new HashMap<String, String>(rowData));
-                        rowData = new HashMap<String, String>();
+                        dataSet.add(new HashMap<>(rowData));
+                        rowData = new HashMap<>();
                     }
                     break;
                 default:
@@ -196,9 +132,76 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
             }
         }
     }
+    private void saveData(){
+        if (isStarted) {
+            isStarted = false;
+            ICsvMapWriter mapWriter = null;
+            try {
+                currentStatus = STOPPED_LOGGING;
+                if (eventHandler != null) {
+                    eventHandler.onStopLogging(dataSet);
+                }
+                File folder = new File(
+                        Environment.getExternalStorageDirectory()
+                                + "/OneSheeld");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                folder = new File(
+                        Environment.getExternalStorageDirectory()
+                                + "/OneSheeld/DataLogger");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                mapWriter = new CsvMapWriter(
+                        new FileWriter(
+                                Environment
+                                        .getExternalStorageDirectory()
+                                        + "/OneSheeld/DataLogger/"
+                                        + (fileName == null
+                                        || fileName.length() == 0 ? new Date()
+                                        .getTime() + ""
+                                        : fileName + " - " + new Date()
+                                        .getTime()) + ".csv"),
+                        CsvPreference.STANDARD_PREFERENCE);
+                final CellProcessor[] processors = new CellProcessor[headerList
+                        .size()];
+                for (int i = 0; i < processors.length; i++) {
+                    processors[i] = new Optional();
+                }
 
+                // write the header
+                header = new String[headerList.size()];
+                int i = 0;
+                for (String headerItem : headerList) {
+                    header[i] = headerItem;
+                    i++;
+                }
+                mapWriter.writeHeader(header);
+
+                // write the customer Maps
+                for (Map<String, String> value : dataSet) {
+                    mapWriter.write(value, header, processors);
+                }
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } finally {
+                if (mapWriter != null) {
+                    try {
+                        mapWriter.close();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    // reset();
+                }
+            }
+        }
+    }
     @Override
     public void reset() {
+        saveData();
         if (dataSet != null)
             dataSet.clear();
         dataSet = null;
