@@ -66,7 +66,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
-        activity = (MainActivity) getAppActivity();
+        activity = getAppActivity();
+        controllerTag = AppShields.getInstance().getShieldTag(((T) (this)).getClass().getName());
         super.onActivityCreated(savedInstanceState);
     }
 

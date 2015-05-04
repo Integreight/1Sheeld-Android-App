@@ -102,7 +102,7 @@ public class SpeechRecognitionShield extends
 
         @Override
         public void onResult(List<String> result) {
-            if (result.size() > 0) {
+            if (result != null && result.size() > 0) {
                 if (eventHandler != null)
                     eventHandler.onResult(result);
                 sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
