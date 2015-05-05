@@ -197,59 +197,63 @@ public class NfcShield extends ControllerParent<NfcShield> {
         String action = intent.getAction();
         if (action == null) return;
         Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-        if (tag == null)
+        if (tag == null) {
             sendError(TAG_READING_ERROR);
-
-        currentTag = tag;
-        resetTechnologyFlags();
-        switch (action) {
-            case NfcAdapter.ACTION_NDEF_DISCOVERED:
-                setCurrentTag(tag);
-                isTagSupported = true;
-                isNdef_Flag = true;
-                displayData();
-                sendNewTagFrame();
-                break;
-            case NfcAdapter.ACTION_TECH_DISCOVERED:
-                setCurrentTag(tag);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                    String[] techList = tag.getTechList();
-                    for (String tech : techList) {
-                        if (!isTagSupported) {
-                            if (Ndef.class.getName().equals(tech)) {
-                                if (getNdefMaxSize() != 0) {
-                                isNdef_Flag = false;
-                                isTagSupported = true;
-                                    if (getNdefRecordCount() == 0) {
-                                        sendNewEmptyTagFrame();
-                                    } else {
-                                        isNdef_Flag = true;
-                                        displayData();
-                                        sendNewTagFrame();
-                                    }
-                                }else{
-                                    sendError(TAG_READING_ERROR);
-                                }
-                            } else if (NdefFormatable.class.getName().equals(tech)) {
-                                if (getNdefMaxSize() != 0) {
-                                    isNdef_Flag = false;
-                                    isTagSupported = true;
-                                    sendNewEmptyTagFrame();
-                                    displayData();
-                                }else{
-                                    sendError(TAG_READING_ERROR);
-                                }
-                            }
-                        } else
-                            break;
+        }else {
+            resetTechnologyFlags();
+            switch (action) {
+                case NfcAdapter.ACTION_NDEF_DISCOVERED:
+                    if (getNdefMaxSize() != 0 && getTagId().length > 0) {
+                        setCurrentTag(tag);
+                        isTagSupported = true;
+                        isNdef_Flag = true;
+                        displayData();
+                        sendNewTagFrame();
+                    } else {
+                        sendError(TAG_READING_ERROR);
                     }
-                    if (!isTagSupported)
-                        sendError(TAG_NOT_SUPPORTED);
-                }
-                break;
-            case NfcAdapter.ACTION_TAG_DISCOVERED:
-                setCurrentTag(tag);
-                break;
+                    break;
+                case NfcAdapter.ACTION_TECH_DISCOVERED:
+                    setCurrentTag(tag);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+                        String[] techList = tag.getTechList();
+                        for (String tech : techList) {
+                            if (!isTagSupported) {
+                                if (Ndef.class.getName().equals(tech)) {
+                                    if (getNdefMaxSize() != 0 && getTagId().length > 0) {
+                                        isNdef_Flag = false;
+                                        isTagSupported = true;
+                                        if (getNdefRecordCount() == 0) {
+                                            sendNewEmptyTagFrame();
+                                        } else {
+                                            isNdef_Flag = true;
+                                            displayData();
+                                            sendNewTagFrame();
+                                        }
+                                    } else {
+                                        sendError(TAG_READING_ERROR);
+                                    }
+                                } else if (NdefFormatable.class.getName().equals(tech)) {
+                                    if (getNdefMaxSize() != 0 && getTagId().length > 0) {
+                                        isNdef_Flag = false;
+                                        isTagSupported = true;
+                                        sendNewEmptyTagFrame();
+                                        displayData();
+                                    } else {
+                                        sendError(TAG_READING_ERROR);
+                                    }
+                                }
+                            } else
+                                break;
+                        }
+                        if (!isTagSupported)
+                            sendError(TAG_NOT_SUPPORTED);
+                    }
+                    break;
+                case NfcAdapter.ACTION_TAG_DISCOVERED:
+                    setCurrentTag(tag);
+                    break;
+            }
         }
     }
 
@@ -263,11 +267,8 @@ public class NfcShield extends ControllerParent<NfcShield> {
         if (currentTag != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
                 ShieldFrame sf = new ShieldFrame(SHIELD_ID, NEW_TAG_FRAME);
-                byte[] currentTagId = currentTag.getId();
-                if (currentTagId.length == 0)
-                    currentTagId = new byte[]{0x00};
 
-                sf.addArgument(currentTagId);
+                sf.addArgument(getTagId());
                 sf.addIntegerArgument(2, getNdefMaxSize());
                 sf.addIntegerArgument(1, getNdefRecordCount());
                 sf.addIntegerArgument(2, getNdefUsedSize());
