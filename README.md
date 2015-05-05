@@ -10,6 +10,16 @@ Pull requests are welcomed. If you want to contribute, fork, create an issue, re
 
 Change Log:
 
+--------- Version 1.3.0 (150505) -----------
+
+- Added two new shields, NFC and color detector.
+- Enhanced the camera shield implementation.
+- Added a preview for the camera shield.
+- Removed RemoteOneSheeld shield.
+- Fixed selection callback for some shields.
+- Made the data logger shield save logged files on connection loss.
+- Increased overall app stability and fixed other major bugs.
+
 --------- Version 1.2.0 (150308) -----------
 
 - Added our most advanced - and most requested - shield ever, the Internet Shield.
