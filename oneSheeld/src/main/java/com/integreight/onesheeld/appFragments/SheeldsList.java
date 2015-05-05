@@ -45,7 +45,6 @@ import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
-import com.parse.ParseInstallation;
 
 import java.text.SimpleDateFormat;
 import java.util.Enumeration;
@@ -66,6 +65,7 @@ public class SheeldsList extends Fragment {
     MainActivity activity;
     public static final int REQUEST_CONNECT_DEVICE = 1;
     public static final int REQUEST_ENABLE_BT = 3;
+
 
     public static SheeldsList getInstance() {
         if (thisInstance == null) {
@@ -133,20 +133,22 @@ public class SheeldsList extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    activity.findViewById(R.id.cancelConnection)
-                                            .setOnClickListener(
-                                                    new View.OnClickListener() {
+                                    if (getActivity().findViewById(R.id.progressShieldInit).getVisibility() != View.VISIBLE) {
+                                        activity.findViewById(R.id.cancelConnection)
+                                                .setOnClickListener(
+                                                        new View.OnClickListener() {
 
-                                                        @Override
-                                                        public void onClick(
-                                                                View v) {
-                                                            // TODO
-                                                            // Auto-generated
-                                                            // method stub
+                                                            @Override
+                                                            public void onClick(
+                                                                    View v) {
+                                                                // TODO
+                                                                // Auto-generated
+                                                                // method stub
 
-                                                        }
-                                                    });
-                                    launchShieldsOperationActivity();
+                                                            }
+                                                        });
+                                        launchShieldsOperationActivity();
+                                    }
                                 }
                             });
                     List<Fragment> frags = activity.getSupportFragmentManager()

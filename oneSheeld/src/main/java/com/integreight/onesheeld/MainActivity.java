@@ -729,6 +729,23 @@ public class MainActivity extends FragmentActivity {
     protected void onNewIntent(Intent intent) {
         getNfcIntent(intent);
         super.onNewIntent(intent);
+        if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
+            if (findViewById(R.id.progressShieldInit) != null) {
+                findViewById(R.id.progressShieldInit)
+                        .setVisibility(View.VISIBLE);
+                findViewById(R.id.operationsLogo)
+                        .setVisibility(View.INVISIBLE);
+                findViewById(R.id.operationsLogo).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        findViewById(R.id.progressShieldInit)
+                                .setVisibility(View.INVISIBLE);
+                        findViewById(R.id.operationsLogo)
+                                .setVisibility(View.VISIBLE);
+                    }
+                }, 1000);
+            }
+        }
     }
 
     private void getNfcIntent(Intent intent) {
@@ -736,10 +753,11 @@ public class MainActivity extends FragmentActivity {
             String action = intent.getAction();
             if (action != null)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action))
+                    if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action) || NfcAdapter.ACTION_TECH_DISCOVERED.equals(action) || NfcAdapter.ACTION_TAG_DISCOVERED.equals(action)) {
                         if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
                             ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
                         }
+                    }
                 }
         }
     }
