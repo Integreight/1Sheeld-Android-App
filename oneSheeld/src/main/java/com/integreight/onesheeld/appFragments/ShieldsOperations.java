@@ -126,12 +126,12 @@ public class ShieldsOperations extends BaseContainerFragment {
                                 .findViewById(R.id.shieldName);
                         if (shieldName != null && mContent != null && mContent.shieldName != null) {
                             shieldName
-                                    .setVisibility(((ShieldFragmentParent<?>) mContent).shieldName
+                                    .setVisibility(mContent.shieldName
                                             .equalsIgnoreCase(UIShield.SEVENSEGMENT_SHIELD
                                                     .getName()) ? View.GONE
                                             : View.VISIBLE);
                             shieldName
-                                    .setText(((ShieldFragmentParent<?>) mContent).shieldName);
+                                    .setText(mContent.shieldName);
                         }
                     }
                 });
