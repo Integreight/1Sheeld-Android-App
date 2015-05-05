@@ -658,7 +658,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
             if (dataLength <= data.length - memoryIndex) {
                 return Arrays.copyOfRange(data, memoryIndex, memoryIndex + dataLength);
             } else {
-                if (sendErrorFrames) sendError(NO_ENOUGH_BYTES);
+//                if (sendErrorFrames) sendError(NO_ENOUGH_BYTES);
                 return data;
             }
         } else {
@@ -701,7 +701,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
             if (dataLength <= data.length - memoryIndex) {
                 return Arrays.copyOfRange(data, memoryIndex, memoryIndex + dataLength);
             } else {
-                if (sendErrorFrames) sendError(NO_ENOUGH_BYTES);
+//                if (sendErrorFrames) sendError(NO_ENOUGH_BYTES);
                 return data;
             }
         } else {
