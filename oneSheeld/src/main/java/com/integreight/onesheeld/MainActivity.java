@@ -726,9 +726,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        getNfcIntent(intent);
-        super.onNewIntent(intent);
+    protected void onNewIntent(final Intent intent) {
         if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
             if (findViewById(R.id.progressShieldInit) != null) {
                 findViewById(R.id.progressShieldInit)
@@ -746,6 +744,13 @@ public class MainActivity extends FragmentActivity {
                 }, 1000);
             }
         }
+        backgroundThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                getNfcIntent(intent);
+            }
+        });
+        super.onNewIntent(intent);
     }
 
     private void getNfcIntent(Intent intent) {
