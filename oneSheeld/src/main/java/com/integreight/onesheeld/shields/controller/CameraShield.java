@@ -156,7 +156,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
             msg.replyTo = mMessenger;
             try {
                 cameraBinder.send(msg);
-//                capturesQueue = new ConcurrentLinkedQueue<>();
             } catch (RemoteException e) {
             }
             isCameraBound = true;
@@ -183,12 +182,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                         capturesQueue.poll();
                     }
                 } else {
-//                    if (CameraUtils.checkCameraHardware(getActivity().getApplicationContext())) {
                     sendCaptureImageIntent(capture);
-//                    } else {
-//                        Toast.makeText(getActivity(), "Your device doesn't have a camera", Toast.LENGTH_SHORT).show();
-//                        capturesQueue.poll();
-//                    }
                 }
             } else bindService();
         }
