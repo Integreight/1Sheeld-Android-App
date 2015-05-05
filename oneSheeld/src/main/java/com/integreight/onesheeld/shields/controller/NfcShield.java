@@ -90,7 +90,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             if (nfcAdapter != null && nfcAdapter.isEnabled()) {
-                setupForegroundDispatch(activity);
+                setupForegroundDispatch();
                 selectionAction.onSuccess();
             } else {
                 if (isToastable) {
@@ -168,7 +168,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
     @Override
     public void resetThis() {
         if (isForeground)
-            stopForegroundDispatch(activity);
+            stopForegroundDispatch();
         else {
             PackageManager packageManager = activity.getApplicationContext().getPackageManager();
             packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
@@ -217,20 +217,28 @@ public class NfcShield extends ControllerParent<NfcShield> {
                     for (String tech : techList) {
                         if (!isTagSupported) {
                             if (Ndef.class.getName().equals(tech)) {
+                                if (getNdefMaxSize() != 0) {
                                 isNdef_Flag = false;
                                 isTagSupported = true;
-                                if (getNdefRecordCount() == 0) {
-                                    sendNewEmptyTagFrame();
-                                } else {
-                                    isNdef_Flag = true;
-                                    displayData();
-                                    sendNewTagFrame();
+                                    if (getNdefRecordCount() == 0) {
+                                        sendNewEmptyTagFrame();
+                                    } else {
+                                        isNdef_Flag = true;
+                                        displayData();
+                                        sendNewTagFrame();
+                                    }
+                                }else{
+                                    sendError(TAG_READING_ERROR);
                                 }
                             } else if (NdefFormatable.class.getName().equals(tech)) {
-                                isNdef_Flag = false;
-                                isTagSupported = true;
-                                sendNewEmptyTagFrame();
-                                displayData();
+                                if (getNdefMaxSize() != 0) {
+                                    isNdef_Flag = false;
+                                    isTagSupported = true;
+                                    sendNewEmptyTagFrame();
+                                    displayData();
+                                }else{
+                                    sendError(TAG_READING_ERROR);
+                                }
                             }
                         } else
                             break;
@@ -322,7 +330,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
         return size;
     }
 
-    public void setupForegroundDispatch(final Activity Mactivity) {
+    public void setupForegroundDispatch() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
@@ -349,7 +357,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
         }
     }
 
-    public void stopForegroundDispatch(final Activity Mactivity) {
+    public void stopForegroundDispatch() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             if (nfcAdapter != null) {
