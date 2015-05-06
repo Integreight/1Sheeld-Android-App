@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
@@ -64,8 +63,6 @@ public class CameraHeadService extends Service implements
     private boolean isFrontCamRequest = false;
     private Camera.Size pictureSize;
     SurfaceView sv;
-    //    TextView tv, tvD;
-//    ImageView iv;
     private SurfaceHolder sHolder;
     private WindowManager windowManager;
     WindowManager.LayoutParams params;//, params1, params2, params3;
@@ -127,7 +124,6 @@ public class CameraHeadService extends Service implements
             mCamera.setPreviewCallback(null);
             mCamera.stopPreview();
             mCamera.release();
-//            mCamera = Camera.open();
         }
         int cameraCount = 0;
         Camera cam = null;
@@ -182,9 +178,7 @@ public class CameraHeadService extends Service implements
         params.y = (int) (150 * metrics.density + .5f);
         params.width = expectedWidth;
         params.height = expectedHeight;
-        params.alpha=1.0f;
-//        if (sv!=null)
-//            sv.setVisibility(View.VISIBLE);
+        params.alpha = 1.0f;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -198,9 +192,7 @@ public class CameraHeadService extends Service implements
         params.height = h + ((int) (1 * getResources().getDisplayMetrics().density + .5f));
         params.x = (int) x;
         params.y = (int) (y);
-        params.alpha=1.0f;
-//        if (sv!=null)
-//            sv.setVisibility(View.VISIBLE);
+        params.alpha = 1.0f;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -216,9 +208,7 @@ public class CameraHeadService extends Service implements
         params.y = (int) (150 * metrics.density + .5f);
         params.width = 0;
         params.height = 0;
-        params.alpha=0.0f;
-//        if (sv!=null)
-//            sv.setVisibility(View.INVISIBLE);
+        params.alpha = 0.0f;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -232,9 +222,7 @@ public class CameraHeadService extends Service implements
         params.height = 0;
         params.x = (int) x;
         params.y = (int) (y);
-        params.alpha=0.0f;
-//        if (sv!=null)
-//            sv.setVisibility(View.INVISIBLE);
+        params.alpha = 0.0f;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -243,18 +231,12 @@ public class CameraHeadService extends Service implements
 
     private void hidePreview() {
         params.width = 0;
-        params.height =0;
-        params.alpha=0.0f;
-//        if (sv!=null)
-//        sv.setVisibility(View.INVISIBLE);
+        params.height = 0;
+        params.alpha = 0.0f;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
         }
-    }
-
-    private OneSheeldApplication getMyApplication() {
-        return (OneSheeldApplication) getApplication();
     }
 
     private synchronized void takeImage(Bundle extras) {
@@ -520,13 +502,12 @@ public class CameraHeadService extends Service implements
         params.height = 0;
         params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);
-        params.alpha=0.0f;
+        params.alpha = 0.0f;
         sv = new SurfaceView(getApplicationContext());
         windowManager.addView(sv, params);
         params = (WindowManager.LayoutParams) sv.getLayoutParams();
         sHolder = sv.getHolder();
         sHolder.addCallback(this);
-//        sv.setVisibility(View.INVISIBLE);
 
         mOrientationEventListener = new OrientationEventListener(this,
                 SensorManager.SENSOR_DELAY_NORMAL) {
@@ -725,18 +706,12 @@ public class CameraHeadService extends Service implements
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-//            if (mCamera != null) {
-//                mCamera.stopPreview();
-//                mCamera.release();
-//                mCamera = null;
-//            }
             com.integreight.onesheeld.utils.Log.d("Camera", "Image Taken !");
             if (bmp != null) {
                 bmp.recycle();
                 bmp = null;
                 System.gc();
             }
-//            mCamera = null;
             handler.post(new Runnable() {
 
                 @Override
@@ -805,10 +780,9 @@ public class CameraHeadService extends Service implements
                 cellSize = msg.getData().getInt("size");
             } else if (msg.what == ColorDetectionShield.UNBIND_COLOR_DETECTOR) {
                 unBindColorDetector();
-            } else if (msg.what == CameraAidlService.UNBIND_CAMERA_CAPTURE) {
+            } else if (msg.what == CameraShield.UNBIND_CAMERA_CAPTURE) {
                 unBindCameraCapture();
-            } else if (msg.what == CameraAidlService.BIND_CAMERA_CAPTURE) {
-//                resetPreviewThread();
+            } else if (msg.what == CameraShield.BIND_CAMERA_CAPTURE) {
                 cameraMessenger = msg.replyTo;
                 if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name()))
                     registeredShieldsIDs.add(UIShield.CAMERA_SHIELD.name());
@@ -991,7 +965,6 @@ public class CameraHeadService extends Service implements
             if (sv != null)
                 windowManager.removeView(sv);
         } catch (IllegalArgumentException e) {
-//            Crashlytics.logException(e);
             e.printStackTrace();
         }
         notifyFinished();
@@ -1024,7 +997,6 @@ public class CameraHeadService extends Service implements
                 if (sv != null)
                     windowManager.removeView(sv);
             } catch (IllegalArgumentException e) {
-//                Crashlytics.logException(e);
                 e.printStackTrace();
             }
         }
@@ -1096,8 +1068,6 @@ public class CameraHeadService extends Service implements
                             } catch (Exception e) {
                                 Crashlytics.logException(e);
                             }
-//                            if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()) && vv == 20)
-//                                throw new ClassCastException();
                         }
                     }
                 });
@@ -1128,6 +1098,5 @@ public class CameraHeadService extends Service implements
                 previewCells[currentColorIndex] = averageColor;
             }
         }
-//        vv++;
     }
 }

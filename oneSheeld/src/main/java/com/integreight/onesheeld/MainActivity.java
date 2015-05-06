@@ -463,25 +463,11 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void killAllProcesses() {
-//        List<ApplicationInfo> packages;
-//        PackageManager pm;
-//        pm = getPackageManager();
-//        //get a list of installed apps.
-//        packages = pm.getInstalledApplications(0);
-//
-//        ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//
-//        for (ApplicationInfo packageInfo : packages) {
-//            if (packageInfo.packageName.equals("com.integreight.onesheeld"))
-//                mActivityManager.killBackgroundProcesses(packageInfo.packageName);
-//        }
         android.os.Process.killProcess(Process.myPid());
     }
 
     public void replaceCurrentFragment(int container, Fragment targetFragment,
                                        String tag, boolean addToBackStack, boolean animate) {
-        // String backStateName = tag;
-        // String fragmentTag = tag;
         if (!isFinishing()) {
             FragmentManager manager = getSupportFragmentManager();
             boolean fragmentPopped = manager.popBackStackImmediate(tag, 0);
@@ -526,11 +512,6 @@ public class MainActivity extends FragmentActivity {
         }
         // // unExpeted
         if (!isBackPressed) {
-//            new Thread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-            // tryToSendNotificationsToAdmins(arg1);
             Enumeration<String> enumKey = ((OneSheeldApplication)
                     getApplication()).getRunningShields().keys();
             while (enumKey.hasMoreElements()) {
@@ -548,8 +529,6 @@ public class MainActivity extends FragmentActivity {
             mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
                     intent);
             killAllProcesses();
-//                }
-//            }).start();
         } else
             killAllProcesses();
         isBackPressed = false;
@@ -798,9 +777,6 @@ public class MainActivity extends FragmentActivity {
             }
 
         } catch (PackageManager.NameNotFoundException e) {
-
-            // Should not happen since the name was determined dynamically from the app context.
-//            Log.e(LOGTAG, "Unexpected NameNotFound.", e);
 
         }
 

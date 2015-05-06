@@ -239,12 +239,6 @@
             android:process=":camera"
             android:singleUser="true"></service>
 
-        <service
-            android:name="com.integreight.onesheeld.shields.controller.utils.CameraAidlService"
-            android:exported="true"
-            android:label="Camera Aidl Service"
-            android:process=":camera"></service>
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
