@@ -37,9 +37,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     private Messenger cameraBinder;
     private boolean isCameraBound;
     public Queue<CameraShield.CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
-    public Queue<CameraShield.CameraCapture> tempQueue = new ConcurrentLinkedQueue<>();
-    public static final int SET_REPLYTO = 1;
-    public static final int ADD_TO_QUEUE = 2;
     public static final int CRASHED = 3;
     public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5, NEXT_CAPTURE = 14;
     CameraCapture capture;
@@ -296,14 +293,10 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                     Log.d("Camera", "Frames number front = " + numberOfFrames);
                     CameraCapture frontCamCapture = new CameraCapture(FLASH_MODE,
                             true, QUALITY_MODE, new Date().getTime());
-//                    if ((cameraBinder == null || !isCameraBound) || activity.getThisApplication().isCameraCapturing()) {
                     if (capturesQueue == null)
                         capturesQueue = new ConcurrentLinkedQueue<>();
                     capturesQueue.add(frontCamCapture);
                     checkQueue();
-//                    } else {
-//                        sendFrontCaptureImageIntent(frontCamCapture);
-//                    }
                     break;
 
                 default:
