@@ -36,6 +36,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
+import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
@@ -728,7 +729,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onNewIntent(final Intent intent) {
         if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
-            if (findViewById(R.id.progressShieldInit) != null) {
+            if (findViewById(R.id.progressShieldInit) != null && getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) == null) {
                 findViewById(R.id.progressShieldInit)
                         .setVisibility(View.VISIBLE);
                 findViewById(R.id.operationsLogo)

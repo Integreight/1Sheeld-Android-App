@@ -195,8 +195,8 @@ public class NfcShield extends ControllerParent<NfcShield> {
             resetTechnologyFlags();
             switch (action) {
                 case NfcAdapter.ACTION_NDEF_DISCOVERED:
+                    setCurrentTag(tag);
                     if (getNdefMaxSize() > 0 && getTagId().length > 0) {
-                        setCurrentTag(tag);
                         isTagSupported = true;
                         isNdef_Flag = true;
                         displayData();

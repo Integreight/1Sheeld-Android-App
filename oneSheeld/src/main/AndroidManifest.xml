@@ -142,56 +142,60 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".shields.controller.utils.NfcUtils"
+        <activity
+            android:name=".shields.controller.utils.NfcUtils"
+            android:excludeFromRecents="true"
+            android:allowTaskReparenting="true"
+            android:taskAffinity=":nfc"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.Transparent">
-        </activity>
+            android:theme="@style/Theme.Transparent"></activity>
 
         <activity-alias
             android:name="NFCUtils-alias"
-            android:targetActivity=".shields.controller.utils.NfcUtils"
+            android:enabled="true"
             android:exported="true"
-            android:enabled="true">
+            android:targetActivity=".shields.controller.utils.NfcUtils">
 
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="*/*"/>
+                <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="http"/>
-                <data android:scheme="https"/>
-                <data android:scheme="tel"/>
-                <data android:scheme="mailto"/>
-                <data android:scheme="ftp"/>
-                <data android:scheme="ftps"/>
-                <data android:scheme="sftp"/>
-                <data android:scheme="smb"/>
-                <data android:scheme="nfs"/>
-                <data android:scheme="dav"/>
-                <data android:scheme="news"/>
-                <data android:scheme="telnet"/>
-                <data android:scheme="imap"/>
-                <data android:scheme="rtsp"/>
-                <data android:scheme="urn"/>
-                <data android:scheme="pop"/>
-                <data android:scheme="sip"/>
-                <data android:scheme="sips"/>
-                <data android:scheme="tftp"/>
-                <data android:scheme="btspp"/>
-                <data android:scheme="btl2cap"/>
-                <data android:scheme="btgoep"/>
-                <data android:scheme="tcpobex"/>
-                <data android:scheme="irdaobex"/>
-                <data android:scheme="file"/>
-                <data android:scheme="urn:epc:id"/>
-                <data android:scheme="urn:epc:tag"/>
-                <data android:scheme="urn:epc:pat"/>
-                <data android:scheme="urn:epc:raw"/>
-                <data android:scheme="urn:epc"/>
-                <data android:scheme="urn:nfc"/>
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:scheme="tel" />
+                <data android:scheme="mailto" />
+                <data android:scheme="ftp" />
+                <data android:scheme="ftps" />
+                <data android:scheme="sftp" />
+                <data android:scheme="smb" />
+                <data android:scheme="nfs" />
+                <data android:scheme="dav" />
+                <data android:scheme="news" />
+                <data android:scheme="telnet" />
+                <data android:scheme="imap" />
+                <data android:scheme="rtsp" />
+                <data android:scheme="urn" />
+                <data android:scheme="pop" />
+                <data android:scheme="sip" />
+                <data android:scheme="sips" />
+                <data android:scheme="tftp" />
+                <data android:scheme="btspp" />
+                <data android:scheme="btl2cap" />
+                <data android:scheme="btgoep" />
+                <data android:scheme="tcpobex" />
+                <data android:scheme="irdaobex" />
+                <data android:scheme="file" />
+                <data android:scheme="urn:epc:id" />
+                <data android:scheme="urn:epc:tag" />
+                <data android:scheme="urn:epc:pat" />
+                <data android:scheme="urn:epc:raw" />
+                <data android:scheme="urn:epc" />
+                <data android:scheme="urn:nfc" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
@@ -201,7 +205,9 @@
                 <action android:name="android.nfc.action.TECH_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            <meta-data android:name="android.nfc.action.TECH_DISCOVERED"
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_supported_technologies" />
         </activity-alias>
 
@@ -235,9 +241,9 @@
 
         <service
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraAidlService"
+            android:exported="true"
             android:label="Camera Aidl Service"
-            android:process=":camera"
-            android:exported="true"></service>
+            android:process=":camera"></service>
 
         <meta-data
             android:name="com.google.android.gms.version"
