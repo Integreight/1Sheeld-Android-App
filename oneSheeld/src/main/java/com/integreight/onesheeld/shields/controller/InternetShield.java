@@ -362,7 +362,7 @@ public class InternetShield extends
                                     ShieldFrame frameSentNotEnough = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
                                     frameSentNotEnough.addIntegerArgument(2, requestID);
                                     frameSentNotEnough.addIntegerArgument(1, RESPONSE.NO_ENOUGH_BYTES);
-                                    sendShieldFrame(frameSentNotEnough, true);
+                                    queueShieldFrame(frameSentNotEnough);
                                 }
                             } else if (bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.INDEX_GREATER_THAN_LENGTH || bodyBytes.getBytes_status() == InternetResponse.RESPONSE_BODY_BYTES.INDEX_LESS_THAN_0) {
                                 ShieldFrame frameSentIndexOut = new ShieldFrame(SHIELD_ID, RESPONSE.ON_ERROR);
