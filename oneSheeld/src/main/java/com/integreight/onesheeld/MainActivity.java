@@ -106,7 +106,6 @@ public class MainActivity extends FragmentActivity {
                 .setInstallDays(7)
                 .setLaunchTimes(5)
                 .setRemindInterval(2)
-                .setDebug(true)
                 .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
                     @Override
                     public void onClickButton(int which) {
