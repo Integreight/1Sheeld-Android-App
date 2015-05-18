@@ -10,6 +10,11 @@ Pull requests are welcomed. If you want to contribute, fork, create an issue, re
 
 Change Log:
 
+--------- Version 1.3.1 (150519) -----------
+
+- Fixed a bug where the app rating dialog appears each time a connection is made.
+- Fixed some bugs in the NFC shield.
+
 --------- Version 1.3.0 (150505) -----------
 
 - Added two new shields, NFC and color detector.
