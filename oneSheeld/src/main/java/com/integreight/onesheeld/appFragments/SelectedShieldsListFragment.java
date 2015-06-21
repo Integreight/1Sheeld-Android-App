@@ -30,6 +30,7 @@ import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
 import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
+import com.integreight.onesheeld.shields.fragments.GlcdFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
 import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
@@ -206,6 +207,8 @@ public class SelectedShieldsListFragment extends ListFragment {
             return addToCreatedListAndReturn(uiShield, new InternetFragment());
         if (uiShield.id == UIShield.NFC_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new NfcFragment());
+        if (uiShield.id == UIShield.GLCD_SHIELD.id)
+            return addToCreatedListAndReturn(uiShield, new GlcdFragment());
         if (uiShield.id == UIShield.COLOR_DETECTION_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new ColorDetectionFragment());
 

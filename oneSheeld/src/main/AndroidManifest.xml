@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
     android:versionCode="150505"
-    android:versionName="1.3.0">
+    android:versionName="1.3.0(GLCD_TEST)">
 
     <uses-sdk android:minSdkVersion="9" />
 
