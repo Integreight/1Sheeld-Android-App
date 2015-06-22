@@ -198,6 +198,19 @@ public class GlcdView extends View implements OnTouchListener {
                 Dots.get(x).set(y,color);
     }
 
+    public void setTouch(int x, int y, int touchId){
+        if (x < Touchs.size() && x >= 0)
+            if (y < Touchs.get(x).size() && y >= 0)
+                Touchs.get(x).set(y,touchId);
+    }
+
+    public int getTouch(int x, int y){
+        if (x < Touchs.size() && x >= 0)
+            if (y < Touchs.get(x).size() && y >= 0)
+                return Touchs.get(x).get(y);
+        return 0;
+    }
+
     public void drawLine(float x1,float y1,float x2,float y2,int color) {
         float deltaX, deltaY, x, y;
         boolean steep;
@@ -442,11 +455,11 @@ public class GlcdView extends View implements OnTouchListener {
                 y -= originY;
                 x /= pixelX;
                 y /= pixelY;
-                if (Touchs.get((int) x).get((int) y) != 0){
+                if (getTouch((int) x,(int) y) != 0){
                     if (action == 1) {
-                        releaseThis(Touchs.get((int) x).get((int) y) - 1);
+                        releaseThis(getTouch((int) x,(int) y) - 1);
                     }else
-                        pressThis(Touchs.get((int) x).get((int) y)-1);
+                        pressThis(getTouch((int) x, (int) y)-1);
 
                 }else {
                     releaseThis(currentPressedKey);
@@ -462,8 +475,8 @@ public class GlcdView extends View implements OnTouchListener {
                 y -= originY;
                 x /= pixelX;
                 y /= pixelY;
-                if (Touchs.get((int) x).get((int) y) != 0){
-                        touchThis(Touchs.get((int) x).get((int) y) - 1,(int) x,(int) y);
+                if (getTouch((int) x, (int) y) != 0){
+                        touchThis(getTouch((int) x,(int) y) - 1,(int) x,(int) y);
                 }
             }
         }
@@ -539,6 +552,17 @@ public class GlcdView extends View implements OnTouchListener {
         float x,y,width,height,start,end,currentValue;
         int color;
 
+        public ProgressBar(float x,float y,float width,float height,int color){
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.color = color;
+            this.start = 0;
+            this.end = 100;
+            this.currentValue = start;
+        }
+
         public ProgressBar(float x,float y,float width,float height,int color,float value){
             this.x = x;
             this.y = y;
@@ -552,17 +576,6 @@ public class GlcdView extends View implements OnTouchListener {
             else if (value > end)
                 value = end;
             this.currentValue = value;
-        }
-
-        public ProgressBar(float x,float y,float width,float height,int color){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.color = color;
-            this.start = 0;
-            this.end = 100;
-            this.currentValue = start;
         }
 
         public ProgressBar(float x,float y,float width,float height,int color,float start,float end){
@@ -876,7 +889,7 @@ public class GlcdView extends View implements OnTouchListener {
         public void applyTouch() {
             for (float x=btnX;x<btnX+btnWidth;x++){
                 for (float y=btnY;y<btnY+btnHeight;y++){
-                    Touchs.get((int) x).set((int) y,btnTouchId);
+                    setTouch((int) x,(int) y,btnTouchId);
                 }
             }
         }
@@ -933,7 +946,7 @@ public class GlcdView extends View implements OnTouchListener {
 
             for (float x=btnX-btnRadius;x<right;x++){
                 for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
-                    Touchs.get((int) x).set((int) y,btnTouchId);
+                    setTouch((int) x,(int) y,btnTouchId);
                 }
             }
         }
@@ -968,9 +981,9 @@ public class GlcdView extends View implements OnTouchListener {
         public void draw() {
             clear(background,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight,true,false);
 
-            fillCircle(btnX,btnY,btnRadius,WHITE);
-            drawCircle(btnX,btnY,btnRadius,BLACK);
-            if (isSelected) fillCircle(btnX,btnY,btnRadius - 2, BLACK);
+            fillCircle(btnX, btnY, btnRadius, WHITE);
+            drawCircle(btnX, btnY, btnRadius, BLACK);
+            if (isSelected) fillCircle(btnX, btnY, btnRadius - 2, BLACK);
             drawString(btnText, btnX + btnRadius,btnY-btnRadius,TEXT_SMALL,BLACK);
 
             refresh(true,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight);
@@ -1015,7 +1028,7 @@ public class GlcdView extends View implements OnTouchListener {
 
             for (float x=btnX;x<right;x++){
                 for (float y=btnY;y<btnY+btnSize;y++){
-                    Touchs.get((int) x).set((int) y,btnTouchId);
+                    setTouch((int) x, (int) y, btnTouchId);
                 }
             }
         }
@@ -1054,7 +1067,7 @@ public class GlcdView extends View implements OnTouchListener {
             if (isSelected) fillRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
             drawString(btnText, btnX + btnSize,btnY,TEXT_SMALL,BLACK);
 
-            refresh(true,(int) btnX,(int) btnY,(int) btnWidth+1,(int) btnHeight);
+            refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight);
         }
     }
 
@@ -1093,7 +1106,7 @@ public class GlcdView extends View implements OnTouchListener {
         public void applyTouch(){
             for (float x=btnX;x<btnX+btnWidth;x++){
                 for (float y=btnY;y<btnY+btnHeight;y++){
-                    Touchs.get((int) x).set((int) y,btnTouchId);
+                    setTouch((int) x, (int) y, btnTouchId);
                 }
             }
         }
