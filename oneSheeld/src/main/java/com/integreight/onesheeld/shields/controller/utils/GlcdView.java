@@ -61,42 +61,48 @@ public class GlcdView extends View implements OnTouchListener {
         if (isInt == false) {
             isInt = true;
 
-            /*button btn = new button(0, 30, 100, 30, "Hello");
+            button btn = new button(0, 30, 100, 30, "Hello");
             btn.setIsPressed(false);
             buttons.add(btn);
             btn.setBtnTouchId(buttons.size());
-            btn.applyTouch();*/
+            btn.applyTouch();
 
-            /*radioButton btn1 = new radioButton(5,5,5,"Male");
-            btn1.setIsPressed(false);
-            btn1.setSelected(false);
-            buttons.add(btn1);
-            btn1.setBtnTouchId(buttons.size());
-            btn1.applyTouch();
+//            button2D btn2 = new button2D(0, 70, 100, 30, "Hello");
+//            btn2.setIsPressed(false);
+//            buttons.add(btn2);
+//            btn2.setBtnTouchId(buttons.size());
+//            btn2.applyTouch();
 
-            radioButton btn2 = new radioButton(5,50,5,"Female");
-            btn2.setIsPressed(false);
-            btn2.setSelected(false);
-            buttons.add(btn2);
-            btn2.setBtnTouchId(buttons.size());
-            btn2.applyTouch();
+//            radioButton btn1 = new radioButton(5,5,5,"Male");
+//            btn1.setIsPressed(false);
+//            btn1.setSelected(false);
+//            buttons.add(btn1);
+//            btn1.setBtnTouchId(buttons.size());
+//            btn1.applyTouch();
+//
+//            radioButton btn2 = new radioButton(5,50,5,"Female");
+//            btn2.setIsPressed(false);
+//            btn2.setSelected(false);
+//            buttons.add(btn2);
+//            btn2.setBtnTouchId(buttons.size());
+//            btn2.applyTouch();
+//
+//            RadioGroup radioGroup = new RadioGroup();
+//            radioGroup.add(btn1);
+//            radioGroup.add(btn2);
 
-            RadioGroup radioGroup = new RadioGroup();
-            radioGroup.add(btn1);
-            radioGroup.add(btn2);*/
 
+//            checkBox btn = new checkBox(5,5,12,"Check box");
+//            btn.setIsPressed(false);
+//            buttons.add(btn);
+//            btn.setBtnTouchId(buttons.size());
+//            btn.applyTouch();
 
-            /*checkBox btn = new checkBox(5,5,12,"Check box");
-            btn.setIsPressed(false);
-            buttons.add(btn);
-            btn.setBtnTouchId(buttons.size());
-            btn.applyTouch();*/
-
-            /*HorSlider btn = new HorSlider(15,15,100,10,BLACK);
-            btn.setIsPressed(false);
-            buttons.add(btn);
-            btn.setBtnTouchId(buttons.size());
-            btn.applyTouch();*/
+//            HorSlider btn = new HorSlider(15,15,100,10,BLACK);
+//            btn.setIsPressed(false);
+//            buttons.add(btn);
+//            btn.setBtnTouchId(buttons.size());
+//            btn.applyTouch();
 
         }
 
@@ -105,13 +111,13 @@ public class GlcdView extends View implements OnTouchListener {
             buttons.get(btnCount).draw();
         }
 
-        drawString("Hello world!!",5,15,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
-        drawString("Hello world!!",5,30,TEXT_SMALL,FONT_ARIEL_BLACK,BLACK);
-        drawString("Hello world!!",5,45,TEXT_SMALL,FONT_ARIEL_ITALIC,BLACK);
-        drawString("Hello world!!",5,60,TEXT_SMALL,FONT_COMICSANS,BLACK);
-        drawString("Hello world!!",5,75,TEXT_SMALL,FONT_SERIF,BLACK);
+//        drawString("Hello world!!",5,15,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
+//        drawString("Hello world!!",5,30,TEXT_SMALL,FONT_ARIEL_BLACK,BLACK);
+//        drawString("Hello world!!",5,45,TEXT_SMALL,FONT_ARIEL_ITALIC,BLACK);
+//        drawString("Hello world!!",5,60,TEXT_SMALL,FONT_COMICSANS,BLACK);
+//        drawString("Hello world!!",5,75,TEXT_SMALL,FONT_SERIF,BLACK);
 
-        refresh(false);
+        refresh(true);
     }
 
     private void clear(int background){
@@ -295,29 +301,31 @@ public class GlcdView extends View implements OnTouchListener {
         drawLine(x, y + radius, x, y + height - (radius), color);
         drawLine(x + width, y + radius, x + width, y + height - (radius), color);
 
-        float tSwitch;
-        float x1=0,y1=radius;
-        tSwitch = 3-2*radius;
-        while (x1<=y1){
-            setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-            setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+        if (radius > 0 ) {
+            float tSwitch;
+            float x1 = 0, y1 = radius;
+            tSwitch = 3 - 2 * radius;
+            while (x1 <= y1) {
+                setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
+                setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
 
-            setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-            setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+                setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+                setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
 
-            setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), color);
-            setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
+                setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), color);
+                setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
 
-            setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
-            setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
+                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
 
-            if (tSwitch <0)
-                tSwitch += (4*x1+6);
-            else {
-                tSwitch += (4*(x1-y1)+10);
-                y1--;
+                if (tSwitch < 0)
+                    tSwitch += (4 * x1 + 6);
+                else {
+                    tSwitch += (4 * (x1 - y1) + 10);
+                    y1--;
+                }
+                x1++;
             }
-            x1++;
         }
     }
 
@@ -497,47 +505,41 @@ public class GlcdView extends View implements OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        float x = event.getX();
+        float y = event.getY();
         int action = event.getAction();
-        if (action == 1 || action == 0) {
-            float x = event.getX();
-            float y = event.getY();
-            if (x >= originX && x < originX + width && y >= originY && y < originY + height) {
-                x -= originX;
-                y -= originY;
-                x /= pixelX;
-                y /= pixelY;
-                if (getTouch((int) x,(int) y) != 0){
-                    if (action == 1) {
-                        releaseThis(getTouch((int) x,(int) y) - 1);
-                    }else
-                        pressThis(getTouch((int) x, (int) y)-1);
-
-                }else {
-                    releaseThis(currentPressedKey);
-                }
-            }else {
-                releaseThis(currentPressedKey);
-            }
-        }else if (action == 2){
-            float x = event.getX();
-            float y = event.getY();
-            if (x >= originX && x < originX + width && y >= originY && y < originY + height) {
-                x -= originX;
-                y -= originY;
-                x /= pixelX;
-                y /= pixelY;
-                if (getTouch((int) x, (int) y) != 0){
-                        touchThis(getTouch((int) x,(int) y) - 1,(int) x,(int) y);
+        if (x >= originX && x < originX + width && y >= originY && y < originY + height) {
+            Log.d("mouso",String.valueOf(x)+" "+String.valueOf(y));
+            x -= originX;
+            y -= originY;
+            x /= pixelX;
+            y /= pixelY;
+            if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
+                    if (getTouch((int) x, (int) y) != 0) {
+                        if (action == MotionEvent.ACTION_UP) {
+                            releaseThis(getTouch((int) x, (int) y) - 1);
+                        } else {
+                            pressThis(getTouch((int) x, (int) y) - 1);
+                        }
+                    } else {
+                        releaseThis(currentPressedKey);
+                    }
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                if (getTouch((int) x, (int) y) != 0) {
+                    touchThis(getTouch((int) x, (int) y) - 1, (int) x, (int) y);
                 }
             }
+        }else{
+            releaseThis(currentPressedKey);
         }
         return true;
     }
 
     public void pressThis(int key){
         if (!buttons.isEmpty()) {
-            if (buttons.get(currentPressedKey).getClass().equals(Button.class)) releaseThis(currentPressedKey);
+            if (buttons.get(currentPressedKey).getClass().equals(button.class)) releaseThis(currentPressedKey);
             buttons.get(key).setIsPressed(true);
+            currentPressedKey = key;
         }
     }
 
@@ -918,7 +920,7 @@ public class GlcdView extends View implements OnTouchListener {
             clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
             drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), BLACK);
             fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, BLACK);
-            refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1);
+            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1);
         }
 
         @Override
@@ -1037,7 +1039,7 @@ public class GlcdView extends View implements OnTouchListener {
             if (isSelected) fillCircle(btnX, btnY, btnRadius - 2, BLACK);
             drawString(btnText, btnX + btnRadius,btnY-btnRadius,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
 
-            refresh(true,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight);
+            //refresh(true,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight);
         }
     }
 
@@ -1111,14 +1113,14 @@ public class GlcdView extends View implements OnTouchListener {
 
         @Override
         public void draw() {
-            clear(background, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight, true, false);
+            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
 
             fillRectangle(btnX, btnY, btnSize - 1, btnSize, WHITE);
             drawRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
             if (isSelected) fillRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
-            drawString(btnText, btnX + btnSize,btnY,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
+            drawString(btnText, btnX + btnSize, btnY, TEXT_SMALL, FONT_ARIEL_REGULAR, BLACK);
 
-            refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight);
+            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight);
         }
     }
 
@@ -1175,7 +1177,7 @@ public class GlcdView extends View implements OnTouchListener {
             }else {
                 releaseDraw();
             }
-            refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
+            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
         }
 
         @Override
@@ -1212,6 +1214,85 @@ public class GlcdView extends View implements OnTouchListener {
 
     }
 
+    public class button2D implements ButtonShape {
+        float btnX,btnY,btnWidth,btnHeight;
+        int btnTouchId;
+        String btnText = "";
+        float btnTextX,btnTextY;
+        boolean isPressed=false;
+
+        public button2D (float x,float y,float width,float height,String text){
+            this.btnX = x;
+            this.btnY = y;
+            if (width < 20)
+                this.btnWidth = 20;
+            else
+                this.btnWidth = width;
+            if (height < 20)
+                this.btnHeight = 20;
+            else
+                this.btnHeight = height;
+
+            if (((int)(this.btnWidth/10)) < text.length()){
+                this.btnText = text.substring(0, ((int) (width/10))-2);
+                this.btnText += "..";
+            }else{
+                this.btnText = text;
+            }
+
+            btnTextX = btnX+(this.btnWidth-(text.length()*10))/2;
+            btnTextY = btnY+(this.btnHeight-10)/2;
+            isPressed=false;
+        }
+
+        @Override
+        public void applyTouch(){
+            for (float x=btnX;x<btnX+btnWidth;x++){
+                for (float y=btnY;y<btnY+btnHeight;y++){
+                    setTouch((int) x, (int) y, btnTouchId);
+                }
+            }
+        }
+
+        @Override
+        public void setBtnTouchId(int btnTouchId) {
+            this.btnTouchId = btnTouchId;
+        }
+
+        @Override
+        public void draw(){
+            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+            if (isPressed){
+                pressDraw();
+            }else {
+                releaseDraw();
+            }
+            refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
+        }
+
+        @Override
+        public void setIsPressed(boolean isPressed) {
+            this.isPressed = isPressed;
+        }
+
+        @Override
+        public void setTouched(int touchX, int touchY) {
+
+        }
+
+        private void releaseDraw() {
+            fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, WHITE+1);
+            drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, BLACK);
+            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
+        }
+
+        private void pressDraw(){
+            fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, BLACK);
+            //drawRoundRectangle(btnX,btnY,btnWidth,btnHeight,2,WHITE+1);
+            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, WHITE+1);
+        }
+
+    }
 
     // fonts
     private class font{
