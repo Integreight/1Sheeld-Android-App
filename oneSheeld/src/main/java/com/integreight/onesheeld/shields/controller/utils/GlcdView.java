@@ -61,11 +61,11 @@ public class GlcdView extends View implements OnTouchListener {
         if (isInt == false) {
             isInt = true;
 
-            button btn = new button(0, 30, 100, 30, "Hello");
-            btn.setIsPressed(false);
-            buttons.add(btn);
-            btn.setBtnTouchId(buttons.size());
-            btn.applyTouch();
+//            button btn = new button(0, 30, 100, 30, "Hello");
+//            btn.setIsPressed(false);
+//            buttons.add(btn);
+//            btn.setBtnTouchId(buttons.size());
+//            btn.applyTouch();
 
 //            button2D btn2 = new button2D(0, 70, 100, 30, "Hello");
 //            btn2.setIsPressed(false);
@@ -329,7 +329,7 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    public void drawShadowRoundRectangle(float x, float y, float width, float height, float radius, int color){
+    private void drawShadowRoundRectangle(float x, float y, float width, float height, float radius, int color){
         if (width >= height) {
             if (radius > (width / 2))
                 radius = (width / 2);
@@ -401,6 +401,91 @@ public class GlcdView extends View implements OnTouchListener {
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawCircle((xCenter * pixelX) + originX + (pixelX / 2), (yCenter * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+    }
+
+    public void drawEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
+        float radiusXSqrt = radiusX * radiusX;
+        float radiusYSqrt = radiusY * radiusY;
+        float x=0,y= radiusY;
+        float Px=0,Py=2*radiusXSqrt*radiusY;
+        drawEllipsePoint(xCenter, yCenter, x, y, color);
+        float P = (float) (radiusYSqrt -(radiusXSqrt*radiusY)+(0.25* radiusXSqrt));
+        while (Px < Py){
+            x++;
+            Px = Px +2*radiusYSqrt;
+            if( P<0 ){
+                P = P+radiusYSqrt+Px;
+            }else {
+                y--;
+                Py = Py -2 * radiusXSqrt;
+                P = P +radiusYSqrt+Px-Py;
+            }
+            drawEllipsePoint(xCenter, yCenter, x, y, color);
+        }
+        P = (float) (radiusYSqrt*(x+0.5)*(x+0.5)+radiusXSqrt*(y-1)*(y-1)-radiusXSqrt*radiusYSqrt);
+        while (y > 0){
+            y--;
+            Py = Py -2*radiusXSqrt;
+            if (P > 0){
+                P = P + radiusXSqrt -Py;
+            }else {
+                x++;
+                Px = Px+2*radiusYSqrt;
+                P = P + radiusXSqrt - Py +Px;
+            }
+            drawEllipsePoint(xCenter,yCenter,x,y,color);
+        }
+    }
+
+    public void fillEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
+        if (radiusX == radiusY){
+            fillCircle(xCenter,yCenter,radiusX,color);
+        }else {
+            float radiusXSqrt = radiusX * radiusX;
+            float radiusYSqrt = radiusY * radiusY;
+            float x = 0, y = radiusY;
+            float Px = 0, Py = 2 * radiusXSqrt * radiusY;
+            drawEllipseLine(xCenter, yCenter, x, y, color);
+            float P = (float) (radiusYSqrt - (radiusXSqrt * radiusY) + (0.25 * radiusXSqrt));
+            while (Px < Py) {
+                x++;
+                Px = Px + 2 * radiusYSqrt;
+                if (P < 0) {
+                    P = P + radiusYSqrt + Px;
+                } else {
+                    y--;
+                    Py = Py - 2 * radiusXSqrt;
+                    P = P + radiusYSqrt + Px - Py;
+                }
+                drawEllipseLine(xCenter, yCenter, x, y, color);
+            }
+            P = (float) (radiusYSqrt * (x + 0.5) * (x + 0.5) + radiusXSqrt * (y - 1) * (y - 1) - radiusXSqrt * radiusYSqrt);
+            while (y > 0) {
+                y--;
+                Py = Py - 2 * radiusXSqrt;
+                if (P > 0) {
+                    P = P + radiusXSqrt - Py;
+                } else {
+                    x++;
+                    Px = Px + 2 * radiusYSqrt;
+                    P = P + radiusXSqrt - Py + Px;
+                }
+                drawEllipseLine(xCenter, yCenter, x, y, color);
+            }
+
+            drawEllipse(xCenter, yCenter, radiusX, radiusY, color);
+        }
+    }
+
+    private void drawEllipsePoint ( float xCenter, float yCenter, float x, float y,int color){
+        setPixel((int) (xCenter + x), (int) (yCenter+y),color);
+        setPixel((int) (xCenter + x), (int) (yCenter-y),color);
+        setPixel((int) (xCenter - x), (int) (yCenter+y),color);
+        setPixel((int) (xCenter - x), (int) (yCenter - y), color);
+    }
+
+    private void drawEllipseLine ( float xCenter, float yCenter, float x, float y,int color){
+            fillRectangle(xCenter-x,yCenter-y,x*2,y*2,color);
     }
 
     public void drawChar(char c,float x,float y,int textSize,int textFont,int color){
@@ -509,7 +594,6 @@ public class GlcdView extends View implements OnTouchListener {
         float y = event.getY();
         int action = event.getAction();
         if (x >= originX && x < originX + width && y >= originY && y < originY + height) {
-            Log.d("mouso",String.valueOf(x)+" "+String.valueOf(y));
             x -= originX;
             y -= originY;
             x /= pixelX;
