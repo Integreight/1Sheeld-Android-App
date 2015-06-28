@@ -23,6 +23,7 @@ public class GlcdView extends View implements OnTouchListener {
     int glcdWidth=256,glcdHeight=128;
     ArrayList<ArrayList<Integer>> Dots,Touchs;
     ArrayList<ButtonShape> buttons;
+    SparseArray<Shape> shapes;
     int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
     float pixelX,pixelY,originX,originY,width,height,ascpectRatio;
 
@@ -59,6 +60,21 @@ public class GlcdView extends View implements OnTouchListener {
 
         if (isInt == false) {
             isInt = true;
+
+//            Line line = new Line(100,120,20,5);
+//            shapes.append(shapes.size(),line);
+
+//            Rectangle rectangle = new Rectangle(0,0,255,127,false);
+//            shapes.append(shapes.size(),rectangle);
+
+//            RoundRectangle roundRectangle = new RoundRectangle(0,0,255,127,10,true);
+//            shapes.append(shapes.size(),roundRectangle);
+
+//            Circle circle = new Circle(50,50,60,true);
+//            shapes.append(shapes.size(),circle);
+
+//            Ellipse ellipse = new Ellipse(-5,50,100,200,true);
+//            shapes.append(shapes.size(),ellipse);
 
 //            button btn = new button(0, 30, 100, 30, "Hello");
 //            btn.setIsPressed(false);
@@ -106,16 +122,15 @@ public class GlcdView extends View implements OnTouchListener {
         }
 
         //------------------------------------
+
+        for (int shapesCount=0;shapesCount<shapes.size();shapesCount++){
+            shapes.valueAt(shapesCount).draw();
+        }
+
         for (int btnCount=0;btnCount<buttons.size();btnCount++){
             buttons.get(btnCount).draw();
         }
 
-//        drawString("Hello world!!",5,15,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
-//        drawString("Hello world!!",5,30,TEXT_SMALL,FONT_ARIEL_BLACK,BLACK);
-//        drawString("Hello world!!",5,45,TEXT_SMALL,FONT_ARIEL_ITALIC,BLACK);
-//        drawString("Hello world!!",5,60,TEXT_SMALL,FONT_COMICSANS,BLACK);
-//        drawString("Hello world!!",5,75,TEXT_SMALL,FONT_SERIF,BLACK);
-        drawString("Hello world!!",5,5,17,FONT_ARIEL_REGULAR,BLACK);
         refresh(true);
     }
 
@@ -125,6 +140,7 @@ public class GlcdView extends View implements OnTouchListener {
         Dots = new ArrayList<ArrayList<Integer>>();
         Touchs = new ArrayList<ArrayList<Integer>>();
         buttons = new ArrayList<ButtonShape>();
+        shapes = new SparseArray<>();
         for (int x=0;x<glcdWidth;x++){
             ArrayList<Integer> tempDots = new ArrayList<Integer>();
             ArrayList<Integer> tempTouchs = new ArrayList<Integer>();
@@ -219,14 +235,51 @@ public class GlcdView extends View implements OnTouchListener {
         return 0;
     }
 
-    public void drawLine(float x1,float y1,float x2,float y2,int color) {
+    public class Line implements Shape{
+        float x1,y1,x2,y2;
+
+        public Line(float x1,float y1,float x2,float y2){
+            this.x1 = x1;
+            this.x2 = x2;
+            this.y1 = y1;
+            this.y2 = y2;
+        }
+
+        public void Move(float newX1,float newY1){
+            setPoint2(x2+(newX1-x1),y2+(newY1-y1));
+            setPoint1(newX1,newY1);
+        }
+
+        public void setPoint1(float newX1,float newY1){
+            this.x1 = newX1;
+            this.y1 = newY1;
+        }
+
+        public void setPoint2(float newX2,float newY2){
+            this.x2 = newX2;
+            this.y2 = newY2;
+        }
+
+        @Override
+        public void draw() {
+            drawLine(x1,y1,x2,y2,BLACK);
+        }
+    }
+
+    private void drawLine(float x1,float y1,float x2,float y2,int color) {
         float deltaX, deltaY, x, y;
         boolean steep;
         float error, yStep;
-        if (x1 > glcdWidth) x1 = 0;
-        if (x2 > glcdWidth) x2 = 0;
-        if (y1 > glcdHeight) y1 = 0;
-        if (y2 > glcdHeight) y1 = 0;
+
+        if (x1 > glcdWidth) x1 = glcdWidth;
+        if (x2 > glcdWidth) x2 = glcdWidth;
+        if (y1 > glcdHeight) y1 = glcdHeight;
+        if (y2 > glcdHeight) y1 = glcdHeight;
+
+        if (x1 < 0) x1 = 0;
+        if (x2 < 0) x2 = 0;
+        if (y1 < 0) y1 = 0;
+        if (y2 < 0) y1 = 0;
 
         steep = absDiff(y1, y2) > absDiff(x1, x2);
         if (steep) {
@@ -268,11 +321,46 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    public void drawRectangle(float x,float y,float width,float height,int color){
+    public class Rectangle implements Shape{
+        float x,y,width,height;
+        boolean isFill;
+
+        public Rectangle(float x,float y,float width,float height,boolean isFill){
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.isFill = isFill;
+        }
+
+        public void Move(float newX,float newY){
+            this.x = newX;
+            this.y = newY;
+        }
+
+        @Override
+        public void draw() {
+            if (isFill)
+                fillRectangle(x, y, width, height, BLACK);
+            else
+                drawRectangle(x, y, width, height, BLACK);
+        }
+    }
+
+    private void drawRectangle(float x,float y,float width,float height,int color){
+        if (x > glcdWidth-1)
+            x = glcdWidth-1;
+        if (y > glcdHeight-1)
+            y = glcdHeight-1;
+
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
         if (x+width > glcdWidth)
             width = glcdWidth-x-1;
         if (y+height > glcdHeight)
             height = glcdHeight-y-1;
+
 
         drawLine(x,y,x+width,y,color);
         drawLine(x, y, x, y + height, color);
@@ -280,14 +368,64 @@ public class GlcdView extends View implements OnTouchListener {
         drawLine(x, y + height, x + width, y + height, color);
     }
 
-    public void fillRectangle(float x,float y,float width,float height,int color){
+    private void fillRectangle(float x,float y,float width,float height,int color){
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
+
+        if (x > glcdWidth-1)
+            x = glcdWidth-1;
+        if (y > glcdHeight-1)
+            y = glcdHeight-1;
+
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
+        if (x+width > glcdWidth)
+            width = glcdWidth-x-1;
+        if (y+height > glcdHeight)
+            height = glcdHeight-y-1;
+
         canvas.drawRect(x * pixelX + originX, y * pixelY + originY, (x + width + 1) * pixelX + originX, (y + height + 1) * pixelY + originY, paint);
     }
 
-    public void drawRoundRectangle(float x,float y,float width,float height,float radius,int color){
-        if (width >= height) {
+    public class RoundRectangle implements Shape{
+
+        float x,y,width,height,radius;
+        boolean isFill;
+
+        public RoundRectangle(float x,float y,float width,float height,float radius,boolean isFill){
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+            this.radius = radius;
+            this.isFill = isFill;
+        }
+
+        @Override
+        public void draw() {
+            if (isFill)
+                fillRoundRectangle(x,y,width,height,radius,BLACK);
+            else
+                drawRoundRectangle(x,y,width,height,radius,BLACK);
+        }
+    }
+
+    private void drawRoundRectangle(float x,float y,float width,float height,float radius,int color){
+        if (x > glcdWidth-1)
+            x = glcdWidth-1;
+        if (y > glcdHeight-1)
+            y = glcdHeight-1;
+
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
+        if (x+width > glcdWidth)
+            width = glcdWidth-x-1;
+        if (y+height > glcdHeight)
+            height = glcdHeight-y-1;
+
+        if (width < height) {
             if (radius > (width / 2))
                 radius = (width / 2);
         }else {
@@ -328,48 +466,21 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    private void drawShadowRoundRectangle(float x, float y, float width, float height, float radius, int color){
-        if (width >= height) {
-            if (radius > (width / 2))
-                radius = (width / 2);
-        }else {
-            if (radius > (height/2))
-                radius = (height/2);
-        }
+    private void fillRoundRectangle(float x,float y,float width,float height,float radius,int color){
+        if (x > glcdWidth-1)
+            x = glcdWidth-1;
+        if (y > glcdHeight-1)
+            y = glcdHeight-1;
 
-        drawLine(x + radius, y, x + width - (radius), y, color);
-        drawLine(x + radius, y + height, x + width - (radius), y + height, background);
-        drawLine(x, y + radius, x, y + height - (radius), color);
-        drawLine(x + width, y + radius, x + width, y + height - (radius), background);
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
 
-        float tSwitch;
-        float x1=0,y1=radius;
-        tSwitch = 3-2*radius;
-        while (x1<=y1){
-            setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-            setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+        if (x+width > glcdWidth)
+            width = glcdWidth-x-1;
+        if (y+height > glcdHeight)
+            height = glcdHeight-y-1;
 
-            setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-            setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
-
-            setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), background);
-            setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), background);
-
-            setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
-            setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
-
-            if (tSwitch <0)
-                tSwitch += (4*x1+6);
-            else {
-                tSwitch += (4*(x1-y1)+10);
-                y1--;
-            }
-            x1++;
-        }
-    }
-
-    public void fillRoundRectangle(float x,float y,float width,float height,float radius,int color){
-        if (width >= height) {
+        if (width < height) {
             if (radius > (width / 2))
                 radius = (width / 2);
         }else {
@@ -382,17 +493,93 @@ public class GlcdView extends View implements OnTouchListener {
         fillRectangle(x + radius, y, width - 2 * radius, height, color);
         fillRectangle(x, y + radius, width, height - 2 * radius, color);
 
-        paint.setColor(color);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(((x + radius) * pixelX) + originX + (pixelX / 2), ((y + radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
-        canvas.drawCircle(((x + width - radius) * pixelX) + originX + (pixelX / 2), ((y + radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
-        canvas.drawCircle(((x + radius) * pixelX) + originX + (pixelX / 2), ((y + height - radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
-        canvas.drawCircle(((x + width - radius) * pixelX) + originX + (pixelX / 2), ((y + height - radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+        if (radius > 0) {
+            paint.setColor(color);
+            paint.setStyle(Paint.Style.FILL);
+            canvas.drawCircle(((x + radius) * pixelX) + originX + (pixelX / 2), ((y + radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(((x + width - radius) * pixelX) + originX + (pixelX / 2), ((y + radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(((x + radius) * pixelX) + originX + (pixelX / 2), ((y + height - radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(((x + width - radius) * pixelX) + originX + (pixelX / 2), ((y + height - radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+        }
+    }
 
+    private void drawShadowRoundRectangle(float x, float y, float width, float height, float radius, int color){
+        if (x > glcdWidth-1)
+            x = glcdWidth-1;
+        if (y > glcdHeight-1)
+            y = glcdHeight-1;
+
+        if (x < 0) x = 0;
+        if (y < 0) y = 0;
+
+        if (x+width > glcdWidth)
+            width = glcdWidth-x-1;
+        if (y+height > glcdHeight)
+            height = glcdHeight-y-1;
+
+        if (width < height) {
+            if (radius > (width / 2))
+                radius = (width / 2);
+        }else {
+            if (radius > (height/2))
+                radius = (height/2);
+        }
+
+        drawLine(x + radius, y, x + width - (radius), y, color);
+        drawLine(x + radius, y + height, x + width - (radius), y + height, background);
+        drawLine(x, y + radius, x, y + height - (radius), color);
+        drawLine(x + width, y + radius, x + width, y + height - (radius), background);
+
+        if (radius > 0) {
+            float tSwitch;
+            float x1 = 0, y1 = radius;
+            tSwitch = 3 - 2 * radius;
+            while (x1 <= y1) {
+                setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
+                setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+
+                setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+                setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+
+                setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), background);
+                setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), background);
+
+                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
+                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+
+                if (tSwitch < 0)
+                    tSwitch += (4 * x1 + 6);
+                else {
+                    tSwitch += (4 * (x1 - y1) + 10);
+                    y1--;
+                }
+                x1++;
+            }
+        }
+    }
+    
+    public class Circle implements Shape{
+        float xCenter,yCenter,radius;
+        boolean isFill;
+
+        public Circle (float xCenter,float yCenter,float radius,boolean isFill){
+            this.xCenter = xCenter;
+            this.yCenter = yCenter;
+            this.radius = radius;
+            this.isFill = isFill;
+        }
+
+        @Override
+        public void draw() {
+            if (isFill)
+                fillCircle(xCenter,yCenter,radius,BLACK);
+            else
+                drawCircle(xCenter,yCenter,radius,BLACK);
+        }
     }
 
     public void drawCircle(float xCenter,float yCenter,float radius,int color){
-        drawRoundRectangle(xCenter - radius, yCenter - radius, 2 * radius, 2 * radius, radius, color);
+        drawEllipse(xCenter,yCenter,radius,radius,color);
     }
 
     public void fillCircle(float xCenter,float yCenter, float radius, int color) {
@@ -402,12 +589,33 @@ public class GlcdView extends View implements OnTouchListener {
         canvas.drawCircle((xCenter * pixelX) + originX + (pixelX / 2), (yCenter * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
     }
 
-    public void drawEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
+    public class Ellipse implements Shape{
+        float xCenter,yCenter,radiusX,radiusY;
+        boolean isFill;
+
+        public Ellipse (float xCenter,float yCenter,float radiusX,float radiusY,boolean isFill){
+            this.xCenter = xCenter;
+            this.yCenter = yCenter;
+            this.radiusX = radiusX;
+            this.radiusY = radiusY;
+            this.isFill = isFill;
+        }
+
+        @Override
+        public void draw() {
+            if (isFill)
+                fillEllipse(xCenter,yCenter,radiusX,radiusY,BLACK);
+            else
+                drawEllipse(xCenter, yCenter, radiusX, radiusY, BLACK);
+        }
+    }
+
+    private void drawEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
         float radiusXSqrt = radiusX * radiusX;
         float radiusYSqrt = radiusY * radiusY;
         float x=0,y= radiusY;
         float Px=0,Py=2*radiusXSqrt*radiusY;
-        drawEllipsePoint(xCenter, yCenter, x, y, color);
+        drawEllipsePoints(xCenter, yCenter, x, y, color);
         float P = (float) (radiusYSqrt -(radiusXSqrt*radiusY)+(0.25* radiusXSqrt));
         while (Px < Py){
             x++;
@@ -419,7 +627,7 @@ public class GlcdView extends View implements OnTouchListener {
                 Py = Py -2 * radiusXSqrt;
                 P = P +radiusYSqrt+Px-Py;
             }
-            drawEllipsePoint(xCenter, yCenter, x, y, color);
+            drawEllipsePoints(xCenter, yCenter, x, y, color);
         }
         P = (float) (radiusYSqrt*(x+0.5)*(x+0.5)+radiusXSqrt*(y-1)*(y-1)-radiusXSqrt*radiusYSqrt);
         while (y > 0){
@@ -432,11 +640,11 @@ public class GlcdView extends View implements OnTouchListener {
                 Px = Px+2*radiusYSqrt;
                 P = P + radiusXSqrt - Py +Px;
             }
-            drawEllipsePoint(xCenter,yCenter,x,y,color);
+            drawEllipsePoints(xCenter, yCenter, x, y, color);
         }
     }
 
-    public void fillEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
+    private void fillEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
         if (radiusX == radiusY){
             fillCircle(xCenter,yCenter,radiusX,color);
         }else {
@@ -444,7 +652,7 @@ public class GlcdView extends View implements OnTouchListener {
             float radiusYSqrt = radiusY * radiusY;
             float x = 0, y = radiusY;
             float Px = 0, Py = 2 * radiusXSqrt * radiusY;
-            drawEllipseLine(xCenter, yCenter, x, y, color);
+            fillEllipsePoints(xCenter, yCenter, x, y, color);
             float P = (float) (radiusYSqrt - (radiusXSqrt * radiusY) + (0.25 * radiusXSqrt));
             while (Px < Py) {
                 x++;
@@ -456,7 +664,7 @@ public class GlcdView extends View implements OnTouchListener {
                     Py = Py - 2 * radiusXSqrt;
                     P = P + radiusYSqrt + Px - Py;
                 }
-                drawEllipseLine(xCenter, yCenter, x, y, color);
+                fillEllipsePoints(xCenter, yCenter, x, y, color);
             }
             P = (float) (radiusYSqrt * (x + 0.5) * (x + 0.5) + radiusXSqrt * (y - 1) * (y - 1) - radiusXSqrt * radiusYSqrt);
             while (y > 0) {
@@ -469,25 +677,25 @@ public class GlcdView extends View implements OnTouchListener {
                     Px = Px + 2 * radiusYSqrt;
                     P = P + radiusXSqrt - Py + Px;
                 }
-                drawEllipseLine(xCenter, yCenter, x, y, color);
+                fillEllipsePoints(xCenter, yCenter, x, y, color);
             }
 
             drawEllipse(xCenter, yCenter, radiusX, radiusY, color);
         }
     }
 
-    private void drawEllipsePoint ( float xCenter, float yCenter, float x, float y,int color){
+    private void drawEllipsePoints(float xCenter, float yCenter, float x, float y, int color){
         setPixel((int) (xCenter + x), (int) (yCenter+y),color);
         setPixel((int) (xCenter + x), (int) (yCenter-y),color);
         setPixel((int) (xCenter - x), (int) (yCenter+y),color);
         setPixel((int) (xCenter - x), (int) (yCenter - y), color);
     }
 
-    private void drawEllipseLine ( float xCenter, float yCenter, float x, float y,int color){
+    private void fillEllipsePoints(float xCenter, float yCenter, float x, float y, int color){
             fillRectangle(xCenter-x,yCenter-y,x*2,y*2,color);
     }
 
-    public void drawChar(char c,float x,float y,int textSize,int textFont,int color){
+    private void drawChar(char c,float x,float y,int textSize,int textFont,int color){
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(color);
         font mfont;
