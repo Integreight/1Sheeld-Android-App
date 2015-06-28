@@ -8,7 +8,6 @@ import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -116,7 +115,7 @@ public class GlcdView extends View implements OnTouchListener {
 //        drawString("Hello world!!",5,45,TEXT_SMALL,FONT_ARIEL_ITALIC,BLACK);
 //        drawString("Hello world!!",5,60,TEXT_SMALL,FONT_COMICSANS,BLACK);
 //        drawString("Hello world!!",5,75,TEXT_SMALL,FONT_SERIF,BLACK);
-
+        drawString("Hello world!!",5,5,17,FONT_ARIEL_REGULAR,BLACK);
         refresh(true);
     }
 
@@ -512,14 +511,13 @@ public class GlcdView extends View implements OnTouchListener {
                 mfont = new ArielRegular();
                 break;
         }
-        //ComicSans mfont = new ComicSans();
 
         if (c < mfont.getFirst_char() || c > mfont.getFirst_char()+mfont.getChar_Count()){
             return;
         }
         c -= mfont.getFirst_char();
 
-        //float multiplier = 1;
+        int multiplier = textSize;
         int[] data = mfont.getFont();
         int charInit = 0;
         for (int widhtAdderCount=0;widhtAdderCount<c;widhtAdderCount++){
@@ -531,14 +529,20 @@ public class GlcdView extends View implements OnTouchListener {
             int ha = data[charInit + charBytesCount];
             for (int i=0;i<8;i++){
                 if (((ha >> i ) & (0x01)) == 0x01){
-                    if (textSize == TEXT_LARGE) {
-                        canvas.drawRect((y + (charBytesCount*4))*pixelX + originX,(x+((i)*4))*pixelY + originY, (y + ((charBytesCount+1)*4))*pixelX + originX,(x+((i+1)*4))*pixelY + originY, paint);
-                    }else if (textSize == TEXT_MEDUIM) {
-                        canvas.drawRect((y + (charBytesCount*2)) * pixelX + originX, (x + ((i) * 2)) * pixelY + originY, (y + ((charBytesCount+1)*2)) * pixelX + originX, (x+((i+1)*2))* pixelY + originY, paint);
-                    }else if (textSize == TEXT_SMALL)
+                    if (multiplier == 1){
                         setPixel((int) (y + charBytesCount), (int) (x + i), color);
+                    }else {
+                        float left = (y + (charBytesCount*multiplier))*pixelX + originX;
+                        if (left < originX) left = originX;
+                        float top = (x+((i)*multiplier))*pixelY + originY;
+                        if (top < originY) top = originY;
+                        float right = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
+                        if (right > originX+(width)) right = originX+(width);
+                        float bottom = (x+((i+1)*multiplier))*pixelY + originY;
+                        if (bottom > originY+(height)) bottom = originY+(height);
 
-                    //setPixel((int) (y + charBytesCount), (int) (x + i), color);
+                        canvas.drawRect(left,top,right,bottom, paint);
+                    }
                 }
             }
             ha = data[charInit + charBytesCount+mfont.chars_width[c]];
@@ -546,14 +550,20 @@ public class GlcdView extends View implements OnTouchListener {
                 int k = (7-(mfont.getFont_height()-8-1));
                 for (int i = k; i < 8; i++) {
                     if (((ha >> i) & (0x01)) == 0x01) {
-                        if (textSize == TEXT_LARGE) {
-                            canvas.drawRect((y + (charBytesCount*4))*pixelX + originX,(x+((i+8-k)*4))*pixelY + originY, (y + ((charBytesCount+1)*4))*pixelX + originX,(x+((i+8-k+1)*4))*pixelY + originY, paint);
-                        }else if (textSize == TEXT_MEDUIM) {
-                            canvas.drawRect((y + (charBytesCount*2)) * pixelX + originX, (x + ((i+8-k) * 2)) * pixelY + originY, (y + ((charBytesCount+1)*2)) * pixelX + originX, (x+((i+8-k+1)*2))* pixelY + originY, paint);
-                        }else if (textSize == TEXT_SMALL)
+                        if (multiplier == 1){
                             setPixel((int) (y + charBytesCount), (int) (x + i+8-k), color);
+                        }else {
+                            float left = (y + (charBytesCount*multiplier))*pixelX + originX;
+                            if (left < originX) left = originX;
+                            float top = (x+((i+8-k)*multiplier))*pixelY + originY;
+                            if (top < originY) top = originY;
+                            float right = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
+                            if (right > originX+(width)) right = originX+(width);
+                            float bottom = (x+((i+8-k+1)*multiplier))*pixelY + originY;
+                            if (bottom > originY+(height)) bottom = originY+(height);
 
-                        //setPixel((int) (y + charBytesCount), (int) (x +i+8-k), color);
+                            canvas.drawRect(left,top,right,bottom, paint);
+                        }
                     }
                 }
             }
@@ -566,22 +576,22 @@ public class GlcdView extends View implements OnTouchListener {
     public void drawString(String text,float x,float y,int textSize,int textFont,int color){
 
         if (text != null) {
-            int spacer;
-            switch (textSize){
-                case TEXT_SMALL:
-                    spacer = 10;
-                    break;
-                case TEXT_MEDUIM:
-                    spacer = 20;
-                    break;
-                case TEXT_LARGE:
-                    spacer = 40;
-                    break;
-                default:
-                    spacer = 10;
-                    textSize = TEXT_MEDUIM;
-                    break;
-            }
+            int spacer= textSize*10;
+//            switch (textSize){
+//                case TEXT_SMALL:
+//                    spacer = 10;
+//                    break;
+//                case TEXT_MEDUIM:
+//                    spacer = 20;
+//                    break;
+//                case TEXT_LARGE:
+//                    spacer = 40;
+//                    break;
+//                default:
+//                    spacer = 10;
+//                    textSize = TEXT_MEDUIM;
+//                    break;
+//            }
             for (int charCount = 0; charCount < text.length(); charCount++) {
                 drawChar(text.charAt(charCount), y, x + (charCount * spacer),textSize,textFont,color);
             }
