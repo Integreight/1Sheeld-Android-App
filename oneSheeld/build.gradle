@@ -49,7 +49,7 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile project(':facebookSDK')
-    compile 'com.google.android.gms:play-services:+'
+    compile 'com.google.android.gms:play-services:7.3.0'
     compile files('libs/activation.jar')
     compile files('libs/additionnal.jar')
     compile files('libs/android-async-http-1.4.6.jar')
