@@ -22,7 +22,7 @@ public class GlcdView extends View implements OnTouchListener {
     Paint paint;
     int glcdWidth=256,glcdHeight=128;
     ArrayList<ArrayList<Integer>> Dots,Touchs;
-    ArrayList<ButtonShape> buttons;
+    SparseArray<ButtonShape> buttons;
     SparseArray<Shape> shapes;
     int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
     float pixelX,pixelY,originX,originY,width,height,ascpectRatio;
@@ -46,41 +46,59 @@ public class GlcdView extends View implements OnTouchListener {
         super.onDraw(canvas);
         this.canvas = canvas;
         ascpectRatio = glcdWidth/glcdHeight;
-        width = canvas.getWidth();
-        height = canvas.getWidth()/ascpectRatio;
-        originY = (canvas.getHeight() - height) / ascpectRatio;
-        pixelX = width/glcdWidth;
-        pixelY = height/glcdHeight;
+        width = canvas.getHeight();
+        height = canvas.getHeight()/ascpectRatio;
+//        height = canvas.getHeight();
+        originY = (canvas.getWidth() - height) / 2;
+        originX = (canvas.getHeight() - width) / 2;
+        pixelX = height/glcdHeight;
+        pixelY = width/glcdWidth;
 
         //   draw Background
         paint.setColor(background);
-        canvas.drawRect(originX, originY, originX + (glcdWidth * pixelX), originY + (glcdHeight * pixelY), paint);
+        canvas.drawRect(originY,originX,originY+height, originX+width, paint);
 
         //------------------------------------
-
+        //----------- display data ----------------
+//        Log.d("mouso", " canvas: "+String.valueOf(canvas.getWidth()) + "/" + String.valueOf(canvas.getHeight()));
+//        Log.d("mouso", " this: "+String.valueOf(this.width) + "/" + String.valueOf(this.height));
+//        Log.d("mouso", " glcd: "+String.valueOf(this.glcdWidth) + "/" + String.valueOf(this.glcdHeight));
+//        Log.d("mouso", " origin: "+String.valueOf(this.originX) + "," + String.valueOf(this.originY));
+//        Log.d("mouso", " pixel: "+String.valueOf(pixelX)+"/"+String.valueOf(pixelY));
+//        Log.d("mouso", " aspectRatio: " + String.valueOf(ascpectRatio));
+        //------------------------------------------
+        //------------------------------------
         if (isInt == false) {
             isInt = true;
 
-//            Line line = new Line(100,120,20,5);
+//            setPixel(0, 0, BLACK);
+//            setPixel(0, 127, BLACK);
+//            setPixel(128,64,BLACK );
+//            setPixel(255,0,BLACK);
+//            setPixel(255,127,BLACK);
+
+//            Line line = new Line(0,0,256,128);
 //            shapes.append(shapes.size(),line);
 
-//            Rectangle rectangle = new Rectangle(0,0,255,127,false);
+//            Rectangle rectangle = new Rectangle(0,0,50,50,true);
 //            shapes.append(shapes.size(),rectangle);
 
-//            RoundRectangle roundRectangle = new RoundRectangle(0,0,255,127,10,true);
+//            RoundRectangle roundRectangle = new RoundRectangle(0,0,50,50,5,true);
 //            shapes.append(shapes.size(),roundRectangle);
 
-//            Circle circle = new Circle(50,50,60,true);
+//            Circle circle = new Circle(50,50,50,true);
 //            shapes.append(shapes.size(),circle);
 
-//            Ellipse ellipse = new Ellipse(-5,50,100,200,true);
+//            Ellipse ellipse = new Ellipse(50,100,50,100,true);
 //            shapes.append(shapes.size(),ellipse);
 
-//            button btn = new button(0, 30, 100, 30, "Hello");
-//            btn.setIsPressed(false);
-//            buttons.add(btn);
-//            btn.setBtnTouchId(buttons.size());
-//            btn.applyTouch();
+            button btn = new button(0, 0, 100, 30, "Hello");
+            int btnKey = shapes.size();
+            shapes.append(btnKey,btn);
+            btn.setIsPressed(false);
+            buttons.append(btnKey,btn);
+            btn.setBtnTouchId(buttons.size());
+            btn.applyTouch();
 
 //            button2D btn2 = new button2D(0, 70, 100, 30, "Hello");
 //            btn2.setIsPressed(false);
@@ -127,9 +145,13 @@ public class GlcdView extends View implements OnTouchListener {
             shapes.valueAt(shapesCount).draw();
         }
 
-        for (int btnCount=0;btnCount<buttons.size();btnCount++){
-            buttons.get(btnCount).draw();
-        }
+//        for (int btnCount=0;btnCount<buttons.size();btnCount++){
+//            buttons.valueAt(btnCount).draw();
+//        }
+
+        //drawString("Hello World!!",0,0,5,FONT_ARIEL_REGULAR,BLACK);
+
+//        drawShadowRoundRectangle(100,100,50,50,5,BLACK);
 
         refresh(true);
     }
@@ -139,7 +161,7 @@ public class GlcdView extends View implements OnTouchListener {
         this.background = background;
         Dots = new ArrayList<ArrayList<Integer>>();
         Touchs = new ArrayList<ArrayList<Integer>>();
-        buttons = new ArrayList<ButtonShape>();
+        buttons = new SparseArray<ButtonShape>();
         shapes = new SparseArray<>();
         for (int x=0;x<glcdWidth;x++){
             ArrayList<Integer> tempDots = new ArrayList<Integer>();
@@ -157,7 +179,7 @@ public class GlcdView extends View implements OnTouchListener {
         paint = new Paint();
         paint.setColor(background);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect((x * pixelX) + originX, (y * pixelY) + originY, ((x + width) * pixelX) + originX, ((y + height) * pixelY) + originY, paint);
+        canvas.drawRect(originY+height - (y * pixelY),(x * pixelX) + originX,originY+height - ((y + height) * pixelY),((x + width) * pixelX) + originX, paint);
         for (int X=x;X<width+x;X++){
             ArrayList<Integer> tempDots = Dots.get(X);
             ArrayList<Integer> tempTouchs = Touchs.get(X);
@@ -180,7 +202,11 @@ public class GlcdView extends View implements OnTouchListener {
             for (int y=0;y<glcdHeight;y++){
                 if (Dots.get(x).get(y) != background) {
                     paint.setColor(Dots.get(x).get(y));
-                    canvas.drawRect(x*pixelX + originX, y*pixelY + originY, (x+1)*pixelX + originX, (y+1)*pixelY + originY, paint);
+                    float left = (originY+height)-((y+1)*pixelY);
+                    float top = (x*pixelX) + originX;
+                    float right = (originY+height)-(y*pixelY);
+                    float bottom = ((x+1)*pixelX) + originX;
+                    canvas.drawRect(left,top,right,bottom,paint);
                 }
             }
         }
@@ -191,22 +217,28 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    private void refresh(boolean doInvalidation,int x,int y,int width,int height){
+    private void refresh(boolean doInvalidation,int X,int Y,int width,int height){
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(x * originX, y * originY, (x + width) * originX, (y + height) * originY, paint);
+        paint.setColor(background);
+        canvas.drawRect(originY + height - (Y * pixelY), (X * pixelX) + originX, originY + height - ((Y + height) * pixelY), ((X + width) * pixelX) + originX, paint);
         // draw pixels
-        for (int X = x;X<width+x;X++){
-            for (int Y=x;Y<height+y;Y++){
-                if (Dots.get(X).get(Y) != background) {
-                    paint.setColor(Dots.get(X).get(Y));
-                    canvas.drawRect(X*pixelX + originX, Y*pixelY + originY, (X+1)*pixelX + originX, (Y+1)*pixelY + originY, paint);
+        for (int x = 0;x<X;x++){
+            for (int y=0;y<Y;y++){
+                if (Dots.get(x).get(y) != background) {
+                    paint.setColor(Dots.get(x).get(y));
+                    float left = (originY+height)-((y+1)*pixelY);
+                    float top = (x*pixelX) + originX;
+                    float right = (originY+height)-(y*pixelY);
+                    float bottom = ((x+1)*pixelX) + originX;
+                    canvas.drawRect(left,top,right,bottom,paint);
                 }
             }
         }
 
         if (doInvalidation) {
-            invalidate((int) (x * pixelX), (int) (y * pixelY), (int) ((x + width) * pixelX), (int) ((y + height) * pixelY));
+            invalidate();
+            requestLayout();
         }
     }
 
@@ -230,8 +262,9 @@ public class GlcdView extends View implements OnTouchListener {
 
     public int getTouch(int x, int y){
         if (x < Touchs.size() && x >= 0)
-            if (y < Touchs.get(x).size() && y >= 0)
+            if (y < Touchs.get(x).size() && y >= 0){
                 return Touchs.get(x).get(y);
+            }
         return 0;
     }
 
@@ -385,7 +418,7 @@ public class GlcdView extends View implements OnTouchListener {
         if (y+height > glcdHeight)
             height = glcdHeight-y-1;
 
-        canvas.drawRect(x * pixelX + originX, y * pixelY + originY, (x + width + 1) * pixelX + originX, (y + height + 1) * pixelY + originY, paint);
+        canvas.drawRect( originY+this.height-((y + height + 1) * pixelY ),x * pixelX + originX,  originY+this.height-(y * pixelY ), (x + width + 1) * pixelX + originX , paint);
     }
 
     public class RoundRectangle implements Shape{
@@ -405,9 +438,9 @@ public class GlcdView extends View implements OnTouchListener {
         @Override
         public void draw() {
             if (isFill)
-                fillRoundRectangle(x,y,width,height,radius,BLACK);
+                fillRoundRectangle(x, y, width, height, radius, BLACK);
             else
-                drawRoundRectangle(x,y,width,height,radius,BLACK);
+                drawRoundRectangle(x, y, width, height, radius, BLACK);
         }
     }
 
@@ -496,10 +529,10 @@ public class GlcdView extends View implements OnTouchListener {
         if (radius > 0) {
             paint.setColor(color);
             paint.setStyle(Paint.Style.FILL);
-            canvas.drawCircle(((x + radius) * pixelX) + originX + (pixelX / 2), ((y + radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
-            canvas.drawCircle(((x + width - radius) * pixelX) + originX + (pixelX / 2), ((y + radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
-            canvas.drawCircle(((x + radius) * pixelX) + originX + (pixelX / 2), ((y + height - radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
-            canvas.drawCircle(((x + width - radius) * pixelX) + originX + (pixelX / 2), ((y + height - radius) * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(originY + this.height - ((y + radius) * pixelY) - (pixelX / 2), ((x + radius) * pixelX) + originX + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(originY + this.height - ((y + radius) * pixelY) - (pixelX / 2), ((x + width - radius) * pixelX) + originX + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(originY + this.height - ((y + height - radius) * pixelY) - (pixelX / 2), ((x + radius) * pixelX) + originX + (pixelX / 2), (radius * pixelX), paint);
+            canvas.drawCircle(originY + this.height - ((y + height - radius) * pixelY) - (pixelX / 2), ((x + width - radius) * pixelX) + originX + (pixelX / 2), (radius * pixelX), paint);
         }
     }
 
@@ -572,9 +605,9 @@ public class GlcdView extends View implements OnTouchListener {
         @Override
         public void draw() {
             if (isFill)
-                fillCircle(xCenter,yCenter,radius,BLACK);
+                fillCircle(xCenter, yCenter, radius, BLACK);
             else
-                drawCircle(xCenter,yCenter,radius,BLACK);
+                drawCircle(xCenter, yCenter, radius, BLACK);
         }
     }
 
@@ -586,7 +619,7 @@ public class GlcdView extends View implements OnTouchListener {
         drawCircle(xCenter, yCenter, radius, color);
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle((xCenter * pixelX) + originX + (pixelX / 2), (yCenter * pixelY) + originY + (pixelX / 2), (radius * pixelX), paint);
+        canvas.drawCircle(originY+height - (xCenter * pixelY) - (pixelY / 2),originX + (yCenter * pixelX) + (pixelY / 2), (radius * pixelY), paint);
     }
 
     public class Ellipse implements Shape{
@@ -692,10 +725,10 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     private void fillEllipsePoints(float xCenter, float yCenter, float x, float y, int color){
-            fillRectangle(xCenter-x,yCenter-y,x*2,y*2,color);
+            fillRectangle(xCenter-x,(glcdHeight-yCenter)-y,x*2,y*2,color);
     }
 
-    private void drawChar(char c,float x,float y,int textSize,int textFont,int color){
+    private int drawChar(char c,float x,float y,int textSize,int textFont,int color){
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(color);
         font mfont;
@@ -721,7 +754,7 @@ public class GlcdView extends View implements OnTouchListener {
         }
 
         if (c < mfont.getFirst_char() || c > mfont.getFirst_char()+mfont.getChar_Count()){
-            return;
+            return 0;
         }
         c -= mfont.getFirst_char();
 
@@ -740,17 +773,26 @@ public class GlcdView extends View implements OnTouchListener {
                     if (multiplier == 1){
                         setPixel((int) (y + charBytesCount), (int) (x + i), color);
                     }else {
-                        float left = (y + (charBytesCount*multiplier))*pixelX + originX;
-                        if (left < originX) left = originX;
-                        float top = (x+((i)*multiplier))*pixelY + originY;
-                        if (top < originY) top = originY;
-                        float right = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
-                        if (right > originX+(width)) right = originX+(width);
-                        float bottom = (x+((i+1)*multiplier))*pixelY + originY;
-                        if (bottom > originY+(height)) bottom = originY+(height);
+//                        float left = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
+//                        if (left < originX) left = originX;
+//                        float top = (x+((i)*multiplier))*pixelY + originY;
+//                        if (top < originY) top = originY;
+//                        float right = (y + (charBytesCount*multiplier))*pixelX + originX;
+//                        if (right > originX+(width)) right = originX+(width);
+//                        float bottom = (x+((i+1)*multiplier))*pixelY + originY;
+//                        if (bottom > originY+(height)) bottom = originY+(height);
 
-                        canvas.drawRect(left,top,right,bottom, paint);
-                    }
+                        float left = (originY+height)-((x+((i+1)*multiplier))*pixelY);
+                        if (left < originY) left = originY;
+                        float top = ((y + ((charBytesCount)*multiplier))*pixelX) + originX;
+                        if (top < originX) top = originX;
+                        float right = (originY+height)-((x+((i)*multiplier))*pixelY);
+                        if (right > originY+(height)) right = originY+(height);
+                        float bottom = ((y + ((charBytesCount+1)*multiplier))*pixelX) + originX;
+                        if (bottom > originX+(width)) bottom = originX+(width);
+
+                        canvas.drawRect(left,top,right,bottom,paint);
+                     }
                 }
             }
             ha = data[charInit + charBytesCount+mfont.chars_width[c]];
@@ -761,21 +803,32 @@ public class GlcdView extends View implements OnTouchListener {
                         if (multiplier == 1){
                             setPixel((int) (y + charBytesCount), (int) (x + i+8-k), color);
                         }else {
-                            float left = (y + (charBytesCount*multiplier))*pixelX + originX;
-                            if (left < originX) left = originX;
-                            float top = (x+((i+8-k)*multiplier))*pixelY + originY;
-                            if (top < originY) top = originY;
-                            float right = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
-                            if (right > originX+(width)) right = originX+(width);
-                            float bottom = (x+((i+8-k+1)*multiplier))*pixelY + originY;
-                            if (bottom > originY+(height)) bottom = originY+(height);
+//                            float left = (y + (charBytesCount*multiplier))*pixelX + originX;
+//                            if (left < originX) left = originX;
+//                            float top = (x+((i+8-k)*multiplier))*pixelY + originY;
+//                            if (top < originY) top = originY;
+//                            float right = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
+//                            if (right > originX+(width)) right = originX+(width);
+//                            float bottom = (x+((i+8-k+1)*multiplier))*pixelY + originY;
+//                            if (bottom > originY+(height)) bottom = originY+(height);
 
+                            float left = (originY+height)-((x+((i+8-k+1)*multiplier))*pixelY);
+                            if (left < originY) left = originY;
+                            float top = ((y + ((charBytesCount)*multiplier))*pixelX) + originX;
+                            if (top < originX) top = originX;
+                            float right = (originY+height)-((x+((i+8-k)*multiplier))*pixelY);
+                            if (right > originY+(height)) right = originY+(height);
+                            float bottom = ((y + ((charBytesCount+1)*multiplier))*pixelX) + originX;
+                            if (bottom > originX+(width)) bottom = originX+(width);
                             canvas.drawRect(left,top,right,bottom, paint);
                         }
                     }
                 }
             }
+
         }
+
+        return mfont.chars_width[c];
 
 
 
@@ -784,32 +837,18 @@ public class GlcdView extends View implements OnTouchListener {
     public void drawString(String text,float x,float y,int textSize,int textFont,int color){
 
         if (text != null) {
-            int spacer= textSize*10;
-//            switch (textSize){
-//                case TEXT_SMALL:
-//                    spacer = 10;
-//                    break;
-//                case TEXT_MEDUIM:
-//                    spacer = 20;
-//                    break;
-//                case TEXT_LARGE:
-//                    spacer = 40;
-//                    break;
-//                default:
-//                    spacer = 10;
-//                    textSize = TEXT_MEDUIM;
-//                    break;
-//            }
+            int xMargin = 0;
             for (int charCount = 0; charCount < text.length(); charCount++) {
-                drawChar(text.charAt(charCount), y, x + (charCount * spacer),textSize,textFont,color);
+                xMargin += (drawChar(text.charAt(charCount), y, x + xMargin, textSize, textFont, color)+2)*textSize;
+                //Log.d("mouso" ,String.valueOf(drawChar(text.charAt(charCount), y, x + (charCount * spacer), textSize, textFont, color)*textSize));
             }
         }
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        float x = event.getX();
-        float y = event.getY();
+        float x = event.getY();
+        float y = event.getX();
         int action = event.getAction();
         if (x >= originX && x < originX + width && y >= originY && y < originY + height) {
             x -= originX;
@@ -819,16 +858,16 @@ public class GlcdView extends View implements OnTouchListener {
             if (action == MotionEvent.ACTION_DOWN || action == MotionEvent.ACTION_UP) {
                     if (getTouch((int) x, (int) y) != 0) {
                         if (action == MotionEvent.ACTION_UP) {
-                            releaseThis(getTouch((int) x, (int) y) - 1);
+                            releaseThis(getTouch((int) x, (int) y));
                         } else {
-                            pressThis(getTouch((int) x, (int) y) - 1);
+                            pressThis(getTouch((int) x, (int) y));
                         }
                     } else {
                         releaseThis(currentPressedKey);
                     }
             } else if (action == MotionEvent.ACTION_MOVE) {
                 if (getTouch((int) x, (int) y) != 0) {
-                    touchThis(getTouch((int) x, (int) y) - 1, (int) x, (int) y);
+                    touchThis(getTouch((int) x, (int) y) , (int) x, (int) y);
                 }
             }
         }else{
@@ -838,27 +877,38 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     public void pressThis(int key){
-        if (!buttons.isEmpty()) {
-            if (buttons.get(currentPressedKey).getClass().equals(button.class)) releaseThis(currentPressedKey);
-            buttons.get(key).setIsPressed(true);
-            currentPressedKey = key;
+        if (buttons.size() > 0) {
+            if (buttons.indexOfKey(currentPressedKey) != -1 ) {
+                if (button.class.equals(buttons.get(buttons.indexOfKey(currentPressedKey)).getClass()))
+                    releaseThis(currentPressedKey);
+            }
+            if (buttons.indexOfKey(key) != -1){
+                buttons.get(buttons.indexOfKey(key)).setIsPressed(true);
+                currentPressedKey = key;
+            }
         }
     }
 
     public void releaseThis(int key){
-        if (!buttons.isEmpty()) {
-            if (buttons.get(currentPressedKey).getClass().equals(radioButton.class)){
-            }else {
-                buttons.get(key).setIsPressed(false);
+        if (buttons.size() > 0) {
+            if (buttons.indexOfKey(currentPressedKey) != -1 ) {
+                if (radioButton.class.equals(buttons.get(buttons.indexOfKey(currentPressedKey)).getClass())) {
+                } else if (buttons.indexOfKey(key) != -1){
+                    buttons.get(buttons.indexOfKey(key)).setIsPressed(false);
+                }
             }
         }
     }
 
 
     public void touchThis(int key,int touchX,int touchY){
-        if (!buttons.isEmpty()) {
-            if (buttons.get(currentPressedKey).getClass().equals(HorSlider.class)){
-                buttons.get(currentPressedKey).setTouched(touchX,touchY);
+        if (buttons.size() > 0) {
+            if (buttons.indexOfKey(currentPressedKey) != -1 ) {
+                if (buttons.get(buttons.indexOfKey(currentPressedKey)) != null) {
+                    if (buttons.get(buttons.indexOfKey(currentPressedKey)).getClass().equals(HorSlider.class)) {
+                        buttons.get(buttons.indexOfKey(currentPressedKey)).setTouched(touchX, touchY);
+                    }
+                }
             }
         }
     }
