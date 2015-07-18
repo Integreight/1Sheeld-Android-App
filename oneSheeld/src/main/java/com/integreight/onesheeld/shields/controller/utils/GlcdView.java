@@ -70,6 +70,7 @@ public class GlcdView extends View implements OnTouchListener {
         //------------------------------------
         if (isInt == false) {
             isInt = true;
+//            Shapes Test
 
 //            setPixel(0, 0, BLACK);
 //            setPixel(0, 127, BLACK);
@@ -92,6 +93,11 @@ public class GlcdView extends View implements OnTouchListener {
 //            Ellipse ellipse = new Ellipse(50,100,50,100,true);
 //            shapes.append(shapes.size()+1,ellipse);
 
+//            TxtLabel txtLabel = new TxtLabel("Hello World!",0,0,TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            TxtLabel txtLabel = new TxtLabel("Hello World!",0,0,TEXT_MEDUIM,FONT_ARIEL_REGULAR);
+//            TxtLabel txtLabel = new TxtLabel("Hello World!",0,0,TEXT_LARGE,FONT_ARIEL_REGULAR);
+//            shapes.append(shapes.size()+1,txtLabel);
+
 //            button btn = new button(0, 0, 100, 30, "Hello");
 //            int btnKey = shapes.size()+1;
 //            shapes.append(btnKey, btn);
@@ -101,32 +107,38 @@ public class GlcdView extends View implements OnTouchListener {
 //            int btnKey2 = shapes.size()+1;
 //            shapes.append(btnKey2, btn2);
 //            btn2.setBtnTouchId(btnKey2);
-
-            radioButton btn1 = new radioButton(5,5,5,"Male");
-            int btn1Key = shapes.size()+1;
-            shapes.append(btn1Key,btn1);
-            btn1.setBtnTouchId(btn1Key);
 //
-            // adjust text width and height in radiobutton constructor
-            radioButton btn2 = new radioButton(5,50,5,"Female");
-            int btn2Key = shapes.size()+1;
-            shapes.append(btn2Key,btn2);
-            btn2.setBtnTouchId(btn2Key);
+//            radioButton btn1 = new radioButton(5,5,5,"Male");
+//            int btn1Key = shapes.size()+1;
+//            shapes.append(btn1Key,btn1);
+//            btn1.setBtnTouchId(btn1Key);
 //
-            RadioGroup radioGroup = new RadioGroup();
-            radioGroup.add(btn1);
-            radioGroup.add(btn2);
+//            radioButton btn2 = new radioButton(5,50,5,"Female");
+//            int btn2Key = shapes.size()+1;
+//            shapes.append(btn2Key,btn2);
+//            btn2.setBtnTouchId(btn2Key);
+//
+//            RadioGroup radioGroup = new RadioGroup();
+//            radioGroup.add(btn1);
+//            radioGroup.add(btn2);
 
 //            checkBox btn = new checkBox(5,5,12,"Check box");
 //            int btnKey = shapes.size()+1;
 //            shapes.append(btnKey,btn);
 //            btn.setBtnTouchId(btnKey);
 
-//            HorSlider btn = new HorSlider(15,15,100,10,BLACK);
-//            btn.setIsPressed(false);
-//            buttons.add(btn);
-//            btn.setBtnTouchId(buttons.size());
-//            btn.applyTouch();
+//            HorSlider btn = new HorSlider(15,15,100,10);
+//            int btnKey = shapes.size()+1;
+//            shapes.append(btnKey,btn);
+//            btn.setBtnTouchId(btnKey);
+
+//            ProgressBar progressBar = new ProgressBar(0,0,100,20);
+//            shapes.append(shapes.size()+1,progressBar);
+//            ((ProgressBar) shapes.get(1)).setCurrentValue(50);
+
+//            AnalogGauge analogGauge = new AnalogGauge(50,50,30,0,100);
+//            shapes.append(shapes.size()+1,analogGauge);
+//            ((AnalogGauge) shapes.get(1)).currentValue = 50;
 
         }
 
@@ -135,14 +147,6 @@ public class GlcdView extends View implements OnTouchListener {
         for (int shapesCount=0;shapesCount<shapes.size();shapesCount++){
             shapes.valueAt(shapesCount).draw();
         }
-
-//        for (int btnCount=0;btnCount<buttons.size();btnCount++){
-//            buttons.valueAt(btnCount).draw();
-//        }
-
-//        drawString("Hello World!!",15,5,5,FONT_ARIEL_REGULAR,BLACK);
-
-//        drawShadowRoundRectangle(100,100,50,50,5,BLACK);
 
         refresh(true);
     }
@@ -768,6 +772,36 @@ public class GlcdView extends View implements OnTouchListener {
             fillRectangle(xCenter - x, (glcdHeight - yCenter) - y, x * 2, y * 2, color);
     }
 
+    public class TxtLabel implements Shape {
+        String text = "";
+        int x,y;
+        int textSize = 0,textFont = 0;
+
+        public TxtLabel(String text,int x,int y,int textSize,int textFont){
+            this.x = x;
+            this.y = y;
+            this.text = text;
+            textSize %= 15;  // max text size is 15
+            this.textSize = textSize;
+            this.textFont = textFont;
+        }
+
+        @Override
+        public void draw() {
+            drawString(text,x,y,textSize,textFont,BLACK);
+        }
+
+        @Override
+        public void setIsPressed(boolean isPressed) {
+
+        }
+
+        @Override
+        public void setTouched(int touchX, int touchY) {
+
+        }
+    }
+
     private int drawChar(char c,float x,float y,int textSize,int textFont,int color){
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(color);
@@ -1057,23 +1091,23 @@ public class GlcdView extends View implements OnTouchListener {
         float x,y,width,height,start,end,currentValue;
         int color;
 
-        public ProgressBar(float x,float y,float width,float height,int color){
+        public ProgressBar(float x,float y,float width,float height){
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = 0;
             this.end = 100;
             this.currentValue = start;
         }
 
-        public ProgressBar(float x,float y,float width,float height,int color,float value){
+        public ProgressBar(float x,float y,float width,float height,float value){
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = 0;
             this.end = 100;
             if (value < start)
@@ -1083,23 +1117,23 @@ public class GlcdView extends View implements OnTouchListener {
             this.currentValue = value;
         }
 
-        public ProgressBar(float x,float y,float width,float height,int color,float start,float end){
+        public ProgressBar(float x,float y,float width,float height,float start,float end){
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = start;
             this.end = end;
             this.currentValue = start;
         }
 
-        public ProgressBar(float x,float y,float width,float height,int color,float start,float end,float value){
+        public ProgressBar(float x,float y,float width,float height,float start,float end,float value){
             this.x = x;
             this.y = y;
             this.width = width;
             this.height = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = start;
             this.end = end;
             if (value < start)
@@ -1139,7 +1173,7 @@ public class GlcdView extends View implements OnTouchListener {
     private class AnalogGauge implements Shape{
         private float xCenter, yCenter,radius,start=0,end=100,currentValue=0,angleStart=2.355f,angleEnd=7.065f;
         int color;
-        public AnalogGauge(float xCenter,float yCenter,float radius,int color,float start,float end){
+        public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end){
             this.xCenter = xCenter;
             this.yCenter = yCenter;
             this.radius = radius;
@@ -1150,11 +1184,11 @@ public class GlcdView extends View implements OnTouchListener {
             }
             this.start = start;
             this.end = end;
-            this.color = color;
+            this.color = BLACK;
             this.currentValue = 0;
         }
 
-        public AnalogGauge(float xCenter,float yCenter,float radius,int color,float start,float end,float currentValue){
+        public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end,float currentValue){
             this.xCenter = xCenter;
             this.yCenter = yCenter;
             this.radius = radius;
@@ -1165,7 +1199,7 @@ public class GlcdView extends View implements OnTouchListener {
             }
             this.start = start;
             this.end = end;
-            this.color = color;
+            this.color = BLACK;
             this.currentValue = currentValue;
         }
 
@@ -1260,36 +1294,25 @@ public class GlcdView extends View implements OnTouchListener {
         boolean isPressed=false;
         int color;
 
-        public HorSlider(float x, float y, float width, float height, int color){
+        public HorSlider(float x, float y, float width, float height){
             this.btnX = x;
             this.btnY = y;
             this.btnWidth = width;
             this.btnHeight = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = 0;
             this.end = 100;
             this.btnTouchId = 0;
             this.currentValue = start;
+            this.isPressed = false;
         }
 
-        public HorSlider(float x, float y, float width, float height, int color, int touchId){
+        public HorSlider(float x, float y, float width, float height, float value){
             this.btnX = x;
             this.btnY = y;
             this.btnWidth = width;
             this.btnHeight = height;
-            this.color = color;
-            this.start = 0;
-            this.end = 100;
-            this.btnTouchId = touchId;
-            this.currentValue = start;
-        }
-
-        public HorSlider(float x, float y, float width, float height, int color, float value){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = 0;
             this.end = 100;
             if (value < start)
@@ -1298,54 +1321,28 @@ public class GlcdView extends View implements OnTouchListener {
                 value = end;
             this.btnTouchId = 0;
             this.currentValue = value;
+            this.isPressed = false;
         }
 
-        public HorSlider(float x, float y, float width, float height, int color, float value, int touchId){
+        public HorSlider(float x, float y, float width, float height, float start, float end){
             this.btnX = x;
             this.btnY = y;
             this.btnWidth = width;
             this.btnHeight = height;
-            this.color = color;
-            this.start = 0;
-            this.end = 100;
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.btnTouchId = touchId;
-            this.currentValue = value;
-        }
-
-        public HorSlider(float x, float y, float width, float height, int color, float start, float end){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = start;
             this.end = end;
             this.btnTouchId = 0;
             this.currentValue = start;
+            this.isPressed = false;
         }
 
-        public HorSlider(float x, float y, float width, float height, int color, float start, float end, int touchId){
+        public HorSlider(float x, float y, float width, float height, float start, float end, float value){
             this.btnX = x;
             this.btnY = y;
             this.btnWidth = width;
             this.btnHeight = height;
-            this.color = color;
-            this.start = start;
-            this.end = end;
-            this.btnTouchId = touchId;
-            this.currentValue = start;
-        }
-
-        public HorSlider(float x, float y, float width, float height, int color, float start, float end, float value){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = color;
+            this.color = BLACK;
             this.start = start;
             this.end = end;
             if (value < start)
@@ -1354,22 +1351,7 @@ public class GlcdView extends View implements OnTouchListener {
                 value = end;
             this.btnTouchId = 0;
             this.currentValue = value;
-        }
-
-        public HorSlider(float x, float y, float width, float height, int color, float start, float end, float value, int touchId){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = color;
-            this.start = start;
-            this.end = end;
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.btnTouchId = touchId;
-            this.currentValue = value;
+            this.isPressed = false;
         }
 
         public void setCurrentValue(float value) {
@@ -1408,6 +1390,7 @@ public class GlcdView extends View implements OnTouchListener {
         @Override
         public void setBtnTouchId(int btnTouchId) {
             this.btnTouchId = btnTouchId;
+            applyTouch();
         }
 
         @Override
@@ -1452,9 +1435,9 @@ public class GlcdView extends View implements OnTouchListener {
             isSelected = false;
             isPressed = false;
 
-            this.btnWidth = (2*btnRadius)+btnText.length()*8;
-            if (radius < 8)
-                this.btnHeight = 15;
+            this.btnWidth = (2*btnRadius)+getStringWidth(text,TEXT_SMALL,FONT_ARIEL_REGULAR);
+            if (radius < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
+                this.btnHeight = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR)*2;
             else
                 this.btnHeight = 2*btnRadius;
         }
@@ -1469,9 +1452,8 @@ public class GlcdView extends View implements OnTouchListener {
 
         @Override
         public void applyTouch(){
-            float right = btnX+btnRadius+(btnText.length()*8);
 
-            for (float x=btnX-btnRadius;x<right;x++){
+            for (float x=btnX-btnRadius;x<btnX+btnWidth;x++){
                 for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
                     setTouch((int) x,(int) y,btnTouchId);
                 }
