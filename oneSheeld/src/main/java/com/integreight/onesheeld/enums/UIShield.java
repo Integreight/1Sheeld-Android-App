@@ -191,7 +191,7 @@ public enum UIShield {
             PatternShield.class, PatternFragment.class), INTERNET_SHIELD((byte) 0x29, "Internet",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
             InternetShield.class, InternetFragment.class), NFC_SHIELD((byte) 0x16, "NFC", 0xff03d203,
-            R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1), GLCD_SHIELD((byte) 0x16, "Glcd", 0xff03d203,
+            R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1), GLCD_SHIELD((byte) 0x28, "Glcd", 0xff03d203,
             R.drawable.shields_list_nfc_symbol, false, GlcdShield.class, GlcdFragment.class, 1),
     COLOR_DETECTION_SHIELD((byte) 0x05, "Color Detector",
             0xffde1f26, R.drawable.shields_list_color_detector_symbol, false,

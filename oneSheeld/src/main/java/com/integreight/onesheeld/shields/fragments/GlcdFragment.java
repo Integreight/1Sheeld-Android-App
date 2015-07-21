@@ -49,13 +49,20 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment>{
 
     private GlcdShield.GlcdEventHandler glcdEventHandler = new GlcdShield.GlcdEventHandler() {
         @Override
-        public void setView(Bitmap bitmap) {
+        public void setView(GlcdView glcdView) {
             if (canChangeUI() && uiHandler!= null) {
+                helperView = glcdView;
                 //Bitmap bb = ((GlcdView) (((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).getGlcdView())).getDrawingCache();
                 //helperView.setBitmap(bb);
                 //helperView.invalidate();
             }
         }
+
+        @Override
+        public GlcdView getView() {
+            return helperView;
+        }
+
     };
 
     @Override
