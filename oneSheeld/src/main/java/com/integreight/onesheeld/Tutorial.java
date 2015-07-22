@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -23,7 +24,7 @@ public class Tutorial extends FragmentActivity {
 
     @Override
     public void onBackPressed() {
-        if (!isMenu) {
+        if (!isMenu && MainActivity.thisInstance != null) {
             MainActivity.thisInstance.finishManually();
         }
         finish();
@@ -41,7 +42,7 @@ public class Tutorial extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -59,8 +60,11 @@ public class Tutorial extends FragmentActivity {
         mIndicator.setViewPager(pager);
         mIndicator.setSnap(true);
         Animation anim = new AlphaAnimation(0, 1);
+        anim.setInterpolator(new AccelerateInterpolator());
         anim.setDuration(2000);
         anim.setFillAfter(true);
+//        anim.setRepeatCount(0);
+//        anim.setRepeatMode(Animation.RESTART);
         anim.setFillEnabled(true);
         anim.setAnimationListener(new Animation.AnimationListener() {
 
