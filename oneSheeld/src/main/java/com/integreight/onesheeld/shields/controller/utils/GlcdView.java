@@ -10,6 +10,8 @@ import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import com.integreight.onesheeld.shields.controller.utils.glcd.*;
+
 
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ public class GlcdView extends View implements OnTouchListener {
     int glcdWidth=256,glcdHeight=128;
     ArrayList<ArrayList<Integer>> Dots,Touchs;
     SparseArray<Shape> shapes;
-    int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
+    public int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
     float pixelX,pixelY,originX,originY,width,height,ascpectRatio;
 
     public static final int TEXT_SMALL=1,TEXT_MEDUIM=3,TEXT_LARGE=5;
@@ -145,13 +147,13 @@ public class GlcdView extends View implements OnTouchListener {
         //------------------------------------
 
         for (int shapesCount=0;shapesCount<shapes.size();shapesCount++){
-            shapes.valueAt(shapesCount).draw();
+            shapes.valueAt(shapesCount).draw(this);
         }
 
         refresh(true);
     }
 
-    private void clear(int background){
+    public void clear(int background){
         paint = new Paint();
         this.background = background;
         Dots = new ArrayList<ArrayList<Integer>>();
@@ -169,11 +171,11 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    private void clear(int background,int x,int y,int width,int height,boolean clearGraphics,boolean clearTouch){
+    public void clear(int background,int x,int y,int width,int height,boolean clearGraphics,boolean clearTouch){
         paint = new Paint();
         paint.setColor(background);
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(originY+height - (y * pixelY),(x * pixelX) + originX,originY+height - ((y + height) * pixelY),((x + width) * pixelX) + originX, paint);
+        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
         for (int X=x;X<width+x;X++){
             ArrayList<Integer> tempDots = Dots.get(X);
             ArrayList<Integer> tempTouchs = Touchs.get(X);
@@ -184,7 +186,8 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    private void clear(int background,int x,int y,int width,int height){
+
+    public void clear(int background,int x,int y,int width,int height){
         clear(background, x, y, width, height, true, true);
     }
 
@@ -248,6 +251,47 @@ public class GlcdView extends View implements OnTouchListener {
                 Dots.get(x).set(y,color);
     }
 
+    public void addToShapes(Shape shape,int key){
+        shapes.append(key,shape);
+    }
+
+    public Shape getFromShapes(int key){
+        if (shapes.indexOfKey(key) != -1)
+            return shapes.get(key);
+        else
+            return null;
+    }
+
+//    public class point implements Shape{
+//        float x,y;
+//        boolean visiblity = true;
+//
+//        public point(float x,float y){
+//            this.x = x;
+//            this.y = y;
+//        }
+//        @Override
+//        public void draw() {
+//            if (visiblity)
+//                setPixel(0,0,BLACK);
+//        }
+//
+//        @Override
+//        public void setVisibility(boolean visibility) {
+//            this.visiblity = visibility;
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
+
     public void setTouch(int x, int y, int touchId){
         if (x < Touchs.size() && x >= 0)
             if (y < Touchs.get(x).size() && y >= 0)
@@ -262,48 +306,55 @@ public class GlcdView extends View implements OnTouchListener {
         return null;
     }
 
-    public class Line implements Shape{
-        float x1,y1,x2,y2;
+//    public class Line implements Shape{
+//        float x1,y1,x2,y2;
+//        boolean visibility = true;
+//
+//        public Line(float x1,float y1,float x2,float y2){
+//            this.x1 = x1;
+//            this.x2 = x2;
+//            this.y1 = y1;
+//            this.y2 = y2;
+//        }
+//
+//        public void move(float newX1,float newY1){
+//            setPoint2(x2+(newX1-x1),y2+(newY1-y1));
+//            setPoint1(newX1,newY1);
+//        }
+//
+//        public void setPoint1(float newX1,float newY1){
+//            this.x1 = newX1;
+//            this.y1 = newY1;
+//        }
+//
+//        public void setPoint2(float newX2,float newY2){
+//            this.x2 = newX2;
+//            this.y2 = newY2;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            if (visibility)
+//                drawLine(x1,y1,x2,y2,BLACK);
+//        }
+//
+//        @Override
+//        public void setVisibility(boolean visibility) {
+//            this.visibility = visibility;
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
 
-        public Line(float x1,float y1,float x2,float y2){
-            this.x1 = x1;
-            this.x2 = x2;
-            this.y1 = y1;
-            this.y2 = y2;
-        }
-
-        public void Move(float newX1,float newY1){
-            setPoint2(x2+(newX1-x1),y2+(newY1-y1));
-            setPoint1(newX1,newY1);
-        }
-
-        public void setPoint1(float newX1,float newY1){
-            this.x1 = newX1;
-            this.y1 = newY1;
-        }
-
-        public void setPoint2(float newX2,float newY2){
-            this.x2 = newX2;
-            this.y2 = newY2;
-        }
-
-        @Override
-        public void draw() {
-            drawLine(x1,y1,x2,y2,BLACK);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
-
-    private void drawLine(float x1,float y1,float x2,float y2,int color) {
+    public void drawLine(float x1,float y1,float x2,float y2,int color) {
         float deltaX, deltaY, x, y;
         boolean steep;
         float error, yStep;
@@ -358,43 +409,43 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    public class Rectangle implements Shape{
-        float x,y,width,height;
-        boolean isFill;
+//    public class Rectangle implements Shape{
+//        float x,y,width,height;
+//        boolean isFill;
+//
+//        public Rectangle(float x,float y,float width,float height,boolean isFill){
+//            this.x = x;
+//            this.y = y;
+//            this.width = width;
+//            this.height = height;
+//            this.isFill = isFill;
+//        }
+//
+//        public void Move(float newX,float newY){
+//            this.x = newX;
+//            this.y = newY;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            if (isFill)
+//                fillRectangle(x, y, width, height, BLACK);
+//            else
+//                drawRectangle(x, y, width, height, BLACK);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
 
-        public Rectangle(float x,float y,float width,float height,boolean isFill){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.isFill = isFill;
-        }
-
-        public void Move(float newX,float newY){
-            this.x = newX;
-            this.y = newY;
-        }
-
-        @Override
-        public void draw() {
-            if (isFill)
-                fillRectangle(x, y, width, height, BLACK);
-            else
-                drawRectangle(x, y, width, height, BLACK);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
-
-    private void drawRectangle(float x,float y,float width,float height,int color){
+    public void drawRectangle(float x,float y,float width,float height,int color){
         if (x > glcdWidth-1)
             x = glcdWidth-1;
         if (y > glcdHeight-1)
@@ -415,7 +466,7 @@ public class GlcdView extends View implements OnTouchListener {
         drawLine(x, y + height, x + width, y + height, color);
     }
 
-    private void fillRectangle(float x,float y,float width,float height,int color){
+    public void fillRectangle(float x,float y,float width,float height,int color){
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
 
@@ -435,40 +486,40 @@ public class GlcdView extends View implements OnTouchListener {
         canvas.drawRect( originY+this.height-((y + height + 1) * pixelY ),x * pixelX + originX,  originY+this.height-(y * pixelY ), (x + width + 1) * pixelX + originX , paint);
     }
 
-    public class RoundRectangle implements Shape{
+//    public class RoundRectangle implements Shape{
+//
+//        float x,y,width,height,radius;
+//        boolean isFill;
+//
+//        public RoundRectangle(float x,float y,float width,float height,float radius,boolean isFill){
+//            this.x = x;
+//            this.y = y;
+//            this.width = width;
+//            this.height = height;
+//            this.radius = radius;
+//            this.isFill = isFill;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            if (isFill)
+//                fillRoundRectangle(x, y, width, height, radius, BLACK);
+//            else
+//                drawRoundRectangle(x, y, width, height, radius, BLACK);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
 
-        float x,y,width,height,radius;
-        boolean isFill;
-
-        public RoundRectangle(float x,float y,float width,float height,float radius,boolean isFill){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.radius = radius;
-            this.isFill = isFill;
-        }
-
-        @Override
-        public void draw() {
-            if (isFill)
-                fillRoundRectangle(x, y, width, height, radius, BLACK);
-            else
-                drawRoundRectangle(x, y, width, height, radius, BLACK);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
-
-    private void drawRoundRectangle(float x,float y,float width,float height,float radius,int color){
+    public void drawRoundRectangle(float x,float y,float width,float height,float radius,int color){
         if (x > glcdWidth-1)
             x = glcdWidth-1;
         if (y > glcdHeight-1)
@@ -523,7 +574,7 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    private void fillRoundRectangle(float x,float y,float width,float height,float radius,int color){
+    public void fillRoundRectangle(float x,float y,float width,float height,float radius,int color){
         if (x > glcdWidth-1)
             x = glcdWidth-1;
         if (y > glcdHeight-1)
@@ -560,7 +611,7 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    private void drawShadowRoundRectangle(float x, float y, float width, float height, float radius, int color){
+    public void drawShadowRoundRectangle(float x, float y, float width, float height, float radius, int color){
         if (x > glcdWidth-1)
             x = glcdWidth-1;
         if (y > glcdHeight-1)
@@ -615,38 +666,38 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
     
-    public class Circle implements Shape{
-        float xCenter,yCenter,radius;
-        boolean isFill;
-
-        public Circle (float xCenter,float yCenter,float radius,boolean isFill){
-            this.xCenter = xCenter;
-            this.yCenter = yCenter;
-            this.radius = radius;
-            this.isFill = isFill;
-        }
-
-        @Override
-        public void draw() {
-            if (isFill)
-                fillCircle(xCenter, yCenter, radius, BLACK);
-            else
-                drawCircle(xCenter, yCenter, radius, BLACK);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
+//    public class Circle implements Shape{
+//        float xCenter,yCenter,radius;
+//        boolean isFill;
+//
+//        public Circle (float xCenter,float yCenter,float radius,boolean isFill){
+//            this.xCenter = xCenter;
+//            this.yCenter = yCenter;
+//            this.radius = radius;
+//            this.isFill = isFill;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            if (isFill)
+//                fillCircle(xCenter, yCenter, radius, BLACK);
+//            else
+//                drawCircle(xCenter, yCenter, radius, BLACK);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
 
     public void drawCircle(float xCenter,float yCenter,float radius,int color){
-        drawEllipse(xCenter,yCenter,radius,radius,color);
+        drawEllipse(xCenter, yCenter, radius, radius, color);
     }
 
     public void fillCircle(float xCenter,float yCenter, float radius, int color) {
@@ -656,72 +707,76 @@ public class GlcdView extends View implements OnTouchListener {
         canvas.drawCircle(originY+height - (yCenter * pixelY) - (pixelY / 2),originX + (xCenter * pixelX) + (pixelY / 2), (radius * pixelY), paint);
     }
 
-    public class Ellipse implements Shape{
-        float xCenter,yCenter,radiusX,radiusY;
-        boolean isFill;
+//    public class Ellipse implements Shape{
+//        float xCenter,yCenter,radiusX,radiusY;
+//        boolean isFill;
+//
+//        public Ellipse (float xCenter,float yCenter,float radiusX,float radiusY,boolean isFill){
+//            this.xCenter = xCenter;
+//            this.yCenter = yCenter;
+//            this.radiusX = radiusX;
+//            this.radiusY = radiusY;
+//            this.isFill = isFill;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            if (isFill)
+//                fillEllipse(xCenter,yCenter,radiusX,radiusY,BLACK);
+//            else
+//                drawEllipse(xCenter, yCenter, radiusX, radiusY, BLACK);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
 
-        public Ellipse (float xCenter,float yCenter,float radiusX,float radiusY,boolean isFill){
-            this.xCenter = xCenter;
-            this.yCenter = yCenter;
-            this.radiusX = radiusX;
-            this.radiusY = radiusY;
-            this.isFill = isFill;
-        }
-
-        @Override
-        public void draw() {
-            if (isFill)
-                fillEllipse(xCenter,yCenter,radiusX,radiusY,BLACK);
-            else
-                drawEllipse(xCenter, yCenter, radiusX, radiusY, BLACK);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
-
-    private void drawEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
-        float radiusXSqrt = radiusX * radiusX;
-        float radiusYSqrt = radiusY * radiusY;
-        float x=0,y= radiusY;
-        float Px=0,Py=2*radiusXSqrt*radiusY;
-        drawEllipsePoints(xCenter, yCenter, x, y, color);
-        float P = (float) (radiusYSqrt -(radiusXSqrt*radiusY)+(0.25* radiusXSqrt));
-        while (Px < Py){
-            x++;
-            Px = Px +2*radiusYSqrt;
-            if( P<0 ){
-                P = P+radiusYSqrt+Px;
-            }else {
-                y--;
-                Py = Py -2 * radiusXSqrt;
-                P = P +radiusYSqrt+Px-Py;
-            }
+    public void drawEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
+        if (radiusX == radiusY){
+            drawCircle(xCenter, yCenter, radiusX, color);
+        }else {
+            float radiusXSqrt = radiusX * radiusX;
+            float radiusYSqrt = radiusY * radiusY;
+            float x = 0, y = radiusY;
+            float Px = 0, Py = 2 * radiusXSqrt * radiusY;
             drawEllipsePoints(xCenter, yCenter, x, y, color);
-        }
-        P = (float) (radiusYSqrt*(x+0.5)*(x+0.5)+radiusXSqrt*(y-1)*(y-1)-radiusXSqrt*radiusYSqrt);
-        while (y > 0){
-            y--;
-            Py = Py -2*radiusXSqrt;
-            if (P > 0){
-                P = P + radiusXSqrt -Py;
-            }else {
+            float P = (float) (radiusYSqrt - (radiusXSqrt * radiusY) + (0.25 * radiusXSqrt));
+            while (Px < Py) {
                 x++;
-                Px = Px+2*radiusYSqrt;
-                P = P + radiusXSqrt - Py +Px;
+                Px = Px + 2 * radiusYSqrt;
+                if (P < 0) {
+                    P = P + radiusYSqrt + Px;
+                } else {
+                    y--;
+                    Py = Py - 2 * radiusXSqrt;
+                    P = P + radiusYSqrt + Px - Py;
+                }
+                drawEllipsePoints(xCenter, yCenter, x, y, color);
             }
-            drawEllipsePoints(xCenter, yCenter, x, y, color);
+            P = (float) (radiusYSqrt * (x + 0.5) * (x + 0.5) + radiusXSqrt * (y - 1) * (y - 1) - radiusXSqrt * radiusYSqrt);
+            while (y > 0) {
+                y--;
+                Py = Py - 2 * radiusXSqrt;
+                if (P > 0) {
+                    P = P + radiusXSqrt - Py;
+                } else {
+                    x++;
+                    Px = Px + 2 * radiusYSqrt;
+                    P = P + radiusXSqrt - Py + Px;
+                }
+                drawEllipsePoints(xCenter, yCenter, x, y, color);
+            }
         }
     }
 
-    private void fillEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
+    public void fillEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
         if (radiusX == radiusY){
             fillCircle(xCenter,yCenter,radiusX,color);
         }else {
@@ -772,35 +827,35 @@ public class GlcdView extends View implements OnTouchListener {
             fillRectangle(xCenter - x, (glcdHeight - yCenter) - y, x * 2, y * 2, color);
     }
 
-    public class TxtLabel implements Shape {
-        String text = "";
-        int x,y;
-        int textSize = 0,textFont = 0;
-
-        public TxtLabel(String text,int x,int y,int textSize,int textFont){
-            this.x = x;
-            this.y = y;
-            this.text = text;
-            textSize %= 15;  // max text size is 15
-            this.textSize = textSize;
-            this.textFont = textFont;
-        }
-
-        @Override
-        public void draw() {
-            drawString(text,x,y,textSize,textFont,BLACK);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
+//    public class TxtLabel implements Shape {
+//        String text = "";
+//        int x,y;
+//        int textSize = 0,textFont = 0;
+//
+//        public TxtLabel(String text,int x,int y,int textSize,int textFont){
+//            this.x = x;
+//            this.y = y;
+//            this.text = text;
+//            textSize %= 15;  // max text size is 15
+//            this.textSize = textSize;
+//            this.textFont = textFont;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            drawString(text,x,y,textSize,textFont,BLACK);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
 
     private int drawChar(char c,float x,float y,int textSize,int textFont,int color){
         paint.setStyle(Paint.Style.FILL);
@@ -1045,730 +1100,729 @@ public class GlcdView extends View implements OnTouchListener {
         return true;
     }
 
-    public interface Shape{
-        void draw();
-        void setIsPressed(boolean isPressed);
-        void setTouched(int touchX,int touchY);
-    }
-
-    public interface ButtonShape extends Shape{
-        void draw();
-        void setIsPressed(boolean isPressed);
-        void setTouched(int touchX,int touchY);
-        void setBtnTouchId(int btnTouchId);
-        void applyTouch();
-    }
-
-    public class RadioGroup{
-        SparseArray<radioButton> radios;
-        public RadioGroup(){
-            radios = new SparseArray<radioButton>();
-        }
-
-        public void add(radioButton radioButton){
-            radios.append(radios.size(),radioButton);
-            radioButton.setRadioGroup(this);
-        }
-
-        public void remove(radioButton radioButton){
-            radios.remove(radios.keyAt(radios.indexOfValue(radioButton)));
-        }
-
-        public void select(radioButton radioButton){
-            reset();
-            radios.get(radios.keyAt(radios.indexOfValue(radioButton))).setSelected(true);
-        }
-
-        public void reset(){
-            for(int radiosCount=0;radiosCount<radios.size();radiosCount++){
-                radios.get(radios.keyAt(radiosCount)).setSelected(false);
-            }
-        }
-    }
-
-    private class ProgressBar implements Shape{
-
-        float x,y,width,height,start,end,currentValue;
-        int color;
-
-        public ProgressBar(float x,float y,float width,float height){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.color = BLACK;
-            this.start = 0;
-            this.end = 100;
-            this.currentValue = start;
-        }
-
-        public ProgressBar(float x,float y,float width,float height,float value){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.color = BLACK;
-            this.start = 0;
-            this.end = 100;
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.currentValue = value;
-        }
-
-        public ProgressBar(float x,float y,float width,float height,float start,float end){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.color = BLACK;
-            this.start = start;
-            this.end = end;
-            this.currentValue = start;
-        }
-
-        public ProgressBar(float x,float y,float width,float height,float start,float end,float value){
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
-            this.color = BLACK;
-            this.start = start;
-            this.end = end;
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.currentValue = value;
-        }
-
-        public void setCurrentValue(float value) {
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.currentValue = value;
-        }
-
-        @Override
-        public void draw() {
-            float progress = (((currentValue-start)*((x+width)-(x+5)))/(end-start))+(x+5);
-
-            drawRoundRectangle(x,y,width,height,5,color);
-            fillRoundRectangle(x,y,progress,height,5,color);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-    }
-
-    private class AnalogGauge implements Shape{
-        private float xCenter, yCenter,radius,start=0,end=100,currentValue=0,angleStart=2.355f,angleEnd=7.065f;
-        int color;
-        public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end){
-            this.xCenter = xCenter;
-            this.yCenter = yCenter;
-            this.radius = radius;
-            if (start > end){
-                float temp = end;
-                end = start;
-                start = temp;
-            }
-            this.start = start;
-            this.end = end;
-            this.color = BLACK;
-            this.currentValue = 0;
-        }
-
-        public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end,float currentValue){
-            this.xCenter = xCenter;
-            this.yCenter = yCenter;
-            this.radius = radius;
-            if (start > end){
-                float temp = end;
-                end = start;
-                start = temp;
-            }
-            this.start = start;
-            this.end = end;
-            this.color = BLACK;
-            this.currentValue = currentValue;
-        }
-
-        @Override
-        public void draw() {
-            //using Linear Interpolation get the angle corresponding to the given value
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
-            float angle = (((currentValue-start)*(angleEnd-angleStart))/(end-start))+angleStart;
-
-            GlcdView.this.fillCircle(xCenter, yCenter, radius, GlcdView.this.background);
-            drawPartOfCircle(radius, color);
-            drawPartOfCircle((float) (radius * 0.8), color);
-            drawPointer((float) (radius * 0.7), angle, color);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-
-        public void draw(float value){
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.currentValue = value;
-            draw();
-        }
-
-        private void drawIndicator(float angleInRadian,int color){
-            float x1 = (float) (xCenter + (radius * 0.8 * Math.cos(angleInRadian))) ,x2=(float) (xCenter + (radius * Math.cos(angleInRadian)));
-            float y1 = (float) (yCenter + (radius * 0.8 * Math.sin(angleInRadian))) ,y2=(float) (yCenter + (radius * Math.sin(angleInRadian)));
-            GlcdView.this.drawLine(x1, y1, x2, y2, color);
-        }
-
-        private void drawPointer(float radius,float angleInRadian,int color){
-            float x1 = xCenter,x2=(float) (xCenter+(radius*Math.cos(angleInRadian)));
-            float y1 = yCenter,y2=(float) (yCenter + (radius * Math.sin(angleInRadian)));
-            GlcdView.this.drawLine(x1, y1, x2, y2, color);
-        }
-
-        private void drawPartOfCircle(float radius,int color){
-            float x = xCenter - radius;
-            float y = yCenter - radius;
-            float width = 2*radius,height = 2*radius;
-
-            if (width >= height) {
-                if (radius > (width / 2))
-                    radius = (width / 2);
-            }else {
-                if (radius > (height/2))
-                    radius = (height/2);
-            }
-
-            float tSwitch;
-            float x1=0,y1=radius;
-            tSwitch = 3-2*radius;
-            while (x1<=y1){
-                GlcdView.this.setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-                GlcdView.this.setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
-
-                GlcdView.this.setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-                GlcdView.this.setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
-
-                GlcdView.this.setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
-
-                GlcdView.this.setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
-
-
-                if (tSwitch <0)
-                    tSwitch += (4*x1+6);
-                else {
-                    tSwitch += (4*(x1-y1)+10);
-                    y1--;
-                }
-                x1++;
-            }
-
-        }
-
-    }
-
-    private class HorSlider implements ButtonShape{
-
-        float btnX,btnY,btnWidth,btnHeight,start,end,currentValue;
-        int btnTouchId;
-        boolean isPressed=false;
-        int color;
-
-        public HorSlider(float x, float y, float width, float height){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = BLACK;
-            this.start = 0;
-            this.end = 100;
-            this.btnTouchId = 0;
-            this.currentValue = start;
-            this.isPressed = false;
-        }
-
-        public HorSlider(float x, float y, float width, float height, float value){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = BLACK;
-            this.start = 0;
-            this.end = 100;
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.btnTouchId = 0;
-            this.currentValue = value;
-            this.isPressed = false;
-        }
-
-        public HorSlider(float x, float y, float width, float height, float start, float end){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = BLACK;
-            this.start = start;
-            this.end = end;
-            this.btnTouchId = 0;
-            this.currentValue = start;
-            this.isPressed = false;
-        }
-
-        public HorSlider(float x, float y, float width, float height, float start, float end, float value){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnWidth = width;
-            this.btnHeight = height;
-            this.color = BLACK;
-            this.start = start;
-            this.end = end;
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.btnTouchId = 0;
-            this.currentValue = value;
-            this.isPressed = false;
-        }
-
-        public void setCurrentValue(float value) {
-            if (value < start)
-                value = start;
-            else if (value > end)
-                value = end;
-            this.currentValue = value;
-        }
-
-        public float getCurrentValue() {
-            return currentValue;
-        }
-
-        @Override
-        public void draw() {
-
-            float progress = (((currentValue-start)*((btnX+btnWidth-(btnHeight/2))-(btnX+(btnHeight/2))))/(end-start))+(btnX+(btnHeight/2));
-
-            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
-            drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), BLACK);
-            fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, BLACK);
-            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-            this.isPressed = false;
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-            currentValue = (((touchX-btnX)*(end-start))/(btnX+btnWidth-btnX))+start;
-        }
-
-        @Override
-        public void setBtnTouchId(int btnTouchId) {
-            this.btnTouchId = btnTouchId;
-            applyTouch();
-        }
-
-        @Override
-        public void applyTouch() {
-            for (float x=btnX;x<btnX+btnWidth;x++){
-                for (float y=btnY;y<btnY+btnHeight;y++){
-                    setTouch((int) x,(int) y,btnTouchId);
-                }
-            }
-        }
-    }
-
-    public class radioButton implements ButtonShape{
-        float btnX,btnY,btnRadius,btnWidth,btnHeight;
-        RadioGroup radioGroup;
-        int btnTouchId;
-        String btnText = "";
-        boolean isSelected = false,isPressed=false;
-
-        public radioButton (float xCenter,float yCenter,float radius,String text,int touchId){
-            this.btnX = xCenter;
-            this.btnY = yCenter;
-            this.btnRadius = radius;
-            this.btnText = text;
-            this.btnTouchId = touchId;
-            isSelected = false;
-            isPressed = false;
-
-            this.btnWidth = (2*btnRadius)+btnText.length()*8;
-            if (radius < 8)
-                this.btnHeight = 15;
-            else
-                this.btnHeight = 2*btnRadius;
-        }
-
-        public radioButton (float xCenter,float yCenter,float radius,String text){
-            this.btnX = xCenter;
-            this.btnY = yCenter;
-            this.btnRadius = radius;
-            this.btnText = text;
-            this.btnTouchId = 0;
-            isSelected = false;
-            isPressed = false;
-
-            this.btnWidth = (2*btnRadius)+getStringWidth(text,TEXT_SMALL,FONT_ARIEL_REGULAR);
-            if (radius < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
-                this.btnHeight = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR)*2;
-            else
-                this.btnHeight = 2*btnRadius;
-        }
-
-        public void setRadioGroup(RadioGroup radioGroup) {
-            this.radioGroup = radioGroup;
-        }
-
-        public RadioGroup getRadioGroup() {
-            return radioGroup;
-        }
-
-        @Override
-        public void applyTouch(){
-
-            for (float x=btnX-btnRadius;x<btnX+btnWidth;x++){
-                for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
-                    setTouch((int) x,(int) y,btnTouchId);
-                }
-            }
-        }
-
-        @Override
-        public void setBtnTouchId(int btnTouchId) {
-            this.btnTouchId = btnTouchId;
-            applyTouch();
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-            setSelected(true);
-            if (radioGroup != null)
-                radioGroup.select(this);
-            this.isPressed = isPressed;
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-
-        public void setSelected(Boolean selected){
-            isSelected = selected;
-        }
-
-        public boolean getSelected(){
-            return isSelected;
-        }
-
-        @Override
-        public void draw() {
-            clear(background,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight,true,false);
-
-            fillCircle(btnX, btnY, btnRadius, WHITE);
-            drawCircle(btnX, btnY, btnRadius, BLACK);
-            if (isSelected) fillCircle(btnX, btnY, btnRadius - 2, BLACK);
-            drawString(btnText, btnX + btnRadius+2,btnY-btnRadius+2,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
-
-            //refresh(true,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight);
-        }
-    }
-
-    public class checkBox implements ButtonShape{
-        float btnX,btnY,btnSize,btnWidth,btnHeight;
-        int btnTouchId;
-        String btnText = "";
-        boolean isSelected = false,isPressed=false;
-
-        public checkBox(float x, float y, float size, String text, int touchId){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnSize = size;
-            this.btnText = text;
-            this.btnTouchId = touchId;
-            isSelected = false;
-            isPressed = false;
-            this.btnWidth = btnSize+getStringWidth(btnText,TEXT_SMALL,FONT_ARIEL_REGULAR);
-            if (btnSize < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
-                btnSize = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR);
-            this.btnHeight = btnSize;
-        }
-
-        public checkBox(float x, float y, float size, String text){
-            this.btnX = x;
-            this.btnY = y;
-            this.btnSize = size;
-            this.btnText = text;
-            this.btnTouchId = 0;
-            isSelected = false;
-            isPressed = false;
-
-            this.btnWidth = btnSize+getStringWidth(btnText,TEXT_SMALL,FONT_ARIEL_REGULAR);
-            if (btnSize < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
-                btnSize = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR);
-            this.btnHeight = btnSize;
-        }
-
-        @Override
-        public void applyTouch(){
-            Log.d("GLCD",String.valueOf(btnX)+"+"+String.valueOf(btnSize)+"+"+String.valueOf(getStringWidth("Check Box",TEXT_SMALL,FONT_ARIEL_REGULAR)));
-            for (float x=btnX;x<btnX+btnSize+getStringWidth(btnText,TEXT_SMALL,FONT_ARIEL_REGULAR);x++){
-                for (float y=btnY;y<btnY+btnHeight;y++){
-                    setTouch((int) x, (int) y, btnTouchId);
-                }
-            }
-
-
-        }
-
-        @Override
-        public void setBtnTouchId(int btnTouchId) {
-            this.btnTouchId = btnTouchId;
-            applyTouch();
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-            if (this.isPressed == true && isPressed == false)
-                setSelected(!isSelected);
-            this.isPressed = isPressed;
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-
-        public void setSelected(Boolean selected){
-            isSelected = selected;
-        }
-
-        public boolean getSelected(){
-            return isSelected;
-        }
-
-        @Override
-        public void draw() {
-            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
-
-            fillRectangle(btnX, btnY, btnSize - 1, btnSize, WHITE);
-            drawRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
-            if (isSelected) fillRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
-            drawString(btnText, btnX + btnSize+2, btnY+(btnSize/2)-(getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR)/2)+2, TEXT_SMALL, FONT_ARIEL_REGULAR, BLACK);
-
-            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight);
-        }
-    }
-
-    public class button implements ButtonShape {
-        float btnX,btnY,btnWidth,btnHeight;
-        int btnTouchId;
-        String btnText = "";
-        float btnTextX,btnTextY;
-        boolean isPressed=false;
-        int textWidth = 0;
-        int textHeight = 0;
-
-        public button (float x,float y,float width,float height,String text){
-            this.btnX = x;
-            this.btnY = y;
-            //set text width and height to min
-            textWidth = getStringWidth("..",TEXT_SMALL,FONT_ARIEL_REGULAR);
-            textHeight = getCharHeight(TEXT_SMALL, FONT_ARIEL_REGULAR);
-            if (width < textWidth)
-                this.btnWidth = textWidth;
-            else {
-                this.btnWidth = width;
-                textWidth = getStringWidth(text, TEXT_SMALL, FONT_ARIEL_REGULAR);
-                if (width < textWidth){
-                    this.btnText = text.substring(0, getMaxCharsInWidth(text,width,TEXT_SMALL,FONT_ARIEL_REGULAR)-2);
-                    this.btnText += "..";
-                }else{
-                    this.btnText = text;
-                }
-            }
-            if (height < textHeight)
-                this.btnHeight = textHeight;
-            else
-                this.btnHeight = height;
-
-            btnTextX = btnX+((btnWidth-textWidth)/2);
-            btnTextY = btnY+((btnHeight-textHeight)/2);
-            isPressed=false;
-        }
-
-        @Override
-        public void applyTouch(){
-            for (float x=btnX;x<btnX+btnWidth;x++){
-                for (float y=btnY;y<btnY+btnHeight;y++){
-                    setTouch((int) x, (int) y, btnTouchId);
-                }
-            }
-        }
-
-        @Override
-        public void setBtnTouchId(int btnTouchId) {
-            this.btnTouchId = btnTouchId;
-            applyTouch();
-        }
-
-        @Override
-        public void draw(){
-            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
-            if (isPressed){
-                pressDraw();
-            }else {
-                releaseDraw();
-            }
-            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-            this.isPressed = isPressed;
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-
-        private void releaseDraw() {
-            fillRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, BLACK);
-            fillRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, WHITE);
-
-            drawRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, BLACK); //BLack
-            drawShadowRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, BLACK); //Black
-
-            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
-        }
-
-        private void pressDraw(){
-
-            //fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 3, BLACK);
-            //fillRoundRectangle(btnX , btnY , btnWidth - 3, btnHeight - 3, 3, WHITE);
-
-            drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, BLACK); // black
-            //drawRoundRectangle(btnX , btnY , btnWidth -3, btnHeight -3, 3, BLACK);  // black
-
-//            drawString(this.btnText, btnTextX + pixelX, btnTextY + pixelX, TEXT_SMALL, BLACK);
-            drawString(this.btnText, btnTextX, btnTextY, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
-        }
-
-    }
-
-    public class button2D implements ButtonShape {
-        float btnX,btnY,btnWidth,btnHeight;
-        int btnTouchId;
-        String btnText = "";
-        float btnTextX,btnTextY;
-        boolean isPressed=false;
-        int textWidth = 0;
-        int textHeight = 0;
-
-        public button2D (float x,float y,float width,float height,String text){
-            this.btnX = x;
-            this.btnY = y;
-            //set text width and height to min
-            textWidth = getStringWidth("..",TEXT_SMALL,FONT_ARIEL_REGULAR);
-            textHeight = getCharHeight(TEXT_SMALL, FONT_ARIEL_REGULAR);
-            if (width < textWidth)
-                this.btnWidth = textWidth;
-            else {
-                this.btnWidth = width;
-                textWidth = getStringWidth(text, TEXT_SMALL, FONT_ARIEL_REGULAR);
-                if (width < textWidth){
-                    this.btnText = text.substring(0, getMaxCharsInWidth(text,width,TEXT_SMALL,FONT_ARIEL_REGULAR)-2);
-                    this.btnText += "..";
-                }else{
-                    this.btnText = text;
-                }
-            }
-            if (height < textHeight)
-                this.btnHeight = textHeight;
-            else
-                this.btnHeight = height;
-
-            btnTextX = btnX+((btnWidth-textWidth)/2);
-            btnTextY = btnY+((btnHeight-textHeight)/2);
-            isPressed=false;
-        }
-
-        @Override
-        public void applyTouch(){
-            for (float x=btnX;x<btnX+btnWidth;x++){
-                for (float y=btnY;y<btnY+btnHeight;y++){
-                    setTouch((int) x, (int) y, btnTouchId);
-                }
-            }
-        }
-
-        @Override
-        public void setBtnTouchId(int btnTouchId) {
-            this.btnTouchId = btnTouchId;
-            applyTouch();
-        }
-
-        @Override
-        public void draw(){
-            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
-            if (isPressed){
-                pressDraw();
-            }else {
-                releaseDraw();
-            }
-            refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
-        }
-
-        @Override
-        public void setIsPressed(boolean isPressed) {
-            this.isPressed = isPressed;
-        }
-
-        @Override
-        public void setTouched(int touchX, int touchY) {
-
-        }
-
-        private void releaseDraw() {
-            fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, WHITE+1);
-            drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, BLACK);
-            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
-        }
-
-        private void pressDraw(){
-            fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, BLACK);
-            //drawRoundRectangle(btnX,btnY,btnWidth,btnHeight,2,WHITE+1);
-            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, WHITE+1);
-        }
-
-    }
+//    public interface Shape{
+//        void draw();
+//        void setIsPressed(boolean isPressed);
+//        void setTouched(int touchX,int touchY);
+//    }
+//
+//    public interface ButtonShape extends Shape{
+//        void draw();
+//        void setIsPressed(boolean isPressed);
+//        void setTouched(int touchX,int touchY);
+//        void setBtnTouchId(int btnTouchId);
+//        void applyTouch();
+//    }
+
+//    public class RadioGroup{
+//        SparseArray<radioButton> radios;
+//        public RadioGroup(){
+//            radios = new SparseArray<radioButton>();
+//        }
+//
+//        public void add(radioButton radioButton){
+//            radios.append(radios.size(),radioButton);
+//            radioButton.setRadioGroup(this);
+//        }
+//
+//        public void remove(radioButton radioButton){
+//            radios.remove(radios.keyAt(radios.indexOfValue(radioButton)));
+//        }
+//
+//        public void select(radioButton radioButton){
+//            reset();
+//            radios.get(radios.keyAt(radios.indexOfValue(radioButton))).setSelected(true);
+//        }
+//
+//        public void reset(){
+//            for(int radiosCount=0;radiosCount<radios.size();radiosCount++){
+//                radios.get(radios.keyAt(radiosCount)).setSelected(false);
+//            }
+//        }
+//    }
+
+//    private class ProgressBar implements Shape{
+//
+//        float x,y,width,height,start,end,currentValue;
+//        int color;
+//
+//        public ProgressBar(float x,float y,float width,float height){
+//            this.x = x;
+//            this.y = y;
+//            this.width = width;
+//            this.height = height;
+//            this.color = BLACK;
+//            this.start = 0;
+//            this.end = 100;
+//            this.currentValue = start;
+//        }
+//
+//        public ProgressBar(float x,float y,float width,float height,float value){
+//            this.x = x;
+//            this.y = y;
+//            this.width = width;
+//            this.height = height;
+//            this.color = BLACK;
+//            this.start = 0;
+//            this.end = 100;
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.currentValue = value;
+//        }
+//
+//        public ProgressBar(float x,float y,float width,float height,float start,float end){
+//            this.x = x;
+//            this.y = y;
+//            this.width = width;
+//            this.height = height;
+//            this.color = BLACK;
+//            this.start = start;
+//            this.end = end;
+//            this.currentValue = start;
+//        }
+//
+//        public ProgressBar(float x,float y,float width,float height,float start,float end,float value){
+//            this.x = x;
+//            this.y = y;
+//            this.width = width;
+//            this.height = height;
+//            this.color = BLACK;
+//            this.start = start;
+//            this.end = end;
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.currentValue = value;
+//        }
+//
+//        public void setCurrentValue(float value) {
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.currentValue = value;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            float progress = (((currentValue-start)*((x+width)-(x+5)))/(end-start))+(x+5);
+//
+//            drawRoundRectangle(x,y,width,height,5,color);
+//            fillRoundRectangle(x,y,progress,height,5,color);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//    }
+
+//    private class AnalogGauge implements Shape{
+//        private float xCenter, yCenter,radius,start=0,end=100,currentValue=0,angleStart=2.355f,angleEnd=7.065f;
+//        int color;
+//        public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end){
+//            this.xCenter = xCenter;
+//            this.yCenter = yCenter;
+//            this.radius = radius;
+//            if (start > end){
+//                float temp = end;
+//                end = start;
+//                start = temp;
+//            }
+//            this.start = start;
+//            this.end = end;
+//            this.color = BLACK;
+//            this.currentValue = 0;
+//        }
+//
+//        public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end,float currentValue){
+//            this.xCenter = xCenter;
+//            this.yCenter = yCenter;
+//            this.radius = radius;
+//            if (start > end){
+//                float temp = end;
+//                end = start;
+//                start = temp;
+//            }
+//            this.start = start;
+//            this.end = end;
+//            this.color = BLACK;
+//            this.currentValue = currentValue;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            //using Linear Interpolation get the angle corresponding to the given value
+//            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
+//            float angle = (((currentValue-start)*(angleEnd-angleStart))/(end-start))+angleStart;
+//
+//            GlcdView.this.fillCircle(xCenter, yCenter, radius, GlcdView.this.background);
+//            drawPartOfCircle(radius, color);
+//            drawPartOfCircle((float) (radius * 0.8), color);
+//            drawPointer((float) (radius * 0.7), angle, color);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//
+//        public void setCurrentValue(float value) {
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.currentValue = value;
+//        }
+//
+//        private void drawIndicator(float angleInRadian,int color){
+//            float x1 = (float) (xCenter + (radius * 0.8 * Math.cos(angleInRadian))) ,x2=(float) (xCenter + (radius * Math.cos(angleInRadian)));
+//            float y1 = (float) (yCenter + (radius * 0.8 * Math.sin(angleInRadian))) ,y2=(float) (yCenter + (radius * Math.sin(angleInRadian)));
+//            GlcdView.this.drawLine(x1, y1, x2, y2, color);
+//        }
+//
+//        private void drawPointer(float radius,float angleInRadian,int color){
+//            float x1 = xCenter,x2=(float) (xCenter+(radius*Math.cos(angleInRadian)));
+//            float y1 = yCenter,y2=(float) (yCenter + (radius * Math.sin(angleInRadian)));
+//            GlcdView.this.drawLine(x1, y1, x2, y2, color);
+//        }
+//
+//        private void drawPartOfCircle(float radius,int color){
+//            float x = xCenter - radius;
+//            float y = yCenter - radius;
+//            float width = 2*radius,height = 2*radius;
+//
+//            if (width >= height) {
+//                if (radius > (width / 2))
+//                    radius = (width / 2);
+//            }else {
+//                if (radius > (height/2))
+//                    radius = (height/2);
+//            }
+//
+//            float tSwitch;
+//            float x1=0,y1=radius;
+//            tSwitch = 3-2*radius;
+//            while (x1<=y1){
+//                GlcdView.this.setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
+//                GlcdView.this.setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+//
+//                GlcdView.this.setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+//                GlcdView.this.setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+//
+//                GlcdView.this.setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
+//
+//                GlcdView.this.setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+//
+//
+//                if (tSwitch <0)
+//                    tSwitch += (4*x1+6);
+//                else {
+//                    tSwitch += (4*(x1-y1)+10);
+//                    y1--;
+//                }
+//                x1++;
+//            }
+//
+//        }
+//
+//    }
+
+//    private class HorSlider implements ButtonShape {
+//
+//        float btnX,btnY,btnWidth,btnHeight,start,end,currentValue;
+//        int btnTouchId;
+//        boolean isPressed=false;
+//        int color;
+//
+//        public HorSlider(float x, float y, float width, float height){
+//            this.btnX = x;
+//            this.btnY = y;
+//            this.btnWidth = width;
+//            this.btnHeight = height;
+//            this.color = BLACK;
+//            this.start = 0;
+//            this.end = 100;
+//            this.btnTouchId = 0;
+//            this.currentValue = start;
+//            this.isPressed = false;
+//        }
+//
+//        public HorSlider(float x, float y, float width, float height, float value){
+//            this.btnX = x;
+//            this.btnY = y;
+//            this.btnWidth = width;
+//            this.btnHeight = height;
+//            this.color = BLACK;
+//            this.start = 0;
+//            this.end = 100;
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.btnTouchId = 0;
+//            this.currentValue = value;
+//            this.isPressed = false;
+//        }
+//
+//        public HorSlider(float x, float y, float width, float height, float start, float end){
+//            this.btnX = x;
+//            this.btnY = y;
+//            this.btnWidth = width;
+//            this.btnHeight = height;
+//            this.color = BLACK;
+//            this.start = start;
+//            this.end = end;
+//            this.btnTouchId = 0;
+//            this.currentValue = start;
+//            this.isPressed = false;
+//        }
+//
+//        public HorSlider(float x, float y, float width, float height, float start, float end, float value){
+//            this.btnX = x;
+//            this.btnY = y;
+//            this.btnWidth = width;
+//            this.btnHeight = height;
+//            this.color = BLACK;
+//            this.start = start;
+//            this.end = end;
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.btnTouchId = 0;
+//            this.currentValue = value;
+//            this.isPressed = false;
+//        }
+//
+//        public void setCurrentValue(float value) {
+//            if (value < start)
+//                value = start;
+//            else if (value > end)
+//                value = end;
+//            this.currentValue = value;
+//        }
+//
+//        public float getCurrentValue() {
+//            return currentValue;
+//        }
+//
+//        @Override
+//        public void draw() {
+//
+//            float progress = (((currentValue-start)*((btnX+btnWidth-(btnHeight/2))-(btnX+(btnHeight/2))))/(end-start))+(btnX+(btnHeight/2));
+//
+//            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+//            drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), BLACK);
+//            fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, BLACK);
+//            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//            this.isPressed = false;
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//            currentValue = (((touchX-btnX)*(end-start))/(btnX+btnWidth-btnX))+start;
+//        }
+//
+//        @Override
+//        public void setBtnTouchId(int btnTouchId) {
+//            this.btnTouchId = btnTouchId;
+//            applyTouch();
+//        }
+//
+//        @Override
+//        public void applyTouch() {
+//            for (float x=btnX;x<btnX+btnWidth;x++){
+//                for (float y=btnY;y<btnY+btnHeight;y++){
+//                    setTouch((int) x,(int) y,btnTouchId);
+//                }
+//            }
+//        }
+//    }
+
+//    public class radioButton implements ButtonShape {
+//        float btnX,btnY,btnRadius,btnWidth,btnHeight;
+//        RadioGroup radioGroup;
+//        int btnTouchId;
+//        String btnText = "";
+//        boolean isSelected = false,isPressed=false;
+//
+//        public radioButton (float xCenter,float yCenter,float radius,String text,int touchId){
+//            this.btnX = xCenter;
+//            this.btnY = yCenter;
+//            this.btnRadius = radius;
+//            this.btnText = text;
+//            this.btnTouchId = touchId;
+//            isSelected = false;
+//            isPressed = false;
+//
+//            this.btnWidth = (2*btnRadius)+btnText.length()*8;
+//            if (radius < 8)
+//                this.btnHeight = 15;
+//            else
+//                this.btnHeight = 2*btnRadius;
+//        }
+//
+//        public radioButton (float xCenter,float yCenter,float radius,String text){
+//            this.btnX = xCenter;
+//            this.btnY = yCenter;
+//            this.btnRadius = radius;
+//            this.btnText = text;
+//            this.btnTouchId = 0;
+//            isSelected = false;
+//            isPressed = false;
+//
+//            this.btnWidth = (2*btnRadius)+getStringWidth(text,TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            if (radius < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
+//                this.btnHeight = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR)*2;
+//            else
+//                this.btnHeight = 2*btnRadius;
+//        }
+//
+//        public void setRadioGroup(RadioGroup radioGroup) {
+//            this.radioGroup = radioGroup;
+//        }
+//
+//        public RadioGroup getRadioGroup() {
+//            return radioGroup;
+//        }
+//
+//        @Override
+//        public void applyTouch(){
+//
+//            for (float x=btnX-btnRadius;x<btnX+btnWidth;x++){
+//                for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
+//                    setTouch((int) x,(int) y,btnTouchId);
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public void setBtnTouchId(int btnTouchId) {
+//            this.btnTouchId = btnTouchId;
+//            applyTouch();
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//            setSelected(true);
+//            if (radioGroup != null)
+//                radioGroup.select(this);
+//            this.isPressed = isPressed;
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//
+//        public void setSelected(Boolean selected){
+//            isSelected = selected;
+//        }
+//
+//        public boolean getSelected(){
+//            return isSelected;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            clear(background,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight,true,false);
+//
+//            fillCircle(btnX, btnY, btnRadius, WHITE);
+//            drawCircle(btnX, btnY, btnRadius, BLACK);
+//            if (isSelected) fillCircle(btnX, btnY, btnRadius - 2, BLACK);
+//            drawString(btnText, btnX + btnRadius+2,btnY-btnRadius+2,TEXT_SMALL,FONT_ARIEL_REGULAR,BLACK);
+//
+//            //refresh(true,(int) (btnX-btnRadius),(int) (btnY-btnRadius),(int) btnWidth,(int) btnHeight);
+//        }
+//    }
+
+//    public class checkBox implements ButtonShape {
+//        float btnX,btnY,btnSize,btnWidth,btnHeight;
+//        int btnTouchId;
+//        String btnText = "";
+//        boolean isSelected = false,isPressed=false;
+//
+//        public checkBox(float x, float y, float size, String text, int touchId){
+//            this.btnX = x;
+//            this.btnY = y;
+//            this.btnSize = size;
+//            this.btnText = text;
+//            this.btnTouchId = touchId;
+//            isSelected = false;
+//            isPressed = false;
+//            this.btnWidth = btnSize+getStringWidth(btnText,TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            if (btnSize < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
+//                btnSize = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            this.btnHeight = btnSize;
+//        }
+//
+//        public checkBox(float x, float y, float size, String text){
+//            this.btnX = x;
+//            this.btnY = y;
+//            this.btnSize = size;
+//            this.btnText = text;
+//            this.btnTouchId = 0;
+//            isSelected = false;
+//            isPressed = false;
+//
+//            this.btnWidth = btnSize+getStringWidth(btnText,TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            if (btnSize < getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR))
+//                btnSize = getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            this.btnHeight = btnSize;
+//        }
+//
+//        @Override
+//        public void applyTouch(){
+//            Log.d("GLCD",String.valueOf(btnX)+"+"+String.valueOf(btnSize)+"+"+String.valueOf(getStringWidth("Check Box",TEXT_SMALL,FONT_ARIEL_REGULAR)));
+//            for (float x=btnX;x<btnX+btnSize+getStringWidth(btnText,TEXT_SMALL,FONT_ARIEL_REGULAR);x++){
+//                for (float y=btnY;y<btnY+btnHeight;y++){
+//                    setTouch((int) x, (int) y, btnTouchId);
+//                }
+//            }
+//
+//
+//        }
+//
+//        @Override
+//        public void setBtnTouchId(int btnTouchId) {
+//            this.btnTouchId = btnTouchId;
+//            applyTouch();
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//            if (this.isPressed == true && isPressed == false)
+//                setSelected(!isSelected);
+//            this.isPressed = isPressed;
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//
+//        public void setSelected(Boolean selected){
+//            isSelected = selected;
+//        }
+//
+//        public boolean getSelected(){
+//            return isSelected;
+//        }
+//
+//        @Override
+//        public void draw() {
+//            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
+//
+//            fillRectangle(btnX, btnY, btnSize - 1, btnSize, WHITE);
+//            drawRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
+//            if (isSelected) fillRectangle(btnX, btnY, btnSize - 1, btnSize, BLACK);
+//            drawString(btnText, btnX + btnSize+2, btnY+(btnSize/2)-(getCharHeight(TEXT_SMALL,FONT_ARIEL_REGULAR)/2)+2, TEXT_SMALL, FONT_ARIEL_REGULAR, BLACK);
+//
+//            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight);
+//        }
+//    }
+
+//    public class button implements ButtonShape {
+//        float btnX,btnY,btnWidth,btnHeight;
+//        int btnTouchId;
+//        String btnText = "";
+//        float btnTextX,btnTextY;
+//        boolean isPressed=false;
+//        int textWidth = 0;
+//        int textHeight = 0;
+//
+//        public button (float x,float y,float width,float height,String text){
+//            this.btnX = x;
+//            this.btnY = y;
+//            //set text width and height to min
+//            textWidth = getStringWidth("..",TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            textHeight = getCharHeight(TEXT_SMALL, FONT_ARIEL_REGULAR);
+//            if (width < textWidth)
+//                this.btnWidth = textWidth;
+//            else {
+//                this.btnWidth = width;
+//                textWidth = getStringWidth(text, TEXT_SMALL, FONT_ARIEL_REGULAR);
+//                if (width < textWidth){
+//                    this.btnText = text.substring(0, getMaxCharsInWidth(text,width,TEXT_SMALL,FONT_ARIEL_REGULAR)-2);
+//                    this.btnText += "..";
+//                }else{
+//                    this.btnText = text;
+//                }
+//            }
+//            if (height < textHeight)
+//                this.btnHeight = textHeight;
+//            else
+//                this.btnHeight = height;
+//
+//            btnTextX = btnX+((btnWidth-textWidth)/2);
+//            btnTextY = btnY+((btnHeight-textHeight)/2);
+//            isPressed=false;
+//        }
+//
+//        @Override
+//        public void applyTouch(){
+//            for (float x=btnX;x<btnX+btnWidth;x++){
+//                for (float y=btnY;y<btnY+btnHeight;y++){
+//                    setTouch((int) x, (int) y, btnTouchId);
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public void setBtnTouchId(int btnTouchId) {
+//            this.btnTouchId = btnTouchId;
+//            applyTouch();
+//        }
+//
+//        @Override
+//        public void draw(){
+//            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+//            if (isPressed){
+//                pressDraw();
+//            }else {
+//                releaseDraw();
+//            }
+//            //refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//            this.isPressed = isPressed;
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//
+//        private void releaseDraw() {
+//            fillRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, BLACK);
+//            fillRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, WHITE);
+//
+//            drawRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, BLACK); //BLack
+//            drawShadowRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, BLACK); //Black
+//
+//            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
+//        }
+//
+//        private void pressDraw(){
+//
+//            //fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 3, BLACK);
+//            //fillRoundRectangle(btnX , btnY , btnWidth - 3, btnHeight - 3, 3, WHITE);
+//
+//            drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, BLACK); // black
+//            //drawRoundRectangle(btnX , btnY , btnWidth -3, btnHeight -3, 3, BLACK);  // black
+//
+////            drawString(this.btnText, btnTextX + pixelX, btnTextY + pixelX, TEXT_SMALL, BLACK);
+//            drawString(this.btnText, btnTextX, btnTextY, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
+//        }
+//
+//    }
+
+//    public class button2D implements ButtonShape {
+//        float btnX,btnY,btnWidth,btnHeight;
+//        int btnTouchId;
+//        String btnText = "";
+//        float btnTextX,btnTextY;
+//        boolean isPressed=false;
+//        int textWidth = 0;
+//        int textHeight = 0;
+//
+//        public button2D (float x,float y,float width,float height,String text){
+//            this.btnX = x;
+//            this.btnY = y;
+//            //set text width and height to min
+//            textWidth = getStringWidth("..",TEXT_SMALL,FONT_ARIEL_REGULAR);
+//            textHeight = getCharHeight(TEXT_SMALL, FONT_ARIEL_REGULAR);
+//            if (width < textWidth)
+//                this.btnWidth = textWidth;
+//            else {
+//                this.btnWidth = width;
+//                textWidth = getStringWidth(text, TEXT_SMALL, FONT_ARIEL_REGULAR);
+//                if (width < textWidth){
+//                    this.btnText = text.substring(0, getMaxCharsInWidth(text,width,TEXT_SMALL,FONT_ARIEL_REGULAR)-2);
+//                    this.btnText += "..";
+//                }else{
+//                    this.btnText = text;
+//                }
+//            }
+//            if (height < textHeight)
+//                this.btnHeight = textHeight;
+//            else
+//                this.btnHeight = height;
+//
+//            btnTextX = btnX+((btnWidth-textWidth)/2);
+//            btnTextY = btnY+((btnHeight-textHeight)/2);
+//            isPressed=false;
+//        }
+//
+//        @Override
+//        public void applyTouch(){
+//            for (float x=btnX;x<btnX+btnWidth;x++){
+//                for (float y=btnY;y<btnY+btnHeight;y++){
+//                    setTouch((int) x, (int) y, btnTouchId);
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public void setBtnTouchId(int btnTouchId) {
+//            this.btnTouchId = btnTouchId;
+//            applyTouch();
+//        }
+//
+//        @Override
+//        public void draw(){
+//            clear(background, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+//            if (isPressed){
+//                pressDraw();
+//            }else {
+//                releaseDraw();
+//            }
+//            refresh(true, (int) btnX, (int) btnY, (int) btnWidth+1, (int) btnHeight+1);
+//        }
+//
+//        @Override
+//        public void setIsPressed(boolean isPressed) {
+//            this.isPressed = isPressed;
+//        }
+//
+//        @Override
+//        public void setTouched(int touchX, int touchY) {
+//
+//        }
+//
+//        private void releaseDraw() {
+//            fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, WHITE+1);
+//            drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, BLACK);
+//            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, BLACK);
+//        }
+//
+//        private void pressDraw(){
+//            fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, BLACK);
+//            //drawRoundRectangle(btnX,btnY,btnWidth,btnHeight,2,WHITE+1);
+//            drawString(this.btnText, btnTextX + 2, btnTextY + 2, TEXT_SMALL,FONT_ARIEL_REGULAR, WHITE+1);
+//        }
+//
+//    }
 
     // fonts
     private class font{
