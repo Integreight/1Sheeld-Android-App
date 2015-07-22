@@ -17,7 +17,7 @@ repositories {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
@@ -49,7 +49,7 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile project(':facebookSDK')
-    compile 'com.google.android.gms:play-services:+'
+    compile 'com.google.android.gms:play-services:7.3.0'
     compile files('libs/activation.jar')
     compile files('libs/additionnal.jar')
     compile files('libs/android-async-http-1.4.6.jar')
@@ -63,7 +63,7 @@ dependencies {
     compile 'com.crashlytics.android:crashlytics:1.+'
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
-    compile 'com.github.hotchemi:android-rate:0.4.+'
+    compile 'com.github.hotchemi:android-rate:0.5.0'
 }
 
 def isCrashlyticsPropertiesAvailable() {

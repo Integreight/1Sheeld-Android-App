@@ -116,9 +116,9 @@
 
     <string name="rate_dialog_title">Did you like 1Sheeld?</string>
     <string name="rate_dialog_message">If you enjoy playing with 1Sheeld app, would you mind taking a moment to rate it? We appreciate your awesome support!</string>
-    <string name="rate_dialog_ok">Rate It Now</string>
-    <string name="rate_dialog_cancel">Maybe Later</string>
-    <string name="rate_dialog_no">No, Thanks</string>
+    <string name="rate_dialog_ok">Now :-)</string>
+    <string name="rate_dialog_cancel">Later :-|</string>
+    <string name="rate_dialog_no">Never :-(</string>
 
     <!-- NFC -->
     <string name="no_card">Approach NFC tag!</string>
