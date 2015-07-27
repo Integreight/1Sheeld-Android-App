@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.nfc.NfcAdapter;
 import android.os.Build;
@@ -99,14 +100,9 @@ public class MainActivity extends FragmentActivity {
                     .addArduinoLibraryVersionQueryHandler(
                             arduinoLibraryVersionHandler);
         }
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-                if (getThisApplication().getShowTutAgain()
-                        && getThisApplication().getTutShownTimes() < 6)
-                    startActivity(new Intent(MainActivity.this, Tutorial.class));
-//            }
-//        },1000);
+        if (getThisApplication().getShowTutAgain()
+                && getThisApplication().getTutShownTimes() < 6)
+            startActivity(new Intent(MainActivity.this, Tutorial.class));
         AppRate.with(this)
                 .setInstallDays(7)
                 .setLaunchTimes(5)
@@ -500,41 +496,52 @@ public class MainActivity extends FragmentActivity {
         finish();
     }
 
+    boolean isConfigChanged = false;
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        isConfigChanged = true;
+        super.onConfigurationChanged(newConfig);
+    }
+
     @Override
     protected void onDestroy() {
-        getThisApplication().getTracker().send(
-                new HitBuilders.EventBuilder().setCategory("App lifecycle")
-                        .setAction("Finished the app manually").build());
-        ArduinoConnectivityPopup.isOpened = false;
-        stopService();
-        stopLooperThread();
-        moveTaskToBack(true);
-        if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
-            while (!((OneSheeldApplication) getApplication()).getAppFirmata()
-                    .close())
-                ;
-        }
-        // // unExpeted
-        if (!isBackPressed) {
-            Enumeration<String> enumKey = ((OneSheeldApplication)
-                    getApplication()).getRunningShields().keys();
-            while (enumKey.hasMoreElements()) {
-                String key = enumKey.nextElement();
-                ((OneSheeldApplication) getApplication())
-                        .getRunningShields().get(key).resetThis();
-                ((OneSheeldApplication) getApplication())
-                        .getRunningShields().remove(key);
+        if (!isConfigChanged) {
+            getThisApplication().getTracker().send(
+                    new HitBuilders.EventBuilder().setCategory("App lifecycle")
+                            .setAction("Finished the app manually").build());
+            ArduinoConnectivityPopup.isOpened = false;
+            stopService();
+            stopLooperThread();
+            moveTaskToBack(true);
+            if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
+                while (!((OneSheeldApplication) getApplication()).getAppFirmata()
+                        .close())
+                    ;
             }
-            Intent in = new Intent(getIntent());
-            PendingIntent intent = PendingIntent.getActivity(
-                    getBaseContext(), 0, in, getIntent().getFlags());
+            // // unExpeted
+            if (!isBackPressed) {
+                Enumeration<String> enumKey = ((OneSheeldApplication)
+                        getApplication()).getRunningShields().keys();
+                while (enumKey.hasMoreElements()) {
+                    String key = enumKey.nextElement();
+                    ((OneSheeldApplication) getApplication())
+                            .getRunningShields().get(key).resetThis();
+                    ((OneSheeldApplication) getApplication())
+                            .getRunningShields().remove(key);
+                }
+                Intent in = new Intent(getIntent());
+                PendingIntent intent = PendingIntent.getActivity(
+                        getBaseContext(), 0, in, getIntent().getFlags());
 
-            AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
-                    intent);
-            killAllProcesses();
-        } else
-            killAllProcesses();
+                AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
+                        intent);
+                killAllProcesses();
+            } else
+                killAllProcesses();
+        }
+        isConfigChanged = false;
         isBackPressed = false;
         super.onDestroy();
     }
