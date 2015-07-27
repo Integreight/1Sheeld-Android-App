@@ -8,7 +8,7 @@ import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 public class Button implements ButtonShape {
     float btnX,btnY,btnWidth,btnHeight;
     int btnTouchId;
-    String btnText = "";
+    String btnText = " .";
     float btnTextX,btnTextY;
     int textWidth = 0,textHeight = 0;
     boolean isPressed=false,visibility=true;
@@ -18,7 +18,7 @@ public class Button implements ButtonShape {
         this.btnX = x;
         this.btnY = y;
         //set text width and height to min
-        textWidth = view.getStringWidth("..", view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+        textWidth = view.getStringWidth(" .", view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         textHeight = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         if (width < textWidth)
             this.btnWidth = textWidth;
@@ -27,7 +27,7 @@ public class Button implements ButtonShape {
             textWidth = view.getStringWidth(text, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
             if (width < textWidth){
                 this.btnText = text.substring(0, view.getMaxCharsInWidth(text, width, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR)-2);
-                this.btnText += "..";
+                this.btnText += " .";
             }else{
                 this.btnText = text;
             }
@@ -94,7 +94,7 @@ public class Button implements ButtonShape {
         textWidth = view.getStringWidth(text, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         if (btnWidth < textWidth){
             this.btnText = text.substring(0, view.getMaxCharsInWidth(text, btnWidth, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR)-2);
-            this.btnText += "..";
+            this.btnText += " .";
         }else{
             this.btnText = text;
         }

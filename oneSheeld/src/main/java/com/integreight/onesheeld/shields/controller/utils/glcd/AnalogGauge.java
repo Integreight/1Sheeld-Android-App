@@ -6,7 +6,7 @@ import com.integreight.onesheeld.shields.controller.utils.GlcdView;
  * Created by Mouso on 7/22/2015.*/
 public class AnalogGauge implements Shape{
     private float xCenter, yCenter,radius,start=0,end=100,currentValue=0,angleStart=2.355f,angleEnd=7.065f;
-    boolean visibility;
+    boolean visibility=true;
 
     public AnalogGauge(float xCenter,float yCenter,float radius){
         this.xCenter = xCenter;

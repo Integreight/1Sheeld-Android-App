@@ -1,11 +1,9 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,6 +12,7 @@ import com.integreight.onesheeld.shields.controller.utils.glcd.*;
 
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Mouso on 6/7/2015.
@@ -25,8 +24,9 @@ public class GlcdView extends View implements OnTouchListener {
     int background = 0;
     Paint paint;
     int glcdWidth=256,glcdHeight=128;
-    ArrayList<ArrayList<Integer>> Dots,Touchs;
+    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> dots, touchs;
     SparseArray<Shape> shapes;
+    SparseArray<RadioGroup> radioGroups;
     public int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
     float pixelX,pixelY,originX,originY,width,height,ascpectRatio;
 
@@ -35,6 +35,9 @@ public class GlcdView extends View implements OnTouchListener {
 
     private boolean isInt=false;
     private int currentPressedKey = 0;
+
+    CopyOnWriteArrayList<Integer> tmpRow;
+    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> tmpDots,tmpTouchs;
 
     public GlcdView(Context context) {
         super(context);
@@ -58,7 +61,8 @@ public class GlcdView extends View implements OnTouchListener {
 
         //   draw Background
         paint.setColor(background);
-        canvas.drawRect(originY,originX,originY+height, originX+width, paint);
+        canvas.drawRect(originY, originX, originY + height, originX + width, paint);
+
 
         //------------------------------------
         //----------- display data ----------------
@@ -72,6 +76,7 @@ public class GlcdView extends View implements OnTouchListener {
         //------------------------------------
         if (isInt == false) {
             isInt = true;
+            //clear(WHITE);
 //            Shapes Test
 
 //            setPixel(0, 0, BLACK);
@@ -146,6 +151,7 @@ public class GlcdView extends View implements OnTouchListener {
 
         //------------------------------------
 
+        //clear(background,false);
         for (int shapesCount=0;shapesCount<shapes.size();shapesCount++){
             shapes.valueAt(shapesCount).draw(this);
         }
@@ -153,64 +159,93 @@ public class GlcdView extends View implements OnTouchListener {
         refresh(true);
     }
 
+
     public void clear(int background){
         paint = new Paint();
         this.background = background;
-        Dots = new ArrayList<ArrayList<Integer>>();
-        Touchs = new ArrayList<ArrayList<Integer>>();
+        dots = new CopyOnWriteArrayList<>();
+        touchs = new CopyOnWriteArrayList<>();
         shapes = new SparseArray<>();
+        radioGroups = new SparseArray<>();
+        radioGroups.append(0, new RadioGroup());
         for (int x=0;x<glcdWidth;x++){
-            ArrayList<Integer> tempDots = new ArrayList<Integer>();
-            ArrayList<Integer> tempTouchs = new ArrayList<Integer>();
+            CopyOnWriteArrayList<Integer> tempDots = new CopyOnWriteArrayList<>();
+            CopyOnWriteArrayList<Integer> tempTouchs = new CopyOnWriteArrayList<>();
             for (int y=0;y<glcdHeight;y++){
                 tempDots.add(this.background);
                 tempTouchs.add(null);
             }
-            Dots.add(tempDots);
-            Touchs.add(tempTouchs);
+            dots.add(tempDots);
+            touchs.add(tempTouchs);
+        }
+    }
+    public void clear(int background,boolean ClearShapes){
+        paint = new Paint();
+        this.background = background;
+        dots = new CopyOnWriteArrayList<>();
+        touchs = new CopyOnWriteArrayList<>();
+        if(ClearShapes) shapes = new SparseArray<>();
+        for (int x=0;x<glcdWidth;x++){
+            CopyOnWriteArrayList<Integer> tempDots = new CopyOnWriteArrayList<>();
+            CopyOnWriteArrayList<Integer> tempTouchs = new CopyOnWriteArrayList<>();
+            for (int y=0;y<glcdHeight;y++){
+                tempDots.add(this.background);
+                tempTouchs.add(null);
+            }
+            dots.add(tempDots);
+            touchs.add(tempTouchs);
         }
     }
 
     public void clear(int background,int x,int y,int width,int height,boolean clearGraphics,boolean clearTouch){
-        paint = new Paint();
-        paint.setColor(background);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
-        for (int X=x;X<width+x;X++){
-            ArrayList<Integer> tempDots = Dots.get(X);
-            ArrayList<Integer> tempTouchs = Touchs.get(X);
-            for (int Y=y;Y<height+y;Y++){
-                if (clearGraphics) tempDots.set(Y,background);
-                if (clearTouch) tempTouchs.set(Y,null);
-            }
-        }
+//        paint = new Paint();
+//        paint.setColor(background);
+//        paint.setStyle(Paint.Style.FILL);
+//        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
+//        tmpDots = dots;
+//        tmpTouchs = touchs;
+//        for (int X=x;X<width+x;X++){
+//            CopyOnWriteArrayList<Integer> tempDots = tmpDots.get(X);
+//            CopyOnWriteArrayList<Integer> tempTouchs = tmpTouchs.get(X);
+//            for (int Y=y;Y<height+y;Y++){
+//                if (clearGraphics) tempDots.set(Y,background);
+//                if (clearTouch) tempTouchs.set(Y,null);
+//            }
+//        }
+//        dots = tmpDots;
+//        touchs = tmpTouchs;
     }
 
 
     public void clear(int background,int x,int y,int width,int height){
         clear(background, x, y, width, height, true, true);
     }
-
     private void refresh(boolean doInvalidation){
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         // draw pixels
         for (int x = 0;x<glcdWidth;x++){
             for (int y=0;y<glcdHeight;y++){
-                if (Dots.get(x).get(y) != background) {
-                    paint.setColor(Dots.get(x).get(y));
-                    float left = (originY+height)-((y+1)*pixelY);
-                    float top = (x*pixelX) + originX;
-                    float right = (originY+height)-(y*pixelY);
-                    float bottom = ((x+1)*pixelX) + originX;
-                    canvas.drawRect(left,top,right,bottom,paint);
+                tmpDots = dots;
+                if (x < tmpDots.size()) {
+                    tmpRow = tmpDots.get(x);
+                    if (y < tmpRow.size()) {
+                        if (tmpRow.get(y) != background) {
+                            paint.setColor(tmpRow.get(y));
+                            float left = (originY + height) - ((y + 1) * pixelY);
+                            float top = (x * pixelX) + originX;
+                            float right = (originY + height) - (y * pixelY);
+                            float bottom = ((x + 1) * pixelX) + originX;
+                            canvas.drawRect(left, top, right, bottom, paint);
+                        }
+                    }
                 }
             }
         }
 
         if (doInvalidation) {
             invalidate();
-            requestLayout();
+//            requestLayout();
         }
     }
 
@@ -222,8 +257,8 @@ public class GlcdView extends View implements OnTouchListener {
         // draw pixels
         for (int x = 0;x<X;x++){
             for (int y=0;y<Y;y++){
-                if (Dots.get(x).get(y) != background) {
-                    paint.setColor(Dots.get(x).get(y));
+                if (dots.get(x).get(y) != background) {
+                    paint.setColor(dots.get(x).get(y));
                     float left = (originY+height)-((y+1)*pixelY);
                     float top = (x*pixelX) + originX;
                     float right = (originY+height)-(y*pixelY);
@@ -246,9 +281,9 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     public void setPixel(int x, int y, int color){
-        if (x < Dots.size() && x >= 0)
-            if (y < Dots.get(x).size() && y >= 0)
-                Dots.get(x).set(y,color);
+        if (x < dots.size() && x >= 0)
+            if (y < dots.get(x).size() && y >= 0)
+                dots.get(x).set(y,color);
     }
 
     public void addToShapes(Shape shape,int key){
@@ -302,15 +337,15 @@ public class GlcdView extends View implements OnTouchListener {
 //    }
 
     public void setTouch(int x, int y, int touchId){
-        if (x < Touchs.size() && x >= 0)
-            if (y < Touchs.get(x).size() && y >= 0)
-                Touchs.get(x).set(y,touchId);
+        if (x < touchs.size() && x >= 0)
+            if (y < touchs.get(x).size() && y >= 0)
+                touchs.get(x).set(y,touchId);
     }
 
     public Integer getTouch(int x, int y){
-        if (x < Touchs.size() && x >= 0)
-            if (y < Touchs.get(x).size() && y >= 0){
-                return Touchs.get(x).get(y);
+        if (x < touchs.size() && x >= 0)
+            if (y < touchs.get(x).size() && y >= 0){
+                return touchs.get(x).get(y);
             }
         return null;
     }
@@ -748,9 +783,9 @@ public class GlcdView extends View implements OnTouchListener {
 //    }
 
     public void drawEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){
-        if (radiusX == radiusY){
-            drawCircle(xCenter, yCenter, radiusX, color);
-        }else {
+//        if (radiusX == radiusY){
+//            drawCircle(xCenter, yCenter, radiusX, color);
+//        }else {
             float radiusXSqrt = radiusX * radiusX;
             float radiusYSqrt = radiusY * radiusY;
             float x = 0, y = radiusY;
@@ -782,7 +817,7 @@ public class GlcdView extends View implements OnTouchListener {
                 }
                 drawEllipsePoints(xCenter, yCenter, x, y, color);
             }
-        }
+//        }
     }
 
     public void fillEllipse(float xCenter,float yCenter,float radiusX,float radiusY,int color){

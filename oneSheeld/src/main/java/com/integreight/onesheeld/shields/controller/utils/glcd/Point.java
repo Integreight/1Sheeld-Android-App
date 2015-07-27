@@ -16,7 +16,7 @@ public class Point implements Shape {
     @Override
     public void draw(GlcdView view) {
         if (visiblity)
-            view.setPixel(0, 0, view.BLACK);
+            view.setPixel((int) x,(int) y, view.BLACK);
     }
 
     @Override

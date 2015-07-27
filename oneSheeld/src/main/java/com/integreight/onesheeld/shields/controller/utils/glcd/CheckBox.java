@@ -18,17 +18,18 @@ public class CheckBox implements ButtonShape {
         this.btnX = x;
         this.btnY = y;
         this.btnText = text;
-        this.btnTouchId = touchId;
-        applyTouch(view);
         setSize(view,size);
+        setBtnTouchId(view,touchId);
         isSelected = false;
         isPressed = false;
     }
 
     @Override
     public void applyTouch(GlcdView view){
-        for (float x=btnX;x<btnX+btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);x++){
-            for (float y=btnY;y<btnY+btnHeight;y++){
+        float xMax = btnX+btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+        float yMax = btnY+btnHeight;
+        for (float x=btnX;x<xMax;x++){
+            for (float y=btnY;y<yMax;y++){
                 view.setTouch((int) x, (int) y, btnTouchId);
             }
         }

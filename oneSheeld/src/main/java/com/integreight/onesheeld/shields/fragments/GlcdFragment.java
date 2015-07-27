@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,7 +8,7 @@ import android.view.ViewGroup;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
-import com.integreight.onesheeld.shields.fragments.sub.GlcdHelperView;
+
 
 /**
  * Created by Mouso on 6/7/2015.
@@ -51,7 +50,9 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment>{
         @Override
         public void setView(GlcdView glcdView) {
             if (canChangeUI() && uiHandler!= null) {
+                //glcdView.invalidate();
                 helperView = glcdView;
+
                 //Bitmap bb = ((GlcdView) (((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).getGlcdView())).getDrawingCache();
                 //helperView.setBitmap(bb);
                 //helperView.invalidate();

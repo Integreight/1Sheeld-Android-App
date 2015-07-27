@@ -20,12 +20,11 @@ public class RadioButton implements ButtonShape {
         this.btnX = x-btnRadius;
         this.btnY = y-btnRadius;
         this.btnText = text;
+        this.btnWidth = btnRadius+btnRadius+btnRadius+view.getStringWidth(text,GlcdView.TEXT_SMALL,GlcdView.FONT_ARIEL_REGULAR);
+        this.btnHeight = btnRadius+btnRadius+btnRadius;
+
         this.btnTouchId = touchId;
         applyTouch(view);
-
-        this.btnWidth = btnX+btnRadius+btnRadius+btnRadius+view.getStringWidth(text,GlcdView.TEXT_SMALL,GlcdView.FONT_ARIEL_REGULAR);
-        this.btnHeight = btnY+btnRadius+btnRadius+btnRadius;
-
         isSelected = false;
         isPressed = false;
     }
