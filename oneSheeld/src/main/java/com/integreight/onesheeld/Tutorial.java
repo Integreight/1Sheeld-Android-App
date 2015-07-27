@@ -1,8 +1,7 @@
 package com.integreight.onesheeld;
 
 import android.graphics.Color;
-import android.os.Build;
-import android.os.Bundle;
+import android.os.*;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -28,6 +27,11 @@ public class Tutorial extends FragmentActivity {
         }
         finish();
         super.onBackPressed();
+        if(!isMenu) {
+           try{
+               System.exit(0);
+           }catch (Exception e){}
+        }
     }
 
     @Override

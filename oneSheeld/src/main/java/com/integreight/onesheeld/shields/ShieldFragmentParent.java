@@ -106,18 +106,19 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onStart() {
         Log.d("S", "start");
+        super.onStart();
         activity = getAppActivity();
         uiHandler = new Handler();
         /*
          * If the Shield lost it's controller instance within the application,
 		 * then starts to re-init it
 		 */
-        if (getApplication().getRunningShields().get(getControllerTag()) != null)
+        if (getApplication().getRunningShields().get(getControllerTag()) != null && activity != null && activity.findViewById(R.id.settingsFixedHandler) != null)
             getApplication().getRunningShields().get(getControllerTag())
                     .setHasForgroundView(true);
         else {
-            if (!reInitController())
-                return;
+//            if (!reInitController())
+            return;
         }
         if (getApplication().getAppFirmata() == null) {
             getApplication().addServiceEventHandler(
@@ -147,7 +148,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                                 || getApplication().getRunningShields().get(
                                 getControllerTag()).requiredPinsIndex == -1 ? View.GONE
                                 : View.VISIBLE);
-        super.onStart();
     }
 
     @Override
@@ -203,6 +203,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
     @Override
     public void onResume() {
+        super.onResume();
+        if(activity==null||activity.findViewById(R.id.shieldStatus)==null)
+            return;
         MainActivity.currentShieldTag = getControllerTag();
         // restore the staus of shield interaction toggle button
         if (getApplication().getRunningShields().get(getControllerTag()) != null)
@@ -215,7 +218,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                 new HitBuilders.ScreenViewBuilder().build());
         // Logging current view for crashlytics
         Crashlytics.setString("Current View", getTag());
-        super.onResume();
     }
 
     /**

@@ -99,9 +99,14 @@ public class MainActivity extends FragmentActivity {
                     .addArduinoLibraryVersionQueryHandler(
                             arduinoLibraryVersionHandler);
         }
-        if (getThisApplication().getShowTutAgain()
-                && getThisApplication().getTutShownTimes() < 6)
-            startActivity(new Intent(this, Tutorial.class));
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+                if (getThisApplication().getShowTutAgain()
+                        && getThisApplication().getTutShownTimes() < 6)
+                    startActivity(new Intent(MainActivity.this, Tutorial.class));
+//            }
+//        },1000);
         AppRate.with(this)
                 .setInstallDays(7)
                 .setLaunchTimes(5)
