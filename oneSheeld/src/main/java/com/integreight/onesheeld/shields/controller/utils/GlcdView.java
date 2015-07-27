@@ -256,12 +256,21 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     public Shape getFromShapes(int key){
-        if (shapes.indexOfKey(key) != -1)
+        if (shapes.indexOfKey(key) > -1)
             return shapes.get(key);
         else
             return null;
     }
 
+    public void addToRadioGroups(RadioGroup group,int key){
+        radioGroups.append(key, group);
+    }
+
+    public RadioGroup getFromRadioGroups(int key){
+        if (radioGroups.indexOfKey(key) <= -1)
+            addToRadioGroups(new RadioGroup(),key);
+        return radioGroups.get(key);
+    }
 //    public class point implements Shape{
 //        float x,y;
 //        boolean visiblity = true;

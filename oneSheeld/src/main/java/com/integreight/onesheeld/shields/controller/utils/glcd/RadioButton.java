@@ -56,10 +56,12 @@ public class RadioButton implements ButtonShape {
 
     @Override
     public void setIsPressed(boolean isPressed) {
-        setSelected(true);
-        if (radioGroup != null)
-            radioGroup.select(this);
-        this.isPressed = isPressed;
+        if (isPressed == true) {
+            setSelected(true);
+            if (radioGroup != null)
+                radioGroup.select(this);
+            this.isPressed = isPressed;
+        }
     }
 
     @Override
