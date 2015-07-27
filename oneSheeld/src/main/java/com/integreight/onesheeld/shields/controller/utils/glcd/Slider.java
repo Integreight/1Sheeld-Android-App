@@ -38,6 +38,7 @@ public class Slider implements ButtonShape{
 
     @Override
     public void draw(GlcdView view) {
+        clearDraw(view);
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
@@ -47,6 +48,17 @@ public class Slider implements ButtonShape{
             view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.BLACK);
             view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, view.BLACK);
         }
+    }
+
+    @Override
+    public void clearDraw(GlcdView view) {
+            // Using linear interpolation eguation to get the average value.
+            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
+            float progress = (((currentValue - start) * ((btnX + btnWidth - (btnHeight / 2)) - (btnX + (btnHeight / 2)))) / (end - start)) + (btnX + (btnHeight / 2));
+
+            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+            view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.WHITE);
+            view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, view.WHITE);
     }
 
     public void setStart(float start) {

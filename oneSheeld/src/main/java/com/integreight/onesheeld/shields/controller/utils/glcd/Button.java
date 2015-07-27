@@ -1,5 +1,7 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import android.graphics.Color;
+
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -64,14 +66,25 @@ public class Button implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
+        clearDraw(view);
         if (visibility) {
             view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
             if (isPressed) {
-                pressDraw(view);
+                pressDraw(view,view.BLACK);
             } else {
-                releaseDraw(view);
+                releaseDraw(view,view.BLACK);
             }
         }
+    }
+
+    @Override
+    public void clearDraw(GlcdView view) {
+            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+            if (isPressed) {
+                pressDraw(view,view.WHITE);
+            } else {
+                releaseDraw(view,view.WHITE);
+            }
     }
 
     @Override
@@ -119,29 +132,29 @@ public class Button implements ButtonShape {
 
     }
 
-    private void releaseDraw(GlcdView view) {
+    private void releaseDraw(GlcdView view,int color) {
         if (style == 0){
             view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, view.WHITE + 1);
-            view.drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, view.BLACK);
-            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
+            view.drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, color);
+            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
         }else {
             view.fillRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, view.BLACK);
             view.fillRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, view.WHITE);
 
-            view.drawRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, view.BLACK);
-            view.drawShadowRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, view.BLACK);
+            view.drawRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, color);
+            view.drawShadowRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, color);
 
-            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
+            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
         }
     }
 
-    private void pressDraw(GlcdView view){
+    private void pressDraw(GlcdView view,int color){
         if (style == 0){
-            view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, view.BLACK);
+            view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, color);
             view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE + 1);
         }else {
-            view.drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, view.BLACK);
-            view.drawString(this.btnText, btnTextX, btnTextY, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
+            view.drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, color);
+            view.drawString(this.btnText, btnTextX, btnTextY, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
         }
     }
 

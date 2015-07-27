@@ -151,7 +151,6 @@ public class GlcdView extends View implements OnTouchListener {
 
         //------------------------------------
 
-        //clear(background,false);
         for (int shapesCount=0;shapesCount<shapes.size();shapesCount++){
             shapes.valueAt(shapesCount).draw(this);
         }
@@ -179,6 +178,7 @@ public class GlcdView extends View implements OnTouchListener {
             touchs.add(tempTouchs);
         }
     }
+
     public void clear(int background,boolean ClearShapes){
         paint = new Paint();
         this.background = background;

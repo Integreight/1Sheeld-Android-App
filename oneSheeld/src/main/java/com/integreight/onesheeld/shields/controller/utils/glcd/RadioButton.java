@@ -100,14 +100,25 @@ public class RadioButton implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
+        clearDraw(view);
         if (visibility) {
-            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
+//            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
 
             view.fillCircle(btnX, btnY, btnRadius, view.WHITE);
             view.drawCircle(btnX, btnY, btnRadius, view.BLACK);
             if (isSelected) view.fillCircle(btnX, btnY, btnRadius - 2, view.BLACK);
             view.drawString(btnText, btnX + btnRadius + 2, btnY - btnRadius + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
         }
+    }
+
+    @Override
+    public void clearDraw(GlcdView view) {
+//            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
+            view.fillCircle(btnX, btnY, btnRadius, view.WHITE);
+            view.drawCircle(btnX, btnY, btnRadius, view.WHITE);
+            view.fillCircle(btnX, btnY, btnRadius - 2, view.WHITE);
+            view.drawString(btnText, btnX + btnRadius + 2, btnY - btnRadius + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE);
+
     }
 
     @Override

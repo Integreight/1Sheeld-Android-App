@@ -101,13 +101,23 @@ public class CheckBox implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
+        clearDraw(view);
         if(visibility) {
-            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
+//            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
 
             view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
             view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, view.BLACK);
             if (isSelected) view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.BLACK);
             view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
         }
+    }
+
+    @Override
+    public void clearDraw(GlcdView view) {
+//            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
+            view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
+            view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
+            if (isSelected) view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
+            view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE);
     }
 }

@@ -22,7 +22,14 @@ public class Label implements Shape {
 
     @Override
     public void draw(GlcdView view) {
-        view.drawString(text, x, y, textSize, textFont, view.BLACK);
+        clearDraw(view);
+        if (visibility)
+            view.drawString(text, x, y, textSize, textFont, view.BLACK);
+    }
+
+    @Override
+    public void clearDraw(GlcdView view) {
+            view.drawString(text, x, y, textSize, textFont, view.WHITE);
     }
 
     @Override

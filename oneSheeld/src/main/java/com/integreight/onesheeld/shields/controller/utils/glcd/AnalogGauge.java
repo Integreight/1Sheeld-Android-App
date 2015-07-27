@@ -60,6 +60,11 @@ public class AnalogGauge implements Shape{
     }
 
     @Override
+    public void clearDraw(GlcdView view) {
+        //----
+    }
+
+    @Override
     public void setVisibility(boolean visibility) {
         this.visibility = visibility;
     }
