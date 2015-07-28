@@ -19,6 +19,9 @@ import com.integreight.onesheeld.shields.controller.utils.glcd.RoundRectangle;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Shape;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Slider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mouso on 6/7/2015.
  */
@@ -113,16 +116,38 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (glcdEventHandler != null) {
             //glcdEventHandler.setView(new GlcdView(getActivity()));
+            List<Integer> params;
+            List<Boolean> premissions;
             if (frame.getShieldId() == SHIELD_ID) {
                 GlcdView view = glcdEventHandler.getView();
                 switch (frame.getFunctionId()) {
                     case TYPE_GLCD:
                         switch (frame.getArgument(0)[0]) {
                             case GLCD_CLEAR:
-                                view.clear(view.WHITE);
+//                                view.clear(view.WHITE);
+                                params = new ArrayList<>();
+                                params.add(view.WHITE);
+                                premissions= new ArrayList<>();
+                                premissions.add(true);
+                                premissions.add(true);
+                                premissions.add(true);
+                                premissions.add(true);
+                                view.doOrder(view.ORDER_CLEAR, params, premissions);
                                 break;
                             case GLCD_CLEAR_RECTANGLE:
-                                view.clear(view.WHITE, frame.getArgumentAsInteger(1), frame.getArgumentAsInteger(2), frame.getArgumentAsInteger(3), frame.getArgumentAsInteger(4));
+//                                view.clear(view.WHITE, frame.getArgumentAsInteger(1), frame.getArgumentAsInteger(2), frame.getArgumentAsInteger(3), frame.getArgumentAsInteger(4));
+                                params = new ArrayList<>();
+                                params.add(view.WHITE);
+                                params.add(frame.getArgumentAsInteger(1));
+                                params.add(frame.getArgumentAsInteger(2));
+                                params.add(frame.getArgumentAsInteger(3));
+                                params.add(frame.getArgumentAsInteger(4));
+                                premissions= new ArrayList<>();
+                                premissions.add(true);
+                                premissions.add(true);
+                                premissions.add(true);
+                                premissions.add(null);
+                                view.doOrder(view.ORDER_CLEAR, params, premissions);
                                 break;
                         }
                         break;

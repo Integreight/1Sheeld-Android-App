@@ -2,6 +2,9 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mouso on 7/22/2015.
  */
@@ -81,13 +84,19 @@ public class ProgressBar implements Shape{
 
     @Override
     public void clearDraw(GlcdView view) {
-            // Using linear interpolation eguation to get the average value.
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
-            view.clear(view.WHITE,(int) x,(int) y,(int) width,(int) height);
-            float progress = (((currentValue - start) * (width - 5)) / (end - start)) + 5;
-
-            view.drawRoundRectangle(x, y, width, height, 5, view.WHITE);
-            view.fillRoundRectangle(x, y, progress, height, 5, view.WHITE);
+//        view.clear(view.WHITE,(int) x,(int) y,(int) width,(int) height);
+        List<Integer> params = new ArrayList<>();
+        params.add(view.WHITE);
+        params.add((int) x);
+        params.add((int) y);
+        params.add((int) width);
+        params.add((int) height);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(true);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);
     }
 
     @Override

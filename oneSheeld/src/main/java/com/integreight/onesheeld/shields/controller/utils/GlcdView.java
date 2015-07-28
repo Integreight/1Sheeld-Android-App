@@ -12,6 +12,7 @@ import com.integreight.onesheeld.shields.controller.utils.glcd.*;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -24,7 +25,7 @@ public class GlcdView extends View implements OnTouchListener {
     int background = 0;
     Paint paint;
     int glcdWidth=256,glcdHeight=128;
-    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> dots, touchs;
+    SparseArray<SparseArray<Integer>> dots, touchs;
     SparseArray<Shape> shapes;
     SparseArray<RadioGroup> radioGroups;
     public int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
@@ -36,15 +37,12 @@ public class GlcdView extends View implements OnTouchListener {
     private boolean isInt=false;
     private int currentPressedKey = 0;
 
-    CopyOnWriteArrayList<Integer> tmpRow;
-    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> tmpDots,tmpTouchs;
-
     public GlcdView(Context context) {
         super(context);
         this.context = context;
         paint = new Paint();
         setOnTouchListener(this);
-        clear(WHITE);
+        background = WHITE;
     }
 
     @Override
@@ -76,7 +74,22 @@ public class GlcdView extends View implements OnTouchListener {
         //------------------------------------
         if (isInt == false) {
             isInt = true;
-            //clear(WHITE);
+
+            dots = new SparseArray<>();
+            touchs = new SparseArray<>();
+            shapes = new SparseArray<>();
+            radioGroups = new SparseArray<>();
+            for (int x=0;x<glcdWidth;x++){
+                SparseArray<Integer> tempDots = new SparseArray<>();
+                SparseArray<Integer> tempTouchs = new SparseArray<>();
+                for (int y=0;y<glcdHeight;y++){
+                    tempDots.append(y, this.background);
+                    tempTouchs.append(y, null);
+                }
+                if (do4Dots) dots.append(x, tempDots);
+                if (do4Touchs) touchs.append(x, tempTouchs);
+            }
+
 //            Shapes Test
 
 //            setPixel(0, 0, BLACK);
@@ -155,124 +168,319 @@ public class GlcdView extends View implements OnTouchListener {
             shapes.valueAt(shapesCount).draw(this);
         }
 
-        refresh(true);
+        List<Integer> params = new ArrayList<>();
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(null);
+        premissions.add(null);
+        premissions.add(true);
+        doOrder(ORDER_REFRESH, params, premissions);
+
+        invalidate();
     }
 
+    public static final int ORDER_SETDOT=0,ORDER_SETTOUCH=1,ORDER_CLEAR=2,ORDER_REFRESH=3,ORDER_HANDLETOUCH=4,ORDER_APPLYTOUCH=5;
+    boolean do4Dots= false,do4Touchs = false,do4Shapes=false,doInvalidate= false;
 
-    public void clear(int background){
-        paint = new Paint();
-        this.background = background;
-        dots = new CopyOnWriteArrayList<>();
-        touchs = new CopyOnWriteArrayList<>();
-        shapes = new SparseArray<>();
-        radioGroups = new SparseArray<>();
-        radioGroups.append(0, new RadioGroup());
-        for (int x=0;x<glcdWidth;x++){
-            CopyOnWriteArrayList<Integer> tempDots = new CopyOnWriteArrayList<>();
-            CopyOnWriteArrayList<Integer> tempTouchs = new CopyOnWriteArrayList<>();
-            for (int y=0;y<glcdHeight;y++){
-                tempDots.add(this.background);
-                tempTouchs.add(null);
-            }
-            dots.add(tempDots);
-            touchs.add(tempTouchs);
-        }
-    }
+    public synchronized boolean doOrder(int order,List<Integer> params,List<Boolean> premissons){
+        //premissons
+        if (premissons.size() < 4)
+            return false;
 
-    public void clear(int background,boolean ClearShapes){
-        paint = new Paint();
-        this.background = background;
-        dots = new CopyOnWriteArrayList<>();
-        touchs = new CopyOnWriteArrayList<>();
-        if(ClearShapes) shapes = new SparseArray<>();
-        for (int x=0;x<glcdWidth;x++){
-            CopyOnWriteArrayList<Integer> tempDots = new CopyOnWriteArrayList<>();
-            CopyOnWriteArrayList<Integer> tempTouchs = new CopyOnWriteArrayList<>();
-            for (int y=0;y<glcdHeight;y++){
-                tempDots.add(this.background);
-                tempTouchs.add(null);
-            }
-            dots.add(tempDots);
-            touchs.add(tempTouchs);
-        }
-    }
-
-    public void clear(int background,int x,int y,int width,int height,boolean clearGraphics,boolean clearTouch){
-        paint = new Paint();
-        paint.setColor(background);
-        paint.setStyle(Paint.Style.FILL);
-        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
-        tmpDots = dots;
-        tmpTouchs = touchs;
-        for (int X=x;X<width+x;X++){
-            CopyOnWriteArrayList<Integer> tempDots = tmpDots.get(X);
-            CopyOnWriteArrayList<Integer> tempTouchs = tmpTouchs.get(X);
-            for (int Y=y;Y<height+y;Y++){
-                if (clearGraphics) tempDots.set(Y,background);
-                if (clearTouch) tempTouchs.set(Y,null);
-            }
-        }
-//        dots = tmpDots;
-//        touchs = tmpTouchs;
-    }
+        if (premissons.get(0) != null)  do4Dots = premissons.get(0); else do4Dots = false;
+        if (premissons.get(1) != null)  do4Touchs = premissons.get(1); else do4Touchs = false;
+        if (premissons.get(2) != null)  do4Shapes = premissons.get(2); else do4Shapes = false;
+        if (premissons.get(3) != null)  doInvalidate = premissons.get(3); else doInvalidate = false;
 
 
-    public void clear(int background,int x,int y,int width,int height){
-        clear(background, x, y, width, height, true, true);
-    }
-    private void refresh(boolean doInvalidation){
-        paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        // draw pixels
-        for (int x = 0;x<glcdWidth;x++){
-            for (int y=0;y<glcdHeight;y++){
-                tmpDots = dots;
-                if (x < tmpDots.size()) {
-                    tmpRow = tmpDots.get(x);
-                    if (y < tmpRow.size()) {
-                        if (tmpRow.get(y) != background) {
-                            paint.setColor(tmpRow.get(y));
-                            float left = (originY + height) - ((y + 1) * pixelY);
-                            float top = (x * pixelX) + originX;
-                            float right = (originY + height) - (y * pixelY);
-                            float bottom = ((x + 1) * pixelX) + originX;
-                            canvas.drawRect(left, top, right, bottom, paint);
+        //orders
+        Integer BgColor=this.background,key=0,action=0,touchId=0,startX=0,startY=0,finalX = 0,finalY=0;
+
+        switch (order){
+            case ORDER_SETDOT:
+                if (params.size() < 3)
+                    return false;
+                // x = params.get(0);
+                // y = params.get(1);
+                // color = params.get(2);
+
+                if (params.get(0) < dots.size() && params.get(0) >= 0)
+                    if (params.get(1) < dots.get(params.get(0)).size() && params.get(1) >= 0)
+                        dots.get(params.get(0)).setValueAt(params.get(1),params.get(2));
+                break;
+            case ORDER_SETTOUCH:
+                if (params.size() < 3)
+                    return false;
+                // x = params.get(0);
+                // y = params.get(1);
+                // touchId = params.get(2);
+                if (params.get(0) < touchs.size() && params.get(0) >= 0)
+                    if (params.get(1) < touchs.get(params.get(0)).size() && params.get(1) >= 0)
+                        touchs.get(params.get(0)).setValueAt(params.get(1),params.get(2));
+                break;
+            case ORDER_CLEAR:
+                if (params.size() < 0)
+                    return false;
+                BgColor=this.background;
+                startX=0;
+                startY=0;
+                finalX = 0;
+                finalY=0;
+
+                if (params.size() == 1){
+                    if(do4Dots) dots = new SparseArray<>();
+                    if(do4Touchs) touchs = new SparseArray<>();
+                    if(do4Shapes) shapes = new SparseArray<>();
+                    radioGroups = new SparseArray<>();
+                    for (int x=0;x<glcdWidth;x++){
+                        SparseArray<Integer> tempDots = new SparseArray<>();
+                        SparseArray<Integer> tempTouchs = new SparseArray<>();
+                        for (int y=0;y<glcdHeight;y++){
+                            tempDots.append(y, this.background);
+                            tempTouchs.append(y, null);
+                        }
+                        if (do4Dots) dots.append(x, tempDots);
+                        if (do4Touchs) touchs.append(x, tempTouchs);
+                    }
+
+                    BgColor = params.get(0);
+                    startX = 0;
+                    startY = 0;
+                    finalX = glcdWidth;
+                    finalY = glcdHeight;
+                }else if (params.size() > 4){
+                     BgColor = params.get(0);
+                     startX = params.get(1);
+                     startY = params.get(2);
+                     finalX = params.get(3);
+                     finalY = params.get(4);
+                }else{
+                    return false;
+                }
+
+                for (int x=startX;x<finalX;x++){
+                    for (int y=startY;y<finalY;y++){
+                        if (do4Dots) dots.get(x).setValueAt(y,BgColor);
+                        if (do4Touchs) touchs.get(x).setValueAt(y,null);
+                    }
+                }
+
+                break;
+            case ORDER_REFRESH:
+                if (params.size() < 0)
+                    return false;
+                startX=0;
+                startY=0;
+                finalX = 0;
+                finalY=0;
+
+                if (params.size() > 4){
+                    startX = params.get(0);
+                    startY = params.get(1);
+                    finalX = params.get(2);
+                    finalY = params.get(3);
+                }else{
+                    startX = 0;
+                    startY = 0;
+                    finalX = glcdWidth;
+                    finalY = glcdHeight;
+                }
+
+                paint = new Paint();
+                paint.setStyle(Paint.Style.FILL);
+
+                for (int x=startX;x<finalX;x++){
+                    for (int y=startY;y<finalY;y++){
+                        if (x < dots.size()) {
+                            if (y < dots.get(x).size()) {
+                                if (dots.get(x).get(y) != background) {
+                                    paint.setColor(dots.get(x).get(y));
+                                    float left = (originY + height) - ((y + 1) * pixelY);
+                                    float top = (x * pixelX) + originX;
+                                    float right = (originY + height) - (y * pixelY);
+                                    float bottom = ((x + 1) * pixelX) + originX;
+                                    canvas.drawRect(left, top, right, bottom, paint);
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
 
-        if (doInvalidation) {
-            invalidate();
-//            requestLayout();
-        }
-    }
+                break;
+            case ORDER_HANDLETOUCH:
+                if (params.size() < 2)
+                    return false;
 
-    private void refresh(boolean doInvalidation,int X,int Y,int width,int height){
-        paint = new Paint();
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(background);
-        canvas.drawRect(originY + height - (Y * pixelY), (X * pixelX) + originX, originY + height - ((Y + height) * pixelY), ((X + width) * pixelX) + originX, paint);
-        // draw pixels
-        for (int x = 0;x<X;x++){
-            for (int y=0;y<Y;y++){
-                if (dots.get(x).get(y) != background) {
-                    paint.setColor(dots.get(x).get(y));
-                    float left = (originY+height)-((y+1)*pixelY);
-                    float top = (x*pixelX) + originX;
-                    float right = (originY+height)-(y*pixelY);
-                    float bottom = ((x+1)*pixelX) + originX;
-                    canvas.drawRect(left,top,right,bottom,paint);
+                action = params.get(0);
+                startX = params.get(1);
+                startY = params.get(2);
+
+                switch (action){
+                    case MotionEvent.ACTION_DOWN:
+                        // press
+                        if (currentPressedKey != 0)
+                            if (shapes.indexOfKey(currentPressedKey) != -1)
+                                shapes.get(currentPressedKey).setIsPressed(false);
+                        key = touchs.get(startX).get(startY);
+                        if (key != null) {
+                            shapes.get(key).setIsPressed(true);
+                            currentPressedKey = key;
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        //release
+                        if (currentPressedKey != 0)
+                            if (shapes.indexOfKey(currentPressedKey) != -1)
+                                shapes.get(currentPressedKey).setIsPressed(false);
+
+                        key = touchs.get(startX).get(startY);
+                        if (key != null) {
+                            shapes.get(key).setIsPressed(false);
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        // touch
+                        key = touchs.get(startX).get(startY);
+                        if (key != null) {
+                            shapes.get(key).setTouched(startX,startY);
+                        }
+                        break;
                 }
-            }
-        }
+                break;
+            case ORDER_APPLYTOUCH:
+                if (params.size() < 0)
+                    return false;
+                touchId=0;
+                startX=0;
+                startY=0;
+                finalX = 0;
+                finalY=0;
+                if (params.size() > 4){
+                    startX = params.get(0);
+                    startY = params.get(1);
+                    finalX = params.get(2);
+                    finalY = params.get(3);
+                    touchId = params.get(4);
+                }else{
+                    return false;
+                }
 
-        if (doInvalidation) {
-            invalidate();
-            requestLayout();
+                for (int x=startX;x<finalX;x++){
+                    for (int y=startY;y<finalY;y++){
+                        touchs.get(x).setValueAt(y,touchId);
+                    }
+                }
+                break;
+            default:
+                return false;
         }
+        return true;
     }
+
+//    public void clear(int background){
+//        paint = new Paint();
+//        this.background = background;
+//        dots = new SparseArray<>();
+//        touchs = new SparseArray<>();
+//        shapes = new SparseArray<>();
+//        radioGroups = new SparseArray<>();
+//        for (int x=0;x<glcdWidth;x++){
+//            SparseArray<Integer> tempDots = new SparseArray<>();
+//            SparseArray<Integer> tempTouchs = new SparseArray<>();
+//            for (int y=0;y<glcdHeight;y++){
+//                tempDots.append(y, this.background);
+//                tempTouchs.append(y, null);
+//            }
+//            dots.append(x, tempDots);
+//            touchs.append(x, tempTouchs);
+//        }
+//    }
+
+//    public void clear(int background,boolean ClearShapes){
+//        paint = new Paint();
+//        this.background = background;
+//        dots = new SparseArray<>();
+//        touchs = new SparseArray<>();
+//        if(ClearShapes) shapes = new SparseArray<>();
+//        for (int x=0;x<glcdWidth;x++){
+//            SparseArray<Integer> tempDots = new SparseArray<>();
+//            SparseArray<Integer> tempTouchs = new SparseArray<>();
+//            for (int y=0;y<glcdHeight;y++){
+//                tempDots.append(y,this.background);
+//                tempTouchs.append(y,null);
+//            }
+//            dots.append(x,tempDots);
+//            touchs.append(x,tempTouchs);
+//        }
+//    }
+
+//    public void clear(int background,int x,int y,int width,int height,boolean clearGraphics,boolean clearTouch){
+//        paint = new Paint();
+//        paint.setColor(background);
+//        paint.setStyle(Paint.Style.FILL);
+//        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
+//        for (int X=x;X<width+x;X++){
+//            for (int Y=y;Y<height+y;Y++){
+//                if (clearGraphics) dots.get(x).setValueAt(y,this.background);
+//                if (clearTouch) touchs.get(x).setValueAt(y,null);
+//            }
+//        }
+//    }
+
+//    public void clear(int background,int x,int y,int width,int height){
+//        clear(background, x, y, width, height, true, true);
+//    }
+
+//    private void refresh(boolean doInvalidation){
+//        paint = new Paint();
+//        paint.setStyle(Paint.Style.FILL);
+//        // draw pixels
+//        for (int x = 0;x<glcdWidth;x++){
+//            for (int y=0;y<glcdHeight;y++){
+//                if (x < dots.size()) {
+//                    if (y < dots.get(x).size()) {
+//                        if (dots.get(x).get(y) != background) {
+//                            paint.setColor(dots.get(x).get(y));
+//                            float left = (originY + height) - ((y + 1) * pixelY);
+//                            float top = (x * pixelX) + originX;
+//                            float right = (originY + height) - (y * pixelY);
+//                            float bottom = ((x + 1) * pixelX) + originX;
+//                            canvas.drawRect(left, top, right, bottom, paint);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (doInvalidation) {
+//            invalidate();
+//        }
+//    }
+
+//    private void refresh(boolean doInvalidation,int X,int Y,int width,int height){
+//        paint = new Paint();
+//        paint.setStyle(Paint.Style.FILL);
+//        paint.setColor(background);
+//        canvas.drawRect(originY + height - (Y * pixelY), (X * pixelX) + originX, originY + height - ((Y + height) * pixelY), ((X + width) * pixelX) + originX, paint);
+//        // draw pixels
+//        for (int x = 0;x<X;x++){
+//            for (int y=0;y<Y;y++){
+//                if (dots.get(x).get(y) != background) {
+//                    paint.setColor(dots.get(x).get(y));
+//                    float left = (originY+height)-((y+1)*pixelY);
+//                    float top = (x*pixelX) + originX;
+//                    float right = (originY+height)-(y*pixelY);
+//                    float bottom = ((x+1)*pixelX) + originX;
+//                    canvas.drawRect(left,top,right,bottom,paint);
+//                }
+//            }
+//        }
+//
+//        if (doInvalidation) {
+//            invalidate();
+//            requestLayout();
+//        }
+//    }
 
     public float absDiff(float a, float b){
         if (a>b)
@@ -280,11 +488,25 @@ public class GlcdView extends View implements OnTouchListener {
         return b-a;
     }
 
-    public void setPixel(int x, int y, int color){
-        if (x < dots.size() && x >= 0)
-            if (y < dots.get(x).size() && y >= 0)
-                dots.get(x).set(y,color);
-    }
+//    private void setPixel(int x, int y, int color){
+//        if (x < dots.size() && x >= 0)
+//            if (y < dots.get(x).size() && y >= 0)
+//                dots.get(x).setValueAt(y,color);
+//    }
+
+//    private void setTouch(int x, int y, int touchId){
+//        if (x < touchs.size() && x >= 0)
+//            if (y < touchs.get(x).size() && y >= 0)
+//                touchs.get(x).setValueAt(y,touchId);
+//    }
+
+//    public Integer getTouch(int x, int y){
+//        if (x < touchs.size() && x >= 0)
+//            if (y < touchs.get(x).size() && y >= 0){
+//                return touchs.get(x).get(y);
+//            }
+//        return null;
+//    }
 
     public void addToShapes(Shape shape,int key){
         shapes.append(key,shape);
@@ -336,19 +558,7 @@ public class GlcdView extends View implements OnTouchListener {
 //        }
 //    }
 
-    public void setTouch(int x, int y, int touchId){
-        if (x < touchs.size() && x >= 0)
-            if (y < touchs.get(x).size() && y >= 0)
-                touchs.get(x).set(y,touchId);
-    }
 
-    public Integer getTouch(int x, int y){
-        if (x < touchs.size() && x >= 0)
-            if (y < touchs.get(x).size() && y >= 0){
-                return touchs.get(x).get(y);
-            }
-        return null;
-    }
 
 //    public class Line implements Shape{
 //        float x1,y1,x2,y2;
@@ -441,10 +651,31 @@ public class GlcdView extends View implements OnTouchListener {
             yStep = -1;
 
         for (x = x1; x <= x2; x++) {
-            if (steep)
-                setPixel((int) y, (int) x, color);
-            else
-                setPixel((int) x, (int) y, color);
+            if (steep) {
+//                setPixel((int) y, (int) x, color);
+                List<Integer> params = new ArrayList<>();
+                params.add((int) y);
+                params.add((int) x);
+                params.add(color);
+                List<Boolean> premissions= new ArrayList<>();
+                premissions.add(true);
+                premissions.add(null);
+                premissions.add(null);
+                premissions.add(null);
+                doOrder(ORDER_SETDOT, params, premissions);
+            }else {
+//                setPixel((int) x, (int) y, color);
+                List<Integer> params = new ArrayList<>();
+                params.add((int) x);
+                params.add((int) y);
+                params.add(color);
+                List<Boolean> premissions= new ArrayList<>();
+                premissions.add(true);
+                premissions.add(null);
+                premissions.add(null);
+                premissions.add(null);
+                doOrder(ORDER_SETDOT, params, premissions);
+            }
             error -= deltaY;
             if (error < 0) {
                 y = y + yStep;
@@ -595,17 +826,52 @@ public class GlcdView extends View implements OnTouchListener {
             float x1 = 0, y1 = radius;
             tSwitch = 3 - 2 * radius;
             while (x1 <= y1) {
-                setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-                setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+                List<Integer> params = new ArrayList<>();
+                params.add(null);
+                params.add(null);
+                params.add(color);
+                List<Boolean> premissions= new ArrayList<>();
+                premissions.add(true);
+                premissions.add(null);
+                premissions.add(null);
+                premissions.add(null);
 
-                setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-                setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+//                setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
+//                setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+                params.set(0, (int) (x + radius - x1));
+                params.set(1, (int) (y + radius - y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + radius - y1));
+                params.set(1,(int) (y + radius - x1));
+                doOrder(ORDER_SETDOT, params, premissions);
 
-                setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), color);
-                setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
+//                setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+//                setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+                params.set(0, (int) (x + width - radius + x1));
+                params.set(1, (int) (y + radius - y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + width - radius + y1));
+                params.set(1, (int) (y + radius - x1));
+                doOrder(ORDER_SETDOT, params, premissions);
 
-                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
-                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+//                setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), color);
+//                setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
+                params.set(0, (int) (x + width - radius + x1));
+                params.set(1, (int) (y + height - radius + y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + width - radius + y1));
+                params.set(1,(int) (y + height - radius + x1));
+                doOrder(ORDER_SETDOT, params, premissions);
+
+
+//                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
+//                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+                params.set(0, (int) (x + radius - x1));
+                params.set(1, (int) (y + height - radius + y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + radius - y1));
+                params.set(1,(int) (y + height - radius + x1));
+                doOrder(ORDER_SETDOT, params, premissions);
 
                 if (tSwitch < 0)
                     tSwitch += (4 * x1 + 6);
@@ -687,17 +953,51 @@ public class GlcdView extends View implements OnTouchListener {
             float x1 = 0, y1 = radius;
             tSwitch = 3 - 2 * radius;
             while (x1 <= y1) {
-                setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-                setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+                List<Integer> params = new ArrayList<>();
+                params.add(null);
+                params.add(null);
+                params.add(color);
+                List<Boolean> premissions= new ArrayList<>();
+                premissions.add(true);
+                premissions.add(null);
+                premissions.add(null);
+                premissions.add(null);
 
-                setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-                setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+//                setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
+//                setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+                params.set(0, (int) (x + radius - x1));
+                params.set(1, (int) (y + radius - y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + radius - y1));
+                params.set(1, (int) (y + radius - x1));
+                doOrder(ORDER_SETDOT, params, premissions);
 
-                setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), background);
-                setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), background);
+//                setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+//                setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+                params.set(0, (int) (x + width - radius + x1));
+                params.set(1, (int) (y + radius - y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + width - radius + y1));
+                params.set(1, (int) (y + radius - x1));
+                doOrder(ORDER_SETDOT, params, premissions);
 
-                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
-                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+//                setPixel((int) (x + width - radius + x1), (int) (y + height - radius + y1), background);
+//                setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), background);
+                params.set(0, (int) (x + width - radius + x1));
+                params.set(1, (int) (y + height - radius + y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + width - radius + y1));
+                params.set(1, (int) (y + height - radius + x1));
+                doOrder(ORDER_SETDOT, params, premissions);
+
+//                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
+//                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+                params.set(0, (int) (x + radius - x1));
+                params.set(1, (int) (y + height - radius + y1));
+                doOrder(ORDER_SETDOT, params, premissions);
+                params.set(0, (int) (x + radius - y1));
+                params.set(1,(int) (y + height - radius + x1));
+                doOrder(ORDER_SETDOT, params, premissions);
 
                 if (tSwitch < 0)
                     tSwitch += (4 * x1 + 6);
@@ -861,10 +1161,35 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     private void drawEllipsePoints(float xCenter, float yCenter, float x, float y, int color){
-        setPixel((int) (xCenter + x), (int) (yCenter+y),color);
-        setPixel((int) (xCenter + x), (int) (yCenter-y),color);
-        setPixel((int) (xCenter - x), (int) (yCenter+y),color);
-        setPixel((int) (xCenter - x), (int) (yCenter - y), color);
+        List<Integer> params = new ArrayList<>();
+        params.add(null);
+        params.add(null);
+        params.add(color);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        premissions.add(null);
+
+//        setPixel((int) (xCenter + x), (int) (yCenter+y),color);
+        params.set(0, (int) (xCenter + x));
+        params.set(1, (int) (yCenter + y));
+        doOrder(ORDER_SETDOT, params, premissions);
+
+//        setPixel((int) (xCenter + x), (int) (yCenter-y),color);
+        params.set(0, (int) (xCenter + x));
+        params.set(1, (int) (yCenter - y));
+        doOrder(ORDER_SETDOT, params, premissions);
+
+//        setPixel((int) (xCenter - x), (int) (yCenter+y),color);
+        params.set(0, (int) (xCenter - x));
+        params.set(1, (int) (yCenter + y));
+        doOrder(ORDER_SETDOT, params, premissions);
+
+//        setPixel((int) (xCenter - x), (int) (yCenter - y), color);
+        params.set(0, (int) (xCenter - x));
+        params.set(1, (int) (yCenter - y));
+        doOrder(ORDER_SETDOT, params, premissions);
     }
 
     private void fillEllipsePoints(float xCenter, float yCenter, float x, float y, int color){
@@ -944,7 +1269,17 @@ public class GlcdView extends View implements OnTouchListener {
             for (int i=0;i<8;i++){
                 if (((ha >> i ) & (0x01)) == 0x01){
                     if (multiplier == 1){
-                        setPixel((int) (y + charBytesCount), (int) (x + i), color);
+//                        setPixel((int) (y + charBytesCount), (int) (x + i), color);
+                        List<Integer> params = new ArrayList<>();
+                        params.add((int) (y + charBytesCount));
+                        params.add((int) (x + i));
+                        params.add(color);
+                        List<Boolean> premissions= new ArrayList<>();
+                        premissions.add(true);
+                        premissions.add(null);
+                        premissions.add(null);
+                        premissions.add(null);
+                        doOrder(ORDER_SETDOT, params, premissions);
                     }else {
 //                        float left = (y + ((charBytesCount+1)*multiplier))*pixelX + originX;
 //                        if (left < originX) left = originX;
@@ -974,7 +1309,17 @@ public class GlcdView extends View implements OnTouchListener {
                 for (int i = k; i < 8; i++) {
                     if (((ha >> i) & (0x01)) == 0x01) {
                         if (multiplier == 1){
-                            setPixel((int) (y + charBytesCount), (int) (x + i+8-k), color);
+//                            setPixel((int) (y + charBytesCount), (int) (x + i+8-k), color);
+                            List<Integer> params = new ArrayList<>();
+                            params.add((int) (y + charBytesCount));
+                            params.add((int) (x + i+8-k));
+                            params.add(color);
+                            List<Boolean> premissions= new ArrayList<>();
+                            premissions.add(true);
+                            premissions.add(null);
+                            premissions.add(null);
+                            premissions.add(null);
+                            doOrder(ORDER_SETDOT, params, premissions);
                         }else {
 //                            float left = (y + (charBytesCount*multiplier))*pixelX + originX;
 //                            if (left < originX) left = originX;
@@ -1099,43 +1444,23 @@ public class GlcdView extends View implements OnTouchListener {
         float x = event.getY();
         float y = event.getX();
         int action = event.getAction();
-        Integer key = null;
         if (x >= originX && x < originX + width && y >= originY && y < originY + height) {
             x -= originX;
             y = height-(y-originY);
             x /= pixelX;
             y /= pixelY;
-            switch (action){
-                case MotionEvent.ACTION_DOWN:
-                    // press
-                    if (currentPressedKey != 0)
-                        if (shapes.indexOfKey(currentPressedKey) != -1)
-                            shapes.get(currentPressedKey).setIsPressed(false);
-                    key = getTouch((int) x,(int) y);
-                    if (key != null) {
-                        shapes.get(key).setIsPressed(true);
-                        currentPressedKey = key;
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-                    //release
-                    if (currentPressedKey != 0)
-                        if (shapes.indexOfKey(currentPressedKey) != -1)
-                            shapes.get(currentPressedKey).setIsPressed(false);
 
-                    key = getTouch((int) x,(int) y);
-                    if (key != null) {
-                        shapes.get(key).setIsPressed(false);
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    // touch
-                    key = getTouch((int) x,(int) y);
-                    if (key != null) {
-                        shapes.get(key).setTouched((int) x,(int) y);
-                    }
-                    break;
-            }
+            List<Integer> params = new ArrayList<>();
+            params.add(action);
+            params.add((int) x);
+            params.add((int) y);
+            List<Boolean> premissions= new ArrayList<>();
+            premissions.add(true);
+            premissions.add(true);
+            premissions.add(null);
+            premissions.add(null);
+            doOrder(ORDER_HANDLETOUCH, params, premissions);
+
         }else{
             if (currentPressedKey != 0)
                 if (shapes.indexOfKey(currentPressedKey) != -1)

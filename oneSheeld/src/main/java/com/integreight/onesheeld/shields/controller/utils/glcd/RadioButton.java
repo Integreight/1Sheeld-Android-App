@@ -2,6 +2,9 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mouso on 7/22/2015.
  */
@@ -39,12 +42,23 @@ public class RadioButton implements ButtonShape {
 
     @Override
     public void applyTouch(GlcdView view){
+//        for (float x=btnX-btnRadius;x<btnX+btnWidth;x++){
+//            for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
+//            }
+//        }
 
-        for (float x=btnX-btnRadius;x<btnX+btnWidth;x++){
-            for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
-                view.setTouch((int) x, (int) y, btnTouchId);
-            }
-        }
+        List<Integer> params = new ArrayList<>();
+        params.add((int) (btnX-btnRadius));
+        params.add((int) (btnY-btnRadius));
+        params.add((int) (btnX+btnWidth));
+        params.add((int) (btnY+btnRadius));
+        params.add(btnTouchId);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
     }
 
     @Override

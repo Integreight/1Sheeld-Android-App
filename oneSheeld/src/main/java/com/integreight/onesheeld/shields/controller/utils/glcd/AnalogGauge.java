@@ -2,6 +2,9 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mouso on 7/22/2015.*/
 public class AnalogGauge implements Shape{
@@ -136,16 +139,43 @@ public class AnalogGauge implements Shape{
         float x1=0,y1=radius;
         tSwitch = 3-2*radius;
         while (x1<=y1){
-            view.setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-            view.setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+            List<Integer> params = new ArrayList<>();
+            params.add(null);
+            params.add(null);
+            params.add(color);
+            List<Boolean> premissions= new ArrayList<>();
+            premissions.add(true);
+            premissions.add(null);
+            premissions.add(null);
+            premissions.add(null);
 
-            view.setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-            view.setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+//            view.setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
+//            view.setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
+            params.set(0, (int) (x + radius - x1));
+            params.set(1, (int) (y + radius - y1));
+            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            params.set(0, (int) (x + radius - y1));
+            params.set(1, (int) (y + radius - x1));
+            view.doOrder(view.ORDER_SETDOT, params, premissions);
 
-            view.setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
+//            view.setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+//            view.setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
+            params.set(0, (int) (x + width - radius + x1));
+            params.set(1, (int) (y + radius - y1));
+            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            params.set(0, (int) (x + width - radius + y1));
+            params.set(1, (int) (y + radius - x1));
+            view.doOrder(view.ORDER_SETDOT, params, premissions);
 
-            view.setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+//            view.setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
+            params.set(0, (int) (x + width - radius + y1));
+            params.set(1, (int) (y + height - radius + x1));
+            view.doOrder(view.ORDER_SETDOT, params, premissions);
 
+//            view.setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
+            params.set(0, (int) (x + radius - y1));
+            params.set(1, (int) (y + height - radius + x1));
+            view.doOrder(view.ORDER_SETDOT, params, premissions);
 
             if (tSwitch <0)
                 tSwitch += (4*x1+6);

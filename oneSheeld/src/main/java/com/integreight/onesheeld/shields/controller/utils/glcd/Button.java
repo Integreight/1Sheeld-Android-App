@@ -4,6 +4,9 @@ import android.graphics.Color;
 
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mouso on 7/22/2015.
  */
@@ -51,11 +54,22 @@ public class Button implements ButtonShape {
 
     @Override
     public void applyTouch(GlcdView view){
-        for (float x=btnX;x<btnX+btnWidth;x++){
-            for (float y=btnY;y<btnY+btnHeight;y++){
-                view.setTouch((int) x, (int) y, btnTouchId);
-            }
-        }
+//        for (float x=btnX;x<btnX+btnWidth;x++){
+//            for (float y=btnY;y<btnY+btnHeight;y++){
+//            }
+//        }
+        List<Integer> params = new ArrayList<>();
+        params.add((int) (btnX));
+        params.add((int) (btnY));
+        params.add((int) (btnX+btnWidth));
+        params.add((int) (btnY+btnHeight));
+        params.add(btnTouchId);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
     }
 
     @Override
@@ -68,7 +82,6 @@ public class Button implements ButtonShape {
     public void draw(GlcdView view) {
         clearDraw(view);
         if (visibility) {
-            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
             if (isPressed) {
                 pressDraw(view,view.BLACK);
             } else {
@@ -79,12 +92,19 @@ public class Button implements ButtonShape {
 
     @Override
     public void clearDraw(GlcdView view) {
-            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
-            if (isPressed) {
-                pressDraw(view,view.WHITE);
-            } else {
-                releaseDraw(view,view.WHITE);
-            }
+//            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+        List<Integer> params = new ArrayList<>();
+        params.add(view.WHITE);
+        params.add((int) btnX);
+        params.add((int) btnY);
+        params.add((int) btnWidth + 1);
+        params.add((int) btnHeight + 1);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(true);
+        premissions.add(false);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);
     }
 
     @Override

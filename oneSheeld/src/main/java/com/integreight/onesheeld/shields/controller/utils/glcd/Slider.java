@@ -2,6 +2,9 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Mouso on 7/22/2015.
  */
@@ -44,7 +47,6 @@ public class Slider implements ButtonShape{
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
             float progress = (((currentValue - start) * ((btnX + btnWidth - (btnHeight / 2)) - (btnX + (btnHeight / 2)))) / (end - start)) + (btnX + (btnHeight / 2));
 
-            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
             view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.BLACK);
             view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, view.BLACK);
         }
@@ -52,13 +54,19 @@ public class Slider implements ButtonShape{
 
     @Override
     public void clearDraw(GlcdView view) {
-            // Using linear interpolation eguation to get the average value.
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
-            float progress = (((currentValue - start) * ((btnX + btnWidth - (btnHeight / 2)) - (btnX + (btnHeight / 2)))) / (end - start)) + (btnX + (btnHeight / 2));
-
-            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
-            view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.WHITE);
-            view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, view.WHITE);
+//            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
+        List<Integer> params = new ArrayList<>();
+        params.add(view.WHITE);
+        params.add((int) btnX);
+        params.add((int) btnY);
+        params.add((int) btnWidth + 1);
+        params.add((int) btnHeight + 1);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(true);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);
     }
 
     public void setStart(float start) {
@@ -108,11 +116,22 @@ public class Slider implements ButtonShape{
 
     @Override
     public void applyTouch(GlcdView view) {
-        for (float x=btnX;x<btnX+btnWidth;x++){
-            for (float y=btnY;y<btnY+btnHeight;y++){
-                view.setTouch((int) x, (int) y, btnTouchId);
-            }
-        }
+//        for (float x=btnX;x<btnX+btnWidth;x++){
+//            for (float y=btnY;y<btnY+btnHeight;y++){
+//            }
+//        }
+        List<Integer> params = new ArrayList<>();
+        params.add((int) (btnX));
+        params.add((int) (btnY));
+        params.add((int) (btnX+btnWidth));
+        params.add((int) (btnY+btnHeight));
+        params.add(btnTouchId);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
     }
 
 }
