@@ -72,7 +72,7 @@ public class ProgressBar implements Shape{
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
-            float progress = (((currentValue - start) * ((x + width) - (x + 5))) / (end - start)) + (x + 5);
+            float progress = (((currentValue - start) * (width - 5)) / (end - start)) + 5;
 
             view.drawRoundRectangle(x, y, width, height, 5, view.BLACK);
             view.fillRoundRectangle(x, y, progress, height, 5, view.BLACK);
