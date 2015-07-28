@@ -198,20 +198,20 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     public void clear(int background,int x,int y,int width,int height,boolean clearGraphics,boolean clearTouch){
-//        paint = new Paint();
-//        paint.setColor(background);
-//        paint.setStyle(Paint.Style.FILL);
-//        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
-//        tmpDots = dots;
-//        tmpTouchs = touchs;
-//        for (int X=x;X<width+x;X++){
-//            CopyOnWriteArrayList<Integer> tempDots = tmpDots.get(X);
-//            CopyOnWriteArrayList<Integer> tempTouchs = tmpTouchs.get(X);
-//            for (int Y=y;Y<height+y;Y++){
-//                if (clearGraphics) tempDots.set(Y,background);
-//                if (clearTouch) tempTouchs.set(Y,null);
-//            }
-//        }
+        paint = new Paint();
+        paint.setColor(background);
+        paint.setStyle(Paint.Style.FILL);
+        canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
+        tmpDots = dots;
+        tmpTouchs = touchs;
+        for (int X=x;X<width+x;X++){
+            CopyOnWriteArrayList<Integer> tempDots = tmpDots.get(X);
+            CopyOnWriteArrayList<Integer> tempTouchs = tmpTouchs.get(X);
+            for (int Y=y;Y<height+y;Y++){
+                if (clearGraphics) tempDots.set(Y,background);
+                if (clearTouch) tempTouchs.set(Y,null);
+            }
+        }
 //        dots = tmpDots;
 //        touchs = tmpTouchs;
     }

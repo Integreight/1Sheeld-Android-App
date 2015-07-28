@@ -401,6 +401,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 break;
                             case SHAPE_SET_VISIBILITY:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
+                                tmpShape.clearDraw(view);
                                 if(tmpShape != null) {
                                     if (frame.getArgument(2)[0] == 0)
                                         tmpShape.setVisibility(true);
