@@ -15,6 +15,7 @@ import com.integreight.onesheeld.shields.controller.utils.glcd.Line;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Point;
 import com.integreight.onesheeld.shields.controller.utils.glcd.ProgressBar;
 import com.integreight.onesheeld.shields.controller.utils.glcd.RadioButton;
+import com.integreight.onesheeld.shields.controller.utils.glcd.RadioGroup;
 import com.integreight.onesheeld.shields.controller.utils.glcd.RoundRectangle;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Shape;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Slider;
@@ -460,7 +461,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                         switch (frame.getArgument(0)[0]) {
                             case SHAPE_DRAW:
                                 view.addToShapes(new RadioButton(view, frame.getArgumentAsInteger(2), frame.getArgumentAsInteger(3), (byte) 0, frame.getArgumentAsInteger(1), frame.getArgumentAsString(4)), frame.getArgumentAsInteger(1));
-                                view.getFromRadioGroups(0).add(((RadioButton) view.getFromShapes(frame.getArgumentAsInteger(1))));
+                                //view.getFromRadioGroups(0).add(((RadioButton) view.getFromShapes(frame.getArgumentAsInteger(1))));
                                 break;
                             case SHAPE_SET_POSTION:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
@@ -489,7 +490,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                             case RADIOBUTTON_SET_GROUP:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
                                 if(tmpShape != null) {
-                                    ((RadioButton) tmpShape).getRadioGroup().remove(((RadioButton) tmpShape));
+                                    RadioGroup rg = ((RadioButton) tmpShape).getRadioGroup();
+                                    if (rg != null)
+                                        rg.remove(((RadioButton) tmpShape));
                                     view.getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
                                 }
                                 break;
