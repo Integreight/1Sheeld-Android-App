@@ -81,13 +81,7 @@ public class ProgressBar implements Shape{
 
     @Override
     public void clearDraw(GlcdView view) {
-            // Using linear interpolation eguation to get the average value.
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
-            view.clear(view.WHITE,(int) x,(int) y,(int) width,(int) height);
-            float progress = (((currentValue - start) * (width - 5)) / (end - start)) + 5;
-
-            view.drawRoundRectangle(x, y, width, height, 5, view.WHITE);
-            view.fillRoundRectangle(x, y, progress, height, 5, view.WHITE);
+            //view.clear(view.WHITE,(int) x,(int) y,(int) width,(int) height);
     }
 
     @Override

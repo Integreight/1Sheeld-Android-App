@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.provider.Settings;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
@@ -11,7 +12,11 @@ import android.view.View.OnTouchListener;
 import com.integreight.onesheeld.shields.controller.utils.glcd.*;
 
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -24,7 +29,7 @@ public class GlcdView extends View implements OnTouchListener {
     int background = 0;
     Paint paint;
     int glcdWidth=256,glcdHeight=128;
-    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> dots, touchs;
+    ConcurrentHashMap dots, touchs;
     SparseArray<Shape> shapes;
     SparseArray<RadioGroup> radioGroups;
     public int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
@@ -36,8 +41,8 @@ public class GlcdView extends View implements OnTouchListener {
     private boolean isInt=false;
     private int currentPressedKey = 0;
 
-    CopyOnWriteArrayList<Integer> tmpRow;
-    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> tmpDots,tmpTouchs;
+//    CopyOnWriteArrayList<Integer> tmpRow;
+//    CopyOnWriteArrayList<CopyOnWriteArrayList<Integer>> tmpDots,tmpTouchs;
 
     public GlcdView(Context context) {
         super(context);
@@ -150,7 +155,6 @@ public class GlcdView extends View implements OnTouchListener {
         }
 
         //------------------------------------
-
         for (int shapesCount=0;shapesCount<shapes.size();shapesCount++){
             shapes.valueAt(shapesCount).draw(this);
         }
@@ -162,38 +166,20 @@ public class GlcdView extends View implements OnTouchListener {
     public void clear(int background){
         paint = new Paint();
         this.background = background;
-        dots = new CopyOnWriteArrayList<>();
-        touchs = new CopyOnWriteArrayList<>();
+        dots = new ConcurrentHashMap();
+        touchs = new ConcurrentHashMap();
         shapes = new SparseArray<>();
         radioGroups = new SparseArray<>();
         radioGroups.append(0, new RadioGroup());
         for (int x=0;x<glcdWidth;x++){
-            CopyOnWriteArrayList<Integer> tempDots = new CopyOnWriteArrayList<>();
-            CopyOnWriteArrayList<Integer> tempTouchs = new CopyOnWriteArrayList<>();
+            ConcurrentHashMap tempDots = new ConcurrentHashMap();
+            ConcurrentHashMap tempTouchs = new ConcurrentHashMap();
             for (int y=0;y<glcdHeight;y++){
-                tempDots.add(this.background);
-                tempTouchs.add(null);
+                tempDots.put(y,this.background);
+                tempTouchs.put(y,-1);
             }
-            dots.add(tempDots);
-            touchs.add(tempTouchs);
-        }
-    }
-
-    public void clear(int background,boolean ClearShapes){
-        paint = new Paint();
-        this.background = background;
-        dots = new CopyOnWriteArrayList<>();
-        touchs = new CopyOnWriteArrayList<>();
-        if(ClearShapes) shapes = new SparseArray<>();
-        for (int x=0;x<glcdWidth;x++){
-            CopyOnWriteArrayList<Integer> tempDots = new CopyOnWriteArrayList<>();
-            CopyOnWriteArrayList<Integer> tempTouchs = new CopyOnWriteArrayList<>();
-            for (int y=0;y<glcdHeight;y++){
-                tempDots.add(this.background);
-                tempTouchs.add(null);
-            }
-            dots.add(tempDots);
-            touchs.add(tempTouchs);
+            dots.put(x,tempDots);
+            touchs.put(x,tempTouchs);
         }
     }
 
@@ -202,14 +188,16 @@ public class GlcdView extends View implements OnTouchListener {
         paint.setColor(background);
         paint.setStyle(Paint.Style.FILL);
         canvas.drawRect(originY + height - (y * pixelY), (x * pixelX) + originX, originY + height - ((y + height) * pixelY), ((x + width) * pixelX) + originX, paint);
-        tmpDots = dots;
-        tmpTouchs = touchs;
+//        tmpDots = dots;
+//        tmpTouchs = touchs;
         for (int X=x;X<width+x;X++){
-            CopyOnWriteArrayList<Integer> tempDots = tmpDots.get(X);
-            CopyOnWriteArrayList<Integer> tempTouchs = tmpTouchs.get(X);
+            ConcurrentHashMap tempDots = (ConcurrentHashMap) dots.get(X);
+            ConcurrentHashMap tempTouchs = (ConcurrentHashMap) touchs.get(X);
             for (int Y=y;Y<height+y;Y++){
-                if (clearGraphics) tempDots.set(Y,background);
-                if (clearTouch) tempTouchs.set(Y,null);
+                if (clearGraphics)
+                    tempDots.replace(Y,background);
+                if (clearTouch)
+                    tempTouchs.replace(Y,-1);
             }
         }
 //        dots = tmpDots;
@@ -220,18 +208,20 @@ public class GlcdView extends View implements OnTouchListener {
     public void clear(int background,int x,int y,int width,int height){
         clear(background, x, y, width, height, true, true);
     }
+
+    ConcurrentHashMap tmpRow;
     private void refresh(boolean doInvalidation){
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         // draw pixels
         for (int x = 0;x<glcdWidth;x++){
             for (int y=0;y<glcdHeight;y++){
-                tmpDots = dots;
-                if (x < tmpDots.size()) {
-                    tmpRow = tmpDots.get(x);
+//                tmpDots = dots;
+                if (x < dots.size()) {
+                    tmpRow = (ConcurrentHashMap) dots.get(x);
                     if (y < tmpRow.size()) {
                         if (tmpRow.get(y) != background) {
-                            paint.setColor(tmpRow.get(y));
+                            paint.setColor((Integer) tmpRow.get(y));
                             float left = (originY + height) - ((y + 1) * pixelY);
                             float top = (x * pixelX) + originX;
                             float right = (originY + height) - (y * pixelY);
@@ -257,8 +247,9 @@ public class GlcdView extends View implements OnTouchListener {
         // draw pixels
         for (int x = 0;x<X;x++){
             for (int y=0;y<Y;y++){
-                if (dots.get(x).get(y) != background) {
-                    paint.setColor(dots.get(x).get(y));
+                tmpRow = (ConcurrentHashMap) dots.get(x);
+                if ((Integer) tmpRow.get(y) != background) {
+                    paint.setColor((Integer) tmpRow.get(y));
                     float left = (originY+height)-((y+1)*pixelY);
                     float top = (x*pixelX) + originX;
                     float right = (originY+height)-(y*pixelY);
@@ -281,9 +272,11 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     public void setPixel(int x, int y, int color){
-        if (x < dots.size() && x >= 0)
-            if (y < dots.get(x).size() && y >= 0)
-                dots.get(x).set(y,color);
+        if (x < dots.size() && x >= 0){
+            tmpRow = (ConcurrentHashMap) dots.get(x);
+            if (y < tmpRow.size() && y >= 0)
+                tmpRow.replace(y, color);
+        }
     }
 
     public void addToShapes(Shape shape,int key){
@@ -337,15 +330,18 @@ public class GlcdView extends View implements OnTouchListener {
 //    }
 
     public void setTouch(int x, int y, int touchId){
-        if (x < touchs.size() && x >= 0)
-            if (y < touchs.get(x).size() && y >= 0)
-                touchs.get(x).set(y,touchId);
+        if (x < touchs.size() && x >= 0){
+            tmpRow = (ConcurrentHashMap) touchs.get(x);
+            if (y < tmpRow.size() && y >= 0)
+                tmpRow.replace(y, touchId);
+        }
     }
 
     public Integer getTouch(int x, int y){
         if (x < touchs.size() && x >= 0)
-            if (y < touchs.get(x).size() && y >= 0){
-                return touchs.get(x).get(y);
+            tmpRow = (ConcurrentHashMap) touchs.get(x);
+            if (y < tmpRow.size() && y >= 0){
+                return (Integer) tmpRow.get(y);
             }
         return null;
     }
@@ -1112,7 +1108,7 @@ public class GlcdView extends View implements OnTouchListener {
                         if (shapes.indexOfKey(currentPressedKey) != -1)
                             shapes.get(currentPressedKey).setIsPressed(false);
                     key = getTouch((int) x,(int) y);
-                    if (key != null) {
+                    if (key != -1) {
                         shapes.get(key).setIsPressed(true);
                         currentPressedKey = key;
                     }
@@ -1124,14 +1120,14 @@ public class GlcdView extends View implements OnTouchListener {
                             shapes.get(currentPressedKey).setIsPressed(false);
 
                     key = getTouch((int) x,(int) y);
-                    if (key != null) {
+                    if (key != -1) {
                         shapes.get(key).setIsPressed(false);
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
                     // touch
                     key = getTouch((int) x,(int) y);
-                    if (key != null) {
+                    if (key != -1) {
                         shapes.get(key).setTouched((int) x,(int) y);
                     }
                     break;
