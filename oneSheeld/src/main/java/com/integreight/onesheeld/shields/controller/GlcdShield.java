@@ -121,6 +121,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
             List<Boolean> premissions;
             if (frame.getShieldId() == SHIELD_ID) {
                 GlcdView view = glcdEventHandler.getView();
+                view.setGlcdViewEventListener(glcdViewEventListener);
                 switch (frame.getFunctionId()) {
                     case TYPE_GLCD:
                         switch (frame.getArgument(0)[0]) {
@@ -617,4 +618,26 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
     public void reset() {
 
     }
+
+    ShieldFrame frame;
+
+    GlcdView.GlcdViewEventListener glcdViewEventListener = new GlcdView.GlcdViewEventListener() {
+        @Override
+        public void sendTouch(byte shapeType, int key, byte state) {
+            frame = new ShieldFrame(SHIELD_ID,shapeType);
+            frame.addByteArgument((byte) 0x01);
+            frame.addIntegerArgument(2, key);
+            frame.addByteArgument(state);
+            sendShieldFrame(frame,true);
+        }
+
+        @Override
+        public void sendTouch(byte shapeType, int key, byte state, int value) {
+            frame = new ShieldFrame(SHIELD_ID,shapeType);
+            frame.addByteArgument((byte) 0x01);
+            frame.addIntegerArgument(2,key);
+            frame.addIntegerArgument(2,value);
+            sendShieldFrame(frame,true);
+        }
+    };
 }

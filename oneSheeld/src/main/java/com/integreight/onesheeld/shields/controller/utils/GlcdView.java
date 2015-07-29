@@ -37,6 +37,25 @@ public class GlcdView extends View implements OnTouchListener {
     private boolean isInt=false;
     private int currentPressedKey = 0;
 
+
+    public static final byte SHAPE_BUTTON=0x08,SHAPE_CHECKBOX=0x0A,SHAPE_SLIDER=0x0B,SHAPE_RADIOBUTTON=0x09;
+    public static final byte STATE_PRESSED=0x01,STATE_RELEASED=0x00,STATE_TOUCHED=0x02;
+
+    public static interface GlcdViewEventListener{
+        void sendTouch(byte shapeType,int key,byte state);
+        void sendTouch(byte shapeType,int key,byte state,int value);
+    }
+
+    GlcdViewEventListener glcdViewEventListener;
+
+    public GlcdViewEventListener getGlcdViewEventListener() {
+        return glcdViewEventListener;
+    }
+
+    public void setGlcdViewEventListener(GlcdViewEventListener glcdViewEventListener) {
+        this.glcdViewEventListener = glcdViewEventListener;
+    }
+
     public GlcdView(Context context) {
         super(context);
         this.context = context;
@@ -325,6 +344,16 @@ public class GlcdView extends View implements OnTouchListener {
                         if (key != null) {
                             shapes.get(key).setIsPressed(true);
                             currentPressedKey = key;
+
+                            if (glcdViewEventListener != null) {
+                                if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
+                                    glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_PRESSED);
+                                else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
+                                    glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_PRESSED);
+                                else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
+                                    glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_PRESSED);
+                            }
+
                         }
                         break;
                     case MotionEvent.ACTION_UP:
@@ -336,6 +365,15 @@ public class GlcdView extends View implements OnTouchListener {
                         key = touchs.get(startX).get(startY);
                         if (key != null) {
                             shapes.get(key).setIsPressed(false);
+
+                            if (glcdViewEventListener != null) {
+                                if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
+                                    glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_RELEASED);
+                                else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
+                                    glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_RELEASED);
+                                else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
+                                    glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_RELEASED);
+                            }
                         }
                         break;
                     case MotionEvent.ACTION_MOVE:
