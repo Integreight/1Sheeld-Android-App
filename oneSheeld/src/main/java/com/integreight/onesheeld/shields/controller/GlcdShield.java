@@ -112,7 +112,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
         selectionAction.onSuccess();
         return super.invalidate(selectionAction, isToastable);
     }
-
+    RadioGroup rg;
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (glcdEventHandler != null) {
@@ -491,7 +491,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                             case RADIOBUTTON_SET_GROUP:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
                                 if(tmpShape != null) {
-                                    RadioGroup rg = ((RadioButton) tmpShape).getRadioGroup();
+                                    rg = ((RadioButton) tmpShape).getRadioGroup();
                                     if (rg != null)
                                         rg.remove(((RadioButton) tmpShape));
                                     view.getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
@@ -500,7 +500,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                             case RADIOBUTTON_SELECT:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
                                 if(tmpShape != null)
-                                    ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
+                                    rg = ((RadioButton) tmpShape).getRadioGroup();
+                                    if (rg != null)
+                                        ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
                                 break;
                         }
                         break;
