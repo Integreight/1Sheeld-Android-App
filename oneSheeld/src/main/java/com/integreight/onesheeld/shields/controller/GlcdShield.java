@@ -419,7 +419,10 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                     case TYPE_BUTTON:
                         switch (frame.getArgument(0)[0]) {
                             case SHAPE_DRAW:
-                                view.addToShapes(new Button(view, frame.getArgumentAsInteger(2), frame.getArgumentAsInteger(3), frame.getArgumentAsInteger(4), frame.getArgumentAsInteger(5), frame.getArgumentAsInteger(1), " "), frame.getArgumentAsInteger(1));
+                                if (frame.getArguments().size() < 7)
+                                    view.addToShapes(new Button(view, frame.getArgumentAsInteger(2), frame.getArgumentAsInteger(3), frame.getArgumentAsInteger(4), frame.getArgumentAsInteger(5), frame.getArgumentAsInteger(1), " "), frame.getArgumentAsInteger(1));
+                                else
+                                    view.addToShapes(new Button(view, frame.getArgumentAsInteger(2), frame.getArgumentAsInteger(3), frame.getArgumentAsInteger(4), frame.getArgumentAsInteger(5), frame.getArgumentAsInteger(1), frame.getArgumentAsString(6)), frame.getArgumentAsInteger(1));
                                 break;
                             case SHAPE_SET_POSTION:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));

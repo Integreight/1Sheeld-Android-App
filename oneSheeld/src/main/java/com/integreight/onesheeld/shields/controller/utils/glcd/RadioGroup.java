@@ -17,8 +17,10 @@ public class RadioGroup{
     }
 
     public void remove(RadioButton radioButton){
-        radios.get(radios.keyAt(radios.indexOfValue(radioButton))).setRadioGroup(null);
-        radios.remove(radios.keyAt(radios.indexOfValue(radioButton)));
+        if(radios.indexOfValue(radioButton) > 0) {
+            radios.get(radios.keyAt(radios.indexOfValue(radioButton))).setRadioGroup(null);
+            radios.remove(radios.keyAt(radios.indexOfValue(radioButton)));
+        }
     }
 
     public void select(RadioButton radioButton){
