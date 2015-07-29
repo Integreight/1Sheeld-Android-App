@@ -500,7 +500,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                             case RADIOBUTTON_SELECT:
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
                                 if(tmpShape != null)
-                                    ((RadioButton) tmpShape).setSelected(true);
+                                    ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
                                 break;
                         }
                         break;
@@ -635,9 +635,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
         public void sendTouch(byte shapeType, int key, byte state, int value) {
             frame = new ShieldFrame(SHIELD_ID,shapeType);
             frame.addByteArgument((byte) 0x01);
-            frame.addIntegerArgument(2,key);
+            frame.addIntegerArgument(2, key);
             frame.addIntegerArgument(2,value);
-            sendShieldFrame(frame,true);
+            sendShieldFrame(frame, true);
         }
     };
 }
