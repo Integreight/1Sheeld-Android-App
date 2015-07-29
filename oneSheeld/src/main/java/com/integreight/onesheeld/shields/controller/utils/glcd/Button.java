@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
-import android.graphics.Color;
-
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -143,13 +141,14 @@ public class Button implements ButtonShape {
     }
 
     @Override
-    public void setIsPressed(boolean isPressed) {
+    public boolean setIsPressed(boolean isPressed) {
         this.isPressed = isPressed;
+        return true;
     }
 
     @Override
-    public void setTouched(int touchX, int touchY) {
-
+    public boolean setTouched(int touchX, int touchY) {
+        return false;
     }
 
     private void releaseDraw(GlcdView view,int color) {

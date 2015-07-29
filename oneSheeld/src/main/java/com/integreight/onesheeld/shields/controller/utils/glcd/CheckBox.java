@@ -1,7 +1,5 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
-import android.util.Log;
-
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -56,15 +54,16 @@ public class CheckBox implements ButtonShape {
     }
 
     @Override
-    public void setIsPressed(boolean isPressed) {
+    public boolean setIsPressed(boolean isPressed) {
         if (this.isPressed == true && isPressed == false)
             setSelected(!isSelected);
         this.isPressed = isPressed;
+        return true;
     }
 
     @Override
-    public void setTouched(int touchX, int touchY) {
-
+    public boolean setTouched(int touchX, int touchY) {
+        return true;
     }
 
     public void setSelected(Boolean selected){

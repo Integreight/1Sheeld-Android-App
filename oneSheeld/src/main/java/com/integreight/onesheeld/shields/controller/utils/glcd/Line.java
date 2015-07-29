@@ -54,12 +54,12 @@ public class Line implements Shape{
     }
 
     @Override
-    public void setIsPressed(boolean isPressed) {
+    public boolean setIsPressed(boolean isPressed) {
 
     }
 
     @Override
-    public void setTouched(int touchX, int touchY) {
+    public boolean setTouched(int touchX, int touchY) {
 
     }
 }

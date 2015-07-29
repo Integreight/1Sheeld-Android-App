@@ -99,13 +99,17 @@ public class Slider implements ButtonShape{
     }
 
     @Override
-    public void setIsPressed(boolean isPressed) {
-        this.isPressed = false;
+    public boolean setIsPressed(boolean isPressed) {
+        return true;
     }
 
     @Override
-    public void setTouched(int touchX, int touchY) {
-        currentValue = (((touchX-btnX)*(end-start))/(btnX+btnWidth-btnX))+start;
+    public boolean setTouched(int touchX, int touchY) {
+        float touchedValue = (((touchX-btnX)*(end-start))/(btnX+btnWidth-btnX))+start;
+        if (currentValue == touchedValue)
+            return false;
+        currentValue = touchedValue;
+        return true;
     }
 
     @Override

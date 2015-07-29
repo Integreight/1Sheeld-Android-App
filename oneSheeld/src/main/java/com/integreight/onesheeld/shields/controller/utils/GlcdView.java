@@ -200,6 +200,7 @@ public class GlcdView extends View implements OnTouchListener {
 
     public static final int ORDER_SETDOT=0,ORDER_SETTOUCH=1,ORDER_CLEAR=2,ORDER_REFRESH=3,ORDER_HANDLETOUCH=4,ORDER_APPLYTOUCH=5;
     boolean do4Dots= false,do4Touchs = false,do4Shapes=false,doInvalidate= false;
+    boolean sendFrame = false;
 
     public synchronized boolean doOrder(int order,List<Integer> params,List<Boolean> premissons){
         //premissons
@@ -343,16 +344,18 @@ public class GlcdView extends View implements OnTouchListener {
                                     shapes.get(currentPressedKey).setIsPressed(false);
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
-                                shapes.get(key).setIsPressed(true);
+                                sendFrame = shapes.get(key).setIsPressed(true);
                                 currentPressedKey = key;
 
-                                if (glcdViewEventListener != null) {
+                                if (glcdViewEventListener != null && sendFrame) {
                                     if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_PRESSED);
                                     else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_PRESSED);
                                     else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_PRESSED);
+                                    else if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
                                 }
 
                             }
@@ -365,15 +368,17 @@ public class GlcdView extends View implements OnTouchListener {
 
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
-                                shapes.get(key).setIsPressed(false);
+                                sendFrame = shapes.get(key).setIsPressed(false);
 
-                                if (glcdViewEventListener != null) {
+                                if (glcdViewEventListener != null && sendFrame) {
                                     if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_RELEASED);
                                     else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_RELEASED);
                                     else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_RELEASED);
+                                    else if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
                                 }
                             }
                             break;
@@ -381,7 +386,11 @@ public class GlcdView extends View implements OnTouchListener {
                             // touch
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
-                                shapes.get(key).setTouched(startX, startY);
+                                sendFrame = shapes.get(key).setTouched(startX, startY);
+                                if (glcdViewEventListener != null && sendFrame) {
+                                    if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                }
                             }
                             break;
                     }

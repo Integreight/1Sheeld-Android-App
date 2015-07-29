@@ -11,6 +11,6 @@ public interface Shape{
     void clearDraw(GlcdView view);
     void setVisibility(boolean visibility);
     void setPosition(float x,float y);
-    void setIsPressed(boolean isPressed);
-    void setTouched(int touchX,int touchY);
+    boolean setIsPressed(boolean isPressed);
+    boolean setTouched(int touchX, int touchY);
 }
