@@ -563,9 +563,10 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     public Shape getFromShapes(int key){
-        if (shapes.indexOfKey(key) > -1)
-            return shapes.get(key);
-        else
+        if (shapes != null)
+            if (shapes.indexOfKey(key) > -1)
+                if (shapes.size() > 0)
+                    return shapes.get(key);
             return null;
     }
 
