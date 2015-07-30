@@ -16,6 +16,7 @@ public class Button implements ButtonShape {
     int textWidth = 0,textHeight = 0;
     boolean isPressed=false,visibility=true;
     byte style = 0;
+    boolean changed = false;
 
     public Button (GlcdView view,float x,float y,float width,float height,int touchId,String text){
         this.btnX = x;
@@ -114,6 +115,7 @@ public class Button implements ButtonShape {
     public void setPosition(float x, float y) {
         this.btnX = x;
         this.btnY = y;
+        changed = true;
     }
 
     public void setStyle(byte style) {
@@ -130,14 +132,17 @@ public class Button implements ButtonShape {
             this.btnText = text;
         }
         btnTextX = btnX+((btnWidth-textWidth)/2);
+        btnTextY = btnY+((btnHeight-textHeight)/2);
     }
 
     public void setWidth(float width) {
         this.btnWidth = width;
+        changed = true;
     }
 
     public void setHeight(float height) {
         this.btnHeight = height;
+        changed = true;
     }
 
     @Override
@@ -149,6 +154,10 @@ public class Button implements ButtonShape {
     @Override
     public boolean setTouched(int touchX, int touchY) {
         return false;
+    }
+
+    public String getText() {
+        return btnText;
     }
 
     private void releaseDraw(GlcdView view,int color) {

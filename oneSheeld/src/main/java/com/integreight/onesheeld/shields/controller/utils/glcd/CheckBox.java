@@ -78,18 +78,18 @@ public class CheckBox implements ButtonShape {
         this.size = size;
         switch (size){
             case 0:
-                btnSize = 5;
+                btnSize = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+                this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
                 break;
             case 1:
-                btnSize = 10;
+                btnSize = view.getCharHeight(view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR);
+                this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR);
                 break;
             case 2:
-                btnSize = 20;
+                btnSize = view.getCharHeight(view.TEXT_LARGE, view.FONT_ARIEL_REGULAR);
+                this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_LARGE, view.FONT_ARIEL_REGULAR);
                 break;
         }
-        this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        if (btnSize < view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR))
-            btnSize = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         this.btnHeight = btnSize;
     }
 
