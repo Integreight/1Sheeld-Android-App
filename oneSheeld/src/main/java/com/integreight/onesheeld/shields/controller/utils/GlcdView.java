@@ -13,7 +13,6 @@ import com.integreight.onesheeld.shields.controller.utils.glcd.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Mouso on 6/7/2015.
@@ -189,12 +188,12 @@ public class GlcdView extends View implements OnTouchListener {
         premissions.add(null);
         premissions.add(null);
         premissions.add(true);
-        doOrder(ORDER_REFRESH, params, premissions);
+        doOrder(ORDER_DRAW_DOTS, params, premissions);
 
         invalidate();
     }
 
-    public static final int ORDER_SETDOT=0,ORDER_SETTOUCH=1,ORDER_CLEAR=2,ORDER_REFRESH=3,ORDER_HANDLETOUCH=4,ORDER_APPLYTOUCH=5;
+    public static final int ORDER_SETDOT=0,ORDER_SETTOUCH=1,ORDER_CLEAR=2, ORDER_DRAW_DOTS =3,ORDER_HANDLETOUCH=4,ORDER_APPLYTOUCH=5;
     boolean do4Dots= false,do4Touchs = false,do4Shapes=false,doInvalidate= false;
     boolean sendFrame = false;
 
@@ -287,7 +286,7 @@ public class GlcdView extends View implements OnTouchListener {
                 }
 
                 break;
-            case ORDER_REFRESH:
+            case ORDER_DRAW_DOTS:
                 if (params.size() < 0)
                     return false;
                 startX=0;
