@@ -213,6 +213,21 @@ public class SpeechRecognitionShield extends
             activity.unbindService(mServiceConnection);
     }
 
+    @Override
+    public void preConfigChange() {
+        if (mServiceConnection != null && activity != null)
+            activity.unbindService(mServiceConnection);
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        activity.bindService(new Intent(activity,
+                        SpeechRecognitionService.class), mServiceConnection,
+                Context.BIND_AUTO_CREATE);
+    }
+
     private static class ERROR {
         protected static int AUDIO = 3, NETWORK = 2, NETWORK_TIMEOUT = 1,
                 NO_MATCH = 7, RECOGNIZER_BUSY = 8, SERVER = 4,

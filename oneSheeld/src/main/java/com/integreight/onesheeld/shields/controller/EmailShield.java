@@ -205,4 +205,12 @@ public class EmailShield extends ControllerParent<EmailShield> {
     public void reset() {
         // TODO Auto-generated method stub
     }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        mSharedPreferences = getActivity().getApplicationContext()
+                .getSharedPreferences("com.integreight.onesheeld",
+                        Context.MODE_PRIVATE);
+    }
 }

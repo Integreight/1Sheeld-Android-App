@@ -265,6 +265,12 @@ public class ArduinoConnectivityPopup extends Dialog {
         super.onStart();
     }
 
+    @Override
+    protected void onStop() {
+        isOpened=false;
+        super.onStop();
+    }
+
     private void setScanButtonReady() {
         changeSlogan("Scan for 1Sheeld", COLOR.RED);
         isConnecting = false;

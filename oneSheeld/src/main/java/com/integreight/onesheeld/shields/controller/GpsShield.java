@@ -237,6 +237,30 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     }
 
     @Override
+    public void preConfigChange() {
+        stopGps();
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        mUpdatesRequested = false;
+        manager = (LocationManager) getApplication().getSystemService(
+                Context.LOCATION_SERVICE);
+        // check if Google play services available, no dialog displayed
+        if (isGoogleplayServicesAvailableNoDialogs()) {
+            if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+                startGps();
+        }
+    }
+
+    @Override
     public void reset() {
         // TODO Auto-generated method stub
         stopGps();
@@ -246,7 +270,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     public void onLocationChanged(Location arg0) {
         // TODO Auto-generated method stub
         if (eventHandler != null && mLocationClient.isConnected()) {
-            lastKnownLocation=arg0;
+            lastKnownLocation = arg0;
             eventHandler.onLangChanged(arg0.getLongitude() + "");
             eventHandler.onLatChanged(arg0.getLatitude() + "");
         }

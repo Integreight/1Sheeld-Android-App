@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
@@ -613,7 +614,7 @@ public class CameraHeadService extends Service implements
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
         if (registeredShieldsIDs != null)
             registeredShieldsIDs.clear();
-        if (MainActivity.hasCrashlyticsApiKey(this)) {
+        if (OneSheeldApplication.hasCrashlyticsApiKey(this)) {
             Crashlytics.start(this);
         }
     }

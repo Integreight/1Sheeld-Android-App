@@ -9,9 +9,9 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.ContentObserver;
 import android.graphics.Color;
 import android.nfc.NfcAdapter;
 import android.os.Build;
@@ -20,6 +20,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
+import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -54,7 +56,6 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -78,16 +79,50 @@ public class MainActivity extends FragmentActivity {
         return (OneSheeldApplication) getApplication();
     }
 
+    private boolean isAlwaysFinishActivitiesOptionEnabled() {
+        int alwaysFinishActivitiesInt = 0;
+        if (Build.VERSION.SDK_INT >= 17) {
+            alwaysFinishActivitiesInt = Settings.System.getInt(getApplicationContext().getContentResolver(), Settings.Global.ALWAYS_FINISH_ACTIVITIES, 0);
+        } else {
+            alwaysFinishActivitiesInt = Settings.System.getInt(getApplicationContext().getContentResolver(), Settings.System.ALWAYS_FINISH_ACTIVITIES, 0);
+        }
+
+        if (alwaysFinishActivitiesInt == 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    int displayTimeout;
+
+    ContentObserver settingsContentObserver = new ContentObserver(new Handler()) {
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            try {
+                int checkDisplayTimeout = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT);
+                if (checkDisplayTimeout != displayTimeout) {
+                    // the DisplayTimeout has changed
+                    displayTimeout = checkDisplayTimeout;
+                }
+            } catch (Settings.SettingNotFoundException e) {
+                // The SCREEN_OFF_TIMEOUT setting didn't change 'cause it doesn't exist
+            }
+        }
+    };
+
+    //    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
-    public void onCreate(Bundle arg0) {
-        super.onCreate(arg0);
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+//        getContentResolver().registerContentObserver(Settings.Global.CONTENT_URI, true, settingsContentObserver);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
         }
-        initCrashlyticsAndUncaughtThreadHandler();
         setContentView(R.layout.one_sheeld_main);
         initLooperThread();
         replaceCurrentFragment(R.id.appTransitionsContainer,
@@ -165,48 +200,6 @@ public class MainActivity extends FragmentActivity {
             }
         });
         looperThread.start();
-    }
-
-    private void initCrashlyticsAndUncaughtThreadHandler() {
-        UncaughtExceptionHandler myHandler = new Thread.UncaughtExceptionHandler() {
-
-            @Override
-            public void uncaughtException(Thread arg0, final Throwable arg1) {
-                arg1.printStackTrace();
-                ArduinoConnectivityPopup.isOpened = false;
-                moveTaskToBack(true);
-
-                Enumeration<String> enumKey = ((OneSheeldApplication) getApplication()).getRunningShields().keys();
-                while (enumKey.hasMoreElements()) {
-                    String key = enumKey.nextElement();
-                    ((OneSheeldApplication) getApplication())
-                            .getRunningShields().get(key).resetThis();
-                    ((OneSheeldApplication) getApplication())
-                            .getRunningShields().remove(key);
-                }
-                if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
-                    while (!((OneSheeldApplication) getApplication())
-                            .getAppFirmata().close())
-                        ;
-                }
-                stopService();
-                Intent in = new Intent(getIntent());
-                PendingIntent intent = PendingIntent
-                        .getActivity(getBaseContext(), 0, in,
-                                getIntent().getFlags());
-
-                AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                mgr.set(AlarmManager.RTC,
-                        System.currentTimeMillis() + 1000, intent);
-                getThisApplication().setTutShownTimes(
-                        getThisApplication().getTutShownTimes() + 1);
-                killAllProcesses();
-            }
-        };
-        Thread.setDefaultUncaughtExceptionHandler(myHandler);
-        if (hasCrashlyticsApiKey(this)) {
-            Crashlytics.start(this);
-        }
     }
 
     Handler versionHandling = new Handler();
@@ -376,6 +369,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        thisInstance = this;
     }
 
     private BackOnconnectionLostHandler backOnConnectionLostHandler;
@@ -425,9 +419,17 @@ public class MainActivity extends FragmentActivity {
         Log.d("Test", "Back Pressed");
         ///// Camera Preview
         if (getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
-            ((CameraShield) getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+            try {
+                ((CameraShield) getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         if (getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
-            ((ColorDetectionShield) getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+            try {
+                ((ColorDetectionShield) getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         resetSlidingMenu();
         MultiDirectionSlidingDrawer pinsView = (MultiDirectionSlidingDrawer) findViewById(R.id.pinsViewSlidingView);
         MultiDirectionSlidingDrawer settingsView = (MultiDirectionSlidingDrawer) findViewById(R.id.settingsSlidingView);
@@ -494,18 +496,6 @@ public class MainActivity extends FragmentActivity {
     public void finishManually() {
         isBackPressed = true;
         finish();
-    }
-
-    boolean isConfigChanged = false;
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        isConfigChanged = true;
-        super.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    protected void onDestroy() {
         if (!isConfigChanged) {
             getThisApplication().getTracker().send(
                     new HitBuilders.EventBuilder().setCategory("App lifecycle")
@@ -543,6 +533,81 @@ public class MainActivity extends FragmentActivity {
         }
         isConfigChanged = false;
         isBackPressed = false;
+    }
+
+    boolean isConfigChanged = false;
+
+    private void preConfigChange() {
+        Enumeration<String> enumKey = ((OneSheeldApplication)
+                getApplication()).getRunningShields().keys();
+        while (enumKey.hasMoreElements()) {
+            String key = enumKey.nextElement();
+            ((OneSheeldApplication) getApplication())
+                    .getRunningShields().get(key).preConfigChangeThis();
+        }
+    }
+
+    private void postConfigChange() {
+        Enumeration<String> enumKey = ((OneSheeldApplication)
+                getApplication()).getRunningShields().keys();
+        while (enumKey.hasMoreElements()) {
+            String key = enumKey.nextElement();
+            ((OneSheeldApplication) getApplication())
+                    .getRunningShields().get(key).postConfigChangeThis();
+        }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        isConfigChanged = true;
+        preConfigChange();
+        super.onConfigurationChanged(newConfig);
+        postConfigChange();
+    }
+
+    private void destroyIt() {
+        if (!isConfigChanged) {
+            getThisApplication().getTracker().send(
+                    new HitBuilders.EventBuilder().setCategory("App lifecycle")
+                            .setAction("Finished the app manually").build());
+            ArduinoConnectivityPopup.isOpened = false;
+            stopService();
+            stopLooperThread();
+            moveTaskToBack(true);
+            if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
+                while (!((OneSheeldApplication) getApplication()).getAppFirmata()
+                        .close())
+                    ;
+            }
+            // // unExpeted
+            if (!isBackPressed) {
+                Enumeration<String> enumKey = ((OneSheeldApplication)
+                        getApplication()).getRunningShields().keys();
+                while (enumKey.hasMoreElements()) {
+                    String key = enumKey.nextElement();
+                    ((OneSheeldApplication) getApplication())
+                            .getRunningShields().get(key).resetThis();
+                    ((OneSheeldApplication) getApplication())
+                            .getRunningShields().remove(key);
+                }
+                Intent in = new Intent(getIntent());
+                PendingIntent intent = PendingIntent.getActivity(
+                        getBaseContext(), 0, in, getIntent().getFlags());
+
+                AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
+                        intent);
+                killAllProcesses();
+            } else
+                killAllProcesses();
+        }
+        isConfigChanged = false;
+        isBackPressed = false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        ArduinoConnectivityPopup.isOpened=false;
         super.onDestroy();
     }
 
@@ -768,31 +833,6 @@ public class MainActivity extends FragmentActivity {
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus()
                     .getWindowToken(), 0);
         }
-    }
-
-    public static boolean hasCrashlyticsApiKey(Context context) {
-
-        boolean hasValidKey = false;
-        try {
-
-            Context appContext = context.getApplicationContext();
-            ApplicationInfo ai = appContext.getPackageManager().getApplicationInfo(appContext.getPackageName(),
-                    PackageManager.GET_META_DATA);
-
-            Bundle bundle = ai.metaData;
-            if (bundle != null) {
-
-                String apiKey = bundle.getString("com.crashlytics.ApiKey");
-                hasValidKey = apiKey != null && !apiKey.equals("0000000000000000000000000000000000000000");
-
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-
-        }
-
-        return hasValidKey;
-
     }
 
     public void registerSlidingMenuListner(OnSlidingMenueChangeListner listner) {

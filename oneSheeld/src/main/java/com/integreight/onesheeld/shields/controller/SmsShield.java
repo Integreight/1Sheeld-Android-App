@@ -137,6 +137,21 @@ public class SmsShield extends ControllerParent<SmsShield> {
     };
 
     @Override
+    public void preConfigChange() {
+        try {
+            getActivity().unregisterReceiver(smsListener);
+        } catch (Exception e) {
+        }
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        init(getTag());
+    }
+
+    @Override
     public void reset() {
         try {
             getActivity().unregisterReceiver(smsListener);

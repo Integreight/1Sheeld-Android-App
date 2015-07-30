@@ -1,14 +1,21 @@
 package com.integreight.onesheeld;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.SparseArray;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger.LogLevel;
@@ -17,6 +24,7 @@ import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
@@ -32,6 +40,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +140,73 @@ public class OneSheeldApplication extends Application {
             ParsePush.subscribeInBackground("dev");
         connectionTime = 0;
         AppShields.getInstance().init(getRememberedShields());
+        initCrashlyticsAndUncaughtThreadHandler();
         super.onCreate();
+    }
+
+    private void initCrashlyticsAndUncaughtThreadHandler() {
+        Thread.UncaughtExceptionHandler myHandler = new Thread.UncaughtExceptionHandler() {
+
+            @Override
+            public void uncaughtException(Thread arg0, final Throwable arg1) {
+                arg1.printStackTrace();
+                ArduinoConnectivityPopup.isOpened = false;
+                MainActivity.thisInstance.moveTaskToBack(true);
+
+                Enumeration<String> enumKey = getRunningShields().keys();
+                while (enumKey.hasMoreElements()) {
+                    String key = enumKey.nextElement();
+                    getRunningShields().get(key).resetThis();
+                    getRunningShields().remove(key);
+                }
+                if (getAppFirmata() != null) {
+                    while (!getAppFirmata().close())
+                        ;
+                }
+                if (MainActivity.thisInstance != null)
+                    MainActivity.thisInstance.stopService();
+                Intent in = MainActivity.thisInstance != null?new Intent(MainActivity.thisInstance.getIntent()):new Intent();
+                PendingIntent intent = PendingIntent
+                        .getActivity(getBaseContext(), 0, in,
+                                MainActivity.thisInstance != null?MainActivity.thisInstance.getIntent().getFlags():0);
+
+                AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                mgr.set(AlarmManager.RTC,
+                        System.currentTimeMillis() + 1000, intent);
+                setTutShownTimes(
+                        getTutShownTimes() + 1);
+                android.os.Process.killProcess(android.os.Process.myPid());
+            }
+        };
+        Thread.setDefaultUncaughtExceptionHandler(myHandler);
+        if (hasCrashlyticsApiKey(this)) {
+            Crashlytics.start(this);
+        }
+    }
+
+    public static boolean hasCrashlyticsApiKey(Context context) {
+
+        boolean hasValidKey = false;
+        try {
+
+            Context appContext = context.getApplicationContext();
+            ApplicationInfo ai = appContext.getPackageManager().getApplicationInfo(appContext.getPackageName(),
+                    PackageManager.GET_META_DATA);
+
+            Bundle bundle = ai.metaData;
+            if (bundle != null) {
+
+                String apiKey = bundle.getString("com.crashlytics.ApiKey");
+                hasValidKey = apiKey != null && !apiKey.equals("0000000000000000000000000000000000000000");
+
+            }
+
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+
+        return hasValidKey;
+
     }
 
     @SuppressLint("UseSparseArrays")

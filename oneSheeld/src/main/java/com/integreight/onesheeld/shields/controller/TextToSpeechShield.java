@@ -70,6 +70,22 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
         }
     }
 
+    @Override
+    public void preConfigChange() {
+        if (myTTS != null) {
+            myTTS.stop();
+            myTTS.shutdown();
+            myTTS = null;
+        }
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
+    }
+
     public interface TTsEventHandler {
         public void onSpeek(String txt);
 

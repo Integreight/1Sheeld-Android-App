@@ -462,6 +462,20 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      */
     public abstract void reset();
 
+    public void preConfigChangeThis() {
+        ((T) ControllerParent.this).preConfigChange();
+    }
+
+    public void postConfigChangeThis() {
+        ((T) ControllerParent.this).postConfigChange();
+    }
+    public void preConfigChange() {
+    }
+
+    public void postConfigChange() {
+        this.activity = (MainActivity) getActivity();
+    }
+
     public String[] getRequiredPinsNames() {
         return requiredPinsNames[requiredPinsIndex];
     }

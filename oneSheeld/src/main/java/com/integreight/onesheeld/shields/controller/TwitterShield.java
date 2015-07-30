@@ -56,7 +56,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
     private static final byte TRACK_KEYWORD_METHOD_ID = (byte) 0x04;
     private static final byte STOP_TRACKING_KEYWORD_METHOD_ID = (byte) 0x05;
     private static final byte GET_TWEET = (byte) 0x01;
-    
+
     private boolean thereIsAConnectionRequest;
     private boolean isTwitterStreamConnecting;
     TwitterStream twitterStream;
@@ -93,7 +93,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
     public TwitterShield() {
         super();
     }
-
 
 
     @Override
@@ -623,7 +622,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                         UIShield.TWITTER_SHIELD.getId(), GET_TWEET);
                 frame.addStringArgument(arg0.getUser().getName());
                 frame.addStringArgument(arg0.getText());
-                sendShieldFrame(frame,true);
+                sendShieldFrame(frame, true);
             }
 
             @Override
@@ -654,6 +653,14 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         twitterStream.cleanUp();
         twitterStream.shutdown();
         twitterStream = null;
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        mSharedPreferences = activity.getApplicationContext()
+                .getSharedPreferences("com.integreight.onesheeld",
+                        Context.MODE_PRIVATE);
     }
 
     @Override

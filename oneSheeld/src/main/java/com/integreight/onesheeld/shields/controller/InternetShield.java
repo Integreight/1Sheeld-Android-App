@@ -543,6 +543,12 @@ public class InternetShield extends
     }
 
     @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        InternetManager.getInstance().setContext(activity.getApplicationContext());
+    }
+
+    @Override
     public void reset() {
         try {
             InternetManager.getInstance().close();

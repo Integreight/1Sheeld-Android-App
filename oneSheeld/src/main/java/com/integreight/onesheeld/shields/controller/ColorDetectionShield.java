@@ -181,7 +181,7 @@ public class ColorDetectionShield extends
 
     }
 
-    public void showPreview(float x, float y, int width, int height) {
+    public void showPreview(float x, float y, int width, int height) throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         Bundle b = new Bundle();
@@ -191,15 +191,13 @@ public class ColorDetectionShield extends
         b.putInt("h", height);
         msg.setData(b);
         if (mService != null)
-            try {
-                mService.send(msg);
-            } catch (RemoteException e) {
-            }
+            mService.send(msg);
         else
             getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
-    public void invalidatePreview(float x, float y) {
+
+    public void invalidatePreview(float x, float y) throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
         msg.replyTo = mMessenger;
         Bundle b = new Bundle();
@@ -207,22 +205,17 @@ public class ColorDetectionShield extends
         b.putFloat("y", y);
         msg.setData(b);
         if (mService != null)
-            try {
-                mService.send(msg);
-            } catch (RemoteException e) {
-            }
+            mService.send(msg);
         else
             getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
-    public void hidePreview() {
+
+    public void hidePreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
-        try {
-            if (mService != null)
-                mService.send(msg);
-        } catch (RemoteException e) {
-        }
+        if (mService != null)
+            mService.send(msg);
     }
 
     public static interface ColorDetectionEventHandler {
@@ -251,6 +244,26 @@ public class ColorDetectionShield extends
 
     public RECEIVED_FRAMES getRecevedFramesOperation() {
         return recevedFramesOperation;
+    }
+
+    @Override
+    public void preConfigChange() {
+        Message msg = Message.obtain(null, UNBIND_COLOR_DETECTOR);
+        msg.replyTo = mMessenger;
+        try {
+            if (mService != null)
+                mService.send(msg);
+        } catch (RemoteException e) {
+        }
+        getActivity().unbindService(mConnection);
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        initMessenger();
+        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override

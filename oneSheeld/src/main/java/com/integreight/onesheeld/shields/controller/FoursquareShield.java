@@ -351,6 +351,14 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
     }
 
     @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        mSharedPreferences = activity.getApplicationContext()
+                .getSharedPreferences("com.integreight.onesheeld",
+                        Context.MODE_PRIVATE);
+    }
+
+    @Override
     public void reset() {
         // TODO Auto-generated method stub
 

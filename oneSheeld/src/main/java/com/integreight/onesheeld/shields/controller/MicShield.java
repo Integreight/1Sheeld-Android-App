@@ -82,6 +82,18 @@ public class MicShield extends ControllerParent<MicShield> {
     }
 
     @Override
+    public void preConfigChange() {
+        stopMic();
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        startMic(false);
+    }
+
+    @Override
     public void reset() {
         stopMic();
     }

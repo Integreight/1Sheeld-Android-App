@@ -179,6 +179,21 @@ public class ClockShield extends
 
     }
 
+    @Override
+    public void preConfigChange() {
+        if (m_timeChangedReceiver != null)
+            getActivity().unregisterReceiver(m_timeChangedReceiver);
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+        getActivity().registerReceiver(m_timeChangedReceiver, intentFilter);
+    }
+
     private BroadcastReceiver m_timeChangedReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

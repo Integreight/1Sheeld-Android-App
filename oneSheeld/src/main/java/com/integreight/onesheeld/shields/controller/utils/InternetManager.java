@@ -63,6 +63,10 @@ public class InternetManager {
         cachDB = DBFactory.open(context);
     }
 
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
     public void close() throws SnappydbException {
         if (httpClient != null)
             httpClient.cancelRequests(context, true);

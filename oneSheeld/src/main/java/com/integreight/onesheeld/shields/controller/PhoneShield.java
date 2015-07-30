@@ -138,6 +138,20 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
     };
 
     @Override
+    public void preConfigChange() {
+        if (phoneListener != null && telephonyManager != null)
+            telephonyManager.listen(phoneListener,
+                    PhoneStateListener.LISTEN_NONE);
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+        init(getTag());
+    }
+
+    @Override
     public void reset() {
         // TODO Auto-generated method stub
         frame = null;
