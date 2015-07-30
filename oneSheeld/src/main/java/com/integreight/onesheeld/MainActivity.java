@@ -135,6 +135,7 @@ public class MainActivity extends FragmentActivity {
                     .addArduinoLibraryVersionQueryHandler(
                             arduinoLibraryVersionHandler);
         }
+        thisInstance=this;
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
             startActivity(new Intent(MainActivity.this, Tutorial.class));

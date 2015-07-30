@@ -132,13 +132,13 @@ public class NfcShield extends ControllerParent<NfcShield> {
                         case RECORD_QUERY_PARSED_DATA:
                             record = frame.getArgumentAsInteger(1, 0);
                             data = readNdefRecordParsedData(record, 0, 255,255);
-                            if (!data.hasError()) {
+                            if (!data.hasError() || data.getError() == NO_ENOUGH_BYTES) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_PARSED_DATA_FRAME);
                                 sf.addIntegerArgument(1, record);
                                 sf.addArgument(data.getBytesData());
                                 sendShieldFrame(sf, true);
                             }
-                            if (data.hasError()){
+                            if (data.hasError() && data.getError() != NO_ENOUGH_BYTES){
                                 sendError(data.getError());
                             }
                             break;
