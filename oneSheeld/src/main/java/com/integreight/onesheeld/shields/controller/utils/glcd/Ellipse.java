@@ -20,7 +20,7 @@ public class Ellipse implements Shape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visibility) {
             if (isFill)
                 view.fillEllipse(xCenter, yCenter, radiusX, radiusY, view.BLACK);
@@ -30,7 +30,7 @@ public class Ellipse implements Shape{
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
             if (isFill)
                 view.fillEllipse(xCenter, yCenter, radiusX, radiusY, view.WHITE);
             else
@@ -62,11 +62,11 @@ public class Ellipse implements Shape{
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-
+        return false;
     }
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-
+        return false;
     }
 }

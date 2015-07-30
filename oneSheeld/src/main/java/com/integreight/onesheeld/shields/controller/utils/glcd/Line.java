@@ -33,13 +33,13 @@ public class Line implements Shape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visibility)
             view.drawLine(x1, y1, x2, y2, view.BLACK);
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
             view.drawLine(x1, y1, x2, y2, view.WHITE);
     }
 
@@ -55,11 +55,11 @@ public class Line implements Shape{
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-
+        return false;
     }
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-
+        return false;
     }
 }

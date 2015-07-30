@@ -93,20 +93,16 @@ public class GlcdView extends View implements OnTouchListener {
         if (isInt == false) {
             isInt = true;
 
-            dots = new SparseArray<>();
-            touchs = new SparseArray<>();
-            shapes = new SparseArray<>();
-            radioGroups = new SparseArray<>();
-            for (int x=0;x<glcdWidth;x++){
-                SparseArray<Integer> tempDots = new SparseArray<>();
-                SparseArray<Integer> tempTouchs = new SparseArray<>();
-                for (int y=0;y<glcdHeight;y++){
-                    tempDots.append(y, this.background);
-                    tempTouchs.append(y, null);
-                }
-                if (do4Dots) dots.append(x, tempDots);
-                if (do4Touchs) touchs.append(x, tempTouchs);
-            }
+            List<Integer> params;
+            List<Boolean> premissions;
+            params = new ArrayList<>();
+            params.add(WHITE);
+            premissions= new ArrayList<>();
+            premissions.add(true);
+            premissions.add(true);
+            premissions.add(true);
+            premissions.add(true);
+            doOrder(ORDER_CLEAR, params, premissions);
 
             setOnTouchListener(this);
 //            Shapes Test
@@ -208,7 +204,10 @@ public class GlcdView extends View implements OnTouchListener {
             return false;
 
         if (premissons.get(0) != null)  do4Dots = premissons.get(0); else do4Dots = false;
-        if (premissons.get(1) != null)  do4Touchs = premissons.get(1); else do4Touchs = false;
+        if (premissons.get(1) != null)
+            do4Touchs = premissons.get(1);
+        else
+            do4Touchs = false;
         if (premissons.get(2) != null)  do4Shapes = premissons.get(2); else do4Shapes = false;
         if (premissons.get(3) != null)  doInvalidate = premissons.get(3); else doInvalidate = false;
 
@@ -272,17 +271,19 @@ public class GlcdView extends View implements OnTouchListener {
                      BgColor = params.get(0);
                      startX = params.get(1);
                      startY = params.get(2);
-                     finalX = params.get(3);
-                     finalY = params.get(4);
+                     finalX = startX+params.get(3);
+                     finalY = startY+params.get(4);
+
+                    for (int x=startX;x<finalX;x++){
+                        for (int y=startY;y<finalY;y++){
+                            if (do4Dots)
+                                dots.get(x).setValueAt(y,BgColor);
+                            if (do4Touchs)
+                                touchs.get(x).setValueAt(y,null);
+                        }
+                    }
                 }else{
                     return false;
-                }
-
-                for (int x=startX;x<finalX;x++){
-                    for (int y=startY;y<finalY;y++){
-                        if (do4Dots) dots.get(x).setValueAt(y,BgColor);
-                        if (do4Touchs) touchs.get(x).setValueAt(y,null);
-                    }
                 }
 
                 break;

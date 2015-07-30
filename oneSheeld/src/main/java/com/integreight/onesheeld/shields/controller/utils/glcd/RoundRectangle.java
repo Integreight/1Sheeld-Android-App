@@ -21,7 +21,7 @@ public class RoundRectangle implements Shape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visibility) {
             if (isFill)
                 view.fillRoundRectangle(x, y, width, height, radius, view.BLACK);
@@ -31,7 +31,7 @@ public class RoundRectangle implements Shape{
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
         if (isFill)
             view.fillRoundRectangle(x, y, width, height, radius, view.WHITE);
         else
@@ -67,11 +67,11 @@ public class RoundRectangle implements Shape{
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-
+        return false;
     }
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-
+        return false;
     }
 }

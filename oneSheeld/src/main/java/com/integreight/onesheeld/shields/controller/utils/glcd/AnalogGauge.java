@@ -50,6 +50,7 @@ public class AnalogGauge implements Shape{
 
     @Override
     public void draw(GlcdView view) {
+        clearDraw(view,true,false);
         if (visibility) {
             //using Linear Interpolation get the angle corresponding to the given value.
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
@@ -63,8 +64,8 @@ public class AnalogGauge implements Shape{
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
-        //----
+    public void clearDraw(GlcdView view, boolean clearGraphics, boolean clearTouch) {
+
     }
 
     @Override
@@ -80,12 +81,12 @@ public class AnalogGauge implements Shape{
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-
+        return false;
     }
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-
+        return false;
     }
 
     public void setCurrentValue(float value) {

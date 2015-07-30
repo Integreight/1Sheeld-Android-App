@@ -18,7 +18,7 @@ public class Point implements Shape {
     }
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visiblity) {
             List<Integer> params = new ArrayList<>();
             params.add((int) y);
@@ -34,14 +34,14 @@ public class Point implements Shape {
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
         List<Integer> params = new ArrayList<>();
         params.add((int) y);
         params.add((int) x);
         params.add(view.WHITE);
         List<Boolean> premissions= new ArrayList<>();
-        premissions.add(true);
-        premissions.add(null);
+        premissions.add(clearGraphics);
+        premissions.add(clearTouch);
         premissions.add(null);
         premissions.add(null);
         view.doOrder(view.ORDER_SETDOT, params, premissions);
@@ -60,11 +60,11 @@ public class Point implements Shape {
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-
+        return false;
     }
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-
+        return false;
     }
 }

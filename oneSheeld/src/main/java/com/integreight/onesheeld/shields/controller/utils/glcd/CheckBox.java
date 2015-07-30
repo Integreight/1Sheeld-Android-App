@@ -114,19 +114,32 @@ public class CheckBox implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if(visibility) {
 //            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
 
             view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
             view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, view.BLACK);
             if (isSelected) view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.BLACK);
-            view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
+            switch (size){
+                case 0:
+                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
+                    break;
+                case 1:
+                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR, view.BLACK);
+                    break;
+                case 2:
+                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_LARGE, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_LARGE, view.FONT_ARIEL_REGULAR, view.BLACK);
+                    break;
+            }
         }
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
+        view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
+        view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE);
+
 //            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
         List<Integer> params = new ArrayList<>();
         params.add(view.WHITE);
@@ -135,8 +148,8 @@ public class CheckBox implements ButtonShape {
         params.add((int) btnWidth + 1);
         params.add((int) btnHeight);
         List<Boolean> premissions= new ArrayList<>();
-        premissions.add(true);
-        premissions.add(true);
+        premissions.add(clearGraphics);
+        premissions.add(clearTouch);
         premissions.add(null);
         premissions.add(null);
         view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);

@@ -41,7 +41,7 @@ public class Slider implements ButtonShape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
@@ -53,7 +53,7 @@ public class Slider implements ButtonShape{
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
 //            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
         List<Integer> params = new ArrayList<>();
         params.add(view.WHITE);
@@ -62,8 +62,8 @@ public class Slider implements ButtonShape{
         params.add((int) btnWidth + 1);
         params.add((int) btnHeight + 1);
         List<Boolean> premissions= new ArrayList<>();
-        premissions.add(true);
-        premissions.add(true);
+        premissions.add(clearGraphics);
+        premissions.add(clearTouch);
         premissions.add(null);
         premissions.add(null);
         view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);

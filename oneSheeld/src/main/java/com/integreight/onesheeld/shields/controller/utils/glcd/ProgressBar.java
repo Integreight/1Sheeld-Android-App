@@ -71,19 +71,20 @@ public class ProgressBar implements Shape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
             float progress = (((currentValue - start) * (width - 5)) / (end - start)) + 5;
 
+            view.fillRoundRectangle(x, y, width, height, 5, view.WHITE);
             view.drawRoundRectangle(x, y, width, height, 5, view.BLACK);
             view.fillRoundRectangle(x, y, progress, height, 5, view.BLACK);
         }
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
 //        view.clear(view.WHITE,(int) x,(int) y,(int) width,(int) height);
         List<Integer> params = new ArrayList<>();
         params.add(view.WHITE);
@@ -92,8 +93,8 @@ public class ProgressBar implements Shape{
         params.add((int) width);
         params.add((int) height);
         List<Boolean> premissions= new ArrayList<>();
-        premissions.add(true);
-        premissions.add(true);
+        premissions.add(clearGraphics);
+        premissions.add(clearTouch);
         premissions.add(null);
         premissions.add(null);
         view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);
@@ -130,11 +131,11 @@ public class ProgressBar implements Shape{
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-
+        return false;
     }
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-
+        return false;
     }
 }

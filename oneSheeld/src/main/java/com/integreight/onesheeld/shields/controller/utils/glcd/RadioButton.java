@@ -115,7 +115,7 @@ public class RadioButton implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view);
+        clearDraw(view,true,false);
         if (visibility) {
 //            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
 
@@ -127,13 +127,12 @@ public class RadioButton implements ButtonShape {
     }
 
     @Override
-    public void clearDraw(GlcdView view) {
+    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
 //            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
             view.fillCircle(btnX, btnY, btnRadius, view.WHITE);
             view.drawCircle(btnX, btnY, btnRadius, view.WHITE);
             view.fillCircle(btnX, btnY, btnRadius - 2, view.WHITE);
             view.drawString(btnText, btnX + btnRadius + 2, btnY - btnRadius + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE);
-
     }
 
     @Override
