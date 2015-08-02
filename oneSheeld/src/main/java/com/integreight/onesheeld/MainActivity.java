@@ -46,10 +46,12 @@ import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.shields.controller.NfcShield;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 
+import io.fabric.sdk.android.Fabric;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -204,8 +206,10 @@ public class MainActivity extends FragmentActivity {
             }
         };
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
-        if (hasCrashlyticsApiKey(this)) {
-            Crashlytics.start(this);
+        try {
+            Fabric.with(this, new Crashlytics());
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -617,7 +621,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResumeFragments() {
         thisInstance = this;
         isForground = true;
-        Crashlytics.setString("isBackground", "No");
+        CrashlyticsUtils.setString("isBackground", "No");
         new Thread(new Runnable() {
 
             @Override
@@ -632,7 +636,7 @@ public class MainActivity extends FragmentActivity {
                             + appProcesses.get(i).pid + "");
                     apps += appProcesses.get(i).processName + "\n";
                 }
-                Crashlytics.setString("Running apps", apps);
+                CrashlyticsUtils.setString("Running apps", apps);
             }
         }).start();
 
@@ -662,7 +666,7 @@ public class MainActivity extends FragmentActivity {
                 .currentTimeMillis() - pausingTime);
         float seconds = TimeUnit.MILLISECONDS.toHours(System
                 .currentTimeMillis() - pausingTime);
-        Crashlytics.setString("isBackground", "since " + hours + " hours - "
+        CrashlyticsUtils.setString("isBackground", "since " + hours + " hours - "
                 + minutes + " minutes - " + seconds + " seconds");
         new Thread(new Runnable() {
 
@@ -678,7 +682,7 @@ public class MainActivity extends FragmentActivity {
                             + appProcesses.get(i).pid + "");
                     apps += appProcesses.get(i).processName + "  ||||||  ";
                 }
-                Crashlytics.setString("Running apps", apps);
+                CrashlyticsUtils.setString("Running apps", apps);
             }
         }).start();
         pauseMainActivityNfc();
@@ -757,31 +761,6 @@ public class MainActivity extends FragmentActivity {
             inputMethodManager.hideSoftInputFromWindow(getCurrentFocus()
                     .getWindowToken(), 0);
         }
-    }
-
-    public static boolean hasCrashlyticsApiKey(Context context) {
-
-        boolean hasValidKey = false;
-        try {
-
-            Context appContext = context.getApplicationContext();
-            ApplicationInfo ai = appContext.getPackageManager().getApplicationInfo(appContext.getPackageName(),
-                    PackageManager.GET_META_DATA);
-
-            Bundle bundle = ai.metaData;
-            if (bundle != null) {
-
-                String apiKey = bundle.getString("com.crashlytics.ApiKey");
-                hasValidKey = apiKey != null && !apiKey.equals("0000000000000000000000000000000000000000");
-
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-
-        }
-
-        return hasValidKey;
-
     }
 
     public void registerSlidingMenuListner(OnSlidingMenueChangeListner listner) {

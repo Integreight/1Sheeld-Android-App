@@ -23,7 +23,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
@@ -42,6 +41,7 @@ import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
@@ -217,7 +217,7 @@ public class SheeldsList extends Fragment {
             if (!ArduinoConnectivityPopup.isOpened)
                 new ArduinoConnectivityPopup(activity).show();
         }
-        Crashlytics.setString("Current View", "Shields List");
+        CrashlyticsUtils.setString("Current View", "Shields List");
         ((OneSheeldApplication) activity.getApplication()).getTracker()
                 .setScreenName("Main Shields List");
         ((OneSheeldApplication) activity.getApplication()).getTracker().send(

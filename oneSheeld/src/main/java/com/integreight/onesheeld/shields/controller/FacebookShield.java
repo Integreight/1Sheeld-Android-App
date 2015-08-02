@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.LoggingBehavior;
@@ -29,6 +28,7 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -195,7 +195,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                             try {
                                 session.requestNewPublishPermissions(newPermissionsRequest);
                             } catch (Exception e) {
-                                Crashlytics.logException(e);
+                                CrashlyticsUtils.logException(e);
                                 if (eventHandler != null)
                                     eventHandler
                                             .onFacebookError("Failed to login, Please try again!");
