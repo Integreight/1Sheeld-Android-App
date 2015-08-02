@@ -267,18 +267,41 @@ public class GlcdView extends View implements OnTouchListener {
                     finalX = glcdWidth;
                     finalY = glcdHeight;
                 }else if (params.size() > 4){
-                     BgColor = params.get(0);
-                     startX = params.get(1);
-                     startY = params.get(2);
-                     finalX = startX+params.get(3);
-                     finalY = startY+params.get(4);
+                    BgColor = params.get(0);
+                    startX = params.get(1);
+                    if (startX < 0)
+                        startX = 0;
+                    else if (startX > glcdWidth)
+                        startX = glcdWidth-1;
 
-                    for (int x=startX;x<finalX;x++){
-                        for (int y=startY;y<finalY;y++){
-                            if (do4Dots)
-                                dots.get(x).setValueAt(y,BgColor);
-                            if (do4Touchs)
-                                touchs.get(x).setValueAt(y,null);
+                    startY = params.get(2);
+                    if (startY < 0)
+                        startY = 0;
+                    else if (startY > glcdHeight)
+                        startY = glcdHeight-1;
+
+                    finalX = startX+params.get(3);
+                    if (finalX < 0)
+                        finalX = 0;
+                    else if (finalX > glcdWidth)
+                        finalX = glcdWidth-1;
+
+                    finalY = startY+params.get(4);
+                    if (finalY < 0)
+                        finalY = 0;
+                    else if (finalY > glcdHeight)
+                        finalY = glcdHeight-1;
+
+                    if (dots.size() > 0) {
+                        for (int x = startX; x < finalX; x++) {
+                            if (dots.get(x).size() > 0) {
+                                for (int y = startY; y < finalY; y++) {
+                                    if (do4Dots)
+                                        dots.get(x).setValueAt(y, BgColor);
+                                    if (do4Touchs)
+                                        touchs.get(x).setValueAt(y, null);
+                                }
+                            }
                         }
                     }
                 }else{
@@ -296,9 +319,29 @@ public class GlcdView extends View implements OnTouchListener {
 
                 if (params.size() > 4){
                     startX = params.get(0);
+                    if (startX < 0)
+                        startX = 0;
+                    else if (startX > glcdWidth)
+                        startX = glcdWidth-1;
+
                     startY = params.get(1);
+                    if (startY < 0)
+                        startY = 0;
+                    else if (startY > glcdHeight)
+                        startY = glcdHeight-1;
+
                     finalX = params.get(2);
+                    if (finalX < 0)
+                        finalX = 0;
+                    else if (finalX > glcdWidth)
+                        finalX = glcdWidth-1;
+
                     finalY = params.get(3);
+                    if (finalY < 0)
+                        finalY = 0;
+                    else if (finalY > glcdHeight)
+                        finalY = glcdHeight-1;
+
                 }else{
                     startX = 0;
                     startY = 0;
@@ -406,17 +449,39 @@ public class GlcdView extends View implements OnTouchListener {
                 finalY=0;
                 if (params.size() > 4){
                     startX = params.get(0);
+                    if (startX < 0)
+                        startX = 0;
+                    else if (startX > glcdWidth)
+                        startX = glcdWidth-1;
+
                     startY = params.get(1);
+                    if (startY < 0)
+                        startY = 0;
+                    else if (startY > glcdHeight)
+                        startY = glcdHeight-1;
+
                     finalX = params.get(2);
+                    if (finalX < 0)
+                        finalX = 0;
+                    else if (finalX > glcdWidth)
+                        finalX = glcdWidth-1;
+
                     finalY = params.get(3);
+                    if (finalY < 0)
+                        finalY = 0;
+                    else if (finalY > glcdHeight)
+                        finalY = glcdHeight-1;
+
                     touchId = params.get(4);
                 }else{
                     return false;
                 }
                 if (touchs.size() > 0) {
                     for (int x = startX; x < finalX; x++) {
-                        for (int y = startY; y < finalY; y++) {
-                            touchs.get(x).setValueAt(y, touchId);
+                        if (touchs.get(x).size() > 0) {
+                            for (int y = startY; y < finalY; y++) {
+                                touchs.get(x).setValueAt(y, touchId);
+                            }
                         }
                     }
                 }
