@@ -11,7 +11,7 @@ import java.util.List;
 public class Button implements ButtonShape {
     float btnX,btnY,btnWidth,btnHeight;
     int btnTouchId;
-    String btnText = " ";
+    String btnText = "..";
     float btnTextX,btnTextY;
     int textWidth = 0,textHeight = 0;
     boolean isPressed=false,visibility=true;
@@ -127,10 +127,11 @@ public class Button implements ButtonShape {
         textWidth = view.getStringWidth(text, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         if (btnWidth < textWidth){
             this.btnText = text.substring(0, view.getMaxCharsInWidth(text, btnWidth, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR)-2);
-            this.btnText += " .";
+            this.btnText += "..";
         }else{
             this.btnText = text;
         }
+        textWidth = view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         btnTextX = btnX+((btnWidth-textWidth)/2);
         btnTextY = btnY+((btnHeight-textHeight)/2);
     }
