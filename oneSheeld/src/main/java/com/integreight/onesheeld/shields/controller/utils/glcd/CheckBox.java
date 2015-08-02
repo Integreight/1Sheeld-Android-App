@@ -36,7 +36,7 @@ public class CheckBox implements ButtonShape {
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
-        params.add((int) (btnX+btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR)));
+        params.add((int) (btnX+btnWidth));
         params.add((int) (btnY+btnHeight));
         params.add(btnTouchId);
         List<Boolean> premissions= new ArrayList<>();
@@ -95,9 +95,12 @@ public class CheckBox implements ButtonShape {
 
     public void setText(GlcdView view,String text) {
         this.btnText = text;
-        this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        if (btnSize < view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR))
-            btnSize = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+        if (size == 0)
+            this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+        else if (size == 1)
+            this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR);
+        else if (size == 2)
+            this.btnWidth = btnSize+view.getStringWidth(btnText, view.TEXT_LARGE, view.FONT_ARIEL_REGULAR);
         this.btnHeight = btnSize;
     }
 
