@@ -348,14 +348,14 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 tmpShape = view.getFromShapes(frame.getArgumentAsInteger(1));
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
-                                    switch (frame.getArgumentAsInteger(2)) {
-                                        case 0:
+                                    switch (frame.getArgument(2)[0]) {
+                                        case 0x00:
                                             ((Label) tmpShape).setTextSize(GlcdView.TEXT_SMALL);
                                             break;
-                                        case 1:
+                                        case 0x01:
                                             ((Label) tmpShape).setTextSize(GlcdView.TEXT_MEDUIM);
                                             break;
-                                        case 2:
+                                        case 0x02:
                                             ((Label) tmpShape).setTextSize(GlcdView.TEXT_LARGE);
                                             break;
                                     }
