@@ -350,7 +350,7 @@ public class Jodem {
         @Override
         public void onDataReceived(byte[] bytes, int length) {
             // TODO Auto-generated method stub
-            for (int i = 0; i < length; i++) {
+            for (int i = 0; i < length && i < bytes.length; i++) {
                 buffer.add(bytes[i]);
             }
 
