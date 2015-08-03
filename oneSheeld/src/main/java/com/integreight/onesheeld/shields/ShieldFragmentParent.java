@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
@@ -19,6 +18,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 /**
@@ -184,7 +184,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                     "tag") != null) ? getArguments().getString(
                     "tag") : getTag());
             if (controllerTag == null)
-                Crashlytics
+                CrashlyticsUtils
                         .log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
                                 .getClass().getName() : "");
             Log.test("TAG", controllerTag + "  Tag from app:  " + tagFromApp
@@ -221,7 +221,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         getApplication().getTracker().send(
                 new HitBuilders.ScreenViewBuilder().build());
         // Logging current view for crashlytics
-        Crashlytics.setString("Current View", getTag());
+        CrashlyticsUtils.setString("Current View", getTag());
+        super.onResume();
     }
 
     /**

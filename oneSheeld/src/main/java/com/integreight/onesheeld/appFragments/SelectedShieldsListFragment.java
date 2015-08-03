@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
@@ -60,6 +59,7 @@ import com.integreight.onesheeld.shields.fragments.TerminalFragment;
 import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
@@ -109,10 +109,10 @@ public class SelectedShieldsListFragment extends ListFragment {
                     return generateShieldFragment(uiShield);
                 }
             } catch (java.lang.InstantiationException e) {
-                Crashlytics.logException(e);
+                CrashlyticsUtils.logException(e);
                 return generateShieldFragment(uiShield);
             } catch (IllegalAccessException e) {
-                Crashlytics.logException(e);
+                CrashlyticsUtils.logException(e);
                 return generateShieldFragment(uiShield);
             }
         }
@@ -297,7 +297,7 @@ public class SelectedShieldsListFragment extends ListFragment {
                         }
                     });
                 } catch (Exception e) {
-                    Crashlytics.logException(e);
+                    CrashlyticsUtils.logException(e);
                 }
                 activity.closeMenu();
             }

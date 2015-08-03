@@ -45,6 +45,8 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import io.fabric.sdk.android.Fabric;
+
 /**
  * @author Ahmed Saad
  */
@@ -179,34 +181,11 @@ public class OneSheeldApplication extends Application {
             }
         };
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
-        if (hasCrashlyticsApiKey(this)) {
-            Crashlytics.start(this);
-        }
-    }
-
-    public static boolean hasCrashlyticsApiKey(Context context) {
-
-        boolean hasValidKey = false;
         try {
-
-            Context appContext = context.getApplicationContext();
-            ApplicationInfo ai = appContext.getPackageManager().getApplicationInfo(appContext.getPackageName(),
-                    PackageManager.GET_META_DATA);
-
-            Bundle bundle = ai.metaData;
-            if (bundle != null) {
-
-                String apiKey = bundle.getString("com.crashlytics.ApiKey");
-                hasValidKey = apiKey != null && !apiKey.equals("0000000000000000000000000000000000000000");
-
-            }
-
-        } catch (PackageManager.NameNotFoundException e) {
-
+            Fabric.with(this, new Crashlytics());
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        return hasValidKey;
-
     }
 
     @SuppressLint("UseSparseArrays")

@@ -7,8 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.parse.ParsePushBroadcastReceiver;
 import org.json.JSONException;
@@ -48,7 +48,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
             Log.d(TAG, "JSONException: " + e.getMessage());
         } catch (Exception e) {
             Log.d(TAG, "Exception: " + e.getMessage());
-            Crashlytics.logException(e);
+            CrashlyticsUtils.logException(e);
         }
     }
 

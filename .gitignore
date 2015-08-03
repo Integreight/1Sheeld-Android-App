@@ -42,10 +42,8 @@ captures/
 # Windows thumbnail db
 Thumbs.db
 
-# Crashlytics
-com_crashlytics_export_strings.xml
-crashlytics-build.properties
-crashlytics.properties
+# Fabric
+fabric.properties
 
 # Android Studio
 .idea
