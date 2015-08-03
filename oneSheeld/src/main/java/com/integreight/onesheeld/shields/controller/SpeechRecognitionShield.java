@@ -54,7 +54,7 @@ public class SpeechRecognitionShield extends
 
     @Override
     public ControllerParent<SpeechRecognitionShield> init(String tag) {
-        activity.bindService(new Intent(activity,
+        getApplication().bindService(new Intent(activity,
                         SpeechRecognitionService.class), mServiceConnection,
                 Context.BIND_AUTO_CREATE);
         Log.sysOut("int AUDIO=" + SpeechRecognizer.ERROR_AUDIO
@@ -209,25 +209,9 @@ public class SpeechRecognitionShield extends
 
     @Override
     public void reset() {
-        if (mServiceConnection != null && activity != null)
-            activity.unbindService(mServiceConnection);
+        if (mServiceConnection != null && getApplication() != null)
+            getApplication().unbindService(mServiceConnection);
     }
-
-    @Override
-    public void preConfigChange() {
-        if (mServiceConnection != null && activity != null)
-            activity.unbindService(mServiceConnection);
-        super.preConfigChange();
-    }
-
-    @Override
-    public void postConfigChange() {
-        super.postConfigChange();
-        activity.bindService(new Intent(activity,
-                        SpeechRecognitionService.class), mServiceConnection,
-                Context.BIND_AUTO_CREATE);
-    }
-
     private static class ERROR {
         protected static int AUDIO = 3, NETWORK = 2, NETWORK_TIMEOUT = 1,
                 NO_MATCH = 7, RECOGNIZER_BUSY = 8, SERVER = 4,

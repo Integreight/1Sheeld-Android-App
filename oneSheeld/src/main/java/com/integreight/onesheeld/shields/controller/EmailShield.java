@@ -38,7 +38,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 
     @Override
     public ControllerParent<EmailShield> init(String tag) {
-        mSharedPreferences = getActivity().getApplicationContext()
+        mSharedPreferences = getApplication().getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
         return super.init(tag);
@@ -204,13 +204,5 @@ public class EmailShield extends ControllerParent<EmailShield> {
     @Override
     public void reset() {
         // TODO Auto-generated method stub
-    }
-
-    @Override
-    public void postConfigChange() {
-        super.postConfigChange();
-        mSharedPreferences = getActivity().getApplicationContext()
-                .getSharedPreferences("com.integreight.onesheeld",
-                        Context.MODE_PRIVATE);
     }
 }

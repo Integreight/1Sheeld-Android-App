@@ -125,8 +125,9 @@ public class MainActivity extends FragmentActivity {
         }
         setContentView(R.layout.one_sheeld_main);
         initLooperThread();
-        replaceCurrentFragment(R.id.appTransitionsContainer,
-                SheeldsList.getInstance(), "base", true, false);
+        if (savedInstance == null)
+            replaceCurrentFragment(R.id.appTransitionsContainer,
+                    SheeldsList.getInstance(), "base", true, false);
         resetSlidingMenu();
         if (getThisApplication().getAppFirmata() != null) {
             getThisApplication().getAppFirmata()
@@ -135,7 +136,7 @@ public class MainActivity extends FragmentActivity {
                     .addArduinoLibraryVersionQueryHandler(
                             arduinoLibraryVersionHandler);
         }
-        thisInstance=this;
+        thisInstance = this;
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
             startActivity(new Intent(MainActivity.this, Tutorial.class));
@@ -497,43 +498,7 @@ public class MainActivity extends FragmentActivity {
     public void finishManually() {
         isBackPressed = true;
         finish();
-        if (!isConfigChanged) {
-            getThisApplication().getTracker().send(
-                    new HitBuilders.EventBuilder().setCategory("App lifecycle")
-                            .setAction("Finished the app manually").build());
-            ArduinoConnectivityPopup.isOpened = false;
-            stopService();
-            stopLooperThread();
-            moveTaskToBack(true);
-            if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
-                while (!((OneSheeldApplication) getApplication()).getAppFirmata()
-                        .close())
-                    ;
-            }
-            // // unExpeted
-            if (!isBackPressed) {
-                Enumeration<String> enumKey = ((OneSheeldApplication)
-                        getApplication()).getRunningShields().keys();
-                while (enumKey.hasMoreElements()) {
-                    String key = enumKey.nextElement();
-                    ((OneSheeldApplication) getApplication())
-                            .getRunningShields().get(key).resetThis();
-                    ((OneSheeldApplication) getApplication())
-                            .getRunningShields().remove(key);
-                }
-                Intent in = new Intent(getIntent());
-                PendingIntent intent = PendingIntent.getActivity(
-                        getBaseContext(), 0, in, getIntent().getFlags());
-
-                AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
-                        intent);
-                killAllProcesses();
-            } else
-                killAllProcesses();
-        }
-        isConfigChanged = false;
-        isBackPressed = false;
+        destroyIt();
     }
 
     boolean isConfigChanged = false;
@@ -608,7 +573,7 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
-        ArduinoConnectivityPopup.isOpened=false;
+        ArduinoConnectivityPopup.isOpened = false;
         super.onDestroy();
     }
 
@@ -641,6 +606,8 @@ public class MainActivity extends FragmentActivity {
     private void resetSlidingMenu() {
         if (appSlidingMenu == null) {
             appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                appSlidingMenu.setFitsSystemWindows(true);
             appSlidingMenu.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
                 @Override
                 public void onPanelSlide(View panel, float slideOffset) {

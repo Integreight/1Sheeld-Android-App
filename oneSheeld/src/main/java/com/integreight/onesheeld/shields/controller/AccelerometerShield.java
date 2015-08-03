@@ -173,19 +173,6 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
-    @Override
-    public void preConfigChange() {
-        unegisterSensorListener();
-        super.preConfigChange();
-    }
-
-    @Override
-    public void postConfigChange() {
-        super.postConfigChange();
-        invalidate(selectionAction,true);
-    }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

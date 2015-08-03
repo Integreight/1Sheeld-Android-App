@@ -62,7 +62,7 @@ public class ClockShield extends
         // TODO Auto-generated method stub
         intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        getActivity().registerReceiver(m_timeChangedReceiver, intentFilter);
+        getApplication().registerReceiver(m_timeChangedReceiver, intentFilter);
 
         isClockBegin = true;
         ShieldFrame frame = new ShieldFrame(UIShield.CLOCK_SHIELD.getId(), CLOCK_VALUE);
@@ -173,7 +173,7 @@ public class ClockShield extends
             handler.removeCallbacksAndMessages(null);
         }
         if (m_timeChangedReceiver != null)
-            getActivity().unregisterReceiver(m_timeChangedReceiver);
+            getApplication().unregisterReceiver(m_timeChangedReceiver);
         if (calendar != null)
             calendar = null;
 
@@ -181,17 +181,17 @@ public class ClockShield extends
 
     @Override
     public void preConfigChange() {
-        if (m_timeChangedReceiver != null)
-            getActivity().unregisterReceiver(m_timeChangedReceiver);
+//        if (m_timeChangedReceiver != null)
+//            getActivity().unregisterReceiver(m_timeChangedReceiver);
         super.preConfigChange();
     }
 
     @Override
     public void postConfigChange() {
         super.postConfigChange();
-        intentFilter = new IntentFilter();
-        intentFilter.addAction(Intent.ACTION_TIME_TICK);
-        getActivity().registerReceiver(m_timeChangedReceiver, intentFilter);
+//        intentFilter = new IntentFilter();
+//        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+//        getActivity().registerReceiver(m_timeChangedReceiver, intentFilter);
     }
 
     private BroadcastReceiver m_timeChangedReceiver = new BroadcastReceiver() {

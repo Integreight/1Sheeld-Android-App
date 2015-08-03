@@ -63,14 +63,14 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
     @Override
     public ControllerParent<FacebookShield> init(String tag) {
-        mSharedPreferences = activity.getApplicationContext()
+        mSharedPreferences = getApplication()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
         Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
         Session session = Session.getActiveSession();
         if (session == null) {
             if (session == null) {
-                session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
+                session = new Session.Builder(getApplication()).setApplicationId(ApiObjects.facebook.get("app_id"))
                         .build();
             }
             Session.setActiveSession(session);
@@ -391,30 +391,30 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
     @Override
     public void preConfigChange() {
-        if (Session.getActiveSession() != null) {
-            Session.getActiveSession().close();
-            Session.setActiveSession(null);
-        }
+//        if (Session.getActiveSession() != null) {
+//            Session.getActiveSession().close();
+//            Session.setActiveSession(null);
+//        }
         super.preConfigChange();
     }
 
     @Override
     public void postConfigChange() {
         super.postConfigChange();
-        mSharedPreferences = activity.getApplicationContext()
-                .getSharedPreferences("com.integreight.onesheeld",
-                        Context.MODE_PRIVATE);
-        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-        Session session = Session.getActiveSession();
-        if (session == null) {
-            if (session == null) {
-                session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
-                        .build();
-            }
-            Session.setActiveSession(session);
-        }
-
-        session.addCallback(statusCallback);
+//        mSharedPreferences = activity.getApplicationContext()
+//                .getSharedPreferences("com.integreight.onesheeld",
+//                        Context.MODE_PRIVATE);
+//        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+//        Session session = Session.getActiveSession();
+//        if (session == null) {
+//            if (session == null) {
+//                session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
+//                        .build();
+//            }
+//            Session.setActiveSession(session);
+//        }
+//
+//        session.addCallback(statusCallback);
     }
 
     @Override

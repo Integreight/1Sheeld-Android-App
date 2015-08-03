@@ -102,6 +102,10 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         }
         return false;
     }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     @Override
     public void onStart() {

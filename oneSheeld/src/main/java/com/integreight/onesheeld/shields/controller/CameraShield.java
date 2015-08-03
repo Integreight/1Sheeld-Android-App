@@ -92,7 +92,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     });
 
     void bindService() {
-        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
+        getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -317,7 +317,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 cameraBinder.send(msg);
         } catch (RemoteException e) {
         }
-        getActivity().unbindService(cameraServiceConnector);
+        getApplication().unbindService(cameraServiceConnector);
         capturesQueue = new ConcurrentLinkedQueue<>();
         isCameraBound = false;
 
@@ -325,20 +325,20 @@ public class CameraShield extends ControllerParent<CameraShield> implements
 
     @Override
     public void preConfigChange() {
-        Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
-        try {
-            if (cameraBinder != null)
-                cameraBinder.send(msg);
-        } catch (RemoteException e) {
-        }
-        getActivity().unbindService(cameraServiceConnector);
+//        Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
+//        try {
+//            if (cameraBinder != null)
+//                cameraBinder.send(msg);
+//        } catch (RemoteException e) {
+//        }
+//        getActivity().unbindService(cameraServiceConnector);
         super.preConfigChange();
     }
 
     @Override
     public void postConfigChange() {
         super.postConfigChange();
-        bindService();
+//        bindService();
     }
 
     private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {

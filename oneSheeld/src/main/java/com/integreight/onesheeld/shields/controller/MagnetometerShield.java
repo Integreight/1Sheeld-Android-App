@@ -179,17 +179,6 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
 
     }
     @Override
-    public void preConfigChange() {
-        unegisterSensorListener();
-        super.preConfigChange();
-    }
-
-    @Override
-    public void postConfigChange() {
-        super.postConfigChange();
-        invalidate(selectionAction,true);
-    }
-    @Override
     public void reset() {
         // TODO Auto-generated method stub
         this.unegisterSensorListener();

@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.utils.customviews;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -13,6 +14,8 @@ public class AppSlidingLeftMenu extends SlidingPaneLayout {
     public AppSlidingLeftMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
         // TODO Auto-generated constructor stub
+//        if (Build.VERSION.SDK_INT >= 21)
+//            setSystemUiVisibility(SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
     @Override
     public ControllerParent<GpsShield> init(String tag) {
-        mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        mLocationClient = new GoogleApiClient.Builder(getApplication())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -103,7 +103,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         // check Internet connection
 
-        mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        mLocationClient = new GoogleApiClient.Builder(getApplication())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -234,30 +234,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
         void onLatChanged(String lat);
 
-    }
-
-    @Override
-    public void preConfigChange() {
-        stopGps();
-        super.preConfigChange();
-    }
-
-    @Override
-    public void postConfigChange() {
-        super.postConfigChange();
-        mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        mUpdatesRequested = false;
-        manager = (LocationManager) getApplication().getSystemService(
-                Context.LOCATION_SERVICE);
-        // check if Google play services available, no dialog displayed
-        if (isGoogleplayServicesAvailableNoDialogs()) {
-            if (manager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
-                startGps();
-        }
     }
 
     @Override

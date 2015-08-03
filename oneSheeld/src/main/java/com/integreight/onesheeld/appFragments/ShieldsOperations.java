@@ -48,11 +48,23 @@ public class ShieldsOperations extends BaseContainerFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt("position", mFrag.currentShield);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        mFrag.currentShield = savedInstanceState == null || savedInstanceState.get("position") == null ? 0
+                : savedInstanceState.getInt("position");
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_shields_operation, container,
                 false);
-        setRetainInstance(true);
         return v;
     }
 
@@ -62,9 +74,15 @@ public class ShieldsOperations extends BaseContainerFragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(savedInstanceState);
+//        else new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                initView(savedInstanceState);
+//            }
+//        },1000);
     }
 
     MultiDirectionSlidingDrawer pinsSlidingView;
@@ -109,15 +127,15 @@ public class ShieldsOperations extends BaseContainerFragment {
             FragmentTransaction t = activity.getSupportFragmentManager()
                     .beginTransaction();
             mFrag = SelectedShieldsListFragment.newInstance(activity);
-            t.replace(R.id.selectedShieldsContainer, mFrag);
+            t.replace(R.id.selectedShieldsContainer, mFrag, "menuShieldsList");
             t.commit();
         } else {
             mFrag = (SelectedShieldsListFragment) activity
-                    .getSupportFragmentManager().findFragmentById(
-                            R.id.menu_frame);
+                    .getSupportFragmentManager().findFragmentByTag("menuShieldsList");
         }
         if (mContent == null) {
-            mContent = mFrag.getShieldFragment(0);
+            mContent = mFrag.getShieldFragment(savedInstanceState == null || savedInstanceState.get("position") == null ?
+                    mFrag.currentShield : savedInstanceState.getInt("position"));
             try {
                 new Handler().post(new Runnable() {
 
@@ -267,10 +285,6 @@ public class ShieldsOperations extends BaseContainerFragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
     @Override
