@@ -644,7 +644,16 @@ public class GlcdView extends View implements OnTouchListener {
             addToRadioGroups(new RadioGroup(),key);
         return radioGroups.get(key);
     }
-//    public class point implements Shape{
+
+    public int getGlcdWidth() {
+        return glcdWidth;
+    }
+
+    public int getGlcdHeight() {
+        return glcdHeight;
+    }
+
+    //    public class point implements Shape{
 //        float x,y;
 //        boolean visiblity = true;
 //
