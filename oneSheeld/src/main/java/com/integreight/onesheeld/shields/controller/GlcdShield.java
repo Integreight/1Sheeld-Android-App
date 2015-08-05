@@ -225,9 +225,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                         }
@@ -292,9 +292,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        view.getFromShapes(frame.getArgumentAsInteger(1)).setVisibility(true);
-                                    else
                                         view.getFromShapes(frame.getArgumentAsInteger(1)).setVisibility(false);
+                                    else
+                                        view.getFromShapes(frame.getArgumentAsInteger(1)).setVisibility(true);
                                 }
                                 break;
                             case RECTANGLE_SET_RADIUS:
@@ -391,9 +391,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case LINE_SET_COORDINATES:
@@ -469,7 +469,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 tmpShape = view.getFromShapes(shapeKey);
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
-                                    if (frame.getArgumentAsInteger(2) == 0)
+                                    if (frame.getArgument(2)[0] == 0)
                                         tmpShape.setVisibility(false);
                                     else
                                         tmpShape.setVisibility(true);
@@ -531,9 +531,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case LABEL_SET_FONT:
@@ -636,9 +636,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case PROGRESSBAR_SET_RANGE:
@@ -725,9 +725,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case GAUGE_SET_RANGE:
@@ -824,9 +824,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case BUTTON_SET_TEXT:
@@ -917,9 +917,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case RADIOBUTTON_SET_TEXT:
@@ -1012,9 +1012,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case CHECKBOX_SET_TEXT:
@@ -1112,9 +1112,9 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
                                     if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case SLIDER_SET_RANGE:
