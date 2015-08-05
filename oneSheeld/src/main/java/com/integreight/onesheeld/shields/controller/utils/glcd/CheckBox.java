@@ -65,10 +65,14 @@ public class CheckBox implements ButtonShape {
 
     @Override
     public boolean setIsPressed(boolean isPressed) {
-        if (this.isPressed == true && isPressed == false)
+        if (isPressed){
             setSelected(!isSelected);
-        this.isPressed = isPressed;
-        return true;
+        }
+        if ((isPressed && isSelected) || (!isPressed && !isSelected)){
+            return true;
+        }
+
+        return false;
     }
 
     @Override
