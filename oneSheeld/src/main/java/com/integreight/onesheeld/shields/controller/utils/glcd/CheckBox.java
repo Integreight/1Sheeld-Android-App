@@ -27,18 +27,28 @@ public class CheckBox implements ButtonShape {
 
     @Override
     public void applyTouch(GlcdView view){
-//        float xMax = btnX+btnSize+view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-//        float yMax = btnY+btnHeight;
-//        for (float x=btnX;x<xMax;x++){
-//            for (float y=btnY;y<yMax;y++){
-//            }
-//        }
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
         params.add((int) (btnX+btnWidth));
         params.add((int) (btnY+btnHeight));
         params.add(btnTouchId);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    }
+
+    @Override
+    public void clearTouch(GlcdView view) {
+        List<Integer> params = new ArrayList<>();
+        params.add((int) (btnX));
+        params.add((int) (btnY));
+        params.add((int) (btnX+btnWidth));
+        params.add((int) (btnY+btnHeight));
+        params.add(null);
         List<Boolean> premissions= new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
@@ -117,7 +127,6 @@ public class CheckBox implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view,true,false);
         if(visibility) {
 //            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
 
@@ -136,25 +145,5 @@ public class CheckBox implements ButtonShape {
                     break;
             }
         }
-    }
-
-    @Override
-    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
-        view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
-        view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE);
-
-//            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight, true, false);
-        List<Integer> params = new ArrayList<>();
-        params.add(view.WHITE);
-        params.add((int) btnX);
-        params.add((int) btnY);
-        params.add((int) btnWidth + 1);
-        params.add((int) btnHeight);
-        List<Boolean> premissions= new ArrayList<>();
-        premissions.add(clearGraphics);
-        premissions.add(clearTouch);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);
     }
 }

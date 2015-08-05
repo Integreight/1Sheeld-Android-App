@@ -42,17 +42,28 @@ public class RadioButton implements ButtonShape {
 
     @Override
     public void applyTouch(GlcdView view){
-//        for (float x=btnX-btnRadius;x<btnX+btnWidth;x++){
-//            for (float y=btnY-btnRadius;y<btnY+btnRadius;y++){
-//            }
-//        }
-
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX-btnRadius));
         params.add((int) (btnY-btnRadius));
         params.add((int) (btnX+btnWidth));
         params.add((int) (btnY+btnRadius));
         params.add(btnTouchId);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    }
+
+    @Override
+    public void clearTouch(GlcdView view) {
+        List<Integer> params = new ArrayList<>();
+        params.add((int) (btnX-btnRadius));
+        params.add((int) (btnY-btnRadius));
+        params.add((int) (btnX+btnWidth));
+        params.add((int) (btnY+btnRadius));
+        params.add(null);
         List<Boolean> premissions= new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
@@ -115,24 +126,12 @@ public class RadioButton implements ButtonShape {
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view,true,false);
         if (visibility) {
-//            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
-
             view.fillCircle(btnX, btnY, btnRadius, view.WHITE);
             view.drawCircle(btnX, btnY, btnRadius, view.BLACK);
             if (isSelected) view.fillCircle(btnX, btnY, btnRadius - 2, view.BLACK);
             view.drawString(btnText, btnX + btnRadius + 2, btnY - btnRadius + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
         }
-    }
-
-    @Override
-    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
-//            view.clear(view.WHITE, (int) (btnX - btnRadius), (int) (btnY - btnRadius), (int) btnWidth, (int) btnHeight, true, false);
-            view.fillCircle(btnX, btnY, btnRadius, view.WHITE);
-            view.drawCircle(btnX, btnY, btnRadius, view.WHITE);
-            view.fillCircle(btnX, btnY, btnRadius - 2, view.WHITE);
-            view.drawString(btnText, btnX + btnRadius + 2, btnY - btnRadius + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE);
     }
 
     @Override

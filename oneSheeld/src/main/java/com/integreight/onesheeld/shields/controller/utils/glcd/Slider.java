@@ -41,7 +41,6 @@ public class Slider implements ButtonShape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view,true,false);
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
             //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
@@ -50,23 +49,6 @@ public class Slider implements ButtonShape{
             view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.BLACK);
             view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, view.BLACK);
         }
-    }
-
-    @Override
-    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
-//            view.clear(view.WHITE, (int) btnX, (int) btnY, (int) btnWidth + 1, (int) btnHeight + 1, true, false);
-        List<Integer> params = new ArrayList<>();
-        params.add(view.WHITE);
-        params.add((int) btnX);
-        params.add((int) btnY);
-        params.add((int) btnWidth + 1);
-        params.add((int) btnHeight + 1);
-        List<Boolean> premissions= new ArrayList<>();
-        premissions.add(clearGraphics);
-        premissions.add(clearTouch);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(GlcdView.ORDER_CLEAR, params, premissions);
     }
 
     public void setStart(float start) {
@@ -120,16 +102,28 @@ public class Slider implements ButtonShape{
 
     @Override
     public void applyTouch(GlcdView view) {
-//        for (float x=btnX;x<btnX+btnWidth;x++){
-//            for (float y=btnY;y<btnY+btnHeight;y++){
-//            }
-//        }
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
         params.add((int) (btnX+btnWidth));
         params.add((int) (btnY+btnHeight));
         params.add(btnTouchId);
+        List<Boolean> premissions= new ArrayList<>();
+        premissions.add(null);
+        premissions.add(true);
+        premissions.add(null);
+        premissions.add(null);
+        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    }
+
+    @Override
+    public void clearTouch(GlcdView view) {
+        List<Integer> params = new ArrayList<>();
+        params.add((int) (btnX));
+        params.add((int) (btnY));
+        params.add((int) (btnX+btnWidth));
+        params.add((int) (btnY+btnHeight));
+        params.add(null);
         List<Boolean> premissions= new ArrayList<>();
         premissions.add(null);
         premissions.add(true);

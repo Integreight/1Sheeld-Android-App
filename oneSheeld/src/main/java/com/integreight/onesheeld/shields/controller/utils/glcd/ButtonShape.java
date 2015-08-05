@@ -10,4 +10,5 @@ public interface ButtonShape extends Shape{
     boolean setTouched(int touchX, int touchY);
     void setBtnTouchId(GlcdView view,int btnTouchId);
     void applyTouch(GlcdView view);
+    void clearTouch(GlcdView view);
 }

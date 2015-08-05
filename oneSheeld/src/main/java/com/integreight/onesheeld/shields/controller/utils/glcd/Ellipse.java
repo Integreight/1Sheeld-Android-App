@@ -20,21 +20,12 @@ public class Ellipse implements Shape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view,true,false);
         if (visibility) {
             if (isFill)
                 view.fillEllipse(xCenter, yCenter, radiusX, radiusY, view.BLACK);
             else
                 view.drawEllipse(xCenter, yCenter, radiusX, radiusY, view.BLACK);
         }
-    }
-
-    @Override
-    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
-            if (isFill)
-                view.fillEllipse(xCenter, yCenter, radiusX, radiusY, view.WHITE);
-            else
-                view.drawEllipse(xCenter, yCenter, radiusX, radiusY, view.WHITE);
     }
 
     @Override

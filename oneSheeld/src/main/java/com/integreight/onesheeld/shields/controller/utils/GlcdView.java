@@ -8,6 +8,7 @@ import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+
 import com.integreight.onesheeld.shields.controller.utils.glcd.*;
 
 
@@ -24,7 +25,7 @@ public class GlcdView extends View implements OnTouchListener {
     int background = 0;
     Paint paint;
     int glcdWidth=256,glcdHeight=128;
-    SparseArray<SparseArray<Integer>> dots, touchs;
+    SparseArray<SparseArray<Integer>> touchs;
     SparseArray<Shape> shapes;
     SparseArray<RadioGroup> radioGroups;
     public int BLACK= Color.parseColor("#11443d"),WHITE=Color.parseColor("#338f45");
@@ -66,6 +67,15 @@ public class GlcdView extends View implements OnTouchListener {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         this.canvas = canvas;
+        //   draw Background
+        paint.setColor(background);
+        canvas.drawRect(originY, originX, originY + height, originX + width, paint);
+
+
+        if (isInt == false) {
+            isInt = true;
+
+
         ascpectRatio = glcdWidth/glcdHeight;
         width = canvas.getHeight();
         height = canvas.getHeight()/ascpectRatio;
@@ -73,10 +83,6 @@ public class GlcdView extends View implements OnTouchListener {
         originX = (canvas.getHeight() - width) / 2;
         pixelX = height/glcdHeight;
         pixelY = width/glcdWidth;
-
-        //   draw Background
-        paint.setColor(background);
-        canvas.drawRect(originY, originX, originY + height, originX + width, paint);
 
 
         //------------------------------------
@@ -89,8 +95,7 @@ public class GlcdView extends View implements OnTouchListener {
 //        Log.d("GLCD", " aspectRatio: " + String.valueOf(ascpectRatio));
         //------------------------------------------
         //------------------------------------
-        if (isInt == false) {
-            isInt = true;
+
 
             List<Integer> params;
             List<Boolean> premissions;
@@ -103,6 +108,7 @@ public class GlcdView extends View implements OnTouchListener {
             premissions.add(true);
             doOrder(ORDER_CLEAR, params, premissions);
 
+            paint = new Paint();
             setOnTouchListener(this);
 //            Shapes Test
 
@@ -182,18 +188,14 @@ public class GlcdView extends View implements OnTouchListener {
             shapes.valueAt(shapesCount).draw(this);
         }
 
-        List<Integer> params = new ArrayList<>();
-        List<Boolean> premissions= new ArrayList<>();
-        premissions.add(null);
-        premissions.add(null);
-        premissions.add(null);
-        premissions.add(true);
-        doOrder(ORDER_DRAW_DOTS, params, premissions);
+        paint.setColor(Color.parseColor("#393939"));
+        canvas.drawRect(0, 0, originY, originX + width, paint);
+        canvas.drawRect(originY + height, originX ,canvas.getWidth(),canvas.getHeight(), paint);
 
         invalidate();
     }
 
-    public static final int ORDER_SETDOT=0,ORDER_SETTOUCH=1,ORDER_CLEAR=2, ORDER_DRAW_DOTS =3,ORDER_HANDLETOUCH=4,ORDER_APPLYTOUCH=5;
+    public static final int ORDER_SETDOT=0,ORDER_SETTOUCH=1,ORDER_CLEAR=2, ORDER_HANDLETOUCH=4,ORDER_APPLYTOUCH=5;
     boolean do4Dots= false,do4Touchs = false,do4Shapes=false,doInvalidate= false;
     boolean sendFrame = false;
 
@@ -216,7 +218,7 @@ public class GlcdView extends View implements OnTouchListener {
 
         switch (order){
             case ORDER_SETDOT:
-                if (params.size() < 3)
+                /*if (params.size() < 3)
                     return false;
                 // x = params.get(0);
                 // y = params.get(1);
@@ -225,6 +227,15 @@ public class GlcdView extends View implements OnTouchListener {
                 if (params.get(0) < dots.size() && params.get(0) >= 0)
                     if (params.get(1) < dots.get(params.get(0)).size() && params.get(1) >= 0)
                         dots.get(params.get(0)).setValueAt(params.get(1),params.get(2));
+                        */
+
+            paint.setColor(params.get(2));
+            float left = (originY + height) - ((params.get(1) + 1) * pixelY);
+            float top = (params.get(0) * pixelX) + originX;
+            float right = (originY + height) - (params.get(1) * pixelY);
+            float bottom = ((params.get(0) + 1) * pixelX) + originX;
+            canvas.drawRect(left, top, right, bottom, paint);
+
                 break;
             case ORDER_SETTOUCH:
                 if (params.size() < 3)
@@ -246,26 +257,19 @@ public class GlcdView extends View implements OnTouchListener {
                 finalY=0;
 
                 if (params.size() == 1){
-                    if(do4Dots) dots = new SparseArray<>();
                     if(do4Touchs) touchs = new SparseArray<>();
-                    if(do4Shapes) shapes = new SparseArray<>();
-                    radioGroups = new SparseArray<>();
+                    if(do4Shapes){
+                        shapes = new SparseArray<>();
+                        radioGroups = new SparseArray<>();
+                    }
+                    paint = new Paint();
                     for (int x=0;x<glcdWidth;x++){
-                        SparseArray<Integer> tempDots = new SparseArray<>();
                         SparseArray<Integer> tempTouchs = new SparseArray<>();
                         for (int y=0;y<glcdHeight;y++){
-                            tempDots.append(y, this.background);
                             tempTouchs.append(y, null);
                         }
-                        if (do4Dots) dots.append(x, tempDots);
                         if (do4Touchs) touchs.append(x, tempTouchs);
                     }
-
-                    BgColor = params.get(0);
-                    startX = 0;
-                    startY = 0;
-                    finalX = glcdWidth;
-                    finalY = glcdHeight;
                 }else if (params.size() > 4){
                     BgColor = params.get(0);
                     startX = params.get(1);
@@ -292,14 +296,18 @@ public class GlcdView extends View implements OnTouchListener {
                     else if (finalY > glcdHeight)
                         finalY = glcdHeight-1;
 
-                    if (dots.size() > 0) {
-                        for (int x = startX; x < finalX; x++) {
-                            if (dots.get(x).size() > 0) {
-                                for (int y = startY; y < finalY; y++) {
-                                    if (do4Dots)
-                                        dots.get(x).setValueAt(y, BgColor);
-                                    if (do4Touchs)
+                    if (do4Dots) {
+                        paint.setColor(WHITE);
+                        canvas.drawRect(startY * pixelY,startX * pixelX,finalY * pixelY,finalX * pixelX, paint);
+                    }
+
+                    if (do4Touchs) {
+                        if (touchs.size() > 0) {
+                            for (int x = startX; x < finalX; x++) {
+                                if (touchs.get(x).size() > 0) {
+                                    for (int y = startY; y < finalY; y++) {
                                         touchs.get(x).setValueAt(y, null);
+                                    }
                                 }
                             }
                         }
@@ -309,8 +317,8 @@ public class GlcdView extends View implements OnTouchListener {
                 }
 
                 break;
-            case ORDER_DRAW_DOTS:
-                if (params.size() < 0)
+//            case ORDER_DRAW_DOTS:
+                /*if (params.size() < 0)
                     return false;
                 startX=0;
                 startY=0;
@@ -368,8 +376,8 @@ public class GlcdView extends View implements OnTouchListener {
                         }
                     }
                 }
-
-                break;
+*/
+//                break;
             case ORDER_HANDLETOUCH:
                 if (params.size() < 2)
                     return false;
@@ -808,6 +816,9 @@ public class GlcdView extends View implements OnTouchListener {
             }
         }
     }
+
+
+
 
 //    public class Rectangle implements Shape{
 //        float x,y,width,height;

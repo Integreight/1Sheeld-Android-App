@@ -18,7 +18,6 @@ public class Point implements Shape {
     }
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view,true,false);
         if (visiblity) {
             List<Integer> params = new ArrayList<>();
             params.add((int) y);
@@ -31,20 +30,6 @@ public class Point implements Shape {
             premissions.add(null);
             view.doOrder(view.ORDER_SETDOT, params, premissions);
         }
-    }
-
-    @Override
-    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) y);
-        params.add((int) x);
-        params.add(view.WHITE);
-        List<Boolean> premissions= new ArrayList<>();
-        premissions.add(clearGraphics);
-        premissions.add(clearTouch);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_SETDOT, params, premissions);
     }
 
     @Override

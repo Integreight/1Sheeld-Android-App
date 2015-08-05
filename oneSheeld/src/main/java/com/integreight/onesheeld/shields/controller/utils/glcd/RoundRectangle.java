@@ -21,21 +21,12 @@ public class RoundRectangle implements Shape{
 
     @Override
     public void draw(GlcdView view) {
-        clearDraw(view,true,false);
         if (visibility) {
             if (isFill)
                 view.fillRoundRectangle(x, y, width, height, radius, view.BLACK);
             else
                 view.drawRoundRectangle(x, y, width, height, radius, view.BLACK);
         }
-    }
-
-    @Override
-    public void clearDraw(GlcdView view,boolean clearGraphics,boolean clearTouch) {
-        if (isFill)
-            view.fillRoundRectangle(x, y, width, height, radius, view.WHITE);
-        else
-            view.drawRoundRectangle(x, y, width, height, radius, view.WHITE);
     }
 
     @Override
