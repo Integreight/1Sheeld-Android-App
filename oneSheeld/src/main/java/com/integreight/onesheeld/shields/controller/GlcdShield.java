@@ -469,10 +469,10 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 tmpShape = view.getFromShapes(shapeKey);
                                 if(tmpShape != null) {
                                     tmpShape.clearDraw(view,true,false);
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(true);
-                                    else
+                                    if (frame.getArgumentAsInteger(2) == 0)
                                         tmpShape.setVisibility(false);
+                                    else
+                                        tmpShape.setVisibility(true);
                                 }
                                 break;
                             case ELLIPSE_SET_RADIUS:

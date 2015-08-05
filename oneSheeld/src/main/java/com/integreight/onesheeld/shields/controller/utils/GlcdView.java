@@ -1318,7 +1318,7 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     private void fillEllipsePoints(float xCenter, float yCenter, float x, float y, int color){
-            fillRectangle(xCenter - x, (glcdHeight - yCenter) - y, x * 2, y * 2, color);
+            fillRectangle(xCenter - x, yCenter - y, x * 2, y * 2, color);
     }
 
 //    public class TxtLabel implements Shape {
