@@ -24,10 +24,9 @@ public class TemperatureFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.temperature_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.temperature_shield_fragment_layout,
+                container, false);
     }
 
     @Override
@@ -59,8 +58,8 @@ public class TemperatureFragment extends
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
 
         temperature_float = (TextView) v
                 .findViewById(R.id.temperature_float_txt);

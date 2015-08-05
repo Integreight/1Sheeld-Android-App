@@ -45,13 +45,12 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.color_detection_shield_fragment_layout, container,
-                false);
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
         activity.registerSlidingMenuListner(this);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.color_detection_shield_fragment_layout, container,
+                false);
     }
 
     private void applyListeners() {

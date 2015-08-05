@@ -21,21 +21,19 @@ import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener
 public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
     ImageView ledImage;
-    Button connectButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.led_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.led_shield_fragment_layout, container,
                 false);
-        return v;
 
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ledImage = (ImageView) v.findViewById(R.id.led_shield_led_imageview);
+        ledImage = (ImageView) view.findViewById(R.id.led_shield_led_imageview);
     }
 
     @Override
@@ -60,7 +58,7 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((LedShield) getApplication().getRunningShields()
+                            (getApplication().getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,

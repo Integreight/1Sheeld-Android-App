@@ -19,9 +19,8 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.clock_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.clock_shield_fragment_layout, container,
                 false);
-        return v;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        time_tx = (TextView) v.findViewById(R.id.time_txt);
+        time_tx = (TextView) view.findViewById(R.id.time_txt);
     }
 
     private ClockEventHandler clockEventHandler = new ClockEventHandler() {

@@ -23,10 +23,9 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.pressure_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.pressure_shield_fragment_layout,
+                container, false);
     }
 
     @Override
@@ -60,8 +59,8 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         pressure_float = (TextView) v.findViewById(R.id.pressure_float_txt);
         pressure_byte = (TextView) v.findViewById(R.id.pressure_byte_txt);
 

@@ -26,13 +26,12 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.nfc_shield_fragment_view, container, false);
-        return v;
+        return inflater.inflate(R.layout.nfc_shield_fragment_view, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         nfcRecords = (ExpandableListView) v.findViewById(R.id.nfc_Records_list);
         cardDetails = new OneSheeldTextView(activity);
         cardDetails.setTextColor(getResources().getColor(R.color.textColorOnDark));

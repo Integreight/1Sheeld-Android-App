@@ -21,7 +21,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 
 public class PushButtonFragment extends
         ShieldFragmentParent<PushButtonFragment> {
-
     Rect rect;
     AppSlidingLeftMenu menu;
     OneSheeldButton push;
@@ -29,9 +28,8 @@ public class PushButtonFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.push_button_shield_fragment_layout,
+        return inflater.inflate(R.layout.push_button_shield_fragment_layout,
                 container, false);
-        return v;
 
     }
 
@@ -43,7 +41,7 @@ public class PushButtonFragment extends
         menu.setCanSlide(false);
     }
 
-    private void off(MotionEvent event) {
+    private void off() {
         ((PushButtonShield) getApplication().getRunningShields().get(
                 getControllerTag())).setButton(false);
         push.setBackgroundResource(R.drawable.button_shield_red);
@@ -88,8 +86,8 @@ public class PushButtonFragment extends
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         push = (OneSheeldButton) v
                 .findViewById(R.id.push_button_shield_button_push_button);
         menu = (AppSlidingLeftMenu) activity
@@ -108,11 +106,11 @@ public class PushButtonFragment extends
                             (int) arg1.getY() + rect.top)) {
                         on(arg1);
                     } else {
-                        off(arg1);
+                        off();
                     }
                     return true;
                 } else if (arg1.getAction() == MotionEvent.ACTION_UP) {
-                    off(arg1);
+                    off();
                     return true;
                 }
                 return false;

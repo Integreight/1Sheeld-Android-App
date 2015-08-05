@@ -29,10 +29,9 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.twitter_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.twitter_shield_fragment_layout,
+                container, false);
 
     }
 
@@ -43,7 +42,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                 return;
         }
         initializeFirmata();
-        if (((TwitterShield) getApplication().getRunningShields().get(
+        if ((getApplication().getRunningShields().get(
                 getControllerTag())) != null
                 && ((TwitterShield) getApplication().getRunningShields().get(
                 getControllerTag())).isTwitterLoggedInAlready()) {
@@ -90,8 +89,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         lastTweetTextContainer = (LinearLayout) v.findViewById(R.id.tweetsCont);
         userNameTextView = (OneSheeldTextView) v
                 .findViewById(R.id.twitter_shield_username_textview);
@@ -299,7 +298,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
     }
 
     private void checkLogin() {
-        if (((TwitterShield) getApplication().getRunningShields().get(
+        if ((getApplication().getRunningShields().get(
                 getControllerTag())) != null
                 && ((TwitterShield) getApplication().getRunningShields().get(
                 getControllerTag())).isTwitterLoggedInAlready()) {
@@ -311,7 +310,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
             twitterLogin.setVisibility(View.INVISIBLE);
             lastTweetTextContainer.setVisibility(View.VISIBLE);
             lastTweetTextContainer.removeAllViews();
-            v.invalidate();
+            if(getView()!=null)
+            getView().invalidate();
         } else {
             userNameTextView.setVisibility(View.INVISIBLE);
             userNameTextView.setText("");
@@ -319,7 +319,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
             twitterLogin.setVisibility(View.VISIBLE);
             lastTweetTextContainer.setVisibility(View.INVISIBLE);
             lastTweetTextContainer.removeAllViews();
-            v.invalidate();
+            if(getView()!=null)
+                getView().invalidate();
         }
     }
 
@@ -372,7 +373,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
             lastTweetTextContainer.setVisibility(View.INVISIBLE);
             lastTweetTextContainer.removeAllViews();
         }
-        v.invalidate();
+        if(getView()!=null)
+            getView().invalidate();
     }
 
     private void buttonToLoggedIn() {
@@ -389,7 +391,8 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
             lastTweetTextContainer.setVisibility(View.VISIBLE);
             lastTweetTextContainer.removeAllViews();
         }
-        v.invalidate();
+        if(getView()!=null)
+            getView().invalidate();
     }
 
     @Override

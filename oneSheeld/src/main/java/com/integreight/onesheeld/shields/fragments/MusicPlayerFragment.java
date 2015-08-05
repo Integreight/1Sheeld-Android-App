@@ -27,9 +27,8 @@ public class MusicPlayerFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
+        return inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
                 container, false);
-        return v;
     }
 
     @Override
@@ -190,8 +189,8 @@ public class MusicPlayerFragment extends
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         musicFileName = (TextView) v.findViewById(R.id.playingMusic);
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
         playingBtn = (ImageView) v.findViewById(R.id.playingBtn);

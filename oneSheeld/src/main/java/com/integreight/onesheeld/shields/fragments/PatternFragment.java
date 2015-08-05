@@ -18,9 +18,8 @@ public class PatternFragment extends ShieldFragmentParent<PatternFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.pattern_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.pattern_shield_fragment_layout, container,
                 false);
-        return v;
 
     }
 

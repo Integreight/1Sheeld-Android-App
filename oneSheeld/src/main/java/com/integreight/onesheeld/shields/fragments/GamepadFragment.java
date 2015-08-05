@@ -3,9 +3,6 @@ package com.integreight.onesheeld.shields.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -144,16 +141,14 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        v = inflater.inflate(R.layout.gamepad_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.gamepad_shield_fragment_layout,
+                container, false);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         upArrowKey = (Key) v.findViewById(R.id.gamepad_up_arrow_key);
         downArrowKey = (Key) v.findViewById(R.id.gamepad_down_arrow_key);
         leftArrowKey = (Key) v.findViewById(R.id.gamepad_left_arrow_key);
@@ -187,9 +182,9 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((GamepadShield) getApplication()
+                            getApplication()
                                     .getRunningShields()
-                                    .get(getControllerTag()))
+                                    .get(getControllerTag())
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
                                             ArduinoFirmata.OUTPUT));
@@ -218,28 +213,10 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
     }
 
-    private void initializeKeysEventHandler(ViewGroup viewGroup) {
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            ViewGroup keypadRow = (ViewGroup) viewGroup.getChildAt(i);
-            for (int j = 0; j < keypadRow.getChildCount(); j++) {
-                View key = keypadRow.getChildAt(j);
-                if (key instanceof Key) {
-                    ((Key) key).setEventListener(touchEventListener);
-                }
-
-            }
-
-        }
-    }
-
     private void initializeFirmata() {
         if ((getApplication().getRunningShields().get(getControllerTag())) == null)
             getApplication().getRunningShields().put(getControllerTag(),
                     new GamepadShield(activity, getControllerTag()));
-    }
-
-    private void showPinsSelectionMenus() {
-
     }
 
     @Override

@@ -32,15 +32,14 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.internet_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.internet_shield_fragment_layout, container,
                 false);
-        return v;
 
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         requestsList = (ExpandableListView) v.findViewById(R.id.requestsList);
     }
 

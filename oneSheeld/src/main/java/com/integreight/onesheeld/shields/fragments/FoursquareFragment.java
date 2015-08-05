@@ -31,10 +31,9 @@ public class FoursquareFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.foursquare_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.foursquare_shield_fragment_layout,
+                container, false);
     }
 
     @Override
@@ -44,8 +43,8 @@ public class FoursquareFragment extends
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         mSharedPreferences = getApplication().getSharedPreferences(
                 "com.integreight.onesheeld", Context.MODE_PRIVATE);
         login = (Button) v.findViewById(R.id.foursquare_shiled_login_bt);

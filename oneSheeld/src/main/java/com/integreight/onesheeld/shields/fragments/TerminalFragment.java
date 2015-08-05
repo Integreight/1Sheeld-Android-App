@@ -40,14 +40,13 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.terminal_shield_fragment_layout,
+        return inflater.inflate(R.layout.terminal_shield_fragment_layout,
                 container, false);
-        return v;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(final View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         output = (ListView) v.findViewById(R.id.terminalOutput);
         outputAdapter = new TerminalLinesAdapter(activity,
                 new ArrayList<TerminalPrintedLine>());
@@ -208,26 +207,28 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
             if (!reInitController())
                 return;
         }
-        v.findViewById(
-                ((TerminalShield) getApplication().getRunningShields().get(
-                        getControllerTag())).encodingMths[0])
-                .setBackgroundColor(
-                        getResources().getColor(
-                                R.color.arduino_conn_resetAll_bg));
-        v.findViewById(
-                ((TerminalShield) getApplication().getRunningShields().get(
-                        getControllerTag())).encodingMths[((TerminalShield) getApplication()
-                        .getRunningShields().get(getControllerTag())).selectedEnMth])
-                .setBackgroundColor(
-                        getResources().getColor(R.color.arduinoPinsSelector));
+        if(getView()!=null) {
+            getView().findViewById(
+                    ((TerminalShield) getApplication().getRunningShields().get(
+                            getControllerTag())).encodingMths[0])
+                    .setBackgroundColor(
+                            getResources().getColor(
+                                    R.color.arduino_conn_resetAll_bg));
+            getView().findViewById(
+                    ((TerminalShield) getApplication().getRunningShields().get(
+                            getControllerTag())).encodingMths[((TerminalShield) getApplication()
+                            .getRunningShields().get(getControllerTag())).selectedEnMth])
+                    .setBackgroundColor(
+                            getResources().getColor(R.color.arduinoPinsSelector));
+        }
         ((TerminalShield) getApplication().getRunningShields().get(
                 getControllerTag())).setEventHandler(terminalHandler);
         if (((TerminalShield) getApplication().getRunningShields().get(
                 getControllerTag())).terminalPrintedLines == null)
             ((TerminalShield) getApplication().getRunningShields().get(
-                    getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+                    getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<>();
         ((TerminalShield) getApplication().getRunningShields().get(
-                getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+                getControllerTag())).tempLines = new CopyOnWriteArrayList<>();
         for (TerminalPrintedLine line : ((TerminalShield) getApplication()
                 .getRunningShields().get(getControllerTag())).terminalPrintedLines) {
             ((TerminalShield) getApplication().getRunningShields().get(
@@ -269,7 +270,6 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
     @Override
     public void onDestroy() {
-        v = null;
         super.onDestroy();
     }
 

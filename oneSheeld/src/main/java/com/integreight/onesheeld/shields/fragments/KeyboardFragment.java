@@ -47,9 +47,8 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.keyboard_shield_fragment_layout,
+        return inflater.inflate(R.layout.keyboard_shield_fragment_layout,
                 container, false);
-        return v;
     }
 
     @Override
@@ -74,14 +73,14 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         mEt1 = (EditText) v.findViewById(R.id.keyboard_myEdit_txt);
         mEt1.setMaxLines(Integer.MAX_VALUE);
         mEt1.setSingleLine(false);
         hideDefaultKeyboard();
         // adjusting key regarding window sizes
-        setKeys();
+        setKeys(v);
         setFrow();
         setSrow();
         setTrow();
@@ -387,7 +386,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
     }
 
-    private void setKeys() {
+    private void setKeys(View v) {
         try {
             DisplayMetrics displaymetrics = new DisplayMetrics();
             activity.getWindow().getWindowManager().getDefaultDisplay()

@@ -37,12 +37,11 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.facebook_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
 
         this.savedInstanceState = savedInstanceState;
-        return v;
+        return inflater.inflate(R.layout.facebook_shield_fragment_layout,
+                container, false);
 
     }
 
@@ -95,8 +94,8 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
         userNameTextView = (TextView) v
                 .findViewById(R.id.facebook_shield_username_textview);

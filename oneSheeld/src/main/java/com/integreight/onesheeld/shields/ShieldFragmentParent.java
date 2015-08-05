@@ -37,7 +37,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     // screen
     public MainActivity activity; // MainActivity Instance to be used in all
     // shields
-    public View v;
 
     public ShieldFragmentParent() {
         controllerTag = AppShields.getInstance().getShieldTag(((T) (this)).getClass().getName());
@@ -252,7 +251,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
     @Override
     public void onDestroy() {
-        v = null;
         super.onDestroy();
     }
 }

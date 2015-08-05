@@ -43,11 +43,9 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
-        v = inflater.inflate(R.layout.keypad_shield_fragment_layout, container,
-                false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.keypad_shield_fragment_layout, container,
+                false);
     }
 
     @Override
@@ -93,12 +91,12 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initializeKeysEventHandler((ViewGroup) v);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
+        initializeKeysEventHandler(v);
     }
 
-    private void initializeKeysEventHandler(ViewGroup viewGroup) {
+    private void initializeKeysEventHandler(View v) {
         ViewGroup keypad = (ViewGroup) v.findViewById(R.id.keysContainer);
         for (int i = 0; i < keypad.getChildCount(); i++) {
             ViewGroup keypadRow = (ViewGroup) keypad.getChildAt(i);

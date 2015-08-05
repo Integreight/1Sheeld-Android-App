@@ -28,13 +28,12 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.camera_shield_fragment_layout, container,
-                false);
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
         activity.registerSlidingMenuListner(this);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.camera_shield_fragment_layout, container,
+                false);
     }
 
     @Override

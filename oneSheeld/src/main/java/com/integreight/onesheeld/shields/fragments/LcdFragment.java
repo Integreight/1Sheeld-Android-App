@@ -22,32 +22,25 @@ import com.integreight.onesheeld.utils.customviews.RotatingTextView;
 
 public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
     private boolean drawn = false;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if (v == null) {
-            v = inflater.inflate(R.layout.lcd_shield_fragment_layout,
-                    container, false);
-            new Handler().postDelayed(new Runnable() {
+        return inflater.inflate(R.layout.lcd_shield_fragment_layout,
+                container, false);
+    }
 
-                @Override
-                public void run() {
-                    draw(0, 0, ((LcdShield) getApplication()
-                                    .getRunningShields().get(getControllerTag())).rows,
-                            ((LcdShield) getApplication().getRunningShields()
-                                    .get(getControllerTag())).columns);
-                    drawn = true;
-                }
-            }, 0);
-        } else
-            try {
-                ((ViewGroup) v.getParent()).removeView(v);
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-        return v;
+    @Override
+    public void onViewCreated(View v, Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
+        verticalContainer = (LinearLayout) v
+                .findViewById(R.id.verticalContainer);
+        draw(0, 0, ((LcdShield) getApplication()
+                        .getRunningShields().get(getControllerTag())).rows,
+                ((LcdShield) getApplication().getRunningShields()
+                        .get(getControllerTag())).columns);
+        drawn = true;
+        v.findViewById(R.id.bg).setBackgroundColor(Color.BLUE);
     }
 
     @Override
@@ -81,13 +74,10 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
         super.onStop();
     }
 
-    LinearLayout verticalContainer, firstRow, secondRow;
+    LinearLayout verticalContainer;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
-        verticalContainer = (LinearLayout) v
-                .findViewById(R.id.verticalContainer);
-        v.findViewById(R.id.bg).setBackgroundColor(Color.BLUE);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -127,8 +117,6 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
                 bg.setBackgroundColor(0x99000000);
                 RelativeLayout.LayoutParams curParams = new RelativeLayout.LayoutParams(
                         height / 10, height);
-                // curParams.topMargin = (int) (1 * scale + .5f);
-                // curParams.bottomMargin = (int) (1 * scale + .5f);
                 TextView cur = new TextView(getAppActivity());
                 cur.setLayoutParams(curParams);
                 cur.setBackgroundColor(0xffffffff);
@@ -157,10 +145,6 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
                 cell.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 18);
                 cell.setGravity(Gravity.CENTER);
                 cell.setTextColor(Color.WHITE);
-                // cell.setText(((LcdShieldd)
-                // getApplication().getRunningShields()
-                // .get(getControllerTag())).chars[(i * columnsEnd) + j]
-                // + "");
                 cell.setSingleLine(true);
                 cellCont.setLayoutParams(cellParams);
                 RelativeLayout.LayoutParams childParams = new RelativeLayout.LayoutParams(
@@ -272,18 +256,6 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
         }
     }
 
-    public void blinkLCD() {
-        v.findViewById(R.id.bg).startAnimation(
-                AnimationUtils.loadAnimation(getAppActivity(),
-                        R.anim.blink_anim_bg));
-    }
-
-    public void noBlinkLCD() {
-        v.findViewById(R.id.bg).startAnimation(
-                AnimationUtils.loadAnimation(getAppActivity(),
-                        R.anim.no_anim_bg));
-    }
-
     private synchronized void redraw(char[] arr) {
         for (int i = 0; i < ((LcdShield) getApplication().getRunningShields()
                 .get(getControllerTag())).rows; i++) {
@@ -292,7 +264,7 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
                             .getRunningShields().get(getControllerTag())).rows
                             - i - 1)).getChildAt(1);
             for (int j = 0; j < rowTxt.getChildCount(); j++) {
-                ((RotatingTextView) ((ViewGroup) rowTxt.getChildAt(j))
+                (((ViewGroup) rowTxt.getChildAt(j))
                         .getChildAt(0)).startAnimation(AnimationUtils
                         .loadAnimation(getAppActivity(), R.anim.rotate_lcd));
                 ((RotatingTextView) ((ViewGroup) rowTxt.getChildAt(j))

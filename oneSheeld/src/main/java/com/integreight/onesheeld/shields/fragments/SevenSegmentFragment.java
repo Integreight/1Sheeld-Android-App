@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -22,8 +21,6 @@ import java.util.Hashtable;
 
 public class SevenSegmentFragment extends
         ShieldFragmentParent<SevenSegmentFragment> {
-
-    Button connectButton;
     ImageView aSegment;
     ImageView bSegment;
     ImageView cSegment;
@@ -32,12 +29,19 @@ public class SevenSegmentFragment extends
     ImageView fSegment;
     ImageView gSegment;
     ImageView dotSegment;
+    LinearLayout colorChooseCont;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.sevensegment_shield_fragment_view,
+        return inflater.inflate(R.layout.sevensegment_shield_fragment_view,
                 container, false);
+
+    }
+
+    @Override
+    public void onViewCreated(View v, Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         aSegment = (ImageView) v
                 .findViewById(R.id.sevensegment_shield_a_segment_imageview);
         bSegment = (ImageView) v
@@ -54,8 +58,8 @@ public class SevenSegmentFragment extends
                 .findViewById(R.id.sevensegment_shield_g_segment_imageview);
         dotSegment = (ImageView) v
                 .findViewById(R.id.sevensegment_shield_dot_segment_imageview);
-        return v;
-
+        colorChooseCont = (LinearLayout) v
+                .findViewById(R.id.colorsContainer);
     }
 
     @Override
@@ -70,8 +74,6 @@ public class SevenSegmentFragment extends
                     .setSevenSegmentsEventHandler(sevenSegmentsEventHandler);
         refreshSegments(((SevenSegmentShield) getApplication()
                 .getRunningShields().get(getControllerTag())).refreshSegments());
-        LinearLayout colorChooseCont = (LinearLayout) v
-                .findViewById(R.id.colorsContainer);
         for (int i = 0; i < colorChooseCont.getChildCount(); i++) {
             final int x = i;
             colorChooseCont.getChildAt(x).setOnClickListener(
@@ -96,7 +98,7 @@ public class SevenSegmentFragment extends
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((SevenSegmentShield) getApplication()
+                            (getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
@@ -217,7 +219,7 @@ public class SevenSegmentFragment extends
 
     }
 
-    private void initializeFirmata(ArduinoFirmata firmata) {
+    private void initializeFirmata() {
         if ((getApplication().getRunningShields().get(getControllerTag())) == null)
             getApplication().getRunningShields().put(getControllerTag(),
                     new SevenSegmentShield(activity, getControllerTag()));
@@ -226,7 +228,7 @@ public class SevenSegmentFragment extends
 
     @Override
     public void doOnServiceConnected() {
-        initializeFirmata(getApplication().getAppFirmata());
+        initializeFirmata();
     }
 
 }

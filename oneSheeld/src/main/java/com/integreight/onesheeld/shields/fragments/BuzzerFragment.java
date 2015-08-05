@@ -33,9 +33,8 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.buzzer_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.buzzer_shield_fragment_layout, container,
                 false);
-        return v;
 
     }
 
@@ -81,8 +80,8 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         buzzerSpeaker = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         buzzerSpeaker

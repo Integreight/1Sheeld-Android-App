@@ -31,15 +31,14 @@ public class SpeechRecognitionFragment extends
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.voice_recognition_shield_fragment_view,
+        return inflater.inflate(R.layout.voice_recognition_shield_fragment_view,
                 container, false);
-        return v;
 
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         statusCircle = v.findViewById(R.id.statusCircle);
         statusHint = (OneSheeldTextView) v.findViewById(R.id.statusHint);
         rmsIndicator = (TextView) v.findViewById(R.id.rmsLevelIndicator);

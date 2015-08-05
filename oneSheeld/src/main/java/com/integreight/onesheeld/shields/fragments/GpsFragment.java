@@ -23,10 +23,9 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.gps_shield_fragment_layout, container,
-                false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.gps_shield_fragment_layout, container,
+                false);
     }
 
     @Override
@@ -54,8 +53,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
 
         Latit = (TextView) v.findViewById(R.id.lat_value_txt);
         Longit = (TextView) v.findViewById(R.id.lang_value_txt);

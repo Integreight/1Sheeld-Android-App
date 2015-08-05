@@ -27,19 +27,17 @@ public class ToggleButtonFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
+        return inflater.inflate(R.layout.toggle_button_shield_fragment_layout,
                 container, false);
-
-        return v;
 
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         toggleButtonButton = (OneSheeldToggleButton) v
                 .findViewById(R.id.toggle_button_shield_button_toggle_button);
-        if ((ToggleButtonShield) getApplication().getRunningShields().get(
+        if (getApplication().getRunningShields().get(
                 getControllerTag()) == null) {
             getApplication().getRunningShields().put(getControllerTag(),
                     new ToggleButtonShield(activity, getControllerTag()));
@@ -57,7 +55,7 @@ public class ToggleButtonFragment extends
 
                     }
                 });
-        if ((ToggleButtonShield) getApplication().getRunningShields().get(
+        if (getApplication().getRunningShields().get(
                 getControllerTag()) != null)
             toggleButtonButton.setEnabled(true);
     }

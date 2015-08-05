@@ -29,9 +29,8 @@ public class DataLoggerFragment extends
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.data_logger_shield_fragment_layout,
+        return inflater.inflate(R.layout.data_logger_shield_fragment_layout,
                 container, false);
-        return v;
     }
 
     @Override
@@ -57,8 +56,8 @@ public class DataLoggerFragment extends
 
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         uiHandler = new Handler();
         loggerStatus = (OneSheeldTextView) v.findViewById(R.id.loggerStatus);
         keysContainer = (LinearLayout) v.findViewById(R.id.keysContainer);

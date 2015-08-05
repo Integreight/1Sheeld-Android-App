@@ -28,15 +28,14 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.slider_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.slider_shield_fragment_layout, container,
                 false);
-        return v;
 
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         seekBar = (VerticalSeekBar) v.findViewById(R.id.slider_fragment_seekbar);
         seekBar.setEnabled(false);
         seekBar.setMax(255);
@@ -84,7 +83,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
                             int pinCode = pin.microHardwarePin;
-                            ((SliderShield) getApplication()
+                            (getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
@@ -146,7 +145,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
         super.onActivityCreated(savedInstanceState);
     }
 
-    private void initializeFirmata(ArduinoFirmata firmata) {
+    private void initializeFirmata() {
 
         if (getApplication().getRunningShields().get(getControllerTag()) == null)
             getApplication().getRunningShields().put(getControllerTag(),
@@ -156,7 +155,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
     @Override
     public void doOnServiceConnected() {
-        initializeFirmata(getApplication().getAppFirmata());
+        initializeFirmata();
     }
 
 }

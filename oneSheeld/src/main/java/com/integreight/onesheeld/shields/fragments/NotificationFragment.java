@@ -20,10 +20,9 @@ public class NotificationFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.notification_shield_fragment_layout,
-                container, false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.notification_shield_fragment_layout,
+                container, false);
 
     }
 
@@ -50,8 +49,8 @@ public class NotificationFragment extends
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         notificationTextTextView = (TextView) v
                 .findViewById(R.id.notification_shield_text_textview);
     }

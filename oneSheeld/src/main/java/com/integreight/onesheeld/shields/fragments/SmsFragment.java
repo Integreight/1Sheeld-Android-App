@@ -21,10 +21,9 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.sms_shield_fragment_layout, container,
-                false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.sms_shield_fragment_layout, container,
+                false);
 
     }
 
@@ -52,8 +51,8 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         smsTextContainer = (LinearLayout) v
                 .findViewById(R.id.sms_shield_text_container);
     }

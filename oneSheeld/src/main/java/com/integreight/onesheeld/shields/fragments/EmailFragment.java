@@ -39,14 +39,13 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.email_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.email_shield_fragment_layout, container,
                 false);
-        return v;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);

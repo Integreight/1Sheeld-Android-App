@@ -18,17 +18,16 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
     RelativeLayout.LayoutParams params;
-    TextView soundLevelIndicator;
+    TextView soundLevelIndicator, micValue;
     int stepValue;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        v = inflater.inflate(R.layout.mic_shield_fragment_view, container,
-                false);
         setHasOptionsMenu(true);
-        return v;
+        return inflater.inflate(R.layout.mic_shield_fragment_view, container,
+                false);
     }
 
     @Override
@@ -52,10 +51,11 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         soundLevelIndicator = (TextView) v
                 .findViewById(R.id.soundLevelIndicator);
+        micValue = (OneSheeldTextView) v.findViewById(R.id.micValue);
         params = (LayoutParams) soundLevelIndicator.getLayoutParams();
         soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -82,11 +82,9 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
                         params.bottomMargin = (int) (value * stepValue);
                         if (soundLevelIndicator != null)
                             soundLevelIndicator.requestLayout();
-                        if (v != null && v.findViewById(R.id.micValue) != null)
-                            ((OneSheeldTextView) v.findViewById(R.id.micValue))
-                                    .setText(String.valueOf(value).substring(0,
-                                            4)
-                                            + " db");
+                        micValue.setText(String.valueOf(value).substring(0,
+                                4)
+                                + " db");
                     }
                 }
             });

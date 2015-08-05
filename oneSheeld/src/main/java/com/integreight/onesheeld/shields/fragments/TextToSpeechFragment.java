@@ -27,14 +27,13 @@ public class TextToSpeechFragment extends
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        v = inflater.inflate(R.layout.tts_shield_fragment_layout, container,
+        return inflater.inflate(R.layout.tts_shield_fragment_layout, container,
                 false);
-        return v;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(v, savedInstanceState);
         speakerLevel = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         femaleBtn = (Button) v.findViewById(R.id.increaseBtn);
