@@ -1156,7 +1156,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
             frame.addByteArgument((byte) 0x01);
             frame.addIntegerArgument(2, key);
             frame.addByteArgument(state);
-            sendShieldFrame(frame,true);
+            sendShieldFrame(frame, false);
         }
 
         @Override
@@ -1165,7 +1165,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
             frame.addByteArgument((byte) 0x01);
             frame.addIntegerArgument(2, key);
             frame.addIntegerArgument(2,value);
-            sendShieldFrame(frame, true);
+            sendShieldFrame(frame, false);
         }
     };
 }
