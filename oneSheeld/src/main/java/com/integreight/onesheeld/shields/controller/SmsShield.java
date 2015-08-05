@@ -41,7 +41,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
         filter.setPriority(IntentFilter.SYSTEM_HIGH_PRIORITY);
         if (smsReceiveEventHandler != null)
             smsListener.setSmsReceiveEventHandler(smsReceiveEventHandler);
-        getActivity().registerReceiver(smsListener, filter);
+        getApplication().registerReceiver(smsListener, filter);
         return super.init(tag);
     }
 
@@ -139,7 +139,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
     @Override
     public void reset() {
         try {
-            getActivity().unregisterReceiver(smsListener);
+            getApplication().unregisterReceiver(smsListener);
         } catch (Exception e) {
         }
         frame = null;

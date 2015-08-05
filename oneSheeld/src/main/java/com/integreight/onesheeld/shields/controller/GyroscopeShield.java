@@ -168,7 +168,6 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

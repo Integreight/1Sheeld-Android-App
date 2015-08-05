@@ -1,23 +1,23 @@
 buildscript {
     repositories {
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
 
 repositories {
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
@@ -49,23 +49,16 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile project(':facebookSDK')
-    compile 'com.google.android.gms:play-services:+'
-    compile files('libs/activation.jar')
-    compile files('libs/additionnal.jar')
-    compile files('libs/android-async-http-1.4.6.jar')
-    compile files('libs/bolts-android-1.1.4.jar')
-    compile files('libs/mail.jar')
-    compile files('libs/Parse-1.8.0.jar')
-    compile files('libs/super-csv-2.3.1.jar')
-    compile files('libs/twitter4j-async-4.0.2.jar')
-    compile files('libs/twitter4j-core-4.0.2.jar')
-    compile files('libs/twitter4j-stream-4.0.2.jar')
-    compile 'com.crashlytics.android:crashlytics:1.+'
+    compile 'com.google.android.gms:play-services:7.3.0'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
-    compile 'com.github.hotchemi:android-rate:0.4.+'
+    compile 'com.github.hotchemi:android-rate:0.5.0'
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.0@aar') {
+        transitive = true;
+    }
 }
 
 def isCrashlyticsPropertiesAvailable() {
-    return new File("./oneSheeld/crashlytics.properties").exists()
+    return new File("./oneSheeld/fabric.properties").exists()
 }

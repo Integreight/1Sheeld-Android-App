@@ -63,7 +63,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((KeypadShield) getApplication()
+                            (getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(

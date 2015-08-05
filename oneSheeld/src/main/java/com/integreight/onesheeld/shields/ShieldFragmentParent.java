@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ToggleButton;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
@@ -19,6 +18,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 /**
@@ -102,22 +102,27 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         }
         return false;
     }
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
 
     @Override
     public void onStart() {
         Log.d("S", "start");
+        super.onStart();
         activity = getAppActivity();
         uiHandler = new Handler();
         /*
          * If the Shield lost it's controller instance within the application,
 		 * then starts to re-init it
 		 */
-        if (getApplication().getRunningShields().get(getControllerTag()) != null)
+        if (getApplication().getRunningShields().get(getControllerTag()) != null && activity != null && activity.findViewById(R.id.settingsFixedHandler) != null)
             getApplication().getRunningShields().get(getControllerTag())
                     .setHasForgroundView(true);
         else {
-            if (!reInitController())
-                return;
+//            if (!reInitController())
+            return;
         }
         if (getApplication().getAppFirmata() == null) {
             getApplication().addServiceEventHandler(
@@ -147,7 +152,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                                 || getApplication().getRunningShields().get(
                                 getControllerTag()).requiredPinsIndex == -1 ? View.GONE
                                 : View.VISIBLE);
-        super.onStart();
     }
 
     @Override
@@ -180,7 +184,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                     "tag") != null) ? getArguments().getString(
                     "tag") : getTag());
             if (controllerTag == null)
-                Crashlytics
+                CrashlyticsUtils
                         .log("ControllerTag = null" + ((T) (this)) != null ? ((T) (this))
                                 .getClass().getName() : "");
             Log.test("TAG", controllerTag + "  Tag from app:  " + tagFromApp
@@ -203,6 +207,9 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
     @Override
     public void onResume() {
+        super.onResume();
+        if(activity==null||activity.findViewById(R.id.shieldStatus)==null)
+            return;
         MainActivity.currentShieldTag = getControllerTag();
         // restore the staus of shield interaction toggle button
         if (getApplication().getRunningShields().get(getControllerTag()) != null)
@@ -214,7 +221,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         getApplication().getTracker().send(
                 new HitBuilders.ScreenViewBuilder().build());
         // Logging current view for crashlytics
-        Crashlytics.setString("Current View", getTag());
+        CrashlyticsUtils.setString("Current View", getTag());
         super.onResume();
     }
 

@@ -34,6 +34,7 @@ project.properties
 import-summary.txt
 manifest-merger-release-report.txt
 dev_meta_data.json
+captures/
 
 # OSX files
 .DS_Store
@@ -41,10 +42,8 @@ dev_meta_data.json
 # Windows thumbnail db
 Thumbs.db
 
-# Crashlytics
-com_crashlytics_export_strings.xml
-crashlytics-build.properties
-crashlytics.properties
+# Fabric
+fabric.properties
 
 # Android Studio
 .idea

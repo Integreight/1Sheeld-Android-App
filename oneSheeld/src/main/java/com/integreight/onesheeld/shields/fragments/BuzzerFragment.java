@@ -53,7 +53,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((SpeakerShield) getApplication()
+                            (getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
@@ -163,7 +163,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
             getApplication().getRunningShields().put(getControllerTag(),
                     new SpeakerShield(activity, getControllerTag()));
         }
-
     }
 
     @Override

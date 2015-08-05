@@ -7,4 +7,8 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light">
         <!-- API 11 theme customizations can go here. -->
     </style>
+
+    <!--<style name="AppTheme" parent="android:Theme.AppCompat.Light">-->
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">false</item>-->
+    <!--</style>-->
 </resources>

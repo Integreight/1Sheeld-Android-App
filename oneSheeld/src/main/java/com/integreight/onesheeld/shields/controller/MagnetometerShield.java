@@ -178,7 +178,6 @@ public class MagnetometerShield extends ControllerParent<MagnetometerShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

@@ -71,7 +71,7 @@ public class ColorDetectionShield extends
         } else {
             if (selectionAction != null)
                 selectionAction.onSuccess();
-            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
         }
         return super.invalidate(selectionAction, isToastable);
     }
@@ -98,7 +98,7 @@ public class ColorDetectionShield extends
             } catch (RemoteException e) {
             }
         } else
-            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -115,7 +115,7 @@ public class ColorDetectionShield extends
             } catch (RemoteException e) {
             }
         } else
-            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
     }
 
     private void notifyColorDetectionType() {
@@ -131,7 +131,7 @@ public class ColorDetectionShield extends
             } catch (RemoteException e) {
             }
         } else
-            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
 
@@ -181,7 +181,7 @@ public class ColorDetectionShield extends
 
     }
 
-    public void showPreview(float x, float y, int width, int height) {
+    public void showPreview(float x, float y, int width, int height) throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         Bundle b = new Bundle();
@@ -191,15 +191,13 @@ public class ColorDetectionShield extends
         b.putInt("h", height);
         msg.setData(b);
         if (mService != null)
-            try {
-                mService.send(msg);
-            } catch (RemoteException e) {
-            }
+            mService.send(msg);
         else
-            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
-    public void invalidatePreview(float x, float y) {
+
+    public void invalidatePreview(float x, float y) throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
         msg.replyTo = mMessenger;
         Bundle b = new Bundle();
@@ -207,22 +205,17 @@ public class ColorDetectionShield extends
         b.putFloat("y", y);
         msg.setData(b);
         if (mService != null)
-            try {
-                mService.send(msg);
-            } catch (RemoteException e) {
-            }
+            mService.send(msg);
         else
-            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
 
     }
-    public void hidePreview() {
+
+    public void hidePreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
-        try {
-            if (mService != null)
-                mService.send(msg);
-        } catch (RemoteException e) {
-        }
+        if (mService != null)
+            mService.send(msg);
     }
 
     public static interface ColorDetectionEventHandler {
@@ -254,6 +247,26 @@ public class ColorDetectionShield extends
     }
 
     @Override
+    public void preConfigChange() {
+//        Message msg = Message.obtain(null, UNBIND_COLOR_DETECTOR);
+//        msg.replyTo = mMessenger;
+//        try {
+//            if (mService != null)
+//                mService.send(msg);
+//        } catch (RemoteException e) {
+//        }
+//        getActivity().unbindService(mConnection);
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+//        initMessenger();
+//        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
     public void reset() {
         Message msg = Message.obtain(null, UNBIND_COLOR_DETECTOR);
         msg.replyTo = mMessenger;
@@ -262,7 +275,7 @@ public class ColorDetectionShield extends
                 mService.send(msg);
         } catch (RemoteException e) {
         }
-        getActivity().unbindService(mConnection);
+        getApplication().unbindService(mConnection);
     }
 
     boolean fullFrame = true;
@@ -295,7 +308,7 @@ public class ColorDetectionShield extends
                                 lastSentMS = SystemClock.elapsedRealtime();
                             }
                         } else if (msg.what == CameraHeadService.CRASHED) {
-                            getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
+                            getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
                         } else if (msg.what == CameraHeadService.SET_CAMERA_PREVIEW_TYPE) {
                             isBackPreview = msg.getData().getBoolean("isBack");
                             if (colorEventHandler != null)

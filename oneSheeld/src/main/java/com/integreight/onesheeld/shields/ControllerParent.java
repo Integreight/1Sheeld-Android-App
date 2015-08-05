@@ -6,7 +6,6 @@ import android.os.SystemClock;
 import android.view.View;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
 import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
@@ -19,6 +18,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -273,7 +273,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 } catch (RuntimeException e) {
                                     cachedArduinoCallbackStatus = false;
                                     Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
-                                    Crashlytics.logException(e);
+                                    CrashlyticsUtils.logException(e);
                                 }
                             }
                         });
@@ -309,7 +309,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         if (getApplication().getRunningShields().get(tag) == null)
             getApplication().getRunningShields().put(tag, this);
         selectionTime = SystemClock.elapsedRealtime();
-        Crashlytics
+        CrashlyticsUtils
                 .setString(
                         "Number of running shields",
                         getApplication().getRunningShields() == null
@@ -317,7 +317,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 : ""
                                 + getApplication().getRunningShields()
                                 .size());
-        Crashlytics
+        CrashlyticsUtils
                 .setString(
                         "Running Shields",
                         getApplication().getRunningShields() != null
@@ -399,7 +399,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                     .build());
             selectionTime = 0;
         }
-        Crashlytics
+        CrashlyticsUtils
                 .setString(
                         "Number of running shields",
                         getApplication().getRunningShields() == null
@@ -407,7 +407,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                 : ""
                                 + getApplication().getRunningShields()
                                 .size());
-        Crashlytics
+        CrashlyticsUtils
                 .setString(
                         "Running Shields",
                         getApplication().getRunningShields() != null
@@ -461,6 +461,20 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * abstract implemented in child class to be called on firing the Shield
      */
     public abstract void reset();
+
+    public void preConfigChangeThis() {
+        ((T) ControllerParent.this).preConfigChange();
+    }
+
+    public void postConfigChangeThis() {
+        ((T) ControllerParent.this).postConfigChange();
+    }
+    public void preConfigChange() {
+    }
+
+    public void postConfigChange() {
+        this.activity = (MainActivity) getActivity();
+    }
 
     public String[] getRequiredPinsNames() {
         return requiredPinsNames[requiredPinsIndex];

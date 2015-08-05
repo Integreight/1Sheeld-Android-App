@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -23,7 +24,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
@@ -42,6 +42,7 @@ import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
@@ -217,7 +218,7 @@ public class SheeldsList extends Fragment {
             if (!ArduinoConnectivityPopup.isOpened)
                 new ArduinoConnectivityPopup(activity).show();
         }
-        Crashlytics.setString("Current View", "Shields List");
+        CrashlyticsUtils.setString("Current View", "Shields List");
         ((OneSheeldApplication) activity.getApplication()).getTracker()
                 .setScreenName("Main Shields List");
         ((OneSheeldApplication) activity.getApplication()).getTracker().send(
@@ -382,9 +383,17 @@ public class SheeldsList extends Fragment {
         public void onClose(boolean closedManually) {
             if (activity != null) {
                 if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
-                    ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                    try {
+                        ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
-                    ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                    try {
+                        ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 if (activity.getThisApplication().taskerController != null) {
                     activity.getThisApplication().taskerController.reset();
                 }

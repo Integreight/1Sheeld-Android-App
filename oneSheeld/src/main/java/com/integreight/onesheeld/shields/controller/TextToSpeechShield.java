@@ -33,7 +33,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
     @Override
     public ControllerParent<TextToSpeechShield> init(String tag) {
-        myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
+        myTTS = new TextToSpeech(getApplication(), TextToSpeechShield.this);
         return super.init(tag, true);
     }
 
@@ -69,6 +69,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
             myTTS = null;
         }
     }
+
 
     public interface TTsEventHandler {
         public void onSpeek(String txt);
@@ -179,7 +180,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
                 }
             }
         } else
-            myTTS = new TextToSpeech(activity, TextToSpeechShield.this);
+            myTTS = new TextToSpeech(getApplication(), TextToSpeechShield.this);
 
     }
 

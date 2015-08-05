@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ExpandableListView;
 
-import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.adapters.InternetRequestsExpandapleAdapter;
 import com.integreight.onesheeld.model.InternetResponse;
@@ -17,6 +16,7 @@ import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.InternetShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.utils.InternetResponsePopup;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
 import org.apache.http.Header;
@@ -96,7 +96,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
             footer.setLayoutParams(new AbsListView.LayoutParams(AbsListView.LayoutParams.MATCH_PARENT, getPixelFromDips(50)));
             requestsList.addFooterView(footer);
         } catch (Exception e) {
-            Crashlytics.logException(e);
+            CrashlyticsUtils.logException(e);
         }
         requestsList.setAdapter(new InternetRequestsExpandapleAdapter(activity, requests));
         requestsList.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {

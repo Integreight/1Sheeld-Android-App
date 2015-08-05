@@ -13,7 +13,7 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="AppTheme" parent="android:Theme.Black.NoTitleBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 

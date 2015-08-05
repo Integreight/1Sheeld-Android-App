@@ -3,6 +3,7 @@ package com.integreight.onesheeld.appFragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,11 +48,23 @@ public class ShieldsOperations extends BaseContainerFragment {
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt("position", mFrag.currentShield);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        mFrag.currentShield = savedInstanceState == null || savedInstanceState.get("position") == null ? 0
+                : savedInstanceState.getInt("position");
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         v = inflater.inflate(R.layout.activity_shields_operation, container,
                 false);
-        setRetainInstance(true);
         return v;
     }
 
@@ -61,9 +74,15 @@ public class ShieldsOperations extends BaseContainerFragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, final Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(savedInstanceState);
+//        else new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                initView(savedInstanceState);
+//            }
+//        },1000);
     }
 
     MultiDirectionSlidingDrawer pinsSlidingView;
@@ -108,15 +127,15 @@ public class ShieldsOperations extends BaseContainerFragment {
             FragmentTransaction t = activity.getSupportFragmentManager()
                     .beginTransaction();
             mFrag = SelectedShieldsListFragment.newInstance(activity);
-            t.replace(R.id.selectedShieldsContainer, mFrag);
+            t.replace(R.id.selectedShieldsContainer, mFrag, "menuShieldsList");
             t.commit();
         } else {
             mFrag = (SelectedShieldsListFragment) activity
-                    .getSupportFragmentManager().findFragmentById(
-                            R.id.menu_frame);
+                    .getSupportFragmentManager().findFragmentByTag("menuShieldsList");
         }
         if (mContent == null) {
-            mContent = mFrag.getShieldFragment(0);
+            mContent = mFrag.getShieldFragment(savedInstanceState == null || savedInstanceState.get("position") == null ?
+                    mFrag.currentShield : savedInstanceState.getInt("position"));
             try {
                 new Handler().post(new Runnable() {
 
@@ -268,10 +287,6 @@ public class ShieldsOperations extends BaseContainerFragment {
         return super.onOptionsItemSelected(item);
     }
 
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
-
     @Override
     public void onDestroy() {
         mContent = null;
@@ -300,9 +315,17 @@ public class ShieldsOperations extends BaseContainerFragment {
                                 @Override
                                 public void onClick(View v) {
                                     if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
-                                        ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                                        try {
+                                            ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
                                     if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
-                                        ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                                        try {
+                                            ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
                                     activity.closeMenu();
                                     if (activity.getSupportFragmentManager()
                                             .getBackStackEntryCount() > 1) {

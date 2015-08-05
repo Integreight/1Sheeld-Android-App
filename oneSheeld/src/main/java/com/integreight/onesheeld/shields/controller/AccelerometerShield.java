@@ -173,7 +173,6 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

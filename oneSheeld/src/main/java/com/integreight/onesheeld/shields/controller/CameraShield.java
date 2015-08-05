@@ -92,7 +92,7 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     });
 
     void bindService() {
-        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
+        getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -205,36 +205,27 @@ public class CameraShield extends ControllerParent<CameraShield> implements
     }
 
 
-    public void showPreview() {
+    public void showPreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
         msg.replyTo = mMessenger;
         if (cameraBinder != null)
-            try {
-                cameraBinder.send(msg);
-            } catch (RemoteException e) {
-            }
+            cameraBinder.send(msg);
         else bindService();
     }
 
-    public void invalidatePreview() {
+    public void invalidatePreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
         msg.replyTo = mMessenger;
         if (cameraBinder != null)
-            try {
-                cameraBinder.send(msg);
-            } catch (RemoteException e) {
-            }
+            cameraBinder.send(msg);
         else bindService();
     }
 
-    public void hidePreview() {
+    public void hidePreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
-        try {
-            if (cameraBinder != null)
-                cameraBinder.send(msg);
-        } catch (RemoteException e) {
-        }
+        if (cameraBinder != null)
+            cameraBinder.send(msg);
     }
 
     @Override
@@ -326,10 +317,28 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 cameraBinder.send(msg);
         } catch (RemoteException e) {
         }
-        getActivity().unbindService(cameraServiceConnector);
+        getApplication().unbindService(cameraServiceConnector);
         capturesQueue = new ConcurrentLinkedQueue<>();
         isCameraBound = false;
 
+    }
+
+    @Override
+    public void preConfigChange() {
+//        Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
+//        try {
+//            if (cameraBinder != null)
+//                cameraBinder.send(msg);
+//        } catch (RemoteException e) {
+//        }
+//        getActivity().unbindService(cameraServiceConnector);
+        super.preConfigChange();
+    }
+
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+//        bindService();
     }
 
     private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {

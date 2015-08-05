@@ -36,9 +36,11 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +49,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 public class CameraHeadService extends Service implements
         SurfaceHolder.Callback {
@@ -613,8 +617,10 @@ public class CameraHeadService extends Service implements
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
         if (registeredShieldsIDs != null)
             registeredShieldsIDs.clear();
-        if (MainActivity.hasCrashlyticsApiKey(this)) {
-            Crashlytics.start(this);
+        try{
+            Fabric.with(this, new Crashlytics());
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -1066,7 +1072,7 @@ public class CameraHeadService extends Service implements
                                     lastPreviewCells = previewCells;
                                 }
                             } catch (Exception e) {
-                                Crashlytics.logException(e);
+                                CrashlyticsUtils.logException(e);
                             }
                         }
                     }

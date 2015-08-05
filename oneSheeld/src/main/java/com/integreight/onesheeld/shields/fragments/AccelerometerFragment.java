@@ -32,7 +32,6 @@ public class AccelerometerFragment extends
 
     @Override
     public void onStart() {
-        super.onStart();
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             if (!reInitController())
                 return;
@@ -42,7 +41,7 @@ public class AccelerometerFragment extends
                 .setAccelerometerEventHandler(accelerometerEventHandler);
         ((AccelerometerShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
-
+        super.onStart();
     }
 
     @Override
@@ -154,6 +153,5 @@ public class AccelerometerFragment extends
     public void onResume() {
         // TODO Auto-generated method stub
         super.onResume();
-
     }
 }

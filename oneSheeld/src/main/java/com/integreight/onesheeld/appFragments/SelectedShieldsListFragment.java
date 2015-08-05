@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
@@ -61,6 +60,7 @@ import com.integreight.onesheeld.shields.fragments.TerminalFragment;
 import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
@@ -71,6 +71,7 @@ public class SelectedShieldsListFragment extends ListFragment {
     private static SelectedShieldsListAdapter UIShieldAdapter;
     Map<String, ShieldFragmentParent<?>> creadtedShields = new HashMap<>();
     private MainActivity activity;
+    public int currentShield = 0;
 
     public static SelectedShieldsListFragment newInstance(Activity activity) {
         UIShieldAdapter = new SelectedShieldsListAdapter(activity);
@@ -98,21 +99,21 @@ public class SelectedShieldsListFragment extends ListFragment {
                 if (uiShield.shieldFragment != null)
                     return addToCreatedListAndReturn(uiShield, uiShield.shieldFragment.newInstance());
                 else {
-                    if(activity!=null)
-                    activity.getThisApplication()
-                            .getTracker()
-                            .send(new HitBuilders.EventBuilder()
-                                    .setCategory("Extreme Cases")
-                                    .setAction(
-                                            "Initialize fragments without reflection")
-                                    .build());
+                    if (activity != null)
+                        activity.getThisApplication()
+                                .getTracker()
+                                .send(new HitBuilders.EventBuilder()
+                                        .setCategory("Extreme Cases")
+                                        .setAction(
+                                                "Initialize fragments without reflection")
+                                        .build());
                     return generateShieldFragment(uiShield);
                 }
             } catch (java.lang.InstantiationException e) {
-                Crashlytics.logException(e);
+                CrashlyticsUtils.logException(e);
                 return generateShieldFragment(uiShield);
             } catch (IllegalAccessException e) {
-                Crashlytics.logException(e);
+                CrashlyticsUtils.logException(e);
                 return generateShieldFragment(uiShield);
             }
         }
@@ -249,14 +250,30 @@ public class SelectedShieldsListFragment extends ListFragment {
                         .findViewById(R.id.sliding_pane_layout)).isOpen();
             }
         });
+        setRetainInstance(true);
         super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onListItemClick(ListView lv, View v, int position, long id) {
         ShieldFragmentParent<?> newContent = getShieldFragment(position);
-        if (newContent != null)
+        if (newContent != null) {
+            currentShield = position;
             switchFragment(newContent, UIShieldAdapter.getItem(position));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt("position", currentShield);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        currentShield = savedInstanceState == null || savedInstanceState.get("position") == null ? 0
+                : savedInstanceState.getInt("position");
+        super.onViewStateRestored(savedInstanceState);
     }
 
     TextView shieldName;
@@ -283,7 +300,7 @@ public class SelectedShieldsListFragment extends ListFragment {
                         }
                     });
                 } catch (Exception e) {
-                    Crashlytics.logException(e);
+                    CrashlyticsUtils.logException(e);
                 }
                 activity.closeMenu();
             }

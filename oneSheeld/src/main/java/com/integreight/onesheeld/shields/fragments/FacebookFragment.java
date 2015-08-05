@@ -25,7 +25,7 @@ import com.integreight.onesheeld.shields.controller.FacebookShield.FacebookEvent
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
-public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
+public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> implements View.OnClickListener {
 
     LinearLayout lastPostTextCont;
     TextView userNameTextView;
@@ -48,27 +48,22 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
 
     @Override
     public void onStart() {
+        super.onStart();
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             if (!reInitController())
                 return;
         }
         initializeFirmata();
         checkLogin();
-        facebookLogin.setOnClickListener(new View.OnClickListener() {
+        facebookLogin.setOnClickListener(this);
+        facebookLogout.setOnClickListener(this);
+    }
 
-            @Override
-            public void onClick(View arg0) {
-                loginToFacebook();
-            }
-        });
-        facebookLogout.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View arg0) {
-                logoutFromFacebook();
-            }
-        });
-        super.onStart();
+    @Override
+    public void onResume() {
+        super.onResume();
+        facebookLogin.setOnClickListener(this);
+        facebookLogout.setOnClickListener(this);
     }
 
     @Override
@@ -294,4 +289,17 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> {
     public void doOnServiceConnected() {
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.login:
+                loginToFacebook();
+                break;
+            case R.id.logout:
+                logoutFromFacebook();
+                break;
+            default:
+                break;
+        }
+    }
 }

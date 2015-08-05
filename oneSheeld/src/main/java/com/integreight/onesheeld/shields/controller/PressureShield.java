@@ -161,7 +161,6 @@ public class PressureShield extends ControllerParent<PressureShield> implements
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

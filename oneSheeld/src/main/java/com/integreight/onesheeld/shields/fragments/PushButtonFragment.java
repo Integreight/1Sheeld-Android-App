@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
@@ -23,7 +22,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 public class PushButtonFragment extends
         ShieldFragmentParent<PushButtonFragment> {
 
-    Button connectButton;
     Rect rect;
     AppSlidingLeftMenu menu;
     OneSheeldButton push;
@@ -65,7 +63,7 @@ public class PushButtonFragment extends
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((PushButtonShield) getApplication()
+                            (getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
@@ -79,7 +77,7 @@ public class PushButtonFragment extends
                     public void onUnSelect(ArduinoPin pin) {
                     }
                 });
-        if ((PushButtonShield) getApplication().getRunningShields().get(
+        if (getApplication().getRunningShields().get(
                 getControllerTag()) == null) {
             getApplication().getRunningShields().put(getControllerTag(),
                     new PushButtonShield(activity, getControllerTag()));

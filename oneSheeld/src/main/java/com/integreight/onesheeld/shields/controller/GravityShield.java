@@ -168,7 +168,6 @@ public class GravityShield extends ControllerParent<GravityShield> implements
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

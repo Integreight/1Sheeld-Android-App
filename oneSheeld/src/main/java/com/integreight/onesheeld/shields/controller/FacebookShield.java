@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
-import com.crashlytics.android.Crashlytics;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.LoggingBehavior;
@@ -29,6 +28,7 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -63,14 +63,14 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
     @Override
     public ControllerParent<FacebookShield> init(String tag) {
-        mSharedPreferences = activity.getApplicationContext()
+        mSharedPreferences = getApplication()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
         Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
         Session session = Session.getActiveSession();
         if (session == null) {
             if (session == null) {
-                session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
+                session = new Session.Builder(getApplication()).setApplicationId(ApiObjects.facebook.get("app_id"))
                         .build();
             }
             Session.setActiveSession(session);
@@ -195,7 +195,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                             try {
                                 session.requestNewPublishPermissions(newPermissionsRequest);
                             } catch (Exception e) {
-                                Crashlytics.logException(e);
+                                CrashlyticsUtils.logException(e);
                                 if (eventHandler != null)
                                     eventHandler
                                             .onFacebookError("Failed to login, Please try again!");
@@ -390,7 +390,38 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
     }
 
     @Override
-    public void reset() {
+    public void preConfigChange() {
+//        if (Session.getActiveSession() != null) {
+//            Session.getActiveSession().close();
+//            Session.setActiveSession(null);
+//        }
+        super.preConfigChange();
+    }
 
+    @Override
+    public void postConfigChange() {
+        super.postConfigChange();
+//        mSharedPreferences = activity.getApplicationContext()
+//                .getSharedPreferences("com.integreight.onesheeld",
+//                        Context.MODE_PRIVATE);
+//        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
+//        Session session = Session.getActiveSession();
+//        if (session == null) {
+//            if (session == null) {
+//                session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
+//                        .build();
+//            }
+//            Session.setActiveSession(session);
+//        }
+//
+//        session.addCallback(statusCallback);
+    }
+
+    @Override
+    public void reset() {
+        if (Session.getActiveSession() != null) {
+            Session.getActiveSession().close();
+            Session.setActiveSession(null);
+        }
     }
 }

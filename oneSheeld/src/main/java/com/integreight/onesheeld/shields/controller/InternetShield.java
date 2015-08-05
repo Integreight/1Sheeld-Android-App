@@ -119,11 +119,11 @@ public class InternetShield extends
             InternetManager.getInstance();
             // initializing local db for fetched responses
             if (InternetManager.getInstance().getCachDB() == null || !InternetManager.getInstance().getCachDB().isOpen())
-                InternetManager.getInstance().init(activity.getApplicationContext());
+                InternetManager.getInstance().init(getApplication());
             else {
                 if (!InternetManager.getInstance().getCachDB().isOpen()) {
                     InternetManager.getInstance().close();
-                    InternetManager.resetInstance().init(activity.getApplicationContext());
+                    InternetManager.resetInstance().init(getApplication());
                 }
             }
         } catch (SnappydbException e) {
@@ -541,7 +541,6 @@ public class InternetShield extends
                 InternetManager.getInstance().getUiCallback().onStart();
         }
     }
-
     @Override
     public void reset() {
         try {

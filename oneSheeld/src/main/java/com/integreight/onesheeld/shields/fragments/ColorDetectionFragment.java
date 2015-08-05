@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,12 +128,26 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                         Window window = getActivity().getWindow();
                         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                         colorsContainer.getLocationInWindow(colorsViewLocation);
-                        ((ColorDetectionShield) getApplication().getRunningShields().get(
-                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                        try {
+                            ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                    getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                            removeListeners();
+                            cameraPreviewToggle.setChecked(false);
+                            applyListeners();
+                        }
                     }
                 } else
-                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).hidePreview();
+                    try {
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).hidePreview();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        removeListeners();
+                        cameraPreviewToggle.setChecked(true);
+                        applyListeners();
+                    }
             }
         });
     }
@@ -249,11 +264,25 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                         window = getActivity().getWindow();
                         window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                         colorsContainer.getLocationInWindow(colorsViewLocation);
-                        ((ColorDetectionShield) getApplication().getRunningShields().get(
-                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                        try {
+                            ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                    getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                            removeListeners();
+                            cameraPreviewToggle.setChecked(false);
+                            applyListeners();
+                        }
                     } else
-                        ((ColorDetectionShield) getApplication().getRunningShields().get(
-                                getControllerTag())).hidePreview();
+                        try {
+                            ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                    getControllerTag())).hidePreview();
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                            removeListeners();
+                            cameraPreviewToggle.setChecked(true);
+                            applyListeners();
+                        }
                 }
             }
         }, 500);
@@ -267,8 +296,12 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     public void onPause() {
         if (getApplication().getRunningShields().get(
                 getControllerTag()) != null)
-            ((ColorDetectionShield) getApplication().getRunningShields().get(
-                    getControllerTag())).hidePreview();
+            try {
+                ((ColorDetectionShield) getApplication().getRunningShields().get(
+                        getControllerTag())).hidePreview();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         getView().invalidate();
         super.onPause();
     }
@@ -440,11 +473,25 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                     window = getActivity().getWindow();
                     window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
                     colorsContainer.getLocationInWindow(colorsViewLocation);
-                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                    try {
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        removeListeners();
+                        cameraPreviewToggle.setChecked(false);
+                        applyListeners();
+                    }
                 } else if (!isChecked || activity.isMenuOpened()) {
-                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).hidePreview();
+                    try {
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).hidePreview();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        removeListeners();
+                        cameraPreviewToggle.setChecked(true);
+                        applyListeners();
+                    }
                     if (!isChecked && !activity.isMenuOpened()) {
                         removeListeners();
                         cameraPreviewToggle.setChecked(false);
@@ -464,21 +511,39 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
             window = getActivity().getWindow();
             window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
             colorsContainer.getLocationInWindow(colorsViewLocation);
-            ((ColorDetectionShield) getApplication().getRunningShields().get(
-                    getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
+            try {
+                ((ColorDetectionShield) getApplication().getRunningShields().get(
+                        getControllerTag())).invalidatePreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 colorsContainer.getLocationInWindow(colorsViewLocation);
                 if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && cameraPreviewToggle.isChecked()) {
                     uiHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            ((ColorDetectionShield) getApplication().getRunningShields().get(
-                                    getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                            try {
+                                ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                        getControllerTag())).showPreview(colorsViewLocation[0], colorsViewLocation[1] - rectangle.top, colorsContainer.getWidth(), colorsContainer.getHeight());
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                                removeListeners();
+                                cameraPreviewToggle.setChecked(false);
+                                applyListeners();
+                            }
                         }
                     }, 100);
                 } else
-                    ((ColorDetectionShield) getApplication().getRunningShields().get(
-                            getControllerTag())).hidePreview();
+                    try {
+                        ((ColorDetectionShield) getApplication().getRunningShields().get(
+                                getControllerTag())).hidePreview();
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                        removeListeners();
+                        cameraPreviewToggle.setChecked(true);
+                        applyListeners();
+                    }
             }
         }
     }

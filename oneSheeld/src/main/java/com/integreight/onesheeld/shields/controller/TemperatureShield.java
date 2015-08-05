@@ -178,7 +178,6 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
-
     @Override
     public void reset() {
         // TODO Auto-generated method stub

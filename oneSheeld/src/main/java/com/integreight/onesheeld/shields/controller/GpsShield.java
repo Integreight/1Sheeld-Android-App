@@ -50,7 +50,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
     @Override
     public ControllerParent<GpsShield> init(String tag) {
-        mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        mLocationClient = new GoogleApiClient.Builder(getApplication())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -103,7 +103,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         // check Internet connection
 
-        mLocationClient = new GoogleApiClient.Builder(getActivity().getApplicationContext())
+        mLocationClient = new GoogleApiClient.Builder(getApplication())
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -246,7 +246,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     public void onLocationChanged(Location arg0) {
         // TODO Auto-generated method stub
         if (eventHandler != null && mLocationClient.isConnected()) {
-            lastKnownLocation=arg0;
+            lastKnownLocation = arg0;
             eventHandler.onLangChanged(arg0.getLongitude() + "");
             eventHandler.onLatChanged(arg0.getLatitude() + "");
         }
