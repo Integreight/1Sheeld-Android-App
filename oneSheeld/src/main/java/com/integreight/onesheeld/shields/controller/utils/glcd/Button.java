@@ -21,25 +21,14 @@ public class Button implements ButtonShape {
     public Button (GlcdView view,float x,float y,float width,float height,int touchId,String text){
         this.btnX = x;
         this.btnY = y;
+        this.btnWidth = width;
+        this.btnHeight = height;
         //set text width and height to min
         textWidth = view.getStringWidth("..", view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         textHeight = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        if (width < textWidth)
-            this.btnWidth = textWidth;
-        else {
-            this.btnWidth = width;
-            textWidth = view.getStringWidth(text, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-            if (width < textWidth){
-                this.btnText = text.substring(0, view.getMaxCharsInWidth(text, width, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR)-2);
-                this.btnText += "..";
-            }else{
-                this.btnText = text;
-            }
-        }
+        setText(view,text);
         if (height < textHeight)
             this.btnHeight = textHeight;
-        else
-            this.btnHeight = height;
 
         btnTextX = btnX+((btnWidth-textWidth)/2);
         btnTextY = btnY+((btnHeight-textHeight)/2);

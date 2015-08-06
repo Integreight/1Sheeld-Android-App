@@ -31,6 +31,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
     private static final byte SHIELD_ID = UIShield.GLCD_SHIELD.getId();
     private GlcdEventHandler glcdEventHandler;
     private Shape tmpShape = null;
+    private int buttonCounter = 0;
 //    private GlcdView glcdView;
 
     private static final byte TYPE_GLCD = 0x00;
@@ -77,6 +78,11 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
     private static final byte BUTTON_SET_DIMENSIONS = 0x04;
     private static final byte BUTTON_SET_STYLE = 0x05;
 
+    private static final byte LABEL_FONT_ARIEL_REGULAR = 0X00;
+    private static final byte LABEL_FONT_ARIEL_BOLD = 0X01;
+    private static final byte LABEL_FONT_ARIEL_ITALIC = 0X02;
+    private static final byte LABEL_FONT_COMICSANS = 0X03;
+    private static final byte LABEL_FONT_SERIF = 0X04;
 
     private static final byte RADIOBUTTON_SET_TEXT = 0x03;
     private static final byte RADIOBUTTON_SET_SIZE = 0x04;
@@ -131,6 +137,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                         switch (frame.getArgument(0)[0]) {
                             case GLCD_CLEAR:
 //                                view.clear(view.WHITE);
+                                buttonCounter = 0;
                                 params = new ArrayList<>();
                                 params.add(view.WHITE);
                                 premissions= new ArrayList<>();
@@ -476,7 +483,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                         shapeRadius2 = 0;
 
                                     ((Ellipse) tmpShape).setRadiusX(shapeRadius);
-                                    ((Ellipse) tmpShape).setRadiusX(shapeRadius2);
+                                    ((Ellipse) tmpShape).setRadiusY(shapeRadius2);
                                 }
                                 break;
                             case ELLIPSE_SET_FILL:
@@ -524,20 +531,20 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 shapeKey = frame.getArgumentAsInteger(1);
                                 tmpShape = view.getFromShapes(shapeKey);
                                 if(tmpShape != null) {
-                                    switch (frame.getArgumentAsInteger(2)) {
-                                        case GlcdView.FONT_ARIEL_REGULAR:
+                                    switch (frame.getArgument(2)[0]) {
+                                        case LABEL_FONT_ARIEL_REGULAR:
                                             ((Label) tmpShape).setTextFont(GlcdView.FONT_ARIEL_REGULAR);
                                             break;
-                                        case GlcdView.FONT_ARIEL_BLACK:
+                                        case LABEL_FONT_ARIEL_BOLD:
                                             ((Label) tmpShape).setTextFont(GlcdView.FONT_ARIEL_BLACK);
                                             break;
-                                        case GlcdView.FONT_ARIEL_ITALIC:
+                                        case LABEL_FONT_ARIEL_ITALIC:
                                             ((Label) tmpShape).setTextFont(GlcdView.FONT_ARIEL_ITALIC);
                                             break;
-                                        case GlcdView.FONT_COMICSANS:
+                                        case LABEL_FONT_COMICSANS:
                                             ((Label) tmpShape).setTextFont(GlcdView.FONT_COMICSANS);
                                             break;
-                                        case GlcdView.FONT_SERIF:
+                                        case LABEL_FONT_SERIF:
                                             ((Label) tmpShape).setTextFont(GlcdView.FONT_SERIF);
                                             break;
                                     }
@@ -761,9 +768,10 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                 else if ((shapeHeight+shapeY) > view.getGlcdHeight())
                                     shapeHeight = view.getGlcdHeight()-1 - shapeY;
 
-                                if (frame.getArguments().size() < 7)
-                                    shapeText = "..";
-                                else
+                                if (frame.getArgument(6)[0] <= 0){
+                                    shapeText = "Button"+String.valueOf(buttonCounter);
+                                    buttonCounter++;
+                                }else
                                     shapeText = frame.getArgumentAsString(6);
 
                                 view.addToShapes(new Button(view, shapeX, shapeY, shapeWidth, shapeHeight, shapeKey, shapeText), shapeKey);
