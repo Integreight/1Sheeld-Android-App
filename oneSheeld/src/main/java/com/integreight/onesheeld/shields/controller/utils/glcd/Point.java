@@ -20,8 +20,8 @@ public class Point implements Shape {
     public void draw(GlcdView view) {
         if (visiblity) {
             List<Integer> params = new ArrayList<>();
-            params.add((int) y);
             params.add((int) x);
+            params.add((int) y);
             params.add(view.BLACK);
             List<Boolean> premissions= new ArrayList<>();
             premissions.add(true);
