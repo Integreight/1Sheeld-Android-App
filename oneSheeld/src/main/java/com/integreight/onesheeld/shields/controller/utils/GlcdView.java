@@ -391,7 +391,7 @@ public class GlcdView extends View implements OnTouchListener {
                         case MotionEvent.ACTION_DOWN:
                             // press
                             if (currentPressedKey != 0)
-                                if (shapes.indexOfKey(currentPressedKey) != -1)
+                                if (shapes.indexOfKey(currentPressedKey) > -1)
                                     shapes.get(currentPressedKey).setIsPressed(false);
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
@@ -414,7 +414,7 @@ public class GlcdView extends View implements OnTouchListener {
                         case MotionEvent.ACTION_UP:
                             //release
                             if (currentPressedKey != 0)
-                                if (shapes.indexOfKey(currentPressedKey) != -1)
+                                if (shapes.indexOfKey(currentPressedKey) > -1)
                                     shapes.get(currentPressedKey).setIsPressed(false);
 
                             key = touchs.get(startX).get(startY);
@@ -1599,7 +1599,7 @@ public class GlcdView extends View implements OnTouchListener {
 
         }else{
             if (currentPressedKey != 0)
-                if (shapes.indexOfKey(currentPressedKey) != -1)
+                if (shapes.indexOfKey(currentPressedKey) > -1)
                     shapes.get(currentPressedKey).setIsPressed(false);
         }
         return true;

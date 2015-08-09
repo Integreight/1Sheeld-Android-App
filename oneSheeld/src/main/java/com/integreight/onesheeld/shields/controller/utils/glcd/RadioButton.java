@@ -20,8 +20,8 @@ public class RadioButton implements ButtonShape {
     public RadioButton (GlcdView view,float x,float y,byte size,int touchId,String text){
         this.size = size;
         setSize(size);
-        this.btnX = x-btnRadius;
-        this.btnY = y-btnRadius;
+        this.btnX = x+btnRadius;
+        this.btnY = y+btnRadius;
         this.btnText = text;
         this.btnWidth = btnRadius+btnRadius+btnRadius+view.getStringWidth(text,GlcdView.TEXT_SMALL,GlcdView.FONT_ARIEL_REGULAR);
         this.btnHeight = btnRadius+btnRadius+btnRadius;
@@ -86,7 +86,12 @@ public class RadioButton implements ButtonShape {
                 radioGroup.select(this);
             this.isPressed = isPressed;
         }
-        return true;
+
+        if ((isPressed && isSelected) || (!isPressed && !isSelected)){
+            return true;
+        }
+
+        return false;
     }
 
     @Override
