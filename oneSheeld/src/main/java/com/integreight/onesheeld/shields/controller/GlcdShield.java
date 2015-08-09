@@ -410,7 +410,20 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                     else if (shapeY > view.getGlcdHeight())
                                         shapeY = view.getGlcdHeight()-1;
 
+                                    shapeX2 = frame.getArgumentAsInteger(4);
+                                    if (shapeX2 < 0)
+                                        shapeX2 = 0;
+                                    else if (shapeX2 > view.getGlcdWidth())
+                                        shapeX2 = view.getGlcdWidth()-1;
+
+                                    shapeY2 = frame.getArgumentAsInteger(5);
+                                    if (shapeY2 < 0)
+                                        shapeY2 = 0;
+                                    else if (shapeY2 > view.getGlcdHeight())
+                                        shapeY2 = view.getGlcdHeight()-1;
+
                                     ((Line) tmpShape).setPoint1(shapeX,shapeY);
+                                    ((Line) tmpShape).setPoint2(shapeX,shapeY);
                                 }
                                 break;
                         }
