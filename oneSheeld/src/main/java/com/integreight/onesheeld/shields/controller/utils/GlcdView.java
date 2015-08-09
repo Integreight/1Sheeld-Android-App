@@ -881,6 +881,7 @@ public class GlcdView extends View implements OnTouchListener {
         paint.setColor(color);
         paint.setStyle(Paint.Style.FILL);
 
+        /*
         if (x > glcdWidth-1)
             x = glcdWidth-1;
         if (y > glcdHeight-1)
@@ -893,6 +894,7 @@ public class GlcdView extends View implements OnTouchListener {
             width = glcdWidth-x-1;
         if (y+height > glcdHeight)
             height = glcdHeight-y-1;
+        */
 
         canvas.drawRect( originY+this.height-((y + height + 1) * pixelY ),x * pixelX + originX,  originY+this.height-(y * pixelY ), (x + width + 1) * pixelX + originX , paint);
     }
