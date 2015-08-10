@@ -9,11 +9,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Button;
 import com.integreight.onesheeld.shields.controller.utils.glcd.CheckBox;
 import com.integreight.onesheeld.shields.controller.utils.glcd.RadioButton;
 import com.integreight.onesheeld.shields.controller.utils.glcd.RadioGroup;
-import com.integreight.onesheeld.shields.controller.utils.glcd.Shape;
 import com.integreight.onesheeld.shields.controller.utils.glcd.Slider;
 
 import java.util.ArrayList;
@@ -30,10 +31,10 @@ public class GlcdView extends View implements OnTouchListener {
     Paint paint;
     int glcdWidth = 256, glcdHeight = 128;
     SparseArray<SparseArray<Integer>> touchs;
-    SparseArray<Shape> shapes;
     SparseArray<RadioGroup> radioGroups;
     public int BLACK = Color.parseColor("#11443d"), WHITE = Color.parseColor("#338f45");
     float pixelX, pixelY, originX, originY, width, height, ascpectRatio;
+    String controllerTag = "";
 
     public static final int TEXT_SMALL = 1, TEXT_MEDUIM = 3, TEXT_LARGE = 5;
     public static final int FONT_ARIEL_REGULAR = 0, FONT_ARIEL_BLACK = 1, FONT_ARIEL_ITALIC = 3, FONT_COMICSANS = 4, FONT_SERIF = 5;
@@ -61,9 +62,10 @@ public class GlcdView extends View implements OnTouchListener {
         this.glcdViewEventListener = glcdViewEventListener;
     }
 
-    public GlcdView(Context context) {
+    public GlcdView(Context context, String controllerTag) {
         super(context);
         this.context = context;
+        this.controllerTag = controllerTag;
         paint = new Paint();
         background = WHITE;
     }
@@ -117,8 +119,8 @@ public class GlcdView extends View implements OnTouchListener {
             setOnTouchListener(this);
         }
 
-        for (int shapesCount = 0; shapesCount < shapes.size(); shapesCount++) {
-            shapes.valueAt(shapesCount).draw(this);
+        for (int shapesCount = 0; shapesCount < ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).getShapesSize(); shapesCount++) {
+            ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.valueAt(shapesCount).draw(this);
         }
 
         paint.setColor(Color.parseColor("#393939"));
@@ -184,7 +186,7 @@ public class GlcdView extends View implements OnTouchListener {
                 if (params.size() == 1) {
                     if (do4Touchs) touchs = new SparseArray<>();
                     if (do4Shapes) {
-                        shapes = new SparseArray<>();
+                        // reset shapes is done by the controller
                         radioGroups = new SparseArray<>();
                     }
                     paint = new Paint();
@@ -255,23 +257,23 @@ public class GlcdView extends View implements OnTouchListener {
                         case MotionEvent.ACTION_DOWN:
                             // press
                             if (currentPressedKey != null)
-                                if (shapes.indexOfKey(currentPressedKey) > -1)
-                                    shapes.get(currentPressedKey).setIsPressed(false);
+                                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
+                                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
 
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
-                                sendFrame = shapes.get(key).setIsPressed(true);
+                                sendFrame = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).setIsPressed(true);
                                 currentPressedKey = key;
 
                                 if (glcdViewEventListener != null && sendFrame) {
-                                    if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
+                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Button.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_PRESSED);
-                                    else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
+                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_PRESSED);
-                                    else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
+                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_PRESSED);
-                                    else if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key)).getCurrentValue());
                                 }
 
                             }
@@ -279,22 +281,22 @@ public class GlcdView extends View implements OnTouchListener {
                         case MotionEvent.ACTION_UP:
                             //release
                             if (currentPressedKey != null)
-                                if (shapes.indexOfKey(currentPressedKey) > -1)
-                                    shapes.get(currentPressedKey).setIsPressed(false);
+                                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
+                                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
 
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
-                                sendFrame = shapes.get(key).setIsPressed(false);
+                                sendFrame = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).setIsPressed(false);
 
                                 if (glcdViewEventListener != null && sendFrame) {
-                                    if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
+                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Button.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_RELEASED);
-                                    else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
+                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_RELEASED);
-                                    else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
+                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_RELEASED);
-                                    else if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key)).getCurrentValue());
                                 }
                             }
                             break;
@@ -302,21 +304,21 @@ public class GlcdView extends View implements OnTouchListener {
                             // touch
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
-                                sendFrame = shapes.get(key).setTouched(startX, startY);
+                                sendFrame = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).setTouched(startX, startY);
                                 if (glcdViewEventListener != null && sendFrame) {
-                                    if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key)).getCurrentValue());
                                 }
                             } else {
                                 if (currentPressedKey != null)
-                                    if (shapes.indexOfKey(currentPressedKey) > -1)
-                                        shapes.get(currentPressedKey).setIsPressed(false);
+                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
+                                        ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
                             }
                             break;
                         default:
                             if (currentPressedKey != null)
-                                if (shapes.indexOfKey(currentPressedKey) > -1)
-                                    shapes.get(currentPressedKey).setIsPressed(false);
+                                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
+                                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
                             break;
                     }
                 }
@@ -378,18 +380,6 @@ public class GlcdView extends View implements OnTouchListener {
         if (a > b)
             return a - b;
         return b - a;
-    }
-
-    public void addToShapes(Shape shape, int key) {
-        shapes.append(key, shape);
-    }
-
-    public Shape getFromShapes(int key) {
-        if (shapes != null)
-            if (shapes.indexOfKey(key) > -1)
-                if (shapes.size() > 0)
-                    return shapes.get(key);
-        return null;
     }
 
     public void addToRadioGroups(RadioGroup group, int key) {
@@ -1058,8 +1048,8 @@ public class GlcdView extends View implements OnTouchListener {
 
         } else {
             if (currentPressedKey != null)
-                if (shapes.indexOfKey(currentPressedKey) > -1)
-                    shapes.get(currentPressedKey).setIsPressed(false);
+                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
+                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
         }
         return true;
     }

@@ -11,14 +11,14 @@ import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 
 /**
- * Created by Mouso on 6/7/2015.
+ * Created by Moustafa Nasr on 6/7/2015.
  */
 public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
     private GlcdView FragmentView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentView = new GlcdView(activity);
+        FragmentView = new GlcdView(activity, getControllerTag());
         return FragmentView;
     }
 
@@ -33,7 +33,6 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
             if (!reInitController())
                 return;
         }
-
 
         super.onStart();
     }
@@ -68,11 +67,11 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
     public void onResume() {
         ((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(glcdEventHandler);
         super.onResume();
+        FragmentView.invalidate();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 }
