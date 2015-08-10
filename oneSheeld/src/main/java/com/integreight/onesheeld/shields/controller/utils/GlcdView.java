@@ -35,7 +35,7 @@ public class GlcdView extends View implements OnTouchListener {
     public static final int FONT_ARIEL_REGULAR=0,FONT_ARIEL_BLACK=1,FONT_ARIEL_ITALIC=3,FONT_COMICSANS=4,FONT_SERIF=5;
 
     private boolean isInt=false;
-    private int currentPressedKey = 0;
+    private Integer currentPressedKey = null;
 
 
     public static final byte SHAPE_BUTTON=0x08,SHAPE_CHECKBOX=0x0A,SHAPE_SLIDER=0x0B,SHAPE_RADIOBUTTON=0x09;
@@ -390,9 +390,10 @@ public class GlcdView extends View implements OnTouchListener {
                     switch (action) {
                         case MotionEvent.ACTION_DOWN:
                             // press
-                            if (currentPressedKey != 0)
+                            if (currentPressedKey != null)
                                 if (shapes.indexOfKey(currentPressedKey) > -1)
                                     shapes.get(currentPressedKey).setIsPressed(false);
+
                             key = touchs.get(startX).get(startY);
                             if (key != null) {
                                 sendFrame = shapes.get(key).setIsPressed(true);
@@ -413,7 +414,7 @@ public class GlcdView extends View implements OnTouchListener {
                             break;
                         case MotionEvent.ACTION_UP:
                             //release
-                            if (currentPressedKey != 0)
+                            if (currentPressedKey != null)
                                 if (shapes.indexOfKey(currentPressedKey) > -1)
                                     shapes.get(currentPressedKey).setIsPressed(false);
 
@@ -442,7 +443,16 @@ public class GlcdView extends View implements OnTouchListener {
                                     if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
                                         glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
                                 }
+                            }else {
+                                if (currentPressedKey != null)
+                                    if (shapes.indexOfKey(currentPressedKey) > -1)
+                                        shapes.get(currentPressedKey).setIsPressed(false);
                             }
+                            break;
+                        default:
+                            if (currentPressedKey != null)
+                                if (shapes.indexOfKey(currentPressedKey) > -1)
+                                    shapes.get(currentPressedKey).setIsPressed(false);
                             break;
                     }
                 }
@@ -1600,7 +1610,7 @@ public class GlcdView extends View implements OnTouchListener {
             doOrder(ORDER_HANDLETOUCH, params, premissions);
 
         }else{
-            if (currentPressedKey != 0)
+            if (currentPressedKey != null)
                 if (shapes.indexOfKey(currentPressedKey) > -1)
                     shapes.get(currentPressedKey).setIsPressed(false);
         }
