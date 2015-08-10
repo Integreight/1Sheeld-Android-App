@@ -65,6 +65,7 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
 
     private static final byte LABEL_SET_FONT = 0x03;
     private static final byte LABEL_SET_SIZE = 0x04;
+    private static final byte LABEL_SET_TEXT = 0X05;
 
     private static final byte PROGRESSBAR_SET_RANGE = 0x03;
     private static final byte PROGRESSBAR_SET_VALUE = 0x04;
@@ -578,6 +579,13 @@ public class GlcdShield extends ControllerParent<GlcdShield>{
                                             ((Label) tmpShape).setTextSize(GlcdView.TEXT_LARGE);
                                             break;
                                     }
+                                }
+                                break;
+                            case LABEL_SET_TEXT:
+                                shapeKey = frame.getArgumentAsInteger(1);
+                                tmpShape = view.getFromShapes(shapeKey);
+                                if(tmpShape != null) {
+                                    ((Label) tmpShape).setText(frame.getArgumentAsString(2));
                                 }
                                 break;
                         }
