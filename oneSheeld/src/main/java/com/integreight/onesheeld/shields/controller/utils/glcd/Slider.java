@@ -6,15 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Mouso on 7/22/2015.
+ * Created by Moustafa Nasr on 7/22/2015.
  */
-public class Slider implements ButtonShape{
+public class Slider implements ButtonShape {
 
-    float btnX,btnY,btnWidth,btnHeight,start,end,currentValue;
+    float btnX, btnY, btnWidth, btnHeight, start, end, currentValue;
     int btnTouchId;
-    boolean isPressed=false,visibility=true;
+    boolean isPressed = false, visibility = true;
 
-    public Slider(GlcdView view,float x, float y, float width, float height,int touchId){
+    public Slider(GlcdView view, float x, float y, float width, float height, int touchId) {
         this.btnX = x;
         this.btnY = y;
         this.btnWidth = width;
@@ -43,7 +43,6 @@ public class Slider implements ButtonShape{
     public void draw(GlcdView view) {
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
             float progress = (((currentValue - start) * ((btnX + btnWidth - (btnHeight / 2)) - (btnX + (btnHeight / 2)))) / (end - start)) + (btnX + (btnHeight / 2));
 
             view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.BLACK);
@@ -87,7 +86,7 @@ public class Slider implements ButtonShape{
 
     @Override
     public boolean setTouched(int touchX, int touchY) {
-        float touchedValue = (((touchX-btnX)*(end-start))/(btnX+btnWidth-btnX))+start;
+        float touchedValue = (((touchX - btnX) * (end - start)) / (btnX + btnWidth - btnX)) + start;
         if (currentValue == touchedValue)
             return false;
         currentValue = touchedValue;
@@ -95,7 +94,7 @@ public class Slider implements ButtonShape{
     }
 
     @Override
-    public void setBtnTouchId(GlcdView view,int btnTouchId) {
+    public void setBtnTouchId(GlcdView view, int btnTouchId) {
         this.btnTouchId = btnTouchId;
         applyTouch(view);
     }
@@ -105,10 +104,10 @@ public class Slider implements ButtonShape{
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
-        params.add((int) (btnX+btnWidth));
-        params.add((int) (btnY+btnHeight));
+        params.add((int) (btnX + btnWidth));
+        params.add((int) (btnY + btnHeight));
         params.add(btnTouchId);
-        List<Boolean> premissions= new ArrayList<>();
+        List<Boolean> premissions = new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
         premissions.add(null);
@@ -121,10 +120,10 @@ public class Slider implements ButtonShape{
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
-        params.add((int) (btnX+btnWidth));
-        params.add((int) (btnY+btnHeight));
+        params.add((int) (btnX + btnWidth));
+        params.add((int) (btnY + btnHeight));
         params.add(null);
-        List<Boolean> premissions= new ArrayList<>();
+        List<Boolean> premissions = new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
         premissions.add(null);

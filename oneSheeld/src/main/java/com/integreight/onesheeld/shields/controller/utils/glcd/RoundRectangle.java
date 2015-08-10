@@ -3,14 +3,14 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
- * Created by Mouso on 7/21/2015.
+ * Created by Moustafa Nasr on 7/21/2015.
  */
-public class RoundRectangle implements Shape{
-    float x,y,width,height,radius;
+public class RoundRectangle implements Shape {
+    float x, y, width, height, radius;
     boolean isFill;
     boolean visibility = true;
 
-    public RoundRectangle(float x,float y,float width,float height,float radius,boolean isFill){
+    public RoundRectangle(float x, float y, float width, float height, float radius, boolean isFill) {
         this.x = x;
         this.y = y;
         this.width = width;

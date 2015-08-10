@@ -6,19 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Mouso on 7/22/2015.
+ * Created by Moustafa Nasr on 7/22/2015.
  */
 public class Button implements ButtonShape {
-    float btnX,btnY,btnWidth,btnHeight;
+    float btnX, btnY, btnWidth, btnHeight;
     int btnTouchId;
     String btnText = "..";
-    float btnTextX,btnTextY;
-    int textWidth = 0,textHeight = 0;
-    boolean isPressed=false,visibility=true;
+    float btnTextX, btnTextY;
+    int textWidth = 0, textHeight = 0;
+    boolean isPressed = false, visibility = true;
     byte style = 0;
     boolean changed = false;
 
-    public Button (GlcdView view,float x,float y,float width,float height,int touchId,String text){
+    public Button(GlcdView view, float x, float y, float width, float height, int touchId, String text) {
         this.btnX = x;
         this.btnY = y;
         this.btnWidth = width;
@@ -26,29 +26,29 @@ public class Button implements ButtonShape {
         //set text width and height to min
         textWidth = view.getStringWidth("..", view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
         textHeight = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        setText(view,text);
+        setText(view, text);
         if (height < textHeight)
             this.btnHeight = textHeight;
 
-        btnTextX = btnX+((btnWidth-textWidth)/2);
-        btnTextY = btnY+((btnHeight-textHeight)/2);
+        btnTextX = btnX + ((btnWidth - textWidth) / 2);
+        btnTextY = btnY + ((btnHeight - textHeight) / 2);
 
         this.btnTouchId = touchId;
         applyTouch(view);
 
-        isPressed=false;
+        isPressed = false;
         style = 0;
     }
 
     @Override
-    public void applyTouch(GlcdView view){
+    public void applyTouch(GlcdView view) {
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
-        params.add((int) (btnX+btnWidth));
-        params.add((int) (btnY+btnHeight));
+        params.add((int) (btnX + btnWidth));
+        params.add((int) (btnY + btnHeight));
         params.add(btnTouchId);
-        List<Boolean> premissions= new ArrayList<>();
+        List<Boolean> premissions = new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
         premissions.add(null);
@@ -61,10 +61,10 @@ public class Button implements ButtonShape {
         List<Integer> params = new ArrayList<>();
         params.add((int) (btnX));
         params.add((int) (btnY));
-        params.add((int) (btnX+btnWidth));
-        params.add((int) (btnY+btnHeight));
+        params.add((int) (btnX + btnWidth));
+        params.add((int) (btnY + btnHeight));
         params.add(null);
-        List<Boolean> premissions= new ArrayList<>();
+        List<Boolean> premissions = new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
         premissions.add(null);
@@ -73,7 +73,7 @@ public class Button implements ButtonShape {
     }
 
     @Override
-    public void setBtnTouchId(GlcdView view,int btnTouchId) {
+    public void setBtnTouchId(GlcdView view, int btnTouchId) {
         this.btnTouchId = btnTouchId;
         applyTouch(view);
     }
@@ -82,9 +82,9 @@ public class Button implements ButtonShape {
     public void draw(GlcdView view) {
         if (visibility) {
             if (isPressed) {
-                pressDraw(view,view.BLACK);
+                pressDraw(view, view.BLACK);
             } else {
-                releaseDraw(view,view.BLACK);
+                releaseDraw(view, view.BLACK);
             }
         }
     }
@@ -105,18 +105,18 @@ public class Button implements ButtonShape {
         this.style = style;
     }
 
-    public void setText(GlcdView view,String text) {
+    public void setText(GlcdView view, String text) {
         this.btnText = text;
         textWidth = view.getStringWidth(text, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        if (btnWidth < textWidth){
-            this.btnText = text.substring(0, view.getMaxCharsInWidth(text, btnWidth, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR)-2);
+        if (btnWidth < textWidth) {
+            this.btnText = text.substring(0, view.getMaxCharsInWidth(text, btnWidth, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) - 2);
             this.btnText += "..";
-        }else{
+        } else {
             this.btnText = text;
         }
         textWidth = view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        btnTextX = btnX+((btnWidth-textWidth)/2);
-        btnTextY = btnY+((btnHeight-textHeight)/2);
+        btnTextX = btnX + ((btnWidth - textWidth) / 2);
+        btnTextY = btnY + ((btnHeight - textHeight) / 2);
     }
 
     public void setWidth(float width) {
@@ -144,12 +144,12 @@ public class Button implements ButtonShape {
         return btnText;
     }
 
-    private void releaseDraw(GlcdView view,int color) {
-        if (style == 0){
+    private void releaseDraw(GlcdView view, int color) {
+        if (style == 0) {
             view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, view.WHITE + 1);
             view.drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, color);
             view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
-        }else {
+        } else {
             view.fillRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, view.BLACK);
             view.fillRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, view.WHITE);
 
@@ -160,11 +160,11 @@ public class Button implements ButtonShape {
         }
     }
 
-    private void pressDraw(GlcdView view,int color){
-        if (style == 0){
+    private void pressDraw(GlcdView view, int color) {
+        if (style == 0) {
             view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, color);
             view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE + 1);
-        }else {
+        } else {
             view.drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, color);
             view.drawString(this.btnText, btnTextX, btnTextY, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
         }

@@ -3,15 +3,15 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
- * Created by Mouso on 7/21/2015.
+ * Created by Moustafa Nasr on 7/21/2015.
  */
 public class Label implements Shape {
     String text = "";
-    float x,y;
-    int textSize = 0,textFont = 0;
+    float x, y;
+    int textSize = 0, textFont = 0;
     boolean visibility = true;
 
-    public Label(String text,float x,float y,int textSize,int textFont){
+    public Label(String text, float x, float y, int textSize, int textFont) {
         this.x = x;
         this.y = y;
         this.text = text;

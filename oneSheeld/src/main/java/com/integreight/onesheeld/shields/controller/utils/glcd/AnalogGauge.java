@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Mouso on 7/22/2015.*/
-public class AnalogGauge implements Shape{
-    private float xCenter, yCenter,radius,start=0,end=100,currentValue=0,angleStart=2.355f,angleEnd=7.065f;
-    boolean visibility=true;
+ * Created by Moustafa Nasr on 7/22/2015.
+ */
+public class AnalogGauge implements Shape {
+    private float xCenter, yCenter, radius, start = 0, end = 100, currentValue = 0, angleStart = 2.355f, angleEnd = 7.065f;
+    boolean visibility = true;
 
-    public AnalogGauge(float xCenter,float yCenter,float radius){
+    public AnalogGauge(float xCenter, float yCenter, float radius) {
         this.xCenter = xCenter;
         this.yCenter = yCenter;
         this.radius = radius;
@@ -20,39 +21,10 @@ public class AnalogGauge implements Shape{
         this.currentValue = 0;
     }
 
-//    public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end){
-//        this.xCenter = xCenter;
-//        this.yCenter = yCenter;
-//        this.radius = radius;
-//        if (start > end){
-//            float temp = end;
-//            end = start;
-//            start = temp;
-//        }
-//        this.start = start;
-//        this.end = end;
-//        this.currentValue = 0;
-//    }
-
-//    public AnalogGauge(float xCenter,float yCenter,float radius,float start,float end,float currentValue){
-//        this.xCenter = xCenter;
-//        this.yCenter = yCenter;
-//        this.radius = radius;
-//        if (start > end){
-//            float temp = end;
-//            end = start;
-//            start = temp;
-//        }
-//        this.start = start;
-//        this.end = end;
-//        this.currentValue = currentValue;
-//    }
-
     @Override
     public void draw(GlcdView view) {
         if (visibility) {
             //using Linear Interpolation get the angle corresponding to the given value.
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
             float angle = (((currentValue - start) * (angleEnd - angleStart)) / (end - start)) + angleStart;
 
             view.fillCircle(xCenter, yCenter, radius, view.WHITE);
@@ -105,47 +77,45 @@ public class AnalogGauge implements Shape{
         setCurrentValue(currentValue);
     }
 
-    private void drawIndicator(GlcdView view,float angleInRadian,int color){
-        float x1 = (float) (xCenter + (radius * 0.8 * Math.cos(angleInRadian))) ,x2=(float) (xCenter + (radius * Math.cos(angleInRadian)));
-        float y1 = (float) (yCenter + (radius * 0.8 * Math.sin(angleInRadian))) ,y2=(float) (yCenter + (radius * Math.sin(angleInRadian)));
+    private void drawIndicator(GlcdView view, float angleInRadian, int color) {
+        float x1 = (float) (xCenter + (radius * 0.8 * Math.cos(angleInRadian))), x2 = (float) (xCenter + (radius * Math.cos(angleInRadian)));
+        float y1 = (float) (yCenter + (radius * 0.8 * Math.sin(angleInRadian))), y2 = (float) (yCenter + (radius * Math.sin(angleInRadian)));
         view.drawLine(x1, y1, x2, y2, color);
     }
 
-    private void drawPointer(GlcdView view,float radius,float angleInRadian,int color){
-        float x1 = xCenter,x2=(float) (xCenter+(radius*Math.cos(angleInRadian)));
-        float y1 = yCenter,y2=(float) (yCenter + (radius * Math.sin(angleInRadian)));
+    private void drawPointer(GlcdView view, float radius, float angleInRadian, int color) {
+        float x1 = xCenter, x2 = (float) (xCenter + (radius * Math.cos(angleInRadian)));
+        float y1 = yCenter, y2 = (float) (yCenter + (radius * Math.sin(angleInRadian)));
         view.drawLine(x1, y1, x2, y2, color);
     }
 
-    private void drawPartOfCircle(GlcdView view,float radius,int color){
+    private void drawPartOfCircle(GlcdView view, float radius, int color) {
         float x = xCenter - radius;
         float y = yCenter - radius;
-        float width = 2*radius,height = 2*radius;
+        float width = 2 * radius, height = 2 * radius;
 
         if (width >= height) {
             if (radius > (width / 2))
                 radius = (width / 2);
-        }else {
-            if (radius > (height/2))
-                radius = (height/2);
+        } else {
+            if (radius > (height / 2))
+                radius = (height / 2);
         }
 
         float tSwitch;
-        float x1=0,y1=radius;
-        tSwitch = 3-2*radius;
-        while (x1<=y1){
+        float x1 = 0, y1 = radius;
+        tSwitch = 3 - 2 * radius;
+        while (x1 <= y1) {
             List<Integer> params = new ArrayList<>();
             params.add(null);
             params.add(null);
             params.add(color);
-            List<Boolean> premissions= new ArrayList<>();
+            List<Boolean> premissions = new ArrayList<>();
             premissions.add(true);
             premissions.add(null);
             premissions.add(null);
             premissions.add(null);
 
-//            view.setPixel((int) (x + radius - x1), (int) (y + radius - y1), color);
-//            view.setPixel((int) (x + radius - y1), (int) (y + radius - x1), color);
             params.set(0, (int) (x + radius - x1));
             params.set(1, (int) (y + radius - y1));
             view.doOrder(view.ORDER_SETDOT, params, premissions);
@@ -153,8 +123,6 @@ public class AnalogGauge implements Shape{
             params.set(1, (int) (y + radius - x1));
             view.doOrder(view.ORDER_SETDOT, params, premissions);
 
-//            view.setPixel((int) (x + width - radius + x1), (int) (y + radius - y1), color);
-//            view.setPixel((int) (x + width - radius + y1), (int) (y + radius - x1), color);
             params.set(0, (int) (x + width - radius + x1));
             params.set(1, (int) (y + radius - y1));
             view.doOrder(view.ORDER_SETDOT, params, premissions);
@@ -162,20 +130,18 @@ public class AnalogGauge implements Shape{
             params.set(1, (int) (y + radius - x1));
             view.doOrder(view.ORDER_SETDOT, params, premissions);
 
-//            view.setPixel((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
             params.set(0, (int) (x + width - radius + y1));
             params.set(1, (int) (y + height - radius + x1));
             view.doOrder(view.ORDER_SETDOT, params, premissions);
 
-//            view.setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
             params.set(0, (int) (x + radius - y1));
             params.set(1, (int) (y + height - radius + x1));
             view.doOrder(view.ORDER_SETDOT, params, premissions);
 
-            if (tSwitch <0)
-                tSwitch += (4*x1+6);
+            if (tSwitch < 0)
+                tSwitch += (4 * x1 + 6);
             else {
-                tSwitch += (4*(x1-y1)+10);
+                tSwitch += (4 * (x1 - y1) + 10);
                 y1--;
             }
             x1++;

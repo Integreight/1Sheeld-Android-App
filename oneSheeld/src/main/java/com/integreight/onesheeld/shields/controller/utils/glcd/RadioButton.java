@@ -10,21 +10,21 @@ import java.util.List;
  */
 public class RadioButton implements ButtonShape {
     // btnX , btnY are the center of the circle
-    float btnX,btnY,btnRadius,btnWidth,btnHeight;
+    float btnX, btnY, btnRadius, btnWidth, btnHeight;
     RadioGroup radioGroup;
     int btnTouchId;
     String btnText = "";
     byte size = 0;
-    boolean isSelected = false,isPressed=false,visibility= true;
+    boolean isSelected = false, isPressed = false, visibility = true;
 
-    public RadioButton (GlcdView view,float x,float y,byte size,int touchId,String text){
+    public RadioButton(GlcdView view, float x, float y, byte size, int touchId, String text) {
         this.size = size;
         setSize(size);
-        this.btnX = x+btnRadius;
-        this.btnY = y+btnRadius;
+        this.btnX = x + btnRadius;
+        this.btnY = y + btnRadius;
         this.btnText = text;
-        this.btnWidth = btnRadius+btnRadius+btnRadius+view.getStringWidth(text,GlcdView.TEXT_SMALL,GlcdView.FONT_ARIEL_REGULAR);
-        this.btnHeight = btnRadius+btnRadius+btnRadius;
+        this.btnWidth = btnRadius + btnRadius + btnRadius + view.getStringWidth(text, GlcdView.TEXT_SMALL, GlcdView.FONT_ARIEL_REGULAR);
+        this.btnHeight = btnRadius + btnRadius + btnRadius;
 
         this.btnTouchId = touchId;
         applyTouch(view);
@@ -41,14 +41,14 @@ public class RadioButton implements ButtonShape {
     }
 
     @Override
-    public void applyTouch(GlcdView view){
+    public void applyTouch(GlcdView view) {
         List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX-btnRadius));
-        params.add((int) (btnY-btnRadius));
-        params.add((int) (btnX+btnWidth));
-        params.add((int) (btnY+btnRadius));
+        params.add((int) (btnX - btnRadius));
+        params.add((int) (btnY - btnRadius));
+        params.add((int) (btnX + btnWidth));
+        params.add((int) (btnY + btnRadius));
         params.add(btnTouchId);
-        List<Boolean> premissions= new ArrayList<>();
+        List<Boolean> premissions = new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
         premissions.add(null);
@@ -59,12 +59,12 @@ public class RadioButton implements ButtonShape {
     @Override
     public void clearTouch(GlcdView view) {
         List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX-btnRadius));
-        params.add((int) (btnY-btnRadius));
-        params.add((int) (btnX+btnWidth));
-        params.add((int) (btnY+btnRadius));
+        params.add((int) (btnX - btnRadius));
+        params.add((int) (btnY - btnRadius));
+        params.add((int) (btnX + btnWidth));
+        params.add((int) (btnY + btnRadius));
         params.add(null);
-        List<Boolean> premissions= new ArrayList<>();
+        List<Boolean> premissions = new ArrayList<>();
         premissions.add(null);
         premissions.add(true);
         premissions.add(null);
@@ -73,7 +73,7 @@ public class RadioButton implements ButtonShape {
     }
 
     @Override
-    public void setBtnTouchId(GlcdView view,int btnTouchId) {
+    public void setBtnTouchId(GlcdView view, int btnTouchId) {
         this.btnTouchId = btnTouchId;
         applyTouch(view);
     }
@@ -87,7 +87,7 @@ public class RadioButton implements ButtonShape {
             this.isPressed = isPressed;
         }
 
-        if ((isPressed && isSelected) || (!isPressed && !isSelected)){
+        if ((isPressed && isSelected) || (!isPressed && !isSelected)) {
             return true;
         }
 
@@ -99,17 +99,17 @@ public class RadioButton implements ButtonShape {
         return false;
     }
 
-    public void setSelected(Boolean selected){
+    public void setSelected(Boolean selected) {
         isSelected = selected;
     }
 
-    public boolean getSelected(){
+    public boolean getSelected() {
         return isSelected;
     }
 
     public void setSize(byte size) {
         this.size = size;
-        switch (this.size){
+        switch (this.size) {
             case 0:
                 this.btnRadius = 5;
                 break;
@@ -123,10 +123,11 @@ public class RadioButton implements ButtonShape {
 
     }
 
-    public void setText(GlcdView view,String text) {
+    public void setText(GlcdView view, String text) {
         this.btnText = text;
-        this.btnWidth = btnX+btnRadius+btnRadius+btnRadius+view.getStringWidth(text,GlcdView.TEXT_SMALL,GlcdView.FONT_ARIEL_REGULAR);
-        this.btnHeight = btnY+btnRadius+btnRadius+btnRadius;;
+        this.btnWidth = btnX + btnRadius + btnRadius + btnRadius + view.getStringWidth(text, GlcdView.TEXT_SMALL, GlcdView.FONT_ARIEL_REGULAR);
+        this.btnHeight = btnY + btnRadius + btnRadius + btnRadius;
+        ;
     }
 
     @Override

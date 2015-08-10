@@ -2,18 +2,15 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by Mouso on 7/22/2015.
+ * Created by Moustafa Nasr on 7/22/2015.
  */
-public class ProgressBar implements Shape{
+public class ProgressBar implements Shape {
 
-    float x,y,width,height,start,end,currentValue;
+    float x, y, width, height, start, end, currentValue;
     boolean visibility = true;
 
-    public ProgressBar(float x,float y,float width,float height){
+    public ProgressBar(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -22,44 +19,6 @@ public class ProgressBar implements Shape{
         this.end = 100;
         this.currentValue = start;
     }
-
-//    public ProgressBar(float x,float y,float width,float height,float value){
-//        this.x = x;
-//        this.y = y;
-//        this.width = width;
-//        this.height = height;
-//        this.start = 0;
-//        this.end = 100;
-//        if (value < start)
-//            value = start;
-//        else if (value > end)
-//            value = end;
-//        this.currentValue = value;
-//    }
-
-//    public ProgressBar(float x,float y,float width,float height,float start,float end){
-//        this.x = x;
-//        this.y = y;
-//        this.width = width;
-//        this.height = height;
-//        this.start = start;
-//        this.end = end;
-//        this.currentValue = start;
-//    }
-
-//    public ProgressBar(float x,float y,float width,float height,float start,float end,float value){
-//        this.x = x;
-//        this.y = y;
-//        this.width = width;
-//        this.height = height;
-//        this.start = start;
-//        this.end = end;
-//        if (value < start)
-//            value = start;
-//        else if (value > end)
-//            value = end;
-//        this.currentValue = value;
-//    }
 
     public void setCurrentValue(float value) {
         if (value < start)
@@ -73,7 +32,6 @@ public class ProgressBar implements Shape{
     public void draw(GlcdView view) {
         if (visibility) {
             // Using linear interpolation eguation to get the average value.
-            //http://www.ajdesigner.com/phpinterpolation/linear_interpolation_equation.php
             float progress = (((currentValue - start) * (width - 5)) / (end - start)) + 5;
 
             view.fillRoundRectangle(x, y, width, height, 5, view.WHITE);

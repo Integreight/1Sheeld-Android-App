@@ -13,26 +13,18 @@ import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 /**
  * Created by Mouso on 6/7/2015.
  */
-public class GlcdFragment extends ShieldFragmentParent<GlcdFragment>{
-    private GlcdView helperView;
+public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
+    private GlcdView FragmentView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        helperView = new GlcdView(activity);
-        return helperView;
+        FragmentView = new GlcdView(activity);
+        return FragmentView;
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        /*helperView =(mView) v.findViewById(R.id.glcd_view);
-        Button bn = (Button) v.findViewById(R.id.glcd_btn_1);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).doClear();
-            }
-        });*/
     }
 
     @Override
@@ -49,19 +41,14 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment>{
     private GlcdShield.GlcdEventHandler glcdEventHandler = new GlcdShield.GlcdEventHandler() {
         @Override
         public void setView(GlcdView glcdView) {
-            if (canChangeUI() && uiHandler!= null) {
-                //glcdView.invalidate();
-                helperView = glcdView;
-
-                //Bitmap bb = ((GlcdView) (((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).getGlcdView())).getDrawingCache();
-                //helperView.setBitmap(bb);
-                //helperView.invalidate();
+            if (canChangeUI() && uiHandler != null) {
+                FragmentView = glcdView;
             }
         }
 
         @Override
         public GlcdView getView() {
-            return helperView;
+            return FragmentView;
         }
 
     };
@@ -81,7 +68,6 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment>{
     public void onResume() {
         ((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(glcdEventHandler);
         super.onResume();
-        //((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).doClear();
     }
 
     @Override
@@ -89,6 +75,4 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment>{
         super.onActivityCreated(savedInstanceState);
 
     }
-
-
 }

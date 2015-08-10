@@ -3,14 +3,14 @@ package com.integreight.onesheeld.shields.controller.utils.glcd;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
- * Created by Mouso on 7/21/2015.
+ * Created by Moustafa Nasr on 7/21/2015.
  */
-public class Ellipse implements Shape{
-    float xCenter,yCenter,radiusX,radiusY;
+public class Ellipse implements Shape {
+    float xCenter, yCenter, radiusX, radiusY;
     boolean isFill;
-    boolean visibility=true;
+    boolean visibility = true;
 
-    public Ellipse (float xCenter,float yCenter,float radiusX,float radiusY,boolean isFill){
+    public Ellipse(float xCenter, float yCenter, float radiusX, float radiusY, boolean isFill) {
         this.xCenter = xCenter;
         this.yCenter = yCenter;
         this.radiusX = radiusX;
