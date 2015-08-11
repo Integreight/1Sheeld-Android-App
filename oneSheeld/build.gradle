@@ -48,7 +48,7 @@ dependencies {
     compile project(':pullToRefreshlibrary')
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
-    compile project(':facebookSDK')
+    compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:7.5.0'
     compile 'com.google.android.gms:play-services-location:7.5.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])

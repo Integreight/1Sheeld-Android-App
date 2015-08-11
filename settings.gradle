@@ -1,4 +1,3 @@
-include ':facebookSDK'
 include ':pagerIndicator'
 include ':pullToRefreshlibrary'
 include ':quickReturnHeader'
