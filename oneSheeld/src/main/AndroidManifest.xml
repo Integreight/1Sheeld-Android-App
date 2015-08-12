@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
-    android:versionCode="150505"
-    android:versionName="1.3.0(GLCD_TEST)">
+    android:versionCode="150519"
+    android:versionName="1.3.1">
 
 
     <uses-sdk android:minSdkVersion="9" />
