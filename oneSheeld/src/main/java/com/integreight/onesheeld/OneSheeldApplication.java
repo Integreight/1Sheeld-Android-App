@@ -8,9 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -167,10 +165,10 @@ public class OneSheeldApplication extends Application {
                 }
                 if (MainActivity.thisInstance != null)
                     MainActivity.thisInstance.stopService();
-                Intent in = MainActivity.thisInstance != null?new Intent(MainActivity.thisInstance.getIntent()):new Intent();
+                Intent in = MainActivity.thisInstance != null ? new Intent(MainActivity.thisInstance.getIntent()) : new Intent();
                 PendingIntent intent = PendingIntent
                         .getActivity(getBaseContext(), 0, in,
-                                MainActivity.thisInstance != null?MainActivity.thisInstance.getIntent().getFlags():0);
+                                MainActivity.thisInstance != null ? MainActivity.thisInstance.getIntent().getFlags() : 0);
 
                 AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 mgr.set(AlarmManager.RTC,
@@ -183,7 +181,7 @@ public class OneSheeldApplication extends Application {
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
         try {
             Fabric.with(this, new Crashlytics());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

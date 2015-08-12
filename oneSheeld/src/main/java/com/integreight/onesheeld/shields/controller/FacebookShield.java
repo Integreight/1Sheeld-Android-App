@@ -1,9 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
@@ -11,16 +8,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
 import com.facebook.FacebookRequestError;
+import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.LoggingBehavior;
-import com.facebook.Request;
-import com.facebook.RequestAsyncTask;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.Settings;
-import com.facebook.model.GraphUser;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
@@ -28,30 +25,27 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.ArrayList;
 
 public class FacebookShield extends ControllerParent<FacebookShield> {
     private static FacebookEventHandler eventHandler;
     private String lastPost;
     private Fragment fragment;
+
     private static final byte UPDATE_STATUS_METHOD_ID = (byte) 0x01;
     private static final byte UPLOAD_PHOTO_METHOD_ID = (byte) 0x02;
 
-    static final String PREF_KEY_FACEBOOK_USERNAME = "FacebookName";
+    private static final String PERMISSION = "publish_actions";
+    private CallbackManager callbackManager;
+    private ProfileTracker profileTracker;
 
-    private static final List<String> PERMISSIONS = Arrays
-            .asList("publish_actions");
-    private boolean pendingPublishReauthorization = false;
-
-    private static SharedPreferences mSharedPreferences;
-    private Session.StatusCallback statusCallback = new SessionStatusCallback();
+    public CallbackManager getCallbackManager() {
+        return callbackManager;
+    }
 
     public String getLastPost() {
         return lastPost;
@@ -61,49 +55,34 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
         super();
     }
 
+    private void initFBSdk() {
+        if (!FacebookSdk.isInitialized()) {
+            FacebookSdk.setApplicationId(ApiObjects.facebook.get("app_id"));
+            FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
+        }
+        callbackManager = CallbackManager.Factory.create();
+
+        profileTracker = new ProfileTracker() {
+            @Override
+            protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
+                if (eventHandler != null) {
+                    if (currentProfile != null)
+                        eventHandler.onFacebookLoggedIn();
+                }
+            }
+        };
+    }
+
     @Override
     public ControllerParent<FacebookShield> init(String tag) {
-        mSharedPreferences = getApplication()
-                .getSharedPreferences("com.integreight.onesheeld",
-                        Context.MODE_PRIVATE);
-        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-        Session session = Session.getActiveSession();
-        if (session == null) {
-            if (session == null) {
-                session = new Session.Builder(getApplication()).setApplicationId(ApiObjects.facebook.get("app_id"))
-                        .build();
-            }
-            Session.setActiveSession(session);
-        }
-
-        session.addCallback(statusCallback);
+        initFBSdk();
         return super.init(tag);
     }
 
     public FacebookShield(Activity activity, String tag, Fragment fragment,
                           Bundle savedInstanceState) {
         super(activity, tag);
-        mSharedPreferences = activity.getApplicationContext()
-                .getSharedPreferences("com.integreight.onesheeld",
-                        Context.MODE_PRIVATE);
-        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-
-        Session session = Session.getActiveSession();
-        if (session == null) {
-            if (savedInstanceState != null) {
-                session = new Session.Builder(activity)
-                        .setApplicationId(ApiObjects.facebook.get("app_id"))
-                        .build();
-            }
-            if (session == null) {
-                session = new Session.Builder(activity)
-                        .setApplicationId(ApiObjects.facebook.get("app_id"))
-                        .build();
-            }
-            Session.setActiveSession(session);
-        }
-
-        session.addCallback(statusCallback);
+        initFBSdk();
         this.fragment = fragment;
     }
 
@@ -130,135 +109,35 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
     }
 
     public void loginToFacebook() {
-        Session session = Session.getActiveSession();
-        if (session == null) {
-            session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
-                    .build();
-            Session.setActiveSession(session);
-            loginToFacebook();
-        } else if (!session.isOpened()) {
-            session.openForRead(new Session.OpenRequest(fragment)
-                    .setCallback(statusCallback));
-        }
-
+        ArrayList<String> perms = new ArrayList<>();
+        perms.add("publish_actions");
+        LoginManager.getInstance().logInWithPublishPermissions(fragment, perms);
     }
 
     public void logoutFromFacebook() {
-
-        if (Session.getActiveSession() != null
-                && !Session.getActiveSession().isClosed()) {
-            // Session.getActiveSession().close();
-            Session.getActiveSession().closeAndClearTokenInformation();
-        } else {
-            Session ses = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
-                    .build();
-            Session.setActiveSession(ses);
-            ses.closeAndClearTokenInformation();
-        }
-        Session.setActiveSession(null);
-        Editor e = mSharedPreferences.edit();
-        e.remove(PREF_KEY_FACEBOOK_USERNAME);
-        e.commit();
-
+        LoginManager.getInstance().logOut();
     }
 
     public String getUsername() {
-        return mSharedPreferences.getString(PREF_KEY_FACEBOOK_USERNAME, "");
+        Profile profile = Profile.getCurrentProfile();
+        return profile != null ? profile.getName() : "";
     }
 
     public boolean isFacebookLoggedInAlready() {
-        if (Session.getActiveSession() != null)
-            return Session.getActiveSession().isOpened()
-                    && getUsername().length() > 0;
-        else
-            return false;
+        return AccessToken.getCurrentAccessToken() != null;
     }
 
-    private class SessionStatusCallback implements Session.StatusCallback {
-        @SuppressWarnings("unused")
-        @Override
-        public void call(final Session session, SessionState state,
-                         Exception exception) {
-            if (exception != null && eventHandler != null) {
-                exception.printStackTrace();
-                logoutFromFacebook();
-                eventHandler.onFacebookError(exception.getMessage());
-            }
-            if (session.isOpened()) {
-
-                if (!pendingPublishReauthorization) {
-                    if (!isSubsetOf(PERMISSIONS, session.getPermissions())) {
-                        pendingPublishReauthorization = true;
-                        Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
-                                fragment, PERMISSIONS);
-                        if (newPermissionsRequest != null)
-                            try {
-                                session.requestNewPublishPermissions(newPermissionsRequest);
-                            } catch (Exception e) {
-                                CrashlyticsUtils.logException(e);
-                                if (eventHandler != null)
-                                    eventHandler
-                                            .onFacebookError("Failed to login, Please try again!");
-                            }
-                        else {
-                            if (eventHandler != null)
-                                eventHandler
-                                        .onFacebookError("Kindly, reset you facebook app or update it!");
-                        }
-                    }
-                }
-
-                if ((pendingPublishReauthorization && state
-                        .equals(SessionState.OPENED_TOKEN_UPDATED))
-                        || isSubsetOf(PERMISSIONS, session.getPermissions())) {
-                    pendingPublishReauthorization = false;
-                    Request.newMeRequest(session,
-                            new Request.GraphUserCallback() {
-
-                                // callback after Graph API response with user
-                                // object
-                                @Override
-                                public void onCompleted(GraphUser user,
-                                                        Response response) {
-                                    if (user != null) {
-
-                                        Editor e = mSharedPreferences.edit();
-                                        e.putString(PREF_KEY_FACEBOOK_USERNAME,
-                                                user.getName());
-                                        e.commit();
-                                        if (eventHandler != null)
-                                            eventHandler.onFacebookLoggedIn();
-                                    }
-
-                                }
-                            }).executeAsync();
-                }
-                // make request to the /me API
-
-            }
-        }
-    }
-
-    private boolean isSubsetOf(Collection<String> subset,
-                               Collection<String> superset) {
-        for (String string : subset) {
-            if (!superset.contains(string)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     private void publishStory(final String message) {
-        Session session = Session.getActiveSession();
 
-        if (session != null) {
+        if (AccessToken.getCurrentAccessToken() != null) {
 
             Bundle postParams = new Bundle();
             postParams.putString("message", message);
-            Request.Callback callback = new Request.Callback() {
-                public void onCompleted(Response response) {
-                    FacebookRequestError error = response.getError();
+            GraphRequest.Callback callback = new GraphRequest.Callback() {
+                @Override
+                public void onCompleted(GraphResponse graphResponse) {
+                    FacebookRequestError error = graphResponse.getError();
                     if (error != null) {
                         if (eventHandler != null) {
                             Log.sysOut("$#$#$ " + error);
@@ -275,12 +154,11 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                 }
             };
 
-            Request request = new Request(session, "me/feed", postParams,
+            GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(), "feed", postParams,
                     HttpMethod.POST, callback);
 
-            RequestAsyncTask task = new RequestAsyncTask(request);
-            task.execute();
-        }
+            request.executeAsync();
+        } else if (eventHandler != null) eventHandler.onFacebookError("You must login first!");
 
     }
 
@@ -302,9 +180,8 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
             @Override
             protected void onPostExecute(final Void result1) {
-                Session session = Session.getActiveSession();
 
-                if (session != null) {
+                if (AccessToken.getCurrentAccessToken() != null) {
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     if (bi != null) {
                         bi.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -314,8 +191,8 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                     Bundle postParams = new Bundle();
                     postParams.putString("message", msg);
                     postParams.putByteArray("source", data);
-                    Request.Callback callback = new Request.Callback() {
-                        public void onCompleted(Response response) {
+                    GraphRequest.Callback callback = new GraphRequest.Callback() {
+                        public void onCompleted(GraphResponse response) {
                             FacebookRequestError error = response.getError();
                             if (error != null) {
                                 if (eventHandler != null) {
@@ -340,11 +217,10 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                     };
                     Toast.makeText(activity, "Uploading your image!",
                             Toast.LENGTH_SHORT).show();
-                    Request request = new Request(session, "me/photos",
+                    GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(), "me/photos",
                             postParams, HttpMethod.POST, callback);
 
-                    RequestAsyncTask task = new RequestAsyncTask(request);
-                    task.execute();
+                    request.executeAsync();
                 } else {
                     if (bi != null)
                         bi.recycle();
@@ -391,37 +267,16 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
 
     @Override
     public void preConfigChange() {
-//        if (Session.getActiveSession() != null) {
-//            Session.getActiveSession().close();
-//            Session.setActiveSession(null);
-//        }
         super.preConfigChange();
     }
 
     @Override
     public void postConfigChange() {
         super.postConfigChange();
-//        mSharedPreferences = activity.getApplicationContext()
-//                .getSharedPreferences("com.integreight.onesheeld",
-//                        Context.MODE_PRIVATE);
-//        Settings.addLoggingBehavior(LoggingBehavior.INCLUDE_ACCESS_TOKENS);
-//        Session session = Session.getActiveSession();
-//        if (session == null) {
-//            if (session == null) {
-//                session = new Session.Builder(activity).setApplicationId(ApiObjects.facebook.get("app_id"))
-//                        .build();
-//            }
-//            Session.setActiveSession(session);
-//        }
-//
-//        session.addCallback(statusCallback);
     }
 
     @Override
     public void reset() {
-        if (Session.getActiveSession() != null) {
-            Session.getActiveSession().close();
-            Session.setActiveSession(null);
-        }
+        profileTracker.stopTracking();
     }
 }

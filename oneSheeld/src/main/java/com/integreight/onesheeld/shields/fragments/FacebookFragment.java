@@ -16,7 +16,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.Session;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
@@ -72,19 +71,16 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (activity == null)
-            activity = (MainActivity) getActivity();
-        if (Session.getActiveSession() != null)
-            Session.getActiveSession().onActivityResult(activity, requestCode,
-                    resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        if (((FacebookShield) getApplication().getRunningShields().get(
+                getControllerTag())).getCallbackManager() != null)
+            ((FacebookShield) getApplication().getRunningShields().get(
+                    getControllerTag())).getCallbackManager().onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Session session = Session.getActiveSession();
-        Session.saveSession(session, outState);
     }
 
     @Override
