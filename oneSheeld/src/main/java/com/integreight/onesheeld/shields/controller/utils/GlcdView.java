@@ -119,8 +119,10 @@ public class GlcdView extends View implements OnTouchListener {
             setOnTouchListener(this);
         }
 
-        for (int shapesCount = 0; shapesCount < ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).getShapesSize(); shapesCount++) {
-            ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.valueAt(shapesCount).draw(this);
+        if (((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag) != null) {
+            for (int shapesCount = 0; shapesCount < ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).getShapesSize(); shapesCount++) {
+                ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.valueAt(shapesCount).draw(this);
+            }
         }
 
         paint.setColor(Color.parseColor("#393939"));
