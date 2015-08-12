@@ -883,7 +883,7 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                                 shapeSize = 0;
                                 shapeText = frame.getArgumentAsString(4);
                                 addToShapes(new RadioButton(view, shapeX, shapeY, shapeSize, shapeKey, shapeText), shapeKey);
-                                if (frame.getArguments().size() > 4)
+                                if (frame.getArguments().size() > 5)
                                     view.getFromRadioGroups(frame.getArgumentAsInteger(5)).add(((RadioButton) getFromShapes(frame.getArgumentAsInteger(1))));
                                 break;
                             case SHAPE_SET_POSTION:
@@ -1149,14 +1149,14 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
             return 0;
     }
 
-    public Shape getFromShapes(int index) {
+    public Shape getFromShapesByIndex(int index) {
         if (shapes != null)
             if (shapes.size() > index)
                 return shapes.valueAt(index);
         return null;
     }
 
-    public Shape getFromShapesByKey(int key) {
+    public Shape getFromShapes(int key) {
         if (shapes != null)
             if (shapes.indexOfKey(key) > -1)
                 if (shapes.size() > 0)
