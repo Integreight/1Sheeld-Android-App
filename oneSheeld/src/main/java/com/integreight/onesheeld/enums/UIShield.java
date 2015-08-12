@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.enums;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.model.Shield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
@@ -13,6 +14,7 @@ import com.integreight.onesheeld.shields.controller.EmptyShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.GpsShield;
 import com.integreight.onesheeld.shields.controller.GravityShield;
 import com.integreight.onesheeld.shields.controller.GyroscopeShield;
@@ -56,6 +58,7 @@ import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
 import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
+import com.integreight.onesheeld.shields.fragments.GlcdFragment;
 import com.integreight.onesheeld.shields.fragments.GpsFragment;
 import com.integreight.onesheeld.shields.fragments.GravityFragment;
 import com.integreight.onesheeld.shields.fragments.GyroscopeFragment;
@@ -188,7 +191,8 @@ public enum UIShield {
             PatternShield.class, PatternFragment.class), INTERNET_SHIELD((byte) 0x29, "Internet",
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
             InternetShield.class, InternetFragment.class), NFC_SHIELD((byte) 0x16, "NFC", 0xff03d203,
-            R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1),
+            R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1), GLCD_SHIELD((byte) 0x28, "Glcd", 0xff03d203,
+            R.drawable.shields_list_nfc_symbol, false, GlcdShield.class, GlcdFragment.class, 1),
     COLOR_DETECTION_SHIELD((byte) 0x05, "Color Detector",
             0xffde1f26, R.drawable.shields_list_color_detector_symbol, false,
             ColorDetectionShield.class, ColorDetectionFragment.class, 1);
