@@ -161,13 +161,7 @@ public enum UIShield {
             0xff6d0347, R.drawable.shields_list_camera_symbol, false,
             CameraShield.class, CameraFragment.class, 1), PHONE_SHIELD((byte) 0x20, "Phone",
             0xffe9bd03, R.drawable.shields_list_phone_symbol, false,
-            PhoneShield.class, PhoneFragment.class, 1), WIFI(
-            (byte) 0x20, "WIFI", 0xff08bbb2,
-            R.drawable.shields_list_wifi_symbol, false, EmptyShield.class, EmptyShieldFragment.class,
-            false), GSM((byte) 0x20, "GSM", 0xff5a0303,
-            R.drawable.shields_list_gsm_symbol, false, EmptyShield.class, EmptyShieldFragment.class, false), GLCD(
-            (byte) 0x20, "GLCD", 0xff988564,
-            R.drawable.shields_list_lcd_symbol, false, EmptyShield.class, EmptyShieldFragment.class, false), EMAIL_SHIELD(
+            PhoneShield.class, PhoneFragment.class, 1), EMAIL_SHIELD(
             (byte) 0x1E, "Email", 0xff114540,
             R.drawable.shields_list_email_symbol, false, EmailShield.class, EmailFragment.class), CLOCK_SHIELD(
             (byte) 0x21, "Clock", 0xffc45527,
@@ -192,7 +186,7 @@ public enum UIShield {
             0xffde1f26, R.drawable.shields_list_internet_symbol, false,
             InternetShield.class, InternetFragment.class), NFC_SHIELD((byte) 0x16, "NFC", 0xff03d203,
             R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1), GLCD_SHIELD((byte) 0x28, "Glcd", 0xff03d203,
-            R.drawable.shields_list_nfc_symbol, false, GlcdShield.class, GlcdFragment.class, 1),
+            R.drawable.shields_list_glcd_symbol, false, GlcdShield.class, GlcdFragment.class, 1),
     COLOR_DETECTION_SHIELD((byte) 0x05, "Color Detector",
             0xffde1f26, R.drawable.shields_list_color_detector_symbol, false,
             ColorDetectionShield.class, ColorDetectionFragment.class, 1);

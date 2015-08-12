@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -247,6 +248,12 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        activity=getAppActivity();
     }
 
     @Override

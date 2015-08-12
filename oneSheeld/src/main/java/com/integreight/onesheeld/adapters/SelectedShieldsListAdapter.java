@@ -34,6 +34,10 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
     public int getCount() {
         return shieldList.size();
     }
