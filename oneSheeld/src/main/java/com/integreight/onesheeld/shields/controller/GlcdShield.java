@@ -1143,7 +1143,10 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
     }
 
     public int getShapesSize() {
-        return this.shapes.size();
+        if (shapes != null)
+            return this.shapes.size();
+        else
+            return 0;
     }
 
     public Shape getFromShapes(int index) {
@@ -1163,7 +1166,7 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
 
 
     public void addToShapes(Shape shape, int key) {
-        shapes.append(key, shape);
+        shapes.put(key, shape);
     }
 
     public void setEventHandler(GlcdEventHandler glcdEventHandler) {
