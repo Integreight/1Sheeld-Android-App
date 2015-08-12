@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.appFragments;
 
 import android.app.Activity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
@@ -78,9 +79,17 @@ public class SelectedShieldsListFragment extends ListFragment {
     }
 
     @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        activity = (MainActivity) getActivity();
+        if (UIShieldAdapter != null)
+            UIShieldAdapter.setActivity(activity);
+    }
+
+    @Override
     public void onAttach(Activity activity) {
-        this.activity = (MainActivity) activity;
         super.onAttach(activity);
+        this.activity = (MainActivity) activity;
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
