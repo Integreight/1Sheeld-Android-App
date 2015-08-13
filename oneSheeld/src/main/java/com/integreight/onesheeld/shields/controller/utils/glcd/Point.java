@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -20,16 +21,7 @@ public class Point implements Shape {
     @Override
     public void draw(GlcdView view) {
         if (visiblity) {
-            List<Integer> params = new ArrayList<>();
-            params.add((int) x);
-            params.add((int) y);
-            params.add(view.BLACK);
-            List<Boolean> premissions = new ArrayList<>();
-            premissions.add(true);
-            premissions.add(null);
-            premissions.add(null);
-            premissions.add(null);
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            view.drawPoint((int) x,(int) y,GlcdShield.BLACK);
         }
     }
 

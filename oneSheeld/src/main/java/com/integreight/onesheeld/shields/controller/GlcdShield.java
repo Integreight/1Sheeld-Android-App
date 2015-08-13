@@ -1,7 +1,9 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
@@ -30,9 +32,23 @@ import java.util.List;
 public class GlcdShield extends ControllerParent<GlcdShield> {
 
     private static final byte SHIELD_ID = UIShield.GLCD_SHIELD.getId();
+
+
+    public static final int glcdWidth = 256, glcdHeight = 128;
+    public static int BLACK = Color.parseColor("#11443d"), WHITE = Color.parseColor("#338f45");
+    public static final int TEXT_SMALL = 1, TEXT_MEDUIM = 3, TEXT_LARGE = 5;
+    public static final int FONT_ARIEL_REGULAR = 0, FONT_ARIEL_BLACK = 1, FONT_ARIEL_ITALIC = 3, FONT_COMICSANS = 4, FONT_SERIF = 5;
+    public static final int ORDER_SETTOUCH = 1, ORDER_CLEAR = 2, ORDER_HANDLETOUCH = 4, ORDER_APPLYTOUCH = 5;
+    public static final byte SHAPE_BUTTON = 0x08, SHAPE_CHECKBOX = 0x0A, SHAPE_SLIDER = 0x0B, SHAPE_RADIOBUTTON = 0x09;
+    public static final byte STATE_PRESSED = 0x01, STATE_RELEASED = 0x00, STATE_TOUCHED = 0x02;
+
+
     private GlcdEventHandler glcdEventHandler;
     public SparseArray<Shape> shapes = new SparseArray<>();
+    public SparseArray<SparseArray<Integer>> touchs;
+    public SparseArray<RadioGroup> radioGroups;
     private Shape tmpShape = null;
+    public Integer currentPressedKey = null;
     private int buttonCounter = 0;
 
     private static final byte TYPE_GLCD = 0x00;
@@ -108,10 +124,12 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
     RadioGroup rg;
 
     public GlcdShield() {
+        initializeGLcd();
     }
 
     public GlcdShield(Activity activity, String tag) {
         super(activity, tag);
+        initializeGLcd();
     }
 
     @Override
@@ -123,1023 +141,1036 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
         return super.invalidate(selectionAction, isToastable);
     }
 
+    private boolean isInitialized = false;
+
+    public void initializeGLcd() {
+        if (!isInitialized) {
+            params = new ArrayList<>();
+            params.add(WHITE);
+            doOrder(ORDER_CLEAR, params);
+            isInitialized = true;
+        }
+    }
+
+    List<Integer> params;
+    GlcdView view;
+
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
-        if (glcdEventHandler != null) {
-            List<Integer> params;
-            List<Boolean> premissions;
-            if (frame.getShieldId() == SHIELD_ID) {
-                GlcdView view = glcdEventHandler.getView();
-                view.setGlcdViewEventListener(glcdViewEventListener);
-                switch (frame.getFunctionId()) {
-                    case TYPE_GLCD:
-                        switch (frame.getArgument(0)[0]) {
-                            case GLCD_CLEAR:
-                                buttonCounter = 0;
-                                shapes = new SparseArray<>();
-                                params = new ArrayList<>();
-                                params.add(view.WHITE);
-                                premissions = new ArrayList<>();
-                                premissions.add(true);
-                                premissions.add(true);
-                                premissions.add(true);
-                                premissions.add(true);
-                                view.doOrder(view.ORDER_CLEAR, params, premissions);
-                                break;
-                            case GLCD_CLEAR_RECTANGLE:
-                                shapeX = frame.getArgumentAsInteger(1);
+
+        if (frame.getShieldId() == SHIELD_ID) {
+            if (glcdEventHandler != null) {
+                view = glcdEventHandler.getView();
+            }
+            switch (frame.getFunctionId()) {
+                case TYPE_GLCD:
+                    switch (frame.getArgument(0)[0]) {
+                        case GLCD_CLEAR:
+                            params = new ArrayList<>();
+                            params.add(WHITE);
+                            doOrder(ORDER_CLEAR, params);
+                            break;
+                        case GLCD_CLEAR_RECTANGLE:
+                            shapeX = frame.getArgumentAsInteger(1);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
+
+                            shapeY = frame.getArgumentAsInteger(2);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
+
+                            shapeWidth = frame.getArgumentAsInteger(3);
+                            if (shapeWidth < 0)
+                                shapeWidth = 0;
+                            else if ((shapeWidth + shapeX) > glcdWidth)
+                                shapeWidth = glcdWidth - 1 - shapeX;
+
+                            shapeHeight = frame.getArgumentAsInteger(4);
+                            if (shapeHeight < 0)
+                                shapeHeight = 0;
+                            else if ((shapeHeight + shapeY) > glcdHeight)
+                                shapeHeight = glcdHeight - 1 - shapeY;
+
+                            // Not Implemented Yet
+                            break;
+                    }
+                    break;
+                case TYPE_POINT:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
+
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
+
+                            addToShapes(new Point(shapeX, shapeY), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
-                                shapeY = frame.getArgumentAsInteger(2);
+                                shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeWidth = frame.getArgumentAsInteger(3);
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_RECTANGLE:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
+
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
+
+                            shapeWidth = frame.getArgumentAsInteger(4);
+                            if (shapeWidth < 0)
+                                shapeWidth = 0;
+                            else if ((shapeWidth + shapeX) > glcdWidth)
+                                shapeWidth = glcdWidth - 1 - shapeX;
+
+                            shapeHeight = frame.getArgumentAsInteger(5);
+                            if (shapeHeight < 0)
+                                shapeHeight = 0;
+                            else if ((shapeHeight + shapeY) > glcdHeight)
+                                shapeHeight = glcdHeight - 1 - shapeY;
+
+                            shapeRadius = frame.getArgumentAsInteger(6);
+                            if (shapeRadius < 0)
+                                shapeRadius = 0;
+
+                            addToShapes(new RoundRectangle(shapeX, shapeY, shapeWidth, shapeHeight, shapeRadius, false), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeX = frame.getArgumentAsInteger(2);
+                                if (shapeX < 0)
+                                    shapeX = 0;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
+
+                                shapeY = frame.getArgumentAsInteger(3);
+                                if (shapeY < 0)
+                                    shapeY = 0;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
+
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                        case RECTANGLE_SET_RADIUS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeRadius = frame.getArgumentAsInteger(2);
+                                ((RoundRectangle) tmpShape).setRadius(shapeRadius);
+                            }
+                            break;
+                        case RECTANGLE_SET_FILL:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    ((RoundRectangle) tmpShape).setIsFill(false);
+                                else
+                                    ((RoundRectangle) tmpShape).setIsFill(true);
+                            }
+                            break;
+                        case RECTANGLE_SET_DIMENSIONS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeWidth = frame.getArgumentAsInteger(2);
                                 if (shapeWidth < 0)
                                     shapeWidth = 0;
-                                else if ((shapeWidth + shapeX) > view.getGlcdWidth())
-                                    shapeWidth = view.getGlcdWidth() - 1 - shapeX;
 
-                                shapeHeight = frame.getArgumentAsInteger(4);
+                                shapeHeight = frame.getArgumentAsInteger(3);
                                 if (shapeHeight < 0)
                                     shapeHeight = 0;
-                                else if ((shapeHeight + shapeY) > view.getGlcdHeight())
-                                    shapeHeight = view.getGlcdHeight() - 1 - shapeY;
 
-                                params = new ArrayList<>();
-                                params.add(view.WHITE);
-                                params.add(shapeX);
-                                params.add(shapeY);
-                                params.add(shapeWidth);
-                                params.add(shapeHeight);
-                                premissions = new ArrayList<>();
-                                premissions.add(true);
-                                premissions.add(true);
-                                premissions.add(true);
-                                premissions.add(null);
-                                view.doOrder(view.ORDER_CLEAR, params, premissions);
-                                break;
-                        }
-                        break;
-                    case TYPE_POINT:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                                ((RoundRectangle) tmpShape).setWidth(shapeWidth);
+                                ((RoundRectangle) tmpShape).setHeight(shapeHeight);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_LINE:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
+
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
+
+                            shapeX2 = frame.getArgumentAsInteger(4);
+                            if (shapeX2 < 0)
+                                shapeX2 = 0;
+                            else if (shapeX2 > glcdWidth)
+                                shapeX2 = glcdWidth - 1;
+
+                            shapeY2 = frame.getArgumentAsInteger(5);
+                            if (shapeY2 < 0)
+                                shapeY2 = 0;
+                            else if (shapeY2 > glcdHeight)
+                                shapeY2 = glcdHeight - 1;
+
+                            addToShapes(new Line(shapeX, shapeY, shapeX2, shapeY2), frame.getArgumentAsInteger(1));
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                addToShapes(new Point(shapeX, shapeY), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
-
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
-
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_RECTANGLE:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                        case LINE_SET_COORDINATES:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
-
-                                shapeWidth = frame.getArgumentAsInteger(4);
-                                if (shapeWidth < 0)
-                                    shapeWidth = 0;
-                                else if ((shapeWidth + shapeX) > view.getGlcdWidth())
-                                    shapeWidth = view.getGlcdWidth() - 1 - shapeX;
-
-                                shapeHeight = frame.getArgumentAsInteger(5);
-                                if (shapeHeight < 0)
-                                    shapeHeight = 0;
-                                else if ((shapeHeight + shapeY) > view.getGlcdHeight())
-                                    shapeHeight = view.getGlcdHeight() - 1 - shapeY;
-
-                                shapeRadius = frame.getArgumentAsInteger(6);
-                                if (shapeRadius < 0)
-                                    shapeRadius = 0;
-
-                                addToShapes(new RoundRectangle(shapeX, shapeY, shapeWidth, shapeHeight, shapeRadius, false), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
-
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
-
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case RECTANGLE_SET_RADIUS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeRadius = frame.getArgumentAsInteger(2);
-                                    ((RoundRectangle) tmpShape).setRadius(shapeRadius);
-                                }
-                                break;
-                            case RECTANGLE_SET_FILL:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        ((RoundRectangle) tmpShape).setIsFill(false);
-                                    else
-                                        ((RoundRectangle) tmpShape).setIsFill(true);
-                                }
-                                break;
-                            case RECTANGLE_SET_DIMENSIONS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeWidth = frame.getArgumentAsInteger(2);
-                                    if (shapeWidth < 0)
-                                        shapeWidth = 0;
-
-                                    shapeHeight = frame.getArgumentAsInteger(3);
-                                    if (shapeHeight < 0)
-                                        shapeHeight = 0;
-
-                                    ((RoundRectangle) tmpShape).setWidth(shapeWidth);
-                                    ((RoundRectangle) tmpShape).setHeight(shapeHeight);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_LINE:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeX = frame.getArgumentAsInteger(2);
-                                if (shapeX < 0)
-                                    shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
-
-                                shapeY = frame.getArgumentAsInteger(3);
-                                if (shapeY < 0)
-                                    shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
                                 shapeX2 = frame.getArgumentAsInteger(4);
                                 if (shapeX2 < 0)
                                     shapeX2 = 0;
-                                else if (shapeX2 > view.getGlcdWidth())
-                                    shapeX2 = view.getGlcdWidth() - 1;
+                                else if (shapeX2 > glcdWidth)
+                                    shapeX2 = glcdWidth - 1;
 
                                 shapeY2 = frame.getArgumentAsInteger(5);
                                 if (shapeY2 < 0)
                                     shapeY2 = 0;
-                                else if (shapeY2 > view.getGlcdHeight())
-                                    shapeY2 = view.getGlcdHeight() - 1;
+                                else if (shapeY2 > glcdHeight)
+                                    shapeY2 = glcdHeight - 1;
 
-                                addToShapes(new Line(shapeX, shapeY, shapeX2, shapeY2), frame.getArgumentAsInteger(1));
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                                ((Line) tmpShape).setPoint1(shapeX, shapeY);
+                                ((Line) tmpShape).setPoint2(shapeX2, shapeY2);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_ELLIPSE:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
 
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case LINE_SET_COORDINATES:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                            shapeRadius = frame.getArgumentAsInteger(4);
+                            if (shapeRadius < 0)
+                                shapeRadius = 0;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
+                            shapeRadius2 = frame.getArgumentAsInteger(5);
+                            if (shapeRadius2 < 0)
+                                shapeRadius2 = 0;
 
-                                    shapeX2 = frame.getArgumentAsInteger(4);
-                                    if (shapeX2 < 0)
-                                        shapeX2 = 0;
-                                    else if (shapeX2 > view.getGlcdWidth())
-                                        shapeX2 = view.getGlcdWidth() - 1;
-
-                                    shapeY2 = frame.getArgumentAsInteger(5);
-                                    if (shapeY2 < 0)
-                                        shapeY2 = 0;
-                                    else if (shapeY2 > view.getGlcdHeight())
-                                        shapeY2 = view.getGlcdHeight() - 1;
-
-                                    ((Line) tmpShape).setPoint1(shapeX, shapeY);
-                                    ((Line) tmpShape).setPoint2(shapeX2, shapeY2);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_ELLIPSE:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            addToShapes(new Ellipse(shapeX, shapeY, shapeRadius, shapeRadius2, false), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeRadius = frame.getArgumentAsInteger(4);
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                        case ELLIPSE_SET_RADIUS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeRadius = frame.getArgumentAsInteger(2);
                                 if (shapeRadius < 0)
                                     shapeRadius = 0;
 
-                                shapeRadius2 = frame.getArgumentAsInteger(5);
+                                shapeRadius2 = frame.getArgumentAsInteger(3);
                                 if (shapeRadius2 < 0)
                                     shapeRadius2 = 0;
 
-                                addToShapes(new Ellipse(shapeX, shapeY, shapeRadius, shapeRadius2, false), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                                ((Ellipse) tmpShape).setRadiusX(shapeRadius);
+                                ((Ellipse) tmpShape).setRadiusY(shapeRadius2);
+                            }
+                            break;
+                        case ELLIPSE_SET_FILL:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    ((Ellipse) tmpShape).setIsFill(false);
+                                else
+                                    ((Ellipse) tmpShape).setIsFill(true);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_LABEL:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            shapeY = frame.getArgumentAsInteger(3);
+                            shapeText = frame.getArgumentAsString(4);
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
-
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case ELLIPSE_SET_RADIUS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeRadius = frame.getArgumentAsInteger(2);
-                                    if (shapeRadius < 0)
-                                        shapeRadius = 0;
-
-                                    shapeRadius2 = frame.getArgumentAsInteger(3);
-                                    if (shapeRadius2 < 0)
-                                        shapeRadius2 = 0;
-
-                                    ((Ellipse) tmpShape).setRadiusX(shapeRadius);
-                                    ((Ellipse) tmpShape).setRadiusY(shapeRadius2);
-                                }
-                                break;
-                            case ELLIPSE_SET_FILL:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        ((Ellipse) tmpShape).setIsFill(false);
-                                    else
-                                        ((Ellipse) tmpShape).setIsFill(true);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_LABEL:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            addToShapes(new Label(shapeText, shapeX, shapeY, TEXT_SMALL, FONT_ARIEL_REGULAR), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 shapeY = frame.getArgumentAsInteger(3);
-                                shapeText = frame.getArgumentAsString(4);
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                        case LABEL_SET_FONT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                switch (frame.getArgument(2)[0]) {
+                                    case LABEL_FONT_ARIEL_REGULAR:
+                                        ((Label) tmpShape).setTextFont(FONT_ARIEL_REGULAR);
+                                        break;
+                                    case LABEL_FONT_ARIEL_BOLD:
+                                        ((Label) tmpShape).setTextFont(FONT_ARIEL_BLACK);
+                                        break;
+                                    case LABEL_FONT_ARIEL_ITALIC:
+                                        ((Label) tmpShape).setTextFont(FONT_ARIEL_ITALIC);
+                                        break;
+                                    case LABEL_FONT_COMICSANS:
+                                        ((Label) tmpShape).setTextFont(FONT_COMICSANS);
+                                        break;
+                                    case LABEL_FONT_SERIF:
+                                        ((Label) tmpShape).setTextFont(FONT_SERIF);
+                                        break;
+                                }
+                            }
+                            break;
+                        case LABEL_SET_SIZE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                switch (frame.getArgument(2)[0]) {
+                                    case 0x00:
+                                        ((Label) tmpShape).setTextSize(TEXT_SMALL);
+                                        break;
+                                    case 0x01:
+                                        ((Label) tmpShape).setTextSize(TEXT_MEDUIM);
+                                        break;
+                                    case 0x02:
+                                        ((Label) tmpShape).setTextSize(TEXT_LARGE);
+                                        break;
+                                }
+                            }
+                            break;
+                        case LABEL_SET_TEXT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((Label) tmpShape).setText(frame.getArgumentAsString(2));
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_PROGRESSBAR:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                addToShapes(new Label(shapeText, shapeX, shapeY, GlcdView.TEXT_SMALL, GlcdView.FONT_ARIEL_REGULAR), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case LABEL_SET_FONT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    switch (frame.getArgument(2)[0]) {
-                                        case LABEL_FONT_ARIEL_REGULAR:
-                                            ((Label) tmpShape).setTextFont(GlcdView.FONT_ARIEL_REGULAR);
-                                            break;
-                                        case LABEL_FONT_ARIEL_BOLD:
-                                            ((Label) tmpShape).setTextFont(GlcdView.FONT_ARIEL_BLACK);
-                                            break;
-                                        case LABEL_FONT_ARIEL_ITALIC:
-                                            ((Label) tmpShape).setTextFont(GlcdView.FONT_ARIEL_ITALIC);
-                                            break;
-                                        case LABEL_FONT_COMICSANS:
-                                            ((Label) tmpShape).setTextFont(GlcdView.FONT_COMICSANS);
-                                            break;
-                                        case LABEL_FONT_SERIF:
-                                            ((Label) tmpShape).setTextFont(GlcdView.FONT_SERIF);
-                                            break;
-                                    }
-                                }
-                                break;
-                            case LABEL_SET_SIZE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    switch (frame.getArgument(2)[0]) {
-                                        case 0x00:
-                                            ((Label) tmpShape).setTextSize(GlcdView.TEXT_SMALL);
-                                            break;
-                                        case 0x01:
-                                            ((Label) tmpShape).setTextSize(GlcdView.TEXT_MEDUIM);
-                                            break;
-                                        case 0x02:
-                                            ((Label) tmpShape).setTextSize(GlcdView.TEXT_LARGE);
-                                            break;
-                                    }
-                                }
-                                break;
-                            case LABEL_SET_TEXT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((Label) tmpShape).setText(frame.getArgumentAsString(2));
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_PROGRESSBAR:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
+
+                            shapeWidth = frame.getArgumentAsInteger(4);
+                            if (shapeWidth < 0)
+                                shapeWidth = 0;
+                            else if ((shapeWidth + shapeX) > glcdWidth)
+                                shapeWidth = glcdWidth - 1 - shapeX;
+
+                            shapeHeight = frame.getArgumentAsInteger(5);
+                            if (shapeHeight < 0)
+                                shapeHeight = 0;
+                            else if ((shapeHeight + shapeY) > glcdHeight)
+                                shapeHeight = glcdHeight - 1 - shapeY;
+
+                            addToShapes(new ProgressBar(shapeX, shapeY, shapeWidth, shapeHeight), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeWidth = frame.getArgumentAsInteger(4);
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                        case PROGRESSBAR_SET_RANGE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((ProgressBar) tmpShape).setStart(frame.getArgumentAsInteger(2));
+                                ((ProgressBar) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                            }
+                            break;
+                        case PROGRESSBAR_SET_VALUE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((ProgressBar) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
+                            }
+                            break;
+                        case PROGRESSBAR_SET_DIMENSIONS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeWidth = frame.getArgumentAsInteger(2);
                                 if (shapeWidth < 0)
                                     shapeWidth = 0;
-                                else if ((shapeWidth + shapeX) > view.getGlcdWidth())
-                                    shapeWidth = view.getGlcdWidth() - 1 - shapeX;
 
-                                shapeHeight = frame.getArgumentAsInteger(5);
+                                shapeHeight = frame.getArgumentAsInteger(3);
                                 if (shapeHeight < 0)
                                     shapeHeight = 0;
-                                else if ((shapeHeight + shapeY) > view.getGlcdHeight())
-                                    shapeHeight = view.getGlcdHeight() - 1 - shapeY;
 
-                                addToShapes(new ProgressBar(shapeX, shapeY, shapeWidth, shapeHeight), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                                ((ProgressBar) tmpShape).setWidth(shapeWidth);
+                                ((ProgressBar) tmpShape).setHeight(shapeHeight);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_GAUGE:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
 
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case PROGRESSBAR_SET_RANGE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((ProgressBar) tmpShape).setStart(frame.getArgumentAsInteger(2));
-                                    ((ProgressBar) tmpShape).setEnd(frame.getArgumentAsInteger(3));
-                                }
-                                break;
-                            case PROGRESSBAR_SET_VALUE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((ProgressBar) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
-                                }
-                                break;
-                            case PROGRESSBAR_SET_DIMENSIONS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeWidth = frame.getArgumentAsInteger(2);
-                                    if (shapeWidth < 0)
-                                        shapeWidth = 0;
+                            shapeRadius = frame.getArgumentAsInteger(4);
+                            if (shapeRadius < 0)
+                                shapeRadius = 0;
 
-                                    shapeHeight = frame.getArgumentAsInteger(3);
-                                    if (shapeHeight < 0)
-                                        shapeHeight = 0;
-
-                                    ((ProgressBar) tmpShape).setWidth(shapeWidth);
-                                    ((ProgressBar) tmpShape).setHeight(shapeHeight);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_GAUGE:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            addToShapes(new AnalogGauge(shapeX, shapeY, shapeRadius), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeRadius = frame.getArgumentAsInteger(4);
+                                tmpShape.setPosition(shapeX, shapeY);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0)
+                                    tmpShape.setVisibility(false);
+                                else
+                                    tmpShape.setVisibility(true);
+                            }
+                            break;
+                        case GAUGE_SET_RANGE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((AnalogGauge) tmpShape).setStart(frame.getArgumentAsInteger(2));
+                                ((AnalogGauge) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                            }
+                            break;
+                        case GAUGE_SET_VALUE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((AnalogGauge) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
+                            }
+                            break;
+                        case GAUGE_SET_RADIUS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeRadius = frame.getArgumentAsInteger(2);
                                 if (shapeRadius < 0)
                                     shapeRadius = 0;
 
-                                addToShapes(new AnalogGauge(shapeX, shapeY, shapeRadius), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                                ((AnalogGauge) tmpShape).setRadius(shapeRadius);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_BUTTON:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
 
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case GAUGE_SET_RANGE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((AnalogGauge) tmpShape).setStart(frame.getArgumentAsInteger(2));
-                                    ((AnalogGauge) tmpShape).setEnd(frame.getArgumentAsInteger(3));
-                                }
-                                break;
-                            case GAUGE_SET_VALUE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((AnalogGauge) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
-                                }
-                                break;
-                            case GAUGE_SET_RADIUS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeRadius = frame.getArgumentAsInteger(2);
-                                    if (shapeRadius < 0)
-                                        shapeRadius = 0;
+                            shapeWidth = frame.getArgumentAsInteger(4);
+                            if (shapeWidth < 0)
+                                shapeWidth = 0;
+                            else if ((shapeWidth + shapeX) > glcdWidth)
+                                shapeWidth = glcdWidth - 1 - shapeX;
 
-                                    ((AnalogGauge) tmpShape).setRadius(shapeRadius);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_BUTTON:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            shapeHeight = frame.getArgumentAsInteger(5);
+                            if (shapeHeight < 0)
+                                shapeHeight = 0;
+                            else if ((shapeHeight + shapeY) > glcdHeight)
+                                shapeHeight = glcdHeight - 1 - shapeY;
+
+                            if (frame.getArgument(6)[0] <= 0) {
+                                shapeText = "Button" + String.valueOf(buttonCounter);
+                                buttonCounter++;
+                            } else
+                                shapeText = frame.getArgumentAsString(6);
+
+                            addToShapes(new Button(this, shapeX, shapeY, shapeWidth, shapeHeight, shapeKey, shapeText), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeWidth = frame.getArgumentAsInteger(4);
+                                ((Button) tmpShape).clearTouch(this);
+                                tmpShape.setPosition(shapeX, shapeY);
+                                ((Button) tmpShape).applyTouch(this);
+                                ((Button) tmpShape).setText(getView(), ((Button) tmpShape).getText());
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0) {
+                                    tmpShape.setVisibility(false);
+                                    ((Button) tmpShape).clearTouch(this);
+                                } else {
+                                    tmpShape.setVisibility(true);
+                                    ((Button) tmpShape).applyTouch(this);
+                                }
+                            }
+                            break;
+                        case BUTTON_SET_TEXT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                Button btn = ((Button) tmpShape);
+                                ((Button) tmpShape).clearTouch(this);
+                                shapeText = frame.getArgumentAsString(2);
+                                btn.setText(getView(), shapeText);
+                                btn.applyTouch(this);
+                            }
+                            break;
+                        case BUTTON_SET_DIMENSIONS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeWidth = frame.getArgumentAsInteger(2);
                                 if (shapeWidth < 0)
                                     shapeWidth = 0;
-                                else if ((shapeWidth + shapeX) > view.getGlcdWidth())
-                                    shapeWidth = view.getGlcdWidth() - 1 - shapeX;
 
-                                shapeHeight = frame.getArgumentAsInteger(5);
+                                shapeHeight = frame.getArgumentAsInteger(3);
                                 if (shapeHeight < 0)
                                     shapeHeight = 0;
-                                else if ((shapeHeight + shapeY) > view.getGlcdHeight())
-                                    shapeHeight = view.getGlcdHeight() - 1 - shapeY;
 
-                                if (frame.getArgument(6)[0] <= 0) {
-                                    shapeText = "Button" + String.valueOf(buttonCounter);
-                                    buttonCounter++;
-                                } else
-                                    shapeText = frame.getArgumentAsString(6);
+                                ((Button) tmpShape).clearTouch(this);
+                                ((Button) tmpShape).setWidth(shapeWidth);
+                                ((Button) tmpShape).setHeight(shapeHeight);
+                                ((Button) tmpShape).applyTouch(this);
+                                ((Button) tmpShape).setText(getView(), ((Button) tmpShape).getText());
+                            }
+                            break;
+                        case BUTTON_SET_STYLE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((Button) tmpShape).setStyle(frame.getArgument(2)[0]);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_RADIOBUTTON:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                addToShapes(new Button(view, shapeX, shapeY, shapeWidth, shapeHeight, shapeKey, shapeText), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
-
-                                    ((Button) tmpShape).clearTouch(view);
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                    ((Button) tmpShape).applyTouch(view);
-                                    ((Button) tmpShape).setText(view, ((Button) tmpShape).getText());
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case BUTTON_SET_TEXT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    Button btn = ((Button) tmpShape);
-                                    shapeText = frame.getArgumentAsString(2);
-                                    btn.setText(view, shapeText);
-                                    btn.applyTouch(view);
-                                }
-                                break;
-                            case BUTTON_SET_DIMENSIONS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeWidth = frame.getArgumentAsInteger(2);
-                                    if (shapeWidth < 0)
-                                        shapeWidth = 0;
-
-                                    shapeHeight = frame.getArgumentAsInteger(3);
-                                    if (shapeHeight < 0)
-                                        shapeHeight = 0;
-
-                                    ((Button) tmpShape).clearTouch(view);
-                                    ((Button) tmpShape).setWidth(shapeWidth);
-                                    ((Button) tmpShape).setHeight(shapeHeight);
-                                    ((Button) tmpShape).applyTouch(view);
-                                    ((Button) tmpShape).setText(view, ((Button) tmpShape).getText());
-                                }
-                                break;
-                            case BUTTON_SET_STYLE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((Button) tmpShape).setStyle(frame.getArgument(2)[0]);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_RADIOBUTTON:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            shapeSize = 0;
+                            shapeText = frame.getArgumentAsString(4);
+                            addToShapes(new RadioButton(this, shapeX, shapeY, shapeSize, shapeKey, shapeText), shapeKey);
+                            if (frame.getArguments().size() > 5)
+                                getFromRadioGroups(frame.getArgumentAsInteger(5)).add(((RadioButton) getFromShapes(frame.getArgumentAsInteger(1))));
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeSize = 0;
-                                shapeText = frame.getArgumentAsString(4);
-                                addToShapes(new RadioButton(view, shapeX, shapeY, shapeSize, shapeKey, shapeText), shapeKey);
-                                if (frame.getArguments().size() > 5)
-                                    view.getFromRadioGroups(frame.getArgumentAsInteger(5)).add(((RadioButton) getFromShapes(frame.getArgumentAsInteger(1))));
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                                ((RadioButton) tmpShape).clearTouch(this);
+                                tmpShape.setPosition(shapeX, shapeY);
+                                ((RadioButton) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0) {
+                                    tmpShape.setVisibility(false);
+                                    ((RadioButton) tmpShape).clearTouch(this);
+                                } else {
+                                    tmpShape.setVisibility(true);
+                                    ((RadioButton) tmpShape).applyTouch(this);
+                                }
+                            }
+                            break;
+                        case RADIOBUTTON_SET_TEXT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeText = frame.getArgumentAsString(2);
+                                ((RadioButton) tmpShape).clearTouch(this);
+                                ((RadioButton) tmpShape).setText(getView(), shapeText);
+                                ((RadioButton) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case RADIOBUTTON_SET_SIZE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((RadioButton) tmpShape).clearTouch(this);
+                                ((RadioButton) tmpShape).setSize(frame.getArgument(2)[0]);
+                                ((RadioButton) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case RADIOBUTTON_SET_GROUP:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                rg = ((RadioButton) tmpShape).getRadioGroup();
+                                if (rg != null)
+                                    rg.remove(((RadioButton) tmpShape));
+                                getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
+                            }
+                            break;
+                        case RADIOBUTTON_SELECT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                rg = ((RadioButton) tmpShape).getRadioGroup();
+                                if (rg != null)
+                                    ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_CHECKBOX:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
 
-                                    ((RadioButton) tmpShape).clearTouch(view);
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                    ((RadioButton) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case RADIOBUTTON_SET_TEXT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeText = frame.getArgumentAsString(2);
-                                    ((RadioButton) tmpShape).setText(view, shapeText);
-                                    ((RadioButton) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case RADIOBUTTON_SET_SIZE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((RadioButton) tmpShape).clearTouch(view);
-                                    ((RadioButton) tmpShape).setSize(frame.getArgument(2)[0]);
-                                    ((RadioButton) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case RADIOBUTTON_SET_GROUP:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    rg = ((RadioButton) tmpShape).getRadioGroup();
-                                    if (rg != null)
-                                        rg.remove(((RadioButton) tmpShape));
-                                    view.getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
-                                }
-                                break;
-                            case RADIOBUTTON_SELECT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    rg = ((RadioButton) tmpShape).getRadioGroup();
-                                    if (rg != null)
-                                        ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_CHECKBOX:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            shapeSize = 0;
+                            shapeText = frame.getArgumentAsString(4);
+                            addToShapes(new CheckBox(this, shapeX, shapeY, shapeSize, shapeKey, shapeText), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeSize = 0;
-                                shapeText = frame.getArgumentAsString(4);
-                                addToShapes(new CheckBox(view, shapeX, shapeY, shapeSize, shapeKey, shapeText), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
+                                ((CheckBox) tmpShape).clearTouch(this);
+                                tmpShape.setPosition(shapeX, shapeY);
+                                ((CheckBox) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0) {
+                                    tmpShape.setVisibility(false);
+                                    ((CheckBox) tmpShape).clearTouch(this);
+                                } else {
+                                    tmpShape.setVisibility(true);
+                                    ((CheckBox) tmpShape).applyTouch(this);
+                                }
+                            }
+                            break;
+                        case CHECKBOX_SET_TEXT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeText = frame.getArgumentAsString(2);
+                                ((CheckBox) tmpShape).clearTouch(this);
+                                ((CheckBox) tmpShape).setText(getView(), shapeText);
+                                ((CheckBox) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case CHECKBOX_SET_SIZE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeSize = frame.getArgument(2)[0];
+                                ((CheckBox) tmpShape).clearTouch(this);
+                                ((CheckBox) tmpShape).setSize(getView(), shapeSize);
+                                ((CheckBox) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case CHECKBOX_SELECT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((CheckBox) tmpShape).setSelected(true);
+                            }
+                            break;
+                        case CHECKBOX_UNSELECT:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((CheckBox) tmpShape).setSelected(false);
+                            }
+                            break;
+                    }
+                    break;
+                case TYPE_SLIDER:
+                    switch (frame.getArgument(0)[0]) {
+                        case SHAPE_DRAW:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            shapeX = frame.getArgumentAsInteger(2);
+                            if (shapeX < 0)
+                                shapeX = 0;
+                            else if (shapeX > glcdWidth)
+                                shapeX = glcdWidth - 1;
 
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
+                            shapeY = frame.getArgumentAsInteger(3);
+                            if (shapeY < 0)
+                                shapeY = 0;
+                            else if (shapeY > glcdHeight)
+                                shapeY = glcdHeight - 1;
 
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                    ((CheckBox) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case CHECKBOX_SET_TEXT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeText = frame.getArgumentAsString(2);
-                                    ((CheckBox) tmpShape).setText(view, shapeText);
-                                    ((CheckBox) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case CHECKBOX_SET_SIZE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeSize = frame.getArgument(2)[0];
-                                    ((CheckBox) tmpShape).setSize(view, shapeSize);
-                                    ((CheckBox) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case CHECKBOX_SELECT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((CheckBox) tmpShape).setSelected(true);
-                                }
-                                break;
-                            case CHECKBOX_UNSELECT:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((CheckBox) tmpShape).setSelected(false);
-                                }
-                                break;
-                        }
-                        break;
-                    case TYPE_SLIDER:
-                        switch (frame.getArgument(0)[0]) {
-                            case SHAPE_DRAW:
-                                shapeKey = frame.getArgumentAsInteger(1);
+                            shapeWidth = frame.getArgumentAsInteger(4);
+                            if (shapeWidth < 0)
+                                shapeWidth = 0;
+                            else if ((shapeWidth + shapeX) > glcdWidth)
+                                shapeWidth = glcdWidth - 1 - shapeX;
+
+                            shapeHeight = frame.getArgumentAsInteger(5);
+                            if (shapeHeight < 0)
+                                shapeHeight = 0;
+                            else if ((shapeHeight + shapeY) > glcdHeight)
+                                shapeHeight = glcdHeight - 1 - shapeY;
+
+                            addToShapes(new Slider(this, shapeX, shapeY, shapeWidth, shapeHeight, shapeKey), shapeKey);
+                            break;
+                        case SHAPE_SET_POSTION:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
                                 shapeX = frame.getArgumentAsInteger(2);
                                 if (shapeX < 0)
                                     shapeX = 0;
-                                else if (shapeX > view.getGlcdWidth())
-                                    shapeX = view.getGlcdWidth() - 1;
+                                else if (shapeX > glcdWidth)
+                                    shapeX = glcdWidth - 1;
 
                                 shapeY = frame.getArgumentAsInteger(3);
                                 if (shapeY < 0)
                                     shapeY = 0;
-                                else if (shapeY > view.getGlcdHeight())
-                                    shapeY = view.getGlcdHeight() - 1;
+                                else if (shapeY > glcdHeight)
+                                    shapeY = glcdHeight - 1;
 
-                                shapeWidth = frame.getArgumentAsInteger(4);
+                                ((Slider) tmpShape).clearTouch(this);
+                                tmpShape.setPosition(shapeX, shapeY);
+                                ((Slider) tmpShape).applyTouch(this);
+                            }
+                            break;
+                        case SHAPE_SET_VISIBILITY:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                if (frame.getArgument(2)[0] == 0) {
+                                    tmpShape.setVisibility(false);
+                                    ((Slider) tmpShape).clearTouch(this);
+                                } else {
+                                    tmpShape.setVisibility(true);
+                                    ((Slider) tmpShape).applyTouch(this);
+                                }
+                            }
+                            break;
+                        case SLIDER_SET_RANGE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((Slider) tmpShape).setStart(frame.getArgumentAsInteger(2));
+                                ((Slider) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                            }
+                            break;
+                        case SLIDER_SET_VALUE:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                ((Slider) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
+                            }
+                            break;
+                        case SLIDER_SET_DIMENSIONS:
+                            shapeKey = frame.getArgumentAsInteger(1);
+                            tmpShape = getFromShapes(shapeKey);
+                            if (tmpShape != null) {
+                                shapeWidth = frame.getArgumentAsInteger(2);
                                 if (shapeWidth < 0)
                                     shapeWidth = 0;
-                                else if ((shapeWidth + shapeX) > view.getGlcdWidth())
-                                    shapeWidth = view.getGlcdWidth() - 1 - shapeX;
 
-                                shapeHeight = frame.getArgumentAsInteger(5);
+                                shapeHeight = frame.getArgumentAsInteger(3);
                                 if (shapeHeight < 0)
                                     shapeHeight = 0;
-                                else if ((shapeHeight + shapeY) > view.getGlcdHeight())
-                                    shapeHeight = view.getGlcdHeight() - 1 - shapeY;
 
-                                addToShapes(new Slider(view, shapeX, shapeY, shapeWidth, shapeHeight, shapeKey), shapeKey);
-                                break;
-                            case SHAPE_SET_POSTION:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeX = frame.getArgumentAsInteger(2);
-                                    if (shapeX < 0)
-                                        shapeX = 0;
-                                    else if (shapeX > view.getGlcdWidth())
-                                        shapeX = view.getGlcdWidth() - 1;
-
-                                    shapeY = frame.getArgumentAsInteger(3);
-                                    if (shapeY < 0)
-                                        shapeY = 0;
-                                    else if (shapeY > view.getGlcdHeight())
-                                        shapeY = view.getGlcdHeight() - 1;
-
-                                    ((Slider) tmpShape).clearTouch(view);
-                                    tmpShape.setPosition(shapeX, shapeY);
-                                    ((Slider) tmpShape).applyTouch(view);
-                                }
-                                break;
-                            case SHAPE_SET_VISIBILITY:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    if (frame.getArgument(2)[0] == 0)
-                                        tmpShape.setVisibility(false);
-                                    else
-                                        tmpShape.setVisibility(true);
-                                }
-                                break;
-                            case SLIDER_SET_RANGE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((Slider) tmpShape).setStart(frame.getArgumentAsInteger(2));
-                                    ((Slider) tmpShape).setEnd(frame.getArgumentAsInteger(3));
-                                }
-                                break;
-                            case SLIDER_SET_VALUE:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    ((Slider) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
-                                }
-                                break;
-                            case SLIDER_SET_DIMENSIONS:
-                                shapeKey = frame.getArgumentAsInteger(1);
-                                tmpShape = getFromShapes(shapeKey);
-                                if (tmpShape != null) {
-                                    shapeWidth = frame.getArgumentAsInteger(2);
-                                    if (shapeWidth < 0)
-                                        shapeWidth = 0;
-
-                                    shapeHeight = frame.getArgumentAsInteger(3);
-                                    if (shapeHeight < 0)
-                                        shapeHeight = 0;
-
-                                    ((Slider) tmpShape).clearTouch(view);
-                                    ((Slider) tmpShape).setWidth(shapeWidth);
-                                    ((Slider) tmpShape).setHeight(shapeHeight);
-                                    ((Slider) tmpShape).applyTouch(view);
-                                }
-                                break;
-                        }
-                        break;
-                }
-                glcdEventHandler.setView(view);
+                                ((Slider) tmpShape).clearTouch(this);
+                                ((Slider) tmpShape).setWidth(shapeWidth);
+                                ((Slider) tmpShape).setHeight(shapeHeight);
+                                ((Slider) tmpShape).applyTouch(this);
+                            }
+                            break;
+                    }
+                    break;
             }
+            if (glcdEventHandler != null)
+                glcdEventHandler.setView(getView());
         }
+
     }
 
     public int getShapesSize() {
@@ -1169,6 +1200,16 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
         shapes.put(key, shape);
     }
 
+    public void addToRadioGroups(RadioGroup group, int key) {
+        radioGroups.append(key, group);
+    }
+
+    public RadioGroup getFromRadioGroups(int key) {
+        if (radioGroups.indexOfKey(key) <= -1)
+            addToRadioGroups(new RadioGroup(), key);
+        return radioGroups.get(key);
+    }
+
     public void setEventHandler(GlcdEventHandler glcdEventHandler) {
         this.glcdEventHandler = glcdEventHandler;
     }
@@ -1188,25 +1229,190 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
 
     }
 
+    public GlcdView getView() {
+        if (view == null)
+            view = new GlcdView(getApplication().getApplicationContext(), glcdWidth, glcdHeight, getTag());
+        return view;
+    }
+
     ShieldFrame frame;
 
-    GlcdView.GlcdViewEventListener glcdViewEventListener = new GlcdView.GlcdViewEventListener() {
-        @Override
-        public void sendTouch(byte shapeType, int key, byte state) {
-            frame = new ShieldFrame(SHIELD_ID, shapeType);
-            frame.addByteArgument((byte) 0x01);
-            frame.addIntegerArgument(2, key);
-            frame.addByteArgument(state);
-            sendShieldFrame(frame, false);
-        }
+    public void sendTouch(byte shapeType, int key, byte state) {
+        frame = new ShieldFrame(SHIELD_ID, shapeType);
+        frame.addByteArgument((byte) 0x01);
+        frame.addIntegerArgument(2, key);
+        frame.addByteArgument(state);
+        sendShieldFrame(frame, state != STATE_TOUCHED);
+    }
 
-        @Override
-        public void sendTouch(byte shapeType, int key, byte state, int value) {
-            frame = new ShieldFrame(SHIELD_ID, shapeType);
-            frame.addByteArgument((byte) 0x01);
-            frame.addIntegerArgument(2, key);
-            frame.addIntegerArgument(2, value);
-            sendShieldFrame(frame, false);
+    public void sendTouch(byte shapeType, int key, byte state, int value) {
+        frame = new ShieldFrame(SHIELD_ID, shapeType);
+        frame.addByteArgument((byte) 0x01);
+        frame.addIntegerArgument(2, key);
+        frame.addIntegerArgument(2, value);
+        sendShieldFrame(frame, state != STATE_TOUCHED);
+    }
+
+    boolean sendFrame = false;
+
+    public synchronized boolean doOrder(int order, List<Integer> params) {
+        Integer BgColor = WHITE, key = 0, action = 0, touchId = 0, startX = 0, startY = 0, finalX = 0, finalY = 0;
+
+        switch (order) {
+            case ORDER_SETTOUCH:
+                if (params.size() < 3)
+                    return false;
+                startX = params.get(0);
+                startY = params.get(1);
+                touchId = params.get(2);
+                if (startX < touchs.size() && startX >= 0)
+                    if (startY < touchs.get(startX).size() && startY >= 0)
+                        touchs.get(startX).setValueAt(startY, touchId);
+                break;
+            case ORDER_CLEAR:
+                if (params.size() < 0)
+                    return false;
+                buttonCounter = 0;
+                shapes = new SparseArray<>();
+                radioGroups = new SparseArray<>();
+                touchs = new SparseArray<>();
+                for (int x = 0; x < glcdWidth; x++) {
+                    SparseArray<Integer> tempTouchs = new SparseArray<>();
+                    for (int y = 0; y < glcdHeight; y++) {
+                        tempTouchs.append(y, null);
+                    }
+                    touchs.append(x, tempTouchs);
+                }
+                break;
+            case ORDER_HANDLETOUCH:
+                if (params.size() < 2)
+                    return false;
+
+                action = params.get(0);
+                startX = params.get(1);
+                startY = params.get(2);
+
+                if (touchs.size() > 0) {
+                    switch (action) {
+                        case MotionEvent.ACTION_DOWN:
+                            // press
+                            if (currentPressedKey != null)
+                                if (shapes.indexOfKey(currentPressedKey) > -1)
+                                    shapes.get(currentPressedKey).setIsPressed(false);
+
+                            key = touchs.get(startX).get(startY);
+                            if (key != null) {
+                                sendFrame = shapes.get(key).setIsPressed(true);
+                                currentPressedKey = key;
+
+                                if (sendFrame) {
+                                    if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
+                                        sendTouch(SHAPE_BUTTON, key, STATE_PRESSED);
+                                    else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
+                                        sendTouch(SHAPE_CHECKBOX, key, STATE_PRESSED);
+                                    else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
+                                        sendTouch(SHAPE_RADIOBUTTON, key, STATE_PRESSED);
+                                    else if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                }
+
+                            }
+                            break;
+                        case MotionEvent.ACTION_UP:
+                            //release
+                            if (currentPressedKey != null)
+                                if (shapes.indexOfKey(currentPressedKey) > -1)
+                                    shapes.get(currentPressedKey).setIsPressed(false);
+
+                            key = touchs.get(startX).get(startY);
+                            if (key != null) {
+                                sendFrame = shapes.get(key).setIsPressed(false);
+
+                                if (sendFrame) {
+                                    if (shapes.get(key).getClass().toString().equals(Button.class.toString()))
+                                        sendTouch(SHAPE_BUTTON, key, STATE_RELEASED);
+                                    else if (shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
+                                        sendTouch(SHAPE_CHECKBOX, key, STATE_RELEASED);
+                                    else if (shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
+                                        sendTouch(SHAPE_RADIOBUTTON, key, STATE_RELEASED);
+                                    else if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                }
+                            }
+                            break;
+                        case MotionEvent.ACTION_MOVE:
+                            // touch
+                            key = touchs.get(startX).get(startY);
+                            if (key != null) {
+                                sendFrame = shapes.get(key).setTouched(startX, startY);
+                                if (sendFrame) {
+                                    if (shapes.get(key).getClass().toString().equals(Slider.class.toString()))
+                                        sendTouch(SHAPE_SLIDER, key, STATE_TOUCHED, (int) ((Slider) shapes.get(key)).getCurrentValue());
+                                }
+                            } else {
+                                if (currentPressedKey != null)
+                                    if (shapes.indexOfKey(currentPressedKey) > -1)
+                                        shapes.get(currentPressedKey).setIsPressed(false);
+                            }
+                            break;
+                        default:
+                            if (currentPressedKey != null)
+                                if (shapes.indexOfKey(currentPressedKey) > -1)
+                                    shapes.get(currentPressedKey).setIsPressed(false);
+                            break;
+                    }
+                }
+                break;
+            case ORDER_APPLYTOUCH:
+                if (params.size() < 0)
+                    return false;
+                touchId = 0;
+                startX = 0;
+                startY = 0;
+                finalX = 0;
+                finalY = 0;
+                if (params.size() > 4) {
+                    startX = params.get(0);
+                    if (startX < 0)
+                        startX = 0;
+                    else if (startX > glcdWidth)
+                        startX = glcdWidth - 1;
+
+                    startY = params.get(1);
+                    if (startY < 0)
+                        startY = 0;
+                    else if (startY > glcdHeight)
+                        startY = glcdHeight - 1;
+
+                    finalX = params.get(2);
+                    if (finalX < 0)
+                        finalX = 0;
+                    else if (finalX > glcdWidth)
+                        finalX = glcdWidth - 1;
+
+                    finalY = params.get(3);
+                    if (finalY < 0)
+                        finalY = 0;
+                    else if (finalY > glcdHeight)
+                        finalY = glcdHeight - 1;
+
+                    touchId = params.get(4);
+                } else {
+                    return false;
+                }
+                if (touchs.size() > 0) {
+                    for (int x = startX; x < finalX; x++) {
+                        if (touchs.get(x).size() > 0) {
+                            for (int y = startY; y < finalY; y++) {
+                                touchs.get(x).setValueAt(y, touchId);
+                            }
+                        }
+                    }
+                }
+                break;
+            default:
+                return false;
         }
-    };
+        return true;
+    }
 }

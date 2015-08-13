@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -23,7 +24,7 @@ public class Label implements Shape {
     @Override
     public void draw(GlcdView view) {
         if (visibility)
-            view.drawString(text, x, y, textSize, textFont, view.BLACK);
+            view.drawString(text, x, y, textSize, textFont, GlcdShield.BLACK);
     }
 
     @Override

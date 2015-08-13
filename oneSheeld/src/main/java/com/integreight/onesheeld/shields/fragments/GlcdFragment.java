@@ -18,7 +18,7 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        FragmentView = new GlcdView(activity, getControllerTag());
+        FragmentView = new GlcdView(activity,GlcdShield.glcdWidth,GlcdShield.glcdHeight, getControllerTag());
         return FragmentView;
     }
 

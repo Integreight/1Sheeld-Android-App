@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class Slider implements ButtonShape {
     int btnTouchId;
     boolean isPressed = false, visibility = true;
 
-    public Slider(GlcdView view, float x, float y, float width, float height, int touchId) {
+    public Slider(GlcdShield controller, float x, float y, float width, float height, int touchId) {
         this.btnX = x;
         this.btnY = y;
         this.btnWidth = width;
@@ -22,7 +23,7 @@ public class Slider implements ButtonShape {
         this.start = 0;
         this.end = 100;
         this.btnTouchId = touchId;
-        applyTouch(view);
+        applyTouch(controller);
         this.currentValue = start;
         this.isPressed = false;
     }
@@ -45,8 +46,8 @@ public class Slider implements ButtonShape {
             // Using linear interpolation eguation to get the average value.
             float progress = (((currentValue - start) * ((btnX + btnWidth - (btnHeight / 2)) - (btnX + (btnHeight / 2)))) / (end - start)) + (btnX + (btnHeight / 2));
 
-            view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), view.BLACK);
-            view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, view.BLACK);
+            view.drawLine(btnX, btnY + (btnHeight / 2), btnX + btnWidth, btnY + (btnHeight / 2), GlcdShield.BLACK);
+            view.fillCircle(progress, btnY + (btnHeight / 2), btnHeight / 2, GlcdShield.BLACK);
         }
     }
 
@@ -94,41 +95,35 @@ public class Slider implements ButtonShape {
     }
 
     @Override
-    public void setBtnTouchId(GlcdView view, int btnTouchId) {
+    public void setBtnTouchId(GlcdShield controller, int btnTouchId) {
         this.btnTouchId = btnTouchId;
-        applyTouch(view);
+        applyTouch(controller);
     }
 
     @Override
-    public void applyTouch(GlcdView view) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX));
-        params.add((int) (btnY));
-        params.add((int) (btnX + btnWidth));
-        params.add((int) (btnY + btnHeight));
-        params.add(btnTouchId);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(null);
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    public void applyTouch(GlcdShield controller) {
+        if (controller != null) {
+            List<Integer> params = new ArrayList<>();
+            params.add((int) (btnX));
+            params.add((int) (btnY));
+            params.add((int) (btnX + btnWidth));
+            params.add((int) (btnY + btnHeight));
+            params.add(btnTouchId);
+            controller.doOrder(GlcdShield.ORDER_APPLYTOUCH, params);
+        }
     }
 
     @Override
-    public void clearTouch(GlcdView view) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX));
-        params.add((int) (btnY));
-        params.add((int) (btnX + btnWidth));
-        params.add((int) (btnY + btnHeight));
-        params.add(null);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(null);
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    public void clearTouch(GlcdShield controller) {
+        if (controller != null) {
+            List<Integer> params = new ArrayList<>();
+            params.add((int) (btnX));
+            params.add((int) (btnY));
+            params.add((int) (btnX + btnWidth));
+            params.add((int) (btnY + btnHeight));
+            params.add(null);
+            controller.doOrder(GlcdShield.ORDER_APPLYTOUCH, params);
+        }
     }
 
 }

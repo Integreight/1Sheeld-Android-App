@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -34,7 +35,7 @@ public class Line implements Shape {
     @Override
     public void draw(GlcdView view) {
         if (visibility)
-            view.drawLine(x1, y1, x2, y2, view.BLACK);
+            view.drawLine(x1, y1, x2, y2, GlcdShield.BLACK);
     }
 
     @Override

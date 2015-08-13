@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -22,9 +23,9 @@ public class Ellipse implements Shape {
     public void draw(GlcdView view) {
         if (visibility) {
             if (isFill)
-                view.fillEllipse(xCenter, yCenter, radiusX, radiusY, view.BLACK);
+                view.fillEllipse(xCenter, yCenter, radiusX, radiusY, GlcdShield.BLACK);
             else
-                view.drawEllipse(xCenter, yCenter, radiusX, radiusY, view.BLACK);
+                view.drawEllipse(xCenter, yCenter, radiusX, radiusY, GlcdShield.BLACK);
         }
     }
 
