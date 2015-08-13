@@ -106,7 +106,7 @@ public enum UIShield {
     PUSHBUTTON_SHIELD((byte) 0x03, "Push Button", 0xffb97547, R.drawable.shields_list_push_button_symbol, false, PushButtonShield.class, PushButtonFragment.class),
     TOGGLEBUTTON_SHIELD((byte) 0x04, "Toggle Button", 0xffc0039d, R.drawable.shields_list_push_button_symbol, false, ToggleButtonShield.class, ToggleButtonFragment.class),
     ACCELEROMETER_SHIELD((byte) 0x0B, "Accelerometer", 0xff266a5d, R.drawable.shields_list_accelerometer_symbol, false, AccelerometerShield.class, AccelerometerFragment.class, 1),
-    FACEBOOK_SHIELD((byte) 0x19, "Facebook", 0xff039dc0, R.drawable.shields_list_facebook_symbol, false, FacebookShield.class, FacebookFragment.class),
+    FACEBOOK_SHIELD((byte) 0x19, "Facebook", 0xff039dc0, R.drawable.shields_list_facebook_symbol, false, FacebookShield.class, FacebookFragment.class,false),
     TWITTER_SHIELD((byte) 0x1A, "Twitter", 0xffa14c4c, R.drawable.shields_list_twitter_symbol, false, TwitterShield.class, TwitterFragment.class),
     GAMEDPAD_SHIELD((byte) 0x0C, "Game Pad", 0xff658f08, R.drawable.shields_list_gamepad_symbol, false, GamepadShield.class, GamepadFragment.class),
     FOURSQUARE_SHIELD((byte) 0x1B, "Foursquare", 0xff061179, R.drawable.shields_list_foursquare_symbol, false, FoursquareShield.class, FoursquareFragment.class),
