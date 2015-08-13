@@ -1242,7 +1242,7 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
         frame.addByteArgument((byte) 0x01);
         frame.addIntegerArgument(2, key);
         frame.addByteArgument(state);
-        sendShieldFrame(frame, state != STATE_TOUCHED);
+        sendShieldFrame(frame, false);
     }
 
     public void sendTouch(byte shapeType, int key, byte state, int value) {
@@ -1250,7 +1250,7 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
         frame.addByteArgument((byte) 0x01);
         frame.addIntegerArgument(2, key);
         frame.addIntegerArgument(2, value);
-        sendShieldFrame(frame, state != STATE_TOUCHED);
+        sendShieldFrame(frame, false);
     }
 
     boolean sendFrame = false;
