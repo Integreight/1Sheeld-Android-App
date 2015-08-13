@@ -7,18 +7,22 @@ import android.util.SparseArray;
  */
 public class RadioGroup {
     SparseArray<RadioButton> radios;
+    int keyCounter = 0;
 
     public RadioGroup() {
         radios = new SparseArray<RadioButton>();
     }
 
     public void add(RadioButton radioButton) {
-        radios.append(radios.size(), radioButton);
-        radioButton.setRadioGroup(this);
+        if (radios.indexOfValue(radioButton) < 0) {
+            keyCounter++;
+            radios.put(keyCounter, radioButton);
+            radioButton.setRadioGroup(this);
+        }
     }
 
     public void remove(RadioButton radioButton) {
-        if (radios.indexOfValue(radioButton) > 0) {
+        if (radios.indexOfValue(radioButton) >= 0) {
             radios.get(radios.keyAt(radios.indexOfValue(radioButton))).setRadioGroup(null);
             radios.remove(radios.keyAt(radios.indexOfValue(radioButton)));
         }
@@ -26,9 +30,11 @@ public class RadioGroup {
 
     public void select(RadioButton radioButton) {
         reset();
-        int key = radios.keyAt(radios.indexOfValue(radioButton));
-        if (key != -1)
-            radios.get(key).setSelected(true);
+        if (radios.indexOfValue(radioButton) >= 0) {
+            int key = radios.keyAt(radios.indexOfValue(radioButton));
+            if (key > 0)
+                radios.get(key).setSelected(true);
+        }
     }
 
     public void reset() {
