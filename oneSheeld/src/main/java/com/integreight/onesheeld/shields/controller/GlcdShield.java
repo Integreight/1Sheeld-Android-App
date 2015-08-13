@@ -961,6 +961,8 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
                                 rg = ((RadioButton) tmpShape).getRadioGroup();
+                                if(((RadioButton) tmpShape).getSelected())
+                                    rg.reset();
                                 if (rg != null)
                                     rg.remove(((RadioButton) tmpShape));
                                 getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
