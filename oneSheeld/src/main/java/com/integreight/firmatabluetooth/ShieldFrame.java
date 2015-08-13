@@ -70,7 +70,7 @@ public class ShieldFrame {
         if (n >= arguments.size()&&(bytes>4||bytes<1)&&arguments.get(n).length!=bytes)
             return 0;
         int value=0;
-        for (int i=0;i<bytes;i++){
+        for (int i=0;i<bytes&&i<arguments.get(n).length;i++){
             value|=((arguments.get(n)[i]<<(8*i))&((0xFF)<<(8*i)));
         }
         return value;
