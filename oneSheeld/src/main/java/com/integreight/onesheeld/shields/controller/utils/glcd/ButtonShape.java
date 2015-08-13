@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -10,9 +11,9 @@ public interface ButtonShape extends Shape {
 
     boolean setTouched(int touchX, int touchY);
 
-    void setBtnTouchId(GlcdView view, int btnTouchId);
+    void setBtnTouchId(GlcdShield controller, int btnTouchId);
 
-    void applyTouch(GlcdView view);
+    void applyTouch(GlcdShield controller);
 
-    void clearTouch(GlcdView view);
+    void clearTouch(GlcdShield controller);
 }

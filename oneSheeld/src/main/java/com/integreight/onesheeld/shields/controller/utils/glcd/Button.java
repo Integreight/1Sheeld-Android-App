@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -18,15 +19,15 @@ public class Button implements ButtonShape {
     byte style = 0;
     boolean changed = false;
 
-    public Button(GlcdView view, float x, float y, float width, float height, int touchId, String text) {
+    public Button(GlcdShield controller, float x, float y, float width, float height, int touchId, String text) {
         this.btnX = x;
         this.btnY = y;
         this.btnWidth = width;
         this.btnHeight = height;
         //set text width and height to min
-        textWidth = view.getStringWidth("..", view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        textHeight = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-        setText(view, text);
+        textWidth = controller.getView().getStringWidth("..", GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
+        textHeight = controller.getView().getCharHeight(GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
+        setText(controller.getView(), text);
         if (height < textHeight)
             this.btnHeight = textHeight;
 
@@ -34,57 +35,51 @@ public class Button implements ButtonShape {
         btnTextY = btnY + ((btnHeight - textHeight) / 2);
 
         this.btnTouchId = touchId;
-        applyTouch(view);
+        applyTouch(controller);
 
         isPressed = false;
         style = 0;
     }
 
     @Override
-    public void applyTouch(GlcdView view) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX));
-        params.add((int) (btnY));
-        params.add((int) (btnX + btnWidth));
-        params.add((int) (btnY + btnHeight));
-        params.add(btnTouchId);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(null);
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    public void applyTouch(GlcdShield controller) {
+        if (controller != null) {
+            List<Integer> params = new ArrayList<>();
+            params.add((int) (btnX));
+            params.add((int) (btnY));
+            params.add((int) (btnX + btnWidth));
+            params.add((int) (btnY + btnHeight));
+            params.add(btnTouchId);
+            controller.doOrder(GlcdShield.ORDER_APPLYTOUCH, params);
+        }
     }
 
     @Override
-    public void clearTouch(GlcdView view) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX));
-        params.add((int) (btnY));
-        params.add((int) (btnX + btnWidth));
-        params.add((int) (btnY + btnHeight));
-        params.add(null);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(null);
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    public void clearTouch(GlcdShield controller) {
+        if (controller != null) {
+            List<Integer> params = new ArrayList<>();
+            params.add((int) (btnX));
+            params.add((int) (btnY));
+            params.add((int) (btnX + btnWidth));
+            params.add((int) (btnY + btnHeight));
+            params.add(null);
+            controller.doOrder(GlcdShield.ORDER_APPLYTOUCH, params);
+        }
     }
 
     @Override
-    public void setBtnTouchId(GlcdView view, int btnTouchId) {
+    public void setBtnTouchId(GlcdShield controller, int btnTouchId) {
         this.btnTouchId = btnTouchId;
-        applyTouch(view);
+        applyTouch(controller);
     }
 
     @Override
     public void draw(GlcdView view) {
         if (visibility) {
             if (isPressed) {
-                pressDraw(view, view.BLACK);
+                pressDraw(view);
             } else {
-                releaseDraw(view, view.BLACK);
+                releaseDraw(view);
             }
         }
     }
@@ -107,14 +102,14 @@ public class Button implements ButtonShape {
 
     public void setText(GlcdView view, String text) {
         this.btnText = text;
-        textWidth = view.getStringWidth(text, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+        textWidth = view.getStringWidth(text, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
         if (btnWidth < textWidth) {
-            this.btnText = text.substring(0, view.getMaxCharsInWidth(text, btnWidth, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) - 2);
+            this.btnText = text.substring(0, view.getMaxCharsInWidth(text, btnWidth, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR) - 2);
             this.btnText += "..";
         } else {
             this.btnText = text;
         }
-        textWidth = view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+        textWidth = view.getStringWidth(btnText, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
         btnTextX = btnX + ((btnWidth - textWidth) / 2);
         btnTextY = btnY + ((btnHeight - textHeight) / 2);
     }
@@ -144,29 +139,29 @@ public class Button implements ButtonShape {
         return btnText;
     }
 
-    private void releaseDraw(GlcdView view, int color) {
+    private void releaseDraw(GlcdView view) {
         if (style == 0) {
-            view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, view.WHITE + 1);
-            view.drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, color);
-            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
+            view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, GlcdShield.WHITE + 1);
+            view.drawRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, GlcdShield.BLACK);
+            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.BLACK);
         } else {
-            view.fillRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, view.BLACK);
-            view.fillRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, view.WHITE);
+            view.fillRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, GlcdShield.BLACK);
+            view.fillRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, GlcdShield.WHITE);
 
-            view.drawRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, color);
-            view.drawShadowRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, color);
+            view.drawRoundRectangle(btnX + 2, btnY + 2, btnWidth - 2, btnHeight - 2, 2, GlcdShield.BLACK);
+            view.drawShadowRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, GlcdShield.BLACK);
 
-            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
+            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.BLACK);
         }
     }
 
-    private void pressDraw(GlcdView view, int color) {
+    private void pressDraw(GlcdView view) {
         if (style == 0) {
-            view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, color);
-            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.WHITE + 1);
+            view.fillRoundRectangle(btnX, btnY, btnWidth, btnHeight, 2, GlcdShield.BLACK);
+            view.drawString(this.btnText, btnTextX + 2, btnTextY + 2, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.WHITE + 1);
         } else {
-            view.drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, color);
-            view.drawString(this.btnText, btnTextX, btnTextY, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, color);
+            view.drawRoundRectangle(btnX, btnY, btnWidth - 2, btnHeight - 2, 2, GlcdShield.BLACK);
+            view.drawString(this.btnText, btnTextX, btnTextY, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.BLACK);
         }
     }
 

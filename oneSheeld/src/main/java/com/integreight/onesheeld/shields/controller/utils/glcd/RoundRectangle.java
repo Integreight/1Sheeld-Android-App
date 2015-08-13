@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -23,9 +24,9 @@ public class RoundRectangle implements Shape {
     public void draw(GlcdView view) {
         if (visibility) {
             if (isFill)
-                view.fillRoundRectangle(x, y, width, height, radius, view.BLACK);
+                view.fillRoundRectangle(x, y, width, height, radius, GlcdShield.BLACK);
             else
-                view.drawRoundRectangle(x, y, width, height, radius, view.BLACK);
+                view.drawRoundRectangle(x, y, width, height, radius, GlcdShield.BLACK);
         }
     }
 

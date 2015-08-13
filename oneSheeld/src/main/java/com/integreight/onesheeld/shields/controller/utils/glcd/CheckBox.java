@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -15,52 +16,46 @@ public class CheckBox implements ButtonShape {
     boolean isSelected = false, isPressed = false, visibility = true;
     byte size;
 
-    public CheckBox(GlcdView view, float x, float y, byte size, int touchId, String text) {
+    public CheckBox(GlcdShield controller, float x, float y, byte size, int touchId, String text) {
         this.btnX = x;
         this.btnY = y;
         this.btnText = text;
-        setSize(view, size);
-        setBtnTouchId(view, touchId);
+        setSize(controller.getView(), size);
+        setBtnTouchId(controller, touchId);
         isSelected = false;
         isPressed = false;
     }
 
     @Override
-    public void applyTouch(GlcdView view) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX));
-        params.add((int) (btnY));
-        params.add((int) (btnX + btnWidth));
-        params.add((int) (btnY + btnHeight));
-        params.add(btnTouchId);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(null);
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    public void applyTouch(GlcdShield controller) {
+        if (controller != null) {
+            List<Integer> params = new ArrayList<>();
+            params.add((int) (btnX));
+            params.add((int) (btnY));
+            params.add((int) (btnX + btnWidth));
+            params.add((int) (btnY + btnHeight));
+            params.add(btnTouchId);
+            controller.doOrder(GlcdShield.ORDER_APPLYTOUCH, params);
+        }
     }
 
     @Override
-    public void clearTouch(GlcdView view) {
-        List<Integer> params = new ArrayList<>();
-        params.add((int) (btnX));
-        params.add((int) (btnY));
-        params.add((int) (btnX + btnWidth));
-        params.add((int) (btnY + btnHeight));
-        params.add(null);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(null);
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        view.doOrder(view.ORDER_APPLYTOUCH, params, premissions);
+    public void clearTouch(GlcdShield controller) {
+        if (controller != null) {
+            List<Integer> params = new ArrayList<>();
+            params.add((int) (btnX));
+            params.add((int) (btnY));
+            params.add((int) (btnX + btnWidth));
+            params.add((int) (btnY + btnHeight));
+            params.add(null);
+            controller.doOrder(GlcdShield.ORDER_APPLYTOUCH, params);
+        }
     }
 
     @Override
-    public void setBtnTouchId(GlcdView view, int btnTouchId) {
+    public void setBtnTouchId(GlcdShield controller, int btnTouchId) {
         this.btnTouchId = btnTouchId;
-        applyTouch(view);
+        applyTouch(controller);
     }
 
     @Override
@@ -92,16 +87,16 @@ public class CheckBox implements ButtonShape {
         this.size = size;
         switch (size) {
             case 0:
-                btnSize = view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
-                this.btnWidth = btnSize + view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+                btnSize = view.getCharHeight(GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
+                this.btnWidth = btnSize + view.getStringWidth(btnText, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
                 break;
             case 1:
-                btnSize = view.getCharHeight(view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR);
-                this.btnWidth = btnSize + view.getStringWidth(btnText, view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR);
+                btnSize = view.getCharHeight(GlcdShield.TEXT_MEDUIM, GlcdShield.FONT_ARIEL_REGULAR);
+                this.btnWidth = btnSize + view.getStringWidth(btnText, GlcdShield.TEXT_MEDUIM, GlcdShield.FONT_ARIEL_REGULAR);
                 break;
             case 2:
-                btnSize = view.getCharHeight(view.TEXT_LARGE, view.FONT_ARIEL_REGULAR);
-                this.btnWidth = btnSize + view.getStringWidth(btnText, view.TEXT_LARGE, view.FONT_ARIEL_REGULAR);
+                btnSize = view.getCharHeight(GlcdShield.TEXT_LARGE, GlcdShield.FONT_ARIEL_REGULAR);
+                this.btnWidth = btnSize + view.getStringWidth(btnText, GlcdShield.TEXT_LARGE, GlcdShield.FONT_ARIEL_REGULAR);
                 break;
         }
         this.btnHeight = btnSize;
@@ -110,11 +105,11 @@ public class CheckBox implements ButtonShape {
     public void setText(GlcdView view, String text) {
         this.btnText = text;
         if (size == 0)
-            this.btnWidth = btnSize + view.getStringWidth(btnText, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR);
+            this.btnWidth = btnSize + view.getStringWidth(btnText, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR);
         else if (size == 1)
-            this.btnWidth = btnSize + view.getStringWidth(btnText, view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR);
+            this.btnWidth = btnSize + view.getStringWidth(btnText, GlcdShield.TEXT_MEDUIM, GlcdShield.FONT_ARIEL_REGULAR);
         else if (size == 2)
-            this.btnWidth = btnSize + view.getStringWidth(btnText, view.TEXT_LARGE, view.FONT_ARIEL_REGULAR);
+            this.btnWidth = btnSize + view.getStringWidth(btnText, GlcdShield.TEXT_LARGE, GlcdShield.FONT_ARIEL_REGULAR);
         this.btnHeight = btnSize;
     }
 
@@ -132,18 +127,18 @@ public class CheckBox implements ButtonShape {
     @Override
     public void draw(GlcdView view) {
         if (visibility) {
-            view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.WHITE);
-            view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, view.BLACK);
-            if (isSelected) view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, view.BLACK);
+            view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, GlcdShield.WHITE);
+            view.drawRectangle(btnX, btnY, btnSize - 1, btnSize, GlcdShield.BLACK);
+            if (isSelected) view.fillRectangle(btnX, btnY, btnSize - 1, btnSize, GlcdShield.BLACK);
             switch (size) {
                 case 0:
-                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_SMALL, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_SMALL, view.FONT_ARIEL_REGULAR, view.BLACK);
+                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR) / 2) + 2, GlcdShield.TEXT_SMALL, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.BLACK);
                     break;
                 case 1:
-                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_MEDUIM, view.FONT_ARIEL_REGULAR, view.BLACK);
+                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(GlcdShield.TEXT_MEDUIM, GlcdShield.FONT_ARIEL_REGULAR) / 2) + 2, GlcdShield.TEXT_MEDUIM, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.BLACK);
                     break;
                 case 2:
-                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(view.TEXT_LARGE, view.FONT_ARIEL_REGULAR) / 2) + 2, view.TEXT_LARGE, view.FONT_ARIEL_REGULAR, view.BLACK);
+                    view.drawString(btnText, btnX + btnSize + 2, btnY + (btnSize / 2) - (view.getCharHeight(GlcdShield.TEXT_LARGE, GlcdShield.FONT_ARIEL_REGULAR) / 2) + 2, GlcdShield.TEXT_LARGE, GlcdShield.FONT_ARIEL_REGULAR, GlcdShield.BLACK);
                     break;
             }
         }

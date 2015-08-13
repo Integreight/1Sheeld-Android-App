@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ public class AnalogGauge implements Shape {
             //using Linear Interpolation get the angle corresponding to the given value.
             float angle = (((currentValue - start) * (angleEnd - angleStart)) / (end - start)) + angleStart;
 
-            view.fillCircle(xCenter, yCenter, radius, view.WHITE);
-            drawPartOfCircle(view, radius, view.BLACK);
-            drawPartOfCircle(view, (float) (radius * 0.8), view.BLACK);
-            drawPointer(view, (float) (radius * 0.7), angle, view.BLACK);
+            view.fillCircle(xCenter, yCenter, radius, GlcdShield.WHITE);
+            drawPartOfCircle(view, radius, GlcdShield.BLACK);
+            drawPartOfCircle(view, (float) (radius * 0.8), GlcdShield.BLACK);
+            drawPointer(view, (float) (radius * 0.7), angle, GlcdShield.BLACK);
         }
     }
 
@@ -106,37 +107,16 @@ public class AnalogGauge implements Shape {
         float x1 = 0, y1 = radius;
         tSwitch = 3 - 2 * radius;
         while (x1 <= y1) {
-            List<Integer> params = new ArrayList<>();
-            params.add(null);
-            params.add(null);
-            params.add(color);
-            List<Boolean> premissions = new ArrayList<>();
-            premissions.add(true);
-            premissions.add(null);
-            premissions.add(null);
-            premissions.add(null);
 
-            params.set(0, (int) (x + radius - x1));
-            params.set(1, (int) (y + radius - y1));
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
-            params.set(0, (int) (x + radius - y1));
-            params.set(1, (int) (y + radius - x1));
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            view.drawPoint((int) (x + radius - x1), (int) (y + radius - y1), color);
+            view.drawPoint((int) (x + radius - y1), (int) (y + radius - x1), color);
 
-            params.set(0, (int) (x + width - radius + x1));
-            params.set(1, (int) (y + radius - y1));
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
-            params.set(0, (int) (x + width - radius + y1));
-            params.set(1, (int) (y + radius - x1));
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            view.drawPoint((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+            view.drawPoint((int) (x + width - radius + y1), (int) (y + radius - x1), color);
 
-            params.set(0, (int) (x + width - radius + y1));
-            params.set(1, (int) (y + height - radius + x1));
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            view.drawPoint((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
 
-            params.set(0, (int) (x + radius - y1));
-            params.set(1, (int) (y + height - radius + x1));
-            view.doOrder(view.ORDER_SETDOT, params, premissions);
+            view.drawPoint((int) (x + radius - y1), (int) (y + height - radius + x1), color);
 
             if (tSwitch < 0)
                 tSwitch += (4 * x1 + 6);

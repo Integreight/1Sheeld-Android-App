@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller.utils.glcd;
 
+import com.integreight.onesheeld.shields.controller.GlcdShield;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
 
 /**
@@ -34,9 +35,9 @@ public class ProgressBar implements Shape {
             // Using linear interpolation eguation to get the average value.
             float progress = (((currentValue - start) * (width - 5)) / (end - start)) + 5;
 
-            view.fillRoundRectangle(x, y, width, height, 5, view.WHITE);
-            view.drawRoundRectangle(x, y, width, height, 5, view.BLACK);
-            view.fillRoundRectangle(x, y, progress, height, 5, view.BLACK);
+            view.fillRoundRectangle(x, y, width, height, 5, GlcdShield.WHITE);
+            view.drawRoundRectangle(x, y, width, height, 5, GlcdShield.BLACK);
+            view.fillRoundRectangle(x, y, progress, height, 5, GlcdShield.BLACK);
         }
     }
 

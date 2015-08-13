@@ -11,11 +11,7 @@ import android.view.View.OnTouchListener;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.shields.controller.GlcdShield;
-import com.integreight.onesheeld.shields.controller.utils.glcd.Button;
-import com.integreight.onesheeld.shields.controller.utils.glcd.CheckBox;
-import com.integreight.onesheeld.shields.controller.utils.glcd.RadioButton;
-import com.integreight.onesheeld.shields.controller.utils.glcd.RadioGroup;
-import com.integreight.onesheeld.shields.controller.utils.glcd.Slider;
+import com.integreight.onesheeld.shields.controller.utils.glcd.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,22 +26,13 @@ public class GlcdView extends View implements OnTouchListener {
     int background = 0;
     Paint paint;
     int glcdWidth = 256, glcdHeight = 128;
-    SparseArray<SparseArray<Integer>> touchs;
-    SparseArray<RadioGroup> radioGroups;
-    public int BLACK = Color.parseColor("#11443d"), WHITE = Color.parseColor("#338f45");
     float pixelX, pixelY, originX, originY, width, height, ascpectRatio;
-    String controllerTag = "";
+    public String controllerTag = "";
 
-    public static final int TEXT_SMALL = 1, TEXT_MEDUIM = 3, TEXT_LARGE = 5;
-    public static final int FONT_ARIEL_REGULAR = 0, FONT_ARIEL_BLACK = 1, FONT_ARIEL_ITALIC = 3, FONT_COMICSANS = 4, FONT_SERIF = 5;
-
-    private boolean isInt = false;
-    private Integer currentPressedKey = null;
+    private boolean isInitialized = false;
 
 
-    public static final byte SHAPE_BUTTON = 0x08, SHAPE_CHECKBOX = 0x0A, SHAPE_SLIDER = 0x0B, SHAPE_RADIOBUTTON = 0x09;
-    public static final byte STATE_PRESSED = 0x01, STATE_RELEASED = 0x00, STATE_TOUCHED = 0x02;
-
+     /*
     public static interface GlcdViewEventListener {
         void sendTouch(byte shapeType, int key, byte state);
 
@@ -61,13 +48,16 @@ public class GlcdView extends View implements OnTouchListener {
     public void setGlcdViewEventListener(GlcdViewEventListener glcdViewEventListener) {
         this.glcdViewEventListener = glcdViewEventListener;
     }
+     */
 
-    public GlcdView(Context context, String controllerTag) {
+    public GlcdView(Context context, int glcdWidth, int glcdHeight, String controllerTag) {
         super(context);
         this.context = context;
         this.controllerTag = controllerTag;
+        this.glcdWidth = glcdWidth;
+        this.glcdHeight = glcdHeight;
         paint = new Paint();
-        background = WHITE;
+        background = GlcdShield.WHITE;
     }
 
     @Override
@@ -79,8 +69,8 @@ public class GlcdView extends View implements OnTouchListener {
         canvas.drawRect(originY, originX, originY + height, originX + width, paint);
 
 
-        if (isInt == false) {
-            isInt = true;
+        if (isInitialized == false) {
+            isInitialized = true;
 
 
             ascpectRatio = glcdWidth / glcdHeight;
@@ -103,25 +93,18 @@ public class GlcdView extends View implements OnTouchListener {
             //------------------------------------------
             //------------------------------------
 
-
-            List<Integer> params;
-            List<Boolean> premissions;
-            params = new ArrayList<>();
-            params.add(WHITE);
-            premissions = new ArrayList<>();
-            premissions.add(true);
-            premissions.add(true);
-            premissions.add(true);
-            premissions.add(true);
-            doOrder(ORDER_CLEAR, params, premissions);
+            if (((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag) != null) {
+                ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).initializeGLcd();
+            }
 
             paint = new Paint();
             setOnTouchListener(this);
         }
 
         if (((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag) != null) {
-            for (int shapesCount = 0; shapesCount < ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).getShapesSize(); shapesCount++) {
-                ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.valueAt(shapesCount).draw(this);
+            final SparseArray<Shape> tempShapes = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes;
+            for (int shapesCount = 0; shapesCount < tempShapes.size(); shapesCount++) {
+                tempShapes.valueAt(shapesCount).draw(this);
             }
         }
 
@@ -132,274 +115,19 @@ public class GlcdView extends View implements OnTouchListener {
         invalidate();
     }
 
-    public static final int ORDER_SETDOT = 0, ORDER_SETTOUCH = 1, ORDER_CLEAR = 2, ORDER_HANDLETOUCH = 4, ORDER_APPLYTOUCH = 5;
-    boolean do4Dots = false, do4Touchs = false, do4Shapes = false, doInvalidate = false;
-    boolean sendFrame = false;
-
-    public synchronized boolean doOrder(int order, List<Integer> params, List<Boolean> premissons) {
-        //premissons
-        if (premissons.size() < 4)
-            return false;
-
-        if (premissons.get(0) != null) do4Dots = premissons.get(0);
-        else do4Dots = false;
-        if (premissons.get(1) != null)
-            do4Touchs = premissons.get(1);
-        else
-            do4Touchs = false;
-        if (premissons.get(2) != null) do4Shapes = premissons.get(2);
-        else do4Shapes = false;
-        if (premissons.get(3) != null) doInvalidate = premissons.get(3);
-        else doInvalidate = false;
-
-
-        //order
-        Integer BgColor = this.background, key = 0, action = 0, touchId = 0, startX = 0, startY = 0, finalX = 0, finalY = 0;
-
-        switch (order) {
-            case ORDER_SETDOT:
-                paint.setColor(params.get(2));
-                float left = (originY + height) - ((params.get(1) + 1) * pixelY);
-                float top = (params.get(0) * pixelX) + originX;
-                float right = (originY + height) - (params.get(1) * pixelY);
-                float bottom = ((params.get(0) + 1) * pixelX) + originX;
-                canvas.drawRect(left, top, right, bottom, paint);
-
-                break;
-            case ORDER_SETTOUCH:
-                if (params.size() < 3)
-                    return false;
-//                 x = params.get(0);
-//                 y = params.get(1);
-//                 touchId = params.get(2);
-                if (params.get(0) < touchs.size() && params.get(0) >= 0)
-                    if (params.get(1) < touchs.get(params.get(0)).size() && params.get(1) >= 0)
-                        touchs.get(params.get(0)).setValueAt(params.get(1), params.get(2));
-                break;
-            case ORDER_CLEAR:
-                if (params.size() < 0)
-                    return false;
-                BgColor = this.background;
-                startX = 0;
-                startY = 0;
-                finalX = 0;
-                finalY = 0;
-
-                if (params.size() == 1) {
-                    if (do4Touchs) touchs = new SparseArray<>();
-                    if (do4Shapes) {
-                        // reset shapes is done by the controller
-                        radioGroups = new SparseArray<>();
-                    }
-                    paint = new Paint();
-                    for (int x = 0; x < glcdWidth; x++) {
-                        SparseArray<Integer> tempTouchs = new SparseArray<>();
-                        for (int y = 0; y < glcdHeight; y++) {
-                            tempTouchs.append(y, null);
-                        }
-                        if (do4Touchs) touchs.append(x, tempTouchs);
-                    }
-                } else if (params.size() > 4) {
-                    BgColor = params.get(0);
-                    startX = params.get(1);
-                    if (startX < 0)
-                        startX = 0;
-                    else if (startX > glcdWidth)
-                        startX = glcdWidth - 1;
-
-                    startY = params.get(2);
-                    if (startY < 0)
-                        startY = 0;
-                    else if (startY > glcdHeight)
-                        startY = glcdHeight - 1;
-
-                    finalX = startX + params.get(3);
-                    if (finalX < 0)
-                        finalX = 0;
-                    else if (finalX > glcdWidth)
-                        finalX = glcdWidth - 1;
-
-                    finalY = startY + params.get(4);
-                    if (finalY < 0)
-                        finalY = 0;
-                    else if (finalY > glcdHeight)
-                        finalY = glcdHeight - 1;
-
-                    if (do4Dots) {
-                        paint.setColor(WHITE);
-                        canvas.drawRect(startY * pixelY, startX * pixelX, finalY * pixelY, finalX * pixelX, paint);
-                    }
-
-                    if (do4Touchs) {
-                        if (touchs.size() > 0) {
-                            for (int x = startX; x < finalX; x++) {
-                                if (touchs.get(x).size() > 0) {
-                                    for (int y = startY; y < finalY; y++) {
-                                        touchs.get(x).setValueAt(y, null);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    return false;
-                }
-
-                break;
-            case ORDER_HANDLETOUCH:
-                if (params.size() < 2)
-                    return false;
-
-                action = params.get(0);
-                startX = params.get(1);
-                startY = params.get(2);
-
-                if (touchs.size() > 0) {
-                    switch (action) {
-                        case MotionEvent.ACTION_DOWN:
-                            // press
-                            if (currentPressedKey != null)
-                                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
-                                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
-
-                            key = touchs.get(startX).get(startY);
-                            if (key != null) {
-                                sendFrame = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).setIsPressed(true);
-                                currentPressedKey = key;
-
-                                if (glcdViewEventListener != null && sendFrame) {
-                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Button.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_PRESSED);
-                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_PRESSED);
-                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_PRESSED);
-                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Slider.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key)).getCurrentValue());
-                                }
-
-                            }
-                            break;
-                        case MotionEvent.ACTION_UP:
-                            //release
-                            if (currentPressedKey != null)
-                                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
-                                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
-
-                            key = touchs.get(startX).get(startY);
-                            if (key != null) {
-                                sendFrame = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).setIsPressed(false);
-
-                                if (glcdViewEventListener != null && sendFrame) {
-                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Button.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_BUTTON, key, STATE_RELEASED);
-                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(CheckBox.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_CHECKBOX, key, STATE_RELEASED);
-                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(RadioButton.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_RADIOBUTTON, key, STATE_RELEASED);
-                                    else if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Slider.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key)).getCurrentValue());
-                                }
-                            }
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            // touch
-                            key = touchs.get(startX).get(startY);
-                            if (key != null) {
-                                sendFrame = ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).setTouched(startX, startY);
-                                if (glcdViewEventListener != null && sendFrame) {
-                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key).getClass().toString().equals(Slider.class.toString()))
-                                        glcdViewEventListener.sendTouch(SHAPE_SLIDER, key, STATE_RELEASED, (int) ((Slider) ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(key)).getCurrentValue());
-                                }
-                            } else {
-                                if (currentPressedKey != null)
-                                    if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
-                                        ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
-                            }
-                            break;
-                        default:
-                            if (currentPressedKey != null)
-                                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
-                                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
-                            break;
-                    }
-                }
-                break;
-            case ORDER_APPLYTOUCH:
-                if (params.size() < 0)
-                    return false;
-                touchId = 0;
-                startX = 0;
-                startY = 0;
-                finalX = 0;
-                finalY = 0;
-                if (params.size() > 4) {
-                    startX = params.get(0);
-                    if (startX < 0)
-                        startX = 0;
-                    else if (startX > glcdWidth)
-                        startX = glcdWidth - 1;
-
-                    startY = params.get(1);
-                    if (startY < 0)
-                        startY = 0;
-                    else if (startY > glcdHeight)
-                        startY = glcdHeight - 1;
-
-                    finalX = params.get(2);
-                    if (finalX < 0)
-                        finalX = 0;
-                    else if (finalX > glcdWidth)
-                        finalX = glcdWidth - 1;
-
-                    finalY = params.get(3);
-                    if (finalY < 0)
-                        finalY = 0;
-                    else if (finalY > glcdHeight)
-                        finalY = glcdHeight - 1;
-
-                    touchId = params.get(4);
-                } else {
-                    return false;
-                }
-                if (touchs.size() > 0) {
-                    for (int x = startX; x < finalX; x++) {
-                        if (touchs.get(x).size() > 0) {
-                            for (int y = startY; y < finalY; y++) {
-                                touchs.get(x).setValueAt(y, touchId);
-                            }
-                        }
-                    }
-                }
-                break;
-            default:
-                return false;
-        }
-        return true;
-    }
-
     public float absDiff(float a, float b) {
         if (a > b)
             return a - b;
         return b - a;
     }
 
-    public void addToRadioGroups(RadioGroup group, int key) {
-        radioGroups.append(key, group);
-    }
-
-    public RadioGroup getFromRadioGroups(int key) {
-        if (radioGroups.indexOfKey(key) <= -1)
-            addToRadioGroups(new RadioGroup(), key);
-        return radioGroups.get(key);
-    }
-
-    public int getGlcdWidth() {
-        return glcdWidth;
-    }
-
-    public int getGlcdHeight() {
-        return glcdHeight;
+    public void drawPoint(int x, int y, int color) {
+        paint.setColor(color);
+        float left = (originY + height) - (y + 1) * pixelY;
+        float top = (x * pixelX) + originX;
+        float right = (originY + height) - (y * pixelY);
+        float bottom = ((x + 1) * pixelX) + originX;
+        canvas.drawRect(left, top, right, bottom, paint);
     }
 
     public void drawLine(float x1, float y1, float x2, float y2, int color) {
@@ -446,27 +174,9 @@ public class GlcdView extends View implements OnTouchListener {
 
         for (x = x1; x <= x2; x++) {
             if (steep) {
-                List<Integer> params = new ArrayList<>();
-                params.add((int) y);
-                params.add((int) x);
-                params.add(color);
-                List<Boolean> premissions = new ArrayList<>();
-                premissions.add(true);
-                premissions.add(null);
-                premissions.add(null);
-                premissions.add(null);
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) y, (int) x, color);
             } else {
-                List<Integer> params = new ArrayList<>();
-                params.add((int) x);
-                params.add((int) y);
-                params.add(color);
-                List<Boolean> premissions = new ArrayList<>();
-                premissions.add(true);
-                premissions.add(null);
-                premissions.add(null);
-                premissions.add(null);
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) x, (int) y, color);
             }
             error -= deltaY;
             if (error < 0) {
@@ -551,43 +261,18 @@ public class GlcdView extends View implements OnTouchListener {
             float x1 = 0, y1 = radius;
             tSwitch = 3 - 2 * radius;
             while (x1 <= y1) {
-                List<Integer> params = new ArrayList<>();
-                params.add(null);
-                params.add(null);
-                params.add(color);
-                List<Boolean> premissions = new ArrayList<>();
-                premissions.add(true);
-                premissions.add(null);
-                premissions.add(null);
-                premissions.add(null);
 
-                params.set(0, (int) (x + radius - x1));
-                params.set(1, (int) (y + radius - y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + radius - y1));
-                params.set(1, (int) (y + radius - x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + radius - x1), (int) (y + radius - y1), color);
+                drawPoint((int) (x + radius - y1), (int) (y + radius - x1), color);
 
-                params.set(0, (int) (x + width - radius + x1));
-                params.set(1, (int) (y + radius - y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + width - radius + y1));
-                params.set(1, (int) (y + radius - x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+                drawPoint((int) (x + width - radius + y1), (int) (y + radius - x1), color);
 
-                params.set(0, (int) (x + width - radius + x1));
-                params.set(1, (int) (y + height - radius + y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + width - radius + y1));
-                params.set(1, (int) (y + height - radius + x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + width - radius + x1), (int) (y + height - radius + y1), color);
+                drawPoint((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
 
-                params.set(0, (int) (x + radius - x1));
-                params.set(1, (int) (y + height - radius + y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + radius - y1));
-                params.set(1, (int) (y + height - radius + x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + radius - x1), (int) (y + height - radius + y1), color);
+                drawPoint((int) (x + radius - y1), (int) (y + height - radius + x1), color);
 
                 if (tSwitch < 0)
                     tSwitch += (4 * x1 + 6);
@@ -669,45 +354,18 @@ public class GlcdView extends View implements OnTouchListener {
             float x1 = 0, y1 = radius;
             tSwitch = 3 - 2 * radius;
             while (x1 <= y1) {
-                List<Integer> params = new ArrayList<>();
-                params.add(null);
-                params.add(null);
-                params.add(color);
-                List<Boolean> premissions = new ArrayList<>();
-                premissions.add(true);
-                premissions.add(null);
-                premissions.add(null);
-                premissions.add(null);
 
-                params.set(0, (int) (x + radius - x1));
-                params.set(1, (int) (y + radius - y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + radius - y1));
-                params.set(1, (int) (y + radius - x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + radius - x1), (int) (y + radius - y1), color);
+                drawPoint((int) (x + radius - y1), (int) (y + radius - x1), color);
 
-                params.set(0, (int) (x + width - radius + x1));
-                params.set(1, (int) (y + radius - y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + width - radius + y1));
-                params.set(1, (int) (y + radius - x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + width - radius + x1), (int) (y + radius - y1), color);
+                drawPoint((int) (x + width - radius + y1), (int) (y + radius - x1), color);
 
-                params.set(0, (int) (x + width - radius + x1));
-                params.set(1, (int) (y + height - radius + y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + width - radius + y1));
-                params.set(1, (int) (y + height - radius + x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + width - radius + x1), (int) (y + height - radius + y1), color);
+                drawPoint((int) (x + width - radius + y1), (int) (y + height - radius + x1), color);
 
-//                setPixel((int) (x + radius - x1), (int) (y + height - radius + y1), color);
-//                setPixel((int) (x + radius - y1), (int) (y + height - radius + x1), color);
-                params.set(0, (int) (x + radius - x1));
-                params.set(1, (int) (y + height - radius + y1));
-                doOrder(ORDER_SETDOT, params, premissions);
-                params.set(0, (int) (x + radius - y1));
-                params.set(1, (int) (y + height - radius + x1));
-                doOrder(ORDER_SETDOT, params, premissions);
+                drawPoint((int) (x + radius - x1), (int) (y + height - radius + y1), color);
+                drawPoint((int) (x + radius - y1), (int) (y + height - radius + x1), color);
 
                 if (tSwitch < 0)
                     tSwitch += (4 * x1 + 6);
@@ -806,31 +464,10 @@ public class GlcdView extends View implements OnTouchListener {
     }
 
     private void drawEllipsePoints(float xCenter, float yCenter, float x, float y, int color) {
-        List<Integer> params = new ArrayList<>();
-        params.add(null);
-        params.add(null);
-        params.add(color);
-        List<Boolean> premissions = new ArrayList<>();
-        premissions.add(true);
-        premissions.add(null);
-        premissions.add(null);
-        premissions.add(null);
-
-        params.set(0, (int) (xCenter + x));
-        params.set(1, (int) (yCenter + y));
-        doOrder(ORDER_SETDOT, params, premissions);
-
-        params.set(0, (int) (xCenter + x));
-        params.set(1, (int) (yCenter - y));
-        doOrder(ORDER_SETDOT, params, premissions);
-
-        params.set(0, (int) (xCenter - x));
-        params.set(1, (int) (yCenter + y));
-        doOrder(ORDER_SETDOT, params, premissions);
-
-        params.set(0, (int) (xCenter - x));
-        params.set(1, (int) (yCenter - y));
-        doOrder(ORDER_SETDOT, params, premissions);
+        drawPoint((int) (xCenter + x), (int) (yCenter + y), color);
+        drawPoint((int) (xCenter + x), (int) (yCenter - y), color);
+        drawPoint((int) (xCenter - x), (int) (yCenter + y), color);
+        drawPoint((int) (xCenter - x), (int) (yCenter - y), color);
     }
 
     private void fillEllipsePoints(float xCenter, float yCenter, float x, float y, int color) {
@@ -842,19 +479,19 @@ public class GlcdView extends View implements OnTouchListener {
         paint.setColor(color);
         font mfont;
         switch (textFont) {
-            case FONT_ARIEL_REGULAR:
+            case GlcdShield.FONT_ARIEL_REGULAR:
                 mfont = new ArielRegular();
                 break;
-            case FONT_ARIEL_BLACK:
+            case GlcdShield.FONT_ARIEL_BLACK:
                 mfont = new ArielBlack();
                 break;
-            case FONT_ARIEL_ITALIC:
+            case GlcdShield.FONT_ARIEL_ITALIC:
                 mfont = new ArielItalic();
                 break;
-            case FONT_COMICSANS:
+            case GlcdShield.FONT_COMICSANS:
                 mfont = new ComicSans();
                 break;
-            case FONT_SERIF:
+            case GlcdShield.FONT_SERIF:
                 mfont = new SerifRegular();
                 break;
             default:
@@ -880,16 +517,7 @@ public class GlcdView extends View implements OnTouchListener {
             for (int i = 0; i < 8; i++) {
                 if (((ha >> i) & (0x01)) == 0x01) {
                     if (multiplier == 1) {
-                        List<Integer> params = new ArrayList<>();
-                        params.add((int) (y + charBytesCount));
-                        params.add((int) (x + i));
-                        params.add(color);
-                        List<Boolean> premissions = new ArrayList<>();
-                        premissions.add(true);
-                        premissions.add(null);
-                        premissions.add(null);
-                        premissions.add(null);
-                        doOrder(ORDER_SETDOT, params, premissions);
+                        drawPoint((int) (y + charBytesCount), (int) (x + i), color);
                     } else {
                         float left = (originY + height) - ((x + ((i + 1) * multiplier)) * pixelY);
                         if (left < originY) left = originY;
@@ -910,16 +538,7 @@ public class GlcdView extends View implements OnTouchListener {
                 for (int i = k; i < 8; i++) {
                     if (((ha >> i) & (0x01)) == 0x01) {
                         if (multiplier == 1) {
-                            List<Integer> params = new ArrayList<>();
-                            params.add((int) (y + charBytesCount));
-                            params.add((int) (x + i + 8 - k));
-                            params.add(color);
-                            List<Boolean> premissions = new ArrayList<>();
-                            premissions.add(true);
-                            premissions.add(null);
-                            premissions.add(null);
-                            premissions.add(null);
-                            doOrder(ORDER_SETDOT, params, premissions);
+                            drawPoint((int) (y + charBytesCount), (int) (x + i + 8 - k), color);
                         } else {
                             float left = (originY + height) - ((x + ((i + 8 - k + 1) * multiplier)) * pixelY);
                             if (left < originY) left = originY;
@@ -953,19 +572,19 @@ public class GlcdView extends View implements OnTouchListener {
     public int getCharWidth(char c, int textSize, int textFont) {
         font mfont;
         switch (textFont) {
-            case FONT_ARIEL_REGULAR:
+            case GlcdShield.FONT_ARIEL_REGULAR:
                 mfont = new ArielRegular();
                 break;
-            case FONT_ARIEL_BLACK:
+            case GlcdShield.FONT_ARIEL_BLACK:
                 mfont = new ArielBlack();
                 break;
-            case FONT_ARIEL_ITALIC:
+            case GlcdShield.FONT_ARIEL_ITALIC:
                 mfont = new ArielItalic();
                 break;
-            case FONT_COMICSANS:
+            case GlcdShield.FONT_COMICSANS:
                 mfont = new ComicSans();
                 break;
-            case FONT_SERIF:
+            case GlcdShield.FONT_SERIF:
                 mfont = new SerifRegular();
                 break;
             default:
@@ -1004,19 +623,19 @@ public class GlcdView extends View implements OnTouchListener {
     public int getCharHeight(int textSize, int textFont) {
         font mfont;
         switch (textFont) {
-            case FONT_ARIEL_REGULAR:
+            case GlcdShield.FONT_ARIEL_REGULAR:
                 mfont = new ArielRegular();
                 break;
-            case FONT_ARIEL_BLACK:
+            case GlcdShield.FONT_ARIEL_BLACK:
                 mfont = new ArielBlack();
                 break;
-            case FONT_ARIEL_ITALIC:
+            case GlcdShield.FONT_ARIEL_ITALIC:
                 mfont = new ArielItalic();
                 break;
-            case FONT_COMICSANS:
+            case GlcdShield.FONT_COMICSANS:
                 mfont = new ComicSans();
                 break;
-            case FONT_SERIF:
+            case GlcdShield.FONT_SERIF:
                 mfont = new SerifRegular();
                 break;
             default:
@@ -1041,17 +660,12 @@ public class GlcdView extends View implements OnTouchListener {
             params.add(action);
             params.add((int) x);
             params.add((int) y);
-            List<Boolean> premissions = new ArrayList<>();
-            premissions.add(true);
-            premissions.add(true);
-            premissions.add(null);
-            premissions.add(null);
-            doOrder(ORDER_HANDLETOUCH, params, premissions);
+            ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).doOrder(GlcdShield.ORDER_HANDLETOUCH, params);
 
         } else {
-            if (currentPressedKey != null)
-                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(currentPressedKey) > -1)
-                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(currentPressedKey).setIsPressed(false);
+            if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).currentPressedKey != null)
+                if (((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.indexOfKey(((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).currentPressedKey) > -1)
+                    ((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).shapes.get(((GlcdShield) ((OneSheeldApplication) getContext().getApplicationContext()).getRunningShields().get(controllerTag)).currentPressedKey).setIsPressed(false);
         }
         return true;
     }
@@ -1087,7 +701,7 @@ public class GlcdView extends View implements OnTouchListener {
         }
     }
 
-    public class ArielRegular extends font {
+    public final class ArielRegular extends font {
 
         public ArielRegular() {
             font_width = 10;
@@ -1207,7 +821,7 @@ public class GlcdView extends View implements OnTouchListener {
 
     }
 
-    public class ArielBlack extends font {
+    public final class ArielBlack extends font {
 
         public ArielBlack() {
             font_width = 10;
@@ -1327,7 +941,7 @@ public class GlcdView extends View implements OnTouchListener {
 
     }
 
-    public class ArielItalic extends font {
+    public final class ArielItalic extends font {
 
         public ArielItalic() {
             font_width = 10;
@@ -1446,7 +1060,7 @@ public class GlcdView extends View implements OnTouchListener {
 
     }
 
-    public class SerifRegular extends font {
+    public final class SerifRegular extends font {
 
         public SerifRegular() {
             font_width = 10;
@@ -1565,7 +1179,7 @@ public class GlcdView extends View implements OnTouchListener {
 
     }
 
-    public class ComicSans extends font {
+    public final class ComicSans extends font {
 
         public ComicSans() {
             font_width = 10;
