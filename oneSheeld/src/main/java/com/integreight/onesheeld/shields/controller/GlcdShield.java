@@ -315,34 +315,40 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeRadius = frame.getArgumentAsInteger(2);
-                                ((RoundRectangle) tmpShape).setRadius(shapeRadius);
+                                if (tmpShape instanceof  RoundRectangle) {
+                                    shapeRadius = frame.getArgumentAsInteger(2);
+                                    ((RoundRectangle) tmpShape).setRadius(shapeRadius);
+                                }
                             }
                             break;
                         case RECTANGLE_SET_FILL:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                if (frame.getArgument(2)[0] == 0)
-                                    ((RoundRectangle) tmpShape).setIsFill(false);
-                                else
-                                    ((RoundRectangle) tmpShape).setIsFill(true);
+                                if (tmpShape instanceof  RoundRectangle) {
+                                    if (frame.getArgument(2)[0] == 0)
+                                        ((RoundRectangle) tmpShape).setIsFill(false);
+                                    else
+                                        ((RoundRectangle) tmpShape).setIsFill(true);
+                                }
                             }
                             break;
                         case RECTANGLE_SET_DIMENSIONS:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeWidth = frame.getArgumentAsInteger(2);
-                                if (shapeWidth < 0)
-                                    shapeWidth = 0;
+                                if (tmpShape instanceof  RoundRectangle) {
+                                    shapeWidth = frame.getArgumentAsInteger(2);
+                                    if (shapeWidth < 0)
+                                        shapeWidth = 0;
 
-                                shapeHeight = frame.getArgumentAsInteger(3);
-                                if (shapeHeight < 0)
-                                    shapeHeight = 0;
+                                    shapeHeight = frame.getArgumentAsInteger(3);
+                                    if (shapeHeight < 0)
+                                        shapeHeight = 0;
 
-                                ((RoundRectangle) tmpShape).setWidth(shapeWidth);
-                                ((RoundRectangle) tmpShape).setHeight(shapeHeight);
+                                    ((RoundRectangle) tmpShape).setWidth(shapeWidth);
+                                    ((RoundRectangle) tmpShape).setHeight(shapeHeight);
+                                }
                             }
                             break;
                     }
@@ -409,32 +415,34 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeX = frame.getArgumentAsInteger(2);
-                                if (shapeX < 0)
-                                    shapeX = 0;
-                                else if (shapeX > glcdWidth)
-                                    shapeX = glcdWidth - 1;
+                                if (tmpShape instanceof  Line) {
+                                    shapeX = frame.getArgumentAsInteger(2);
+                                    if (shapeX < 0)
+                                        shapeX = 0;
+                                    else if (shapeX > glcdWidth)
+                                        shapeX = glcdWidth - 1;
 
-                                shapeY = frame.getArgumentAsInteger(3);
-                                if (shapeY < 0)
-                                    shapeY = 0;
-                                else if (shapeY > glcdHeight)
-                                    shapeY = glcdHeight - 1;
+                                    shapeY = frame.getArgumentAsInteger(3);
+                                    if (shapeY < 0)
+                                        shapeY = 0;
+                                    else if (shapeY > glcdHeight)
+                                        shapeY = glcdHeight - 1;
 
-                                shapeX2 = frame.getArgumentAsInteger(4);
-                                if (shapeX2 < 0)
-                                    shapeX2 = 0;
-                                else if (shapeX2 > glcdWidth)
-                                    shapeX2 = glcdWidth - 1;
+                                    shapeX2 = frame.getArgumentAsInteger(4);
+                                    if (shapeX2 < 0)
+                                        shapeX2 = 0;
+                                    else if (shapeX2 > glcdWidth)
+                                        shapeX2 = glcdWidth - 1;
 
-                                shapeY2 = frame.getArgumentAsInteger(5);
-                                if (shapeY2 < 0)
-                                    shapeY2 = 0;
-                                else if (shapeY2 > glcdHeight)
-                                    shapeY2 = glcdHeight - 1;
+                                    shapeY2 = frame.getArgumentAsInteger(5);
+                                    if (shapeY2 < 0)
+                                        shapeY2 = 0;
+                                    else if (shapeY2 > glcdHeight)
+                                        shapeY2 = glcdHeight - 1;
 
-                                ((Line) tmpShape).setPoint1(shapeX, shapeY);
-                                ((Line) tmpShape).setPoint2(shapeX2, shapeY2);
+                                    ((Line) tmpShape).setPoint1(shapeX, shapeY);
+                                    ((Line) tmpShape).setPoint2(shapeX2, shapeY2);
+                                }
                             }
                             break;
                     }
@@ -498,26 +506,30 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeRadius = frame.getArgumentAsInteger(2);
-                                if (shapeRadius < 0)
-                                    shapeRadius = 0;
+                                if (tmpShape instanceof  Ellipse) {
+                                    shapeRadius = frame.getArgumentAsInteger(2);
+                                    if (shapeRadius < 0)
+                                        shapeRadius = 0;
 
-                                shapeRadius2 = frame.getArgumentAsInteger(3);
-                                if (shapeRadius2 < 0)
-                                    shapeRadius2 = 0;
+                                    shapeRadius2 = frame.getArgumentAsInteger(3);
+                                    if (shapeRadius2 < 0)
+                                        shapeRadius2 = 0;
 
-                                ((Ellipse) tmpShape).setRadiusX(shapeRadius);
-                                ((Ellipse) tmpShape).setRadiusY(shapeRadius2);
+                                    ((Ellipse) tmpShape).setRadiusX(shapeRadius);
+                                    ((Ellipse) tmpShape).setRadiusY(shapeRadius2);
+                                }
                             }
                             break;
                         case ELLIPSE_SET_FILL:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                if (frame.getArgument(2)[0] == 0)
-                                    ((Ellipse) tmpShape).setIsFill(false);
-                                else
-                                    ((Ellipse) tmpShape).setIsFill(true);
+                                if (tmpShape instanceof  Ellipse) {
+                                    if (frame.getArgument(2)[0] == 0)
+                                        ((Ellipse) tmpShape).setIsFill(false);
+                                    else
+                                        ((Ellipse) tmpShape).setIsFill(true);
+                                }
                             }
                             break;
                     }
@@ -555,22 +567,24 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                switch (frame.getArgument(2)[0]) {
-                                    case LABEL_FONT_ARIEL_REGULAR:
-                                        ((Label) tmpShape).setTextFont(FONT_ARIEL_REGULAR);
-                                        break;
-                                    case LABEL_FONT_ARIEL_BOLD:
-                                        ((Label) tmpShape).setTextFont(FONT_ARIEL_BLACK);
-                                        break;
-                                    case LABEL_FONT_ARIEL_ITALIC:
-                                        ((Label) tmpShape).setTextFont(FONT_ARIEL_ITALIC);
-                                        break;
-                                    case LABEL_FONT_COMICSANS:
-                                        ((Label) tmpShape).setTextFont(FONT_COMICSANS);
-                                        break;
-                                    case LABEL_FONT_SERIF:
-                                        ((Label) tmpShape).setTextFont(FONT_SERIF);
-                                        break;
+                                if (tmpShape instanceof  Label) {
+                                    switch (frame.getArgument(2)[0]) {
+                                        case LABEL_FONT_ARIEL_REGULAR:
+                                            ((Label) tmpShape).setTextFont(FONT_ARIEL_REGULAR);
+                                            break;
+                                        case LABEL_FONT_ARIEL_BOLD:
+                                            ((Label) tmpShape).setTextFont(FONT_ARIEL_BLACK);
+                                            break;
+                                        case LABEL_FONT_ARIEL_ITALIC:
+                                            ((Label) tmpShape).setTextFont(FONT_ARIEL_ITALIC);
+                                            break;
+                                        case LABEL_FONT_COMICSANS:
+                                            ((Label) tmpShape).setTextFont(FONT_COMICSANS);
+                                            break;
+                                        case LABEL_FONT_SERIF:
+                                            ((Label) tmpShape).setTextFont(FONT_SERIF);
+                                            break;
+                                    }
                                 }
                             }
                             break;
@@ -578,16 +592,18 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                switch (frame.getArgument(2)[0]) {
-                                    case 0x00:
-                                        ((Label) tmpShape).setTextSize(TEXT_SMALL);
-                                        break;
-                                    case 0x01:
-                                        ((Label) tmpShape).setTextSize(TEXT_MEDUIM);
-                                        break;
-                                    case 0x02:
-                                        ((Label) tmpShape).setTextSize(TEXT_LARGE);
-                                        break;
+                                if (tmpShape instanceof  Label) {
+                                    switch (frame.getArgument(2)[0]) {
+                                        case 0x00:
+                                            ((Label) tmpShape).setTextSize(TEXT_SMALL);
+                                            break;
+                                        case 0x01:
+                                            ((Label) tmpShape).setTextSize(TEXT_MEDUIM);
+                                            break;
+                                        case 0x02:
+                                            ((Label) tmpShape).setTextSize(TEXT_LARGE);
+                                            break;
+                                    }
                                 }
                             }
                             break;
@@ -595,7 +611,8 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((Label) tmpShape).setText(frame.getArgumentAsString(2));
+                                if (tmpShape instanceof  Label)
+                                    ((Label) tmpShape).setText(frame.getArgumentAsString(2));
                             }
                             break;
                     }
@@ -663,31 +680,36 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((ProgressBar) tmpShape).setStart(frame.getArgumentAsInteger(2));
-                                ((ProgressBar) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                                if (tmpShape instanceof  ProgressBar) {
+                                    ((ProgressBar) tmpShape).setStart(frame.getArgumentAsInteger(2));
+                                    ((ProgressBar) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                                }
                             }
                             break;
                         case PROGRESSBAR_SET_VALUE:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((ProgressBar) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
+                                if (tmpShape instanceof  ProgressBar)
+                                    ((ProgressBar) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
                             }
                             break;
                         case PROGRESSBAR_SET_DIMENSIONS:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeWidth = frame.getArgumentAsInteger(2);
-                                if (shapeWidth < 0)
-                                    shapeWidth = 0;
+                                if (tmpShape instanceof  ProgressBar) {
+                                    shapeWidth = frame.getArgumentAsInteger(2);
+                                    if (shapeWidth < 0)
+                                        shapeWidth = 0;
 
-                                shapeHeight = frame.getArgumentAsInteger(3);
-                                if (shapeHeight < 0)
-                                    shapeHeight = 0;
+                                    shapeHeight = frame.getArgumentAsInteger(3);
+                                    if (shapeHeight < 0)
+                                        shapeHeight = 0;
 
-                                ((ProgressBar) tmpShape).setWidth(shapeWidth);
-                                ((ProgressBar) tmpShape).setHeight(shapeHeight);
+                                    ((ProgressBar) tmpShape).setWidth(shapeWidth);
+                                    ((ProgressBar) tmpShape).setHeight(shapeHeight);
+                                }
                             }
                             break;
                     }
@@ -747,26 +769,31 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((AnalogGauge) tmpShape).setStart(frame.getArgumentAsInteger(2));
-                                ((AnalogGauge) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                                if (tmpShape instanceof  AnalogGauge) {
+                                    ((AnalogGauge) tmpShape).setStart(frame.getArgumentAsInteger(2));
+                                    ((AnalogGauge) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                                }
                             }
                             break;
                         case GAUGE_SET_VALUE:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((AnalogGauge) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
+                                if (tmpShape instanceof  AnalogGauge)
+                                    ((AnalogGauge) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
                             }
                             break;
                         case GAUGE_SET_RADIUS:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeRadius = frame.getArgumentAsInteger(2);
-                                if (shapeRadius < 0)
-                                    shapeRadius = 0;
+                                if (tmpShape instanceof  AnalogGauge) {
+                                    shapeRadius = frame.getArgumentAsInteger(2);
+                                    if (shapeRadius < 0)
+                                        shapeRadius = 0;
 
-                                ((AnalogGauge) tmpShape).setRadius(shapeRadius);
+                                    ((AnalogGauge) tmpShape).setRadius(shapeRadius);
+                                }
                             }
                             break;
                     }
@@ -811,34 +838,38 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeX = frame.getArgumentAsInteger(2);
-                                if (shapeX < 0)
-                                    shapeX = 0;
-                                else if (shapeX > glcdWidth)
-                                    shapeX = glcdWidth - 1;
+                                if (tmpShape instanceof  Button) {
+                                    shapeX = frame.getArgumentAsInteger(2);
+                                    if (shapeX < 0)
+                                        shapeX = 0;
+                                    else if (shapeX > glcdWidth)
+                                        shapeX = glcdWidth - 1;
 
-                                shapeY = frame.getArgumentAsInteger(3);
-                                if (shapeY < 0)
-                                    shapeY = 0;
-                                else if (shapeY > glcdHeight)
-                                    shapeY = glcdHeight - 1;
+                                    shapeY = frame.getArgumentAsInteger(3);
+                                    if (shapeY < 0)
+                                        shapeY = 0;
+                                    else if (shapeY > glcdHeight)
+                                        shapeY = glcdHeight - 1;
 
-                                ((Button) tmpShape).clearTouch(this);
-                                tmpShape.setPosition(shapeX, shapeY);
-                                ((Button) tmpShape).applyTouch(this);
-                                ((Button) tmpShape).setText(getView(), ((Button) tmpShape).getText());
+                                    ((Button) tmpShape).clearTouch(this);
+                                    tmpShape.setPosition(shapeX, shapeY);
+                                    ((Button) tmpShape).applyTouch(this);
+                                    ((Button) tmpShape).setText(getView(), ((Button) tmpShape).getText());
+                                }
                             }
                             break;
                         case SHAPE_SET_VISIBILITY:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                if (frame.getArgument(2)[0] == 0) {
-                                    tmpShape.setVisibility(false);
-                                    ((Button) tmpShape).clearTouch(this);
-                                } else {
-                                    tmpShape.setVisibility(true);
-                                    ((Button) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof  Button) {
+                                    if (frame.getArgument(2)[0] == 0) {
+                                        tmpShape.setVisibility(false);
+                                        ((Button) tmpShape).clearTouch(this);
+                                    } else {
+                                        tmpShape.setVisibility(true);
+                                        ((Button) tmpShape).applyTouch(this);
+                                    }
                                 }
                             }
                             break;
@@ -846,37 +877,42 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                Button btn = ((Button) tmpShape);
-                                ((Button) tmpShape).clearTouch(this);
-                                shapeText = frame.getArgumentAsString(2);
-                                btn.setText(getView(), shapeText);
-                                btn.applyTouch(this);
+                                if (tmpShape instanceof Button) {
+                                    Button btn = ((Button) tmpShape);
+                                    ((Button) tmpShape).clearTouch(this);
+                                    shapeText = frame.getArgumentAsString(2);
+                                    btn.setText(getView(), shapeText);
+                                    btn.applyTouch(this);
+                                }
                             }
                             break;
                         case BUTTON_SET_DIMENSIONS:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeWidth = frame.getArgumentAsInteger(2);
-                                if (shapeWidth < 0)
-                                    shapeWidth = 0;
+                                if (tmpShape instanceof Button) {
+                                    shapeWidth = frame.getArgumentAsInteger(2);
+                                    if (shapeWidth < 0)
+                                        shapeWidth = 0;
 
-                                shapeHeight = frame.getArgumentAsInteger(3);
-                                if (shapeHeight < 0)
-                                    shapeHeight = 0;
+                                    shapeHeight = frame.getArgumentAsInteger(3);
+                                    if (shapeHeight < 0)
+                                        shapeHeight = 0;
 
-                                ((Button) tmpShape).clearTouch(this);
-                                ((Button) tmpShape).setWidth(shapeWidth);
-                                ((Button) tmpShape).setHeight(shapeHeight);
-                                ((Button) tmpShape).applyTouch(this);
-                                ((Button) tmpShape).setText(getView(), ((Button) tmpShape).getText());
+                                    ((Button) tmpShape).clearTouch(this);
+                                    ((Button) tmpShape).setWidth(shapeWidth);
+                                    ((Button) tmpShape).setHeight(shapeHeight);
+                                    ((Button) tmpShape).applyTouch(this);
+                                    ((Button) tmpShape).setText(getView(), ((Button) tmpShape).getText());
+                                }
                             }
                             break;
                         case BUTTON_SET_STYLE:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((Button) tmpShape).setStyle(frame.getArgument(2)[0]);
+                                if (tmpShape instanceof  Button)
+                                    ((Button) tmpShape).setStyle(frame.getArgument(2)[0]);
                             }
                             break;
                     }
@@ -907,33 +943,37 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeX = frame.getArgumentAsInteger(2);
-                                if (shapeX < 0)
-                                    shapeX = 0;
-                                else if (shapeX > glcdWidth)
-                                    shapeX = glcdWidth - 1;
+                                if (tmpShape instanceof RadioButton) {
+                                    shapeX = frame.getArgumentAsInteger(2);
+                                    if (shapeX < 0)
+                                        shapeX = 0;
+                                    else if (shapeX > glcdWidth)
+                                        shapeX = glcdWidth - 1;
 
-                                shapeY = frame.getArgumentAsInteger(3);
-                                if (shapeY < 0)
-                                    shapeY = 0;
-                                else if (shapeY > glcdHeight)
-                                    shapeY = glcdHeight - 1;
+                                    shapeY = frame.getArgumentAsInteger(3);
+                                    if (shapeY < 0)
+                                        shapeY = 0;
+                                    else if (shapeY > glcdHeight)
+                                        shapeY = glcdHeight - 1;
 
-                                ((RadioButton) tmpShape).clearTouch(this);
-                                tmpShape.setPosition(shapeX, shapeY);
-                                ((RadioButton) tmpShape).applyTouch(this);
+                                    ((RadioButton) tmpShape).clearTouch(this);
+                                    tmpShape.setPosition(shapeX, shapeY);
+                                    ((RadioButton) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                         case SHAPE_SET_VISIBILITY:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                if (frame.getArgument(2)[0] == 0) {
-                                    tmpShape.setVisibility(false);
-                                    ((RadioButton) tmpShape).clearTouch(this);
-                                } else {
-                                    tmpShape.setVisibility(true);
-                                    ((RadioButton) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof RadioButton) {
+                                    if (frame.getArgument(2)[0] == 0) {
+                                        tmpShape.setVisibility(false);
+                                        ((RadioButton) tmpShape).clearTouch(this);
+                                    } else {
+                                        tmpShape.setVisibility(true);
+                                        ((RadioButton) tmpShape).applyTouch(this);
+                                    }
                                 }
                             }
                             break;
@@ -941,10 +981,12 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeText = frame.getArgumentAsString(2);
-                                ((RadioButton) tmpShape).clearTouch(this);
-                                ((RadioButton) tmpShape).setText(getView(), shapeText);
-                                ((RadioButton) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof RadioButton) {
+                                    shapeText = frame.getArgumentAsString(2);
+                                    ((RadioButton) tmpShape).clearTouch(this);
+                                    ((RadioButton) tmpShape).setText(getView(), shapeText);
+                                    ((RadioButton) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                         case RADIOBUTTON_SET_SIZE:
@@ -960,21 +1002,25 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                rg = ((RadioButton) tmpShape).getRadioGroup();
-                                if(((RadioButton) tmpShape).getSelected())
-                                    rg.reset();
-                                if (rg != null)
-                                    rg.remove(((RadioButton) tmpShape));
-                                getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
+                                if (tmpShape instanceof RadioButton) {
+                                    rg = ((RadioButton) tmpShape).getRadioGroup();
+                                    if (((RadioButton) tmpShape).getSelected())
+                                        rg.reset();
+                                    if (rg != null)
+                                        rg.remove(((RadioButton) tmpShape));
+                                    getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
+                                }
                             }
                             break;
                         case RADIOBUTTON_SELECT:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                rg = ((RadioButton) tmpShape).getRadioGroup();
-                                if (rg != null)
-                                    ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
+                                if (tmpShape instanceof RadioButton) {
+                                    rg = ((RadioButton) tmpShape).getRadioGroup();
+                                    if (rg != null)
+                                        ((RadioButton) tmpShape).getRadioGroup().select(((RadioButton) tmpShape));
+                                }
                             }
                             break;
                     }
@@ -1003,33 +1049,37 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeX = frame.getArgumentAsInteger(2);
-                                if (shapeX < 0)
-                                    shapeX = 0;
-                                else if (shapeX > glcdWidth)
-                                    shapeX = glcdWidth - 1;
+                                if (tmpShape instanceof CheckBox) {
+                                    shapeX = frame.getArgumentAsInteger(2);
+                                    if (shapeX < 0)
+                                        shapeX = 0;
+                                    else if (shapeX > glcdWidth)
+                                        shapeX = glcdWidth - 1;
 
-                                shapeY = frame.getArgumentAsInteger(3);
-                                if (shapeY < 0)
-                                    shapeY = 0;
-                                else if (shapeY > glcdHeight)
-                                    shapeY = glcdHeight - 1;
+                                    shapeY = frame.getArgumentAsInteger(3);
+                                    if (shapeY < 0)
+                                        shapeY = 0;
+                                    else if (shapeY > glcdHeight)
+                                        shapeY = glcdHeight - 1;
 
-                                ((CheckBox) tmpShape).clearTouch(this);
-                                tmpShape.setPosition(shapeX, shapeY);
-                                ((CheckBox) tmpShape).applyTouch(this);
+                                    ((CheckBox) tmpShape).clearTouch(this);
+                                    tmpShape.setPosition(shapeX, shapeY);
+                                    ((CheckBox) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                         case SHAPE_SET_VISIBILITY:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                if (frame.getArgument(2)[0] == 0) {
-                                    tmpShape.setVisibility(false);
-                                    ((CheckBox) tmpShape).clearTouch(this);
-                                } else {
-                                    tmpShape.setVisibility(true);
-                                    ((CheckBox) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof CheckBox) {
+                                    if (frame.getArgument(2)[0] == 0) {
+                                        tmpShape.setVisibility(false);
+                                        ((CheckBox) tmpShape).clearTouch(this);
+                                    } else {
+                                        tmpShape.setVisibility(true);
+                                        ((CheckBox) tmpShape).applyTouch(this);
+                                    }
                                 }
                             }
                             break;
@@ -1037,34 +1087,40 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeText = frame.getArgumentAsString(2);
-                                ((CheckBox) tmpShape).clearTouch(this);
-                                ((CheckBox) tmpShape).setText(getView(), shapeText);
-                                ((CheckBox) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof CheckBox) {
+                                    shapeText = frame.getArgumentAsString(2);
+                                    ((CheckBox) tmpShape).clearTouch(this);
+                                    ((CheckBox) tmpShape).setText(getView(), shapeText);
+                                    ((CheckBox) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                         case CHECKBOX_SET_SIZE:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeSize = frame.getArgument(2)[0];
-                                ((CheckBox) tmpShape).clearTouch(this);
-                                ((CheckBox) tmpShape).setSize(getView(), shapeSize);
-                                ((CheckBox) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof CheckBox) {
+                                    shapeSize = frame.getArgument(2)[0];
+                                    ((CheckBox) tmpShape).clearTouch(this);
+                                    ((CheckBox) tmpShape).setSize(getView(), shapeSize);
+                                    ((CheckBox) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                         case CHECKBOX_SELECT:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((CheckBox) tmpShape).setSelected(true);
+                                if (tmpShape instanceof CheckBox)
+                                    ((CheckBox) tmpShape).setSelected(true);
                             }
                             break;
                         case CHECKBOX_UNSELECT:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((CheckBox) tmpShape).setSelected(false);
+                                if (tmpShape instanceof CheckBox)
+                                    ((CheckBox) tmpShape).setSelected(false);
                             }
                             break;
                     }
@@ -1103,33 +1159,37 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeX = frame.getArgumentAsInteger(2);
-                                if (shapeX < 0)
-                                    shapeX = 0;
-                                else if (shapeX > glcdWidth)
-                                    shapeX = glcdWidth - 1;
+                                if (tmpShape instanceof Slider) {
+                                    shapeX = frame.getArgumentAsInteger(2);
+                                    if (shapeX < 0)
+                                        shapeX = 0;
+                                    else if (shapeX > glcdWidth)
+                                        shapeX = glcdWidth - 1;
 
-                                shapeY = frame.getArgumentAsInteger(3);
-                                if (shapeY < 0)
-                                    shapeY = 0;
-                                else if (shapeY > glcdHeight)
-                                    shapeY = glcdHeight - 1;
+                                    shapeY = frame.getArgumentAsInteger(3);
+                                    if (shapeY < 0)
+                                        shapeY = 0;
+                                    else if (shapeY > glcdHeight)
+                                        shapeY = glcdHeight - 1;
 
-                                ((Slider) tmpShape).clearTouch(this);
-                                tmpShape.setPosition(shapeX, shapeY);
-                                ((Slider) tmpShape).applyTouch(this);
+                                    ((Slider) tmpShape).clearTouch(this);
+                                    tmpShape.setPosition(shapeX, shapeY);
+                                    ((Slider) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                         case SHAPE_SET_VISIBILITY:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                if (frame.getArgument(2)[0] == 0) {
-                                    tmpShape.setVisibility(false);
-                                    ((Slider) tmpShape).clearTouch(this);
-                                } else {
-                                    tmpShape.setVisibility(true);
-                                    ((Slider) tmpShape).applyTouch(this);
+                                if (tmpShape instanceof Slider) {
+                                    if (frame.getArgument(2)[0] == 0) {
+                                        tmpShape.setVisibility(false);
+                                        ((Slider) tmpShape).clearTouch(this);
+                                    } else {
+                                        tmpShape.setVisibility(true);
+                                        ((Slider) tmpShape).applyTouch(this);
+                                    }
                                 }
                             }
                             break;
@@ -1137,33 +1197,38 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((Slider) tmpShape).setStart(frame.getArgumentAsInteger(2));
-                                ((Slider) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                                if (tmpShape instanceof Slider) {
+                                    ((Slider) tmpShape).setStart(frame.getArgumentAsInteger(2));
+                                    ((Slider) tmpShape).setEnd(frame.getArgumentAsInteger(3));
+                                }
                             }
                             break;
                         case SLIDER_SET_VALUE:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                ((Slider) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
+                                if (tmpShape instanceof Slider)
+                                    ((Slider) tmpShape).setCurrentValue(frame.getArgumentAsInteger(2));
                             }
                             break;
                         case SLIDER_SET_DIMENSIONS:
                             shapeKey = frame.getArgumentAsInteger(1);
                             tmpShape = getFromShapes(shapeKey);
                             if (tmpShape != null) {
-                                shapeWidth = frame.getArgumentAsInteger(2);
-                                if (shapeWidth < 0)
-                                    shapeWidth = 0;
+                                if (tmpShape instanceof Slider) {
+                                    shapeWidth = frame.getArgumentAsInteger(2);
+                                    if (shapeWidth < 0)
+                                        shapeWidth = 0;
 
-                                shapeHeight = frame.getArgumentAsInteger(3);
-                                if (shapeHeight < 0)
-                                    shapeHeight = 0;
+                                    shapeHeight = frame.getArgumentAsInteger(3);
+                                    if (shapeHeight < 0)
+                                        shapeHeight = 0;
 
-                                ((Slider) tmpShape).clearTouch(this);
-                                ((Slider) tmpShape).setWidth(shapeWidth);
-                                ((Slider) tmpShape).setHeight(shapeHeight);
-                                ((Slider) tmpShape).applyTouch(this);
+                                    ((Slider) tmpShape).clearTouch(this);
+                                    ((Slider) tmpShape).setWidth(shapeWidth);
+                                    ((Slider) tmpShape).setHeight(shapeHeight);
+                                    ((Slider) tmpShape).applyTouch(this);
+                                }
                             }
                             break;
                     }
