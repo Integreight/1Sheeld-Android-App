@@ -134,7 +134,7 @@ public enum UIShield {
     PATTERN_SHIELD((byte) 0x27, "Pattern", 0xffde1f26, R.drawable.shields_list_pattern_symbol, false, PatternShield.class, PatternFragment.class),
     INTERNET_SHIELD((byte) 0x29, "Internet", 0xffde1f26, R.drawable.shields_list_internet_symbol, false, InternetShield.class, InternetFragment.class),
     NFC_SHIELD((byte) 0x16, "NFC", 0xff03d203, R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1),
-    GLCD_SHIELD((byte) 0x28, "Glcd", 0xff03d203, R.drawable.shields_list_glcd_symbol, false, GlcdShield.class, GlcdFragment.class, 1),
+    GLCD_SHIELD((byte) 0x28, "GLCD", 0xff03d203, R.drawable.shields_list_glcd_symbol, false, GlcdShield.class, GlcdFragment.class, 1),
     COLOR_DETECTION_SHIELD((byte) 0x05, "Color Detector", 0xffde1f26, R.drawable.shields_list_color_detector_symbol, false, ColorDetectionShield.class, ColorDetectionFragment.class, 1);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
