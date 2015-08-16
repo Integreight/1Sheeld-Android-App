@@ -31,8 +31,7 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
     }
 
     @Override
-    public void onViewCreated(View v, Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, Bundle savedInstanceState) {
         verticalContainer = (LinearLayout) v
                 .findViewById(R.id.verticalContainer);
         draw(0, 0, ((LcdShield) getApplication()
@@ -44,12 +43,7 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         uiHandler = new Handler();
         ((LcdShield) getApplication().getRunningShields().get(
                 getControllerTag())).setLcdEventHandler(lcdEventHandler);
@@ -65,21 +59,15 @@ public class LcdFragment extends ShieldFragmentParent<LcdFragment> {
     }
 
     @Override
-    public void onStop() {
+    public void doOnStop() {
         try {
             clear(false, false);
             drawn = false;
         } catch (Exception e) {
         }
-        super.onStop();
     }
 
     LinearLayout verticalContainer;
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
 
     public void draw(int initRow, int initCol, int rowsEnd, int columnsEnd) {
         float scale = getResources().getDisplayMetrics().density;

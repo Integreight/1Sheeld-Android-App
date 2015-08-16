@@ -32,8 +32,7 @@ public class TextToSpeechFragment extends
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         speakerLevel = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         femaleBtn = (Button) v.findViewById(R.id.increaseBtn);
@@ -52,30 +51,18 @@ public class TextToSpeechFragment extends
     };
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         uiHandler = new Handler();
         ((TextToSpeechShield) getApplication().getRunningShields().get(
                 getControllerTag())).setEventHandler(ttsEventHandler);
-        super.onStart();
     }
 
     @Override
-    public void onStop() {
+    public void doOnStop() {
         if (speakerLevel != null && animation != null) {
             speakerLevel.removeCallbacks(runAnimation);
             animation.stop();
         }
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
     }
 
     private TTsEventHandler ttsEventHandler = new TTsEventHandler() {
@@ -135,11 +122,6 @@ public class TextToSpeechFragment extends
             getApplication().getRunningShields().put(getControllerTag(),
                     new TextToSpeechShield(activity, getControllerTag()));
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

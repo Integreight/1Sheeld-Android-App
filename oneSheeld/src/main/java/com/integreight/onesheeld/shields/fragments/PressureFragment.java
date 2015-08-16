@@ -12,7 +12,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.PressureShield;
 import com.integreight.onesheeld.shields.controller.PressureShield.PressureEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
     TextView pressure_float, pressure_byte;
@@ -22,19 +21,12 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.pressure_shield_fragment_layout,
                 container, false);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((PressureShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setPressureEventHandler(pressureEventHandler);
@@ -44,23 +36,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
     }
 
     @Override
-    public void onStop() {
-
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Pressure Sheeld::OnActivityCreated()", "");
-
-
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         pressure_float = (TextView) v.findViewById(R.id.pressure_float_txt);
         pressure_byte = (TextView) v.findViewById(R.id.pressure_byte_txt);
 
@@ -151,14 +127,5 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
 
     public void doOnServiceConnected() {
         initializeFirmata();
-    }
-
-    ;
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-
     }
 }

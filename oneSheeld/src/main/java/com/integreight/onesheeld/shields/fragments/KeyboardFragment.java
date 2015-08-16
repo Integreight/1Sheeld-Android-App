@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.content.pm.ActivityInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,29 +51,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-
-        super.onStop();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         mEt1 = (EditText) v.findViewById(R.id.keyboard_myEdit_txt);
         mEt1.setMaxLines(Integer.MAX_VALUE);
         mEt1.setSingleLine(false);
@@ -109,12 +86,6 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
     public void setKeyboardEventHandler(
             KeyboardEventHandler keyboardEventHandler) {
         this.eventHandler = keyboardEventHandler;
@@ -131,9 +102,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
     }
 
     @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
+    public void doOnResume() {
         setKeyboardEventHandler(((KeyboardShield) getApplication()
                 .getRunningShields().get(getControllerTag()))
                 .getKeyboardEventHandler());

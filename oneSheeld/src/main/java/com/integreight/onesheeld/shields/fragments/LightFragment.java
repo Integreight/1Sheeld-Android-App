@@ -12,7 +12,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.LightShield.LightEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class LightFragment extends ShieldFragmentParent<LightFragment> {
     TextView light_float, light_byte;
@@ -29,12 +28,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((LightShield) getApplication().getRunningShields().get(
                 getControllerTag())).setLightEventHandler(lightEventHandler);
         ((LightShield) getApplication().getRunningShields().get(
@@ -43,22 +37,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-        Log.d("Light Sheeld::OnActivityCreated()", "");
-
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         light_float = (TextView) v.findViewById(R.id.light_float_txt);
         light_byte = (TextView) v.findViewById(R.id.light_byte_txt);
 
@@ -144,13 +123,5 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
 
     public void doOnServiceConnected() {
         initializeFirmata();
-    }
-
-    ;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
     }
 }

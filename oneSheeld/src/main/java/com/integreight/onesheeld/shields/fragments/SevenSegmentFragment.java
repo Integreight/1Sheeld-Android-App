@@ -40,8 +40,7 @@ public class SevenSegmentFragment extends
     }
 
     @Override
-    public void onViewCreated(View v, Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, Bundle savedInstanceState) {
         aSegment = (ImageView) v
                 .findViewById(R.id.sevensegment_shield_a_segment_imageview);
         bSegment = (ImageView) v
@@ -63,11 +62,7 @@ public class SevenSegmentFragment extends
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         if (getControllerTag() != null)
             ((SevenSegmentShield) getApplication().getRunningShields().get(
                     getControllerTag()))
@@ -118,19 +113,6 @@ public class SevenSegmentFragment extends
                                 .refreshSegments());
                     }
                 });
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
 
     }
 

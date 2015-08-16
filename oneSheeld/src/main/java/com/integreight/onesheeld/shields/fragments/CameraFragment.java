@@ -19,7 +19,6 @@ import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
-    private CameraFragmentHandler fragmentHandler;
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
     private View camerLogo;
@@ -31,28 +30,21 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
         activity.registerSlidingMenuListner(this);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.camera_shield_fragment_layout, container,
                 false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void doOnViewCreated(View view, Bundle savedInstanceState) {
         frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         camerLogo = view.findViewById(R.id.camera_log);
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(cameraEventHandler);
-        super.onStart();
 
     }
 
@@ -118,24 +110,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     }
 
     @Override
-    public void onStop() {
-
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        fragmentHandler = new CameraFragmentHandler() {
-
-            @Override
-            public void onCameraFragmentIntilized() {
-                // TODO Auto-generated method stub
-
-            }
-        };
-        fragmentHandler.onCameraFragmentIntilized();
+    public void doOnActivityCreated(Bundle savedInstanceState) {
     }
 
     private CameraEventHandler cameraEventHandler = new CameraEventHandler() {
@@ -194,12 +169,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         initializeFirmata();
     }
 
-    ;
-
     @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
+    public void doOnResume() {
         uiHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -243,7 +214,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     }
 
     @Override
-    public void onPause() {
+    public void doOnPause() {
         if (getApplication().getRunningShields().get(
                 getControllerTag()) != null) {
             try {
@@ -255,7 +226,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             camerLogo.setVisibility(View.VISIBLE);
         }
         getView().invalidate();
-        super.onPause();
     }
 
     @Override
@@ -325,9 +295,5 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 }
             }
         }
-    }
-
-    public static interface CameraFragmentHandler {
-        void onCameraFragmentIntilized();
     }
 }

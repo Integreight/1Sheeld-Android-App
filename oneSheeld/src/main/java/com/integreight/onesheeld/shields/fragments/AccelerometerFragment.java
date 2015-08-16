@@ -12,7 +12,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield.AccelerometerEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class AccelerometerFragment extends
         ShieldFragmentParent<AccelerometerFragment> {
@@ -23,36 +22,21 @@ public class AccelerometerFragment extends
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.accelerometer_shield_fragment_layout,
                 container, false);
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((AccelerometerShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setAccelerometerEventHandler(accelerometerEventHandler);
         ((AccelerometerShield) getApplication().getRunningShields().get(
                 getControllerTag())).registerSensorListener(true);
-        super.onStart();
     }
 
     @Override
-    public void onStop() {
-
-        super.onStop();
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         x = (TextView) v.findViewById(R.id.x_value_txt);
         y = (TextView) v.findViewById(R.id.y_value_txt);
         z = (TextView) v.findViewById(R.id.z_value_txt);
@@ -86,10 +70,8 @@ public class AccelerometerFragment extends
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
+    public void doOnActivityCreated(Bundle savedInstanceState) {
         // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Gravity Sheeld::OnActivityCreated()", "");
 
     }
 
@@ -149,8 +131,6 @@ public class AccelerometerFragment extends
     ;
 
     @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
+    public void doOnResume() {
     }
 }

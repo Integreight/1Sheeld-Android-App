@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
@@ -31,24 +30,18 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void doOnViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ledImage = (ImageView) view.findViewById(R.id.led_shield_led_imageview);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void doOnResume() {
         toggleLed(((LedShield) getApplication().getRunningShields().get(
                 getControllerTag())).refreshLed());
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((LedShield) getApplication().getRunningShields().get(
                 getControllerTag())).setLedEventHandler(ledEventHandler);
         ConnectingPinsView.getInstance().reset(
@@ -79,18 +72,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
 
                     }
                 }); // TODO Auto-generated method stub
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
     }
 
     private LedEventHandler ledEventHandler = new LedEventHandler() {
@@ -132,11 +113,6 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
                     new LedShield(activity, getControllerTag()));
         }
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

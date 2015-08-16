@@ -24,32 +24,13 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((ClockShield) getApplication().getRunningShields().get(
                 getControllerTag())).setClockEventHandler(clockEventHandler);
-        super.onStart();
-
     }
 
     @Override
-    public void onStop() {
-
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void doOnViewCreated(View view, @Nullable Bundle savedInstanceState) {
         time_tx = (TextView) view.findViewById(R.id.time_txt);
     }
 
@@ -80,13 +61,6 @@ public class ClockFragment extends ShieldFragmentParent<ClockFragment> {
         }
 
     }
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-    }
-
     @Override
     public void doOnServiceConnected() {
         initializeFirmata();

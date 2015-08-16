@@ -12,7 +12,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield;
 import com.integreight.onesheeld.shields.controller.MagnetometerShield.MagnetometerEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class MagnetometerFragment extends
         ShieldFragmentParent<MagnetometerFragment> {
@@ -30,12 +29,7 @@ public class MagnetometerFragment extends
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((MagnetometerShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setMagnetometerEventHandler(magnetometerEventHandler);
@@ -45,22 +39,7 @@ public class MagnetometerFragment extends
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Magnetometer Sheeld::OnActivityCreated()", "");
-
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         x = (TextView) v.findViewById(R.id.x_value_txt);
         y = (TextView) v.findViewById(R.id.y_value_txt);
         z = (TextView) v.findViewById(R.id.z_value_txt);
@@ -162,12 +141,4 @@ public class MagnetometerFragment extends
         initializeFirmata();
     }
 
-    ;
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-
-    }
 }

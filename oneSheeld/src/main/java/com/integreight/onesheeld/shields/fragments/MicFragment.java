@@ -24,35 +24,11 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.mic_shield_fragment_view, container,
                 false);
     }
-
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         soundLevelIndicator = (TextView) v
                 .findViewById(R.id.soundLevelIndicator);
         micValue = (OneSheeldTextView) v.findViewById(R.id.micValue);
@@ -104,7 +80,7 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
     }
 
     @Override
-    public void onResume() {
+    public void doOnResume() {
         invalidateController();
         ((MicShield) getApplication().getRunningShields().get(
                 getControllerTag())).setMicEventHandler(micEventHandler);
@@ -112,7 +88,5 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
                 getControllerTag())).startMic(false);
         ((MicShield) getApplication().getRunningShields().get(
                 getControllerTag())).doOnResume();
-
-        super.onResume();
     }
 }

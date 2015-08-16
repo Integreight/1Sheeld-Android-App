@@ -39,12 +39,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     }
 
     @Override
-    public void onStart() {
-
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -76,14 +71,10 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
         ((SpeakerShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setSpeakerEventHandler(speakerEventHandler);
-        super.onStart();
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-
-        if(getApplication().getAppFirmata().isOpen()==false)return;
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         buzzerSpeaker = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         buzzerSpeaker
@@ -135,19 +126,6 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                 : volume == 75 ? 3 : volume == 100 ? 4 : currLevel;
         return levelsResources[currLevel];
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Log.d("BuzeerFragment::OnActivityCreated()", "");
-
-    }
-
     private SpeakerEventHandler speakerEventHandler = new SpeakerEventHandler() {
 
         @Override
@@ -172,9 +150,8 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     }
 
     @Override
-    public void onResume() {
+    public void doOnResume() {
         ((SpeakerShield) getApplication().getRunningShields().get(
                 getControllerTag())).doOnResume();
-        super.onResume();
     }
 }

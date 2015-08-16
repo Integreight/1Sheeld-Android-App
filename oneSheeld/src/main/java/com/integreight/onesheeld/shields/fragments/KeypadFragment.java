@@ -42,18 +42,12 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.keypad_shield_fragment_layout, container,
                 false);
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -76,23 +70,10 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
 
                     }
                 });
-        super.onStart();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         initializeKeysEventHandler(v);
     }
 

@@ -47,11 +47,13 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     public void onAttach(Activity activity) {
         this.activity = (MainActivity) activity;
         super.onAttach(activity);
+        ((T) this).doOnAttach();
     }
 
     @Override
     public void onDetach() {
         // activity = null;
+        ((T) this).doOnDetach();
         super.onDetach();
     }
 
@@ -69,6 +71,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         activity = getAppActivity();
         controllerTag = AppShields.getInstance().getShieldTag(((T) (this)).getClass().getName());
         super.onActivityCreated(savedInstanceState);
+        ((T) this).doOnActivityCreated(savedInstanceState);
     }
 
     public String getClassName() {
@@ -102,10 +105,16 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         }
         return false;
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        if(getApplication().getAppFirmata().isOpen()==false)return;
         super.onViewCreated(view, savedInstanceState);
+        if (getApplication().getAppFirmata().isOpen() == false) return;
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        ((T) this).doOnViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -118,6 +127,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
          * If the Shield lost it's controller instance within the application,
 		 * then starts to re-init it
 		 */
+
+        if (getApplication().getAppFirmata().isOpen() == false) return;
         if (getApplication().getRunningShields().get(getControllerTag()) != null && activity != null && activity.findViewById(R.id.settingsFixedHandler) != null)
             getApplication().getRunningShields().get(getControllerTag())
                     .setHasForgroundView(true);
@@ -153,11 +164,13 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                                 || getApplication().getRunningShields().get(
                                 getControllerTag()).requiredPinsIndex == -1 ? View.GONE
                                 : View.VISIBLE);
+        ((T) this).doOnStart();
     }
 
     @Override
     public void onStop() {
         // stop shield controller form affecting the UI
+        ((T) this).doOnStop();
         if (getApplication().getRunningShields().get(getControllerTag()) != null)
             getApplication().getRunningShields().get(getControllerTag())
                     .setHasForgroundView(false);
@@ -209,7 +222,12 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onResume() {
         super.onResume();
-        if(activity==null||activity.findViewById(R.id.shieldStatus)==null)
+        if (getApplication().getAppFirmata().isOpen() == false) return;
+        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
+            if (!reInitController())
+                return;
+        }
+        if (activity == null || activity.findViewById(R.id.shieldStatus) == null)
             return;
         MainActivity.currentShieldTag = getControllerTag();
         // restore the staus of shield interaction toggle button
@@ -223,7 +241,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
                 new HitBuilders.ScreenViewBuilder().build());
         // Logging current view for crashlytics
         CrashlyticsUtils.setString("Current View", getTag());
-        super.onResume();
+        ((T) this).doOnResume();
     }
 
     /**
@@ -254,11 +272,42 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        activity=getAppActivity();
+        activity = getAppActivity();
     }
 
     @Override
     public void onDestroy() {
+        ((T) this).doOnDestroy();
         super.onDestroy();
     }
+
+    @Override
+    public void onPause() {
+        ((T) this).doOnPause();
+        super.onPause();
+    }
+    public void doOnStart() {
+    }
+
+    public void doOnDestroy() {
+    }
+
+    public void doOnResume() {
+    }
+
+    public void doOnStop() {
+    }
+
+    public void doOnAttach() {
+    }
+
+    public void doOnDetach() {
+    }
+
+    public void doOnActivityCreated(Bundle savedInstanceStat) {
+    }
+
+    public void doOnViewCreated(View view, Bundle savedInstanceStat) {
+    }
+    public void doOnPause() {}
 }

@@ -24,12 +24,7 @@ public class PatternFragment extends ShieldFragmentParent<PatternFragment> {
     }
 
     @Override
-    public void onStart() {
-
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         if (getView() != null && getView().findViewById(R.id.lockPattern) != null)
             ((LockPatternViewEx) getView().findViewById(R.id.lockPattern)).setOnPatternListener(new LockPatternViewEx.OnPatternListener() {
                 @Override
@@ -52,18 +47,6 @@ public class PatternFragment extends ShieldFragmentParent<PatternFragment> {
                     ((PatternShield) getApplication().getRunningShields().get(getControllerTag())).onPatternDetected(pattern);
                 }
             });
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
 
@@ -78,10 +61,5 @@ public class PatternFragment extends ShieldFragmentParent<PatternFragment> {
     @Override
     public void doOnServiceConnected() {
         initializeFirmata();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
     }
 }

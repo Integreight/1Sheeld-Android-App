@@ -30,21 +30,12 @@ public class FoursquareFragment extends
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.foursquare_shield_fragment_layout,
                 container, false);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         mSharedPreferences = getApplication().getSharedPreferences(
                 "com.integreight.onesheeld", Context.MODE_PRIVATE);
         login = (Button) v.findViewById(R.id.foursquare_shiled_login_bt);
@@ -163,20 +154,10 @@ public class FoursquareFragment extends
     };
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((FoursquareShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setFoursquareEventHandler(foursquareEventHandler);
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     private void initializeFirmata() {
@@ -206,7 +187,7 @@ public class FoursquareFragment extends
     }
 
     @Override
-    public void onResume() {
+    public void doOnResume() {
         // if user logged in set data
         if (((FoursquareShield) getApplication().getRunningShields().get(
                 getControllerTag())).isFoursquareLoggedInAlready()) {
@@ -235,6 +216,5 @@ public class FoursquareFragment extends
             login.setVisibility(View.VISIBLE);
             logout.setVisibility(View.INVISIBLE);
         }
-        super.onResume();
     }
 }

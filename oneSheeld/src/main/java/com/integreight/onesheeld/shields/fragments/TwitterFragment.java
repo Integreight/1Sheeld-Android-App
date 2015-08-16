@@ -28,19 +28,13 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.twitter_shield_fragment_layout,
                 container, false);
 
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         initializeFirmata();
         if ((getApplication().getRunningShields().get(
                 getControllerTag())) != null
@@ -72,25 +66,11 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                 logoutFromTwitter();
             }
         });
-        super.onStart();
 
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         lastTweetTextContainer = (LinearLayout) v.findViewById(R.id.tweetsCont);
         userNameTextView = (OneSheeldTextView) v
                 .findViewById(R.id.twitter_shield_username_textview);
@@ -324,34 +304,6 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
         }
     }
 
-    /**
-     * Function to login twitter
-     * */
-
-    /**
-     * Check user already logged in your application using twitter Login flag is
-     * fetched from Shared Preferences
-     */
-    @Override
-    public void onCreateOptionsMenu(android.view.Menu menu,
-                                    android.view.MenuInflater inflater) {
-        // TODO Auto-generated method stub
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(android.view.MenuItem item) {
-        return super.onOptionsItemSelected(item);
-    }
-
-    /**
-     * Function to update status
-     * */
-
-    /**
-     * Function to logout from twitter It will just clear the application shared
-     * preferences
-     */
     private void logoutFromTwitter() {
         // Clear the shared preferences
         ((TwitterShield) getApplication().getRunningShields().get(

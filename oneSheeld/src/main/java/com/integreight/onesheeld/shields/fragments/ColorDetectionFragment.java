@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
@@ -48,7 +47,6 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
         activity.registerSlidingMenuListner(this);
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.color_detection_shield_fragment_layout, container,
                 false);
     }
@@ -193,8 +191,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void doOnViewCreated(View view, Bundle savedInstanceState) {
         normalColor = view.findViewById(R.id.normalColor);
         fullColor = (LinearLayout) view.findViewById(R.id.fullColor);
         operationToggle = (OneSheeldToggleButton) view.findViewById(R.id.operation);
@@ -210,11 +207,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         removeListeners();
         if (((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getRecevedFramesOperation() == ColorDetectionShield.RECEIVED_FRAMES.CENTER)
@@ -233,27 +226,11 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.SMALL ? 0 : ((ColorDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).getPatchSize() == ColorDetectionShield.PATCH_SIZE.MEDIUM ? 1 : 2);
         applyListeners();
-        super.onStart();
 
     }
 
-
     @Override
-    public void onStop() {
-
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
+    public void doOnResume() {
         uiHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -292,7 +269,7 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     }
 
     @Override
-    public void onPause() {
+    public void doOnPause() {
         if (getApplication().getRunningShields().get(
                 getControllerTag()) != null)
             try {
@@ -302,7 +279,6 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
                 e.printStackTrace();
             }
         getView().invalidate();
-        super.onPause();
     }
 
     @Override

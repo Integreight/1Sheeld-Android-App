@@ -22,19 +22,12 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.proximity_shield_fragment_layout,
                 container, false);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((ProximityShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setProximityEventHandler(proximityEventHandler);
@@ -44,21 +37,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Proximity Sheeld::OnActivityCreated()", "");
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         distance_float = (TextView) v.findViewById(R.id.distance_float_txt);
         distance_byte = (TextView) v.findViewById(R.id.distance_byte_txt);
 
@@ -151,12 +130,4 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
         initializeFirmata();
     }
 
-    ;
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-
-    }
 }

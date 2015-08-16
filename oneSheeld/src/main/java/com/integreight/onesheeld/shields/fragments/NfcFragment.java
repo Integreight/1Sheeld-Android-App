@@ -30,8 +30,7 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
     }
 
     @Override
-    public void onViewCreated(View v, Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, Bundle savedInstanceState) {
         nfcRecords = (ExpandableListView) v.findViewById(R.id.nfc_Records_list);
         cardDetails = new OneSheeldTextView(activity);
         cardDetails.setTextColor(getResources().getColor(R.color.textColorOnDark));
@@ -50,13 +49,8 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(nfcEventHandler);
-        super.onStart();
     }
 
     @Override
@@ -71,16 +65,8 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
     }
 
     @Override
-    public void onResume() {
-        ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(nfcEventHandler);
-        super.onResume();
+    public void doOnResume() {
         ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).displayData();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     private NFCEventHandler nfcEventHandler = new NFCEventHandler() {

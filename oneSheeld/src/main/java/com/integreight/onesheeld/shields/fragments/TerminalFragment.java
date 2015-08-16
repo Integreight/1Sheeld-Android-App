@@ -45,8 +45,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
     }
 
     @Override
-    public void onViewCreated(final View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(final View v, @Nullable Bundle savedInstanceState) {
         output = (ListView) v.findViewById(R.id.terminalOutput);
         outputAdapter = new TerminalLinesAdapter(activity,
                 new ArrayList<TerminalPrintedLine>());
@@ -202,12 +201,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
-        if(getView()!=null) {
+    public void doOnStart() {
+        if (getView() != null) {
             getView().findViewById(
                     ((TerminalShield) getApplication().getRunningShields().get(
                             getControllerTag())).encodingMths[0])
@@ -247,34 +242,12 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
             output.setSelection(((TerminalShield) getApplication()
                     .getRunningShields().get(getControllerTag())).tempLines
                     .size() - 1);
-        super.onStart();
 
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onPause() {
+    public void doOnPause() {
         getAppActivity().hideSoftKeyboard();
-        super.onPause();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
-    public void doOnServiceConnected() {
     }
 
     TerminalHandler terminalHandler = new TerminalHandler() {

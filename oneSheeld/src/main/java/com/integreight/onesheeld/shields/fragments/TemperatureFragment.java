@@ -12,7 +12,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.TemperatureShield;
 import com.integreight.onesheeld.shields.controller.TemperatureShield.TemperatureEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class TemperatureFragment extends
         ShieldFragmentParent<TemperatureFragment> {
@@ -23,19 +22,12 @@ public class TemperatureFragment extends
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.temperature_shield_fragment_layout,
                 container, false);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((TemperatureShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setTemperatureEventHandler(temperatureEventHandler);
@@ -45,22 +37,7 @@ public class TemperatureFragment extends
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Temperature Sheeld::OnActivityCreated()", "");
-
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         temperature_float = (TextView) v
                 .findViewById(R.id.temperature_float_txt);
         temperature_byte = (TextView) v.findViewById(R.id.temperature_byte_txt);
@@ -155,12 +132,4 @@ public class TemperatureFragment extends
         initializeFirmata();
     }
 
-    ;
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-
-    }
 }

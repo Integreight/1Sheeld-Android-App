@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
@@ -22,7 +21,6 @@ import com.integreight.onesheeld.utils.customviews.VerticalSeekBar;
 public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
 
     VerticalSeekBar seekBar;
-    Button connectButton;
 
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,8 +32,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         seekBar = (VerticalSeekBar) v.findViewById(R.id.slider_fragment_seekbar);
         seekBar.setEnabled(false);
         seekBar.setMax(255);
@@ -64,17 +61,13 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
             }
         });
 
-        if (((SliderShield) getApplication().getRunningShields().get(
+        if ((getApplication().getRunningShields().get(
                 getControllerTag())) != null)
             seekBar.setEnabled(true);
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -130,19 +123,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
                 });
             }
         });
-        super.onStart();
 
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
     }
 
     private void initializeFirmata() {

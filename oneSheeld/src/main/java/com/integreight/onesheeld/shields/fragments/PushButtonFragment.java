@@ -49,11 +49,7 @@ public class PushButtonFragment extends
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -81,13 +77,10 @@ public class PushButtonFragment extends
                     new PushButtonShield(activity, getControllerTag()));
         }
 
-        super.onStart();
-
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         push = (OneSheeldButton) v
                 .findViewById(R.id.push_button_shield_button_push_button);
         menu = (AppSlidingLeftMenu) activity
@@ -117,18 +110,6 @@ public class PushButtonFragment extends
             }
         });
     }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
     @Override
     public void doOnServiceConnected() {
     }

@@ -22,40 +22,18 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.gps_shield_fragment_layout, container,
                 false);
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((GpsShield) getApplication().getRunningShields().get(
                 getControllerTag())).setGpsEventHandler(gpsEventHandler);
-        super.onStart();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Gps Sheeld::OnActivityCreated()", "");
-
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
-
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         Latit = (TextView) v.findViewById(R.id.lat_value_txt);
         Longit = (TextView) v.findViewById(R.id.lang_value_txt);
         startGps = (Button) v.findViewById(R.id.start_listener_bt);
@@ -134,9 +112,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
     ;
 
     @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
+    public void doOnResume() {
         ((GpsShield) getApplication().getRunningShields().get(
                 getControllerTag())).isGooglePlayServicesAvailableWithDialog();
         if (((GpsShield) getApplication().getRunningShields().get(

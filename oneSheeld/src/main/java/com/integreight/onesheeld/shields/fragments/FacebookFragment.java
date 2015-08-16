@@ -45,12 +45,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         initializeFirmata();
         checkLogin();
         facebookLogin.setOnClickListener(this);
@@ -58,15 +53,9 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void doOnResume() {
         facebookLogin.setOnClickListener(this);
         facebookLogout.setOnClickListener(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     @Override
@@ -84,14 +73,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         lastPostTextCont = (LinearLayout) v.findViewById(R.id.postsCont);
         userNameTextView = (TextView) v
                 .findViewById(R.id.facebook_shield_username_textview);

@@ -44,8 +44,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
@@ -96,36 +95,11 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
             }
         });
     }
-
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((EmailShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setEmailEventHandler(emailEventHandler);
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Email Sheeld::OnActivityCreated()", "");
-
     }
 
     private boolean isGmailLoggedInAlready() {

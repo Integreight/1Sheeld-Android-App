@@ -32,18 +32,13 @@ public class MusicPlayerFragment extends
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         activity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.settingsViewContainer,
                         MusicShieldSettings.getInstance()).commit();
         hasSettings = true;
         startTracking();
-        super.onStart();
     }
 
     private void stopTracking() {
@@ -91,7 +86,7 @@ public class MusicPlayerFragment extends
     }
 
     @Override
-    public void onResume() {
+    public void doOnResume() {
         MusicShield control = (MusicShield) getApplication()
                 .getRunningShields().get(getControllerTag());
         if (control != null) {
@@ -113,13 +108,11 @@ public class MusicPlayerFragment extends
                 eventHandler.setMusicName("Music file name");
             }
         }
-        super.onResume();
     }
 
     @Override
-    public void onStop() {
+    public void doOnStop() {
         stopTracking();
-        super.onStop();
     }
 
     MusicEventHandler eventHandler = new MusicEventHandler() {
@@ -184,13 +177,7 @@ public class MusicPlayerFragment extends
     };
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         musicFileName = (TextView) v.findViewById(R.id.playingMusic);
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
         playingBtn = (ImageView) v.findViewById(R.id.playingBtn);

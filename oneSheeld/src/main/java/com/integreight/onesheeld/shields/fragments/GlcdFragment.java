@@ -22,21 +22,6 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
         return FragmentView;
     }
 
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-    }
-
-    @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
-
-        super.onStart();
-    }
-
     private GlcdShield.GlcdEventHandler glcdEventHandler = new GlcdShield.GlcdEventHandler() {
         @Override
         public void setView(GlcdView glcdView) {
@@ -53,6 +38,11 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
     };
 
     @Override
+    public void doOnStart() {
+        ((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(glcdEventHandler);
+    }
+
+    @Override
     public void doOnServiceConnected() {
         initializeFirmata();
     }
@@ -64,14 +54,7 @@ public class GlcdFragment extends ShieldFragmentParent<GlcdFragment> {
     }
 
     @Override
-    public void onResume() {
-        ((GlcdShield) getApplication().getRunningShields().get(getControllerTag())).setEventHandler(glcdEventHandler);
-        super.onResume();
+    public void doOnResume() {
         FragmentView.invalidate();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
     }
 }

@@ -140,15 +140,12 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        setHasOptionsMenu(true);
         return inflater.inflate(R.layout.gamepad_shield_fragment_layout,
                 container, false);
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         upArrowKey = (Key) v.findViewById(R.id.gamepad_up_arrow_key);
         downArrowKey = (Key) v.findViewById(R.id.gamepad_down_arrow_key);
         leftArrowKey = (Key) v.findViewById(R.id.gamepad_left_arrow_key);
@@ -169,12 +166,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
     }
 
     @Override
-    public void onStart() {
-        // TODO Auto-generated method stub
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -198,19 +190,6 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
 
                     }
                 });
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-
     }
 
     private void initializeFirmata() {

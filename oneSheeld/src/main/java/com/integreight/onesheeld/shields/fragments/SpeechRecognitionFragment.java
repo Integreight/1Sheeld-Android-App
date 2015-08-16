@@ -37,8 +37,7 @@ public class SpeechRecognitionFragment extends
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         statusCircle = v.findViewById(R.id.statusCircle);
         statusHint = (OneSheeldTextView) v.findViewById(R.id.statusHint);
         rmsIndicator = (TextView) v.findViewById(R.id.rmsLevelIndicator);
@@ -57,11 +56,7 @@ public class SpeechRecognitionFragment extends
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((SpeechRecognitionShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setEventHandler(speechRecognitionEventHandler);
@@ -73,18 +68,6 @@ public class SpeechRecognitionFragment extends
                         .get(getControllerTag())).startRecognizer();
             }
         });
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
     }
 
     private RecognitionEventHandler speechRecognitionEventHandler = new RecognitionEventHandler() {
@@ -199,11 +182,6 @@ public class SpeechRecognitionFragment extends
                     new SpeechRecognitionShield(activity, getControllerTag()));
         }
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override

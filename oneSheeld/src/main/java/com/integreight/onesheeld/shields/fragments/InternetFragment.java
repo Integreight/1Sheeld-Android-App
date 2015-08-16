@@ -38,17 +38,12 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         requestsList = (ExpandableListView) v.findViewById(R.id.requestsList);
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((InternetShield) getApplication().getRunningShields().get(getControllerTag())).setUiCallback(new AsyncHttpResponseHandler() {
             @Override
             public void onStart() {
@@ -115,11 +110,7 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
                 return true;
             }
         });
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//        int width = metrics.widthPixels;
         requestsList.setIndicatorBounds(getPixelFromDips(10), getPixelFromDips(40));
-        super.onStart();
     }
 
     public int getPixelFromDips(float pixels) {
@@ -137,16 +128,9 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
     }
 
     @Override
-    public void onStop() {
+    public void doOnStop() {
         if (popup != null && popup.isShowing())
             popup.cancel();
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
     }
 
 
@@ -163,9 +147,5 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
         initializeFirmata();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
 
 }

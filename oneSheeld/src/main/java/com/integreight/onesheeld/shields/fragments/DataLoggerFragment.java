@@ -34,30 +34,13 @@ public class DataLoggerFragment extends
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((DataLoggerShield) getApplication().getRunningShields().get(
                 getControllerTag())).setEventHandler(eventHandler);
-        super.onStart();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         uiHandler = new Handler();
         loggerStatus = (OneSheeldTextView) v.findViewById(R.id.loggerStatus);
         keysContainer = (LinearLayout) v.findViewById(R.id.keysContainer);
@@ -76,17 +59,6 @@ public class DataLoggerFragment extends
         keysContainer.removeAllViews();
         valuesContainer.removeAllViews();
     }
-
-    @Override
-    public void onResume() {
-        // TODO Auto-generated method stub
-        super.onResume();
-    }
-
-    @Override
-    public void doOnServiceConnected() {
-    }
-
     DataLoggerListener eventHandler = new DataLoggerListener() {
 
         @Override

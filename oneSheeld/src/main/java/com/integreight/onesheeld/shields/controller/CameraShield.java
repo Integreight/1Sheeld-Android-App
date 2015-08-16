@@ -19,7 +19,6 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
-import com.integreight.onesheeld.shields.fragments.CameraFragment.CameraFragmentHandler;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.Serializable;
@@ -27,8 +26,7 @@ import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class CameraShield extends ControllerParent<CameraShield> implements
-        CameraFragmentHandler {
+public class CameraShield extends ControllerParent<CameraShield>  {
     private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
     private static final byte FLASH_METHOD_ID = (byte) 0x02;
     private static final byte QUALITY_METHOD_ID = (byte) 0x04;
@@ -380,11 +378,6 @@ public class CameraShield extends ControllerParent<CameraShield> implements
                 bindService();
             }
         }
-    }
-
-    @Override
-    public void onCameraFragmentIntilized() {
-
     }
 
     public class CameraCapture implements Serializable {

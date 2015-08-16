@@ -24,28 +24,10 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((SkypeShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setSkypeEventHandler(skypeEventHandler);
-        super.onStart();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-        Log.d("Skype Sheeld::OnActivityCreated()", "");
 
     }
 

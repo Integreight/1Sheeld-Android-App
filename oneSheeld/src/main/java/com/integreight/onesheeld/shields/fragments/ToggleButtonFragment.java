@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 
@@ -22,7 +21,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 public class ToggleButtonFragment extends
         ShieldFragmentParent<ToggleButtonFragment> {
     OneSheeldToggleButton toggleButtonButton;
-    Button connectButton;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -33,8 +31,7 @@ public class ToggleButtonFragment extends
     }
 
     @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         toggleButtonButton = (OneSheeldToggleButton) v
                 .findViewById(R.id.toggle_button_shield_button_toggle_button);
         if (getApplication().getRunningShields().get(
@@ -61,11 +58,7 @@ public class ToggleButtonFragment extends
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -73,7 +66,7 @@ public class ToggleButtonFragment extends
                     @Override
                     public void onSelect(ArduinoPin pin) {
                         if (pin != null) {
-                            ((ToggleButtonShield) getApplication()
+                            (getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
@@ -92,24 +85,7 @@ public class ToggleButtonFragment extends
                     public void onUnSelect(ArduinoPin pin) {
                     }
                 });
-        super.onStart();
 
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
-    public void doOnServiceConnected() {
     }
 
 }

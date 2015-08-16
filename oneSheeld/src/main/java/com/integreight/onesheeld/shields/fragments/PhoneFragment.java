@@ -26,31 +26,14 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
     }
 
     @Override
-    public void onStart() {
-        if (getApplication().getRunningShields().get(getControllerTag()) == null) {
-            if (!reInitController())
-                return;
-        }
+    public void doOnStart() {
         ((PhoneShield) getApplication().getRunningShields().get(
                 getControllerTag())).setPhoneEventHandler(phoneEventHandler);
-        super.onStart();
 
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
-        super.onActivityCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(v, savedInstanceState);
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         callsLogContainer = (LinearLayout) v.findViewById(R.id.callsCont);
     }
 
