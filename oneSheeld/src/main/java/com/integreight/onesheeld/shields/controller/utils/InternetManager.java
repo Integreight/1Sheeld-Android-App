@@ -95,6 +95,7 @@ public class InternetManager {
     public AsyncHttpClient getHttpClient() {
         if (httpClient == null)
             httpClient = new AsyncHttpClient(true, 80, 443);
+//        httpClient.getHttpClient().getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
         return httpClient;
     }
 
@@ -112,7 +113,6 @@ public class InternetManager {
     }
 
     public synchronized void putRequest(int id, final InternetRequest request) {
-//        request.setContentType(contentType);
         requests.put(id, request);
         if (uiCallback != null)
             uiCallback.onStart();
@@ -184,6 +184,7 @@ public class InternetManager {
             }
 
         };
+
         if (InternetManager.getInstance().getBasicAuth() != null && InternetManager.getInstance().getBasicAuth().first != null && InternetManager.getInstance().getBasicAuth().first.trim().length() > 0)
             getHttpClient().setBasicAuth(InternetManager.getInstance().getBasicAuth().first, InternetManager.getInstance().getBasicAuth().second);
 

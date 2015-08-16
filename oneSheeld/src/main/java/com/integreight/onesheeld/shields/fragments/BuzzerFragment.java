@@ -82,6 +82,8 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     @Override
     public void onViewCreated(View v, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(v, savedInstanceState);
+
+        if(getApplication().getAppFirmata().isOpen()==false)return;
         buzzerSpeaker = (ImageView) v
                 .findViewById(R.id.speaker_shield_imageview);
         buzzerSpeaker
