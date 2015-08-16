@@ -1004,10 +1004,11 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             if (tmpShape != null) {
                                 if (tmpShape instanceof RadioButton) {
                                     rg = ((RadioButton) tmpShape).getRadioGroup();
-                                    if (((RadioButton) tmpShape).getSelected())
-                                        rg.reset();
-                                    if (rg != null)
+                                    if (rg != null) {
+                                        if (((RadioButton) tmpShape).getSelected())
+                                            rg.reset();
                                         rg.remove(((RadioButton) tmpShape));
+                                    }
                                     getFromRadioGroups(frame.getArgumentAsInteger(2)).add(((RadioButton) tmpShape));
                                 }
                             }
