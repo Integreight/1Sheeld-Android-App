@@ -214,7 +214,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
             filters[1].addAction(NfcAdapter.ACTION_TAG_DISCOVERED);
             filters[1].addCategory(Intent.CATEGORY_DEFAULT);
             if (nfcAdapter != null) {
-                if (!isForeground) {
+                if (!isForeground && activity.isForground) {
                     nfcAdapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
                     isForeground = true;
                 }
