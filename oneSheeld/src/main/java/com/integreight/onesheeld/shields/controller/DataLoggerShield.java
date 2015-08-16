@@ -7,6 +7,7 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.utils.Log;
 
 import org.supercsv.cellprocessor.Optional;
 import org.supercsv.cellprocessor.ift.CellProcessor;

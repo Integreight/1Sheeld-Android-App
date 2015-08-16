@@ -89,9 +89,18 @@ public class MainActivity extends FragmentActivity {
         }
         setContentView(R.layout.one_sheeld_main);
         initLooperThread();
-        if (savedInstance == null)
+        if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
+//            if (savedInstance != null) {
+//                int count = getSupportFragmentManager().getBackStackEntryCount();
+//                while (count > 0) {
+//                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(count)).commit();
+//                    count --;
+//                }
+//            }
             replaceCurrentFragment(R.id.appTransitionsContainer,
                     SheeldsList.getInstance(), "base", true, false);
+        }
+        postConfigChange();
         resetSlidingMenu();
         if (getThisApplication().getAppFirmata() != null) {
             getThisApplication().getAppFirmata()
@@ -482,6 +491,8 @@ public class MainActivity extends FragmentActivity {
                 getApplication()).getRunningShields().keys();
         while (enumKey.hasMoreElements()) {
             String key = enumKey.nextElement();
+            ((OneSheeldApplication) getApplication())
+                    .getRunningShields().get(key).updateActivty(this);
             ((OneSheeldApplication) getApplication())
                     .getRunningShields().get(key).postConfigChangeThis();
         }

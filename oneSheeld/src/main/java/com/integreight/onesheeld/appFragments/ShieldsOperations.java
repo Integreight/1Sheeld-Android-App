@@ -135,7 +135,7 @@ public class ShieldsOperations extends BaseContainerFragment {
         }
         if (mContent == null) {
             mContent = mFrag.getShieldFragment(savedInstanceState == null || savedInstanceState.get("position") == null ?
-                    mFrag.currentShield : savedInstanceState.getInt("position"));
+                    (mFrag != null ? mFrag.currentShield : 0) : savedInstanceState.getInt("position"));
             try {
                 new Handler().post(new Runnable() {
 

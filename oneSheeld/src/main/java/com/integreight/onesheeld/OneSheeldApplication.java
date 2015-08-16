@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 

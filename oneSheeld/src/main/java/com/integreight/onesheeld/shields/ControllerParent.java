@@ -157,6 +157,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         return this;
     }
 
+    public void updateActivty(MainActivity activity) {
+        this.activity = activity;
+    }
+
     public void refresh() {
 
     }
@@ -469,6 +473,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public void postConfigChangeThis() {
         ((T) ControllerParent.this).postConfigChange();
     }
+
     public void preConfigChange() {
     }
 
