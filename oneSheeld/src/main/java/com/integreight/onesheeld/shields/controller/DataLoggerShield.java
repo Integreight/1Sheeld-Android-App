@@ -33,11 +33,11 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
     private static final byte ADD_STRING = 0x04;
     private static final byte LOG = 0x05;
     private boolean isStarted = false;
-    public CopyOnWriteArrayList<String> headerList = new CopyOnWriteArrayList<String>();
-    ArrayList<Map<String, String>> dataSet = new ArrayList<Map<String, String>>();
+    public CopyOnWriteArrayList<String> headerList = new CopyOnWriteArrayList<>();
+    ArrayList<Map<String, String>> dataSet = new ArrayList<>();
     String fileName = null;
     String header[];
-    Map<String, String> rowData = new HashMap<String, String>();
+    Map<String, String> rowData = new HashMap<>();
     public static final int READ_FOR_LOGGING = 0, LOGGING = 1,
             STOPPED_LOGGING = 2;
     public int currentStatus = READ_FOR_LOGGING;
@@ -75,11 +75,12 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                         fileName = frame.getArgumentAsString(0);
                     else
                         fileName = null;
-                    headerList = new CopyOnWriteArrayList<String>();
-                    dataSet = new ArrayList<Map<String, String>>();
-                    rowData = new HashMap<String, String>();
+                    headerList = new CopyOnWriteArrayList<>();
+                    dataSet = new ArrayList<>();
+                    rowData = new HashMap<>();
                     currentStatus = LOGGING;
                     isStarted = true;
+                    Log.d("HeaderSize", "Start");
                     if (eventHandler != null) {
                         eventHandler.onStartLogging();
                     }
@@ -105,6 +106,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                         currentStatus = LOGGING;
                         String keyFloat = frame.getArgumentAsString(0);
                         String valueFloat = frame.getArgumentAsFloat(1) + "";
+                        Log.d("HeaderSize", "Add    : " + keyFloat + "   " + valueFloat);
                         if (!headerList.contains(keyFloat))
                             headerList.add(keyFloat);
                         rowData.put(keyFloat, valueFloat);
@@ -126,6 +128,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                         //rowData.remove("Time");
                         dataSet.add(new HashMap<>(rowData));
                         rowData = new HashMap<>();
+                        Log.d("HeaderSize", "Log:  " + headerList.size() + "   **");
                     }
                     break;
                 default:
@@ -133,7 +136,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
             }
         }
     }
-    private void saveData(){
+
+    private void saveData() {
         if (isStarted) {
             isStarted = false;
             ICsvMapWriter mapWriter = null;
@@ -173,16 +177,19 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 
                 // write the header
                 header = new String[headerList.size()];
+                Log.d("HeaderSize", "Stop:   " + headerList.size() + "");
                 int i = 0;
-                for (String headerItem : headerList) {
+                for (final String headerItem : headerList) {
                     header[i] = headerItem;
                     i++;
                 }
-                mapWriter.writeHeader(header);
+                if (header.length > 0) {
+                    mapWriter.writeHeader(header);
 
-                // write the customer Maps
-                for (Map<String, String> value : dataSet) {
-                    mapWriter.write(value, header, processors);
+                    // write the customer MapsaqxzheaderList
+                    for (Map<String, String> value : dataSet) {
+                        mapWriter.write(value, header, processors);
+                    }
                 }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -200,6 +207,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
             }
         }
     }
+
     @Override
     public void reset() {
         saveData();
