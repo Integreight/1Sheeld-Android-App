@@ -651,7 +651,7 @@ public class MainActivity extends FragmentActivity {
     private void resumeNfcMainActivityFragments() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             if (((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
-                PackageManager packageManager = thisInstance.getApplicationContext().getPackageManager();
+                PackageManager packageManager = getApplicationContext().getPackageManager();
                 packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP);
                 ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).setupForegroundDispatch();
             }
@@ -696,7 +696,7 @@ public class MainActivity extends FragmentActivity {
     private void pauseMainActivityNfc() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             if (((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
-                PackageManager packageManager = thisInstance.getApplicationContext().getPackageManager();
+                PackageManager packageManager = getApplicationContext().getPackageManager();
                 packageManager.setComponentEnabledSetting(new ComponentName("com.integreight.onesheeld", "com.integreight.onesheeld.NFCUtils-alias"), PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP);
                 ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).stopForegroundDispatch();
             }
