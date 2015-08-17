@@ -57,6 +57,7 @@ public class ShieldsOperations extends BaseContainerFragment {
     public void onViewStateRestored(Bundle savedInstanceState) {
         mFrag.currentShield = savedInstanceState == null || savedInstanceState.get("position") == null ? 0
                 : savedInstanceState.getInt("position");
+        this.activity=(MainActivity)getActivity();
         super.onViewStateRestored(savedInstanceState);
     }
 
@@ -71,6 +72,7 @@ public class ShieldsOperations extends BaseContainerFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        this.activity=(MainActivity)getActivity();
     }
 
     @Override
@@ -268,8 +270,8 @@ public class ShieldsOperations extends BaseContainerFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        this.activity = (MainActivity) activity;
         super.onAttach(activity);
+        this.activity=(MainActivity)getActivity();
     }
 
     @Override

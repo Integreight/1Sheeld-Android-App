@@ -47,6 +47,10 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
         return shieldsList.get(position);
     }
 
+    public void setActivity(MainActivity activity) {
+        this.activity = activity;
+    }
+
     public long getItemId(int position) {
         return position;
     }

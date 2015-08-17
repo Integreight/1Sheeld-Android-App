@@ -114,13 +114,16 @@ public class SheeldsList extends Fragment {
 
     @Override
     public void onAttach(Activity activity) {
-        this.activity = (MainActivity) activity;
+        this.activity = (MainActivity) getActivity();
         super.onAttach(activity);
     }
 
     @Override
     public void onResume() {
         MainActivity.currentShieldTag = null;
+        this.activity = (MainActivity) getActivity();
+        if(adapter!=null)
+            adapter.setActivity(activity);
         activity.disableMenu();
         activity.hideSoftKeyboard();
         new Handler().postDelayed(new Runnable() {
@@ -229,12 +232,18 @@ public class SheeldsList extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setHasOptionsMenu(true);
+        this.activity = (MainActivity) getActivity();
+        if(adapter!=null)
+            adapter.setActivity(activity);
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         // setRetainInstance(true);
+        this.activity = (MainActivity) getActivity();
+        if(adapter!=null)
+            adapter.setActivity(activity);
         if (isInflated)
             initView();
         super.onActivityCreated(savedInstanceState);

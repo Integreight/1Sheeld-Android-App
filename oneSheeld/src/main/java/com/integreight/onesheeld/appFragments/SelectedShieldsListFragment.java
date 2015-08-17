@@ -90,7 +90,7 @@ public class SelectedShieldsListFragment extends ListFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.activity = (MainActivity) activity;
+        this.activity = (MainActivity) getActivity();
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -245,6 +245,9 @@ public class SelectedShieldsListFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        this.activity = (MainActivity) getActivity();
+        if (UIShieldAdapter != null)
+            UIShieldAdapter.setActivity(activity);
         setListAdapter(UIShieldAdapter);
     }
 
@@ -282,6 +285,9 @@ public class SelectedShieldsListFragment extends ListFragment {
     public void onViewStateRestored(Bundle savedInstanceState) {
         currentShield = savedInstanceState == null || savedInstanceState.get("position") == null ? 0
                 : savedInstanceState.getInt("position");
+        this.activity = (MainActivity) getActivity();
+        if (UIShieldAdapter != null)
+            UIShieldAdapter.setActivity(activity);
         super.onViewStateRestored(savedInstanceState);
     }
 

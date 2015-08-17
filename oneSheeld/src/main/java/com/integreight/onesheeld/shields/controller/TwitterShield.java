@@ -305,9 +305,12 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                                     getActivity(), authUrl, twitter,
                                     requestToken, listener);
                             mDialog.show();
-                            if (prog != null) {
-                                prog.dismiss();
-                                prog.cancel();
+                            if (prog != null && prog.isShowing()) {
+                                try {
+                                    prog.dismiss();
+                                    prog.cancel();
+                                } catch (Exception e) {
+                                }
                             }
                         }
                     });

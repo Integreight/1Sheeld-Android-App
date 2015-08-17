@@ -74,10 +74,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
         ((T) this).doOnActivityCreated(savedInstanceState);
     }
 
-    public String getClassName() {
-        return ((T) this).getClass().getName();
-    }
-
     public boolean reInitController() {
         ControllerParent<?> type = null;
         Shield shield = AppShields.getInstance().getShield(getControllerTag());
