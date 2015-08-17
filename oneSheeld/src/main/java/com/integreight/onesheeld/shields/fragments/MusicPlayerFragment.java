@@ -27,6 +27,7 @@ public class MusicPlayerFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        hasSettings = true;
         return inflater.inflate(R.layout.musicplayer_shield_fragment_layout,
                 container, false);
     }
@@ -37,7 +38,6 @@ public class MusicPlayerFragment extends
                 .beginTransaction()
                 .replace(R.id.settingsViewContainer,
                         MusicShieldSettings.getInstance()).commit();
-        hasSettings = true;
         startTracking();
     }
 
@@ -182,5 +182,6 @@ public class MusicPlayerFragment extends
         seekBar = (SeekBar) v.findViewById(R.id.seekBar);
         playingBtn = (ImageView) v.findViewById(R.id.playingBtn);
         playingStatus = (TextView) v.findViewById(R.id.playingStatus);
+        hasSettings = true;
     }
 }
