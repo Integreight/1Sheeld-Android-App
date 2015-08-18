@@ -10,6 +10,14 @@ Pull requests are welcomed. If you want to contribute, fork, create an issue, re
 
 Change Log:
 
+--------- Version 1.4.0 (150818) -----------
+
+- Added the GLCD shield.
+- Fixed an issue with the NFC shield.
+- Removed the Facebook shield temporarily due to a change in their permissions policy.
+- Increased overall app stability and fixed other major bugs.
+- Fixed a issue with the repo that prevented it from building.
+
 --------- Version 1.3.1 (150519) -----------
 
 - Fixed a bug where the app rating dialog appears each time a connection is made.
@@ -36,28 +44,6 @@ Change Log:
 - Added the name of the connected 1Sheeld in the notifications.
 - Fixed bugs with the voice recognizer and Facebook shields.
 - Added a button to remember the list of selected shields.
-- Increased overall app stability.
-
---------- Version 1.1.3 (141225) -----------
-
-- Fixed front camera orientation problem.
-- Added a feature to control 1Sheelds remotely through the internet (Remote 1Sheeld).
-- Report input pins on connection.
-- Notify the board with Bluetooth status.
-- Added a method to attach pictures to email shield.
-- Added methods to track keywords to Twitter shield.
-- Increased overall app stability and fixed other major bugs.
-- Prepared app for firmware upgrade.
-
---------- Version 1.1.2 (140911) -----------
-
-- Added four new shields. (Data logger, voice recognition, text-to-speech and terminal)
-- Added 2 plugins for Tasker. (Condition and Action plugins)
-- Added the ability to post photos from Facebook and Twitter shields.
-- Added a method to send direct messages from Twitter shield.
-- Detect older versions of Arduino library.
-- Fixed some bugs in music player shield.
-- Fixed the orientation of captured photos in camera shield.
 - Increased overall app stability.
 
 1Sheeld App by Integreight, Inc. is licensed under GNU General Public License v3.0 (GNU GPL v3.0).
