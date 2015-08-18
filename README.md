@@ -1,4 +1,4 @@
-The repo is an Android Studio project, tested on the its latest stable version (1.1.0)
+The repo is an Android Studio project, tested on the its latest stable version (1.3)
 
 To set it up in your development environment, clone the project, open Android Studio and click on Import Non-Android Studio Project, pick the cloned directory and you are good to go.
 
