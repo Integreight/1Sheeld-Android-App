@@ -268,23 +268,6 @@ public class SheeldsList extends Fragment {
                         ((OneSheeldApplication) getActivity().getApplication()).setRememberedShields(AppShields.getInstance().getSelectedShields());
                     }
                 });
-        v.findViewById(R.id.selectAll).setOnClickListener(
-                new View.OnClickListener() {
-
-                    @Override
-                    public void onClick(View arg0) {
-                        InputMethodManager imm = (InputMethodManager) activity
-                                .getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(searchBox.getWindowToken(),
-                                0);
-                        for (int i = 0; i < AppShields.getInstance()
-                                .getShieldsArray().size(); i++) {
-                            AppShields.getInstance().getShield(i).mainActivitySelection = true;
-                        }
-                        searchBox.setText("");
-                        adapter.selectAll();
-                    }
-                });
         v.findViewById(R.id.reset).setOnClickListener(
                 new View.OnClickListener() {
 

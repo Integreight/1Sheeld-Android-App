@@ -220,12 +220,6 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
         }
     }
 
-    public void selectAll() {
-        shieldsList = AppShields.getInstance().getShieldsArray();
-        applyToControllerTable();
-        notifyDataSetChanged();
-    }
-
     public void reset() {
         shieldsList = AppShields.getInstance().getShieldsArray();
         applyToControllerTable();

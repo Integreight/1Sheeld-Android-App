@@ -52,7 +52,6 @@
 
     <!-- Hint text in Gmail signin dialog -->
     <string name="gmail_hint_text">\@ gmail.com</string>
-    <string name="selectAll">Select All</string>
     <string name="reset">Reset</string>
     <string name="remember">Remember</string>
     <string name="upgradeFirmata">Upgrade Firmware</string>
