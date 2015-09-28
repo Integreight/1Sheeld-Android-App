@@ -1,9 +1,20 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Environment;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
+import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -36,6 +47,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
     public CopyOnWriteArrayList<String> headerList = new CopyOnWriteArrayList<>();
     ArrayList<Map<String, String>> dataSet = new ArrayList<>();
     String fileName = null;
+    String fullFileName = null;
+    String filePath = null;
     String header[];
     Map<String, String> rowData = new HashMap<>();
     public static final int READ_FOR_LOGGING = 0, LOGGING = 1,
@@ -158,16 +171,17 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                 if (!folder.exists()) {
                     folder.mkdirs();
                 }
+                fullFileName = (fileName == null
+                        || fileName.length() == 0 ? new Date()
+                        .getTime() + ""
+                        : fileName + " - " + new Date()
+                        .getTime()) + ".csv";
+                filePath = Environment
+                        .getExternalStorageDirectory()
+                        + "/OneSheeld/DataLogger/"
+                        + fullFileName;
                 mapWriter = new CsvMapWriter(
-                        new FileWriter(
-                                Environment
-                                        .getExternalStorageDirectory()
-                                        + "/OneSheeld/DataLogger/"
-                                        + (fileName == null
-                                        || fileName.length() == 0 ? new Date()
-                                        .getTime() + ""
-                                        : fileName + " - " + new Date()
-                                        .getTime()) + ".csv"),
+                        new FileWriter(filePath),
                         CsvPreference.STANDARD_PREFERENCE);
                 final CellProcessor[] processors = new CellProcessor[headerList
                         .size()];
@@ -191,6 +205,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                         mapWriter.write(value, header, processors);
                     }
                 }
+//                Toast.makeText(activity,"Data Logged Successfully.",Toast.LENGTH_SHORT).show();
+                showNotification("Data Logged Successfully" + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " to " + fullFileName));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -206,6 +222,36 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                 }
             }
         }
+    }
+
+    protected void showNotification(String notificationText) {
+        // TODO Auto-generated method stub
+        NotificationCompat.Builder build = new NotificationCompat.Builder(
+                activity);
+        build.setSmallIcon(R.drawable.white_ee_icon);
+        build.setContentTitle("Data Logger Shield");
+        build.setContentText(notificationText);
+        build.setTicker(notificationText);
+        build.setWhen(System.currentTimeMillis());
+        build.setAutoCancel(true);
+        Toast.makeText(activity, notificationText, Toast.LENGTH_SHORT).show();
+        Vibrator v = (Vibrator) activity
+                .getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(1000);
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
+        String mimeFileType = mimeTypeMap.getMimeTypeFromExtension(".csv");
+        notificationIntent.setDataAndType(Uri.fromFile(new File(filePath == null
+                || filePath.length() == 0 ? "" : filePath)), mimeFileType);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent intent = PendingIntent.getActivity(activity, 0,
+                notificationIntent, 0);
+        build.setContentIntent(intent);
+        Notification notification = build.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        NotificationManager notificationManager = (NotificationManager) activity
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify((int) new Date().getTime(), notification);
     }
 
     @Override
