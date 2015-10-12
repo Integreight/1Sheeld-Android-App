@@ -95,7 +95,7 @@ public class InternetManager {
     public AsyncHttpClient getHttpClient() {
         if (httpClient == null)
             httpClient = new AsyncHttpClient(true, 80, 443);
-//        httpClient.getHttpClient().getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
+        httpClient.getHttpClient().getParams().setParameter(ClientPNames.ALLOW_CIRCULAR_REDIRECTS, true);
         return httpClient;
     }
 
