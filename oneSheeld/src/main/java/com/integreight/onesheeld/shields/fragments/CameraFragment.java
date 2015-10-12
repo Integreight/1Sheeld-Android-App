@@ -4,13 +4,16 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -110,10 +113,22 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(new File(lastImageSrc)), "image/*");
-                startActivity(intent);
+                activity.startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    v.setAlpha((float) 0.5);
+                }
             }
         });
         camerLogo = view.findViewById(R.id.camera_log);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (lastImage != null)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                lastImage.setAlpha((float) 1);
+            }
     }
 
     @Override
