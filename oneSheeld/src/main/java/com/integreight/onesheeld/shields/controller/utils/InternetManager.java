@@ -15,6 +15,7 @@ import com.snappydb.SnappydbException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 
