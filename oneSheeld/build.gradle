@@ -58,6 +58,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
         transitive = true;
     }
+    compile files('libs/commons-io-2.4.jar')
 }
 
 def isCrashlyticsPropertiesAvailable() {

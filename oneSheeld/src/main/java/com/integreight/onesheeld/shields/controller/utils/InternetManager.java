@@ -13,10 +13,13 @@ import com.snappydb.DB;
 import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
-import org.apache.http.client.params.ClientPNames;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -193,17 +196,28 @@ public class InternetManager {
                 getHttpClient().get(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);
                 break;
             case POST:
-                if (request.getEntity() == null)
-                    getHttpClient().post(context, request.getUrl(), request.getHeaders(), request.getParams(), request.getContentType(), withUiCallBack);
-                else {
+                if (request.getEntity() != null)
                     getHttpClient().post(context, request.getUrl(), request.getHeaders(), new StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
-                }
+                else if (request.getFileEntity() != null) {
+                    try {
+                        getHttpClient().post(context, request.getUrl(), request.getHeaders(), new ByteArrayEntity(FileUtils.readFileToByteArray(new File(request.getFileEntity()))), request.getContentType(), withUiCallBack);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else
+                    getHttpClient().post(context, request.getUrl(), request.getHeaders(), request.getParams(), request.getContentType(), withUiCallBack);
                 break;
             case PUT:
-                if (request.getEntity() == null)
-                    getHttpClient().put(context, request.getUrl(), request.getParams(), withUiCallBack);
-                else
+                if (request.getEntity() != null)
                     getHttpClient().put(context, request.getUrl(), request.getHeaders(), new StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
+                else if (request.getFileEntity() != null) {
+                    try {
+                        getHttpClient().post(context, request.getUrl(), request.getHeaders(), new ByteArrayEntity(FileUtils.readFileToByteArray(new File(request.getFileEntity()))), request.getContentType(), withUiCallBack);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else
+                    getHttpClient().put(context, request.getUrl(), request.getParams(), withUiCallBack);
                 break;
             case DELETE:
                 getHttpClient().delete(context, request.getUrl(), request.getHeaders(), request.getParams(), withUiCallBack);

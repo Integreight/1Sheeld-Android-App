@@ -1,15 +1,21 @@
 package com.integreight.onesheeld.model;
 
+import android.util.Base64;
+
 import com.integreight.onesheeld.shields.controller.InternetShield;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.snappydb.SnappydbException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.ParseException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,10 +32,12 @@ public class InternetRequest {
     private InternetShield.CallBack shieldCallback;
     private Map<String, String> headers;
     private Map<String, String> params;
+    private Map<String, String> files;
     private String contentType;
     private boolean isIgnored = false;
     private ArrayList<String> registeredCallbacks;
     private String entity = null;
+    private String fileEntity = null;
     private String encoding = null;
 
     public InternetRequest() {
@@ -38,6 +46,7 @@ public class InternetRequest {
         registeredCallbacks = new ArrayList<>();
         headers = new HashMap<>();
         params = new HashMap<>();
+        files = new HashMap<>();
         shieldCallback = new InternetShield.CallBack() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int RequestID) {
@@ -70,6 +79,7 @@ public class InternetRequest {
         setCallback(shieldCallback);
         this.headers = new HashMap<>();
         this.params = new HashMap<>();
+        this.files = new HashMap<>();
     }
 
     public String getUrl() {
@@ -207,14 +217,33 @@ public class InternetRequest {
         params.put(key, value);
     }
 
+    public void addFile(String key, String filePath) {
+        files.put(key, filePath);
+    }
+
+    public void addBase64File(String key, File file) {
+        try {
+            params.put(key, Base64.encodeToString(FileUtils.readFileToByteArray(file), Base64.DEFAULT));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void removeParam(String key) {
         if (params.get(key) != null)
             params.remove(key);
     }
 
+    public void removeFile(String key) {
+        if (files.get(key) != null)
+            files.remove(key);
+    }
+
     public void removeAllParams() {
         params = new HashMap<>();
+        files = new HashMap<>();
         entity = null;
+        fileEntity = null;
     }
 
     public Header[] getHeaders() {
@@ -251,6 +280,13 @@ public class InternetRequest {
         for (final String key : params.keySet()) {
             paramsI.add(key, params.get(key));
         }
+        for (final String key : files.keySet()) {
+            try {
+                paramsI.put(key, new File(files.get(key)));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         return paramsI;
     }
 
@@ -258,8 +294,16 @@ public class InternetRequest {
         return new HashMap<>(params);
     }
 
+    public HashMap<String, String> getFilesAsMap() {
+        return new HashMap<>(files);
+    }
+
     public void setParams(Map<String, String> params) {
         this.params = params;
+    }
+
+    public void setFiles(Map<String, String> files) {
+        this.files = files;
     }
 
     public HashMap<String, String> getHeadersAsMap() {
@@ -301,8 +345,16 @@ public class InternetRequest {
         return entity;
     }
 
+    public String getFileEntity() {
+        return fileEntity;
+    }
+
     public void setEntity(String entity) {
         this.entity = entity;
+    }
+
+    public void setFileEntity(String fileEntity) {
+        this.fileEntity = fileEntity;
     }
 
     public String getEncoding() {

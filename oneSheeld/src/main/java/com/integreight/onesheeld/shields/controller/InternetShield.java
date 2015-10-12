@@ -9,6 +9,7 @@ import com.integreight.onesheeld.model.InternetRequest;
 import com.integreight.onesheeld.model.InternetResponse;
 import com.integreight.onesheeld.model.InternetUiRequest;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
@@ -18,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -47,6 +49,8 @@ public class InternetShield extends
         public static final byte IGNORE_RESPONSE = (byte) 0x08;
         public static final byte ADD_HTTP_ENTITY = (byte) 0x15;
         public static final byte SET_ENCODING = (byte) 0x16;
+        public static final byte ADD_LAST_IMAGE_AS_PARAM = (byte) 0x18;
+        public static final byte HTTP_ADD_LAST_IMAGE_AS_RAW_ENTITY = (byte) 0x19;
 
         ////// SENT FRAMES FUNICTIONS IDs
         private static final byte ON_SUCCESS = (byte) 0x01;
@@ -54,6 +58,11 @@ public class InternetShield extends
         private static final byte ON_START = (byte) 0x03;
         private static final byte ON_PROGRESS = (byte) 0x04;
         private static final byte ON_FINISH = (byte) 0x05;
+    }
+
+    private final static class IMAGE_ENCODING {
+        private static final byte MULTIPART = (byte) 0x00;
+        private static final byte BASE64 = (byte) 0x01;
     }
 
     /*
@@ -233,6 +242,40 @@ public class InternetShield extends
                     requestID = frame.getArgumentAsInteger(0);
                     if (InternetManager.getInstance().getRequest(requestID) != null)
                         InternetManager.getInstance().getRequest(requestID).addParam(frame.getArgumentAsString(1), frame.getArgumentAsString(2));
+                    break;
+                case REQUEST.ADD_LAST_IMAGE_AS_PARAM:
+                    requestID = frame.getArgumentAsInteger(0);
+                    if (InternetManager.getInstance().getRequest(requestID) != null) {
+                        String imgPath = null;
+                        byte sourceFolderId = frame.getArgument(2)[0];
+                        if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
+                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+                        else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
+                            imgPath = CameraUtils.getLastCapturedImagePathFromCameraFolder(activity);
+                        if (imgPath != null) {
+                            if (frame.getArgument(3)[0] == IMAGE_ENCODING.MULTIPART)
+                                InternetManager.getInstance().getRequest(requestID).addFile(frame.getArgumentAsString(1), imgPath);
+                            else if (frame.getArgument(3)[0] == IMAGE_ENCODING.BASE64)
+                                InternetManager.getInstance().getRequest(requestID).addBase64File(frame.getArgumentAsString(1), new File(imgPath));
+                        }
+                    }
+                    break;
+                case REQUEST.HTTP_ADD_LAST_IMAGE_AS_RAW_ENTITY:
+                    requestID = frame.getArgumentAsInteger(0);
+                    if (InternetManager.getInstance().getRequest(requestID) != null) {
+                        String imgPath = null;
+                        byte sourceFolderId = frame.getArgument(1)[0];
+                        if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
+                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+                        else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
+                            imgPath = CameraUtils.getLastCapturedImagePathFromCameraFolder(activity);
+                        if (imgPath != null) {
+//                                InternetManager.getInstance().getRequest(requestID).setContentType("image/jpeg");
+//                                InternetManager.getInstance().getRequest(requestID).addHeader("Content-Length", String.valueOf(new File(imgPath).length()));
+                            InternetManager.getInstance().getRequest(requestID).setEntity(null);
+                            InternetManager.getInstance().getRequest(requestID).setFileEntity(imgPath);
+                        }
+                    }
                     break;
                 case REQUEST.DEL_ALL_HEADERS:
                     requestID = frame.getArgumentAsInteger(0);
@@ -541,6 +584,7 @@ public class InternetShield extends
                 InternetManager.getInstance().getUiCallback().onStart();
         }
     }
+
     @Override
     public void reset() {
         try {
@@ -568,6 +612,7 @@ public class InternetShield extends
             req.setUrl(mainReq.getUrl());
             req.setContentType(mainReq.getContentType());
             req.setParams(mainReq.getParamsAsMap());
+            req.setFiles(mainReq.getFilesAsMap());
             req.setHeaders(mainReq.getHeadersAsMap());
             req.setStatus(mainReq.getStatus());
             if (mainReq.isCancelled())
@@ -585,10 +630,20 @@ public class InternetShield extends
             else
                 children.add(new Pair<>("Authentication", "No Authentication"));
             String params = "No Parameters";
-            if (req.getParams() != null && req.getParamsAsMap().size() > 0) {
+            if (req.getParams() != null) {
                 params = "";
-                for (String key : req.getParamsAsMap().keySet()) {
-                    params += key + " : " + req.getParamsAsMap().get(key) + "\n";
+                if (req.getParamsAsMap().size() > 0) {
+                    for (String key : req.getParamsAsMap().keySet()) {
+                        if (req.getParamsAsMap().get(key).length() > 100)
+                            params += key + " : " + req.getParamsAsMap().get(key).substring(0,100) + "\n";
+                        else
+                            params += key + " : " + req.getParamsAsMap().get(key) + "\n";
+                    }
+                }
+                if (req.getFilesAsMap().size() > 0) {
+                    for (String key : req.getFilesAsMap().keySet()) {
+                        params += key + " : " + req.getFilesAsMap().get(key) + "\n";
+                    }
                 }
             }
             children.add(new Pair<>("Parameters", params));
