@@ -55,7 +55,7 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     compile 'com.github.hotchemi:android-rate:0.5.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.1@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
     compile files('libs/commons-io-2.4.jar')
