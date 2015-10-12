@@ -1,14 +1,17 @@
 package com.integreight.onesheeld.shields.fragments;
 
-import android.graphics.Rect;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.MainActivity;
@@ -18,10 +21,68 @@ import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
 
+import java.io.File;
+
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
+    private ImageView lastImage;
     private View camerLogo;
+    private String lastImageSrc = null;
+    private CameraEventHandler cameraEventHandler = new CameraEventHandler() {
+
+        @Override
+        public void checkCameraHardware(boolean isHasCamera) {
+
+            if (canChangeUI()) {
+                if (!isHasCamera) {
+                    Toast.makeText(activity, "Your Device doesn't have Camera",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        @Override
+        public void OnPictureTaken() {
+            if (canChangeUI())
+                Toast.makeText(activity, "Your Camera has been Captured Image",
+                        Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void takePicture() {
+        }
+
+        @Override
+        public void setFlashMode(String flash_mode) {
+
+        }
+
+        @Override
+        public void setOnCameraPreviewTypeChanged(final boolean isBack) {
+            if (canChangeUI() && frontBackToggle != null && getView() != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        removeListners();
+                        frontBackToggle.setChecked(isBack);
+                        applyListeners();
+                    }
+                });
+        }
+
+        @Override
+        public void updatePreviewButton(final Bitmap lastImageBitmap) {
+            if (canChangeUI() && frontBackToggle != null && getView() != null)
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        lastImage.setImageBitmap(lastImageBitmap);
+                        lastImage.setVisibility(View.VISIBLE);
+                    }
+                });
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,6 +99,20 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     public void doOnViewCreated(View view, Bundle savedInstanceState) {
         frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
+        lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
+        lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
+        if (lastImageSrc != null)
+            lastImage.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(lastImageSrc), 50, 50, true));
+        else
+            lastImage.setVisibility(View.INVISIBLE);
+        lastImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(new File(lastImageSrc)), "image/*");
+                startActivity(intent);
+            }
+        });
         camerLogo = view.findViewById(R.id.camera_log);
     }
 
@@ -112,49 +187,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     @Override
     public void doOnActivityCreated(Bundle savedInstanceState) {
     }
-
-    private CameraEventHandler cameraEventHandler = new CameraEventHandler() {
-
-        @Override
-        public void checkCameraHardware(boolean isHasCamera) {
-
-            if (canChangeUI()) {
-                if (!isHasCamera) {
-                    Toast.makeText(activity, "Your Device doesn't have Camera",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-
-        @Override
-        public void OnPictureTaken() {
-            if (canChangeUI())
-                Toast.makeText(activity, "Your Camera has been Captured Image",
-                        Toast.LENGTH_SHORT).show();
-        }
-
-        @Override
-        public void takePicture() {
-        }
-
-        @Override
-        public void setFlashMode(String flash_mode) {
-
-        }
-
-        @Override
-        public void setOnCameraPreviewTypeChanged(final boolean isBack) {
-            if (canChangeUI() && frontBackToggle != null && getView() != null)
-                uiHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeListners();
-                        frontBackToggle.setChecked(isBack);
-                        applyListeners();
-                    }
-                });
-        }
-    };
 
     private void initializeFirmata() {
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {

@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -26,41 +28,51 @@ import java.util.Date;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class CameraShield extends ControllerParent<CameraShield>  {
+public class CameraShield extends ControllerParent<CameraShield> {
+    public static final int CRASHED = 3;
+    public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5, NEXT_CAPTURE = 14, SET_LAST_IMAGE_BUTTON = 17;
     private static final byte CAPTURE_METHOD_ID = (byte) 0x01;
     private static final byte FLASH_METHOD_ID = (byte) 0x02;
     private static final byte QUALITY_METHOD_ID = (byte) 0x04;
+    private static final byte FRONT_CAPTURE = (byte) 0x03;
     private static String FLASH_MODE;
     private static int QUALITY_MODE = 0;
-    private Messenger cameraBinder;
-    private boolean isCameraBound;
+    private static String lastImageAbsoultePath = null;
     public Queue<CameraShield.CameraCapture> capturesQueue = new ConcurrentLinkedQueue<>();
-    public static final int CRASHED = 3;
-    public final static int UNBIND_CAMERA_CAPTURE = 4, BIND_CAMERA_CAPTURE = 5, NEXT_CAPTURE = 14;
+    public boolean isBackPreview = true;
     CameraCapture capture;
-    private boolean isCameraCapturing = false;
-
-    private static final byte FRONT_CAPTURE = (byte) 0x03;
     int numberOfFrames = 0;
     Handler UIHandler;
-    public boolean isBackPreview = true;
+    private Messenger cameraBinder;
+    private boolean isCameraBound;
+    private boolean isCameraCapturing = false;
     private CameraEventHandler eventHandler;
     private boolean hasFrontCamera = false;
+    private boolean isChangingPreview = false;
+    private ServiceConnection cameraServiceConnector = new ServiceConnection() {
 
-    public CameraShield() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            isCameraCapturing = false;
+            notifyHardwareOfShieldSelection();
+            cameraBinder = new Messenger(service);
+            Message msg = Message.obtain(null, BIND_CAMERA_CAPTURE);
+            msg.replyTo = mMessenger;
+            try {
+                cameraBinder.send(msg);
+            } catch (RemoteException e) {
+            }
+            isCameraBound = true;
+            checkQueue();
+        }
 
-    }
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            cameraBinder = null;
+            isCameraBound = false;
+        }
 
-    public CameraShield(Activity activity, String tag) {
-        super(activity, tag, true);
-    }
-
-    @Override
-    public ControllerParent<CameraShield> init(String tag) {
-        UIHandler = new Handler();
-        return super.init(tag, true);
-    }
-
+    };
     private Messenger mMessenger = new Messenger(new Handler() {
 
         public void handleMessage(Message msg) {
@@ -82,12 +94,36 @@ public class CameraShield extends ControllerParent<CameraShield>  {
                 if (eventHandler != null)
                     eventHandler.setOnCameraPreviewTypeChanged(isBackPreview);
                 isChangingPreview = false;
+            } else if (msg.what == SET_LAST_IMAGE_BUTTON) {
+                lastImageAbsoultePath = msg.getData().getString("absolutePath");
+                Log.d("LastImage", lastImageAbsoultePath);
+                if (eventHandler != null) {
+                    eventHandler.updatePreviewButton(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(lastImageAbsoultePath), 50, 50, true));
+                }
             }
             super.handleMessage(msg);
         }
 
 
     });
+
+    public CameraShield() {
+
+    }
+
+    public CameraShield(Activity activity, String tag) {
+        super(activity, tag, true);
+    }
+
+    public static String getLastImageAbsoultePath() {
+        return lastImageAbsoultePath;
+    }
+
+    @Override
+    public ControllerParent<CameraShield> init(String tag) {
+        UIHandler = new Handler();
+        return super.init(tag, true);
+    }
 
     void bindService() {
         getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), cameraServiceConnector, Context.BIND_AUTO_CREATE);
@@ -117,8 +153,6 @@ public class CameraShield extends ControllerParent<CameraShield>  {
         return isBackPreview;
     }
 
-    private boolean isChangingPreview = false;
-
     public boolean setCameraToPreview(boolean isBack) {
         if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
             return false;
@@ -139,31 +173,6 @@ public class CameraShield extends ControllerParent<CameraShield>  {
         isBackPreview = isBack;
         return true;
     }
-
-    private ServiceConnection cameraServiceConnector = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            isCameraCapturing = false;
-            notifyHardwareOfShieldSelection();
-            cameraBinder = new Messenger(service);
-            Message msg = Message.obtain(null, BIND_CAMERA_CAPTURE);
-            msg.replyTo = mMessenger;
-            try {
-                cameraBinder.send(msg);
-            } catch (RemoteException e) {
-            }
-            isCameraBound = true;
-            checkQueue();
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            cameraBinder = null;
-            isCameraBound = false;
-        }
-
-    };
 
     private synchronized void checkQueue() {
         if (capturesQueue != null && !capturesQueue.isEmpty() && !isCameraCapturing) {
@@ -201,7 +210,6 @@ public class CameraShield extends ControllerParent<CameraShield>  {
         this.eventHandler = eventHandler;
 
     }
-
 
     public void showPreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
@@ -295,18 +303,6 @@ public class CameraShield extends ControllerParent<CameraShield>  {
 
     }
 
-    public interface CameraEventHandler {
-        void OnPictureTaken();
-
-        void checkCameraHardware(boolean isHasCamera);
-
-        void takePicture();
-
-        void setFlashMode(String flash_mode);
-
-        void setOnCameraPreviewTypeChanged(boolean isBack);
-    }
-
     @Override
     public void reset() {
         Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
@@ -378,6 +374,20 @@ public class CameraShield extends ControllerParent<CameraShield>  {
                 bindService();
             }
         }
+    }
+
+    public interface CameraEventHandler {
+        void OnPictureTaken();
+
+        void checkCameraHardware(boolean isHasCamera);
+
+        void takePicture();
+
+        void setFlashMode(String flash_mode);
+
+        void setOnCameraPreviewTypeChanged(boolean isBack);
+
+        void updatePreviewButton(Bitmap lastImageBitmap);
     }
 
     public class CameraCapture implements Serializable {
