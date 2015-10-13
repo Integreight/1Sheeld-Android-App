@@ -1,8 +1,8 @@
 language: android
 
-#branches:
-#  only:
-#    - master
+branches:
+  only:
+    - master
 
 android:
   components:
