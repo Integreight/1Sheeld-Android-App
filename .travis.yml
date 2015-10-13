@@ -3,6 +3,7 @@ language: android
 branches:
   only:
     - master
+    - development
 
 android:
   components:
