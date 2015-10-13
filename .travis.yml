@@ -1,0 +1,25 @@
+language: android
+
+branches:
+  only:
+    - master
+
+android:
+  components:
+    - build-tools-22.0.1
+    - android-21
+    - extra
+    - platform-tools
+    - tools
+    - extra-android-support
+    - extra-google-google_play_services
+
+before_script:
+  - chmod +x gradlew
+
+script: ./gradlew assemble
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
