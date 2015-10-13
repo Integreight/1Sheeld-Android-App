@@ -23,6 +23,7 @@ import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Queue;
@@ -97,9 +98,11 @@ public class CameraShield extends ControllerParent<CameraShield> {
             } else if (msg.what == SET_LAST_IMAGE_BUTTON) {
                 lastImageAbsoultePath = msg.getData().getString("absolutePath");
                 Log.d("LastImage", lastImageAbsoultePath);
-                if (eventHandler != null) {
-                    eventHandler.updatePreviewButton(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(lastImageAbsoultePath), 50, 50, true));
+                File img = new File(lastImageAbsoultePath);
+                if (img.exists() && eventHandler != null) {
+                    eventHandler.updatePreviewButton(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(lastImageAbsoultePath), 50, 50, true),lastImageAbsoultePath);
                 }
+                img = null;
             }
             super.handleMessage(msg);
         }
@@ -387,7 +390,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
 
         void setOnCameraPreviewTypeChanged(boolean isBack);
 
-        void updatePreviewButton(Bitmap lastImageBitmap);
+        void updatePreviewButton(Bitmap lastImageBitmap,String lastImagePath);
     }
 
     public class CameraCapture implements Serializable {

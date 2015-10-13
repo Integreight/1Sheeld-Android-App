@@ -75,13 +75,14 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         }
 
         @Override
-        public void updatePreviewButton(final Bitmap lastImageBitmap) {
+        public void updatePreviewButton(final Bitmap lastImageBitmap, final String lastImagePath) {
             if (canChangeUI() && frontBackToggle != null && getView() != null)
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         lastImage.setImageBitmap(lastImageBitmap);
                         lastImage.setVisibility(View.VISIBLE);
+                        lastImageSrc = lastImagePath;
                     }
                 });
         }
@@ -108,17 +109,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             lastImage.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(lastImageSrc), 50, 50, true));
         else
             lastImage.setVisibility(View.INVISIBLE);
-        lastImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(new File(lastImageSrc)), "image/*");
-                activity.startActivity(intent);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    v.setAlpha((float) 0.5);
-                }
-            }
-        });
         camerLogo = view.findViewById(R.id.camera_log);
     }
 
@@ -148,6 +138,12 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         cameraPreviewToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+            }
+        });
+        lastImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }
@@ -193,6 +189,22 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         removeListners();
                         cameraPreviewToggle.setChecked(true);
                         applyListeners();
+                    }
+                }
+            }
+        });
+        lastImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                if (lastImageSrc != null) {
+                    File img = new File(lastImageSrc);
+                    if (img.exists()) {
+                        intent.setDataAndType(Uri.fromFile(img), "image/*");
+                        activity.startActivity(intent);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                            v.setAlpha((float) 0.5);
+                        }
                     }
                 }
             }
