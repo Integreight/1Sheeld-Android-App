@@ -41,4 +41,14 @@
         android:button="@null"
         android:checked="false" />
 
+    <ImageView
+        android:id="@+id/camera_last_image"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="3dp"
+        android:layout_marginRight="15dp"
+        android:layout_toLeftOf="@id/camera_preview_toggle"
+        android:background="@drawable/rounded_corner_rectangle"/>
+
 </RelativeLayout>

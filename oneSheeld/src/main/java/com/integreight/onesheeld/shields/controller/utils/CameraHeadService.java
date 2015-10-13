@@ -35,8 +35,6 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.integreight.onesheeld.MainActivity;
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
@@ -55,37 +53,24 @@ import io.fabric.sdk.android.Fabric;
 public class CameraHeadService extends Service implements
         SurfaceHolder.Callback {
 
-    // Camera variables
-    // a surface holder
-    // a variable to control the camera
-    private Camera mCamera;
-    // the camera parametersrivate Bitmap bmp;
-    FileOutputStream fo;
-    private Bitmap bmp;
-    private String FLASH_MODE;
-    private int QUALITY_MODE = 0;
-    private boolean isFrontCamRequest = false;
-    private Camera.Size pictureSize;
-    SurfaceView sv;
-    private SurfaceHolder sHolder;
-    private WindowManager windowManager;
-    WindowManager.LayoutParams params;//, params1, params2, params3;
-    SharedPreferences pref;
-    Editor editor;
-    int width = 0, height = 0;
-    private ArrayList<String> registeredShieldsIDs = new ArrayList<>();
-
+    public static final int GET_RESULT = 1, CAPTURE_IMAGE = 3, CRASHED = 13, SET_CAMERA_PREVIEW_TYPE = 15;
+    public final static int SHOW_PREVIEW = 7;
+    public final static int HIDE_PREVIEW = 8;
+    public final static int INVALIDATE_PREVIEW = 16;
     private static final int ORIENTATION_PORTRAIT_NORMAL = 1;
     private static final int ORIENTATION_PORTRAIT_INVERTED = 2;
     private static final int ORIENTATION_LANDSCAPE_NORMAL = 3;
     private static final int ORIENTATION_LANDSCAPE_INVERTED = 4;
-    private OrientationEventListener mOrientationEventListener;
-    private int mOrientation = -1;
     public static boolean isRunning = false;
-    private boolean takenSuccessfully = false;
-    public static final int GET_RESULT = 1, CAPTURE_IMAGE = 3, CRASHED = 13, SET_CAMERA_PREVIEW_TYPE = 15;
     private static Handler queue = new Handler();
-    private byte[] data;
+    private final int quality = 50;
+    // the camera parametersrivate Bitmap bmp;
+    FileOutputStream fo;
+    SurfaceView sv;
+    WindowManager.LayoutParams params;//, params1, params2, params3;
+    SharedPreferences pref;
+    Editor editor;
+    int width = 0, height = 0;
     ByteArrayOutputStream out;
     Camera.Parameters parameters;
     Camera.Size size;
@@ -94,24 +79,311 @@ public class CameraHeadService extends Service implements
     Bitmap bitmap;
     Bitmap resizebitmap;
     Handler handler = new Handler();
-    private Messenger colorDetectionMessenger;
-    private Messenger cameraMessenger;
     int[] previewCells;
     int[] lastPreviewCells;
     int currentColorIndex = 0;
-    private final int quality = 50;
     int w = 0;
     int h = 0;
     int x = 0;
     int y = 0;
+    // Camera variables
+    // a surface holder
+    // a variable to control the camera
+    private Camera mCamera;
+    private Bitmap bmp;
+    private String FLASH_MODE;
+    private int QUALITY_MODE = 0;
+    private boolean isFrontCamRequest = false;
+    private Camera.Size pictureSize;
+    private SurfaceHolder sHolder;
+    private WindowManager windowManager;
+    private ArrayList<String> registeredShieldsIDs = new ArrayList<>();
+    private OrientationEventListener mOrientationEventListener;
+    private int mOrientation = -1;
+    private boolean takenSuccessfully = false;
+    private byte[] data;
+    private Messenger colorDetectionMessenger;
+    private Messenger cameraMessenger;
     private int cellSize = 1;
     private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
     private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
+    private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
+        @Override
+        public void onPreviewFrame(byte[] data1, final Camera camera) {
+            if (colorDetectionMessenger != null) {
+                queue.removeCallbacks(null);
+                data = data1;
+                queue.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (data != null && camera != null) {
+                            try {
+                                Log.e("", "onPreviewFrame pass");
+                                out = new ByteArrayOutputStream();
+                                parameters = camera.getParameters();
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                                }
+                                size = parameters.getPreviewSize();
+                                yuv = new YuvImage(data, ImageFormat.NV21, size.width,
+                                        size.height, null);
+
+                                // bWidth and bHeight define the size of the bitmap you wish the
+                                // fill with the preview image
+                                yuv.compressToJpeg(new Rect(0, 0, size.width, size.height),
+                                        quality, out);
+                                bytes = out.toByteArray();
+                                bitmap = BitmapFactory.decodeByteArray(bytes, 0,
+                                        bytes.length);
+                                if (recevedFrameOperation == ColorDetectionShield.RECEIVED_FRAMES.CENTER) {
+                                    previewCells = new int[1];
+                                    currentColorIndex = 0;
+                                    addColorCell(1, 1);
+                                } else {
+                                    currentColorIndex = 0;
+                                    previewCells = new int[9];
+                                    for (int i = 0; i < 3; i++)
+                                        for (int j = 0; j < 3; j++) {
+                                            addColorCell(i, j);
+                                            currentColorIndex += 1;
+                                        }
+                                }
+                                if (colorDetectionMessenger != null && !isEqualColors()) {
+                                    Bundle b = new Bundle();
+                                    b.putIntArray("detected", previewCells);
+                                    Message msg = Message.obtain(null, GET_RESULT);
+                                    msg.setData(b);
+                                    colorDetectionMessenger.send(msg);
+                                    lastPreviewCells = previewCells;
+                                }
+                            } catch (Exception e) {
+                                CrashlyticsUtils.logException(e);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    };
     private boolean isBackPreview = true;
     private boolean isCapturing = false;
-    public final static int SHOW_PREVIEW = 7;
-    public final static int HIDE_PREVIEW = 8;
-    public final static int INVALIDATE_PREVIEW = 16;
+    Camera.PictureCallback mCall = new Camera.PictureCallback() {
+
+        @Override
+        public void onPictureTaken(byte[] data, Camera camera) {
+            // decode the data obtained by the camera into a Bitmap
+            int rotate = 0;
+            switch (mOrientation) {
+                case ORIENTATION_PORTRAIT_NORMAL:
+                    if (!isFrontCamRequest) rotate = 90;
+                    else rotate = 270;
+                    break;
+                case ORIENTATION_LANDSCAPE_NORMAL:
+                    rotate = 0;
+                    break;
+                case ORIENTATION_PORTRAIT_INVERTED:
+                    if (!isFrontCamRequest) rotate = 270;
+                    else rotate = 90;
+                    break;
+                case ORIENTATION_LANDSCAPE_INVERTED:
+                    rotate = 180;
+                    break;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotate);
+
+            Log.d("ImageTakin", "Done");
+            if (bmp != null)
+                bmp.recycle();
+            // decode with options and set rotation
+            bmp = ImageUtils.decodeBitmap(data, matrix);
+            data = null;
+
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            if (bmp != null && QUALITY_MODE == 0)
+                bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
+            else if (bmp != null && QUALITY_MODE != 0)
+                bmp.compress(Bitmap.CompressFormat.JPEG, QUALITY_MODE, bytes);
+
+            File imagesFolder = new File(
+                    Environment.getExternalStorageDirectory(), "OneSheeld");
+            if (!imagesFolder.exists())
+                imagesFolder.mkdirs(); // <----
+            File image = new File(imagesFolder, System.currentTimeMillis()
+                    + ".jpg");
+
+            // write the bytes in file
+            try {
+                fo = new FileOutputStream(image);
+            } catch (FileNotFoundException e) {
+                Log.e("TAG", "FileNotFoundException", e);
+                // TODO Auto-generated catch block
+            }
+            try {
+                fo.write(bytes.toByteArray());
+            } catch (IOException e) {
+                Log.e("TAG", "fo.write::PictureTaken", e);
+                // TODO Auto-generated catch block
+            }
+            // remember close de FileOutput
+            try {
+                fo.close();
+                if (Build.VERSION.SDK_INT < 19)
+                    sendBroadcast(new Intent(
+                            Intent.ACTION_MEDIA_MOUNTED,
+                            Uri.parse("file://"
+                                    + Environment.getExternalStorageDirectory())));
+                else {
+                    MediaScannerConnection
+                            .scanFile(
+                                    getApplicationContext(),
+                                    new String[]{image.toString()},
+                                    null,
+                                    new MediaScannerConnection.OnScanCompletedListener() {
+                                        public void onScanCompleted(
+                                                String path, Uri uri) {
+                                            Log.i("ExternalStorage", "Scanned "
+                                                    + path + ":");
+                                            Log.i("ExternalStorage", "-> uri="
+                                                    + uri);
+                                        }
+                                    });
+                }
+
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            com.integreight.onesheeld.utils.Log.d("Camera", "Image Taken !");
+            if (bmp != null) {
+                bmp.recycle();
+                bmp = null;
+                System.gc();
+            }
+            handler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),
+                            "Your Picture has been taken !", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+            resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
+            takenSuccessfully = true;
+            updatePreviewButton(image.getAbsolutePath());
+            notifyFinished();
+            return;
+        }
+    };
+    private final Messenger mMesesenger = new Messenger(new Handler() {
+
+        public void handleMessage(Message msg) {
+            if (msg.replyTo != null && msg.what == GET_RESULT) {
+                colorDetectionMessenger = msg.replyTo;
+                if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                    registeredShieldsIDs.add(UIShield.COLOR_DETECTION_SHIELD.name());
+                resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
+                notifyPreviewTypeChanged(isBackPreview, false);
+                Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
+            } else if (msg.what == ColorDetectionShield.SET_COLOR_DETECTION_OPERATION) {
+                recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.getEnum(msg.getData().getInt("type"));
+            } else if (msg.what == ColorDetectionShield.SET_COLOR_DETECTION_TYPE) {
+                colorType = ColorDetectionShield.COLOR_TYPE.getEnum(msg.getData().getInt("type"));
+            } else if (msg.what == ColorDetectionShield.SET_COLOR_PATCH_SIZE) {
+                cellSize = msg.getData().getInt("size");
+            } else if (msg.what == ColorDetectionShield.UNBIND_COLOR_DETECTOR) {
+                unBindColorDetector();
+            } else if (msg.what == CameraShield.UNBIND_CAMERA_CAPTURE) {
+                unBindCameraCapture();
+            } else if (msg.what == CameraShield.BIND_CAMERA_CAPTURE) {
+                cameraMessenger = msg.replyTo;
+                if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name()))
+                    registeredShieldsIDs.add(UIShield.CAMERA_SHIELD.name());
+                resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
+                notifyPreviewTypeChanged(isBackPreview, true);
+                Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
+            } else if (msg.what == CAPTURE_IMAGE) {
+                isCapturing = true;
+                takeImage(msg.getData());
+            } else if (msg.what == SHOW_PREVIEW) {
+                if (msg.getData() == null || msg.getData().get("x") == null)
+                    showPreview();
+                else
+                    showPreview(msg.getData().getFloat("x"), msg.getData().getFloat("y"), msg.getData().getInt("w"), msg.getData().getInt("h"));
+            } else if (msg.what == INVALIDATE_PREVIEW) {
+                if (msg.getData() == null || msg.getData().get("x") == null)
+                    invalidateView();
+                else
+                    invalidateView(msg.getData().getFloat("x"), msg.getData().getFloat("y"));
+            } else if (msg.what == HIDE_PREVIEW) hidePreview();
+            else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
+                if (!isCapturing) {
+                    if (msg.getData().getBoolean("isBack")) {
+                        if (mCamera != null) {
+                            queue.removeCallbacks(null);
+                            mCamera.setPreviewCallback(null);
+                            mCamera.stopPreview();
+                            mCamera.release();
+                            mCamera = Camera.open();
+                        } else
+                            mCamera = getCameraInstance();
+
+                        try {
+                            if (mCamera != null) {
+                                mCamera.setDisplayOrientation(90);
+                                if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
+                                    mCamera.setPreviewCallback(previewCallback);
+                                mCamera.setPreviewDisplay(sv.getHolder());
+                                try {
+                                    mCamera.startPreview();
+                                } catch (Exception e) {
+                                }
+                                isBackPreview = true;
+                            }
+                        } catch (IOException e1) {
+                        }
+                        notifyPreviewTypeChanged(isBackPreview, true);
+                    } else {
+                        mCamera = openFrontFacingCameraGingerbread();
+                        if (mCamera != null) {
+                            try {
+                                mCamera.setPreviewDisplay(sv.getHolder());
+                                try {
+                                    mCamera.startPreview();
+                                } catch (Exception e) {
+                                }
+                                isBackPreview = false;
+                            } catch (IOException e) {
+                                handler.post(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "API dosen't support front camera",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            }
+                        }
+                        notifyPreviewTypeChanged(isBackPreview, true);
+                    }
+                } else
+                    notifyPreviewTypeChanged(isBackPreview, true);
+            }
+        }
+    });
+
+    public static Camera getCameraInstance() {
+        Camera c = null;
+        try {
+            c = Camera.open(); // attempt to get a Camera instance
+        } catch (Exception e) {
+            // Camera is not available (in use or does not exist)
+        }
+        return c; // returns null if camera is unavailable
+    }
 
     /**
      * Called when the activity is first created.
@@ -617,122 +889,24 @@ public class CameraHeadService extends Service implements
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
         if (registeredShieldsIDs != null)
             registeredShieldsIDs.clear();
-        try{
+        try {
             Fabric.with(this, new Crashlytics());
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    Camera.PictureCallback mCall = new Camera.PictureCallback() {
-
-        @Override
-        public void onPictureTaken(byte[] data, Camera camera) {
-            // decode the data obtained by the camera into a Bitmap
-            int rotate = 0;
-            switch (mOrientation) {
-                case ORIENTATION_PORTRAIT_NORMAL:
-                    if (!isFrontCamRequest) rotate = 90;
-                    else rotate = 270;
-                    break;
-                case ORIENTATION_LANDSCAPE_NORMAL:
-                    rotate = 0;
-                    break;
-                case ORIENTATION_PORTRAIT_INVERTED:
-                    if (!isFrontCamRequest) rotate = 270;
-                    else rotate = 90;
-                    break;
-                case ORIENTATION_LANDSCAPE_INVERTED:
-                    rotate = 180;
-                    break;
-            }
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotate);
-
-            Log.d("ImageTakin", "Done");
-            if (bmp != null)
-                bmp.recycle();
-            // decode with options and set rotation
-            bmp = ImageUtils.decodeBitmap(data, matrix);
-            data = null;
-
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            if (bmp != null && QUALITY_MODE == 0)
-                bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
-            else if (bmp != null && QUALITY_MODE != 0)
-                bmp.compress(Bitmap.CompressFormat.JPEG, QUALITY_MODE, bytes);
-
-            File imagesFolder = new File(
-                    Environment.getExternalStorageDirectory(), "OneSheeld");
-            if (!imagesFolder.exists())
-                imagesFolder.mkdirs(); // <----
-            File image = new File(imagesFolder, System.currentTimeMillis()
-                    + ".jpg");
-
-            // write the bytes in file
-            try {
-                fo = new FileOutputStream(image);
-            } catch (FileNotFoundException e) {
-                Log.e("TAG", "FileNotFoundException", e);
-                // TODO Auto-generated catch block
-            }
-            try {
-                fo.write(bytes.toByteArray());
-            } catch (IOException e) {
-                Log.e("TAG", "fo.write::PictureTaken", e);
-                // TODO Auto-generated catch block
-            }
-
-            // remember close de FileOutput
-            try {
-                fo.close();
-                if (Build.VERSION.SDK_INT < 19)
-                    sendBroadcast(new Intent(
-                            Intent.ACTION_MEDIA_MOUNTED,
-                            Uri.parse("file://"
-                                    + Environment.getExternalStorageDirectory())));
-                else {
-                    MediaScannerConnection
-                            .scanFile(
-                                    getApplicationContext(),
-                                    new String[]{image.toString()},
-                                    null,
-                                    new MediaScannerConnection.OnScanCompletedListener() {
-                                        public void onScanCompleted(
-                                                String path, Uri uri) {
-                                            Log.i("ExternalStorage", "Scanned "
-                                                    + path + ":");
-                                            Log.i("ExternalStorage", "-> uri="
-                                                    + uri);
-                                        }
-                                    });
-                }
-
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            com.integreight.onesheeld.utils.Log.d("Camera", "Image Taken !");
-            if (bmp != null) {
-                bmp.recycle();
-                bmp = null;
-                System.gc();
-            }
-            handler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Toast.makeText(getApplicationContext(),
-                            "Your Picture has been taken !", Toast.LENGTH_SHORT)
-                            .show();
-                }
-            });
-            resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
-            takenSuccessfully = true;
-            notifyFinished();
-            return;
+    private void updatePreviewButton(String path) {
+        Bundle intent = new Bundle();
+        intent.putString("absolutePath", path);
+        try {
+            Message msg = Message.obtain(null, CameraShield.SET_LAST_IMAGE_BUTTON);
+            msg.setData(intent);
+            if (cameraMessenger != null)
+                cameraMessenger.send(msg);
+        } catch (RemoteException e) {
         }
-    };
+    }
 
     private void notifyFinished() {
         isCapturing = false;
@@ -767,105 +941,6 @@ public class CameraHeadService extends Service implements
         if (forCamerShield)
             notifyPreviewTypeChanged(isBack, false);
     }
-
-    private final Messenger mMesesenger = new Messenger(new Handler() {
-
-        public void handleMessage(Message msg) {
-            if (msg.replyTo != null && msg.what == GET_RESULT) {
-                colorDetectionMessenger = msg.replyTo;
-                if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
-                    registeredShieldsIDs.add(UIShield.COLOR_DETECTION_SHIELD.name());
-                resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
-                notifyPreviewTypeChanged(isBackPreview, false);
-                Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
-            } else if (msg.what == ColorDetectionShield.SET_COLOR_DETECTION_OPERATION) {
-                recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.getEnum(msg.getData().getInt("type"));
-            } else if (msg.what == ColorDetectionShield.SET_COLOR_DETECTION_TYPE) {
-                colorType = ColorDetectionShield.COLOR_TYPE.getEnum(msg.getData().getInt("type"));
-            } else if (msg.what == ColorDetectionShield.SET_COLOR_PATCH_SIZE) {
-                cellSize = msg.getData().getInt("size");
-            } else if (msg.what == ColorDetectionShield.UNBIND_COLOR_DETECTOR) {
-                unBindColorDetector();
-            } else if (msg.what == CameraShield.UNBIND_CAMERA_CAPTURE) {
-                unBindCameraCapture();
-            } else if (msg.what == CameraShield.BIND_CAMERA_CAPTURE) {
-                cameraMessenger = msg.replyTo;
-                if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name()))
-                    registeredShieldsIDs.add(UIShield.CAMERA_SHIELD.name());
-                resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
-                notifyPreviewTypeChanged(isBackPreview, true);
-                Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
-            } else if (msg.what == CAPTURE_IMAGE) {
-                isCapturing = true;
-                takeImage(msg.getData());
-            } else if (msg.what == SHOW_PREVIEW) {
-                if (msg.getData() == null || msg.getData().get("x") == null)
-                    showPreview();
-                else
-                    showPreview(msg.getData().getFloat("x"), msg.getData().getFloat("y"), msg.getData().getInt("w"), msg.getData().getInt("h"));
-            } else if (msg.what == INVALIDATE_PREVIEW) {
-                if (msg.getData() == null || msg.getData().get("x") == null)
-                    invalidateView();
-                else
-                    invalidateView(msg.getData().getFloat("x"), msg.getData().getFloat("y"));
-            } else if (msg.what == HIDE_PREVIEW) hidePreview();
-            else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
-                if (!isCapturing) {
-                    if (msg.getData().getBoolean("isBack")) {
-                        if (mCamera != null) {
-                            queue.removeCallbacks(null);
-                            mCamera.setPreviewCallback(null);
-                            mCamera.stopPreview();
-                            mCamera.release();
-                            mCamera = Camera.open();
-                        } else
-                            mCamera = getCameraInstance();
-
-                        try {
-                            if (mCamera != null) {
-                                mCamera.setDisplayOrientation(90);
-                                if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
-                                    mCamera.setPreviewCallback(previewCallback);
-                                mCamera.setPreviewDisplay(sv.getHolder());
-                                try {
-                                    mCamera.startPreview();
-                                } catch (Exception e) {
-                                }
-                                isBackPreview = true;
-                            }
-                        } catch (IOException e1) {
-                        }
-                        notifyPreviewTypeChanged(isBackPreview, true);
-                    } else {
-                        mCamera = openFrontFacingCameraGingerbread();
-                        if (mCamera != null) {
-                            try {
-                                mCamera.setPreviewDisplay(sv.getHolder());
-                                try {
-                                    mCamera.startPreview();
-                                } catch (Exception e) {
-                                }
-                                isBackPreview = false;
-                            } catch (IOException e) {
-                                handler.post(new Runnable() {
-
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getApplicationContext(),
-                                                "API dosen't support front camera",
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
-                        }
-                        notifyPreviewTypeChanged(isBackPreview, true);
-                    }
-                } else
-                    notifyPreviewTypeChanged(isBackPreview, true);
-            }
-        }
-    });
-
 
     @Override
     public boolean onUnbind(Intent intent) {
@@ -947,16 +1022,6 @@ public class CameraHeadService extends Service implements
         }
     }
 
-    public static Camera getCameraInstance() {
-        Camera c = null;
-        try {
-            c = Camera.open(); // attempt to get a Camera instance
-        } catch (Exception e) {
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
-    }
-
     @Override
     public void onDestroy() {
         if (mCamera != null) {
@@ -1020,66 +1085,6 @@ public class CameraHeadService extends Service implements
         } else
             return false;
     }
-
-    private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
-        @Override
-        public void onPreviewFrame(byte[] data1, final Camera camera) {
-            if (colorDetectionMessenger != null) {
-                queue.removeCallbacks(null);
-                data = data1;
-                queue.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (data != null && camera != null) {
-                            try {
-                                Log.e("", "onPreviewFrame pass");
-                                out = new ByteArrayOutputStream();
-                                parameters = camera.getParameters();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                                }
-                                size = parameters.getPreviewSize();
-                                yuv = new YuvImage(data, ImageFormat.NV21, size.width,
-                                        size.height, null);
-
-                                // bWidth and bHeight define the size of the bitmap you wish the
-                                // fill with the preview image
-                                yuv.compressToJpeg(new Rect(0, 0, size.width, size.height),
-                                        quality, out);
-                                bytes = out.toByteArray();
-                                bitmap = BitmapFactory.decodeByteArray(bytes, 0,
-                                        bytes.length);
-                                if (recevedFrameOperation == ColorDetectionShield.RECEIVED_FRAMES.CENTER) {
-                                    previewCells = new int[1];
-                                    currentColorIndex = 0;
-                                    addColorCell(1, 1);
-                                } else {
-                                    currentColorIndex = 0;
-                                    previewCells = new int[9];
-                                    for (int i = 0; i < 3; i++)
-                                        for (int j = 0; j < 3; j++) {
-                                            addColorCell(i, j);
-                                            currentColorIndex += 1;
-                                        }
-                                }
-                                if (colorDetectionMessenger != null && !isEqualColors()) {
-                                    Bundle b = new Bundle();
-                                    b.putIntArray("detected", previewCells);
-                                    Message msg = Message.obtain(null, GET_RESULT);
-                                    msg.setData(b);
-                                    colorDetectionMessenger.send(msg);
-                                    lastPreviewCells = previewCells;
-                                }
-                            } catch (Exception e) {
-                                CrashlyticsUtils.logException(e);
-                            }
-                        }
-                    }
-                });
-            }
-        }
-    };
 //    int vv = 0;
 
     private void addColorCell(int i, int j) {
