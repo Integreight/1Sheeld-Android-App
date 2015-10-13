@@ -7,6 +7,11 @@ env:
 android:
   components:
     - build-tools-22.0.1
+    - android-21
+    - extra
+
+before_install:
+ - chmod +x gradlew
 
 before_script:
   # Create and start emulator
