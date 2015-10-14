@@ -9,10 +9,14 @@ import android.provider.MediaStore;
 
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.File;
 import java.util.List;
 
 public class CameraUtils {
+    public static final byte FROM_ONESHEELD_FOLDER = (byte) 0x00;
+    public static final byte FROM_CAMERA_FOLDER = (byte) 0x01;
     public static String CAMERA_CAPTURE_RECEIVER_EVENT_NAME = "camera_capture_event_name";
+    public static String lastCapturedImagePathFromOneSheeldFolder = "";
 
     public static Camera.Size getBiggestPictureSize(
             Camera.Parameters parameters) {
@@ -84,9 +88,6 @@ public class CameraUtils {
         return true;
     }
 
-    public static final byte FROM_ONESHEELD_FOLDER = (byte) 0x00;
-    public static final byte FROM_CAMERA_FOLDER = (byte) 0x01;
-
     public static String getLastCapturedImagePathFromCameraFolder(
             Activity activity) {
         final String[] imageColumns = {MediaStore.Images.Media._ID,
@@ -136,5 +137,24 @@ public class CameraUtils {
             }
         } while (imageCursor.moveToNext());
         return fullPath;
+    }
+
+    public static String getLastCapturedImagePathFromOneSheeldFolder() {
+        if (lastCapturedImagePathFromOneSheeldFolder != null) {
+            File tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+            if (tmpImage.exists())
+                return lastCapturedImagePathFromOneSheeldFolder;
+            else
+                return "";
+        }
+        return "";
+    }
+
+    public static void setLastCapturedImagePathFromOneSheeldFolder(String lastCapturedImagePathFromOneSheeldFolder) {
+        if (lastCapturedImagePathFromOneSheeldFolder != null) {
+            File tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+            if (tmpImage.exists())
+                CameraUtils.lastCapturedImagePathFromOneSheeldFolder = lastCapturedImagePathFromOneSheeldFolder;
+        }
     }
 }
