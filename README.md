@@ -1,49 +1,57 @@
-The repo is an Android Studio project, tested on the its latest stable version (1.3)
+# 1Sheeld Android App [![Build Status](https://travis-ci.org/Integreight/1Sheeld-Android-App.svg?branch=master)](https://travis-ci.org/Integreight/1Sheeld-Android-App)#
 
-To set it up in your development environment, clone the project, open Android Studio and click on Import Non-Android Studio Project, pick the cloned directory and you are good to go.
+## Overview ##
 
-You can download the app's latest release directly from [Google Play store](https://play.google.com/store/apps/details?id=com.integreight.onesheeld&hl=en).
+1Sheeld app is used along with our hardware shield to either control Arduino, read your smartphone's sensors in your Arduino sketch, post on social media, or even control your Android device. It enables you to scan, connect, and interact with nearby 1Sheelds using our custom protocol
 
-If you need more help, don't hesitate posting a question on our [website's forum](http://www.1sheeld.com/forum).
+## Installation ##
 
-Pull requests are welcomed. If you want to contribute, fork, create an issue, resolve the issue, submit a pull request.
+You can download the latest version of our app from [Google Play Store](https://play.google.com/store/apps/details?id=com.integreight.onesheeld&hl=en), or pick your preferred version directly from our repo's [releases page](https://github.com/Integreight/1Sheeld-Android-App/releases).
 
-Change Log:
+## Building ##
 
---------- Version 1.4.0 (150818) -----------
+The repo is an Android Studio project, it was built and tested using the latest stable version of Android Studio.
 
-- Added the GLCD shield.
-- Fixed an issue with the NFC shield.
-- Removed the Facebook shield temporarily due to a change in their permissions policy.
-- Increased overall app stability and fixed other major bugs.
-- Fixed a issue with the repo that prevented it from building.
+## Compatibility ##
 
---------- Version 1.3.1 (150519) -----------
+The app should work with Android devices running version 2.3 and above.
 
-- Fixed a bug where the app rating dialog appears each time a connection is made.
-- Fixed some bugs in the NFC shield.
+## Contribution ##
 
---------- Version 1.3.0 (150505) -----------
+Contributions are welcomed, please follow this pattern:
+- Fork the repo.
+- Open an issue with your proposed feature or bug fix.
+- Commit and push code to a new branch in your forked repo.
+- Submit a pull request to our *development* branch.
 
-- Added two new shields, NFC and color detector.
-- Enhanced the camera shield implementation.
-- Added a preview for the camera shield.
-- Removed RemoteOneSheeld shield.
-- Fixed selection callback for some shields.
-- Made the data logger shield save logged files on connection loss.
-- Increased overall app stability and fixed other major bugs.
+Don't forget to drop us an email, post on our forum, or mention us on Twitter or Facebook about what you have built using 1Sheeld, we would love to hear about it.
 
---------- Version 1.2.0 (150308) -----------
+## Learn More ##
 
-- Added our most advanced - and most requested - shield ever, the Internet Shield.
-- Added an Android pattern shield.
-- Fixed a bug in Bluetooth connection status reporting.
-- Fixed major bugs related to sending frames to Arduino.
-- Revamped the camera shield implementation. (Now, it works in its own process.)
-- Queued frames if Arduino is in one of our callbacks.
-- Added the name of the connected 1Sheeld in the notifications.
-- Fixed bugs with the voice recognizer and Facebook shields.
-- Added a button to remember the list of selected shields.
-- Increased overall app stability.
+ - [Getting started tutorial](http://www.1sheeld.com/tutorials/getting-started)
+ - [Arduino library documentation](http://1sheeld.com/docs/).
+ - Check our [1Sheeld Forums](http://www.1sheeld.com/forum) where you can post your questions and get answers.
+ - Explore what people have built at our [Hackster.io page](https://www.hackster.io/1sheeld/projects)
+ - Built custom apps using our [Android SDK](https://github.com/Integreight/1Sheeld-Android-SDK).
 
-1Sheeld App by Integreight, Inc. is licensed under GNU General Public License v3.0 (GNU GPL v3.0).
+## Changelog ##
+
+To see what has changed in recent versions of 1Sheeld Android App, see the [Change Log](CHANGELOG.md).
+
+## License and Copyright ##
+
+```
+This code is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License version 3 only, as
+published by the Free Software Foundation.
+
+This code is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+version 3 for more details (a copy is included in the LICENSE file that
+accompanied this code).
+
+Please contact Integreight, Inc. at info@integreight.com or post on our
+support forums www.1sheeld.com/forum if you need additional information
+or have any questions.
+```
