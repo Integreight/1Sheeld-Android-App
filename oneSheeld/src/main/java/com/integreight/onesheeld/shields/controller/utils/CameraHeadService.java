@@ -272,7 +272,7 @@ public class CameraHeadService extends Service implements
             });
             resetPreview(registeredShieldsIDs == null || !registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()));
             takenSuccessfully = true;
-            updatePreviewButton(image.getAbsolutePath());
+            updateLastImage(image.getAbsolutePath());
             notifyFinished();
             return;
         }
@@ -896,7 +896,8 @@ public class CameraHeadService extends Service implements
         }
     }
 
-    private void updatePreviewButton(String path) {
+    private void updateLastImage(String path) {
+        CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(path);
         Bundle intent = new Bundle();
         intent.putString("absolutePath", path);
         try {

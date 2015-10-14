@@ -247,7 +247,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                         byte sourceFolderId = frame.getArgument(1)[0];
                         if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
                             imgPath = CameraUtils
-                                    .getLastCapturedImagePathFromOneSheeldFolder(activity);
+                                    .getLastCapturedImagePathFromOneSheeldFolder();
                         else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                             imgPath = CameraUtils
                                     .getLastCapturedImagePathFromCameraFolder(activity);

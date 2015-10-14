@@ -249,7 +249,7 @@ public class InternetShield extends
                         String imgPath = null;
                         byte sourceFolderId = frame.getArgument(2)[0];
                         if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
-                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder();
                         else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                             imgPath = CameraUtils.getLastCapturedImagePathFromCameraFolder(activity);
                         if (imgPath != null) {
@@ -266,7 +266,7 @@ public class InternetShield extends
                         String imgPath = null;
                         byte sourceFolderId = frame.getArgument(1)[0];
                         if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
-                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder();
                         else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                             imgPath = CameraUtils.getLastCapturedImagePathFromCameraFolder(activity);
                         if (imgPath != null) {
