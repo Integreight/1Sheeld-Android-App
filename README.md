@@ -12,6 +12,10 @@ You can download the latest version of our app from [Google Play Store](https://
 
 The repo is an Android Studio project, it was built and tested using the latest stable version of Android Studio.
 
+## Access Tokens ##
+
+In case you want to use any of the web services we use, you should update its access tokens in [meta_data.json](https://github.com/Integreight/1Sheeld-Android-App/blob/master/oneSheeld/src/main/assets/meta_data.json) file.
+
 ## Compatibility ##
 
 The app should work with Android devices running version 2.3 and above.
