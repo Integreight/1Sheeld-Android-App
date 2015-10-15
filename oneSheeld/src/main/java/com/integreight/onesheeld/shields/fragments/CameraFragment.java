@@ -8,12 +8,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -27,6 +25,7 @@ import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHand
 import java.io.File;
 
 public class CameraFragment extends ShieldFragmentParent<CameraFragment> implements ShieldsOperations.OnChangeListener, MainActivity.OnSlidingMenueChangeListner {
+    Bitmap lastImageBitmap;
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
     private ImageView lastImage;
@@ -75,14 +74,16 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         }
 
         @Override
-        public void updatePreviewButton(final Bitmap lastImageBitmap, final String lastImagePath) {
+        public void updatePreviewButton(final String lastImagePath) {
             if (canChangeUI() && frontBackToggle != null && getView() != null)
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        lastImageSrc = lastImagePath;
+                        lastImageBitmap = BitmapFactory.decodeFile(lastImagePath);
+                        lastImageBitmap = Bitmap.createScaledBitmap(lastImageBitmap, 50, 50, true);
                         lastImage.setImageBitmap(lastImageBitmap);
                         lastImage.setVisibility(View.VISIBLE);
-                        lastImageSrc = lastImagePath;
                     }
                 });
         }
