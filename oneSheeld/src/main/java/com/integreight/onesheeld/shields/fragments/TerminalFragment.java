@@ -243,6 +243,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                     .getRunningShields().get(getControllerTag())).tempLines
                     .size() - 1);
 
+        outputAdapter.isTimeOn = ((TerminalShield) getApplication().getRunningShields().get(getControllerTag())).isTimeOn;
+        outputAdapter.notifyDataSetChanged();
     }
 
     @Override
