@@ -150,7 +150,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
         }
     }
 
-    private void saveData() {
+    public void saveData() {
         if (isStarted) {
             isStarted = false;
             ICsvMapWriter mapWriter = null;

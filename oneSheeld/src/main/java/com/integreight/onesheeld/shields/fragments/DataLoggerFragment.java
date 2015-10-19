@@ -14,6 +14,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.DataLoggerShield;
 import com.integreight.onesheeld.shields.controller.DataLoggerShield.DataLoggerListener;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.Map;
 public class DataLoggerFragment extends
         ShieldFragmentParent<DataLoggerFragment> {
     OneSheeldTextView loggerStatus;
+    OneSheeldButton stopLogging;
     LinearLayout keysContainer, valuesContainer;
     float scale = 0;
     LinearLayout.LayoutParams cellParams;
@@ -37,6 +39,13 @@ public class DataLoggerFragment extends
     public void doOnStart() {
         ((DataLoggerShield) getApplication().getRunningShields().get(
                 getControllerTag())).setEventHandler(eventHandler);
+        if (stopLogging != null) {
+            if (((DataLoggerShield) getApplication().getRunningShields().get(getControllerTag())).currentStatus == DataLoggerShield.LOGGING) {
+                stopLogging.setVisibility(View.VISIBLE);
+            } else {
+                stopLogging.setVisibility(View.INVISIBLE);
+            }
+        }
     }
 
     @Override
@@ -45,6 +54,7 @@ public class DataLoggerFragment extends
         loggerStatus = (OneSheeldTextView) v.findViewById(R.id.loggerStatus);
         keysContainer = (LinearLayout) v.findViewById(R.id.keysContainer);
         valuesContainer = (LinearLayout) v.findViewById(R.id.valuesContainer);
+        stopLogging = (OneSheeldButton) v.findViewById(R.id.stop_logging_btn);
         scale = getResources().getDisplayMetrics().density;
         cellParams = new LinearLayout.LayoutParams((int) (100 * scale + .5f),
                 LinearLayout.LayoutParams.MATCH_PARENT);
@@ -56,6 +66,13 @@ public class DataLoggerFragment extends
         loggerStatus
                 .setText(status == DataLoggerShield.READ_FOR_LOGGING ? R.string.readyToLog
                         : R.string.logging);
+        stopLogging.setVisibility(View.INVISIBLE);
+        stopLogging.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((DataLoggerShield) getApplication().getRunningShields().get(getControllerTag())).saveData();
+            }
+        });
         keysContainer.removeAllViews();
         valuesContainer.removeAllViews();
     }
@@ -91,6 +108,7 @@ public class DataLoggerFragment extends
                                     loggerStatus
                                             .setBackgroundResource(R.drawable.large_yellow_circle);
                                     loggerStatus.setText(R.string.readyToLog);
+                                    stopLogging.setVisibility(View.INVISIBLE);
                                 }
                             }
                         }, 1000);
@@ -111,6 +129,7 @@ public class DataLoggerFragment extends
                         loggerStatus
                                 .setBackgroundResource(R.drawable.large_green_circle);
                         loggerStatus.setText(R.string.logging);
+                        stopLogging.setVisibility(View.VISIBLE);
                     }
                 }
             });

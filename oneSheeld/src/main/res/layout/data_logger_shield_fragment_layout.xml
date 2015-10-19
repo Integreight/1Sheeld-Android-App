@@ -43,4 +43,13 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+        android:id="@+id/stop_logging_btn"
+        android:text="@string/stopLoggingButton"
+        android:background="@drawable/data_logger_button"
+        android:textColor="@color/offWhite"
+        android:textSize="20dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp" />
 </LinearLayout>
