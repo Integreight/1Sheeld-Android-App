@@ -10,7 +10,7 @@ You can download the latest version of our app from [Google Play Store](https://
 
 ## Screenshots ##
 
-![App Screenshots](http://i.imgur.com/9KqOKKu.png)
+![App Screenshots](http://i.imgur.com/RmKXSzx.png)
 
 ## Building ##
 
