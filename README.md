@@ -8,6 +8,10 @@
 
 You can download the latest version of our app from [Google Play Store](https://play.google.com/store/apps/details?id=com.integreight.onesheeld&hl=en), or pick your preferred version directly from our repo's [releases page](https://github.com/Integreight/1Sheeld-Android-App/releases).
 
+## Screenshots ##
+
+![App Screenshots](http://i.imgur.com/9KqOKKu.png)
+
 ## Building ##
 
 The repo is an Android Studio project, it was built and tested using the latest stable version of Android Studio.
