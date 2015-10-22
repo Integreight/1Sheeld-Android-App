@@ -44,8 +44,7 @@ public class TerminalLinesAdapter extends BaseAdapter {
             public void run() {
                 clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    clipData = ClipData.newPlainText("OneSheeldClipboard", "");
-                    clipboardManager.setPrimaryClip(ClipData.newPlainText("TerminalLine", copyLine));
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText("OneSheeldClipboard", copyLine));
                     Toast.makeText(activity.getApplicationContext(), "Line Copied", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -144,6 +143,28 @@ public class TerminalLinesAdapter extends BaseAdapter {
         ((ViewGroup) holder.output.getParent()).invalidate();
         ((ViewGroup) holder.output.getParent().getParent()).invalidate();
         return row;
+    }
+
+    private StringBuilder allLines;
+    public void copyAll(){
+        if (!lines.isEmpty()) {
+            allLines = new StringBuilder("");
+            if (isTimeOn){
+                for (int lineCounter = 0; lineCounter < lines.size(); lineCounter++) {
+                    allLines.append(lines.get(lineCounter).date+lines.get(lineCounter).print + "\n");
+                }
+            }else {
+                for (int lineCounter = 0; lineCounter < lines.size(); lineCounter++) {
+                    allLines.append(lines.get(lineCounter).print + "\n");
+                }
+            }
+
+            clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                clipboardManager.setPrimaryClip(ClipData.newPlainText("OneSheeldClipboard", new String(allLines)));
+                Toast.makeText(activity.getApplicationContext(), "Lines copied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     static class Holder {
