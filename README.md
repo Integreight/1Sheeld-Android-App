@@ -14,7 +14,13 @@ You can download the latest version of our app from [Google Play Store](https://
 
 ## Building ##
 
-The repo is an Android Studio project, it was built and tested using the latest stable version of Android Studio.
+The repo is a generic Gradle project, it was built and tested using the latest stable version of Android Studio.
+
+To build the project and generate the release and debug apk(s), run this command on the root of the repo:
+
+```
+.\gradlew assemble
+```
 
 ## Access Tokens ##
 
@@ -36,11 +42,11 @@ Don't forget to drop us an email, post on our forum, or mention us on Twitter or
 
 ## Learn More ##
 
- - [Getting started tutorial](http://www.1sheeld.com/tutorials/getting-started)
- - [Arduino library documentation](http://1sheeld.com/docs/).
- - Check our [1Sheeld Forums](http://www.1sheeld.com/forum) where you can post your questions and get answers.
- - Explore what people have built at our [Hackster.io page](https://www.hackster.io/1sheeld/projects)
- - Built custom apps using our [Android SDK](https://github.com/Integreight/1Sheeld-Android-SDK).
+- [Getting started tutorial](http://www.1sheeld.com/tutorials/getting-started)
+- [Arduino library documentation](http://1sheeld.com/docs/).
+- Check our [1Sheeld Forums](http://www.1sheeld.com/forum) where you can post your questions and get answers.
+- Explore what people have built at our [Hackster.io page](https://www.hackster.io/1sheeld/projects)
+- Built custom apps using our [Android SDK](https://github.com/Integreight/1Sheeld-Android-SDK).
 
 ## Changelog ##
 
