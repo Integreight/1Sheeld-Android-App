@@ -1,13 +1,19 @@
 package com.integreight.onesheeld.adapters;
 
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.TerminalPrintedLine;
@@ -20,12 +26,30 @@ public class TerminalLinesAdapter extends BaseAdapter {
     List<TerminalPrintedLine> lines;
     LayoutInflater inflater;
     public boolean isTimeOn = true;
+    public static boolean isTextSelected = false;
+    private static String copyLine = "";
+    private Handler uiHandler;
+    private Runnable copyRunnable;
+    ClipboardManager clipboardManager = null;
+    ClipData clipData = null;
 
     public TerminalLinesAdapter(Activity a, List<TerminalPrintedLine> lines) {
         this.activity = a;
         this.lines = lines;
         inflater = (LayoutInflater) activity
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        uiHandler = new Handler();
+        copyRunnable = new Runnable() {
+            @Override
+            public void run() {
+                clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                    clipData = ClipData.newPlainText("OneSheeldClipboard", "");
+                    clipboardManager.setPrimaryClip(ClipData.newPlainText("TerminalLine", copyLine));
+                    Toast.makeText(activity.getApplicationContext(), "Line Copied", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
     }
 
     public int getCount() {
@@ -42,7 +66,8 @@ public class TerminalLinesAdapter extends BaseAdapter {
 
     public void updateLines(List<TerminalPrintedLine> lines) {
         this.lines = lines;
-        notifyDataSetChanged();
+        if (!isTextSelected)
+            notifyDataSetChanged();
     }
 
     @Override
@@ -56,6 +81,8 @@ public class TerminalLinesAdapter extends BaseAdapter {
                     false);
 
             holder = new Holder();
+            holder.contScrollView = row.findViewById(R.id.terminal_line_scroll_view);
+            holder.contTextContainer = row.findViewById(R.id.terminal_line_text_container);
             holder.dateX = (OneSheeldTextView) row.findViewById(R.id.dateX);
             holder.output = (OneSheeldTextView) row
                     .findViewById(R.id.terminalOutput);
@@ -64,13 +91,15 @@ public class TerminalLinesAdapter extends BaseAdapter {
         } else {
             holder = (Holder) row.getTag();
         }
-        TerminalPrintedLine line = lines.get(position);
+        final TerminalPrintedLine line = lines.get(position);
         if (isTimeOn) {
             holder.dateX.setVisibility(View.VISIBLE);
             holder.dateX.setText(line.date);
         } else
             holder.dateX.setVisibility(View.GONE);
         holder.output.setText(line.print);
+        holder.dateX.setClickable(false);
+        holder.output.setClickable(false);
         if (line.isRx()) {
             holder.output.setTextColor(Color.GREEN);
             holder.dateX.setTextColor(Color.GREEN);
@@ -78,12 +107,48 @@ public class TerminalLinesAdapter extends BaseAdapter {
             holder.output.setTextColor(Color.BLUE);
             holder.dateX.setTextColor(Color.BLUE);
         }
+        final View textContainer = holder.contTextContainer;
+        final View scrollContainer = holder.contScrollView;
+
+        holder.contScrollView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_OUTSIDE:
+                    case MotionEvent.ACTION_CANCEL:
+                        if (isTextSelected) {
+                            textContainer.setBackgroundColor(Color.BLACK);
+                            scrollContainer.setBackgroundColor(Color.BLACK);
+                            isTextSelected = false;
+                            uiHandler.removeCallbacks(copyRunnable);
+                        }
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                    case MotionEvent.ACTION_POINTER_DOWN:
+                        if (!isTextSelected) {
+                            textContainer.setBackgroundColor(activity.getResources().getColor(R.color.arduino_conn_gray_bg));
+                            scrollContainer.setBackgroundColor(activity.getResources().getColor(R.color.arduino_conn_gray_bg));
+                            copyLine = line.print;
+                            uiHandler.postDelayed(copyRunnable, 1000);
+                            isTextSelected = true;
+                        }
+                        break;
+                    default:
+                        //textContainer.setBackgroundColor(Color.BLACK);
+                        break;
+                }
+                return true;
+            }
+        });
         ((ViewGroup) holder.output.getParent()).invalidate();
         ((ViewGroup) holder.output.getParent().getParent()).invalidate();
         return row;
     }
 
     static class Holder {
+        View contScrollView;
+        View contTextContainer;
         OneSheeldTextView dateX, output;
         TextView seperator;
     }

@@ -69,7 +69,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                         ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).isTimeOn = isChecked;
                         outputAdapter.isTimeOn = isChecked;
-                        outputAdapter.notifyDataSetChanged();
+                        if (!TerminalLinesAdapter.isTextSelected)
+                            outputAdapter.notifyDataSetChanged();
                     }
                 });
         autoScrollingToggle
@@ -242,9 +243,9 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
             output.setSelection(((TerminalShield) getApplication()
                     .getRunningShields().get(getControllerTag())).tempLines
                     .size() - 1);
-
         outputAdapter.isTimeOn = ((TerminalShield) getApplication().getRunningShields().get(getControllerTag())).isTimeOn;
-        outputAdapter.notifyDataSetChanged();
+        if (!TerminalLinesAdapter.isTextSelected)
+            outputAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/terminal_line_scroll_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
     android:fadingEdge="none"
     android:scrollbarThumbHorizontal="@drawable/transparent">
 
     <LinearLayout
+        android:id="@+id/terminal_line_text_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:clickable="false"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp">
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
             android:id="@+id/dateX"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:clickable="true"
+            android:linksClickable="false"
+            android:longClickable="false"
             android:paddingBottom="1dp"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
@@ -23,7 +32,7 @@
             android:scrollbars="vertical"
             android:singleLine="true"
             android:textColor="@color/green"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             android:textSize="14sp" />
 
         <TextView
@@ -38,6 +47,8 @@
             android:layout_height="match_parent"
             android:clickable="true"
             android:gravity="top|left"
+            android:linksClickable="false"
+            android:longClickable="false"
             android:paddingBottom="1dp"
             android:paddingLeft="0dp"
             android:paddingRight="0dp"
@@ -45,7 +56,7 @@
             android:scrollbars="vertical"
             android:singleLine="true"
             android:textColor="@color/green"
-            android:textIsSelectable="true"
+            android:textIsSelectable="false"
             android:textSize="14sp" />
     </LinearLayout>
 
