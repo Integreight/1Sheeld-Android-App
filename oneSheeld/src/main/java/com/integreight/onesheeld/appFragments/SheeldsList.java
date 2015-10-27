@@ -80,7 +80,6 @@ public class SheeldsList extends Fragment {
                              Bundle savedInstanceState) {
         isInflated = (v == null);
         if (v == null) {
-
             QuickReturnHeaderHelper helper = new QuickReturnHeaderHelper(
                     activity, R.layout.app_sheelds_list,
                     R.layout.shields_list_search_area);

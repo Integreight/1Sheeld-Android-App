@@ -96,7 +96,7 @@ public class QuickReturnHeaderHelper implements OnGlobalLayoutListener {
 		int heightMeasureSpec = MeasureSpec.makeMeasureSpec(
 				LayoutParams.WRAP_CONTENT, MeasureSpec.EXACTLY);
 		realHeader.measure(widthMeasureSpec, heightMeasureSpec);
-		headerHeight = realHeader.getMeasuredHeight();
+		headerHeight = (int)(100 * realHeader.getResources().getDisplayMetrics().density + .5f);
 
 		listView = (ListView) content.findViewById(android.R.id.list);
 		if (listView != null) {
@@ -277,6 +277,10 @@ public class QuickReturnHeaderHelper implements OnGlobalLayoutListener {
 		// trouble when scrolling to the bottom of the list
 		if (realHeaderLayoutParams.topMargin != headerTop) {
 			realHeaderLayoutParams.topMargin = headerTop;
+			if (realHeaderLayoutParams.topMargin > headerHeight) {
+				realHeaderLayoutParams.topMargin = headerHeight;
+				showHeader();
+			}
 			Log.v(TAG, "topMargin=" + headerTop);
 			realHeader.setLayoutParams(realHeaderLayoutParams);
 		}
