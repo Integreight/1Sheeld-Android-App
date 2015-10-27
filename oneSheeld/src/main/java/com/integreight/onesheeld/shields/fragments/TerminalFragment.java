@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.fragments;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.format.DateFormat;
@@ -28,7 +29,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
     private ListView output;
     private OneSheeldEditText inputField;
-    private OneSheeldButton send;
+    private OneSheeldButton send,copyAll;
     private boolean endedWithNewLine = false;
     private TerminalLinesAdapter outputAdapter;
     private ToggleButton timeToggle, autoScrollingToggle;
@@ -56,10 +57,16 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
         timeToggle = (ToggleButton) v.findViewById(R.id.toggleTime);
         autoScrollingToggle = (ToggleButton) v
                 .findViewById(R.id.toggleAutoScrolling);
+        copyAll = (OneSheeldButton) v.findViewById(R.id.copy_all);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            copyAll.setVisibility(View.INVISIBLE);
+        }
         timeToggle.setChecked(((TerminalShield) getApplication()
                 .getRunningShields().get(getControllerTag())).isTimeOn);
         autoScrollingToggle.setChecked(((TerminalShield) getApplication()
                 .getRunningShields().get(getControllerTag())).isAutoScrolling);
+        timeToggle.setTypeface(getApplication().appFont);
+        autoScrollingToggle.setTypeface(getApplication().appFont);
         timeToggle
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -69,7 +76,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                         ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).isTimeOn = isChecked;
                         outputAdapter.isTimeOn = isChecked;
-                        outputAdapter.notifyDataSetChanged();
+                        if (!TerminalLinesAdapter.isTextSelected)
+                            outputAdapter.notifyDataSetChanged();
                     }
                 });
         autoScrollingToggle
@@ -135,6 +143,13 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                 imm.hideSoftInputFromWindow(inputField.getWindowToken(), 0);
             }
         });
+        copyAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                outputAdapter.copyAll();
+            }
+        });
+
         int i = 0;
         for (final int id : ((TerminalShield) getApplication()
                 .getRunningShields().get(getControllerTag())).encodingMths) {
@@ -242,9 +257,9 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
             output.setSelection(((TerminalShield) getApplication()
                     .getRunningShields().get(getControllerTag())).tempLines
                     .size() - 1);
-
         outputAdapter.isTimeOn = ((TerminalShield) getApplication().getRunningShields().get(getControllerTag())).isTimeOn;
-        outputAdapter.notifyDataSetChanged();
+        if (!TerminalLinesAdapter.isTextSelected)
+            outputAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -79,11 +79,15 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        lastImageSrc = lastImagePath;
-                        lastImageBitmap = BitmapFactory.decodeFile(lastImagePath);
-                        lastImageBitmap = Bitmap.createScaledBitmap(lastImageBitmap, 50, 50, true);
-                        lastImage.setImageBitmap(lastImageBitmap);
-                        lastImage.setVisibility(View.VISIBLE);
+                        if (lastImagePath != null && !lastImagePath.equals("")) {
+                            lastImageSrc = lastImagePath;
+                            lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
+                            if (lastImage != null && lastImageBitmap != null) {
+                                lastImageBitmap = Bitmap.createScaledBitmap(lastImageBitmap, 50, 50, true);
+                                lastImage.setImageBitmap(lastImageBitmap);
+                                lastImage.setVisibility(View.VISIBLE);
+                            }
+                        }
                     }
                 });
         }
@@ -106,9 +110,14 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
         lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
-        if (lastImageSrc != null)
-            lastImage.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeFile(lastImageSrc), 50, 50, true));
-        else
+        if (lastImageSrc != null) {
+            lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
+            if (lastImage !=null && lastImageBitmap != null) {
+                lastImageBitmap = Bitmap.createScaledBitmap(lastImageBitmap, 50, 50, true);
+                lastImage.setImageBitmap(lastImageBitmap);
+                lastImage.setVisibility(View.VISIBLE);
+            }
+        }else
             lastImage.setVisibility(View.INVISIBLE);
         camerLogo = view.findViewById(R.id.camera_log);
     }
@@ -116,10 +125,21 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     @Override
     public void onResume() {
         super.onResume();
-        if (lastImage != null)
+        if (lastImage != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 lastImage.setAlpha((float) 1);
             }
+            lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
+            if (lastImageSrc != null) {
+                lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
+                if (lastImage !=null && lastImageBitmap != null) {
+                    lastImageBitmap = Bitmap.createScaledBitmap(lastImageBitmap, 50, 50, true);
+                    lastImage.setImageBitmap(lastImageBitmap);
+                    lastImage.setVisibility(View.VISIBLE);
+                }
+            }else
+                lastImage.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override

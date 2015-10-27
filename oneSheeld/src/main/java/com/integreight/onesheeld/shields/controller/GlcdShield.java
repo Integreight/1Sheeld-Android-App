@@ -826,7 +826,7 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
                             else if ((shapeHeight + shapeY) > glcdHeight)
                                 shapeHeight = glcdHeight - 1 - shapeY;
 
-                            if (frame.getArgument(6)[0] <= 0) {
+                            if (frame.getArguments().size() < 7) {
                                 shapeText = "Button" + String.valueOf(buttonCounter);
                                 buttonCounter++;
                             } else
