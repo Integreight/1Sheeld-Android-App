@@ -496,6 +496,8 @@ public class ArduinoConnectivityPopup extends Dialog {
         public void onConnect() {
             if (isOpened) {
                 isConnecting = false;
+                android.util.Log.i("BluetoothService","Popup on Connect");
+                dismiss();
                 cancel();
             }
         }

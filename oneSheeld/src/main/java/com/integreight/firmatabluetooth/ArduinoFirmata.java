@@ -659,9 +659,12 @@ public class ArduinoFirmata {
     }
 
     private void onConnect() {
+        android.util.Log.i("BluetoothService","EVentHandlers "+ eventHandlers.size());
         for (ArduinoFirmataEventHandler eventHandler : eventHandlers) {
-            if (eventHandler != null)
+            if (eventHandler != null) {
+                android.util.Log.i("BluetoothService","Onconnect eventHanders "+eventHandlers.size());
                 eventHandler.onConnect();
+            }
         }
     }
 
@@ -722,12 +725,16 @@ public class ArduinoFirmata {
         resetProcessInput();
         isVersionQueried = false;
         bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
+//        bluetoothBufferListeningThread.start();
         uartListeningThread = new UartListeningThread();
-        while (!isBluetoothBufferWaiting)
-            ;
-        while (!isUartBufferWaiting)
-            ;
+//        uartListeningThread.start();
+        android.util.Log.i("BluetoothService","started UART BUFFER");
+//        while (!isBluetoothBufferWaiting)
+//            ;
+//        while (!isUartBufferWaiting)
+//            ;
 
+        android.util.Log.i("BluetoothService","Affecting ui thread");
         uiThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -735,6 +742,7 @@ public class ArduinoFirmata {
                 enableReporting();
                 setAllPinsAsInput();
                 reportInputPinsValues();
+                android.util.Log.i("BluetoothService","applying on Connect on Init Firmata");
                 onConnect();
                 respondToIsAlive();
                 queryFirmwareVersion();
@@ -851,6 +859,7 @@ public class ArduinoFirmata {
 
     private class UartListeningThread extends Thread {
         public UartListeningThread() {
+            super();
             start();
         }
 
@@ -962,7 +971,7 @@ public class ArduinoFirmata {
 
     private class BluetoothBufferListeningThread extends Thread {
         public BluetoothBufferListeningThread() {
-            // TODO Auto-generated constructor stub
+            super();
             start();
         }
 
