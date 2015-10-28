@@ -96,7 +96,7 @@ public class BluetoothService {
     }
 
     private synchronized void setState(int state) {
-//        if (D)
+        if (D)
             Log.d(TAG, "setState() " + mState + " -> " + state);
         mState = state;
 
@@ -113,7 +113,7 @@ public class BluetoothService {
     }
 
     public synchronized void connect(BluetoothDevice device) {
-//        if (D)
+        if (D)
             Log.d(TAG, "connect to: " + device);
         closedManually = false;
         // Cancel any thread attempting to make a connection
@@ -132,7 +132,6 @@ public class BluetoothService {
         }
 
         // Start the thread to connect with the given device
-        android.util.Log.i(TAG,"as to start connect thread");
         mConnectThread = new ConnectThread(device);
         mConnectThread.start();
         setState(STATE_CONNECTING);
@@ -141,7 +140,7 @@ public class BluetoothService {
 
     public synchronized void connected(BluetoothSocket socket,
                                        BluetoothDevice device) {
-//        if (D)
+        if (D)
             Log.d(TAG, "connected");
 
         // Cancel the thread that completed the connection
@@ -163,7 +162,7 @@ public class BluetoothService {
     }
 
     private synchronized void stop() {
-//        if (D)
+        if (D)
             Log.d(TAG, "stop");
         if (mConnectThread != null) {
             mConnectThread.cancel();
@@ -222,7 +221,6 @@ public class BluetoothService {
     }
 
     private void connectionFailed() {
-        android.util.Log.i(TAG,"Unable to connect device");
         for (BluetoothServiceHandler handler : handlers) {
             handler.onError("Unable to connect device");
         }
@@ -251,7 +249,7 @@ public class BluetoothService {
                             .createInsecureRfcommSocketToServiceRecord(MY_UUID);
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Blutooth Service ConnectThread()", e);
+                Log.e("TAG", "Blutooth Service ConnectThread()", e);
                 try {
                     mmSocket = device
                             .createRfcommSocketToServiceRecord(MY_UUID);
@@ -438,13 +436,10 @@ public class BluetoothService {
                 }
             });
             LooperThread.start();
-            android.util.Log.i(TAG,"starting Looper Thread");
             while (!LooperThread.isAlive())
                 ;
-            android.util.Log.i(TAG,"set status Connected");
             setState(STATE_CONNECTED);
             for (BluetoothServiceHandler handler : handlers) {
-                android.util.Log.i(TAG,"Handling On connecting  " + handlers.size());
                 handler.onConnected(mmDevice);
             }
             byte[] buffer = new byte[1024];
