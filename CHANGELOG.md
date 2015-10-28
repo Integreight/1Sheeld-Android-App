@@ -1,3 +1,6 @@
+## v1.4.1(151028) (October 28, 2015)
+ - Fixed the connection bug on Android 6 devices.
+
 ## v1.4.0(150818) (August 18, 2015)
  - Added the GLCD shield.
  - Fixed an issue with the NFC shield.

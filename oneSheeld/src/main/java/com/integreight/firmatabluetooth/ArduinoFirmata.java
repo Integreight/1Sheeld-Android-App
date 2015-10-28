@@ -723,12 +723,12 @@ public class ArduinoFirmata {
         isVersionQueried = false;
         bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
         uartListeningThread = new UartListeningThread();
-        while (!isBluetoothBufferWaiting)
-            ;
-        while (!isUartBufferWaiting)
-            ;
+//        while (!isBluetoothBufferWaiting)
+//            ;
+//        while (!isUartBufferWaiting)
+//            ;
 
-        uiThreadHandler.post(new Runnable() {
+        uiThreadHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 // TODO Auto-generated method stub
@@ -741,7 +741,7 @@ public class ArduinoFirmata {
                 notifyHardwareOfConnection();
                 queryLibraryVersion();
             }
-        });
+        },100);
     }
 
     private byte readByteFromUartBuffer() throws InterruptedException,
