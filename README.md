@@ -10,6 +10,10 @@ Pull requests are welcomed. If you want to contribute, fork, create an issue, re
 
 Change Log:
 
+--------- Version 1.4.1 (151028) -----------
+
+- Fixed the connection bug on Android 6 devices.
+
 --------- Version 1.4.0 (150818) -----------
 
 - Added the GLCD shield.
