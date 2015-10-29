@@ -21,8 +21,12 @@ android {
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
-        minSdkVersion 9
-        targetSdkVersion 9
+        minSdkVersion 14
+        targetSdkVersion 14
+
+
+        // Enabling multidex support.
+        multiDexEnabled true
     }
 
     buildTypes.all{
@@ -41,6 +45,10 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
 }
 
 dependencies {
@@ -48,6 +56,7 @@ dependencies {
     compile project(':pullToRefreshlibrary')
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
+    compile 'com.android.support:multidex:1.0.0'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:7.5.0'
     compile 'com.google.android.gms:play-services-location:7.5.0'
