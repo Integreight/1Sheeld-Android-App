@@ -915,6 +915,7 @@ public class ArduinoFirmata {
                         uartBuffer.clear();
                         continue;
                     }
+                    boolean continueRequested=false;
                     for (int i = 0; i < argumentsNumber; i++) {
                         int length = readByteFromUartBuffer() & 0xff;
                         int lengthVerification = (255 - (readByteFromUartBuffer() & 0xFF));
@@ -922,7 +923,8 @@ public class ArduinoFirmata {
                             if (ShieldFrameTimeout != null)
                                 ShieldFrameTimeout.stopTimer();
                             uartBuffer.clear();
-                            continue;
+                            continueRequested=true;
+                            break;
                         }
                         byte[] data = new byte[length];
                         for (int j = 0; j < length; j++) {
@@ -930,6 +932,7 @@ public class ArduinoFirmata {
                         }
                         frame.addArgument(data);
                     }
+                    if(continueRequested)continue;
                     if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
                         if (ShieldFrameTimeout != null)
                             ShieldFrameTimeout.stopTimer();
