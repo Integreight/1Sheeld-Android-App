@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.shields.fragments;
 
+import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -14,25 +16,34 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.gmail.GmailScopes;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
-import com.integreight.onesheeld.shields.controller.utils.GmailSinginPopup;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.SecurePreferences;
+
+import java.util.Arrays;
 
 public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
     TextView sendTo, subject, userName;
     Button login_bt, logout_bt;
+    ProgressBar progress;
+    private String userEmail;
+    private Boolean isLoggedIn = false;
     private static SharedPreferences mSharedPreferences;
     private static final String PREF_EMAIL_SHIELD_USER_LOGIN = "user_login_status";
     private static final String PREF_EMAIL_SHIELD_GMAIL_ACCOUNT = "gmail_account";
-    private static final String PREF_EMAIL_SHIELD_GMAIL_PASSWORD = "gmail_password";
-    private String userEmail;
-    ProgressBar progress;
+
+    private static final String[] SCOPES = {GmailScopes.GMAIL_COMPOSE};
+    GoogleAccountCredential mCredential;
+    static final int REQUEST_ACCOUNT_PICKER = 1000;
+    static final int REQUEST_AUTHORIZATION = 1001;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +59,10 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, null));
 
         sendTo = (TextView) v.findViewById(R.id.gmail_shield_sendto_textview);
         userName = (TextView) v
@@ -60,32 +75,18 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
             @Override
             public void onClick(View v) {
-                if (ConnectionDetector.isConnectingToInternet(activity))
+                if (ConnectionDetector.isConnectingToInternet(activity)) {
                     // show dialog of registration then call add account method
-                    new GmailSinginPopup(activity, emailEventHandler).show();
-                else
+                    if (mCredential.getSelectedAccountName() == null){
+                        startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+                    }
+                }else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
                             "Please check your Internet connection and try again.",
                             Toast.LENGTH_SHORT).show();
             }
         });
-
-        // if user logged in run controller else ask for login
-        if (isGmailLoggedInAlready()) {
-            userEmail = mSharedPreferences.getString(
-                    PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
-
-            ((EmailShield) getApplication().getRunningShields().get(
-                    getControllerTag()))
-                    .setEmailEventHandler(emailEventHandler);
-            login_bt.setVisibility(View.INVISIBLE);
-            logout_bt.setVisibility(View.VISIBLE);
-            userName.setVisibility(View.VISIBLE);
-            userName.setText(userEmail);
-        } else {
-            login_bt.setVisibility(View.VISIBLE);
-        }
 
         logout_bt.setOnClickListener(new View.OnClickListener() {
 
@@ -94,27 +95,33 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                 logoutGmailAccount();
             }
         });
+
     }
     @Override
     public void doOnStart() {
         ((EmailShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setEmailEventHandler(emailEventHandler);
-    }
-
-    private boolean isGmailLoggedInAlready() {
-        // return twitter login status from Shared Preferences
-        return mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,
-                false);
+        // if user logged in run controller else ask for login
+        userEmail = mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
+        isLoggedIn = mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,false);
+        if (mCredential.getSelectedAccountName() != null && userEmail != null && !userEmail.equals("") && isLoggedIn == true) { // this replaces isGmailLoggedInAlready method
+            addAccount(userEmail);
+        } else {
+            login_bt.setVisibility(View.VISIBLE);
+        }
     }
 
     private EmailEventHandler emailEventHandler = new EmailEventHandler() {
 
         @Override
-        public void onSendingAuthError(String error) {
-            if (canChangeUI())
-                Toast.makeText(getApplication(), error, Toast.LENGTH_LONG)
-                        .show();
+        public void onSendingAuthError(String error,Intent intent,int requestCode) {
+            if (canChangeUI()) {
+                if (error != null && !error.equals(""))
+                Toast.makeText(getApplication(), error, Toast.LENGTH_LONG).show();
+                if (intent != null && requestCode != 0)
+                    startActivityForResult(intent,requestCode);
+            }
 
         }
 
@@ -138,19 +145,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
         public void onSuccess() {
             if (canChangeUI())
                 Toast.makeText(getApplication(), "Email sent Successful",
-                        Toast.LENGTH_LONG).show();
-        }
-
-        @Override
-        public void onLoginSuccess(final String userName, final String password) {
-            uiHandler.removeCallbacksAndMessages(null);
-            uiHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    addAccount(userName, password);
-                }
-            });
+                        Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -190,6 +185,11 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                 }
             });
         }
+
+        @Override
+        public GoogleAccountCredential getCredential() {
+            return mCredential;
+        }
     };
 
     private void initializeFirmata() {
@@ -207,46 +207,36 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
         initializeFirmata();
     }
 
-    private void addAccount(String accountName, String password) {
+    private void addAccount(String accountName) {
         Log.d("account name ", accountName);
-        // save in share perefrences
         SharedPreferences.Editor editor = mSharedPreferences.edit();
         editor.putString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, accountName);
-        // encrypt password before saved in share perefrence...
-        byte[] b = SecurePreferences.convertStirngToByteArray(password);
-        // encrypt
-        try {
-            byte[] key = SecurePreferences.generateKey();
-            byte[] encryptedPassword = SecurePreferences.encrypt(key, b);
-            String encryptedPassword_str = Base64.encodeToString(
-                    encryptedPassword, Base64.DEFAULT);
-            editor.putString(PREF_EMAIL_SHIELD_GMAIL_PASSWORD,
-                    encryptedPassword_str);
-            editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
-            // Commit the edits!
-            editor.commit();
-            ((EmailShield) getApplication().getRunningShields().get(
-                    getControllerTag()))
-                    .setEmailEventHandler(emailEventHandler);
-            if (canChangeUI()) {
-                login_bt.setVisibility(View.INVISIBLE);
-                logout_bt.setVisibility(View.VISIBLE);
-                userName.setVisibility(View.VISIBLE);
-                userName.setText(accountName);
-            }
+        editor.commit();
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, null));
 
-        } catch (Exception e) {
-            Log.d("Email", "EmaiFragment:: filed in password encryption");
+        ((EmailShield) getApplication().getRunningShields().get(getControllerTag())).setEmailEventHandler(emailEventHandler);
+        if (canChangeUI()) {
+            login_bt.setVisibility(View.INVISIBLE);
+            logout_bt.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.VISIBLE);
+            userName.setText(accountName);
         }
-
     }
 
     private void logoutGmailAccount() {
-        Editor e = mSharedPreferences.edit();
-        e.remove(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT);
-        e.remove(PREF_EMAIL_SHIELD_GMAIL_PASSWORD);
-        e.remove(PREF_EMAIL_SHIELD_USER_LOGIN);
-        e.commit();
+        mCredential.setSelectedAccountName(null);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.remove(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT);
+        editor.remove(PREF_EMAIL_SHIELD_USER_LOGIN);
+        editor.commit();
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, null));
+
         login_bt.setVisibility(View.VISIBLE);
         logout_bt.setVisibility(View.INVISIBLE);
         userName.setVisibility(View.INVISIBLE);
@@ -255,4 +245,45 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
 
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_ACCOUNT_PICKER:
+                if (resultCode == activity.RESULT_OK && data != null &&
+                        data.getExtras() != null) {
+                    String accountName =
+                            data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+                    if (accountName != null) {
+                        mCredential.setSelectedAccountName(accountName);
+                        SharedPreferences.Editor editor = mSharedPreferences.edit();
+                        editor.putString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, accountName);
+                        editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
+                        editor.apply();
+                        addAccount(accountName);
+                        ((EmailShield) getApplication().getRunningShields().get(getControllerTag())).sendTestRequest(mCredential);
+                        Toast.makeText(activity.getApplicationContext(), accountName, Toast.LENGTH_SHORT).show();
+                    }
+                } else if (resultCode == activity.RESULT_CANCELED) {
+                    Toast.makeText(activity.getApplicationContext(), "Account unspecified.", Toast.LENGTH_LONG).show();
+                }
+                break;
+            case REQUEST_AUTHORIZATION:
+                if (requestCode != activity.RESULT_OK && mCredential.getSelectedAccountName() == null)
+                    startActivityForResult(mCredential.newChooseAccountIntent(), REQUEST_ACCOUNT_PICKER);
+                break;
+        }
+        // if user logged in run controller else ask for login
+        if (mCredential.getSelectedAccountName() != null) { // this replaces isGmailLoggedInAlready method
+            userEmail = mSharedPreferences.getString(
+                    PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
+            ((EmailShield) getApplication().getRunningShields().get(getControllerTag())).setEmailEventHandler(emailEventHandler);
+            login_bt.setVisibility(View.INVISIBLE);
+            logout_bt.setVisibility(View.VISIBLE);
+            userName.setVisibility(View.VISIBLE);
+            userName.setText(userEmail);
+        } else {
+            login_bt.setVisibility(View.VISIBLE);
+        }
+    }
 }

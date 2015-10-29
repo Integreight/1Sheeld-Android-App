@@ -58,7 +58,17 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
-    compile files('libs/commons-io-2.4.jar')
+    compile ('com.google.android.gms:play-services-identity:7.5.0'){
+        transitive = true;
+    }
+    compile('com.google.api-client:google-api-client-android:1.20.0') {
+        transitive = true;
+        exclude group: 'org.apache.httpcomponents'
+    }
+    compile('com.google.apis:google-api-services-gmail:v1-rev29-1.20.0') {
+        transitive = true;
+        exclude group: 'org.apache.httpcomponents'
+    }
 }
 
 def isCrashlyticsPropertiesAvailable() {

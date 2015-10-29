@@ -2,19 +2,42 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.widget.Toast;
 
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.gmail.model.Message;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
-import com.integreight.onesheeld.shields.controller.utils.GMailSender;
 import com.integreight.onesheeld.utils.ConnectionDetector;
-import com.integreight.onesheeld.utils.Log;
-import com.integreight.onesheeld.utils.SecurePreferences;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.BodyPart;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 public class EmailShield extends ControllerParent<EmailShield> {
 
@@ -24,14 +47,18 @@ public class EmailShield extends ControllerParent<EmailShield> {
     private static SharedPreferences mSharedPreferences;
     private static final String PREF_EMAIL_SHIELD_USER_LOGIN = "user_login_status";
     private static final String PREF_EMAIL_SHIELD_GMAIL_ACCOUNT = "gmail_account";
-    private static final String PREF_EMAIL_SHIELD_GMAIL_PASSWORD = "gmail_password";
+    private static final int PREF_EMAIL_SHIELD_REQUEST_AUTHORIZATION = 1001;
+    private static int ORDER_GET_LABELS = 0;
+    private static int ORDER_SEND_EMAIL = 1;
     private String userEmail = "";
     private String password = "";
     private static String message_body = "";
     private static String message_reciption = "";
     private static String message_subject = "";
     private static String attachment_file_path = null;
-
+    private static DataSource source;
+    private static BodyPart messageFilePart,messageBodyPart;
+/////
     public EmailShield() {
         super();
     }
@@ -56,17 +83,17 @@ public class EmailShield extends ControllerParent<EmailShield> {
     public static interface EmailEventHandler {
         void onEmailsent(String email_send_to, String subject);
 
-        void onSendingAuthError(String error);
+        void onSendingAuthError(String error,Intent intent,int requestCode);
 
         void onSuccess();
 
         void onEmailnotSent(String message_not_sent);
 
-        void onLoginSuccess(String userName, String password);
-
         void startProgress();
 
         void stopProgress();
+
+        GoogleAccountCredential getCredential();
     }
 
     @Override
@@ -116,87 +143,107 @@ public class EmailShield extends ControllerParent<EmailShield> {
         message_reciption = email_send_to;
         message_subject = subject;
         attachment_file_path = filePath;
-        new sendGmailinBackground().execute();
-
+        if (eventHandler != null)
+            new sendGmailinBackground(eventHandler.getCredential(),ORDER_SEND_EMAIL).execute();
     }
 
-    public class sendGmailinBackground extends AsyncTask<Void, Void, Integer> {
-        GMailSender sender = new GMailSender(userEmail, password);
-        int result;
+    public void sendTestRequest(GoogleAccountCredential credential){
+        if (ConnectionDetector.isConnectingToInternet(getApplication().getApplicationContext())) {
+            new sendGmailinBackground(credential, ORDER_GET_LABELS).execute();
+        }
+    }
 
-        @Override
-        protected Integer doInBackground(Void... params) {
-            if (eventHandler != null)
-                eventHandler.startProgress();
-            try {
-                result = (attachment_file_path == null) ? sender.sendMail(message_subject, message_body,
-                        userEmail, message_reciption) : sender.sendMail(message_subject, message_body,
-                        userEmail, message_reciption, attachment_file_path);
-            } catch (Exception e) {
-                Log.d("SendMail", e.getMessage());
-                if (eventHandler != null)
-                    eventHandler.stopProgress();
-            }
-            return result;
+    public class sendGmailinBackground extends AsyncTask<Void, Void, String> {
+        private com.google.api.services.gmail.Gmail mService = null;
+        private Exception mLastError = null;
+        private int order = 0;
+
+        public sendGmailinBackground(GoogleAccountCredential credential,int order){
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mService = new com.google.api.services.gmail.Gmail.Builder(
+                    transport, jsonFactory, credential)
+                    .setApplicationName("1Sheeld app | Email Shield")
+                    .build();
+            this.order = order;
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
+        protected String doInBackground(Void... params) {
+            if (eventHandler != null)
+                eventHandler.startProgress();
+            try {
+                return sendEmail();
+            } catch (Exception e) {
+                mLastError = e;
+                cancel(true);
+                if (eventHandler != null)
+                    eventHandler.stopProgress();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
             // TODO Auto-generated method stub
             super.onPostExecute(result);
-            switch (result) {
-                case 0:
-                    if (eventHandler != null)
-                        eventHandler.onSuccess();
-                    break;
-                case 1:
-                    if (eventHandler != null)
-                        eventHandler.onEmailnotSent("Authentication Failed");
-                    break;
-                case 2:
-                    if (eventHandler != null)
-                        eventHandler
-                                .onEmailnotSent("message could not be sent to the recipient ");
-                    break;
 
-                default:
-                    break;
+            if (result != null){
+                if (eventHandler != null)
+                    eventHandler.onSuccess();
+            }
+            attachment_file_path = null;
+            if (eventHandler != null)
+                eventHandler.stopProgress();
+        }
+
+        @Override
+        protected void onCancelled(String s) {
+            //super.onCancelled();
+            if (mLastError != null) {
+                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    //showGooglePlayServicesAvailabilityErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
+                    if (eventHandler != null && order == ORDER_SEND_EMAIL)
+                        eventHandler.onEmailnotSent("The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
+                } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                    if (eventHandler != null)
+                        eventHandler.onSendingAuthError(mLastError.getMessage(),((UserRecoverableAuthIOException) mLastError).getIntent(),PREF_EMAIL_SHIELD_REQUEST_AUTHORIZATION);
+                } else {
+                    if (eventHandler != null && order == ORDER_SEND_EMAIL)
+                        eventHandler.onEmailnotSent("The following error occurred:\n" + mLastError.getMessage());
+                }
+            } else {
+                if (eventHandler != null)
+                    eventHandler.onEmailnotSent("Request cancelled.");
             }
             if (eventHandler != null)
                 eventHandler.stopProgress();
         }
 
+        private String sendEmail() throws IOException {
+            try {
+                if (order > 0) {
+                    if (attachment_file_path == null)
+                        mService.users().messages().send("me", createMessageWithEmail(createEmail(message_reciption, userEmail, message_subject, message_body))).execute();
+                    else
+                        mService.users().messages().send("me", createMessageWithEmail(createEmailWithAttachment(message_reciption, userEmail, message_subject, message_body, attachment_file_path))).execute();
+                }else
+                    mService.users().labels().list("me").execute();
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                return null;
+            }
+            return "";
+        }
     }
 
     public void setUserData() {
-        byte[] decryptedData = null;
-        byte[] encryptedPassword_bytes = null;
-        // password decryption
         this.userEmail = mSharedPreferences.getString(
                 PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
-        // decrypt
-        String encryptedPassword_str = mSharedPreferences.getString(
-                PREF_EMAIL_SHIELD_GMAIL_PASSWORD, "");
-        if (!encryptedPassword_str.equalsIgnoreCase("")) {
-            encryptedPassword_bytes = Base64.decode(encryptedPassword_str,
-                    Base64.DEFAULT);
-        }
-
-        try {
-            byte[] key = SecurePreferences.generateKey();
-            decryptedData = SecurePreferences.decrypt(key,
-                    encryptedPassword_bytes);
-            this.password = SecurePreferences
-                    .convertByteArrayToString(decryptedData);
-
-        } catch (Exception e) {
-            // failed to decrypt password.
-            Log.d("Email", "Email Sheeld" + "failed to decrypt password");
-        }
     }
 
     private boolean isLoggedIn() {
-        // return twitter login status from Shared Preferences
         return mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,
                 false);
     }
@@ -205,4 +252,61 @@ public class EmailShield extends ControllerParent<EmailShield> {
     public void reset() {
         // TODO Auto-generated method stub
     }
+
+    public static MimeMessage createEmail(String to, String from, String subject,
+                                          String bodyText) throws MessagingException{
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+        MimeMessage email = new MimeMessage(session);
+        InternetAddress tAddress = new InternetAddress(to);
+        InternetAddress fAddress = new InternetAddress(from);
+        email.setFrom(fAddress);
+        email.addRecipient(javax.mail.Message.RecipientType.TO, tAddress);
+        email.setSubject(subject);
+        email.setText(bodyText);
+        return email;
+    }
+
+    public static MimeMessage createEmailWithAttachment(String to, String from, String subject,
+                                          String bodyText,String filePath) throws MessagingException{
+        File file = new File(filePath);
+        Properties props = new Properties();
+        Session session = Session.getDefaultInstance(props, null);
+        MimeMessage email = new MimeMessage(session);
+        Multipart multipart = new MimeMultipart();
+        InternetAddress tAddress = new InternetAddress(to);
+        InternetAddress fAddress = new InternetAddress(from);
+        email.setFrom(fAddress);
+        email.addRecipient(javax.mail.Message.RecipientType.TO, tAddress);
+        email.setSubject(subject);
+        if (file.exists()) {
+            source = new FileDataSource(filePath);
+            messageFilePart = new MimeBodyPart();
+            messageBodyPart = new MimeBodyPart();
+            try {
+                messageBodyPart.setText(bodyText);
+                messageFilePart.setDataHandler(new DataHandler(source));
+                messageFilePart.setFileName(file.getName());
+
+                multipart.addBodyPart(messageBodyPart);
+                multipart.addBodyPart(messageFilePart);
+                email.setContent(multipart);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+        }else
+            email.setText(bodyText);
+        return email;
+    }
+
+    public static Message createMessageWithEmail(MimeMessage email)
+            throws MessagingException, IOException {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        email.writeTo(bytes);
+        String encodedEmail = Base64.encodeToString(bytes.toByteArray(), Base64.URL_SAFE);
+        Message message = new Message();
+        message.setRaw(encodedEmail);
+        return message;
+    }
+
 }
