@@ -22,7 +22,7 @@ android {
     defaultConfig {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
-        targetSdkVersion 22
+        targetSdkVersion 9
     }
 
     buildTypes.all{
