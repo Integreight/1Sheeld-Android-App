@@ -49,12 +49,12 @@ public class InternetRequest {
         files = new HashMap<>();
         shieldCallback = new InternetShield.CallBack() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int RequestID) {
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, int RequestID) {
 
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int RequestID) {
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error, int RequestID) {
 
             }
 
@@ -117,13 +117,13 @@ public class InternetRequest {
     public void setCallback(final InternetShield.CallBack callback) {
         this.shieldCallback = new InternetShield.CallBack() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int RequestID) {
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, int RequestID) {
                 if (callback != null)
                     callback.onSuccess(statusCode, headers, responseBody, RequestID);
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int requestID) {
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error, int requestID) {
                 if (callback != null)
                     callback.onFailure(statusCode, headers, responseBody, error, requestID);
             }
@@ -151,7 +151,7 @@ public class InternetRequest {
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                 status = REQUEST_STATUS.EXECUTED;
                 setResponse(new InternetResponse(responseBody, statusCode, InternetResponse.RESPONSE_STATUS.SUCCESSFUL, headers));
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_SUCCESS.name()))
@@ -159,7 +159,7 @@ public class InternetRequest {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
                 status = REQUEST_STATUS.EXECUTED;
                 setResponse(new InternetResponse(responseBody, statusCode, InternetResponse.RESPONSE_STATUS.FAILURE, headers));
                 if (!isIgnored && registeredCallbacks.contains(CALLBACK.ON_FAILURE.name()))
@@ -246,13 +246,13 @@ public class InternetRequest {
         fileEntity = null;
     }
 
-    public Header[] getHeaders() {
+    public cz.msebera.android.httpclient.Header[] getHeaders() {
         if (headers == null || headers.size() == 0)
             return null;
-        Header[] returnedHeaders = new Header[headers.keySet().size()];
+        cz.msebera.android.httpclient.Header[] returnedHeaders = new cz.msebera.android.httpclient.Header[headers.keySet().size()];
         int i = 0;
         for (final String key : headers.keySet()) {
-            returnedHeaders[i] = new Header() {
+            returnedHeaders[i] = new cz.msebera.android.httpclient.Header() {
                 @Override
                 public String getName() {
                     return key;
@@ -264,8 +264,8 @@ public class InternetRequest {
                 }
 
                 @Override
-                public HeaderElement[] getElements() throws ParseException {
-                    return new HeaderElement[0];
+                public cz.msebera.android.httpclient.HeaderElement[] getElements() throws ParseException {
+                    return new cz.msebera.android.httpclient.HeaderElement[0];
                 }
             };
             i++;

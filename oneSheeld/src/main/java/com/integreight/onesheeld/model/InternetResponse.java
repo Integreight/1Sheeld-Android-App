@@ -37,7 +37,7 @@ public class InternetResponse implements Parcelable, Serializable {
         headers = null;
     }
 
-    public InternetResponse(byte[] responseBody, int statusCode, RESPONSE_STATUS status, Header[] headers) {
+    public InternetResponse(byte[] responseBody, int statusCode, RESPONSE_STATUS status, cz.msebera.android.httpclient.Header[] headers) {
         this();
         this.responseBody = responseBody != null ? responseBody : new byte[0];
         this.statusCode = statusCode;
@@ -185,10 +185,10 @@ public class InternetResponse implements Parcelable, Serializable {
         return headers;
     }
 
-    public void setHeaders(Header[] headers1) {
+    public void setHeaders(cz.msebera.android.httpclient.Header[] headers1) {
         this.headers = new Hashtable<>();
         if (headers1 != null) {
-            for (Header header : headers1) {
+            for (cz.msebera.android.httpclient.Header header : headers1) {
                 headers.put(header.getName(), header.getValue());
             }
         }
