@@ -16,13 +16,13 @@ repositories {
 
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 22
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
-        targetSdkVersion 9
+        targetSdkVersion 22
     }
 
     buildTypes.all{
@@ -49,8 +49,8 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
-    compile 'com.google.android.gms:play-services-analytics:7.5.0'
-    compile 'com.google.android.gms:play-services-location:7.5.0'
+    compile 'com.google.android.gms:play-services-analytics:8.1.0'
+    compile 'com.google.android.gms:play-services-location:8.1.0'
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
