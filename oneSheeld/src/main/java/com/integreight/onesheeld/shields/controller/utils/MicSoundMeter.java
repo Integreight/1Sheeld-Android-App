@@ -1,10 +1,13 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
 import android.media.MediaRecorder;
+import android.os.Environment;
 
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class MicSoundMeter {
     // static final private double EMA_FILTER = 0.6;
@@ -12,6 +15,7 @@ public class MicSoundMeter {
 
     private MediaRecorder mRecorder = null;
     private double mEMA = 0.0;
+    private File folder = null;
     private static MicSoundMeter thisInstance;
     boolean isCanceled = false;
     boolean isRecording = false;
@@ -27,7 +31,11 @@ public class MicSoundMeter {
         return thisInstance;
     }
 
-    public boolean start() {
+    public boolean start(boolean record){
+        return start(record,null);
+    }
+
+    public boolean start(boolean record,String fileName) {
         if (isCanceled | initialStart) {
             initialStart = false;
             isCanceled = false;
@@ -36,7 +44,19 @@ public class MicSoundMeter {
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setOutputFile("/dev/null");
+            if (record) {
+                folder = new File(
+                        Environment.getExternalStorageDirectory()
+                                + "/OneSheeld/Mic");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                mRecorder.setOutputFile(Environment
+                        .getExternalStorageDirectory()
+                        + "/OneSheeld/Mic/"+((fileName!=null)? fileName : ("Mic_" + String.valueOf(new Date().getTime()))) + ".amr/");
+            }else
+                mRecorder.setOutputFile("/dev/null");
+
             try {
                 mRecorder.prepare();
                 mRecorder.start();
@@ -63,6 +83,7 @@ public class MicSoundMeter {
                     mRecorder.reset();
                     mRecorder.release();
                     mRecorder = null;
+                    isRecording = false;
                     isCanceled = true;
                 }
             } catch (Exception e) {

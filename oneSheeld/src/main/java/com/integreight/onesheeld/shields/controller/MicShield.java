@@ -21,6 +21,11 @@ public class MicShield extends ControllerParent<MicShield> {
     public static final byte MIC_VALUE = 0x01;
     boolean initialRequest = true;
     boolean success = true;
+    private boolean isRecording = false;
+    private String fileName;
+
+    private static final byte MIC_START_RECORD = 0x01;
+    private static final byte MIC_STOP_RECORD = 0x02;
 
     // private int counter = 0;
 
@@ -78,7 +83,33 @@ public class MicShield extends ControllerParent<MicShield> {
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         // TODO Auto-generated method stub
-
+        if (frame.getShieldId() == UIShield.MIC_SHIELD.getId()){
+            switch (frame.getFunctionId()){
+                case MIC_START_RECORD:
+                    if (!isRecording) {
+                        handler.removeCallbacks(processMic);
+                        MicSoundMeter.getInstance().stop();
+                        if (frame.getArguments().isEmpty()) {
+                            MicSoundMeter.getInstance().start(true);
+                        } else {
+                            fileName = frame.getArgumentAsString(0);
+                            MicSoundMeter.getInstance().start(true, fileName);
+                        }
+                        handler.post(processMic);
+                        isRecording = true;
+                    }
+                    break;
+                case MIC_STOP_RECORD:
+                    if (isRecording) {
+                        handler.removeCallbacks(processMic);
+                        MicSoundMeter.getInstance().stop();
+                        MicSoundMeter.getInstance().start(false);
+                        handler.post(processMic);
+                        isRecording = false;
+                    }
+                    break;
+            }
+        }
     }
 
     @Override
@@ -87,7 +118,7 @@ public class MicShield extends ControllerParent<MicShield> {
     }
 
     public void startMic(boolean isToastable) {
-        final boolean isRecording = MicSoundMeter.getInstance().start();
+        final boolean isRecording = MicSoundMeter.getInstance().start(false);
         if (!isRecording)
             success = false;
         handler = new Handler();
