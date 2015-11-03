@@ -348,6 +348,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private void showProgress() {
         deviceListCont.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.VISIBLE);
+        smallLoading.setVisibility(View.INVISIBLE);
         scanOrTryAgain.setVisibility(View.INVISIBLE);
     }
 
