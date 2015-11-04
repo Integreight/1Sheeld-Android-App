@@ -905,8 +905,7 @@ public class ArduinoFirmata {
                     }
                     byte instanceId = readByteFromUartBuffer();
                     byte functionId = readByteFromUartBuffer();
-                    ShieldFrame frame = new ShieldFrame(shieldId, instanceId,
-                            functionId);
+                    ShieldFrame frame = new ShieldFrame(shieldId,functionId);
                     int argumentsNumber = readByteFromUartBuffer() & 0xFF;
                     int argumentsNumberVerification = (255 - (readByteFromUartBuffer() & 0xFF));
                     if (argumentsNumber != argumentsNumberVerification) {
