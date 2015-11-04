@@ -109,7 +109,7 @@ public class MicShield extends ControllerParent<MicShield> {
                         }
                         MicSoundMeter.getInstance().start(true, fileName);
                         if (eventHandler != null)
-                            eventHandler.getState("Recording");
+                            eventHandler.getState("Recording..");
                         handler.post(processMic);
                         isRecording = true;
                     }
@@ -177,9 +177,7 @@ public class MicShield extends ControllerParent<MicShield> {
                 .getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(1000);
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-        MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        String mimeFileType = mimeTypeMap.getMimeTypeFromExtension(".mp3");
-        notificationIntent.setDataAndType(Uri.fromFile(new File(filePath + fileName + ".mp3/")), mimeFileType);
+        notificationIntent.setDataAndType(Uri.fromFile(new File(filePath + fileName + ".mp3/")), "audio/*");
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent intent = PendingIntent.getActivity(activity, 0,
                 notificationIntent, 0);
