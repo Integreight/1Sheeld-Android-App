@@ -132,8 +132,8 @@ public class ShieldFrame {
         for (byte[] argument : arguments) {
             totalSizeOfArguments += argument.length;
         }
-        int randomValue= (int) Math.round((Math.random()*16));
-        randomValue=randomValue|((16-randomValue)<<4);
+        int randomValue= (int) Math.round((Math.random()*15));
+        randomValue=randomValue|((15-randomValue)<<4);
         int frameSize = 7 + arguments.size() * 2 + totalSizeOfArguments;// 6:start,
         // shield
         // id,
