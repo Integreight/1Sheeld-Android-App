@@ -213,7 +213,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers,
+                    public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers,
                                           String responseBody, Throwable e) {
                         ((OneSheeldApplication) activity.getApplication())
                                 .setMajorVersion(-1);
@@ -223,7 +223,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     }
 
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                         try {
                             System.err.println(response);
                             ((OneSheeldApplication) activity.getApplication())
@@ -261,7 +261,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                         new BinaryHttpResponseHandler(new String[]{
                                 "application/octet-stream", "text/plain"}) {
                             @Override
-                            public void onSuccess(int statusCode, Header[] headers, byte[] binaryData) {
+                            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] binaryData) {
                                 FirmwareUpdatingPopup.this.setCancelable(false);
                                 activity.getThisApplication().getAppFirmata()
                                         .prepareAppForSendingFirmware();
@@ -279,7 +279,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 
                             @Override
                             public void onFailure(int statusCode,
-                                                  Header[] headers, byte[] binaryData,
+                                                  cz.msebera.android.httpclient.Header[] headers, byte[] binaryData,
                                                   Throwable error) {
                                 changeSlogan("Error Downloading!", COLOR.RED);
                                 setUpgrade();
@@ -293,9 +293,10 @@ public class FirmwareUpdatingPopup extends Dialog {
                                                 .build());
                             }
 
+
                             @Override
-                            public void onProgress(int bytesWritten,
-                                                   int totalSize) {
+                            public void onProgress(long bytesWritten,
+                                                   long totalSize) {
                                 super.onProgress(bytesWritten, totalSize);
                             }
                         });
