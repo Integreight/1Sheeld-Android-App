@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,8 +15,12 @@ import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener.PhoneRingingEventHandler;
 import com.integreight.onesheeld.utils.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PhoneShield extends ControllerParent<PhoneShield> {
     private PhoneEventHandler eventHandler;
+    private List<String> requiredPermissions = new ArrayList<String>();
     private static final byte CALL_METHOD_ID = (byte) 0x01;
     private PhoneCallStateListener phoneListener;
     private TelephonyManager telephonyManager;
@@ -44,6 +49,8 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
+        requiredPermissions.add(Manifest.permission.CALL_PHONE);
+        requiredPermissions.add(Manifest.permission.READ_PHONE_STATE);
         TelephonyManager tm = (TelephonyManager) getApplication()
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
@@ -54,9 +61,15 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
                     activity.showToast("Device doesn't support Calling functionality !");
             }
         } else {
-            // calling functionality
-            if (this.selectionAction != null) {
-                this.selectionAction.onSuccess();
+            if (checkForPermissions(requiredPermissions)) {
+                // calling functionality
+                if (this.selectionAction != null) {
+                    this.selectionAction.onSuccess();
+                }
+            }else{
+                if (this.selectionAction != null) {
+                    this.selectionAction.onFailure();
+                }
             }
         }
 

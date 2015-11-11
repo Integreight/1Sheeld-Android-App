@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -24,11 +25,15 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SendFrameHandler;
 import com.integreight.onesheeld.utils.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class GpsShield extends ControllerParent<GpsShield> implements
         LocationListener, GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, SendFrameHandler {
     public static final byte GPS_VALUE = 0x01;
     private GpsEventHandler eventHandler;
+    private List<String> requiredPermissions = new ArrayList<String>();
     private LocationRequest mLocationRequest;
     private GoogleApiClient mLocationClient;
     private boolean mUpdatesRequested;
@@ -64,6 +69,20 @@ public class GpsShield extends ControllerParent<GpsShield> implements
                 startGps();
         }
         return super.init(tag);
+    }
+
+    @Override
+    public ControllerParent<GpsShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
+        this.selectionAction =selectionAction;
+        requiredPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (checkForPermissions(requiredPermissions)) {
+            if (selectionAction != null)
+                selectionAction.onSuccess();
+        }else {
+            if (selectionAction != null)
+                selectionAction.onFailure();
+        }
+        return super.invalidate(selectionAction, isToastable);
     }
 
     public void setGpsEventHandler(GpsEventHandler eventHandler) {

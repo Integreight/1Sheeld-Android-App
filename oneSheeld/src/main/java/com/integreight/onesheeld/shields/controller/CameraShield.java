@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,7 +24,9 @@ import com.integreight.onesheeld.utils.Log;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -46,6 +49,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
     private boolean isCameraBound;
     private boolean isCameraCapturing = false;
     private CameraEventHandler eventHandler;
+    private List<String> requiredPermissions = new ArrayList<String>();
     private boolean hasFrontCamera = false;
     private boolean isChangingPreview = false;
     private Messenger mMessenger = new Messenger(new Handler() {
@@ -142,11 +146,22 @@ public class CameraShield extends ControllerParent<CameraShield> {
             if (isToastable)
                 activity.showToast("Camera is unavailable, maybe it's used by another application !");
         } else {
-            if (selectionAction != null)
-                selectionAction.onSuccess();
-            hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
-            bindService();
-            UIHandler = new Handler();
+                requiredPermissions.add(Manifest.permission.CAMERA);
+                requiredPermissions.add(Manifest.permission.FLASHLIGHT);
+                requiredPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                requiredPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (checkForPermissions(requiredPermissions)) {
+                if (selectionAction != null)
+                    selectionAction.onSuccess();
+                hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
+                bindService();
+                UIHandler = new Handler();
+            }else {
+                if (this.selectionAction != null) {
+                    this.selectionAction.onFailure();
+                }
+                bindService();
+            }
         }
         return super.invalidate(selectionAction, isToastable);
     }

@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -21,6 +22,8 @@ import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ColorDetectionShield extends
         ControllerParent<ColorDetectionShield> {
@@ -38,6 +41,7 @@ public class ColorDetectionShield extends
     private static final byte AVERAGE_COLOR = (byte) 0x02;
     private static final byte SET_PALLETE = (byte) 0x01;
     private ColorDetectionEventHandler colorEventHandler;
+    private List<String> requiredPermissions = new ArrayList<String>();
     boolean isCameraBound = false;
     private Messenger mService;
     public static final int UNBIND_COLOR_DETECTOR = 2, SET_COLOR_DETECTION_OPERATION = 10, SET_COLOR_DETECTION_TYPE = 11, SET_COLOR_PATCH_SIZE = 12;
@@ -63,14 +67,20 @@ public class ColorDetectionShield extends
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
+        requiredPermissions.add(Manifest.permission.CAMERA);
         if (!CameraUtils.checkCameraHardware(getApplication().getApplicationContext())) {
             if (selectionAction != null)
                 selectionAction.onFailure();
             if (isToastable)
                 activity.showToast("Camera is unavailable, maybe it's used by another application !");
         } else {
-            if (selectionAction != null)
-                selectionAction.onSuccess();
+            if (checkForPermissions(requiredPermissions)) {
+                if (selectionAction != null)
+                    selectionAction.onSuccess();
+            }else {
+                if (selectionAction != null)
+                    selectionAction.onFailure();
+            }
             getApplication().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
         }
         return super.invalidate(selectionAction, isToastable);

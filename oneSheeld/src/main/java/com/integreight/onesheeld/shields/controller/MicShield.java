@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Handler;
@@ -10,11 +11,15 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.MicSoundMeter;
 import com.integreight.onesheeld.utils.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MicShield extends ControllerParent<MicShield> {
     Handler handler;
     int PERIOD = 100;
     boolean isHandlerLive = false;
     private MicEventHandler eventHandler;
+    private List<String> requiredPermissions = new ArrayList<String>();
     private double ampl;
     boolean isResumed = false;
     private ShieldFrame frame;
@@ -67,8 +72,9 @@ public class MicShield extends ControllerParent<MicShield> {
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
+        requiredPermissions.add(Manifest.permission.RECORD_AUDIO);
         if (activity.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_MICROPHONE))
+                PackageManager.FEATURE_MICROPHONE) && checkForPermissions(requiredPermissions))
             startMic(isToastable);
         else
             this.selectionAction.onFailure();
@@ -91,6 +97,7 @@ public class MicShield extends ControllerParent<MicShield> {
         if (!isRecording)
             success = false;
         handler = new Handler();
+
         if (selectionAction != null) {
             if (success)
                 selectionAction.onSuccess();
