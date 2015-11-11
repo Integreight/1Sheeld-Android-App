@@ -1,13 +1,16 @@
 package com.integreight.onesheeld;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -20,10 +23,13 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
 import android.view.Window;
@@ -64,119 +70,13 @@ import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends FragmentActivity {
-    public AppSlidingLeftMenu appSlidingMenu;
-    public boolean isForground = false;
-    private onConnectedToBluetooth onConnectToBlueTooth = null;
+    public static final int PREMISSION_REQUEST_CODE = 1;
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
-    private boolean isBackPressed = false;
-
-    private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
-
-    public OneSheeldApplication getThisApplication() {
-        return (OneSheeldApplication) getApplication();
-    }
-
-    //    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
-        }
-        setContentView(R.layout.one_sheeld_main);
-        initLooperThread();
-        if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
-//            if (savedInstance != null) {
-//                int count = getSupportFragmentManager().getBackStackEntryCount();
-//                while (count > 0) {
-//                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(count)).commit();
-//                    count --;
-//                }
-//            }
-            replaceCurrentFragment(R.id.appTransitionsContainer,
-                    SheeldsList.getInstance(), "base", true, false);
-        }
-        postConfigChange();
-        resetSlidingMenu();
-        if (getThisApplication().getAppFirmata() != null) {
-            getThisApplication().getAppFirmata()
-                    .addFirmwareVersionQueryHandler(versionChangingHandler);
-            getThisApplication().getAppFirmata()
-                    .addArduinoLibraryVersionQueryHandler(
-                            arduinoLibraryVersionHandler);
-        }
-        thisInstance = this;
-        if (getThisApplication().getShowTutAgain()
-                && getThisApplication().getTutShownTimes() < 6)
-            startActivity(new Intent(MainActivity.this, Tutorial.class));
-        AppRate.with(this)
-                .setInstallDays(7)
-                .setLaunchTimes(5)
-                .setRemindInterval(2)
-                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
-                    @Override
-                    public void onClickButton(int which) {
-                        Map<String, String> hit = null;
-                        switch (which) {
-                            case Dialog.BUTTON_NEGATIVE:
-                                hit = new HitBuilders.EventBuilder()
-                                        .setCategory("App Rating Dialog")
-                                        .setAction("No")
-                                        .build();
-                                break;
-                            case Dialog.BUTTON_NEUTRAL:
-                                hit = new HitBuilders.EventBuilder()
-                                        .setCategory("App Rating Dialog")
-                                        .setAction("Later")
-                                        .build();
-                                break;
-                            case Dialog.BUTTON_POSITIVE:
-                                hit = new HitBuilders.EventBuilder()
-                                        .setCategory("App Rating Dialog")
-                                        .setAction("Yes")
-                                        .build();
-                                break;
-                        }
-                        if (hit != null) getThisApplication()
-                                .getTracker()
-                                .send(hit);
-                    }
-                })
-                .monitor();
-    }
-
+    public AppSlidingLeftMenu appSlidingMenu;
+    public boolean isForground = false;
     public Thread looperThread;
     public Handler backgroundThreadHandler;
-    private Looper backgroundHandlerLooper;
-
-    private void stopLooperThread() {
-        if (looperThread != null && looperThread.isAlive()) {
-            looperThread.interrupt();
-            backgroundHandlerLooper.quit();
-            looperThread = null;
-        }
-    }
-
-    public void initLooperThread() {
-        stopLooperThread();
-        looperThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                Looper.prepare();
-                backgroundHandlerLooper = Looper.myLooper();
-                backgroundThreadHandler = new Handler();
-                Looper.loop();
-            }
-        });
-        looperThread.start();
-    }
-
     Handler versionHandling = new Handler();
     FirmwareVersionQueryHandler versionChangingHandler = new FirmwareVersionQueryHandler() {
         ValidationPopup popub;
@@ -340,14 +240,119 @@ public class MainActivity extends FragmentActivity {
             });
         }
     };
+    boolean isConfigChanged = false;
+    long pausingTime = 0;
+    private onConnectedToBluetooth onConnectToBlueTooth = null;
+    private boolean isBackPressed = false;
+    private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
+    private Looper backgroundHandlerLooper;
+    private BackOnconnectionLostHandler backOnConnectionLostHandler;
+
+    public OneSheeldApplication getThisApplication() {
+        return (OneSheeldApplication) getApplication();
+    }
+
+    //    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
+        }
+        setContentView(R.layout.one_sheeld_main);
+        initLooperThread();
+        if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
+//            if (savedInstance != null) {
+//                int count = getSupportFragmentManager().getBackStackEntryCount();
+//                while (count > 0) {
+//                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(count)).commit();
+//                    count --;
+//                }
+//            }
+            replaceCurrentFragment(R.id.appTransitionsContainer,
+                    SheeldsList.getInstance(), "base", true, false);
+        }
+        postConfigChange();
+        resetSlidingMenu();
+        if (getThisApplication().getAppFirmata() != null) {
+            getThisApplication().getAppFirmata()
+                    .addFirmwareVersionQueryHandler(versionChangingHandler);
+            getThisApplication().getAppFirmata()
+                    .addArduinoLibraryVersionQueryHandler(
+                            arduinoLibraryVersionHandler);
+        }
+        thisInstance = this;
+        if (getThisApplication().getShowTutAgain()
+                && getThisApplication().getTutShownTimes() < 6)
+            startActivity(new Intent(MainActivity.this, Tutorial.class));
+        AppRate.with(this)
+                .setInstallDays(7)
+                .setLaunchTimes(5)
+                .setRemindInterval(2)
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Map<String, String> hit = null;
+                        switch (which) {
+                            case Dialog.BUTTON_NEGATIVE:
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("No")
+                                        .build();
+                                break;
+                            case Dialog.BUTTON_NEUTRAL:
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("Later")
+                                        .build();
+                                break;
+                            case Dialog.BUTTON_POSITIVE:
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("Yes")
+                                        .build();
+                                break;
+                        }
+                        if (hit != null) getThisApplication()
+                                .getTracker()
+                                .send(hit);
+                    }
+                })
+                .monitor();
+    }
+
+    private void stopLooperThread() {
+        if (looperThread != null && looperThread.isAlive()) {
+            looperThread.interrupt();
+            backgroundHandlerLooper.quit();
+            looperThread = null;
+        }
+    }
+
+    public void initLooperThread() {
+        stopLooperThread();
+        looperThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Looper.prepare();
+                backgroundHandlerLooper = Looper.myLooper();
+                backgroundThreadHandler = new Handler();
+                Looper.loop();
+            }
+        });
+        looperThread.start();
+    }
 
     @Override
     protected void onResume() {
         super.onResume();
         thisInstance = this;
     }
-
-    private BackOnconnectionLostHandler backOnConnectionLostHandler;
 
     public BackOnconnectionLostHandler getOnConnectionLostHandler() {
         if (backOnConnectionLostHandler == null) {
@@ -382,11 +387,6 @@ public class MainActivity extends FragmentActivity {
             };
         }
         return backOnConnectionLostHandler;
-    }
-
-    public static class BackOnconnectionLostHandler extends Handler {
-        public boolean canInvokeOnCloseConnection = true,
-                connectionLost = false;
     }
 
     @Override
@@ -473,8 +473,6 @@ public class MainActivity extends FragmentActivity {
         finish();
         destroyIt();
     }
-
-    boolean isConfigChanged = false;
 
     private void preConfigChange() {
         Enumeration<String> enumKey = ((OneSheeldApplication)
@@ -621,15 +619,66 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(this, R.string.bt_not_enabled_leaving,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    if (onConnectToBlueTooth != null
-                            && ArduinoConnectivityPopup.isOpened)
-                        onConnectToBlueTooth.onConnect();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        if (onConnectToBlueTooth != null
+                                && ArduinoConnectivityPopup.isOpened)
+                            onConnectToBlueTooth.onConnect();
+                    } else {
+                        checkAndAskForLocationPermission();
+                    }
                 }
                 break;
             default:
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Boolean checkForLocationPermission() {
+        return (ContextCompat.checkSelfPermission(thisInstance,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public void checkAndAskForLocationPermission() {
+        if (ContextCompat.checkSelfPermission(thisInstance,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(thisInstance,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                AlertDialog.Builder locationPremissionExplanationDialog = new AlertDialog.Builder(thisInstance);
+                locationPremissionExplanationDialog.setMessage("Bluetooth scan needs location premission.").setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(thisInstance,
+                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                MainActivity.PREMISSION_REQUEST_CODE);
+                    }
+                }).setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showToast("Location permission denied.");
+                    }
+                }).create();
+                locationPremissionExplanationDialog.show();
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(thisInstance,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.LOCATION_HARDWARE},
+                        MainActivity.PREMISSION_REQUEST_CODE);
+            }
+        } else {
+            if (onConnectToBlueTooth != null
+                    && ArduinoConnectivityPopup.isOpened)
+                onConnectToBlueTooth.onConnect();
+        }
     }
 
     @Override
@@ -668,8 +717,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
-
-    long pausingTime = 0;
 
     @Override
     protected void onPause() {
@@ -783,7 +830,63 @@ public class MainActivity extends FragmentActivity {
             onChangeSlidingLockListeners.add(listner);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PREMISSION_REQUEST_CODE) {
+            switch (permissions[0]) {
+                case Manifest.permission.ACCESS_FINE_LOCATION:
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        if (onConnectToBlueTooth != null
+                                && ArduinoConnectivityPopup.isOpened)
+                            onConnectToBlueTooth.onConnect();
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+                                showToast("Location permission turned off.");
+                            else
+                                showToast("Please turn on location permission.");
+                        }
+                    }
+                    break;
+                default:
+                    Boolean isEnabled = true;
+                    for (int permissionsCount = 0; permissionsCount < grantResults.length; permissionsCount++) {
+                        if (grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                            isEnabled = false;
+                    }
+                    if (isEnabled) {
+                        showToast("Shield selection on.");
+                        // permission was granted, yay! Do the
+                        // contacts-related task you need to do.
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            Boolean isShouldShowRequestPermissionRationale = true;
+                            for (int permissionsCount = 0; permissionsCount < permissions.length; permissionsCount++) {
+                                if (shouldShowRequestPermissionRationale(permissions[permissionsCount]) && grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                                    isShouldShowRequestPermissionRationale = false;
+                            }
+                            if (!isShouldShowRequestPermissionRationale)
+                                showToast("Current shield needs premission.");
+                            else
+                                showToast("Your device ban this shield.");
+                        } else {
+                            showToast("Current shield needs premission.");
+                        }
+                    }
+                    break;
+            }
+            return;
+        }
+    }
+
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
+    }
+
+    public static class BackOnconnectionLostHandler extends Handler {
+        public boolean canInvokeOnCloseConnection = true,
+                connectionLost = false;
     }
 }

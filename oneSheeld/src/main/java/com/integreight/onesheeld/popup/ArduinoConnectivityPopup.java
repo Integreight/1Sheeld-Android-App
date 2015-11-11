@@ -312,15 +312,31 @@ public class ArduinoConnectivityPopup extends Dialog {
                     activity.startActivityForResult(enableIntent,
                             SheeldsList.REQUEST_ENABLE_BT);
                 } else {
-                    backPressed = false;
-                    if (mBtAdapter != null && mBtAdapter.isDiscovering())
-                        mBtAdapter.cancelDiscovery();
-                    showProgress();
-                    changeSlogan(
-                            activity.getResources().getString(
-                                    R.string.searching), COLOR.RED);
-                    scanDevices();
-                    doDiscovery();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        backPressed = false;
+                        if (mBtAdapter != null && mBtAdapter.isDiscovering())
+                            mBtAdapter.cancelDiscovery();
+                        showProgress();
+                        changeSlogan(
+                                activity.getResources().getString(
+                                        R.string.searching), COLOR.RED);
+                        scanDevices();
+                        doDiscovery();
+                    }else{
+                        if(((MainActivity) activity).checkForLocationPermission()){
+                            backPressed = false;
+                            if (mBtAdapter != null && mBtAdapter.isDiscovering())
+                                mBtAdapter.cancelDiscovery();
+                            showProgress();
+                            changeSlogan(
+                                    activity.getResources().getString(
+                                            R.string.searching), COLOR.RED);
+                            scanDevices();
+                            doDiscovery();
+                        }else{
+                            ((MainActivity) activity).checkAndAskForLocationPermission();
+                        }
+                    }
                 }
             }
         });
