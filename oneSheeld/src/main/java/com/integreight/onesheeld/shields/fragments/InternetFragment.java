@@ -19,7 +19,6 @@ import com.integreight.onesheeld.shields.controller.utils.InternetResponsePopup;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
