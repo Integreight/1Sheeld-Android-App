@@ -128,6 +128,7 @@ public class OneSheeldApplication extends Application {
         appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
         setAppFirmata(new ArduinoFirmata(getApplicationContext()));
         parseSocialKeys();
+        Parse.enableLocalDatastore(this);
         Parse.initialize(this, ApiObjects.parse.get("app_id"),
                 ApiObjects.parse.get("client_id"));
         ParseInstallation.getCurrentInstallation().saveInBackground();

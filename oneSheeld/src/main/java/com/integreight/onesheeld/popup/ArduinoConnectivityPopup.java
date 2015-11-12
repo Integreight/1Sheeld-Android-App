@@ -226,17 +226,17 @@ public class ArduinoConnectivityPopup extends Dialog {
                     }
 
                     @Override
-                    public void onFailure(int arg0, Header[] arg1, String arg2,
-                                          Throwable arg3) {
+                    public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+
                         ((OneSheeldApplication) activity.getApplication())
                                 .setMajorVersion(-1);
                         ((OneSheeldApplication) activity.getApplication())
                                 .setMinorVersion(-1);
-                        super.onFailure(arg0, arg1, arg2, arg3);
+                                super.onFailure(statusCode, headers, responseString, throwable);
                     }
 
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                         try {
                             System.err.println(response);
                             ((OneSheeldApplication) activity.getApplication())
