@@ -52,18 +52,22 @@ dependencies {
     compile project(':pullToRefreshlibrary')
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
+    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:8.1.0'
     compile 'com.google.android.gms:play-services-location:8.1.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     compile 'com.github.hotchemi:android-rate:0.5.0'
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
-    compile files('libs/commons-io-2.4.jar')
+    compile 'com.parse.bolts:bolts-android:1.2.0'
+    compile 'com.parse:parse-android:1.11.0'
+    compile 'org.twitter4j:twitter4j-core:4.0.4'
+    compile 'org.twitter4j:twitter4j-async:4.0.4'
+    compile 'org.twitter4j:twitter4j-stream:4.0.4'
 }
 
 def isCrashlyticsPropertiesAvailable() {
