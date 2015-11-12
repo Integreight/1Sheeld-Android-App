@@ -19,12 +19,6 @@ import com.integreight.onesheeld.shields.controller.utils.FoursquareError;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,6 +28,13 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URLEncoder;
+
+import cz.msebera.android.httpclient.HttpEntity;
+import cz.msebera.android.httpclient.HttpResponse;
+import cz.msebera.android.httpclient.HttpStatus;
+import cz.msebera.android.httpclient.client.HttpClient;
+import cz.msebera.android.httpclient.client.methods.HttpPost;
+import cz.msebera.android.httpclient.impl.client.DefaultHttpClient;
 
 public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
