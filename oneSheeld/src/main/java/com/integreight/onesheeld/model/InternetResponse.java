@@ -7,7 +7,6 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.integreight.onesheeld.utils.BitsUtils;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

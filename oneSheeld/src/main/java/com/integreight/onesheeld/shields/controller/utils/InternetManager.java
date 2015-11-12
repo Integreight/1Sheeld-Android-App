@@ -14,16 +14,14 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.Header;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import cz.msebera.android.httpclient.client.params.ClientPNames;
 
 /**
  * Created by Saad on 1/26/15.
