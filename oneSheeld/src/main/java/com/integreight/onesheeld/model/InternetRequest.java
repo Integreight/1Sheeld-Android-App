@@ -9,9 +9,6 @@ import com.loopj.android.http.RequestParams;
 import com.snappydb.SnappydbException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.Header;
-import org.apache.http.HeaderElement;
-import org.apache.http.ParseException;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +16,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import cz.msebera.android.httpclient.HeaderElement;
+import cz.msebera.android.httpclient.ParseException;
 
 /**
  * Created by Saad on 1/26/15.
