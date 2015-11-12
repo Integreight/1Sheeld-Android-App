@@ -59,7 +59,7 @@ dependencies {
     compile project(':pullToRefreshlibrary')
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
-    compile 'com.android.support:multidex:1.0.0'
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:8.1.0'
     compile 'com.google.android.gms:play-services-location:8.1.0'
