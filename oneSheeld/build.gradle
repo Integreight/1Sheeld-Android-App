@@ -16,13 +16,13 @@ repositories {
 
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 14
-        targetSdkVersion 14
+        targetSdkVersion 23
 
 
         // Enabling multidex support.
@@ -52,6 +52,9 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    useLibrary 'org.apache.http.legacy'
+
 }
 
 dependencies {
@@ -59,6 +62,7 @@ dependencies {
     compile project(':pullToRefreshlibrary')
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
+    compile 'com.android.support:support-v13:23.1.0'
     compile 'com.android.support:multidex:1.0.0'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:8.1.0'

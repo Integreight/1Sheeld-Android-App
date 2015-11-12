@@ -43,7 +43,6 @@ import com.integreight.onesheeld.utils.TimeOut;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
