@@ -26,7 +26,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
