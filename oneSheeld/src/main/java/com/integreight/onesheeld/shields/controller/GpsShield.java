@@ -33,7 +33,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         GoogleApiClient.OnConnectionFailedListener, SendFrameHandler {
     public static final byte GPS_VALUE = 0x01;
     private GpsEventHandler eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
     private LocationRequest mLocationRequest;
     private GoogleApiClient mLocationClient;
     private boolean mUpdatesRequested;
@@ -74,8 +73,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     @Override
     public ControllerParent<GpsShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
         this.selectionAction =selectionAction;
-        requiredPermissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
-        if (checkForPermissions(requiredPermissions)) {
+        addRequiredPremission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (checkForPermissions()) {
             if (selectionAction != null)
                 selectionAction.onSuccess();
         }else {

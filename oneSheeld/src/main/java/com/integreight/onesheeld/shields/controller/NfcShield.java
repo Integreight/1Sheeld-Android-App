@@ -60,7 +60,6 @@ public class NfcShield extends ControllerParent<NfcShield> {
     private static final byte RECORD_NOT_FOUND = 0x05;
 
     private NFCEventHandler eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
 
     private Tag currentTag;
     private boolean isNdef_Flag = false;
@@ -91,15 +90,9 @@ public class NfcShield extends ControllerParent<NfcShield> {
 
     public void registerNFCListener(boolean isToastable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
-            requiredPermissions.add(Manifest.permission.NFC);
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             if (nfcAdapter != null && nfcAdapter.isEnabled()) {
-                if (checkForPermissions(requiredPermissions)) {
-                    setupForegroundDispatch();
-                    selectionAction.onSuccess();
-                }else {
-                    selectionAction.onFailure();
-                }
+                setupForegroundDispatch();
             } else {
                 if (isToastable) {
                     activity.showToast(nfcAdapter == null ? "Device doesn't support NFC!" : "Please, Enable Your NFC");

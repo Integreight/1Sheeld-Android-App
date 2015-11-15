@@ -20,7 +20,6 @@ import java.util.List;
 
 public class PhoneShield extends ControllerParent<PhoneShield> {
     private PhoneEventHandler eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
     private static final byte CALL_METHOD_ID = (byte) 0x01;
     private PhoneCallStateListener phoneListener;
     private TelephonyManager telephonyManager;
@@ -49,8 +48,8 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
-        requiredPermissions.add(Manifest.permission.CALL_PHONE);
-        requiredPermissions.add(Manifest.permission.READ_PHONE_STATE);
+        addRequiredPremission(Manifest.permission.CALL_PHONE);
+        addRequiredPremission(Manifest.permission.READ_PHONE_STATE);
         TelephonyManager tm = (TelephonyManager) getApplication()
                 .getSystemService(Context.TELEPHONY_SERVICE);
         if (tm.getPhoneType() == TelephonyManager.PHONE_TYPE_NONE) {
@@ -61,7 +60,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
                     activity.showToast("Device doesn't support Calling functionality !");
             }
         } else {
-            if (checkForPermissions(requiredPermissions)) {
+            if (checkForPermissions()) {
                 // calling functionality
                 if (this.selectionAction != null) {
                     this.selectionAction.onSuccess();

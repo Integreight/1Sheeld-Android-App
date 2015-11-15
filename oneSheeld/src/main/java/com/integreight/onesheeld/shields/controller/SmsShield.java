@@ -24,7 +24,6 @@ import java.util.List;
 
 public class SmsShield extends ControllerParent<SmsShield> {
     private SmsEventHandler eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
     private String lastSmsText;
     private String lastSmsNumber;
     private static final byte SEND_SMS_METHOD_ID = (byte) 0x01;
@@ -70,10 +69,10 @@ public class SmsShield extends ControllerParent<SmsShield> {
                     activity.showToast("Device doesn't support SMS functionality !");
             }
         } else {
-            requiredPermissions.add(Manifest.permission.READ_SMS);
-            requiredPermissions.add(Manifest.permission.SEND_SMS);
-            requiredPermissions.add(Manifest.permission.RECEIVE_SMS);
-            if (checkForPermissions(requiredPermissions)) {
+            addRequiredPremission(Manifest.permission.READ_SMS);
+            addRequiredPremission(Manifest.permission.SEND_SMS);
+            addRequiredPremission(Manifest.permission.RECEIVE_SMS);
+            if (checkForPermissions()) {
                 // calling functionality
                 if (this.selectionAction != null) {
                     this.selectionAction.onSuccess();

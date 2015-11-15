@@ -19,7 +19,6 @@ public class MicShield extends ControllerParent<MicShield> {
     int PERIOD = 100;
     boolean isHandlerLive = false;
     private MicEventHandler eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
     private double ampl;
     boolean isResumed = false;
     private ShieldFrame frame;
@@ -72,9 +71,9 @@ public class MicShield extends ControllerParent<MicShield> {
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
-        requiredPermissions.add(Manifest.permission.RECORD_AUDIO);
+        addRequiredPremission(Manifest.permission.RECORD_AUDIO);
         if (activity.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_MICROPHONE) && checkForPermissions(requiredPermissions))
+                PackageManager.FEATURE_MICROPHONE) && checkForPermissions())
             startMic(isToastable);
         else
             this.selectionAction.onFailure();

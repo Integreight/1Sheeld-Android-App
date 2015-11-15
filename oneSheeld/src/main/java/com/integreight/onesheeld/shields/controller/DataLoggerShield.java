@@ -57,7 +57,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
             STOPPED_LOGGING = 2;
     public int currentStatus = READ_FOR_LOGGING;
     private DataLoggerListener eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
+
 
     public boolean isLoggingStarted() {
         return isStarted;
@@ -85,9 +85,9 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
     @Override
     public ControllerParent<DataLoggerShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
         this.selectionAction =selectionAction;
-        requiredPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        requiredPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (checkForPermissions(requiredPermissions)) {
+        addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkForPermissions()) {
             if (selectionAction != null)
                 selectionAction.onSuccess();
         }else {

@@ -40,6 +40,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     private static final byte SELECT_SHIELD = (byte) 0xFE;
     private static final byte DESELECT_SHIELD = (byte) 0xFD;
     public MainActivity activity;
+    protected List<String> requiredPermissions = new ArrayList<String>();
     // case of FALSE
     public String[][] requiredPinsNames = new String[][]{
             {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
@@ -252,6 +253,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     }
 
+    protected void addRequiredPremission(String premission){
+        requiredPermissions.add(premission);
+    }
+
     public void onSysex(byte command, byte[] data) {
         // TODO Auto-generated method stub
 
@@ -344,7 +349,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         return this;
     }
 
-    public boolean checkForPermissions(List<String> requiredPermissions) {
+    public boolean checkForPermissions() {
         for (String perm : requiredPermissions) {
             if ((ContextCompat.checkSelfPermission(activity, perm) != PackageManager.PERMISSION_GRANTED))
                 permissions.add(perm);

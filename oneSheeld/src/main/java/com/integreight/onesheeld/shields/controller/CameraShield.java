@@ -49,7 +49,6 @@ public class CameraShield extends ControllerParent<CameraShield> {
     private boolean isCameraBound;
     private boolean isCameraCapturing = false;
     private CameraEventHandler eventHandler;
-    private List<String> requiredPermissions = new ArrayList<String>();
     private boolean hasFrontCamera = false;
     private boolean isChangingPreview = false;
     private Messenger mMessenger = new Messenger(new Handler() {
@@ -146,11 +145,11 @@ public class CameraShield extends ControllerParent<CameraShield> {
             if (isToastable)
                 activity.showToast("Camera is unavailable, maybe it's used by another application !");
         } else {
-                requiredPermissions.add(Manifest.permission.CAMERA);
-                requiredPermissions.add(Manifest.permission.FLASHLIGHT);
-                requiredPermissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                requiredPermissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-            if (checkForPermissions(requiredPermissions)) {
+            addRequiredPremission(Manifest.permission.CAMERA);
+            addRequiredPremission(Manifest.permission.FLASHLIGHT);
+            addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (checkForPermissions()) {
                 if (selectionAction != null)
                     selectionAction.onSuccess();
                 hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
