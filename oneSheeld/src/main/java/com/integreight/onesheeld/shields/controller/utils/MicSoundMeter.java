@@ -1,21 +1,25 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
 import android.media.MediaRecorder;
+import android.os.Build;
+import android.os.Environment;
 
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 
 public class MicSoundMeter {
     // static final private double EMA_FILTER = 0.6;
     static final private double POWER_REFERENCE = 0.00002;
-
-    private MediaRecorder mRecorder = null;
-    private double mEMA = 0.0;
     private static MicSoundMeter thisInstance;
     boolean isCanceled = false;
     boolean isRecording = false;
     boolean initialStart = true;
+    private MediaRecorder mRecorder = null;
+    private double mEMA = 0.0;
+    private File folder = null;
 
     private MicSoundMeter() {
         // TODO Auto-generated constructor stub
@@ -27,16 +31,37 @@ public class MicSoundMeter {
         return thisInstance;
     }
 
-    public boolean start() {
+    public boolean start(boolean record) {
+        return start(record, null);
+    }
+
+    public boolean start(boolean record, String fileName) {
         if (isCanceled | initialStart) {
             initialStart = false;
             isCanceled = false;
             isRecording = false;
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.setOutputFile("/dev/null");
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1)
+                mRecorder.setAudioSamplingRate(44100);
+            else
+                mRecorder.setAudioSamplingRate(8000);
+
+            if (record) {
+                folder = new File(
+                        Environment.getExternalStorageDirectory()
+                                + "/OneSheeld/Mic");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
+                mRecorder.setOutputFile(Environment
+                        .getExternalStorageDirectory()
+                        + "/OneSheeld/Mic/" + ((fileName != null) ? fileName : ("Mic_" + String.valueOf(new Date().getTime()))) + ".mp3/");
+            } else
+                mRecorder.setOutputFile("/dev/null");
+
             try {
                 mRecorder.prepare();
                 mRecorder.start();
@@ -63,6 +88,7 @@ public class MicSoundMeter {
                     mRecorder.reset();
                     mRecorder.release();
                     mRecorder = null;
+                    isRecording = false;
                     isCanceled = true;
                 }
             } catch (Exception e) {

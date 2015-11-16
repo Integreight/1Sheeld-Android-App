@@ -1,29 +1,43 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Handler;
+import android.os.Vibrator;
+import android.support.v4.app.NotificationCompat;
+import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.MicSoundMeter;
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.File;
+import java.util.Date;
+
 public class MicShield extends ControllerParent<MicShield> {
+    public static final byte MIC_VALUE = 0x01;
+    private static final String filePath = "/OneSheeld/Mic/";
+    private static final byte MIC_START_RECORD = 0x01;
+    private static final byte MIC_STOP_RECORD = 0x02;
     Handler handler;
     int PERIOD = 100;
     boolean isHandlerLive = false;
-    private MicEventHandler eventHandler;
-    private double ampl;
     boolean isResumed = false;
-    private ShieldFrame frame;
-    public static final byte MIC_VALUE = 0x01;
     boolean initialRequest = true;
     boolean success = true;
-
-    // private int counter = 0;
-
+    private MicEventHandler eventHandler;
+    private double ampl;
+    private ShieldFrame frame;
     private final Runnable processMic = new Runnable() {
         @Override
         public void run() {
@@ -45,16 +59,20 @@ public class MicShield extends ControllerParent<MicShield> {
                 handler.postDelayed(this, PERIOD);
         }
     };
+    private boolean isRecording = false;
+
+    // private int counter = 0;
+    private String fileName;
 
     public MicShield() {
     }
 
-    public void doOnResume() {
-        isResumed = true;
-    }
-
     public MicShield(Activity activity, String tag) {
         super(activity, tag);
+    }
+
+    public void doOnResume() {
+        isResumed = true;
     }
 
     @Override
@@ -78,16 +96,52 @@ public class MicShield extends ControllerParent<MicShield> {
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         // TODO Auto-generated method stub
-
+        if (frame.getShieldId() == UIShield.MIC_SHIELD.getId()) {
+            switch (frame.getFunctionId()) {
+                case MIC_START_RECORD:
+                    if (!isRecording) {
+                        handler.removeCallbacks(processMic);
+                        MicSoundMeter.getInstance().stop();
+                        if (frame.getArguments().isEmpty()) {
+                            fileName = "Mic_" + String.valueOf(new Date().getTime());
+                        } else {
+                            fileName = frame.getArgumentAsString(0);
+                        }
+                        MicSoundMeter.getInstance().start(true, fileName);
+                        if (eventHandler != null)
+                            eventHandler.getState("Recording..");
+                        handler.post(processMic);
+                        isRecording = true;
+                    }
+                    break;
+                case MIC_STOP_RECORD:
+                    if (isRecording) {
+                        handler.removeCallbacks(processMic);
+                        MicSoundMeter.getInstance().stop();
+                        MicSoundMeter.getInstance().start(false);
+                        if (eventHandler != null)
+                            eventHandler.getState("");
+                        if (!fileName.equals(""))
+                            showNotification("Sound Recorded Successfully to " + fileName + ".mp3");
+                        fileName = "";
+                        handler.post(processMic);
+                        isRecording = false;
+                    }
+                    break;
+            }
+        }
     }
 
     @Override
     public void reset() {
         stopMic();
+        if (!fileName.equals(""))
+            showNotification("Sound Recorded Successfully to " + fileName + ".mp3");
+        fileName = "";
     }
 
     public void startMic(boolean isToastable) {
-        final boolean isRecording = MicSoundMeter.getInstance().start();
+        final boolean isRecording = MicSoundMeter.getInstance().start(false);
         if (!isRecording)
             success = false;
         handler = new Handler();
@@ -108,13 +162,42 @@ public class MicShield extends ControllerParent<MicShield> {
         MicSoundMeter.getInstance().stop();
     }
 
-    public static interface MicEventHandler {
-        void getAmplitude(Double value);
+    protected void showNotification(String notificationText) {
+        // TODO Auto-generated method stub
+        NotificationCompat.Builder build = new NotificationCompat.Builder(
+                activity);
+        build.setSmallIcon(R.drawable.white_ee_icon);
+        build.setContentTitle("Mic Shield");
+        build.setContentText(notificationText);
+        build.setTicker(notificationText);
+        build.setWhen(System.currentTimeMillis());
+        build.setAutoCancel(true);
+        Toast.makeText(activity, notificationText, Toast.LENGTH_SHORT).show();
+        Vibrator v = (Vibrator) activity
+                .getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(1000);
+        Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+        notificationIntent.setDataAndType(Uri.fromFile(new File(filePath + fileName + ".mp3/")), "audio/*");
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent intent = PendingIntent.getActivity(activity, 0,
+                notificationIntent, 0);
+        build.setContentIntent(intent);
+        Notification notification = build.build();
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        NotificationManager notificationManager = (NotificationManager) activity
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify((int) new Date().getTime(), notification);
     }
 
     public void setMicEventHandler(MicEventHandler micEventHandler) {
         this.eventHandler = micEventHandler;
 
+    }
+
+    public static interface MicEventHandler {
+        void getAmplitude(Double value);
+
+        void getState(String state);
     }
 
 }
