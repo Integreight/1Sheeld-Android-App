@@ -8,6 +8,7 @@
  - Added a button in the camera shield to show the latest captured image.
  - Made the data logger shields output the logged file in a notification.
  - Revamped the login process in the email shield.
+ - Added the ability to record sound from mic shield.
  - Fixed an error that prevented firmware upgrade on Android M devices.
 
 ## v1.4.1(151028) (October 28, 2015)
