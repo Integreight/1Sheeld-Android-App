@@ -87,6 +87,7 @@ dependencies {
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'org.twitter4j:twitter4j-async:4.0.4'
     compile 'org.twitter4j:twitter4j-stream:4.0.4'
+    compile 'net.sf.supercsv:super-csv:2.4.0'
 
 }
 
