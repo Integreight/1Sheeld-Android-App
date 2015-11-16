@@ -10,6 +10,7 @@
 # Add any project specific keep options here:
 
 -dontobfuscate
+-keepattributes SourceFile,LineNumberTable
 
 # Required for Parse
 -keepattributes Signature
