@@ -19,7 +19,6 @@ import com.integreight.onesheeld.shields.controller.utils.InternetResponsePopup;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 
-import org.apache.http.Header;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -74,12 +73,12 @@ public class InternetFragment extends ShieldFragmentParent<InternetFragment> {
             }
 
             @Override
-            public void onSuccess(int i, Header[] headers, byte[] bytes) {
+            public void onSuccess(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes) {
 
             }
 
             @Override
-            public void onFailure(int i, Header[] headers, byte[] bytes, Throwable throwable) {
+            public void onFailure(int i, cz.msebera.android.httpclient.Header[] headers, byte[] bytes, Throwable throwable) {
 
             }
         });

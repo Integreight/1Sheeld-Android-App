@@ -14,16 +14,14 @@ import com.snappydb.DBFactory;
 import com.snappydb.SnappydbException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.Header;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.entity.StringEntity;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+
+import cz.msebera.android.httpclient.client.params.ClientPNames;
 
 /**
  * Created by Saad on 1/26/15.
@@ -176,13 +174,13 @@ public class InternetManager {
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
                 if (request.getCallback() != null)
                     request.getCallback().onFailure(statusCode, headers, responseBody, error);
             }
 
             @Override
-            public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                 if (request.getCallback() != null)
                     request.getCallback().onSuccess(statusCode, headers, responseBody);
             }
@@ -198,10 +196,10 @@ public class InternetManager {
                 break;
             case POST:
                 if (request.getEntity() != null)
-                    getHttpClient().post(context, request.getUrl(), request.getHeaders(), new StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
+                    getHttpClient().post(context, request.getUrl(), request.getHeaders(), new cz.msebera.android.httpclient.entity.StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
                 else if (request.getFileEntity() != null) {
                     try {
-                        getHttpClient().post(context, request.getUrl(), request.getHeaders(), new ByteArrayEntity(FileUtils.readFileToByteArray(new File(request.getFileEntity()))), request.getContentType(), withUiCallBack);
+                        getHttpClient().post(context, request.getUrl(), request.getHeaders(), new cz.msebera.android.httpclient.entity.ByteArrayEntity(FileUtils.readFileToByteArray(new File(request.getFileEntity()))), request.getContentType(), withUiCallBack);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -210,10 +208,10 @@ public class InternetManager {
                 break;
             case PUT:
                 if (request.getEntity() != null)
-                    getHttpClient().put(context, request.getUrl(), request.getHeaders(), new StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
+                    getHttpClient().put(context, request.getUrl(), request.getHeaders(), new cz.msebera.android.httpclient.entity.StringEntity(request.getEntity()), request.getContentType(), withUiCallBack);
                 else if (request.getFileEntity() != null) {
                     try {
-                        getHttpClient().post(context, request.getUrl(), request.getHeaders(), new ByteArrayEntity(FileUtils.readFileToByteArray(new File(request.getFileEntity()))), request.getContentType(), withUiCallBack);
+                        getHttpClient().post(context, request.getUrl(), request.getHeaders(), new cz.msebera.android.httpclient.entity.ByteArrayEntity(FileUtils.readFileToByteArray(new File(request.getFileEntity()))), request.getContentType(), withUiCallBack);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
