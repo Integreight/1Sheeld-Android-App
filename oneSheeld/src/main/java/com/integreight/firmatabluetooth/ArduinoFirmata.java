@@ -89,9 +89,8 @@ public class ArduinoFirmata {
     private boolean isVersionQueried = false;
     private BluetoothService bluetoothService;
     private Context context;
-    private boolean isBluetoothBufferWaiting;
-    private boolean isUartBufferWaiting;
-    private boolean isFirmataInitDone;
+    private volatile boolean isBluetoothBufferWaiting;
+    private volatile boolean isUartBufferWaiting;
     BluetoothServiceHandler handler = new BluetoothServiceHandler() {
 
         @Override
@@ -140,24 +139,7 @@ public class ArduinoFirmata {
 
         }
     };
-    private BufferIsWaiting bufferWaitingCallback = new BufferIsWaiting() {
-        @Override
-        public void onBufferWaiting() {
 
-            uiThreadHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    synchronized (ArduinoFirmata.this) {
-                        if (isUartBufferWaiting && isBluetoothBufferWaiting && !isFirmataInitDone) {
-                            doInitialQueriesAndConfiguration();
-                            isFirmataInitDone = true;
-                        }
-                    }
-                }
-            });
-        }
-
-    };
     private boolean isInACallback;
 
     public ArduinoFirmata(Context context) {
@@ -173,7 +155,6 @@ public class ArduinoFirmata {
         this.context = context;
         bluetoothService.addBluetoothServiceHandler(handler);
         uiThreadHandler = new Handler(Looper.getMainLooper());
-        isFirmataInitDone = false;
     }
 
     public void resetMicro() {
@@ -725,41 +706,43 @@ public class ArduinoFirmata {
     }
 
     private void initFirmata(final BluetoothDevice device) {
-        synchronized (ArduinoFirmata.this) {
-            isFirmataInitDone = false;
-            isBluetoothBufferWaiting = false;
-            isUartBufferWaiting = false;
-        }
+        isBluetoothBufferWaiting = false;
+        isUartBufferWaiting = false;
         stopBuffersThreads();
         clearAllBuffers();
         resetProcessInput();
         isVersionQueried = false;
         bluetoothBufferListeningThread = new BluetoothBufferListeningThread();
         uartListeningThread = new UartListeningThread();
-    }
 
-    private void doInitialQueriesAndConfiguration() {
-        enableReporting();
-        setAllPinsAsInput();
-        reportInputPinsValues();
-        onConnect();
-        respondToIsAlive();
-        queryFirmwareVersion();
-        notifyHardwareOfConnection();
-        queryLibraryVersion();
+        while (true) {
+            if (isBluetoothBufferWaiting) break;
+        }
+        
+        while (true) {
+            if (isUartBufferWaiting) break;
+        }
+
+        uiThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                enableReporting();
+                setAllPinsAsInput();
+                reportInputPinsValues();
+                onConnect();
+                respondToIsAlive();
+                queryFirmwareVersion();
+                notifyHardwareOfConnection();
+                queryLibraryVersion();
+            }
+        });
     }
 
     private byte readByteFromUartBuffer() throws InterruptedException,
             ShieldFrameNotComplete {
         if (ShieldFrameTimeout != null && ShieldFrameTimeout.isTimeout())
             throw new ShieldFrameNotComplete();
-        synchronized (this) {
-            if (!isUartBufferWaiting) {
                 isUartBufferWaiting = true;
-                if (bufferWaitingCallback != null)
-                    bufferWaitingCallback.onBufferWaiting();
-            }
-        }
         byte temp = uartBuffer.take().byteValue();
         if (ShieldFrameTimeout != null)
             ShieldFrameTimeout.resetTimer();
@@ -767,13 +750,7 @@ public class ArduinoFirmata {
     }
 
     private byte readByteFromBluetoothBuffer() throws InterruptedException {
-        synchronized (this) {
-            if (!isBluetoothBufferWaiting) {
                 isBluetoothBufferWaiting = true;
-                if (bufferWaitingCallback != null)
-                    bufferWaitingCallback.onBufferWaiting();
-            }
-        }
         return bluetoothBuffer.take().byteValue();
     }
 
@@ -864,10 +841,6 @@ public class ArduinoFirmata {
 
     public void clearArduinoFirmataDataHandlers() {
         dataHandlers.clear();
-    }
-
-    private interface BufferIsWaiting {
-        void onBufferWaiting();
     }
 
     private class UartListeningThread extends Thread {
