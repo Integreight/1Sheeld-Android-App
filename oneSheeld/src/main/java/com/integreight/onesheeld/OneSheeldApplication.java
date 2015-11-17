@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -69,6 +70,8 @@ public class OneSheeldApplication extends Application {
     private ConnectionDetector connectionHandler;
     private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
     public Typeface appFont;
+    // private GoogleAnalytics googleAnalyticsInstance;
+    // private Tracker appGaTracker;
     public TaskerShield taskerController;
     public SparseArray<Boolean> taskerPinsStatus;
 
@@ -100,16 +103,17 @@ public class OneSheeldApplication extends Application {
         return connectionTime;
     }
 
-    synchronized public Tracker getTracker() {
-        if (gaTracker == null) {
-            GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
-            // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
-            analytics.setAppOptOut(isDebuggable);
-            if (isDebuggable)
-                analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
-            gaTracker = analytics.newTracker(R.xml.global_tracker);
-            gaTracker.enableAdvertisingIdCollection(true);
-        }
+    public synchronized Tracker getTracker() {
+        if (gaTracker != null)
+            return gaTracker;
+        GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
+        analytics.setAppOptOut(isDebuggable);
+        if (isDebuggable)
+            analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
+        gaTracker = analytics.newTracker(ApiObjects.analytics
+                .get("property_id"));
+        gaTracker.enableAdvertisingIdCollection(true);
+        gaTracker.setSessionTimeout(-1);
         return gaTracker;
     }
 
@@ -241,6 +245,12 @@ public class OneSheeldApplication extends Application {
                 if (parse.has("app_id") && parse.has("client_id"))
                     ApiObjects.parse.add("app_id", parse.getString("app_id"));
                 ApiObjects.parse.add("client_id", parse.getString("client_id"));
+            }
+            if (socialKeysObject.has("analytics")) {
+                analytics = socialKeysObject.getJSONObject("analytics");
+                if (analytics.has("property_id"))
+                    ApiObjects.analytics.add("property_id",
+                            analytics.getString("property_id"));
             }
         } catch (JSONException e) {
         }
