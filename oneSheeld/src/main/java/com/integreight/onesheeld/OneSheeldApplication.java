@@ -105,6 +105,8 @@ public class OneSheeldApplication extends Application {
             GoogleAnalytics analytics = GoogleAnalytics.getInstance(this);
             // To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
             analytics.setAppOptOut(isDebuggable);
+            if (isDebuggable)
+                analytics.getLogger().setLogLevel(LogLevel.VERBOSE);
             gaTracker = analytics.newTracker(R.xml.global_tracker);
             gaTracker.enableAdvertisingIdCollection(true);
         }
