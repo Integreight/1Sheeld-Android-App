@@ -718,7 +718,7 @@ public class ArduinoFirmata {
         while (true) {
             if (isBluetoothBufferWaiting) break;
         }
-        
+
         while (true) {
             if (isUartBufferWaiting) break;
         }
@@ -742,7 +742,7 @@ public class ArduinoFirmata {
             ShieldFrameNotComplete {
         if (ShieldFrameTimeout != null && ShieldFrameTimeout.isTimeout())
             throw new ShieldFrameNotComplete();
-                isUartBufferWaiting = true;
+        isUartBufferWaiting = true;
         byte temp = uartBuffer.take().byteValue();
         if (ShieldFrameTimeout != null)
             ShieldFrameTimeout.resetTimer();
@@ -750,7 +750,7 @@ public class ArduinoFirmata {
     }
 
     private byte readByteFromBluetoothBuffer() throws InterruptedException {
-                isBluetoothBufferWaiting = true;
+        isBluetoothBufferWaiting = true;
         return bluetoothBuffer.take().byteValue();
     }
 
@@ -878,7 +878,7 @@ public class ArduinoFirmata {
                     }
                     byte instanceId = readByteFromUartBuffer();
                     byte functionId = readByteFromUartBuffer();
-                    ShieldFrame frame = new ShieldFrame(shieldId,functionId);
+                    ShieldFrame frame = new ShieldFrame(shieldId, functionId);
                     int argumentsNumber = readByteFromUartBuffer() & 0xFF;
                     int argumentsNumberVerification = (255 - (readByteFromUartBuffer() & 0xFF));
                     if (argumentsNumber != argumentsNumberVerification) {
@@ -887,7 +887,7 @@ public class ArduinoFirmata {
                         uartBuffer.clear();
                         continue;
                     }
-                    boolean continueRequested=false;
+                    boolean continueRequested = false;
                     for (int i = 0; i < argumentsNumber; i++) {
                         int length = readByteFromUartBuffer() & 0xff;
                         int lengthVerification = (255 - (readByteFromUartBuffer() & 0xFF));
@@ -895,7 +895,7 @@ public class ArduinoFirmata {
                             if (ShieldFrameTimeout != null)
                                 ShieldFrameTimeout.stopTimer();
                             uartBuffer.clear();
-                            continueRequested=true;
+                            continueRequested = true;
                             break;
                         }
                         byte[] data = new byte[length];
@@ -904,7 +904,7 @@ public class ArduinoFirmata {
                         }
                         frame.addArgument(data);
                     }
-                    if(continueRequested)continue;
+                    if (continueRequested) continue;
                     if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
                         if (ShieldFrameTimeout != null)
                             ShieldFrameTimeout.stopTimer();
