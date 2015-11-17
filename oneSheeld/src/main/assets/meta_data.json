@@ -13,8 +13,5 @@
     "parse": {
         "app_id": "Parse App ID",
         "client_id": "Parse Client ID"
-    },
-	"analytics": {
-		"property_id": "Google Analytics property ID"
     }
 }
