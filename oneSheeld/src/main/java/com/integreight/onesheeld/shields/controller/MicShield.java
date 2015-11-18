@@ -62,7 +62,7 @@ public class MicShield extends ControllerParent<MicShield> {
     private boolean isRecording = false;
 
     // private int counter = 0;
-    private String fileName;
+    private String fileName = "";
 
     public MicShield() {
     }
