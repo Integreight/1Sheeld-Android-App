@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
-    android:versionCode="151117"
-    android:versionName="1.5.0-rc">
+    android:versionCode="151118"
+    android:versionName="1.5.0-rc1">
 
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
