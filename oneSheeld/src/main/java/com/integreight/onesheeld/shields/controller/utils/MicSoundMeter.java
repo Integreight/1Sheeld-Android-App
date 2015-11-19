@@ -43,19 +43,27 @@ public class MicSoundMeter {
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+            mRecorder.setAudioEncodingBitRate(16);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1)
                 mRecorder.setAudioSamplingRate(44100);
             else
                 mRecorder.setAudioSamplingRate(8000);
 
             if (record) {
+                File folder = new File(
+                        Environment.getExternalStorageDirectory()
+                                + "/OneSheeld");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
                 folder = new File(
                         Environment.getExternalStorageDirectory()
                                 + "/OneSheeld/Mic");
                 if (!folder.exists()) {
                     folder.mkdirs();
                 }
+
                 mRecorder.setOutputFile(Environment
                         .getExternalStorageDirectory()
                         + "/OneSheeld/Mic/" + ((fileName != null) ? fileName : ("Mic_" + String.valueOf(new Date().getTime()))) + ".mp3/");
