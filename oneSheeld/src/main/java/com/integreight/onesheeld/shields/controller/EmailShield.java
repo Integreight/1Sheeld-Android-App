@@ -121,7 +121,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                             String imgPath = null;
                             if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
                                 imgPath = CameraUtils
-                                        .getLastCapturedImagePathFromOneSheeldFolder();
+                                        .getLastCapturedImagePathFromOneSheeldFolder(activity);
                             else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                                 imgPath = CameraUtils
                                         .getLastCapturedImagePathFromCameraFolder(activity);

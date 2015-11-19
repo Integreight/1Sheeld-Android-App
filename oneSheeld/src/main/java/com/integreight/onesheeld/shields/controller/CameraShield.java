@@ -71,7 +71,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
                 isChangingPreview = false;
             } else if (msg.what == SET_LAST_IMAGE_BUTTON) {
                 lastImageAbsoultePath = msg.getData().getString("absolutePath");
-                CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(lastImageAbsoultePath);
+                CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(lastImageAbsoultePath,activity);
                 Log.d("LastImage", lastImageAbsoultePath);
                 File img = new File(lastImageAbsoultePath);
                 if (img.exists() && eventHandler != null) {
