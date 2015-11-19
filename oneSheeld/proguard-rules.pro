@@ -10,6 +10,8 @@
 # Add any project specific keep options here:
 -dontobfuscate
 -keepattributes SourceFile,LineNumberTable
+-keep class com.integreight.** { *; }
+
 
 # Required for Parse
 -keepattributes Signature
