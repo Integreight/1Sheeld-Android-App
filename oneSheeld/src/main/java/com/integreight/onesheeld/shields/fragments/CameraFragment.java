@@ -223,6 +223,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 if (lastImageSrc != null) {
                     File img = new File(lastImageSrc);
                     if (img.exists()) {
+                        cameraPreviewToggle.setEnabled(false);
                         intent.setDataAndType(Uri.fromFile(img), "image/*");
                         activity.startActivity(intent);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -256,6 +257,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         uiHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                cameraPreviewToggle.setEnabled(true);
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                     if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                         try {
