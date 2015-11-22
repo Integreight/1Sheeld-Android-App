@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
@@ -26,7 +27,6 @@ import java.util.Date;
 
 public class MicShield extends ControllerParent<MicShield> {
     public static final byte MIC_VALUE = 0x01;
-    private static final String filePath = "/OneSheeld/Mic/";
     private static final byte MIC_START_RECORD = 0x01;
     private static final byte MIC_STOP_RECORD = 0x02;
     Handler handler;
@@ -177,7 +177,7 @@ public class MicShield extends ControllerParent<MicShield> {
                 .getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(1000);
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
-        notificationIntent.setDataAndType(Uri.fromFile(new File(filePath + fileName + ".mp3/")), "audio/*");
+        notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/OneSheeld/Mic/"+ fileName + ".mp3")), "audio/*");
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent intent = PendingIntent.getActivity(activity, 0,
                 notificationIntent, 0);
