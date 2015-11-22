@@ -44,7 +44,7 @@ public class MicSoundMeter {
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
             mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
-            mRecorder.setAudioEncodingBitRate(16);
+            mRecorder.setAudioEncodingBitRate(128);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1)
                 mRecorder.setAudioSamplingRate(44100);
             else
