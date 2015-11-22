@@ -270,6 +270,11 @@ public class BluetoothService {
         public void run() {
             Log.i(TAG, "BEGIN mConnectThread");
             setName("ConnectThread");
+            if (mmSocket==null) {
+                cancel();
+                // connectionFailed();
+                return;
+            }
 
             // Always cancel discovery because it will slow down a connection
             while (mAdapter.isDiscovering())
