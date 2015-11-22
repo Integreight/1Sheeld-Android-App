@@ -215,18 +215,20 @@ public class EmailShield extends ControllerParent<EmailShield> {
                 }
             } else {
                 if (eventHandler != null)
-                    eventHandler.onEmailnotSent("Request cancelled.");
+                    eventHandler.onEmailnotSent("Email not sent.");
             }
             if (eventHandler != null)
                 eventHandler.stopProgress();
         }
-
+        File attachedFile;
         private String sendEmail() throws IOException {
             try {
+                attachedFile = new File(attachment_file_path);
                 if (order > 0) {
-                    if (attachment_file_path == null)
-                        mService.users().messages().send("me", createMessageWithEmail(createEmail(message_reciption, userEmail, message_subject, message_body))).execute();
-                    else
+                    if (attachment_file_path == null || !attachedFile.exists()) {
+                        cancel(true);
+                        return null;
+                    }else
                         mService.users().messages().send("me", createMessageWithEmail(createEmailWithAttachment(message_reciption, userEmail, message_subject, message_body, attachment_file_path))).execute();
                 }else
                     mService.users().labels().list("me").execute();
