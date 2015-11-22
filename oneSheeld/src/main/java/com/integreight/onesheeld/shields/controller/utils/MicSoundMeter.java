@@ -71,10 +71,10 @@ public class MicSoundMeter {
                 mRecorder.setOutputFile("/dev/null");
 
             try {
+                isRecording = true;
                 mRecorder.prepare();
                 mRecorder.start();
                 mEMA = 0.0;
-                isRecording = true;
                 return true;
             } catch (IllegalStateException e) {
                 return false;
@@ -90,18 +90,18 @@ public class MicSoundMeter {
 
     public void stop() {
         if (mRecorder != null) {
-            try {
                 if (isRecording) {
+                    isRecording = false;
+                    isCanceled = true;
+                    try {
                     mRecorder.stop();
                     mRecorder.reset();
                     mRecorder.release();
+                    } catch (Exception e) {
+                        Log.e("TAG", "stop MRecorder::Mic", e);
+                    }
                     mRecorder = null;
-                    isRecording = false;
-                    isCanceled = true;
                 }
-            } catch (Exception e) {
-                Log.e("TAG", "stop MRecorder::Mic", e);
-            }
         }
     }
 
