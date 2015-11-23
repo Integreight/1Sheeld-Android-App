@@ -178,9 +178,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
                 return sendEmail();
             } catch (Exception e) {
                 mLastError = e;
+                cancel(true);
                 if (eventHandler != null)
                     eventHandler.stopProgress();
-                cancel(true);
                 return null;
             }
         }
@@ -205,21 +205,21 @@ public class EmailShield extends ControllerParent<EmailShield> {
             //super.onCancelled();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
-                    CrashlyticsUtils.logException(mLastError);
                     //showGooglePlayServicesAvailabilityErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
                         Log.d("Email","The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                         eventHandler.onEmailnotSent("Email not sent.");
                     }
+                    CrashlyticsUtils.logException(mLastError);
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     if (eventHandler != null)
                         eventHandler.onSendingAuthError(mLastError.getMessage(),((UserRecoverableAuthIOException) mLastError).getIntent(),PREF_EMAIL_SHIELD_REQUEST_AUTHORIZATION);
                 } else {
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
-                        CrashlyticsUtils.logException(mLastError);
-                        Log.d("Email","The following error occurred:\n" + mLastError.getMessage());
+                        Log.d("Email", "The following error occurred:\n" + mLastError.getMessage());
                         eventHandler.onEmailnotSent("Email not sent.");
                     }
+                    CrashlyticsUtils.logException(mLastError);
                 }
             } else {
                 if (eventHandler != null)
@@ -231,15 +231,21 @@ public class EmailShield extends ControllerParent<EmailShield> {
         File attachedFile;
         private String sendEmail() throws IOException {
             try {
-                attachedFile = new File(attachment_file_path);
+                if (attachment_file_path != null)
+                    attachedFile = new File(attachment_file_path);
                 if (order > 0) {
-                    if (attachment_file_path == null || !attachedFile.exists()) {
-                        cancel(true);
-                        if (eventHandler != null)
-                            eventHandler.stopProgress();
-                        return null;
-                    }else
-                        mService.users().messages().send("me", createMessageWithEmail(createEmailWithAttachment(message_reciption, userEmail, message_subject, message_body, attachment_file_path))).execute();
+                    if (attachment_file_path == null) {
+                        mService.users().messages().send("me", createMessageWithEmail(createEmail(message_reciption, userEmail, message_subject, message_body))).execute();
+                    }else {
+                        if (attachedFile.exists())
+                            mService.users().messages().send("me", createMessageWithEmail(createEmailWithAttachment(message_reciption, userEmail, message_subject, message_body, attachment_file_path))).execute();
+                        else {
+                            cancel(true);
+                            if (eventHandler != null)
+                                eventHandler.stopProgress();
+                            return null;
+                        }
+                    }
                 }else
                     mService.users().labels().list("me").execute();
             } catch (MessagingException e) {
