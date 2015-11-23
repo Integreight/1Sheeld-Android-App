@@ -66,7 +66,7 @@ public class MicSoundMeter {
 
                 mRecorder.setOutputFile(Environment
                         .getExternalStorageDirectory()
-                        + "/OneSheeld/Mic/" + ((fileName != null) ? fileName : ("Mic_" + String.valueOf(new Date().getTime()))) + ".mp3/");
+                        + "/OneSheeld/Mic/" + ((fileName != null) ? (fileName +"_" + String.valueOf(new Date().getTime())) : ("Mic_" + String.valueOf(new Date().getTime()))) + ".mp3/");
             } else
                 mRecorder.setOutputFile("/dev/null");
 

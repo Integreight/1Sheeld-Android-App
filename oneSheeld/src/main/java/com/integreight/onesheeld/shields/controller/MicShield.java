@@ -105,7 +105,7 @@ public class MicShield extends ControllerParent<MicShield> {
                         if (frame.getArguments().isEmpty()) {
                             fileName = "Mic_" + String.valueOf(new Date().getTime());
                         } else {
-                            fileName = frame.getArgumentAsString(0);
+                            fileName = frame.getArgumentAsString(0) +"_" + String.valueOf(new Date().getTime());
                         }
                         MicSoundMeter.getInstance().start(true, fileName);
                         if (eventHandler != null)
