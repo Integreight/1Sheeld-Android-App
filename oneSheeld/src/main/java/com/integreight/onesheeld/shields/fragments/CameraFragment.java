@@ -21,6 +21,7 @@ import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.CameraShield.CameraEventHandler;
+import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 
 import java.io.File;
 
@@ -109,7 +110,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
-        lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
+//        lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
+        lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
         if (lastImageSrc != null) {
             lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
             if (lastImage !=null && lastImageBitmap != null) {
@@ -129,7 +131,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 lastImage.setAlpha((float) 1);
             }
-            lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
+//            lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
+            lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
             if (lastImageSrc != null) {
                 lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
                 if (lastImage !=null && lastImageBitmap != null) {

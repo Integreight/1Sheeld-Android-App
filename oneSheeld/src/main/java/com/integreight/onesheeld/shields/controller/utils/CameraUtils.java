@@ -145,21 +145,24 @@ public class CameraUtils {
 
     public static String getLastCapturedImagePathFromOneSheeldFolder(Activity activity) {
         sharedPreferences = activity.getSharedPreferences("camera", Context.MODE_PRIVATE);
+        File tmpImage;
         if (lastCapturedImagePathFromOneSheeldFolder != null) {
-            File tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+            tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
             if (tmpImage.exists())
                 return lastCapturedImagePathFromOneSheeldFolder;
             else {
-                if(!sharedPreferences.getAll().get(sharedPreferencesKey).equals(null)){
-                    lastCapturedImagePathFromOneSheeldFolder = sharedPreferences.getString(sharedPreferencesKey,"");
-                    tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
-                    if (tmpImage.exists())
-                        return lastCapturedImagePathFromOneSheeldFolder;
-//                    else
-//                        return getLastCapturedImagePathFromOneSheeldFolderInMediaStore(activity);
-                }
-                return "";
+                lastCapturedImagePathFromOneSheeldFolder = sharedPreferences.getString(sharedPreferencesKey,"");
+                tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+                if (tmpImage.exists())
+                    return lastCapturedImagePathFromOneSheeldFolder;
+                else
+                    return getLastCapturedImagePathFromOneSheeldFolderInMediaStore(activity);
             }
+        }else{
+            lastCapturedImagePathFromOneSheeldFolder = sharedPreferences.getString(sharedPreferencesKey,"");
+            tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+            if (tmpImage.exists())
+                return lastCapturedImagePathFromOneSheeldFolder;
         }
         return "";
     }
@@ -171,7 +174,7 @@ public class CameraUtils {
             if (tmpImage.exists()) {
                 CameraUtils.lastCapturedImagePathFromOneSheeldFolder = lastCapturedImagePathFromOneSheeldFolder;
                 editor = sharedPreferences.edit();
-                editor.putString(sharedPreferencesKey,"");
+                editor.putString(sharedPreferencesKey,lastCapturedImagePathFromOneSheeldFolder);
                 editor.commit();
             }
         }
