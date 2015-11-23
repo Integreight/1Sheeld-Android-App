@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.hardware.Camera;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.integreight.onesheeld.utils.Log;
 
@@ -143,7 +144,7 @@ public class CameraUtils {
         return fullPath;
     }
 
-    public static String getLastCapturedImagePathFromOneSheeldFolder(Activity activity) {
+    public static String getLastCapturedImagePathFromOneSheeldFolder(Activity activity,boolean viewToast) {
         sharedPreferences = activity.getSharedPreferences("camera", Context.MODE_PRIVATE);
         File tmpImage;
         if (lastCapturedImagePathFromOneSheeldFolder != null) {
@@ -164,6 +165,8 @@ public class CameraUtils {
             if (tmpImage.exists())
                 return lastCapturedImagePathFromOneSheeldFolder;
         }
+        if (viewToast)
+            Toast.makeText(activity.getApplicationContext(),"Image not found",Toast.LENGTH_SHORT).show();
         return "";
     }
 

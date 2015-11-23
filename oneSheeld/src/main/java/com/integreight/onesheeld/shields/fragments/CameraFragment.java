@@ -111,7 +111,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
 //        lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
-        lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+        lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity,false);
         if (lastImageSrc != null) {
             lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
             if (lastImage !=null && lastImageBitmap != null) {
@@ -132,7 +132,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 lastImage.setAlpha((float) 1);
             }
 //            lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
-            lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity);
+            lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity,false);
             if (lastImageSrc != null) {
                 lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
                 if (lastImage !=null && lastImageBitmap != null) {
