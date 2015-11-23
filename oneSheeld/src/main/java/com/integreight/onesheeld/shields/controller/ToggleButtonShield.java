@@ -51,6 +51,9 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
 
     }
 
+    public boolean getButton(){
+        return isButtonOn;
+    }
     @Override
     public void refresh() {
         // TODO Auto-generated method stub
