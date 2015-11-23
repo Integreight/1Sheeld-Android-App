@@ -177,6 +177,7 @@ public class MicShield extends ControllerParent<MicShield> {
                 .getSystemService(Context.VIBRATOR_SERVICE);
         v.vibrate(1000);
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
+        Log.d("Mic",fileName+".mp3");
         notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/OneSheeld/Mic/"+ fileName + ".mp3")), "audio/*");
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent intent = PendingIntent.getActivity(activity, 0,
