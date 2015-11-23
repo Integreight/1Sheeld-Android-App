@@ -21,6 +21,7 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -177,9 +178,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
                 return sendEmail();
             } catch (Exception e) {
                 mLastError = e;
-                cancel(true);
                 if (eventHandler != null)
                     eventHandler.stopProgress();
+                cancel(true);
                 return null;
             }
         }
@@ -204,6 +205,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
             //super.onCancelled();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    CrashlyticsUtils.logException(mLastError);
                     //showGooglePlayServicesAvailabilityErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
                         Log.d("Email","The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
@@ -214,6 +216,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                         eventHandler.onSendingAuthError(mLastError.getMessage(),((UserRecoverableAuthIOException) mLastError).getIntent(),PREF_EMAIL_SHIELD_REQUEST_AUTHORIZATION);
                 } else {
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
+                        CrashlyticsUtils.logException(mLastError);
                         Log.d("Email","The following error occurred:\n" + mLastError.getMessage());
                         eventHandler.onEmailnotSent("Email not sent.");
                     }
@@ -232,6 +235,8 @@ public class EmailShield extends ControllerParent<EmailShield> {
                 if (order > 0) {
                     if (attachment_file_path == null || !attachedFile.exists()) {
                         cancel(true);
+                        if (eventHandler != null)
+                            eventHandler.stopProgress();
                         return null;
                     }else
                         mService.users().messages().send("me", createMessageWithEmail(createEmailWithAttachment(message_reciption, userEmail, message_subject, message_body, attachment_file_path))).execute();
