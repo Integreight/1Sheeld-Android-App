@@ -1,4 +1,4 @@
-## v1.5.0(______) (November __, 2015)
+## v1.5.0(151123) (November 23, 2015)
  - Make sure frames sent and received are correct.
  - Added copy selection feature to terminal shield.
  - Remove select all button in shields list.
