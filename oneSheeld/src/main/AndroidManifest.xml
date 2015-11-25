@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.integreight.onesheeld"
-    android:versionCode="151028"
-    android:versionName="1.4.1">
+    android:versionCode="151123"
+    android:versionName="1.5.0">
 
 
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -31,6 +31,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.NFC" />
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
 
     <permission

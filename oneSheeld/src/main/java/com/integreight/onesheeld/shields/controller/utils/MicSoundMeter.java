@@ -43,30 +43,38 @@ public class MicSoundMeter {
             mRecorder = new MediaRecorder();
             mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             mRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB);
+            mRecorder.setAudioEncodingBitRate(128);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1)
                 mRecorder.setAudioSamplingRate(44100);
             else
                 mRecorder.setAudioSamplingRate(8000);
 
             if (record) {
+                File folder = new File(
+                        Environment.getExternalStorageDirectory()
+                                + "/OneSheeld");
+                if (!folder.exists()) {
+                    folder.mkdirs();
+                }
                 folder = new File(
                         Environment.getExternalStorageDirectory()
                                 + "/OneSheeld/Mic");
                 if (!folder.exists()) {
                     folder.mkdirs();
                 }
+
                 mRecorder.setOutputFile(Environment
                         .getExternalStorageDirectory()
-                        + "/OneSheeld/Mic/" + ((fileName != null) ? fileName : ("Mic_" + String.valueOf(new Date().getTime()))) + ".mp3/");
+                        + "/OneSheeld/Mic/" + ((fileName != null) ? (fileName): ("Mic_" + String.valueOf(new Date().getTime()))) + ".mp3/");
             } else
                 mRecorder.setOutputFile("/dev/null");
 
             try {
+                isRecording = true;
                 mRecorder.prepare();
                 mRecorder.start();
                 mEMA = 0.0;
-                isRecording = true;
                 return true;
             } catch (IllegalStateException e) {
                 return false;
@@ -82,18 +90,18 @@ public class MicSoundMeter {
 
     public void stop() {
         if (mRecorder != null) {
-            try {
                 if (isRecording) {
+                    isRecording = false;
+                    isCanceled = true;
+                    try {
                     mRecorder.stop();
                     mRecorder.reset();
                     mRecorder.release();
+                    } catch (Exception e) {
+                        Log.e("TAG", "stop MRecorder::Mic", e);
+                    }
                     mRecorder = null;
-                    isRecording = false;
-                    isCanceled = true;
                 }
-            } catch (Exception e) {
-                Log.e("TAG", "stop MRecorder::Mic", e);
-            }
         }
     }
 
