@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:text="@string/action_settings"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/arduino_conn_resetAll_bg"
+        android:textColor="@color/textColorOnDark"/>
+    <Button
+        android:text="@string/upgradeFirmata"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/arduino_conn_resetAll_bg"
+        android:textColor="@color/textColorOnDark"/>
+    <Button
+        android:text="@string/appTutorial"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/arduino_conn_resetAll_bg"
+        android:textColor="@color/textColorOnDark"/>
+    <Button
+        android:text="@string/about"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/arduino_conn_resetAll_bg"
+        android:textColor="@color/textColorOnDark"/>
+
+</LinearLayout>

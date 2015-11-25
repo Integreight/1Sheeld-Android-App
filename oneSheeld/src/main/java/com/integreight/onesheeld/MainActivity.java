@@ -30,6 +30,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -70,13 +72,15 @@ public class MainActivity extends FragmentActivity {
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
     private boolean isBackPressed = false;
+    private boolean isMenuVisible = false;
+    LinearLayout appCustomMenu;
 
     private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
 
     public OneSheeldApplication getThisApplication() {
         return (OneSheeldApplication) getApplication();
     }
-
+    TextView oneSheeldLogo;
     //    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -88,6 +92,20 @@ public class MainActivity extends FragmentActivity {
             window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
         }
         setContentView(R.layout.one_sheeld_main);
+        oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
+        oneSheeldLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("mouso", "Bololo2");
+                if (isMenuVisible){
+                    isMenuVisible = false;
+                    removeCustomMenu();
+                }else{
+                    isMenuVisible = true;
+                    addCustomMenu();
+                }
+            }
+        });
         initLooperThread();
         if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
 //            if (savedInstance != null) {
@@ -110,6 +128,10 @@ public class MainActivity extends FragmentActivity {
                             arduinoLibraryVersionHandler);
         }
         thisInstance = this;
+        //-------------
+        appCustomMenu = (LinearLayout) findViewById(R.id.appMenu);
+        appCustomMenu.setVisibility(View.GONE);
+        ////---------------
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
             startActivity(new Intent(MainActivity.this, Tutorial.class));
@@ -785,5 +807,13 @@ public class MainActivity extends FragmentActivity {
 
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
+    }
+
+    public void addCustomMenu(){
+        appCustomMenu.setVisibility(View.VISIBLE);
+    }
+
+    public void removeCustomMenu(){
+        appCustomMenu.setVisibility(View.GONE);
     }
 }
