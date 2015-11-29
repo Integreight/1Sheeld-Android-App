@@ -9,6 +9,8 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -56,11 +58,14 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
@@ -96,7 +101,6 @@ public class MainActivity extends FragmentActivity {
         oneSheeldLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("mouso", "Bololo2");
                 if (isMenuVisible){
                     isMenuVisible = false;
                     removeCustomMenu();
@@ -131,7 +135,38 @@ public class MainActivity extends FragmentActivity {
         //-------------
         appCustomMenu = (LinearLayout) findViewById(R.id.appMenu);
         appCustomMenu.setVisibility(View.GONE);
-        ////---------------
+
+        appCustomMenu.findViewById(R.id.custom_action_settings).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeCustomMenu();
+                ((OneSheeldApplication) MainActivity.this.getApplication()).setLastConnectedDevice(null);
+            }
+        });
+        appCustomMenu.findViewById(R.id.custom_open_bootloader_popup).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!FirmwareUpdatingPopup.isOpened) {
+                    removeCustomMenu();
+                    new FirmwareUpdatingPopup(MainActivity.this/* , false */).show();
+                }
+            }
+        });
+        appCustomMenu.findViewById(R.id.custom_appTutorial).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeCustomMenu();
+                MainActivity.this.startActivity(new Intent(MainActivity.this, Tutorial.class).putExtra("isMenu", true));
+            }
+        });
+        appCustomMenu.findViewById(R.id.custom_aboutDialogButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeCustomMenu();
+                showAboutDialog();
+            }
+        });
+        //-------------
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
             startActivity(new Intent(MainActivity.this, Tutorial.class));
@@ -785,6 +820,73 @@ public class MainActivity extends FragmentActivity {
                         }
                     }
                 }
+        }
+    }
+
+    public void showAboutDialog() {
+        // TODO Auto-generated method stub
+        String stringDate = null;
+        try {
+            ApplicationInfo ai = getPackageManager()
+                    .getApplicationInfo(getPackageName(), 0);
+            ZipFile zf = new ZipFile(ai.sourceDir);
+            ZipEntry ze = zf.getEntry("classes.dex");
+            long time = ze.getTime();
+            stringDate = SimpleDateFormat.getInstance().format(
+                    new java.util.Date(time));
+            zf.close();
+            PackageInfo pInfo = getPackageManager().getPackageInfo(
+                    getPackageName(), 0);
+            String versionName = pInfo.versionName;
+            int versionCode = pInfo.versionCode;
+            String installationIdString = "";
+            ValidationPopup.ValidationAction shareConnectionId = null;
+            String firmwareVersion = "";
+            if ((((OneSheeldApplication) getApplication())
+                    .getAppFirmata() != null && ((OneSheeldApplication) getApplication()).getAppFirmata().isOpen())
+                    && (((OneSheeldApplication) getApplication())
+                    .getAppFirmata().getMajorVersion() != 0)) {
+                firmwareVersion = "\nFirmware Version: v"
+                        + (((OneSheeldApplication) getApplication())
+                        .getAppFirmata().getMajorVersion())
+                        + "."
+                        + (((OneSheeldApplication) getApplication())
+                        .getAppFirmata().getMinorVersion()) + "\n\n";
+            }
+            final ValidationPopup popup = new ValidationPopup(
+                    this,
+                    "About 1Sheeld",
+                    "Developed with love by Integreight, Inc. team in Cairo, Egypt.\n"
+                            + "If you have any question, please visit our website or drop us an email on info@integreight.com\n\n"
+                            + "App Version: "
+                            + versionName
+                            + " ("
+                            + versionCode
+                            + ")"
+                            + firmwareVersion
+                            + (stringDate != null ? "\nApp was last updated on "
+                            + stringDate
+                            : "")
+                            + "\n\n"
+                            + "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n"
+                            + installationIdString);
+            ValidationPopup.ValidationAction ok = new ValidationPopup.ValidationAction("Okay!",
+                    new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            popup.dismiss();
+                        }
+                    }, true);
+
+            popup.addValidationAction(ok);
+            if (shareConnectionId != null)
+                popup.addValidationAction(shareConnectionId);
+            if (!isFinishing())
+                popup.show();
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
     }
 
