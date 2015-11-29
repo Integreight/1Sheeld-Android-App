@@ -349,10 +349,12 @@ public class ColorDetectionShield extends
         Bundle b = new Bundle();
         b.putBoolean("isBack", isBack);
         msg.setData(b);
-        try {
-            mService.send(msg);
-        } catch (RemoteException e) {
-            return false;
+        if (mService != null) {
+            try {
+                mService.send(msg);
+            } catch (RemoteException e) {
+                return false;
+            }
         }
         isBackPreview = isBack;
         return true;

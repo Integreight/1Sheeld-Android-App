@@ -44,8 +44,11 @@ public class TerminalLinesAdapter extends BaseAdapter {
             public void run() {
                 clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                    clipboardManager.setPrimaryClip(ClipData.newPlainText("OneSheeldClipboard", copyLine));
-                    Toast.makeText(activity.getApplicationContext(), "Line Copied", Toast.LENGTH_SHORT).show();
+                    if (!copyLine.equals("")) {
+                        clipboardManager.setPrimaryClip(ClipData.newPlainText("OneSheeldClipboard", copyLine));
+                        Toast.makeText(activity.getApplicationContext(), "Line Copied", Toast.LENGTH_SHORT).show();
+                    }else
+                        Toast.makeText(activity.getApplicationContext(), "Couldn't copy empty line.", Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -128,8 +131,11 @@ public class TerminalLinesAdapter extends BaseAdapter {
                         if (!isTextSelected) {
                             textContainer.setBackgroundColor(activity.getResources().getColor(R.color.arduino_conn_gray_bg));
                             scrollContainer.setBackgroundColor(activity.getResources().getColor(R.color.arduino_conn_gray_bg));
-                            copyLine = line.print;
-                            uiHandler.postDelayed(copyRunnable, 1000);
+                            if (isTimeOn)
+                                copyLine = line.date+line.print;
+                            else
+                                copyLine = line.print;
+                            uiHandler.postDelayed(copyRunnable, 1500);
                             isTextSelected = true;
                         }
                         break;
@@ -137,7 +143,7 @@ public class TerminalLinesAdapter extends BaseAdapter {
                         //textContainer.setBackgroundColor(Color.BLACK);
                         break;
                 }
-                return true;
+                return false;
             }
         });
         ((ViewGroup) holder.output.getParent()).invalidate();

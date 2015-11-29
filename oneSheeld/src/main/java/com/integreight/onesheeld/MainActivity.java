@@ -12,6 +12,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -36,6 +38,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -60,11 +64,14 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
@@ -75,6 +82,94 @@ public class MainActivity extends FragmentActivity {
     public static MainActivity thisInstance;
     public AppSlidingLeftMenu appSlidingMenu;
     public boolean isForground = false;
+    private boolean isBackPressed = false;
+    TextView oneSheeldLogo;
+
+    private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
+
+    public OneSheeldApplication getThisApplication() {
+        return (OneSheeldApplication) getApplication();
+    }
+
+    //    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
+        }
+        setContentView(R.layout.one_sheeld_main);
+        oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
+        oneSheeldLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.openOptionsMenu();
+            }
+        });
+        initLooperThread();
+        if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
+//            if (savedInstance != null) {
+//                int count = getSupportFragmentManager().getBackStackEntryCount();
+//                while (count > 0) {
+//                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(count)).commit();
+//                    count --;
+//                }
+//            }
+            replaceCurrentFragment(R.id.appTransitionsContainer,
+                    SheeldsList.getInstance(), "base", true, false);
+        }
+        postConfigChange();
+        resetSlidingMenu();
+        if (getThisApplication().getAppFirmata() != null) {
+            getThisApplication().getAppFirmata()
+                    .addFirmwareVersionQueryHandler(versionChangingHandler);
+            getThisApplication().getAppFirmata()
+                    .addArduinoLibraryVersionQueryHandler(
+                            arduinoLibraryVersionHandler);
+        }
+        thisInstance = this;
+        if (getThisApplication().getShowTutAgain()
+                && getThisApplication().getTutShownTimes() < 6)
+            startActivity(new Intent(MainActivity.this, Tutorial.class));
+        AppRate.with(this)
+                .setInstallDays(7)
+                .setLaunchTimes(5)
+                .setRemindInterval(2)
+                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
+                    @Override
+                    public void onClickButton(int which) {
+                        Map<String, String> hit = null;
+                        switch (which) {
+                            case Dialog.BUTTON_NEGATIVE:
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("No")
+                                        .build();
+                                break;
+                            case Dialog.BUTTON_NEUTRAL:
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("Later")
+                                        .build();
+                                break;
+                            case Dialog.BUTTON_POSITIVE:
+                                hit = new HitBuilders.EventBuilder()
+                                        .setCategory("App Rating Dialog")
+                                        .setAction("Yes")
+                                        .build();
+                                break;
+                        }
+                        if (hit != null) getThisApplication()
+                                .getTracker()
+                                .send(hit);
+                    }
+                })
+                .monitor();
+    }
+
     public Thread looperThread;
     public Handler backgroundThreadHandler;
     Handler versionHandling = new Handler();
@@ -243,86 +338,8 @@ public class MainActivity extends FragmentActivity {
     boolean isConfigChanged = false;
     long pausingTime = 0;
     private onConnectedToBluetooth onConnectToBlueTooth = null;
-    private boolean isBackPressed = false;
-    private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
     private Looper backgroundHandlerLooper;
     private BackOnconnectionLostHandler backOnConnectionLostHandler;
-
-    public OneSheeldApplication getThisApplication() {
-        return (OneSheeldApplication) getApplication();
-    }
-
-    //    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
-        }
-        setContentView(R.layout.one_sheeld_main);
-        initLooperThread();
-        if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
-//            if (savedInstance != null) {
-//                int count = getSupportFragmentManager().getBackStackEntryCount();
-//                while (count > 0) {
-//                    getSupportFragmentManager().beginTransaction().remove(getSupportFragmentManager().getFragments().get(count)).commit();
-//                    count --;
-//                }
-//            }
-            replaceCurrentFragment(R.id.appTransitionsContainer,
-                    SheeldsList.getInstance(), "base", true, false);
-        }
-        postConfigChange();
-        resetSlidingMenu();
-        if (getThisApplication().getAppFirmata() != null) {
-            getThisApplication().getAppFirmata()
-                    .addFirmwareVersionQueryHandler(versionChangingHandler);
-            getThisApplication().getAppFirmata()
-                    .addArduinoLibraryVersionQueryHandler(
-                            arduinoLibraryVersionHandler);
-        }
-        thisInstance = this;
-        if (getThisApplication().getShowTutAgain()
-                && getThisApplication().getTutShownTimes() < 6)
-            startActivity(new Intent(MainActivity.this, Tutorial.class));
-        AppRate.with(this)
-                .setInstallDays(7)
-                .setLaunchTimes(5)
-                .setRemindInterval(2)
-                .setOnClickButtonListener(new OnClickButtonListener() { // callback listener.
-                    @Override
-                    public void onClickButton(int which) {
-                        Map<String, String> hit = null;
-                        switch (which) {
-                            case Dialog.BUTTON_NEGATIVE:
-                                hit = new HitBuilders.EventBuilder()
-                                        .setCategory("App Rating Dialog")
-                                        .setAction("No")
-                                        .build();
-                                break;
-                            case Dialog.BUTTON_NEUTRAL:
-                                hit = new HitBuilders.EventBuilder()
-                                        .setCategory("App Rating Dialog")
-                                        .setAction("Later")
-                                        .build();
-                                break;
-                            case Dialog.BUTTON_POSITIVE:
-                                hit = new HitBuilders.EventBuilder()
-                                        .setCategory("App Rating Dialog")
-                                        .setAction("Yes")
-                                        .build();
-                                break;
-                        }
-                        if (hit != null) getThisApplication()
-                                .getTracker()
-                                .send(hit);
-                    }
-                })
-                .monitor();
-    }
 
     private void stopLooperThread() {
         if (looperThread != null && looperThread.isAlive()) {
