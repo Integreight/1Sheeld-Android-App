@@ -897,7 +897,7 @@ public class CameraHeadService extends Service implements
     }
 
     private void updateLastImage(String path) {
-        CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(path);
+        //CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(path);
         Bundle intent = new Bundle();
         intent.putString("absolutePath", path);
         try {

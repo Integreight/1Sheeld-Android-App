@@ -69,7 +69,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private BluetoothAdapter mBtAdapter;
     private RelativeLayout deviceListCont;
     private LinearLayout devicesList;
-    private ProgressBar loading;
+    private ProgressBar loading, smallLoading;
     private Button scanOrTryAgain;
     private OneSheeldTextView statusText;
     private RelativeLayout transactionSlogan;
@@ -128,6 +128,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         setCancelable(false);
         deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
         loading = (ProgressBar) findViewById(R.id.progress);
+        smallLoading = (ProgressBar) findViewById(R.id.small_progress);
         scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
         statusText = (OneSheeldTextView) findViewById(R.id.statusText);
         transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
@@ -225,17 +226,17 @@ public class ArduinoConnectivityPopup extends Dialog {
                     }
 
                     @Override
-                    public void onFailure(int arg0, Header[] arg1, String arg2,
-                                          Throwable arg3) {
+                    public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, String responseString, Throwable throwable) {
+
                         ((OneSheeldApplication) activity.getApplication())
                                 .setMajorVersion(-1);
                         ((OneSheeldApplication) activity.getApplication())
                                 .setMinorVersion(-1);
-                        super.onFailure(arg0, arg1, arg2, arg3);
+                                super.onFailure(statusCode, headers, responseString, throwable);
                     }
 
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, JSONObject response) {
                         try {
                             System.err.println(response);
                             ((OneSheeldApplication) activity.getApplication())
@@ -276,6 +277,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         isConnecting = false;
         deviceListCont.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.INVISIBLE);
+        smallLoading.setVisibility(View.INVISIBLE);
         scanOrTryAgain.setVisibility(View.VISIBLE);
         scanOrTryAgain.setText(R.string.scan);
         scanOrTryAgain.setOnClickListener(new View.OnClickListener() {
@@ -329,6 +331,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         if (backPressed == false) {
             deviceListCont.setVisibility(View.INVISIBLE);
             loading.setVisibility(View.INVISIBLE);
+            smallLoading.setVisibility(View.INVISIBLE);
             scanOrTryAgain.setVisibility(View.VISIBLE);
             changeSlogan(msg, COLOR.ORANGE);
             scanOrTryAgain.setText(R.string.tryAgain);
@@ -338,12 +341,14 @@ public class ArduinoConnectivityPopup extends Dialog {
     private void setDevicesListReady() {
         deviceListCont.setVisibility(View.VISIBLE);
         loading.setVisibility(View.INVISIBLE);
+        smallLoading.setVisibility(View.INVISIBLE);
         scanOrTryAgain.setVisibility(View.INVISIBLE);
     }
 
     private void showProgress() {
         deviceListCont.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.VISIBLE);
+        smallLoading.setVisibility(View.INVISIBLE);
         scanOrTryAgain.setVisibility(View.INVISIBLE);
     }
 
@@ -368,7 +373,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
-
+                                smallLoading.setVisibility(View.INVISIBLE);
                                 setRetryButtonReady(activity.getResources()
                                                 .getString(R.string.none_found),
                                         new View.OnClickListener() {
@@ -386,6 +391,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                             @Override
                             public void run() {
                                 // TODO Auto-generated method stub
+                                smallLoading.setVisibility(View.INVISIBLE);
                                 // devicesList.removeAllViews();
                                 for (int i = 0; i < devicesList.getChildCount(); i++) {
                                     OneSheeldTextView deviceView = (OneSheeldTextView) devicesList
@@ -635,6 +641,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 changeSlogan(
                         activity.getResources().getString(
                                 R.string.selectYourDevice), COLOR.YELLOW);
+                smallLoading.setVisibility(View.VISIBLE);
             }
         }
     }

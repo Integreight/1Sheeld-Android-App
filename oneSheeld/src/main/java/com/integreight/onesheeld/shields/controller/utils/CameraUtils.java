@@ -2,10 +2,12 @@ package com.integreight.onesheeld.shields.controller.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.hardware.Camera;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 import com.integreight.onesheeld.utils.Log;
 
@@ -17,6 +19,9 @@ public class CameraUtils {
     public static final byte FROM_CAMERA_FOLDER = (byte) 0x01;
     public static String CAMERA_CAPTURE_RECEIVER_EVENT_NAME = "camera_capture_event_name";
     public static String lastCapturedImagePathFromOneSheeldFolder = "";
+    private static SharedPreferences sharedPreferences;
+    private static SharedPreferences.Editor editor;
+    private static final String sharedPreferencesKey = "LastImage";
 
     public static Camera.Size getBiggestPictureSize(
             Camera.Parameters parameters) {
@@ -113,7 +118,7 @@ public class CameraUtils {
         return fullPath;
     }
 
-    public static String getLastCapturedImagePathFromOneSheeldFolder(
+    public static String getLastCapturedImagePathFromOneSheeldFolderInMediaStore(
             Activity activity) {
         final String[] imageColumns = {MediaStore.Images.Media._ID,
                 MediaStore.Images.Media.DATA};
@@ -139,22 +144,42 @@ public class CameraUtils {
         return fullPath;
     }
 
-    public static String getLastCapturedImagePathFromOneSheeldFolder() {
+    public static String getLastCapturedImagePathFromOneSheeldFolder(Activity activity,boolean viewToast) {
+        sharedPreferences = activity.getSharedPreferences("camera", Context.MODE_PRIVATE);
+        File tmpImage;
         if (lastCapturedImagePathFromOneSheeldFolder != null) {
-            File tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+            tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
             if (tmpImage.exists())
                 return lastCapturedImagePathFromOneSheeldFolder;
-            else
-                return "";
+            else {
+                lastCapturedImagePathFromOneSheeldFolder = sharedPreferences.getString(sharedPreferencesKey,"");
+                tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+                if (tmpImage.exists())
+                    return lastCapturedImagePathFromOneSheeldFolder;
+                else
+                    return getLastCapturedImagePathFromOneSheeldFolderInMediaStore(activity);
+            }
+        }else{
+            lastCapturedImagePathFromOneSheeldFolder = sharedPreferences.getString(sharedPreferencesKey,"");
+            tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
+            if (tmpImage.exists())
+                return lastCapturedImagePathFromOneSheeldFolder;
         }
+        if (viewToast)
+            Toast.makeText(activity.getApplicationContext(),"Image not found",Toast.LENGTH_SHORT).show();
         return "";
     }
 
-    public static void setLastCapturedImagePathFromOneSheeldFolder(String lastCapturedImagePathFromOneSheeldFolder) {
+    public static void setLastCapturedImagePathFromOneSheeldFolder(String lastCapturedImagePathFromOneSheeldFolder,Activity activity) {
+        sharedPreferences = activity.getSharedPreferences("camera",Context.MODE_PRIVATE);
         if (lastCapturedImagePathFromOneSheeldFolder != null) {
             File tmpImage = new File(lastCapturedImagePathFromOneSheeldFolder);
-            if (tmpImage.exists())
+            if (tmpImage.exists()) {
                 CameraUtils.lastCapturedImagePathFromOneSheeldFolder = lastCapturedImagePathFromOneSheeldFolder;
+                editor = sharedPreferences.edit();
+                editor.putString(sharedPreferencesKey,lastCapturedImagePathFromOneSheeldFolder);
+                editor.commit();
+            }
         }
     }
 }

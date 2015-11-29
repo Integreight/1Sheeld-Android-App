@@ -10,22 +10,12 @@ public class ShieldFrame {
     public static final byte END_OF_FRAME = (byte) 0x00;
 
     private byte shieldId;
-    private byte instanceId;
     private byte functionId;
     private ArrayList<byte[]> arguments;
-
-    public ShieldFrame(byte shieldId, byte instanceId, byte functionId) {
-        // TODO Auto-generated constructor stub
-        this.shieldId = shieldId;
-        this.instanceId = instanceId;
-        this.functionId = functionId;
-        arguments = new ArrayList<byte[]>();
-    }
 
     public ShieldFrame(byte shieldId, byte functionId) {
         // TODO Auto-generated constructor stub
         this.shieldId = shieldId;
-        this.instanceId = 0;
         this.functionId = functionId;
         arguments = new ArrayList<byte[]>();
     }
@@ -33,17 +23,12 @@ public class ShieldFrame {
     public ShieldFrame(byte shieldId) {
         // TODO Auto-generated constructor stub
         this.shieldId = shieldId;
-        this.instanceId = 0;
         this.functionId = 0;
         arguments = new ArrayList<byte[]>();
     }
 
     public byte getShieldId() {
         return shieldId;
-    }
-
-    public byte getInstanceId() {
-        return instanceId;
     }
 
     public byte getFunctionId() {
@@ -147,6 +132,8 @@ public class ShieldFrame {
         for (byte[] argument : arguments) {
             totalSizeOfArguments += argument.length;
         }
+        int randomValue= (int) Math.round((Math.random()*15));
+        randomValue=randomValue|((15-randomValue)<<4);
         int frameSize = 7 + arguments.size() * 2 + totalSizeOfArguments;// 6:start,
         // shield
         // id,
@@ -161,7 +148,7 @@ public class ShieldFrame {
         byte[] data = new byte[frameSize];
         data[0] = START_OF_FRAME;
         data[1] = shieldId;
-        data[2] = instanceId;
+        data[2] = (byte)randomValue;
         data[3] = functionId;
         data[4] = (byte) arguments.size();
         data[5] = (byte) (255 - arguments.size());

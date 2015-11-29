@@ -9,6 +9,8 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -30,6 +32,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
@@ -54,11 +58,14 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
@@ -70,6 +77,7 @@ public class MainActivity extends FragmentActivity {
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
     private boolean isBackPressed = false;
+    TextView oneSheeldLogo;
 
     private CopyOnWriteArrayList<OnSlidingMenueChangeListner> onChangeSlidingLockListeners = new CopyOnWriteArrayList<>();
 
@@ -88,6 +96,13 @@ public class MainActivity extends FragmentActivity {
             window.setStatusBarColor(Color.parseColor("#CC3a3a3a"));
         }
         setContentView(R.layout.one_sheeld_main);
+        oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
+        oneSheeldLogo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.this.openOptionsMenu();
+            }
+        });
         initLooperThread();
         if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
 //            if (savedInstance != null) {

@@ -14,7 +14,6 @@ import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.snappydb.SnappydbException;
 
-import org.apache.http.Header;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -152,9 +151,9 @@ public class InternetShield extends
     }
 
     public interface CallBack {
-        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int RequestID);
+        public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, int RequestID);
 
-        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int RequestID);
+        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error, int RequestID);
 
         public void onFinish(int requestID);
 
@@ -176,7 +175,7 @@ public class InternetShield extends
                     request.setUrl(url);
                     request.setCallback(new CallBack() {
                         @Override
-                        public void onSuccess(int statusCode, Header[] headers, byte[] responseBody, int requestID) {
+                        public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_SUCCESS);
                             frame1.addIntegerArgument(2, requestID);///0=id
                             frame1.addIntegerArgument(2, statusCode);//
@@ -189,7 +188,7 @@ public class InternetShield extends
                         }
 
                         @Override
-                        public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error, int requestID) {
+                        public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error, int requestID) {
                             ShieldFrame frame1 = new ShieldFrame(SHIELD_ID, REQUEST.ON_FAILURE);
                             frame1.addIntegerArgument(2, requestID);
                             frame1.addIntegerArgument(2, statusCode);//
@@ -249,7 +248,7 @@ public class InternetShield extends
                         String imgPath = null;
                         byte sourceFolderId = frame.getArgument(2)[0];
                         if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
-                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder();
+                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity,true);
                         else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                             imgPath = CameraUtils.getLastCapturedImagePathFromCameraFolder(activity);
                         if (imgPath != null) {
@@ -266,7 +265,7 @@ public class InternetShield extends
                         String imgPath = null;
                         byte sourceFolderId = frame.getArgument(1)[0];
                         if (sourceFolderId == CameraUtils.FROM_ONESHEELD_FOLDER)
-                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder();
+                            imgPath = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity,true);
                         else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                             imgPath = CameraUtils.getLastCapturedImagePathFromCameraFolder(activity);
                         if (imgPath != null) {
@@ -650,7 +649,7 @@ public class InternetShield extends
             String headers = "No Headers";
             if (req.getHeaders() != null) {
                 headers = "";
-                for (Header header : req.getHeaders()) {
+                for (cz.msebera.android.httpclient.Header header : req.getHeaders()) {
                     headers += header.getName() + " : " + header.getValue() + "\n";
                 }
             }

@@ -51,7 +51,7 @@ import io.fabric.sdk.android.Fabric;
  */
 public class OneSheeldApplication extends Application {
     private SharedPreferences appPreferences;
-    public static int ARDUINO_LIBRARY_VERSION = 7;
+    public static int ARDUINO_LIBRARY_VERSION = 9;
     private final String APP_PREF_NAME = "oneSheeldPreference";
     private final String LAST_DEVICE = "lastConnectedDevice";
     private final String MAJOR_VERSION = "majorVersion";
@@ -128,6 +128,7 @@ public class OneSheeldApplication extends Application {
         appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
         setAppFirmata(new ArduinoFirmata(getApplicationContext()));
         parseSocialKeys();
+        Parse.enableLocalDatastore(this);
         Parse.initialize(this, ApiObjects.parse.get("app_id"),
                 ApiObjects.parse.get("client_id"));
         ParseInstallation.getCurrentInstallation().saveInBackground();
