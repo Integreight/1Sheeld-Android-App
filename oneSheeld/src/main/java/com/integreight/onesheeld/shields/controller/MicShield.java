@@ -87,6 +87,8 @@ public class MicShield extends ControllerParent<MicShield> {
             boolean isToastable) {
         this.selectionAction = selectionAction;
         addRequiredPremission(Manifest.permission.RECORD_AUDIO);
+        addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
         if (activity.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_MICROPHONE) && checkForPermissions())
             startMic(isToastable);
