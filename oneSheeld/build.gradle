@@ -52,6 +52,7 @@ android {
         abortOnError false
     }
 
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
