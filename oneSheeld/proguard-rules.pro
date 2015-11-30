@@ -9,14 +9,15 @@
 
 # Add any project specific keep options here:
 -dontobfuscate
--keepattributes SourceFile,LineNumberTable
+-keepattributes SourceFile,LineNumberTable,*Annotation*,Signature
 -keep class com.integreight.** { *; }
 
 
 # Required for Parse
--keepattributes Signature
 -dontwarn com.squareup.**
 -dontwarn okio.**
+-dontwarn android.net.SSLCertificateSocketFactory
+-dontwarn android.app.Notification
 
 # Required for Twitter4j
 -dontwarn twitter4j.**
