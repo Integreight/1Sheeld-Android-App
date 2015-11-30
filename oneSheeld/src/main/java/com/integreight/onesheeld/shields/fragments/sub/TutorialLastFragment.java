@@ -40,6 +40,16 @@ public class TutorialLastFragment extends Fragment {
                         getActivity().finish();
                     }
                 });
+        v.findViewById(R.id.exploreBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.setShownTutAgain(cb.isChecked());
+                if (!cb.isChecked())
+                    app.setTutShownTimes(0);
+                app.setIsDemoMode(true);
+                getActivity().finish();
+            }
+        });
         getView().findViewById(R.id.check).setOnClickListener(
                 new View.OnClickListener() {
 

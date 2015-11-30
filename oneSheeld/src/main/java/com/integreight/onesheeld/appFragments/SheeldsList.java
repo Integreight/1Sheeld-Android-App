@@ -193,14 +193,17 @@ public class SheeldsList extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (activity.getSupportFragmentManager()
-                                            .getBackStackEntryCount() > 1) {
-                                        activity.getSupportFragmentManager()
-                                                .popBackStack();
-                                        activity.getSupportFragmentManager()
-                                                .executePendingTransactions();
-                                    }
-                                    activity.stopService();
+                                    if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                                        if (activity.getSupportFragmentManager()
+                                                .getBackStackEntryCount() > 1) {
+                                            activity.getSupportFragmentManager()
+                                                    .popBackStack();
+                                            activity.getSupportFragmentManager()
+                                                    .executePendingTransactions();
+                                        }
+                                        activity.stopService();
+                                    }else
+                                        Log.test("Test", "Cannot disconnect in demoMode");
                                     if (!ArduinoConnectivityPopup.isOpened) {
                                         ArduinoConnectivityPopup.isOpened = true;
                                         new ArduinoConnectivityPopup(activity)
@@ -217,7 +220,7 @@ public class SheeldsList extends Fragment {
                 || (((OneSheeldApplication) activity.getApplication())
                 .getAppFirmata() != null && !((OneSheeldApplication) activity
                 .getApplication()).getAppFirmata().isOpen())) {
-            if (!ArduinoConnectivityPopup.isOpened)
+            if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
                 new ArduinoConnectivityPopup(activity).show();
         }
         CrashlyticsUtils.setString("Current View", "Shields List");
@@ -348,7 +351,7 @@ public class SheeldsList extends Fragment {
                 activity.getSupportFragmentManager()
                         .executePendingTransactions();
             }
-            if (!ArduinoConnectivityPopup.isOpened)
+            if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
                 new ArduinoConnectivityPopup(activity).show();
         }
 

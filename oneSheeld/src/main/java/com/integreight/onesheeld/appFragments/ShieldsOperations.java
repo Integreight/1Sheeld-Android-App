@@ -337,7 +337,7 @@ public class ShieldsOperations extends BaseContainerFragment {
                                                 .executePendingTransactions();
                                     }
                                     activity.stopService();
-                                    if (!ArduinoConnectivityPopup.isOpened) {
+                                    if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
                                         ArduinoConnectivityPopup.isOpened = true;
                                         new ArduinoConnectivityPopup(activity)
                                                 .show();

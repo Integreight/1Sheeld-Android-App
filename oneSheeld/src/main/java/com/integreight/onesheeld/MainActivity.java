@@ -360,6 +360,13 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         thisInstance = this;
+        if (((OneSheeldApplication) thisInstance.getApplication()).getIsDemoMode()) {
+            Log.d("Test", "DemoMode On");
+            if (ArduinoConnectivityPopup.isOpened){
+                ArduinoConnectivityPopup.isOpened = false;
+                ArduinoConnectivityPopup.thisInstance.cancel();
+            }
+        }
     }
 
     private BackOnconnectionLostHandler backOnConnectionLostHandler;
@@ -372,11 +379,11 @@ public class MainActivity extends FragmentActivity {
                 public void handleMessage(Message msg) {
                     if (connectionLost) {
                         if (!ArduinoConnectivityPopup.isOpened
-                                && !isFinishing())
+                                && !isFinishing() && !((OneSheeldApplication) getApplication()).getIsDemoMode())
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     if (!ArduinoConnectivityPopup.isOpened
-                                            && !isFinishing())
+                                            && !isFinishing() && !((OneSheeldApplication) getApplication()).getIsDemoMode())
                                         new ArduinoConnectivityPopup(
                                                 MainActivity.this).show();
                                 }
@@ -637,7 +644,7 @@ public class MainActivity extends FragmentActivity {
                             Toast.LENGTH_SHORT).show();
                 } else {
                     if (onConnectToBlueTooth != null
-                            && ArduinoConnectivityPopup.isOpened)
+                            && ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) getApplication()).getIsDemoMode())
                         onConnectToBlueTooth.onConnect();
                 }
                 break;
@@ -801,4 +808,5 @@ public class MainActivity extends FragmentActivity {
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
     }
+
 }

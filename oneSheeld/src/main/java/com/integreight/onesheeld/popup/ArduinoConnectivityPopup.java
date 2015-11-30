@@ -40,6 +40,7 @@ import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
@@ -52,6 +53,7 @@ import java.util.Hashtable;
 
 public class ArduinoConnectivityPopup extends Dialog {
     private Activity activity;
+    public static ArduinoConnectivityPopup thisInstance;
     private float scale;
     private boolean isConnecting = false;
     private Hashtable<String, BluetoothDevice> foundDevicesTable;
@@ -63,6 +65,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         this.activity = context;
         scale = activity.getResources().getDisplayMetrics().density;
         foundDevicesTable = new Hashtable<String, BluetoothDevice>();
+        thisInstance = this;
     }
 
     // Member fields
@@ -72,6 +75,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private ProgressBar loading, smallLoading;
     private Button scanOrTryAgain;
     private OneSheeldTextView statusText;
+    private OneSheeldButton skipScan;
     private RelativeLayout transactionSlogan;
     public static boolean isOpened = false, backPressed = false;
     private TimeOut lockerTimeOut;
@@ -131,6 +135,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         smallLoading = (ProgressBar) findViewById(R.id.small_progress);
         scanOrTryAgain = (Button) findViewById(R.id.scanOrTryAgain);
         statusText = (OneSheeldTextView) findViewById(R.id.statusText);
+        skipScan = (OneSheeldButton) findViewById(R.id.skip_scan);
         transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
         devicesList = (LinearLayout) findViewById(R.id.devicesList);
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -162,6 +167,13 @@ public class ArduinoConnectivityPopup extends Dialog {
             activity.finish();
             return;
         }
+        skipScan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ArduinoConnectivityPopup.isOpened = false;
+                ArduinoConnectivityPopup.this.cancel();
+            }
+        });
         ((PullToRefreshScrollView) findViewById(R.id.scrollingDevices))
                 .setOnRefreshListener(new OnRefreshListener<ScrollView>() {
 
@@ -608,7 +620,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                 ((OneSheeldApplication) activity
                                         .getApplication())
                                         .setLastConnectedDevice(address);
-                            startService(address,name);
+                            startService(address, name);
                         } else {
                             if (mBtAdapter != null
                                     && mBtAdapter.isDiscovering())
@@ -621,12 +633,13 @@ public class ArduinoConnectivityPopup extends Dialog {
                                         @Override
                                         public void onConnect() {
                                             backPressed = false;
+                                            ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
                                             if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
                                                     .isChecked())
                                                 ((OneSheeldApplication) activity
                                                         .getApplication())
                                                         .setLastConnectedDevice(address);
-                                            startService(address,name);
+                                            startService(address, name);
                                         }
                                     });
                             Intent enableIntent = new Intent(

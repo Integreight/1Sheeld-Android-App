@@ -79,6 +79,8 @@ public class OneSheeldApplication extends Application {
 
     private static boolean isDebuggable = true;
 
+    private static boolean isDemoMode = false;
+
     private Tracker gaTracker;
 
     private long connectionTime;
@@ -373,6 +375,14 @@ public class OneSheeldApplication extends Application {
     public void setRunningSheelds(
             Hashtable<String, ControllerParent<?>> runningSheelds) {
         this.runningSheelds = runningSheelds;
+    }
+
+    public boolean getIsDemoMode(){
+        return isDemoMode;
+    }
+
+    public void setIsDemoMode(boolean isDemoMode) {
+        OneSheeldApplication.isDemoMode = isDemoMode;
     }
 
     public ArduinoFirmata getAppFirmata() {
