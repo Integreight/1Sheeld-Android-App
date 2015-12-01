@@ -193,7 +193,7 @@ public class SheeldsList extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
                                         if (activity.getSupportFragmentManager()
                                                 .getBackStackEntryCount() > 1) {
                                             activity.getSupportFragmentManager()
@@ -202,8 +202,10 @@ public class SheeldsList extends Fragment {
                                                     .executePendingTransactions();
                                         }
                                         activity.stopService();
-                                    }else
+                                    }else {
                                         Log.test("Test", "Cannot disconnect in demoMode");
+                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
+                                    }
                                     if (!ArduinoConnectivityPopup.isOpened) {
                                         ArduinoConnectivityPopup.isOpened = true;
                                         new ArduinoConnectivityPopup(activity)

@@ -170,6 +170,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         skipScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(true);
                 ArduinoConnectivityPopup.isOpened = false;
                 ArduinoConnectivityPopup.this.cancel();
             }

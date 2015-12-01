@@ -377,28 +377,30 @@ public class MainActivity extends FragmentActivity {
 
                 @Override
                 public void handleMessage(Message msg) {
-                    if (connectionLost) {
-                        if (!ArduinoConnectivityPopup.isOpened
-                                && !isFinishing() && !((OneSheeldApplication) getApplication()).getIsDemoMode())
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    if (!ArduinoConnectivityPopup.isOpened
-                                            && !isFinishing() && !((OneSheeldApplication) getApplication()).getIsDemoMode())
-                                        new ArduinoConnectivityPopup(
-                                                MainActivity.this).show();
-                                }
-                            });
-                        if (getSupportFragmentManager()
-                                .getBackStackEntryCount() > 1) {
-                            getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(0, 0, 0, 0)
-                                    .commitAllowingStateLoss();
-                            getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            getSupportFragmentManager()
-                                    .executePendingTransactions();
+                    if (!((OneSheeldApplication) getApplication()).getIsDemoMode()) {
+                        if (connectionLost) {
+                            if (!ArduinoConnectivityPopup.isOpened
+                                    && !isFinishing())
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        if (!ArduinoConnectivityPopup.isOpened
+                                                && !isFinishing() && !((OneSheeldApplication) getApplication()).getIsDemoMode())
+                                            new ArduinoConnectivityPopup(
+                                                    MainActivity.this).show();
+                                    }
+                                });
+                            if (getSupportFragmentManager()
+                                    .getBackStackEntryCount() > 1) {
+                                getSupportFragmentManager().beginTransaction()
+                                        .setCustomAnimations(0, 0, 0, 0)
+                                        .commitAllowingStateLoss();
+                                getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                getSupportFragmentManager()
+                                        .executePendingTransactions();
+                            }
                         }
+                        connectionLost = false;
                     }
-                    connectionLost = false;
                     super.handleMessage(msg);
                 }
             };
