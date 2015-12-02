@@ -105,7 +105,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getApplication().getAppFirmata().isOpen() == false) return;
+        if (getApplication().getAppFirmata().isOpen() == false && !getApplication().getIsDemoMode()) return;
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             if (!reInitController())
                 return;
@@ -124,31 +124,32 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		 * then starts to re-init it
 		 */
 
-        if (getApplication().getAppFirmata().isOpen() == false) return;
-        if (getApplication().getRunningShields().get(getControllerTag()) != null && activity != null && activity.findViewById(R.id.settingsFixedHandler) != null)
-            getApplication().getRunningShields().get(getControllerTag())
-                    .setHasForgroundView(true);
-        else {
+        if (getApplication().getAppFirmata().isOpen() == false) {
+            if (getApplication().getRunningShields().get(getControllerTag()) != null && activity != null && activity.findViewById(R.id.settingsFixedHandler) != null)
+                getApplication().getRunningShields().get(getControllerTag())
+                        .setHasForgroundView(true);
+            else {
 //            if (!reInitController())
-            return;
+                return;
+            }
+            if (getApplication().getAppFirmata() == null) {
+                getApplication().addServiceEventHandler(
+                        new OneSheeldServiceHandler() {
+
+                            @Override
+                            public void onSuccess(ArduinoFirmata firmate) {
+                                ((T) ShieldFragmentParent.this)
+                                        .doOnServiceConnected();
+                            }
+
+                            @Override
+                            public void onFailure() {
+
+                            }
+                        });
+            } else
+                doOnServiceConnected();
         }
-        if (getApplication().getAppFirmata() == null) {
-            getApplication().addServiceEventHandler(
-                    new OneSheeldServiceHandler() {
-
-                        @Override
-                        public void onSuccess(ArduinoFirmata firmate) {
-                            ((T) ShieldFragmentParent.this)
-                                    .doOnServiceConnected();
-                        }
-
-                        @Override
-                        public void onFailure() {
-
-                        }
-                    });
-        } else
-            doOnServiceConnected();
         // View or hide Setting sliding drawer handler button
         activity.findViewById(R.id.settingsFixedHandler).setVisibility(
                 hasSettings ? View.VISIBLE : View.GONE);
@@ -218,7 +219,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onResume() {
         super.onResume();
-        if (getApplication().getAppFirmata().isOpen() == false) return;
+        if (getApplication().getAppFirmata().isOpen() == false && !getApplication().getIsDemoMode()) return;
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             if (!reInitController())
                 return;
