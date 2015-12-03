@@ -451,9 +451,11 @@ public class SheeldsList extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.open_bootloader_popup:
-                if (!FirmwareUpdatingPopup.isOpened)
+                if (!FirmwareUpdatingPopup.isOpened && ((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
                     new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
                             .show();
+                else
+                    activity.showToast("Please connect first.");
                 return true;
             case R.id.action_settings:
                 ((OneSheeldApplication) activity.getApplication())
