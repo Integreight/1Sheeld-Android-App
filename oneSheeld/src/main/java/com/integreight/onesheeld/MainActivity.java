@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -360,13 +361,6 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         thisInstance = this;
-        if (((OneSheeldApplication) thisInstance.getApplication()).getIsDemoMode()) {
-            Log.d("Test", "DemoMode On");
-            if (ArduinoConnectivityPopup.isOpened){
-                ArduinoConnectivityPopup.isOpened = false;
-                ArduinoConnectivityPopup.thisInstance.cancel();
-            }
-        }
     }
 
     private BackOnconnectionLostHandler backOnConnectionLostHandler;
@@ -377,16 +371,17 @@ public class MainActivity extends FragmentActivity {
 
                 @Override
                 public void handleMessage(Message msg) {
-                    if (!((OneSheeldApplication) getApplication()).getIsDemoMode()) {
+                    if (!((OneSheeldApplication) getApplication()).getIsDemoMode() && !((OneSheeldApplication) getApplication()).getAppFirmata().isOpen()) {
                         if (connectionLost) {
                             if (!ArduinoConnectivityPopup.isOpened
                                     && !isFinishing())
                                 runOnUiThread(new Runnable() {
                                     public void run() {
                                         if (!ArduinoConnectivityPopup.isOpened
-                                                && !isFinishing() && !((OneSheeldApplication) getApplication()).getIsDemoMode())
+                                                && !isFinishing()) {
                                             new ArduinoConnectivityPopup(
                                                     MainActivity.this).show();
+                                        }
                                     }
                                 });
                             if (getSupportFragmentManager()

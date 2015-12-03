@@ -27,6 +27,7 @@ import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
+import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
@@ -316,18 +317,23 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
-                                        try {
-                                            ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
-                                        } catch (RemoteException e) {
-                                            e.printStackTrace();
-                                        }
-                                    if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
-                                        try {
-                                            ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
-                                        } catch (RemoteException e) {
-                                            e.printStackTrace();
-                                        }
+                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                                        if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
+                                            try {
+                                                ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                                            } catch (RemoteException e) {
+                                                e.printStackTrace();
+                                            }
+                                        if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
+                                            try {
+                                                ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                                            } catch (RemoteException e) {
+                                                e.printStackTrace();
+                                            }
+                                    } else {
+                                        Log.test("Test", "Cannot disconnect in demoMode");
+                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
+                                    }
                                     activity.closeMenu();
                                     if (activity.getSupportFragmentManager()
                                             .getBackStackEntryCount() > 1) {
@@ -337,7 +343,7 @@ public class ShieldsOperations extends BaseContainerFragment {
                                                 .executePendingTransactions();
                                     }
                                     activity.stopService();
-                                    if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                                    if (!ArduinoConnectivityPopup.isOpened) {
                                         ArduinoConnectivityPopup.isOpened = true;
                                         new ArduinoConnectivityPopup(activity)
                                                 .show();
@@ -346,9 +352,10 @@ public class ShieldsOperations extends BaseContainerFragment {
                             });
             }
         }, 500);
-        ((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
-                .getChildAt(1).setBackgroundResource(
-                R.drawable.bluetooth_disconnect_button);
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
+            ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
+        else
+            ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
         ((ViewGroup) activity.findViewById(R.id.cancelConnection))
                 .getChildAt(1).setBackgroundResource(R.drawable.back_button);
         new Handler().postDelayed(new Runnable() {

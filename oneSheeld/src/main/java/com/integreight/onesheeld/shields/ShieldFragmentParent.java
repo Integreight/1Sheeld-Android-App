@@ -124,7 +124,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 		 * then starts to re-init it
 		 */
 
-        if (getApplication().getAppFirmata().isOpen() == false) {
             if (getApplication().getRunningShields().get(getControllerTag()) != null && activity != null && activity.findViewById(R.id.settingsFixedHandler) != null)
                 getApplication().getRunningShields().get(getControllerTag())
                         .setHasForgroundView(true);
@@ -132,6 +131,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 //            if (!reInitController())
                 return;
             }
+        if (getApplication().getAppFirmata().isOpen() == true) {
             if (getApplication().getAppFirmata() == null) {
                 getApplication().addServiceEventHandler(
                         new OneSheeldServiceHandler() {
