@@ -17,7 +17,9 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by Mostafa on 11/26/15.
+ * Author: Mostafa Mahmoud
+ * Email: mostafa_mahmoud@protonmail.com
+ * Created on: 11/26/15
  */
 public class VibrationShield extends ControllerParent<VibrationShield> {
     private static final int NO_REPEAT = 65535 ; //65535 is the 2'complement of -1
@@ -74,47 +76,55 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if(frame.getShieldId() == UIShield.VIBRATION_SHIELD.getId()){
             final Vibrator vibrator = (Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE);
+            int period;
             stop();
             switch (frame.getFunctionId()){
                 case 0x01:
                     final byte[] receivedPattern = frame.getArgument(0);
+                    period = frame.getArgumentAsInteger(1);
+
                     final long[] pattern = new long[receivedPattern.length/2];
                     for(int i = 0 ; i < pattern.length ; i++){
                         pattern[i] = ((receivedPattern[2*i+1] & 0xFFL) <<8 ) | (receivedPattern[i*2] & 0xFFL);
                     }
-                    final int repeat = frame.getArgumentAsInteger(1);
-                    if (repeat == NO_REPEAT)
+
+                    if (period == NO_REPEAT)
                         futureTasks.add(scheduledThreadPoolExecutor.schedule(new Runnable() {
                             @Override
                             public void run() {
                                 vibrator.vibrate(pattern,-1);
                             }
                         },0,TimeUnit.MILLISECONDS));
-                    else
-                        futureTasks.add( scheduledThreadPoolExecutor.scheduleWithFixedDelay(new Runnable() {
+                    else {
+                        for (long i:pattern)
+                            period+= i;
+                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(new Runnable() {
                             @Override
                             public void run() {
                                 vibrator.vibrate(pattern,-1);
                             }
-                        },0,repeat, TimeUnit.MILLISECONDS));
+                        }, 0, period, TimeUnit.MILLISECONDS));
+                    }
                     break;
                 case 0x02:
                     final int duration = frame.getArgumentAsInteger(0);
-                    final int repeatAfter = frame.getArgumentAsInteger(1);
-                    if (repeatAfter == NO_REPEAT)
+                    period = frame.getArgumentAsInteger(1);
+                    if (period == NO_REPEAT)
                         futureTasks.add(scheduledThreadPoolExecutor.schedule(new Runnable() {
                             @Override
                             public void run() {
                                 vibrator.vibrate(duration);
                             }
                         },0,TimeUnit.MILLISECONDS));
-                    else
+                    else {
+                        period += duration;
                         futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(new Runnable() {
                             @Override
                             public void run() {
                                 vibrator.vibrate(duration);
                             }
-                        },0,repeatAfter, TimeUnit.MILLISECONDS)) ;
+                        }, 0, period, TimeUnit.MILLISECONDS));
+                    }
                     break;
                 case 0x03:
                     stop();
@@ -124,7 +134,8 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
         }
     }
 
-    private void stop(){
+    public void stop(){
+        ((Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE)).cancel();
         for (ScheduledFuture task:futureTasks)
             task.cancel(true);
         futureTasks.clear();
@@ -133,6 +144,7 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
     @Override
     public void reset() {
         Log.sysOut("Reset");
+        ((Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE)).cancel();
         if (!scheduledThreadPoolExecutor.isShutdown())
             scheduledThreadPoolExecutor.shutdown();
         futureTasks.clear();
