@@ -204,8 +204,7 @@ public class PinsColumnContainer extends RelativeLayout {
             if (focusListener != null)
                 focusListener.selectThisChild(currentIndex, currentIndex == -1 ? "" : currentTag);
             childrenRects = new ArrayList<PinsColumnContainer.PinData>();
-            if (childrenRects.size() > 0)
-                loadRects(this);
+            loadRects(this);
             return true;
         }
         return true;
