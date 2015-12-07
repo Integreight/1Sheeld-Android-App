@@ -18,9 +18,11 @@ import com.integreight.onesheeld.shields.controller.VibrationShield;
  */
 public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
     private Button vibrationStopButton;
+    private VibrationShield.VibrationShieldListener vibrationShieldListener;
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater,ViewGroup container,Bundle savedInstanceState){
         return inflater.inflate(R.layout.vibration_shield_fragment_layout,container,false);
     }
 
@@ -31,6 +33,24 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
 
     @Override
     public void doOnStart() {
+        vibrationShieldListener = new VibrationShield.VibrationShieldListener() {
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onPause() {
+
+            }
+
+            @Override
+            public void onStop() {
+                
+            }
+        };
+        ((VibrationShield)getApplication().getRunningShields().get(getControllerTag()))
+                .setVibrationShieldListener(vibrationShieldListener);
         vibrationStopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

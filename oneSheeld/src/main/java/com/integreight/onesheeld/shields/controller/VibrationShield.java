@@ -25,6 +25,16 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
     private static final int NO_REPEAT = 65535 ; //65535 is the 2'complement of -1
     private ScheduledThreadPoolExecutor scheduledThreadPoolExecutor;
     private Vector<ScheduledFuture<?>> futureTasks;
+    private VibrationShieldListener vibrationShieldListener;
+    private Runnable onStart;
+    private Runnable onPause;
+    private Runnable onStop;
+
+    public interface VibrationShieldListener{
+        void onStart();
+        void onPause();
+        void onStop();
+    }
 
     public VibrationShield(){
         super();
@@ -38,11 +48,33 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
         super(activity, tag, manageShieldSelectionFrameManually);
     }
 
+    public void setVibrationShieldListener(VibrationShieldListener listener){
+        this.vibrationShieldListener = listener;
+    }
+
     @Override
     public ControllerParent<VibrationShield> init(String tag) {
         scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
         if(Build.VERSION.SDK_INT >= 21)
             scheduledThreadPoolExecutor.setRemoveOnCancelPolicy(true);
+        onStart = new Runnable() {
+            @Override
+            public void run() {
+                if (vibrationShieldListener != null) vibrationShieldListener.onStart();
+            }
+        };
+        onPause = new Runnable() {
+            @Override
+            public void run() {
+                if (vibrationShieldListener != null) vibrationShieldListener.onPause();
+            }
+        };
+        onStop = new Runnable() {
+            @Override
+            public void run() {
+                if (vibrationShieldListener != null) vibrationShieldListener.onStop();
+            }
+        };
         futureTasks = new Vector<>();
         return super.init(tag);
     }
@@ -88,53 +120,109 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
                         pattern[i] = ((receivedPattern[2*i+1] & 0xFFL) <<8 ) | (receivedPattern[i*2] & 0xFFL);
                     }
 
-                    if (period == NO_REPEAT)
+                    final long[] stoppingPattern = new long[receivedPattern.length/2];
+                    stoppingPattern[0] = pattern[0];
+                    for (int i = 1 ; i < stoppingPattern.length ; i++){
+                        stoppingPattern[i] = stoppingPattern[i-1] + pattern[i];
+                    }
+
+                    if (period == NO_REPEAT) {
                         futureTasks.add(scheduledThreadPoolExecutor.schedule(new Runnable() {
                             @Override
                             public void run() {
-                                vibrator.vibrate(pattern,-1);
+                                if (vibrationShieldListener != null) vibrationShieldListener
+                                        .onPause();
+                                vibrator.vibrate(pattern, -1);
                             }
-                        },0,TimeUnit.MILLISECONDS));
+                        }, 0, TimeUnit.MILLISECONDS));
+
+                        for(int i = 0 ; i < stoppingPattern.length-1 ; i++){
+                            if(i%2 == 0){
+                                futureTasks.add(scheduledThreadPoolExecutor.schedule(onStart,
+                                        stoppingPattern[i], TimeUnit.MILLISECONDS));
+                            }
+                            else{
+                                futureTasks.add(scheduledThreadPoolExecutor.schedule(onPause,
+                                        stoppingPattern[i], TimeUnit.MILLISECONDS));
+                            }
+                        }
+                        futureTasks.add(scheduledThreadPoolExecutor.schedule(onStop,
+                                stoppingPattern[stoppingPattern.length-1], TimeUnit.MILLISECONDS));
+                    }
                     else {
+
                         for (long i:pattern)
                             period+= i;
-                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(new Runnable() {
+
+                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(
+                                new Runnable() {
                             @Override
                             public void run() {
-                                vibrator.vibrate(pattern,-1);
+                                if (vibrationShieldListener != null) vibrationShieldListener
+                                        .onPause();
+                                vibrator.vibrate(pattern, -1);
                             }
                         }, 0, period, TimeUnit.MILLISECONDS));
+
+                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(
+                                new Runnable() {
+                            @Override
+                            public void run() {
+                                for (int i = 0; i < stoppingPattern.length - 1; i++) {
+                                    if (i % 2 == 0) {
+                                        futureTasks.add(scheduledThreadPoolExecutor.schedule(onStart,
+                                                stoppingPattern[i], TimeUnit.MILLISECONDS));
+                                    } else {
+                                        futureTasks.add(scheduledThreadPoolExecutor.schedule(onPause,
+                                                stoppingPattern[i], TimeUnit.MILLISECONDS));
+                                    }
+                                }
+                                futureTasks.add(scheduledThreadPoolExecutor.schedule(onPause,
+                                        stoppingPattern[stoppingPattern.length - 1],
+                                        TimeUnit.MILLISECONDS));
+                            }
+                        },0,period,TimeUnit.MILLISECONDS));
                     }
                     break;
                 case 0x02:
                     final int duration = frame.getArgumentAsInteger(0);
                     period = frame.getArgumentAsInteger(1);
-                    if (period == NO_REPEAT)
+                    if (period == NO_REPEAT) {
                         futureTasks.add(scheduledThreadPoolExecutor.schedule(new Runnable() {
                             @Override
                             public void run() {
+                                if (vibrationShieldListener != null) vibrationShieldListener
+                                        .onStart();
                                 vibrator.vibrate(duration);
                             }
-                        },0,TimeUnit.MILLISECONDS));
+                        }, 0, TimeUnit.MILLISECONDS));
+                        futureTasks.add(scheduledThreadPoolExecutor.schedule(onStop,
+                                duration,TimeUnit.MILLISECONDS));
+                    }
                     else {
                         period += duration;
-                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(new Runnable() {
+                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(
+                                new Runnable() {
                             @Override
                             public void run() {
+                                if (vibrationShieldListener != null) vibrationShieldListener
+                                        .onStart();
                                 vibrator.vibrate(duration);
                             }
                         }, 0, period, TimeUnit.MILLISECONDS));
+                        futureTasks.add(scheduledThreadPoolExecutor.scheduleWithFixedDelay(onPause,
+                                duration,period,TimeUnit.MILLISECONDS));
                     }
                     break;
                 case 0x03:
                     stop();
                     break;
             }
-
         }
     }
 
     public void stop(){
+        if (vibrationShieldListener != null) vibrationShieldListener.onStop();
         ((Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE)).cancel();
         for (ScheduledFuture task:futureTasks)
             task.cancel(true);
