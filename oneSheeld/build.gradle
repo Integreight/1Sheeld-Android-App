@@ -25,6 +25,7 @@ android {
         targetSdkVersion 9
         versionCode 151123
         versionName "1.5.0"
+        archivesBaseName = "1Sheeld.v$versionName.$versionCode"
     }
 
     buildTypes.all{
