@@ -23,6 +23,8 @@ android {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
         targetSdkVersion 9
+        versionCode 151123
+        versionName "1.5.0"
     }
 
     buildTypes.all{
