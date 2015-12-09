@@ -102,7 +102,7 @@ def isCrashlyticsPropertiesAvailable() {
 def getWorkingBranchSuffix() {
     def workingBranchSuffix=""
     try {
-        def workingBranch = "gitlh --git-dir=${rootDir}/.git --work-tree=${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
+        def workingBranch = "git --git-dir=${rootDir}/.git --work-tree=${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
         workingBranchSuffix = (workingBranch!="")? " - branch:" + workingBranch : ""
     }
     catch(all){}
