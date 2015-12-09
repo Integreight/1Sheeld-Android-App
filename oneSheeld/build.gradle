@@ -34,8 +34,7 @@ android {
 
     buildTypes {
         debug{
-            if(getWorkingBranch()!="")
-                versionNameSuffix " - branch:" + getWorkingBranch()
+            versionNameSuffix getWorkingBranchSuffix()
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -100,11 +99,12 @@ def isCrashlyticsPropertiesAvailable() {
     return new File("./oneSheeld/fabric.properties").exists()
 }
 
-def getWorkingBranch() {
-    def workingBranch=""
+def getWorkingBranchSuffix() {
+    def workingBranchSuffix=""
     try {
-        workingBranch = "gitlh --git-dir=${rootDir}/.git --work-tree=${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
+        def workingBranch = "gitlh --git-dir=${rootDir}/.git --work-tree=${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
+        workingBranchSuffix = (workingBranch!="")? " - branch:" + workingBranch : ""
     }
     catch(all){}
-    return workingBranch
+    return workingBranchSuffix
 }
