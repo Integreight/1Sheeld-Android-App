@@ -23,6 +23,9 @@ android {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
         targetSdkVersion 9
+        versionCode 151123
+        versionName "1.5.0"
+        archivesBaseName = "1Sheeld.v$versionName.$versionCode"
     }
 
     buildTypes.all{
@@ -31,6 +34,7 @@ android {
 
     buildTypes {
         debug{
+            versionNameSuffix getWorkingBranchSuffix()
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -66,7 +70,7 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     compile 'com.github.hotchemi:android-rate:0.5.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
 
@@ -93,4 +97,14 @@ dependencies {
 
 def isCrashlyticsPropertiesAvailable() {
     return new File("./oneSheeld/fabric.properties").exists()
+}
+
+def getWorkingBranchSuffix() {
+    def workingBranchSuffix=""
+    try {
+        def workingBranch = "git --git-dir=${rootDir}/.git --work-tree=${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
+        workingBranchSuffix = (workingBranch!="")? " - branch:" + workingBranch : ""
+    }
+    catch(all){}
+    return workingBranchSuffix
 }
