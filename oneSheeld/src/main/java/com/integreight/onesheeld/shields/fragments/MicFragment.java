@@ -18,31 +18,8 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 public class MicFragment extends ShieldFragmentParent<MicFragment> {
     RelativeLayout.LayoutParams params;
-    TextView soundLevelIndicator, micValue;
+    TextView soundLevelIndicator, micValue, micState;
     int stepValue;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.mic_shield_fragment_view, container,
-                false);
-    }
-    @Override
-    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
-        soundLevelIndicator = (TextView) v
-                .findViewById(R.id.soundLevelIndicator);
-        micValue = (OneSheeldTextView) v.findViewById(R.id.micValue);
-        params = (LayoutParams) soundLevelIndicator.getLayoutParams();
-        soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-
-                    @Override
-                    public void onGlobalLayout() {
-                        stepValue = soundLevelIndicator.getHeight() / 80;
-                    }
-                });
-    }
-
     private MicEventHandler micEventHandler = new MicEventHandler() {
 
         @Override
@@ -65,7 +42,46 @@ public class MicFragment extends ShieldFragmentParent<MicFragment> {
                 }
             });
         }
+
+        @Override
+        public void getState(final String state) {
+            // set data to UI
+            uiHandler.removeCallbacksAndMessages(null);
+            uiHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (canChangeUI()) {
+                        micState.setText(state);
+                    }
+                }
+            });
+        }
     };
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.mic_shield_fragment_view, container,
+                false);
+    }
+
+    @Override
+    public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
+        soundLevelIndicator = (TextView) v
+                .findViewById(R.id.soundLevelIndicator);
+        micValue = (OneSheeldTextView) v.findViewById(R.id.micValue);
+        micState = (OneSheeldTextView) v.findViewById(R.id.micState);
+        params = (LayoutParams) soundLevelIndicator.getLayoutParams();
+        soundLevelIndicator.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+
+                    @Override
+                    public void onGlobalLayout() {
+                        stepValue = soundLevelIndicator.getHeight() / 80;
+                    }
+                });
+    }
 
     private void invalidateController() {
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {

@@ -59,6 +59,7 @@ public class ToggleButtonFragment extends
 
     @Override
     public void doOnStart() {
+        toggleButtonButton.setChecked(((ToggleButtonShield) getApplication().getRunningShields().get(getControllerTag())).getButton());
         ConnectingPinsView.getInstance().reset(
                 getApplication().getRunningShields().get(getControllerTag()),
                 new OnPinSelectionListener() {
@@ -72,10 +73,7 @@ public class ToggleButtonFragment extends
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
                                             ArduinoFirmata.OUTPUT));
-                            ((ToggleButtonShield) getApplication()
-                                    .getRunningShields()
-                                    .get(getControllerTag()))
-                                    .setButton(toggleButtonButton.isChecked());
+                            ((ToggleButtonShield) getApplication().getRunningShields().get(getControllerTag())).setButton(toggleButtonButton.isChecked());
                             toggleButtonButton.setEnabled(true);
                         }
 

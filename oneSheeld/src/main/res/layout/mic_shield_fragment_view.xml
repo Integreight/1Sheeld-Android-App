@@ -74,4 +74,12 @@
         android:textColor="@color/offWhite"
         android:textSize="33sp" />
 
+    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+        android:id="@+id/micState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/offWhite"
+        android:textSize="33sp" />
+
 </LinearLayout>

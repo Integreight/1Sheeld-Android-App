@@ -71,7 +71,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
                 isChangingPreview = false;
             } else if (msg.what == SET_LAST_IMAGE_BUTTON) {
                 lastImageAbsoultePath = msg.getData().getString("absolutePath");
-                CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(lastImageAbsoultePath);
+                CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(lastImageAbsoultePath,activity);
                 Log.d("LastImage", lastImageAbsoultePath);
                 File img = new File(lastImageAbsoultePath);
                 if (img.exists() && eventHandler != null) {
@@ -167,10 +167,14 @@ public class CameraShield extends ControllerParent<CameraShield> {
         Bundle b = new Bundle();
         b.putBoolean("isBack", isBack);
         msg.setData(b);
-        try {
-            cameraBinder.send(msg);
-        } catch (RemoteException e) {
-            return false;
+        if (cameraBinder != null) {
+            try {
+                cameraBinder.send(msg);
+            } catch (RemoteException e) {
+                return false;
+            }
+        }else {
+            bindService();
         }
         isBackPreview = isBack;
         return true;
@@ -213,12 +217,16 @@ public class CameraShield extends ControllerParent<CameraShield> {
 
     }
 
-    public void showPreview() throws RemoteException {
+    public boolean showPreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
         msg.replyTo = mMessenger;
-        if (cameraBinder != null)
+        if (cameraBinder != null) {
             cameraBinder.send(msg);
-        else bindService();
+            return true;
+        }else {
+            bindService();
+            return false;
+        }
     }
 
     public void invalidatePreview() throws RemoteException {
@@ -229,11 +237,15 @@ public class CameraShield extends ControllerParent<CameraShield> {
         else bindService();
     }
 
-    public void hidePreview() throws RemoteException {
+    public boolean hidePreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
-        if (cameraBinder != null)
+        if (cameraBinder != null) {
             cameraBinder.send(msg);
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
