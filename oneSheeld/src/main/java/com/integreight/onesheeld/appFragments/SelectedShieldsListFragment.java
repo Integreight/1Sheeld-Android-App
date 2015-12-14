@@ -61,6 +61,7 @@ import com.integreight.onesheeld.shields.fragments.TerminalFragment;
 import com.integreight.onesheeld.shields.fragments.TextToSpeechFragment;
 import com.integreight.onesheeld.shields.fragments.ToggleButtonFragment;
 import com.integreight.onesheeld.shields.fragments.TwitterFragment;
+import com.integreight.onesheeld.shields.fragments.VibrationFragment;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.customviews.AppSlidingLeftMenu;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
@@ -129,6 +130,8 @@ public class SelectedShieldsListFragment extends ListFragment {
     }
 
     private ShieldFragmentParent<?> generateShieldFragment(Shield uiShield) {
+        if (uiShield.id == UIShield.VIBRATION_SHIELD.id)
+            return addToCreatedListAndReturn(uiShield,new VibrationFragment());
         if (uiShield.id == UIShield.LED_SHIELD.id)
             return addToCreatedListAndReturn(uiShield, new LedFragment());
         if (uiShield.id == UIShield.ACCELEROMETER_SHIELD.id)
