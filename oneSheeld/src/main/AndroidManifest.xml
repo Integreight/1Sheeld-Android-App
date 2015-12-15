@@ -260,6 +260,13 @@
 
         <service android:name="com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService" />
         <service android:name="com.parse.PushService" />
+        <service android:name=".shields.controller.utils.NotificationReceiver"
+            android:singleUser="true"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name="com.parse.GcmBroadcastReceiver"

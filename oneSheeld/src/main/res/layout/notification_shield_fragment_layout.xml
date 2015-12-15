@@ -20,8 +20,19 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:gravity="center"
-        android:text="Your notification text will be here!"
+        android:text="Notification text will be here!"
         android:textColor="@color/offWhite"
         android:textSize="23sp" />
 
+    <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
+        android:id="@+id/notification_receiver_toggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/notification_shield_text_textview"
+        android:background="@drawable/on_off_toggle_selelctor"
+        android:textColor="@color/offWhite"
+        android:textOff="Reader\nOFF"
+        android:textOn="Reader\nON"
+        android:textSize="20sp"/>
 </RelativeLayout>
