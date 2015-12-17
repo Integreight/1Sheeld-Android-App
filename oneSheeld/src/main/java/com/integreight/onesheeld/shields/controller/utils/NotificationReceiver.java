@@ -13,6 +13,8 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.util.Log;
 
+import com.integreight.onesheeld.shields.controller.NotificationShield;
+
 import java.util.ArrayList;
 
 /**
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 public class NotificationReceiver extends NotificationListenerService{
 
     Context context;
+    static NotificationReceiver thisInstance;
 
     @Override
 
@@ -30,63 +33,76 @@ public class NotificationReceiver extends NotificationListenerService{
 
         super.onCreate();
         context = getApplicationContext();
-
+        thisInstance = this;
     }
+
+    public static NotificationReceiver getThisInstance() {
+        return thisInstance;
+    }
+
     @Override
 
     public void onNotificationPosted(StatusBarNotification sbn) {
 
         Intent msgrcv = new Intent("NotificationDetailsMessage");
-        String pack = sbn.getPackageName();
-        String ticker = sbn.getNotification().tickerText.toString();
-        msgrcv.putExtra("package", pack);
-        msgrcv.putExtra("ticker", ticker);
-        msgrcv.putExtra("time", sbn.getPostTime());
+        NotificationObject currentNotification = null;
+        currentNotification = new NotificationObject(sbn.getPackageName(),sbn.getId(),sbn.getPostTime());
+        currentNotification.setTag(sbn.getTag());
+        if (sbn.getNotification().tickerText != null)
+            currentNotification.setTicker(String.valueOf(sbn.getNotification().tickerText));
 
-        //Log.d("notificationReceiver", "-----Notifaction Start------");
-        //Log.d("notificationReceiver", pack);
-        //Log.d("notificationReceiver", ticker);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Bundle extras = sbn.getNotification().extras;
-
-            //Log.d("notificationReceiver", "-----------");
             ArrayList<String> extrasArray = new ArrayList<>();
+            ArrayList<String> textLines = new ArrayList<String>();
             for (String key : extras.keySet()) {
                 switch (key) {
                     case Notification.EXTRA_TEXT:
-                    case Notification.EXTRA_TITLE:
-                    case Notification.EXTRA_SUB_TEXT:
-                    case Notification.EXTRA_INFO_TEXT:
-                    case Notification.EXTRA_TITLE_BIG:
                         if (extras.getString(key) != null) {
-                            //Log.d("notificationReceiver", key + ":" + extras.getString(key));
-                            extrasArray.add(extras.getString(key));
+                            currentNotification.setText(extras.getString(key));
                         }
                         break;
-//                case "android.showWhen":
-//                    Log.d("notificationReceiver","showWhen:"+extras.get(key).toString());
-//                    break;
+                    case Notification.EXTRA_TITLE:
+                        if (extras.getString(key) != null) {
+                            currentNotification.setTitle(extras.getString(key));
+                        }
+                        break;
+                    case Notification.EXTRA_SUB_TEXT:
+                        if (extras.getString(key) != null) {
+                            currentNotification.setSubText(extras.getString(key));
+                        }
+                        break;
+                    case Notification.EXTRA_INFO_TEXT:
+                        if (extras.getString(key) != null) {
+                            currentNotification.setInfoText(extras.getString(key));
+                        }
+                        break;
+                    case Notification.EXTRA_TITLE_BIG:
+                        if (extras.getString(key) != null) {
+                            currentNotification.setBigTitle(extras.getString(key));
+                        }
+                        break;
                     case Notification.EXTRA_BIG_TEXT:
-                        //Log.d("notificationReceiver", "bigText:" + ((SpannableString) extras.get(key)).toString());
-                        extrasArray.add(((SpannableString) extras.get(key)).toString());
+                        currentNotification.setBigText(((SpannableString) extras.get(key)).toString());
                         break;
                     case Notification.EXTRA_TEXT_LINES:
                         CharSequence[] strings = (CharSequence[]) extras.get(key);
                         for (CharSequence txt : strings) {
-                            //Log.d("notificationReceiver", txt.toString());
-                            extrasArray.add(txt.toString());
+                            textLines.add(txt.toString());
                         }
+                        currentNotification.setTextLines(textLines);
                         break;
                     default:
                         //Log.d("notificationReceiver",key);
                         break;
                 }
             }
-            msgrcv.putStringArrayListExtra("extras", extrasArray);
         }
-        //Log.d("notificationReceiver","-----Notifaction End------");
+        msgrcv.putExtra(NotificationShield.JSON_EXTRAS, currentNotification.toJsonString());
         LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);
+//        if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
+//            thisInstance.cancelNotification(currentNotification.getPackageName(), currentNotification.getTag(), currentNotification.getNotificationId());
+//        }
     }
 
     @Override

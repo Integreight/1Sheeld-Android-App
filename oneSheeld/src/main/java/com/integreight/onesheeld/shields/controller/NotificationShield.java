@@ -20,6 +20,7 @@ import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.controller.utils.NotificationObject;
 import com.integreight.onesheeld.shields.controller.utils.NotificationReceiver;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     private NotificationEventHandler eventHandler;
     private String lastNotificationText;
     private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
+    private ArrayList<NotificationObject> notificationObjectArrayList = new ArrayList<>();
 
     public String getLastNotificationText() {
         return lastNotificationText;
@@ -89,38 +91,39 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(onNotice);
     }
 
+    public static final String EXTRAS = "extras",JSON_EXTRAS = "jsonExtras";
+
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            String pack = intent.getStringExtra("package");
-            String ticker = intent.getStringExtra("ticker");
-            Long time = intent.getLongExtra("time",0);
-            ArrayList<String> extras = intent.getStringArrayListExtra("extras");
+            NotificationObject currentNotification = new NotificationObject(intent.getStringExtra(JSON_EXTRAS));
+            notificationObjectArrayList.add(currentNotification);
 
-            StringBuilder text = new StringBuilder("");
-            text.append(pack);
-            text.append("\n"+ticker);
-            if (extras != null &&extras.size() > 0){
-                for (String txt:extras){
-                    text.append("\n"+txt);
+            if (eventHandler != null ){
+                if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
+//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+//                        NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(),currentNotification.getTag(),currentNotification.getNotificationId());
+//                    }
+                    return;
                 }
-            }
 
-            if (eventHandler != null && !pack.equals("com.integreight.onesheeld")){
-                //eventHandler.onNotifiactionArrived(text.toString());
-
-                if (pack.equals("com.facebook.orca"))
-                    if (extras.size() == 2)
-                    eventHandler.onNotifiactionArrived(extras.get(0).toString()+" :"+extras.get(1).toString());
+                if (currentNotification.getPackageName().equals("com.facebook.orca")) {
+                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getTitle().equals(""))
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                    else if (!currentNotification.getTitle().equals(""))
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                }else if (currentNotification.getPackageName().equals("com.whatsapp")) {
+                    if (currentNotification.getTextLines().size() == 0)
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
                     else
-                    eventHandler.onNotifiactionArrived(extras.get(0).toString()+" :"+extras.get(extras.size() - 2).toString());
-                else if (pack.equals("com.whatsapp"))
-                    eventHandler.onNotifiactionArrived(ticker+" :"+extras.get(extras.size() - 1).toString());
-                else if (!ticker.equals(""))
-                    eventHandler.onNotifiactionArrived(ticker);
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                }else if (!currentNotification.getTitle().equals(""))
+                    eventHandler.onNotifiactionArrived(currentNotification.getTitle());
+                else if (!currentNotification.getTicker().equals(""))
+                    eventHandler.onNotifiactionArrived(currentNotification.getTicker());
                 else
-                    eventHandler.onNotifiactionArrived(extras.get(0).toString());
+                    eventHandler.onNotifiactionArrived(currentNotification.getPackageName());
             }
         }
     };
