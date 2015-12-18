@@ -6,11 +6,12 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Button;
 
 import com.integreight.onesheeld.R;
 
-public class Key extends Button {
+public class Key extends View {
     private boolean outOfBounds = false;
     private Drawable normalBackground;
     private Drawable pressedBackground;
@@ -105,7 +106,7 @@ public class Key extends Button {
 
     @SuppressWarnings("deprecation")
     @SuppressLint("NewApi")
-    public static void setKeyColor(Button key, Drawable bg) {
+    public static void setKeyColor(View key, Drawable bg) {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
             key.setBackgroundDrawable(bg);
         } else {

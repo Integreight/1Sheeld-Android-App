@@ -11,9 +11,23 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.BitsUtils;
 
 public class GamepadShield extends ControllerParent<GamepadShield> {
-    ShieldFrame sf;
-    byte buttonByte = 0;
-    private static final byte DATA_IN = 0x01;
+    public enum GamePadMode {KEYS,ANALOG}
+
+    private GamePadMode gamePadMode;
+    private ShieldFrame sf;
+    private byte keysStatus; //Every bit holds status of a key
+    private byte analogX;
+    private byte analogY;
+    private int angle;
+    private byte power;
+    private byte direction;
+    private static final byte GAMEPAD_KEYS = 0x01;
+    private static final byte GAMEPAD_ANALOG = 0x02;
+    private static final String[] keysPins = {"Up Arrow", "Right Arrow", "Down Arrow",
+            "Left Arrow", "Yellow Button", "Red Button", "Green Button",
+            "Blue Button"};
+    private static final String[] analogPins = {"Yellow Button", "Red Button", "Green Button",
+            "Blue Button","Analog X","Analog Y"};
 
     public GamepadShield(Activity activity, String tag) {
         super(activity, tag);
@@ -33,36 +47,41 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     public GamepadShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Up Arrow", "Right Arrow", "Down Arrow",
-                "Left Arrow", "Yellow Button", "Red Button", "Green Button",
-                "Blue Button"};
+        keysStatus = 0;
+        // The View Switcher starts with the KEYS mode
+        setGamePadMode(GamePadMode.KEYS);
     }
 
     public void setPinToHigh(String pinName, int pinId) {
-        ArduinoPin columnPincolumnPin = matchedShieldPins.get(pinName);
-        if (columnPincolumnPin != null) {
-            digitalWrite(columnPincolumnPin.microHardwarePin,
-                    ArduinoFirmata.HIGH);
-        }
-        buttonByte = BitsUtils.setBit(buttonByte, pinId);
-        sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(buttonByte);
-        sendShieldFrame(sf);
+        keysStatus = BitsUtils.setBit(keysStatus, pinId);
+        ArduinoPin arduinoPin = matchedShieldPins.get(pinName);
+        if (arduinoPin != null) digitalWrite(arduinoPin.microHardwarePin, ArduinoFirmata.HIGH);
+        sendShieldFrame();
     }
 
     public void setPinToLow(String pinName, int pinId) {
-        ArduinoPin columnPin = matchedShieldPins.get(pinName);
-
-        if (columnPin != null) {
-            digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.LOW);
-        }
-        buttonByte = BitsUtils.resetBit(buttonByte, pinId);
-        sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(buttonByte);
-        sendShieldFrame(sf);
+        keysStatus = BitsUtils.resetBit(keysStatus, pinId);
+        ArduinoPin arduinoPin = matchedShieldPins.get(pinName);
+        if (arduinoPin != null) digitalWrite(arduinoPin.microHardwarePin, ArduinoFirmata.LOW);
+        sendShieldFrame();
     }
 
-    public static enum Pin {
+    public void setAnalogPins(byte analogX, byte analogY, int angle, byte power, byte direction){
+        this.analogX = analogX;
+        this.analogY = analogY;
+        this.angle = angle;
+        this.power = power;
+        this.direction = direction;
+
+        ArduinoPin analogXArduinoPin = matchedShieldPins.get("Analog X");
+        ArduinoPin analogYArduinoPin = matchedShieldPins.get("Analog Y");
+
+        if (analogXArduinoPin != null) analogWrite(analogXArduinoPin.microHardwarePin,analogX);
+        if (analogYArduinoPin != null) analogWrite(analogYArduinoPin.microHardwarePin,analogY);
+        sendShieldFrame();
+    }
+
+    public enum Key {
         UP_ARROW(4, "Up Arrow"), RIGHT_ARROW(7, "Right Arrow"), DOWN_ARROW(5,
                 "Down Arrow"), LEFT_ARROW(6, "Left Arrow"), YELLOW_BUTTON(0,
                 "Yellow Button"), RED_BUTTON(1, "Red Button"), GREEN_BUTTON(2,
@@ -71,7 +90,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         String name;
         int id;
 
-        Pin(int id, String name) {
+        Key(int id, String name) {
             this.id = id;
             this.name = name;
         }
@@ -85,6 +104,42 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         }
     }
 
+    public GamePadMode getGamePadMode(){
+        return gamePadMode;
+    }
+
+    public void setGamePadMode(GamePadMode gamePadMode){
+        reset();
+        this.gamePadMode = gamePadMode;
+        switch (gamePadMode) {
+            case ANALOG:
+                shieldPins = analogPins;
+                break;
+            case KEYS:
+                shieldPins = keysPins;
+                break;
+        }
+    }
+
+    private void sendShieldFrame(){
+        if(gamePadMode == GamePadMode.KEYS) {
+            sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), GAMEPAD_KEYS);
+            sf.addByteArgument(keysStatus);
+            sendShieldFrame(sf);
+        }
+        else if (gamePadMode == GamePadMode.ANALOG){
+            keysStatus = (byte) (keysStatus & 0x0F); // masking unused keys for precaution
+            sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), GAMEPAD_ANALOG);
+            sf.addByteArgument(keysStatus);
+            sf.addByteArgument(analogX);
+            sf.addByteArgument(analogY);
+            sf.addIntegerArgument(2,angle);
+            sf.addByteArgument(power);
+            sf.addByteArgument(direction);
+            sendShieldFrame(sf);
+        }
+    }
+
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         // TODO Auto-generated method stub
@@ -95,5 +150,11 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     public void reset() {
         // TODO Auto-generated method stub
         sf = null;
+        keysStatus = 0;
+        analogX = 127;
+        analogY = 127;
+        angle = 0;
+        power = 0;
+        direction = 0;
     }
 }
