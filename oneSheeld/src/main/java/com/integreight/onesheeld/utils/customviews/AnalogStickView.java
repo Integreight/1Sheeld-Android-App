@@ -151,39 +151,16 @@ public class AnalogStickView extends View{
     }
 
     private int getAngle() {
-        if (xPosition > centerX) {
-            if (yPosition < centerY) {
-                return angle = (int) (Math.atan((yPosition - centerY)
-                        / (xPosition - centerX))
-                        * RAD + 90);
-            } else if (yPosition > centerY) {
-                return angle = (int) (Math.atan((yPosition - centerY)
-                        / (xPosition - centerX)) * RAD) + 90;
-            } else {
-                return angle = 90;
-            }
-        } else if (xPosition < centerX) {
-            if (yPosition < centerY) {
-                return angle = (int) (Math.atan((yPosition - centerY)
-                        / (xPosition - centerX))
-                        * RAD - 90);
-            } else if (yPosition > centerY) {
-                return angle = (int) (Math.atan((yPosition - centerY)
-                        / (xPosition - centerX)) * RAD) - 90;
-            } else {
-                return angle = -90;
-            }
-        } else {
-            if (yPosition <= centerY) {
-                return angle = 0;
-            } else {
-                if (angle < 0) {
-                    return angle = -180;
-                } else {
-                    return angle = 180;
-                }
-            }
+        angle = (int) Math.toDegrees(Math.atan2(yPosition - centerY,xPosition - centerX));
+
+        if(angle < 0){
+            angle += 360;
         }
+
+        if (angle != 0)
+            angle = 360 - angle;
+
+        return angle;
     }
 
     private int getPower() {
@@ -194,29 +171,25 @@ public class AnalogStickView extends View{
     }
 
     private int getDirection() {
-
-        if (power == 0 && angle == 0) {
-            return 0;
-        }
-
-        int newAngle = 0;
-
-        if (angle <= 0) {
-            newAngle = (angle * -1) + 90;
-        } else if (angle > 0) {
-
-            if (angle <= 90) {
-                newAngle = 90 - angle;
-            } else {
-                newAngle = 360 - (angle - 90);
-            }
-        }
-
-        int direction = (((newAngle + 22) / 45) + 1);
-
-        if (direction > 8)
+        int direction = 0;
+        if (power == 0)
+            direction = 0;
+        else if (angle > 338 || angle <= 22)
             direction = 1;
-
+        else if (angle > 22 && angle <= 68)
+            direction = 2;
+        else if (angle > 68 && angle <= 112)
+            direction = 3;
+        else if (angle > 112 && angle <= 158)
+            direction = 4;
+        else if (angle > 158 && angle <= 202)
+            direction = 5;
+        else if (angle > 202 && angle <= 248)
+            direction = 6;
+        else if (angle > 248 && angle <= 292)
+            direction = 7;
+        else if (angle > 292 && angle <= 338)
+            direction = 8;
         return direction;
     }
 
