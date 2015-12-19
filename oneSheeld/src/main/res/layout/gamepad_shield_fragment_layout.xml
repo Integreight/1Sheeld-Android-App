@@ -137,6 +137,7 @@
 
                 <com.integreight.onesheeld.utils.customviews.AnalogStickView
                     android:id="@+id/gamepad_analog_stick"
+                    android:rotation="90.0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_alignParentBottom="true"
@@ -148,10 +149,10 @@
 
     <Button
         android:id="@+id/gamepad_mode_switcher"
+        android:background="@drawable/tts_shield_male_voice_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:text="S" />
+        android:layout_alignParentRight="true"/>
 
 </RelativeLayout>
