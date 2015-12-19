@@ -27,7 +27,7 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
             "Left Arrow", "Yellow Button", "Red Button", "Green Button",
             "Blue Button"};
     private static final String[] analogPins = {"Yellow Button", "Red Button", "Green Button",
-            "Blue Button","Analog X","Analog Y"};
+            "Blue Button","Analog X","Analog Y","Power","Angle"};
 
     public GamepadShield(Activity activity, String tag) {
         super(activity, tag);
@@ -75,9 +75,13 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
 
         ArduinoPin analogXArduinoPin = matchedShieldPins.get("Analog X");
         ArduinoPin analogYArduinoPin = matchedShieldPins.get("Analog Y");
+        ArduinoPin powerArduinoPin = matchedShieldPins.get("Power");
+        ArduinoPin angleArduinoPin = matchedShieldPins.get("Angle");
 
-        if (analogXArduinoPin != null) analogWrite(analogXArduinoPin.microHardwarePin,analogX);
-        if (analogYArduinoPin != null) analogWrite(analogYArduinoPin.microHardwarePin,analogY);
+        if (analogXArduinoPin != null) analogWrite(analogXArduinoPin.microHardwarePin,(analogX & 0xFF));
+        if (analogYArduinoPin != null) analogWrite(analogYArduinoPin.microHardwarePin,(analogY & 0xFF));
+        if (powerArduinoPin != null) analogWrite(powerArduinoPin.microHardwarePin,(power & 0xFF));
+        if (angleArduinoPin != null) analogWrite(angleArduinoPin.microHardwarePin,angle);
         sendShieldFrame();
     }
 
