@@ -155,7 +155,8 @@ public class NotificationObject {
             jsonObject.put(NOTIFICATION_PACKAGE,(packageName != null)? packageName:"");
             jsonObject.put(NOTIFICATION_ID,notificationId);
             jsonObject.put(NOTIFICATION_TIME,time);
-            jsonObject.put(NOTIFICATION_TAG,tag);
+            if (tag != null)
+                jsonObject.put(NOTIFICATION_TAG,tag);
             jsonObject.put(NOTIFICATION_TICKER,(ticker != null)? ticker:"");
             jsonObject.put(NOTIFICATION_TITLE,(title != null)? title:"");
             jsonObject.put(NOTIFICATION_BIG_TITLE,(bigTitle != null)? bigTitle:"");
@@ -181,7 +182,10 @@ public class NotificationObject {
             jsonObject = new JSONObject(jsonString);
             setPackageName(jsonObject.getString(NOTIFICATION_PACKAGE));
             setNotificationId(jsonObject.getInt(NOTIFICATION_ID));
-            setTag(jsonObject.getString(NOTIFICATION_TAG));
+            if (jsonObject.has(NOTIFICATION_TAG))
+                setTag(jsonObject.getString(NOTIFICATION_TAG));
+            else
+                setTag(null);
             setTime(jsonObject.getLong(NOTIFICATION_TIME));
             setTicker(jsonObject.getString(NOTIFICATION_TICKER));
             setTitle(jsonObject.getString(NOTIFICATION_TITLE));
