@@ -205,4 +205,14 @@ public class NotificationObject {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (NotificationObject.class.equals(o.getClass())){
+//            if (this.packageName.equals(((NotificationObject) o).getPackageName()) && this.notificationId == ((NotificationObject) o).getNotificationId())
+            if (this.toString().equals(o.toString()))
+                return true;
+        }
+        return false;
+    }
 }

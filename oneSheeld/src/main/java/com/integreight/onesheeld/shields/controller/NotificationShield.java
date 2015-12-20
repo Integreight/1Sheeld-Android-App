@@ -9,6 +9,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
@@ -82,6 +83,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         {
             activity.startService(new Intent(activity, NotificationReceiver.class));
             LocalBroadcastManager.getInstance(activity).registerReceiver(onNotice, new IntentFilter("NotificationDetailsMessage"));
+            LocalBroadcastManager.getInstance(activity).registerReceiver(onRemoval, new IntentFilter("NotificationRemovalMessage"));
             return true;
         }
     }
@@ -89,6 +91,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     public void stopNotificationReceiver(){
         activity.stopService(new Intent(activity, NotificationReceiver.class));
         LocalBroadcastManager.getInstance(activity).unregisterReceiver(onNotice);
+        LocalBroadcastManager.getInstance(activity).unregisterReceiver(onRemoval);
     }
 
     public static final String EXTRAS = "extras",JSON_EXTRAS = "jsonExtras";
@@ -102,9 +105,6 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 
             if (eventHandler != null ){
                 if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
-//                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-//                        NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(),currentNotification.getTag(),currentNotification.getNotificationId());
-//                    }
                     return;
                 }
 
@@ -128,10 +128,38 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         }
     };
 
+    BroadcastReceiver onRemoval = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            NotificationObject currentNotification = new NotificationObject(intent.getStringExtra(JSON_EXTRAS));
+            for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
+                if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))){
+                    notificationObjectArrayList.remove(notificationsCounter);
+                    break;
+                }
+            }
+        }
+    };
+
     public void setNotificationEventHandler(
             NotificationEventHandler eventHandler) {
         this.eventHandler = eventHandler;
+    }
 
+    private NotificationObject getNotification(String packageNmae,int notificationId){
+        NotificationObject currentNotification = new NotificationObject(packageNmae,notificationId,00);
+        for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
+            if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))){
+                return notificationObjectArrayList.get(notificationsCounter);
+            }
+        }
+        return null;
+    }
+
+    private void dismissNotification(NotificationObject currentNotification){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(),currentNotification.getTag(),currentNotification.getNotificationId());
+        }
     }
 
     public interface NotificationEventHandler {

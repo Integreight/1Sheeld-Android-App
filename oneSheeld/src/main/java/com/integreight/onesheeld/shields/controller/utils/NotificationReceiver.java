@@ -100,16 +100,18 @@ public class NotificationReceiver extends NotificationListenerService{
         }
         msgrcv.putExtra(NotificationShield.JSON_EXTRAS, currentNotification.toJsonString());
         LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);
-//        if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
-//            thisInstance.cancelNotification(currentNotification.getPackageName(), currentNotification.getTag(), currentNotification.getNotificationId());
-//        }
     }
 
     @Override
 
     public void onNotificationRemoved(StatusBarNotification sbn) {
         Log.i("notificationReceiver","Notification Removed");
-
+        Intent msgrcv = new Intent("NotificationRemovalMessage");
+        NotificationObject currentNotification = null;
+        currentNotification = new NotificationObject(sbn.getPackageName(),sbn.getId(),sbn.getPostTime());
+        currentNotification.setTag(sbn.getTag());
+        msgrcv.putExtra(NotificationShield.JSON_EXTRAS, currentNotification.toJsonString());
+        LocalBroadcastManager.getInstance(context).sendBroadcast(msgrcv);
     }
 
 }
