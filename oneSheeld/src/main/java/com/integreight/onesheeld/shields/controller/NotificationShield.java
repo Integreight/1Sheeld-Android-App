@@ -14,6 +14,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -24,13 +25,11 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.NotificationObject;
 import com.integreight.onesheeld.shields.controller.utils.NotificationReceiver;
 
-import java.util.ArrayList;
-
 public class NotificationShield extends ControllerParent<NotificationShield> {
     private NotificationEventHandler eventHandler;
     private String lastNotificationText;
     private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
-    private ArrayList<NotificationObject> notificationObjectArrayList = new ArrayList<>();
+    private SparseArray<NotificationObject> notificationObjectArrayList = new SparseArray<>();
 
     public String getLastNotificationText() {
         return lastNotificationText;
@@ -95,13 +94,19 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     }
 
     public static final String EXTRAS = "extras",JSON_EXTRAS = "jsonExtras";
-
+    private static int keyCounter = 1;
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             NotificationObject currentNotification = new NotificationObject(intent.getStringExtra(JSON_EXTRAS));
-            notificationObjectArrayList.add(currentNotification);
+            int currentKey = getNotificationKey(currentNotification.getPackageName(),currentNotification.getNotificationId());
+            if (currentKey == 0) {
+                notificationObjectArrayList.put(keyCounter, currentNotification);
+                keyCounter++;
+            }else{
+                notificationObjectArrayList.get(currentKey).fromJsonString(intent.getStringExtra(JSON_EXTRAS));
+            }
 
             if (eventHandler != null ){
                 if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
@@ -154,6 +159,16 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
             }
         }
         return null;
+    }
+
+    private int getNotificationKey(String packageNmae,int notificationId){
+        NotificationObject currentNotification = new NotificationObject(packageNmae,notificationId,00);
+        for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
+            if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))){
+                return notificationObjectArrayList.keyAt(notificationsCounter);
+            }
+        }
+        return 0;
     }
 
     private void dismissNotification(NotificationObject currentNotification){
