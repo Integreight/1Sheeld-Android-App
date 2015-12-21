@@ -208,9 +208,8 @@ public class NotificationObject {
 
     @Override
     public boolean equals(Object o) {
-        if (NotificationObject.class.equals(o.getClass())){
+        if (o != null && NotificationObject.class.equals(o.getClass()) && this.toString().equals(o.toString())){
 //            if (this.packageName.equals(((NotificationObject) o).getPackageName()) && this.notificationId == ((NotificationObject) o).getNotificationId())
-            if (this.toString().equals(o.toString()))
                 return true;
         }
         return false;
