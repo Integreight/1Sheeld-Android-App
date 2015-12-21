@@ -13,6 +13,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.NotificationShield;
 import com.integreight.onesheeld.shields.controller.NotificationShield.NotificationEventHandler;
+import com.integreight.onesheeld.shields.fragments.sub.NotificationShieldSettings;
 import com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton;
 
 public class NotificationFragment extends
@@ -24,6 +25,7 @@ public class NotificationFragment extends
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        hasSettings = true;
         setHasOptionsMenu(true);
         return inflater.inflate(R.layout.notification_shield_fragment_layout,
                 container, false);
@@ -50,6 +52,7 @@ public class NotificationFragment extends
         }else{
             notificationReceiverToggle.setVisibility(View.GONE);
         }
+        hasSettings = true;
     }
 
     private NotificationEventHandler notificationEventHandler = new NotificationEventHandler() {
@@ -101,4 +104,18 @@ public class NotificationFragment extends
         initializeFirmata();
     }
 
+    @Override
+    public void doOnStart() {
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.settingsViewContainer,
+                        NotificationShieldSettings.getInstance()).commit();
+        super.doOnStart();
+    }
+
+    @Override
+    public void doOnResume() {
+        super.doOnResume();
+        ((NotificationShield) getApplication().getRunningShields().get(getControllerTag())).checkDenyList();
+    }
 }

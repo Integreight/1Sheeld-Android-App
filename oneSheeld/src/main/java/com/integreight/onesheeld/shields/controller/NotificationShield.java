@@ -21,15 +21,20 @@ import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.model.PackageItem;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.NotificationObject;
 import com.integreight.onesheeld.shields.controller.utils.NotificationReceiver;
+import com.integreight.onesheeld.utils.database.NotificationPackageList;
+
+import java.util.ArrayList;
 
 public class NotificationShield extends ControllerParent<NotificationShield> {
     private NotificationEventHandler eventHandler;
     private String lastNotificationText;
     private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
     private SparseArray<NotificationObject> notificationObjectArrayList = new SparseArray<>();
+    private ArrayList<PackageItem> packageItems = new ArrayList<PackageItem>();
 
     public String getLastNotificationText() {
         return lastNotificationText;
@@ -41,6 +46,13 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 
     public NotificationShield(Activity activity, String tag) {
         super(activity, tag);
+         checkDenyList();
+    }
+
+    @Override
+    public ControllerParent<NotificationShield> init(String tag) {
+        checkDenyList();
+        return super.init(tag);
     }
 
     protected void showNotification(String notificationText) {
@@ -112,6 +124,11 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                 if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
                     return;
                 }
+                for (PackageItem item: packageItems){
+                    if (currentNotification.getPackageName().equals(item.name)) {
+                        return;
+                    }
+                }
 
                 if (currentNotification.getPackageName().equals("com.facebook.orca")) {
                     if (currentNotification.getTextLines().size() == 0 && !currentNotification.getTitle().equals(""))
@@ -174,7 +191,18 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     private void dismissNotification(NotificationObject currentNotification){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(),currentNotification.getTag(),currentNotification.getNotificationId());
+            notificationObjectArrayList.remove(getNotificationKey(currentNotification.getPackageName(),currentNotification.getNotificationId()));
         }
+    }
+
+    public void checkDenyList() {
+//        if (packageItems == null || (packageItems != null && packageItems.size() == 0)) {
+            NotificationPackageList db = new NotificationPackageList(activity);
+            db.openToWrite();
+            packageItems = db.getPlaylist();
+            db.close();
+            //init();
+//        }
     }
 
     public interface NotificationEventHandler {
