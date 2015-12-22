@@ -14,7 +14,7 @@ import java.util.ArrayList;
 
 public class NotificationPackageList {
 
-    public static final String MYDATABASE_NAME = "onesheeld";
+    public static final String MYDATABASE_NAME = "onesheeld1";
     public static final String MYDATABASE_TABLE = "packages";
     public static final int MYDATABASE_VERSION = 1;
     public static final String KEY_ID = "_id", NAME = "name";
