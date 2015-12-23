@@ -67,6 +67,8 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     }
 
     public void setAnalogPins(byte analogX, byte analogY, int angle, byte power, byte direction){
+        if (gamePadMode != GamePadMode.ANALOG) return;
+
         this.analogX = analogX;
         this.analogY = analogY;
         this.angle = angle;
@@ -142,6 +144,10 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
             sf.addByteArgument(direction);
             sendShieldFrame(sf);
         }
+    }
+
+    public boolean isReadyToSwitch(){
+        return (keysStatus == 0 && analogY == 127 && analogX == 127 && power == 0 && angle == 0);
     }
 
     @Override

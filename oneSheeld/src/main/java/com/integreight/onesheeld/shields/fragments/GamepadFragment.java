@@ -154,6 +154,10 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
     private Button.OnClickListener onGamePadModeSwitcherClickListener = new Button.OnClickListener(){
         @Override
         public void onClick(View v) {
+            if(!((GamepadShield)getApplication().getRunningShields().get(getControllerTag()))
+                    .isReadyToSwitch()){
+                return;
+            }
             resetConnectingPins();
             if (((GamepadShield)getApplication().getRunningShields().get(getControllerTag()))
                     .getGamePadMode() == GamepadShield.GamePadMode.KEYS){
