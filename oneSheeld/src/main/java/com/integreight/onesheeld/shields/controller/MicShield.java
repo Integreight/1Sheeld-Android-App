@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -85,8 +86,11 @@ public class MicShield extends ControllerParent<MicShield> {
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
+        addRequiredPremission(Manifest.permission.RECORD_AUDIO);
+        addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
         if (activity.getPackageManager().hasSystemFeature(
-                PackageManager.FEATURE_MICROPHONE))
+                PackageManager.FEATURE_MICROPHONE) && checkForPermissions())
             startMic(isToastable);
         else
             this.selectionAction.onFailure();
@@ -145,6 +149,7 @@ public class MicShield extends ControllerParent<MicShield> {
         if (!isRecording)
             success = false;
         handler = new Handler();
+
         if (selectionAction != null) {
             if (success)
                 selectionAction.onSuccess();

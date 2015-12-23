@@ -45,7 +45,6 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.apache.http.Header;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -332,16 +331,33 @@ public class ArduinoConnectivityPopup extends Dialog {
                     activity.startActivityForResult(enableIntent,
                             SheeldsList.REQUEST_ENABLE_BT);
                 } else {
-                    backPressed = false;
-                    if (mBtAdapter != null && mBtAdapter.isDiscovering())
-                        mBtAdapter.cancelDiscovery();
-                    showProgress();
-                    changeSlogan(
-                            activity.getResources().getString(
-                                    R.string.searching), COLOR.RED);
-                    findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
-                    scanDevices();
-                    doDiscovery();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        backPressed = false;
+                        if (mBtAdapter != null && mBtAdapter.isDiscovering())
+                            mBtAdapter.cancelDiscovery();
+                        showProgress();
+                        changeSlogan(
+                                activity.getResources().getString(
+                                        R.string.searching), COLOR.RED);
+                        findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                        scanDevices();
+                        doDiscovery();
+                    }else{
+                        if(((MainActivity) activity).checkForLocationPermission()){
+                            backPressed = false;
+                            if (mBtAdapter != null && mBtAdapter.isDiscovering())
+                                mBtAdapter.cancelDiscovery();
+                            showProgress();
+                            changeSlogan(
+                                    activity.getResources().getString(
+                                            R.string.searching), COLOR.RED);
+                            findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                            scanDevices();
+                            doDiscovery();
+                        }else{
+                            ((MainActivity) activity).checkAndAskForLocationPermission();
+                        }
+                    }
                 }
             }
         });

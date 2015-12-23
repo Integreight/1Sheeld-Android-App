@@ -1,17 +1,26 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener.SmsReceiveEventHandler;
 import com.integreight.onesheeld.utils.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SmsShield extends ControllerParent<SmsShield> {
     private SmsEventHandler eventHandler;
@@ -60,10 +69,20 @@ public class SmsShield extends ControllerParent<SmsShield> {
                     activity.showToast("Device doesn't support SMS functionality !");
             }
         } else {
-            // calling functionality
-            if (this.selectionAction != null) {
-                this.selectionAction.onSuccess();
+            addRequiredPremission(Manifest.permission.READ_SMS);
+            addRequiredPremission(Manifest.permission.SEND_SMS);
+            addRequiredPremission(Manifest.permission.RECEIVE_SMS);
+            if (checkForPermissions()) {
+                // calling functionality
+                if (this.selectionAction != null) {
+                    this.selectionAction.onSuccess();
+                }
+            }else{
+                if (this.selectionAction != null) {
+                    this.selectionAction.onFailure();
+                }
             }
+
         }
 
         return super.invalidate(selectionAction, isToastable);

@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Mouso on 3/11/2015.
@@ -91,7 +93,6 @@ public class NfcShield extends ControllerParent<NfcShield> {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             if (nfcAdapter != null && nfcAdapter.isEnabled()) {
                 setupForegroundDispatch();
-                selectionAction.onSuccess();
             } else {
                 if (isToastable) {
                     activity.showToast(nfcAdapter == null ? "Device doesn't support NFC!" : "Please, Enable Your NFC");
