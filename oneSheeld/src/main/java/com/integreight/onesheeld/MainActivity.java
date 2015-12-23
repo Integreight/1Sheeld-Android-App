@@ -889,11 +889,11 @@ public class MainActivity extends FragmentActivity {
                                     isShouldShowRequestPermissionRationale = false;
                             }
                             if (!isShouldShowRequestPermissionRationale)
-                                showToast("Current shield needs premission.");
+                                showToast("Current shield needs permission.");
                             else
                                 showToast("Your device ban this shield.");
                         } else {
-                            showToast("Current shield needs premission.");
+                            showToast("Current shield needs permission.");
                         }
                     }
                     break;
