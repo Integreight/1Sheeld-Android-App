@@ -18,16 +18,13 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     private byte keysStatus; //Every bit holds status of a key
     private byte analogX;
     private byte analogY;
-    private int angle;
-    private byte power;
-    private byte direction;
     private static final byte GAMEPAD_KEYS = 0x01;
     private static final byte GAMEPAD_ANALOG = 0x02;
     private static final String[] keysPins = {"Up Arrow", "Right Arrow", "Down Arrow",
             "Left Arrow", "Yellow Button", "Red Button", "Green Button",
             "Blue Button"};
     private static final String[] analogPins = {"Yellow Button", "Red Button", "Green Button",
-            "Blue Button","Analog X","Analog Y","Power","Angle"};
+            "Blue Button","Analog X","Analog Y"};
 
     public GamepadShield(Activity activity, String tag) {
         super(activity, tag);
@@ -66,24 +63,17 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         sendShieldFrame();
     }
 
-    public void setAnalogPins(byte analogX, byte analogY, int angle, byte power, byte direction){
+    public void setAnalogPins(byte analogX, byte analogY){
         if (gamePadMode != GamePadMode.ANALOG) return;
 
         this.analogX = analogX;
         this.analogY = analogY;
-        this.angle = angle;
-        this.power = power;
-        this.direction = direction;
 
         ArduinoPin analogXArduinoPin = matchedShieldPins.get("Analog X");
         ArduinoPin analogYArduinoPin = matchedShieldPins.get("Analog Y");
-        ArduinoPin powerArduinoPin = matchedShieldPins.get("Power");
-        ArduinoPin angleArduinoPin = matchedShieldPins.get("Angle");
 
         if (analogXArduinoPin != null) analogWrite(analogXArduinoPin.microHardwarePin,(analogX & 0xFF));
         if (analogYArduinoPin != null) analogWrite(analogYArduinoPin.microHardwarePin,(analogY & 0xFF));
-        if (powerArduinoPin != null) analogWrite(powerArduinoPin.microHardwarePin,(power & 0xFF));
-        if (angleArduinoPin != null) analogWrite(angleArduinoPin.microHardwarePin,angle);
         sendShieldFrame();
     }
 
@@ -139,15 +129,12 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
             sf.addByteArgument(keysStatus);
             sf.addByteArgument(analogX);
             sf.addByteArgument(analogY);
-            sf.addIntegerArgument(2,angle);
-            sf.addByteArgument(power);
-            sf.addByteArgument(direction);
             sendShieldFrame(sf);
         }
     }
 
     public boolean isReadyToSwitch(){
-        return (keysStatus == 0 && analogY == 127 && analogX == 127 && power == 0 && angle == 0);
+        return (keysStatus == 0 && analogY == 127 && analogX == 127);
     }
 
     @Override
@@ -163,8 +150,5 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         keysStatus = 0;
         analogX = 127;
         analogY = 127;
-        angle = 0;
-        power = 0;
-        direction = 0;
     }
 }

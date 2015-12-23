@@ -39,7 +39,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
         @Override
         public void onValueChange(int x, int y, int angle, int power, int direction) {
             ((GamepadShield) getApplication().getRunningShields().get(getControllerTag()))
-                    .setAnalogPins((byte)x,(byte)y,angle,(byte)power,(byte)direction);
+                    .setAnalogPins((byte)x,(byte)y);
         }
     };
 
