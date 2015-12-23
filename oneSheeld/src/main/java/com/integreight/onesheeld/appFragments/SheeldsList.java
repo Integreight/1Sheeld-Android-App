@@ -178,9 +178,10 @@ public class SheeldsList extends Fragment {
         ((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
                 .getChildAt(1).setBackgroundResource(
                 R.drawable.shields_list_shields_operation_button);
-        ((ViewGroup) activity.findViewById(R.id.cancelConnection))
-                .getChildAt(1).setBackgroundResource(
-                R.drawable.bluetooth_disconnect_button);
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
+            ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
+        else
+            ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -193,14 +194,19 @@ public class SheeldsList extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (activity.getSupportFragmentManager()
-                                            .getBackStackEntryCount() > 1) {
-                                        activity.getSupportFragmentManager()
-                                                .popBackStack();
-                                        activity.getSupportFragmentManager()
-                                                .executePendingTransactions();
+                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                                        if (activity.getSupportFragmentManager()
+                                                .getBackStackEntryCount() > 1) {
+                                            activity.getSupportFragmentManager()
+                                                    .popBackStack();
+                                            activity.getSupportFragmentManager()
+                                                    .executePendingTransactions();
+                                        }
+                                        activity.stopService();
+                                    }else {
+                                        Log.test("Test", "Cannot disconnect in demoMode");
+                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
                                     }
-                                    activity.stopService();
                                     if (!ArduinoConnectivityPopup.isOpened) {
                                         ArduinoConnectivityPopup.isOpened = true;
                                         new ArduinoConnectivityPopup(activity)
@@ -217,8 +223,9 @@ public class SheeldsList extends Fragment {
                 || (((OneSheeldApplication) activity.getApplication())
                 .getAppFirmata() != null && !((OneSheeldApplication) activity
                 .getApplication()).getAppFirmata().isOpen())) {
-            if (!ArduinoConnectivityPopup.isOpened)
+            if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
                 new ArduinoConnectivityPopup(activity).show();
+            }
         }
         CrashlyticsUtils.setString("Current View", "Shields List");
         ((OneSheeldApplication) activity.getApplication()).getTracker()
@@ -348,8 +355,9 @@ public class SheeldsList extends Fragment {
                 activity.getSupportFragmentManager()
                         .executePendingTransactions();
             }
-            if (!ArduinoConnectivityPopup.isOpened)
+            if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
                 new ArduinoConnectivityPopup(activity).show();
+            }
         }
 
         @Override
@@ -443,9 +451,11 @@ public class SheeldsList extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.open_bootloader_popup:
-                if (!FirmwareUpdatingPopup.isOpened)
+                if (!FirmwareUpdatingPopup.isOpened && ((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
                     new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
                             .show();
+                else
+                    activity.showToast("Please connect first.");
                 return true;
             case R.id.action_settings:
                 ((OneSheeldApplication) activity.getApplication())

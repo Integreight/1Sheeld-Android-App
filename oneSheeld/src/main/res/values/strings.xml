@@ -89,6 +89,7 @@
 
     <!-- Tutorial -->
     <string name="go">Go !</string>
+    <string name="explore">Explore</string>
     <!-- Terminal -->
     <string name="terminalString">ASCII</string>
     <string name="terminalASCI">DEC</string>

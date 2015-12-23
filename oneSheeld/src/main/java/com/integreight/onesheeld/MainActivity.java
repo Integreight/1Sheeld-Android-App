@@ -28,6 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -370,28 +371,31 @@ public class MainActivity extends FragmentActivity {
 
                 @Override
                 public void handleMessage(Message msg) {
-                    if (connectionLost) {
-                        if (!ArduinoConnectivityPopup.isOpened
-                                && !isFinishing())
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    if (!ArduinoConnectivityPopup.isOpened
-                                            && !isFinishing())
-                                        new ArduinoConnectivityPopup(
-                                                MainActivity.this).show();
-                                }
-                            });
-                        if (getSupportFragmentManager()
-                                .getBackStackEntryCount() > 1) {
-                            getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(0, 0, 0, 0)
-                                    .commitAllowingStateLoss();
-                            getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            getSupportFragmentManager()
-                                    .executePendingTransactions();
+                    if (!((OneSheeldApplication) getApplication()).getIsDemoMode() && !((OneSheeldApplication) getApplication()).getAppFirmata().isOpen()) {
+                        if (connectionLost) {
+                            if (!ArduinoConnectivityPopup.isOpened
+                                    && !isFinishing())
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        if (!ArduinoConnectivityPopup.isOpened
+                                                && !isFinishing()) {
+                                            new ArduinoConnectivityPopup(
+                                                    MainActivity.this).show();
+                                        }
+                                    }
+                                });
+                            if (getSupportFragmentManager()
+                                    .getBackStackEntryCount() > 1) {
+                                getSupportFragmentManager().beginTransaction()
+                                        .setCustomAnimations(0, 0, 0, 0)
+                                        .commitAllowingStateLoss();
+                                getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                getSupportFragmentManager()
+                                        .executePendingTransactions();
+                            }
                         }
+                        connectionLost = false;
                     }
-                    connectionLost = false;
                     super.handleMessage(msg);
                 }
             };
@@ -637,7 +641,7 @@ public class MainActivity extends FragmentActivity {
                             Toast.LENGTH_SHORT).show();
                 } else {
                     if (onConnectToBlueTooth != null
-                            && ArduinoConnectivityPopup.isOpened)
+                            && ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) getApplication()).getIsDemoMode())
                         onConnectToBlueTooth.onConnect();
                 }
                 break;
@@ -801,4 +805,5 @@ public class MainActivity extends FragmentActivity {
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
     }
+
 }

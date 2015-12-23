@@ -14,12 +14,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.integreight.onesheeld.adapters.TutorialPagerAdapter;
+import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.viewpagerindicator.CirclePageIndicator;
 
-public class Tutorial extends FragmentActivity {
+public class Tutorial extends FragmentActivity{
     ViewPager pager;
     RelativeLayout logoCont;
     ImageView fadingLogo;
+    OneSheeldButton skip;
+    Boolean isAnimationFinished = false;
 
     @Override
     public void onBackPressed() {
@@ -60,8 +63,35 @@ public class Tutorial extends FragmentActivity {
         fadingLogo = (ImageView) findViewById(R.id.fadingLogo);
         pager.setAdapter(new TutorialPagerAdapter(getSupportFragmentManager()));
         pager.setCurrentItem(0);
+        skip = (OneSheeldButton) findViewById(R.id.skip_tutorial);
+        skip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pager.setCurrentItem(7);
+            }
+        });
+        skip.setVisibility(View.INVISIBLE);
         CirclePageIndicator mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
         mIndicator.setViewPager(pager);
+        mIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position < 7 && isAnimationFinished)
+                    skip.setVisibility(View.VISIBLE);
+                else
+                    skip.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mIndicator.setSnap(true);
         Animation anim = new AlphaAnimation(0, 1);
         anim.setInterpolator(new AccelerateInterpolator());
@@ -76,6 +106,8 @@ public class Tutorial extends FragmentActivity {
             public void onAnimationStart(Animation animation) {
                 logoCont.setVisibility(View.VISIBLE);
                 fadingLogo.setVisibility(View.VISIBLE);
+                skip.setVisibility(View.INVISIBLE);
+                isAnimationFinished = false;
             }
 
             @Override
@@ -91,6 +123,8 @@ public class Tutorial extends FragmentActivity {
                     @Override
                     public void run() {
                         logoCont.setVisibility(View.GONE);
+                        skip.setVisibility(View.VISIBLE);
+                        isAnimationFinished = true;
                     }
                 }, 500);
             }
