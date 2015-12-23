@@ -1,8 +1,11 @@
 package com.integreight.onesheeld.shields;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Toast;
 
@@ -20,8 +23,10 @@ import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 
 /**
  * @param <T> the Child class used for casting
@@ -31,12 +36,11 @@ import java.util.Hashtable;
  */
 @SuppressWarnings("unchecked")
 public abstract class ControllerParent<T extends ControllerParent<?>> {
+    private static final byte IS_SHIELD_SELECTED = (byte) 0xFF;
+    private static final byte SELECT_SHIELD = (byte) 0xFE;
+    private static final byte DESELECT_SHIELD = (byte) 0xFD;
     public MainActivity activity;
-    private boolean hasConnectedPins = false; // flag for detecting the
-    // connected pins to stop the
-    // analog and digital effects
-    private String tag = ""; // Shield identical key
-    private boolean hasForgroundView = false;// flag to stop UI handler calls in
+    protected List<String> requiredPermissions = new ArrayList<String>();
     // case of FALSE
     public String[][] requiredPinsNames = new String[][]{
             {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
@@ -47,8 +51,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     // connected
     // pins
     public int requiredPinsIndex = -1;// related to the pins type (index of the
-    // requiredPinsNames array)
-    private boolean isALive = false; // flag for fired shields (in case of
     // disconnection or disselect)
     public String[] shieldPins = new String[]{};// Specific shield pins names
     // (like "Toggle" pin with
@@ -58,24 +60,103 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     // like not
     // found sensors
     public boolean isInteractive = true;// flag used for the interaction
+    public List<String> permissions = new ArrayList<String>();
     // top-right toggle button
-
-    private long selectionTime;
-
-    private static final byte IS_SHIELD_SELECTED = (byte) 0xFF;
-    private static final byte SELECT_SHIELD = (byte) 0xFE;
-    private static final byte DESELECT_SHIELD = (byte) 0xFD;
-
     public boolean cachedArduinoCallbackStatus = false;
+    public Handler actionHandler = new Handler(); // queuing sysex UI calls
+    public Handler onDigitalActionHandler = new Handler(); // Queuing digital UI
+    private boolean hasConnectedPins = false; // flag for detecting the
+    // connected pins to stop the
+    // analog and digital effects
+    private String tag = ""; // Shield identical key
+    private boolean hasForgroundView = false;// flag to stop UI handler calls in
+    // requiredPinsNames array)
+    private boolean isALive = false; // flag for fired shields (in case of
+    // Interface implemented for listening to Arduino actions
+    public ArduinoFirmataDataHandler arduinoFirmataDataHandler = new ArduinoFirmataDataHandler() {
 
+        private int portNumber,
+                portData;
+        // UI runnable to be called onDigital actions
+        Runnable onDigitalRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                if (hasConnectedPins
+                        || ((T) ControllerParent.this) instanceof TaskerShield)
+                    ((T) ControllerParent.this).onDigital(portNumber, portData);
+            }
+        };
+
+        @Override
+        public void onSysex(final byte command, final byte[] data) {
+            actionHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    if (isALive && isInteractive)
+                        ((T) ControllerParent.this).onSysex(command, data);
+                }
+            });
+        }
+
+        @Override
+        public void onDigital(final int portNumber, final int portData) {
+            if (isALive && isInteractive) {
+                onDigitalActionHandler.removeCallbacks(onDigitalRunnable);
+                this.portData = portData;
+                this.portNumber = portNumber;
+                onDigitalActionHandler.post(onDigitalRunnable);
+            }
+        }
+
+        @Override
+        public void onAnalog(final int pin, final int value) {
+            if (isALive && isInteractive)
+                actionHandler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (hasConnectedPins)
+                            ((T) ControllerParent.this).onAnalog(pin, value);
+                    }
+                });
+        }
+    };
+    private long selectionTime;
     private boolean isInit = false;
+    // Interface implemented for listening to received Shields Frames
+    public ArduinoFirmataShieldFrameHandler arduinoFirmataShieldFrameHandler = new ArduinoFirmataShieldFrameHandler() {
 
-    public void notifyHardwareOfShieldSelection() {
-        if (isItARealShield())
-            activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
-        isInit = true;
-    }
+        @Override
+        public void onNewShieldFrameReceived(final ShieldFrame frame) {
+            if (isALive && frame != null && matchedShieldPins.size() == 0 && isInit)
+                if (frame.getShieldId() == getShieldId())
+                    if (frame.getFunctionId() == IS_SHIELD_SELECTED)
+                        notifyHardwareOfShieldSelection();
+                    else if (frame.getFunctionId() == SELECT_SHIELD) {
+                    } else if (frame.getFunctionId() == DESELECT_SHIELD) {
+                    } else {
+                        cachedArduinoCallbackStatus = getApplication().getAppFirmata().getCallbackStatus();
+                        actionHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                try {
+                                    if (isInteractive)
+                                        ((T) ControllerParent.this)
+                                                .onNewShieldFrameReceived(frame);
+                                    cachedArduinoCallbackStatus = false;
+                                } catch (RuntimeException e) {
+                                    cachedArduinoCallbackStatus = false;
+                                    Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
+                                    CrashlyticsUtils.logException(e);
+                                }
+                            }
+                        });
+                    }
+        }
+    };
 
     public ControllerParent() {
         // TODO Auto-generated constructor stub
@@ -98,6 +179,13 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public ControllerParent(Activity activity, String tag, boolean manageShieldSelectionFrameManually) {
         setActivity((MainActivity) activity);
         init(tag, manageShieldSelectionFrameManually);
+    }
+
+    public void notifyHardwareOfShieldSelection() {
+        if (isItARealShield())
+            activity.getThisApplication().getAppFirmata()
+                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
+        isInit = true;
     }
 
     /**
@@ -165,6 +253,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     }
 
+    protected void addRequiredPremission(String premission){
+        requiredPermissions.add(premission);
+    }
+
     public void onSysex(byte command, byte[] data) {
         // TODO Auto-generated method stub
 
@@ -173,6 +265,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     public void onDigital(int portNumber, int portData) {
 
     }
+    // calls
 
     public void onAnalog(int pin, int value) {
         // TODO Auto-generated method stub
@@ -180,10 +273,6 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     public abstract void onNewShieldFrameReceived(ShieldFrame frame);
-
-    public Handler actionHandler = new Handler(); // queuing sysex UI calls
-    public Handler onDigitalActionHandler = new Handler(); // Queuing digital UI
-    // calls
 
     /**
      * add Shield handlers to firmata listening list
@@ -195,95 +284,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                 .addShieldFrameHandler(arduinoFirmataShieldFrameHandler);
     }
 
-    // Interface implemented for listening to Arduino actions
-    public ArduinoFirmataDataHandler arduinoFirmataDataHandler = new ArduinoFirmataDataHandler() {
-
-        @Override
-        public void onSysex(final byte command, final byte[] data) {
-            actionHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (isALive && isInteractive)
-                        ((T) ControllerParent.this).onSysex(command, data);
-                }
-            });
-        }
-
-        // UI runnable to be called onDigital actions
-        Runnable onDigitalRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                if (hasConnectedPins
-                        || ((T) ControllerParent.this) instanceof TaskerShield)
-                    ((T) ControllerParent.this).onDigital(portNumber, portData);
-            }
-        };
-        private int portNumber,
-                portData;
-
-        @Override
-        public void onDigital(final int portNumber, final int portData) {
-            if (isALive && isInteractive) {
-                onDigitalActionHandler.removeCallbacks(onDigitalRunnable);
-                this.portData = portData;
-                this.portNumber = portNumber;
-                onDigitalActionHandler.post(onDigitalRunnable);
-            }
-        }
-
-        @Override
-        public void onAnalog(final int pin, final int value) {
-            if (isALive && isInteractive)
-                actionHandler.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (hasConnectedPins)
-                            ((T) ControllerParent.this).onAnalog(pin, value);
-                    }
-                });
-        }
-    };
-
     private byte getShieldId() {
         if (ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.id;
         return AppShields.getInstance().getShield(tag).id;
     }
-
-    // Interface implemented for listening to received Shields Frames
-    public ArduinoFirmataShieldFrameHandler arduinoFirmataShieldFrameHandler = new ArduinoFirmataShieldFrameHandler() {
-
-        @Override
-        public void onNewShieldFrameReceived(final ShieldFrame frame) {
-            if (isALive && frame != null && matchedShieldPins.size() == 0 && isInit)
-                if (frame.getShieldId() == getShieldId())
-                    if (frame.getFunctionId() == IS_SHIELD_SELECTED)
-                        notifyHardwareOfShieldSelection();
-                    else if (frame.getFunctionId() == SELECT_SHIELD) {
-                    } else if (frame.getFunctionId() == DESELECT_SHIELD) {
-                    } else {
-                        cachedArduinoCallbackStatus = getApplication().getAppFirmata().getCallbackStatus();
-                        actionHandler.post(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                try {
-                                    if (isInteractive)
-                                        ((T) ControllerParent.this)
-                                                .onNewShieldFrameReceived(frame);
-                                    cachedArduinoCallbackStatus = false;
-                                } catch (RuntimeException e) {
-                                    cachedArduinoCallbackStatus = false;
-                                    Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
-                                    CrashlyticsUtils.logException(e);
-                                }
-                            }
-                        });
-                    }
-        }
-    };
 
     public OneSheeldApplication getApplication() {
         return activity.getThisApplication();
@@ -345,16 +349,45 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         return this;
     }
 
+    public boolean checkForPermissions() {
+        for (String perm : requiredPermissions) {
+            if ((ContextCompat.checkSelfPermission(activity, perm) != PackageManager.PERMISSION_GRANTED))
+                permissions.add(perm);
+        }
+
+        if (permissions.size() > 0) {
+            ActivityCompat.requestPermissions(activity, permissions.toArray(new String[permissions.size()]), MainActivity.PREMISSION_REQUEST_CODE);
+            return false;
+//            // Should we show an explanation?
+//            if (ActivityCompat.shouldShowRequestPermissionRationale(activity,
+//                    Manifest.permission.CAMERA) || ActivityCompat.shouldShowRequestPermissionRationale(activity,
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//                // Show an expanation to the user *asynchronously* -- don't block
+//                // this thread waiting for the user's response! After the user
+//                // sees the explanation, try again to request the permission.
+//                ActivityCompat.requestPermissions(activity, permissions.toArray(new String[permissions.size()]), MainActivity.PREMISSION_REQUEST_CODE);
+//            } else {
+//
+//                // No explanation needed, we can request the permission.
+//                ActivityCompat.requestPermissions(activity, permissions.toArray(new String[permissions.size()]), MainActivity.PREMISSION_REQUEST_CODE);
+//            }
+        } else {
+            return true;
+        }
+//        return false;
+    }
+
     public boolean isHasConnectedPins() {
         return hasConnectedPins;
     }
 
-    private boolean isItARealShield() {
-        return !(ControllerParent.this instanceof TaskerShield);
-    }
-
     public void setHasConnectedPins(boolean hasConnectedPins) {
         this.hasConnectedPins = hasConnectedPins;
+    }
+
+    private boolean isItARealShield() {
+        return !(ControllerParent.this instanceof TaskerShield);
     }
 
     /**

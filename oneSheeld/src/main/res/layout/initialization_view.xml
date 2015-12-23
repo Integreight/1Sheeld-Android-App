@@ -142,10 +142,22 @@
             style="@android:style/Widget.ProgressBar.Small.Inverse"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"></ProgressBar>
+
+        <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+            android:id="@+id/skip_scan"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/transparent"
+            android:text="Skip"
+            android:textSize="20dp"
+            android:textColor="@color/white"/>
     </RelativeLayout>
 
 </LinearLayout>

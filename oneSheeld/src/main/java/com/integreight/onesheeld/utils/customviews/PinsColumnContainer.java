@@ -184,8 +184,8 @@ public class PinsColumnContainer extends RelativeLayout {
             if (item.index != currentIndex) {
                 currentIndex = item.index;
                 currentTag = item.tag;
-                focusListener.focusOnThisChild(currentIndex,
-                        currentIndex == -1 ? "" : currentTag);
+                if (focusListener != null)
+                    focusListener.focusOnThisChild(currentIndex, currentIndex == -1 ? "" : currentTag);
                 if (item.index != -1) {
                     setCursorTo(item);
                 } else
@@ -199,9 +199,10 @@ public class PinsColumnContainer extends RelativeLayout {
             if (item.index != -1) {
                 setCursorTo(item);
             } else
+            if (cursor != null)
                 cursor.setVisibility(View.INVISIBLE);
-            focusListener.selectThisChild(currentIndex, currentIndex == -1 ? ""
-                    : currentTag);
+            if (focusListener != null)
+                focusListener.selectThisChild(currentIndex, currentIndex == -1 ? "" : currentTag);
             childrenRects = new ArrayList<PinsColumnContainer.PinData>();
             loadRects(this);
             return true;

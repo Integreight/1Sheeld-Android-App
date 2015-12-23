@@ -16,13 +16,13 @@ repositories {
 
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
-        targetSdkVersion 9
+        targetSdkVersion 23
         versionCode 151123
         versionName "1.5.0"
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
@@ -55,6 +55,8 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -63,6 +65,7 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-v4:23.1.1'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:8.3.0'
     compile 'com.google.android.gms:play-services-location:8.3.0'
@@ -91,8 +94,8 @@ dependencies {
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'org.twitter4j:twitter4j-async:4.0.4'
     compile 'org.twitter4j:twitter4j-stream:4.0.4'
+    compile 'cz.msebera.android:httpclient:4.4.1.1'
     compile 'net.sf.supercsv:super-csv:2.4.0'
-
 }
 
 def isCrashlyticsPropertiesAvailable() {

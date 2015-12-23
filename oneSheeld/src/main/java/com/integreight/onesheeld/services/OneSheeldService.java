@@ -71,7 +71,7 @@ public class OneSheeldService extends Service {
             app.getAppFirmata().connect(device);
         }
         WakeLocker.acquire(this);
-        return START_REDELIVER_INTENT;
+        return START_NOT_STICKY;
     }
 
     @Override
