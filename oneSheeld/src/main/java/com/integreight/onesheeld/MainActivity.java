@@ -906,11 +906,8 @@ public class MainActivity extends FragmentActivity {
         public void onMenuClosed();
     }
 
-<<<<<<< HEAD
-=======
     public static class BackOnconnectionLostHandler extends Handler {
         public boolean canInvokeOnCloseConnection = true,
                 connectionLost = false;
     }
->>>>>>> feature/android_M_support
 }
