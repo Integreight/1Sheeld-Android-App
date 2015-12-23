@@ -106,7 +106,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     }
 
     public static final String EXTRAS = "extras",JSON_EXTRAS = "jsonExtras";
-    private static int keyCounter = 1;
+    private int keyCounter = 1;
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
 
         @Override
@@ -136,10 +136,27 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                     else if (!currentNotification.getTitle().equals(""))
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
                 }else if (currentNotification.getPackageName().equals("com.whatsapp")) {
-                    if (currentNotification.getTextLines().size() == 0)
+                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals(""))
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
-                    else
+                    else if (currentNotification.getTextLines().size() > 0)
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                }else if (currentNotification.getPackageName().equals("com.google.android.gm")) {
+                    if (!currentNotification.getBigText().equals(""))
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getBigText());
+                    else if(currentNotification.getTextLines().size() > 0)
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                }else if (currentNotification.getPackageName().equals("com.google.android.talk")) {
+                    if (currentNotification.getTicker().contains(":"))
+                        eventHandler.onNotifiactionArrived(currentNotification.getTicker().split(":")[0]+currentNotification.getTitle());
+                }else if (currentNotification.getPackageName().equals("com.slack")) {
+                    eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                }else if(currentNotification.getPackageName().equals("jp.naver.line.android")){
+                    eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                }else if (currentNotification.getPackageName().equals("org.telegram.messenger")) {
+                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals(""))
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                    else if (currentNotification.getTextLines().size() > 0)
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(0));
                 }else if (!currentNotification.getTitle().equals(""))
                     eventHandler.onNotifiactionArrived(currentNotification.getTitle());
                 else if (!currentNotification.getTicker().equals(""))

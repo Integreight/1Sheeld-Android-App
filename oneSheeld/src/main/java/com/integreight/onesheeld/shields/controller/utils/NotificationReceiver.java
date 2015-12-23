@@ -58,8 +58,8 @@ public class NotificationReceiver extends NotificationListenerService{
             for (String key : extras.keySet()) {
                 switch (key) {
                     case Notification.EXTRA_TEXT:
-                        if (extras.getString(key) != null) {
-                            currentNotification.setText(extras.getString(key));
+                        if (extras.get(key) != null) {
+                            currentNotification.setText(extras.get(key).toString());
                         }
                         break;
                     case Notification.EXTRA_TITLE:
@@ -75,6 +75,11 @@ public class NotificationReceiver extends NotificationListenerService{
                     case Notification.EXTRA_INFO_TEXT:
                         if (extras.getString(key) != null) {
                             currentNotification.setInfoText(extras.getString(key));
+                        }
+                        break;
+                    case Notification.EXTRA_SUMMARY_TEXT:
+                        if (extras.getString(key) != null) {
+                            currentNotification.setSubText(extras.getString(key));
                         }
                         break;
                     case Notification.EXTRA_TITLE_BIG:
