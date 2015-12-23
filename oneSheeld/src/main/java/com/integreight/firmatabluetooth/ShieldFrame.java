@@ -133,7 +133,7 @@ public class ShieldFrame {
 
     public void addStringArgument(String data) {
         String temp = (data.length() > 255) ? data.substring(0, 255) : data;
-        arguments.add(temp.getBytes(Charset.forName("UTF-8")));
+        arguments.add(temp.getBytes(Charset.forName("US-ASCII")));
     }
 
     public byte[] getAllFrameAsBytes() {

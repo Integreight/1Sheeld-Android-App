@@ -62,14 +62,16 @@ public class MutitouchKeysContainer extends RelativeLayout {
         PinData item = getTouhedIndex(x, y, childrenRects);
         if (item.index != -1 && !pressedRects.contains(item)) {
             pressedRects.add(item);
-            item.key.eventListener.onPressed(item.key);
+            if (item.key != null && item.key.eventListener != null)
+                item.key.eventListener.onPressed(item.key);
         }
     }
 
     private synchronized void up(int x, int y) {
         PinData item = getTouhedIndex(x, y, childrenRects);
         if (item.index != -1 && pressedRects.contains(item)) {
-            item.key.eventListener.onReleased(item.key);
+            if (item.key != null && item.key.eventListener != null)
+                item.key.eventListener.onReleased(item.key);
             pressedRects.remove(item);
         }
     }
@@ -84,7 +86,8 @@ public class MutitouchKeysContainer extends RelativeLayout {
                     pressed = true;
             }
             if (!pressed) {
-                item.key.eventListener.onReleased(item.key);
+                if (item.key != null && item.key.eventListener != null)
+                    item.key.eventListener.onReleased(item.key);
                 pressedRects.remove(item);
             }
         }

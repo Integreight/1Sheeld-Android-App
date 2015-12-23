@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -23,6 +24,9 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SendFrameHandler;
 import com.integreight.onesheeld.utils.Log;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class GpsShield extends ControllerParent<GpsShield> implements
         LocationListener, GoogleApiClient.ConnectionCallbacks,
@@ -64,6 +68,20 @@ public class GpsShield extends ControllerParent<GpsShield> implements
                 startGps();
         }
         return super.init(tag);
+    }
+
+    @Override
+    public ControllerParent<GpsShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
+        this.selectionAction =selectionAction;
+        addRequiredPremission(Manifest.permission.ACCESS_FINE_LOCATION);
+        if (checkForPermissions()) {
+            if (selectionAction != null)
+                selectionAction.onSuccess();
+        }else {
+            if (selectionAction != null)
+                selectionAction.onFailure();
+        }
+        return super.invalidate(selectionAction, isToastable);
     }
 
     public void setGpsEventHandler(GpsEventHandler eventHandler) {

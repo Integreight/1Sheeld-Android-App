@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,6 +34,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -56,6 +58,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
     public int currentStatus = READ_FOR_LOGGING;
     private DataLoggerListener eventHandler;
 
+
     public boolean isLoggingStarted() {
         return isStarted;
     }
@@ -77,6 +80,21 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
     public void refresh() {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public ControllerParent<DataLoggerShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
+        this.selectionAction =selectionAction;
+        addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkForPermissions()) {
+            if (selectionAction != null)
+                selectionAction.onSuccess();
+        }else {
+            if (selectionAction != null)
+                selectionAction.onFailure();
+        }
+        return super.invalidate(selectionAction, isToastable);
     }
 
     @Override

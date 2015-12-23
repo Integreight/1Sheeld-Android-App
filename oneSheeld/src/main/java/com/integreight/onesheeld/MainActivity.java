@@ -1,13 +1,16 @@
 package com.integreight.onesheeld;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningAppProcessInfo;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -22,12 +25,16 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.os.RemoteException;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -71,11 +78,11 @@ import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends FragmentActivity {
-    public AppSlidingLeftMenu appSlidingMenu;
-    public boolean isForground = false;
-    private onConnectedToBluetooth onConnectToBlueTooth = null;
+    public static final int PREMISSION_REQUEST_CODE = 1;
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
+    public AppSlidingLeftMenu appSlidingMenu;
+    public boolean isForground = false;
     private boolean isBackPressed = false;
     TextView oneSheeldLogo;
 
@@ -166,32 +173,6 @@ public class MainActivity extends FragmentActivity {
 
     public Thread looperThread;
     public Handler backgroundThreadHandler;
-    private Looper backgroundHandlerLooper;
-
-    private void stopLooperThread() {
-        if (looperThread != null && looperThread.isAlive()) {
-            looperThread.interrupt();
-            backgroundHandlerLooper.quit();
-            looperThread = null;
-        }
-    }
-
-    public void initLooperThread() {
-        stopLooperThread();
-        looperThread = new Thread(new Runnable() {
-
-            @Override
-            public void run() {
-                // TODO Auto-generated method stub
-                Looper.prepare();
-                backgroundHandlerLooper = Looper.myLooper();
-                backgroundThreadHandler = new Handler();
-                Looper.loop();
-            }
-        });
-        looperThread.start();
-    }
-
     Handler versionHandling = new Handler();
     FirmwareVersionQueryHandler versionChangingHandler = new FirmwareVersionQueryHandler() {
         ValidationPopup popub;
@@ -355,6 +336,35 @@ public class MainActivity extends FragmentActivity {
             });
         }
     };
+    boolean isConfigChanged = false;
+    long pausingTime = 0;
+    private onConnectedToBluetooth onConnectToBlueTooth = null;
+    private Looper backgroundHandlerLooper;
+    private BackOnconnectionLostHandler backOnConnectionLostHandler;
+
+    private void stopLooperThread() {
+        if (looperThread != null && looperThread.isAlive()) {
+            looperThread.interrupt();
+            backgroundHandlerLooper.quit();
+            looperThread = null;
+        }
+    }
+
+    public void initLooperThread() {
+        stopLooperThread();
+        looperThread = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                Looper.prepare();
+                backgroundHandlerLooper = Looper.myLooper();
+                backgroundThreadHandler = new Handler();
+                Looper.loop();
+            }
+        });
+        looperThread.start();
+    }
 
     @Override
     protected void onResume() {
@@ -362,46 +372,42 @@ public class MainActivity extends FragmentActivity {
         thisInstance = this;
     }
 
-    private BackOnconnectionLostHandler backOnConnectionLostHandler;
-
     public BackOnconnectionLostHandler getOnConnectionLostHandler() {
         if (backOnConnectionLostHandler == null) {
             backOnConnectionLostHandler = new BackOnconnectionLostHandler() {
 
                 @Override
                 public void handleMessage(Message msg) {
-                    if (connectionLost) {
-                        if (!ArduinoConnectivityPopup.isOpened
-                                && !isFinishing())
-                            runOnUiThread(new Runnable() {
-                                public void run() {
-                                    if (!ArduinoConnectivityPopup.isOpened
-                                            && !isFinishing())
-                                        new ArduinoConnectivityPopup(
-                                                MainActivity.this).show();
-                                }
-                            });
-                        if (getSupportFragmentManager()
-                                .getBackStackEntryCount() > 1) {
-                            getSupportFragmentManager().beginTransaction()
-                                    .setCustomAnimations(0, 0, 0, 0)
-                                    .commitAllowingStateLoss();
-                            getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                            getSupportFragmentManager()
-                                    .executePendingTransactions();
+                    if (!((OneSheeldApplication) getApplication()).getIsDemoMode() && !((OneSheeldApplication) getApplication()).getAppFirmata().isOpen()) {
+                        if (connectionLost) {
+                            if (!ArduinoConnectivityPopup.isOpened
+                                    && !isFinishing())
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        if (!ArduinoConnectivityPopup.isOpened
+                                                && !isFinishing()) {
+                                            new ArduinoConnectivityPopup(
+                                                    MainActivity.this).show();
+                                        }
+                                    }
+                                });
+                            if (getSupportFragmentManager()
+                                    .getBackStackEntryCount() > 1) {
+                                getSupportFragmentManager().beginTransaction()
+                                        .setCustomAnimations(0, 0, 0, 0)
+                                        .commitAllowingStateLoss();
+                                getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                getSupportFragmentManager()
+                                        .executePendingTransactions();
+                            }
                         }
+                        connectionLost = false;
                     }
-                    connectionLost = false;
                     super.handleMessage(msg);
                 }
             };
         }
         return backOnConnectionLostHandler;
-    }
-
-    public static class BackOnconnectionLostHandler extends Handler {
-        public boolean canInvokeOnCloseConnection = true,
-                connectionLost = false;
     }
 
     @Override
@@ -488,8 +494,6 @@ public class MainActivity extends FragmentActivity {
         finish();
         destroyIt();
     }
-
-    boolean isConfigChanged = false;
 
     private void preConfigChange() {
         Enumeration<String> enumKey = ((OneSheeldApplication)
@@ -636,15 +640,66 @@ public class MainActivity extends FragmentActivity {
                     Toast.makeText(this, R.string.bt_not_enabled_leaving,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    if (onConnectToBlueTooth != null
-                            && ArduinoConnectivityPopup.isOpened)
-                        onConnectToBlueTooth.onConnect();
+                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                        if (onConnectToBlueTooth != null
+                                && ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) getApplication()).getIsDemoMode())
+                            onConnectToBlueTooth.onConnect();
+                    } else {
+                        checkAndAskForLocationPermission();
+                    }
                 }
                 break;
             default:
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public Boolean checkForLocationPermission() {
+        return (ContextCompat.checkSelfPermission(thisInstance,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public void checkAndAskForLocationPermission() {
+        if (ContextCompat.checkSelfPermission(thisInstance,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(thisInstance,
+                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+                AlertDialog.Builder locationPremissionExplanationDialog = new AlertDialog.Builder(thisInstance);
+                locationPremissionExplanationDialog.setMessage("Bluetooth scan needs location premission.").setPositiveButton("Allow", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityCompat.requestPermissions(thisInstance,
+                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                MainActivity.PREMISSION_REQUEST_CODE);
+                    }
+                }).setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        showToast("Location permission denied.");
+                    }
+                }).create();
+                locationPremissionExplanationDialog.show();
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(thisInstance,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.LOCATION_HARDWARE},
+                        MainActivity.PREMISSION_REQUEST_CODE);
+            }
+        } else {
+            if (onConnectToBlueTooth != null
+                    && ArduinoConnectivityPopup.isOpened)
+                onConnectToBlueTooth.onConnect();
+        }
     }
 
     @Override
@@ -683,8 +738,6 @@ public class MainActivity extends FragmentActivity {
             }
         }
     }
-
-    long pausingTime = 0;
 
     @Override
     protected void onPause() {
@@ -798,7 +851,63 @@ public class MainActivity extends FragmentActivity {
             onChangeSlidingLockListeners.add(listner);
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PREMISSION_REQUEST_CODE) {
+            switch (permissions[0]) {
+                case Manifest.permission.ACCESS_FINE_LOCATION:
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        if (onConnectToBlueTooth != null
+                                && ArduinoConnectivityPopup.isOpened)
+                            onConnectToBlueTooth.onConnect();
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+                                showToast("Location permission turned off.");
+                            else
+                                showToast("Please turn on location permission.");
+                        }
+                    }
+                    break;
+                default:
+                    Boolean isEnabled = true;
+                    for (int permissionsCount = 0; permissionsCount < grantResults.length; permissionsCount++) {
+                        if (grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                            isEnabled = false;
+                    }
+                    if (isEnabled) {
+                        showToast("Shield selection on.");
+                        // permission was granted, yay! Do the
+                        // contacts-related task you need to do.
+                    } else {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            Boolean isShouldShowRequestPermissionRationale = true;
+                            for (int permissionsCount = 0; permissionsCount < permissions.length; permissionsCount++) {
+                                if (shouldShowRequestPermissionRationale(permissions[permissionsCount]) && grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                                    isShouldShowRequestPermissionRationale = false;
+                            }
+                            if (!isShouldShowRequestPermissionRationale)
+                                showToast("Current shield needs permission.");
+                            else
+                                showToast("Your device ban this shield.");
+                        } else {
+                            showToast("Current shield needs permission.");
+                        }
+                    }
+                    break;
+            }
+            return;
+        }
+    }
+
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
+    }
+
+    public static class BackOnconnectionLostHandler extends Handler {
+        public boolean canInvokeOnCloseConnection = true,
+                connectionLost = false;
     }
 }

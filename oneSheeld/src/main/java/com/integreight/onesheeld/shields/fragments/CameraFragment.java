@@ -304,17 +304,19 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
     @Override
     public void doOnPause() {
-        if (getApplication().getRunningShields().get(
-                getControllerTag()) != null) {
-            try {
-                ((CameraShield) getApplication().getRunningShields().get(
-                        getControllerTag())).hidePreview();
-            } catch (RemoteException e) {
-                e.printStackTrace();
+        if (!getApplication().getIsDemoMode()) {
+            if (getApplication().getRunningShields().get(
+                    getControllerTag()) != null) {
+                try {
+                    ((CameraShield) getApplication().getRunningShields().get(
+                            getControllerTag())).hidePreview();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
             camerLogo.setVisibility(View.VISIBLE);
+            getView().invalidate();
         }
-        getView().invalidate();
     }
 
     @Override

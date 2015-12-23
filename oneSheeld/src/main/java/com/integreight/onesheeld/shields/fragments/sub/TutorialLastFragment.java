@@ -9,6 +9,7 @@ import android.widget.ToggleButton;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 
 public class TutorialLastFragment extends Fragment {
     View v;
@@ -40,6 +41,22 @@ public class TutorialLastFragment extends Fragment {
                         getActivity().finish();
                     }
                 });
+        v.findViewById(R.id.exploreBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.setShownTutAgain(cb.isChecked());
+                if (!cb.isChecked())
+                    app.setTutShownTimes(0);
+                app.setIsDemoMode(true);
+                if (ArduinoConnectivityPopup.isOpened) {
+                    ArduinoConnectivityPopup.isOpened = false;
+                    ArduinoConnectivityPopup.thisInstance.cancel();
+                }
+                if (app.getAppFirmata().isOpen())
+                    app.getAppFirmata().close();
+                getActivity().finish();
+            }
+        });
         getView().findViewById(R.id.check).setOnClickListener(
                 new View.OnClickListener() {
 
