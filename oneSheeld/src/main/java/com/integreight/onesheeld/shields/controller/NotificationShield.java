@@ -35,6 +35,23 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
     private SparseArray<NotificationObject> notificationObjectArrayList = new SparseArray<>();
     private ArrayList<PackageItem> packageItems = new ArrayList<PackageItem>();
+    private static final byte ID = UIShield.NOTIFICATION_SHIELD.getId();
+
+    private static final byte ON_NEW_NOTIFICATION = 0x01;
+    private static final byte ON_NEW_PARSED_NOTIFICATION = 0x02;
+    private static final byte ON_DATA_QUERY_REQUEST = 0x03;
+    private static final byte ON_NOTIFIACTION_DISMISSED = 0x04;
+    private static final byte ON_ERROR = 0x04;
+
+    private static final byte TYPE_FACEBOOK = 0x01;
+    private static final byte TYPE_WHATSAPP = 0x02;
+    private static final byte TYPE_GMAIL = 0x03;
+    private static final byte TYPE_SLACK = 0x04;
+    private static final byte TYPE_TELEGRAM = 0x05;
+    private static final byte TYPE_HANGOUTS = 0x06;
+    private static final byte TYPE_LINE = 0x07;
+
+
 
     public String getLastNotificationText() {
         return lastNotificationText;
@@ -53,6 +70,10 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     public ControllerParent<NotificationShield> init(String tag) {
         checkDenyList();
         return super.init(tag);
+    }
+
+    public static byte getID() {
+        return ID;
     }
 
     protected void showNotification(String notificationText) {
@@ -130,33 +151,99 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                     }
                 }
 
+                ShieldFrame sf1 = new ShieldFrame(getID(),ON_NEW_NOTIFICATION);
+                sf1.addIntegerArgument(2,currentKey);
+                sf1.addStringArgument(currentNotification.getPackageName());
+                byte tickerFlag = (byte) ((currentNotification.getTicker().equals(""))? 0x00:0x01);
+                byte textFlag = (byte) ((currentNotification.getText().equals(""))? 0x00:(0x01 << 1));
+                byte subTextFlag = (byte) ((currentNotification.getSubText().equals(""))? 0x00:(0x01 << 2));
+                byte infoTextFlag = (byte) ((currentNotification.getInfoText().equals(""))? 0x00:(0x01 << 3));
+                byte bigTextFlag = (byte) ((currentNotification.getBigText().equals(""))? 0x00:(0x01 << 4));
+                byte textLinesFlag = (byte) ((currentNotification.getTextLines().equals(""))? 0x00:(0x01 << 5));
+                byte titleFlag = (byte) ((currentNotification.getTitle().equals(""))? 0x00:(0x01 << 6));
+                byte bigTitleFlag = (byte) ((currentNotification.getBigTitle().equals(""))? 0x00:(0x01 << 7));
+                sf1.addByteArgument((byte) (tickerFlag | textFlag | subTextFlag | infoTextFlag | bigTextFlag | textLinesFlag | titleFlag | bigTitleFlag));
+                sendShieldFrame(sf1);
+
+                ShieldFrame sf2 = new ShieldFrame(getID(),ON_NEW_PARSED_NOTIFICATION);
+                sf2.addIntegerArgument(2, currentKey);
+
                 if (currentNotification.getPackageName().equals("com.facebook.orca")) {
-                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getTitle().equals(""))
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
-                    else if (!currentNotification.getTitle().equals(""))
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getTitle().equals("")) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
+                        sf2.addByteArgument(TYPE_FACEBOOK);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getText());
+                        sendShieldFrame(sf2);
+                    }else if (!currentNotification.getTitle().equals("")) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
+                        sf2.addByteArgument(TYPE_FACEBOOK);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
+                        sendShieldFrame(sf2);
+                    }
                 }else if (currentNotification.getPackageName().equals("com.whatsapp")) {
-                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals(""))
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
-                    else if (currentNotification.getTextLines().size() > 0)
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals("")) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
+                        sf2.addByteArgument(TYPE_WHATSAPP);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getText());
+                        sendShieldFrame(sf2);
+                    }else if (currentNotification.getTextLines().size() > 0) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
+                        sf2.addByteArgument(TYPE_WHATSAPP);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
+                        sendShieldFrame(sf2);
+                    }
                 }else if (currentNotification.getPackageName().equals("com.google.android.gm")) {
-                    if (!currentNotification.getBigText().equals(""))
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getBigText());
-                    else if(currentNotification.getTextLines().size() > 0)
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(currentNotification.getTextLines().size()-1));
+                    if (!currentNotification.getBigText().equals("")) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getBigText());
+                        sf2.addByteArgument(TYPE_GMAIL);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getBigText());
+                        sendShieldFrame(sf2);
+                    }else if(currentNotification.getTextLines().size() > 0) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
+                        sf2.addByteArgument(TYPE_GMAIL);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
+                        sendShieldFrame(sf2);
+                    }
                 }else if (currentNotification.getPackageName().equals("com.google.android.talk")) {
-                    if (currentNotification.getTicker().contains(":"))
-                        eventHandler.onNotifiactionArrived(currentNotification.getTicker().split(":")[0]+currentNotification.getTitle());
+                    if (currentNotification.getTicker().contains(":")) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTicker().split(":")[0] + currentNotification.getTitle());
+                        sf2.addByteArgument(TYPE_HANGOUTS);
+                        sf2.addStringArgument(currentNotification.getTicker().split(":")[0]);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sendShieldFrame(sf2);
+                    }
                 }else if (currentNotification.getPackageName().equals("com.slack")) {
                     eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                    sf2.addByteArgument(TYPE_SLACK);
+                    sf2.addStringArgument(currentNotification.getTitle());
+                    sf2.addStringArgument(currentNotification.getText());
+                    sendShieldFrame(sf2);
                 }else if(currentNotification.getPackageName().equals("jp.naver.line.android")){
                     eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                    sf2.addByteArgument(TYPE_LINE);
+                    sf2.addStringArgument(currentNotification.getTitle());
+                    sf2.addStringArgument(currentNotification.getText());
+                    sendShieldFrame(sf2);
                 }else if (currentNotification.getPackageName().equals("org.telegram.messenger")) {
-                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals(""))
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
-                    else if (currentNotification.getTextLines().size() > 0)
-                        eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getTextLines().get(0));
+                    if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals("")) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
+                        sf2.addByteArgument(TYPE_TELEGRAM);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getText());
+                        sendShieldFrame(sf2);
+                    }else if (currentNotification.getTextLines().size() > 0) {
+                        eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(0));
+                        sf2.addByteArgument(TYPE_TELEGRAM);
+                        sf2.addStringArgument(currentNotification.getTitle());
+                        sf2.addStringArgument(currentNotification.getTextLines().get(0));
+                        sendShieldFrame(sf2);
+                    }
                 }else if (!currentNotification.getTitle().equals(""))
                     eventHandler.onNotifiactionArrived(currentNotification.getTitle());
                 else if (!currentNotification.getTicker().equals(""))
@@ -172,8 +259,11 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         public void onReceive(Context context, Intent intent) {
             NotificationObject currentNotification = new NotificationObject(intent.getStringExtra(JSON_EXTRAS));
             for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
-                if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))){
+                if (currentNotification.equals(notificationObjectArrayList.get(notificationObjectArrayList.keyAt(notificationsCounter)))){
+                    ShieldFrame sf = new ShieldFrame(getID(),ON_NOTIFIACTION_DISMISSED);
+                    sf.addIntegerArgument(2, notificationObjectArrayList.keyAt(notificationsCounter));
                     notificationObjectArrayList.remove(notificationsCounter);
+                    sendShieldFrame(sf);
                     break;
                 }
             }
