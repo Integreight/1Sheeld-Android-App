@@ -260,20 +260,26 @@ public class FirmwareUpdatingPopup extends Dialog {
                         new BinaryHttpResponseHandler(new String[]{
                                 "application/octet-stream", "text/plain"}) {
                             @Override
-                            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] binaryData) {
+                            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, final byte[] binaryData) {
                                 FirmwareUpdatingPopup.this.setCancelable(false);
                                 activity.getThisApplication().getAppFirmata()
                                         .prepareAppForSendingFirmware();
-                                activity.getThisApplication().getAppFirmata()
-                                        .resetMicro();
-                                binaryFile = binaryData;
+
                                 showDownloadingProgress();
-                                jodem.send(binaryData, 4);
-                                if (!isFailed)
-                                    changeSlogan("Installing...", COLOR.BLUE);
-                                else
-                                    changeSlogan("Please, Press reset!",
-                                            COLOR.BLUE);
+                                uIHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        activity.getThisApplication().getAppFirmata()
+                                                .resetMicro();
+                                        binaryFile = binaryData;
+                                        jodem.send(binaryData, 4);
+                                        if (!isFailed)
+                                            changeSlogan("Installing...", COLOR.BLUE);
+                                        else
+                                            changeSlogan("Please, Press reset!",
+                                                    COLOR.BLUE);
+                                    }
+                                },200);
                             }
 
                             @Override
@@ -323,14 +329,20 @@ public class FirmwareUpdatingPopup extends Dialog {
                         FirmwareUpdatingPopup.this.setCancelable(false);
                         activity.getThisApplication().getAppFirmata()
                                 .prepareAppForSendingFirmware();
-                        activity.getThisApplication().getAppFirmata()
-                                .resetMicro();
+
                         showDownloadingProgress();
-                        jodem.send(binaryFile, 4);
-                        if (!isFailed)
-                            changeSlogan("Installing...", COLOR.BLUE);
-                        else
-                            changeSlogan("Please, Press reset!", COLOR.BLUE);
+                        uIHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.getThisApplication().getAppFirmata()
+                                        .resetMicro();
+                                jodem.send(binaryFile, 4);
+                                if (!isFailed)
+                                    changeSlogan("Installing...", COLOR.BLUE);
+                                else
+                                    changeSlogan("Please, Press reset!", COLOR.BLUE);
+                            }
+                        },200);
 
                     }
                 } else {
