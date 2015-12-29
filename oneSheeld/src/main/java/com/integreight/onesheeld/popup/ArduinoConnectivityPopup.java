@@ -355,6 +355,29 @@ public class ArduinoConnectivityPopup extends Dialog {
                             scanDevices();
                             doDiscovery();
                         }else{
+                            ((MainActivity) activity)
+                                    .setOnConnectToBluetooth(new onConnectedToBluetooth() {
+
+                                        @Override
+                                        public void onConnect() {
+                                            addingDevicesHandler.post(new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    backPressed = false;
+                                                    showProgress();
+                                                    changeSlogan(
+                                                            activity.getResources()
+                                                                    .getString(
+                                                                            R.string.searching),
+                                                            COLOR.RED);
+                                                    findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                                                    scanDevices();
+                                                    doDiscovery();
+                                                }
+                                            });
+                                        }
+                                    });
                             ((MainActivity) activity).checkAndAskForLocationPermission();
                         }
                     }
