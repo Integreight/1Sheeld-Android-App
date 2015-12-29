@@ -374,8 +374,8 @@ public class SheeldsList extends Fragment {
                 if (adapter != null)
                     adapter.applyToControllerTable();
             }
-            if (!activity.getThisApplication().isDebuggable())
-                AppRate.showRateDialogIfMeetsConditions(activity);
+            AppRate.showRateDialogIfMeetsConditions(activity);
+            activity.showMenuButtonTutorialOnce();
         }
 
         @Override
