@@ -32,16 +32,42 @@ import java.util.ArrayList;
 public class NotificationShield extends ControllerParent<NotificationShield> {
     private NotificationEventHandler eventHandler;
     private String lastNotificationText;
-    private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
     private SparseArray<NotificationObject> notificationObjectArrayList = new SparseArray<>();
     private ArrayList<PackageItem> packageItems = new ArrayList<PackageItem>();
     private static final byte ID = UIShield.NOTIFICATION_SHIELD.getId();
+    int tmpNotificationId = 0;
+    NotificationObject tmpNotificationObject = null;
+
+    private static final byte NOTIFY_PHONE_METHOD_ID = (byte) 0x01;
+    private static final byte QUERY_DATA_METHOD_ID = (byte) 0x02;
+    private static final byte DISMISS_METHOD_ID = (byte) 0x03;
+
+    private static final byte QUERY_APP = 0X01;
+    private static final byte QUERY_TITLE = 0X02;
+    private static final byte QUERY_TEXT = 0X03;
+    private static final byte QUERY_SUB_TEXT = 0X04;
+    private static final byte QUERY_INFO_TEXT = 0X05;
+    private static final byte QUERY_BIG_TEXT = 0X06;
+    private static final byte QUERY_TEXT_LINES = 0X07;
+    private static final byte QUERY_BIG_TITLE = 0X08;
+    private static final byte QUERY_TICKER = 0X09;
 
     private static final byte ON_NEW_NOTIFICATION = 0x01;
-    private static final byte ON_NEW_PARSED_NOTIFICATION = 0x02;
-    private static final byte ON_DATA_QUERY_REQUEST = 0x03;
+    private static final byte ON_DATA_QUERY_REQUEST = 0x02;
+    private static final byte ON_NEW_MESSAGE_NOTIFICATION = 0x03;
     private static final byte ON_NOTIFIACTION_DISMISSED = 0x04;
-    private static final byte ON_ERROR = 0x04;
+    private static final byte ON_ERROR = 0x05;
+
+    private static final byte ERROR_NOTIFICATION_NOT_FOUND = 0x00;
+    private static final byte ERROR_DATA_TYPE_NOT_FOUND = 0x01;
+    private static final byte ERROR_TITLE = 0X02;
+    private static final byte ERROR_TEXT = 0X03;
+    private static final byte ERROR_SUB_TEXT = 0X04;
+    private static final byte ERROR_INFO_TEXT = 0X05;
+    private static final byte ERROR_BIG_TEXT = 0X06;
+    private static final byte ERROR_TEXT_LINES = 0X07;
+    private static final byte ERROR_BIG_TITLE = 0X08;
+    private static final byte ERROR_TICKER = 0X09;
 
     private static final byte TYPE_FACEBOOK = 0x01;
     private static final byte TYPE_WHATSAPP = 0x02;
@@ -165,19 +191,21 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                 sf1.addByteArgument((byte) (tickerFlag | textFlag | subTextFlag | infoTextFlag | bigTextFlag | textLinesFlag | titleFlag | bigTitleFlag));
                 sendShieldFrame(sf1);
 
-                ShieldFrame sf2 = new ShieldFrame(getID(),ON_NEW_PARSED_NOTIFICATION);
+                ShieldFrame sf2 = new ShieldFrame(getID(),ON_NEW_MESSAGE_NOTIFICATION);
                 sf2.addIntegerArgument(2, currentKey);
 
                 if (currentNotification.getPackageName().equals("com.facebook.orca")) {
                     if (currentNotification.getTextLines().size() == 0 && !currentNotification.getTitle().equals("")) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
                         sf2.addByteArgument(TYPE_FACEBOOK);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getText());
                         sendShieldFrame(sf2);
                     }else if (!currentNotification.getTitle().equals("")) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
                         sf2.addByteArgument(TYPE_FACEBOOK);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
                         sendShieldFrame(sf2);
@@ -186,12 +214,14 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                     if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals("")) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
                         sf2.addByteArgument(TYPE_WHATSAPP);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getText());
                         sendShieldFrame(sf2);
                     }else if (currentNotification.getTextLines().size() > 0) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
                         sf2.addByteArgument(TYPE_WHATSAPP);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
                         sendShieldFrame(sf2);
@@ -200,12 +230,14 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                     if (!currentNotification.getBigText().equals("")) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getBigText());
                         sf2.addByteArgument(TYPE_GMAIL);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getBigText());
                         sendShieldFrame(sf2);
                     }else if(currentNotification.getTextLines().size() > 0) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
                         sf2.addByteArgument(TYPE_GMAIL);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getTextLines().get(currentNotification.getTextLines().size() - 1));
                         sendShieldFrame(sf2);
@@ -214,6 +246,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                     if (currentNotification.getTicker().contains(":")) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTicker().split(":")[0] + currentNotification.getTitle());
                         sf2.addByteArgument(TYPE_HANGOUTS);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTicker().split(":")[0]);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sendShieldFrame(sf2);
@@ -221,12 +254,14 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                 }else if (currentNotification.getPackageName().equals("com.slack")) {
                     eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
                     sf2.addByteArgument(TYPE_SLACK);
+                    sf2.addIntegerArgument(2, tmpNotificationId);
                     sf2.addStringArgument(currentNotification.getTitle());
                     sf2.addStringArgument(currentNotification.getText());
                     sendShieldFrame(sf2);
                 }else if(currentNotification.getPackageName().equals("jp.naver.line.android")){
-                    eventHandler.onNotifiactionArrived(currentNotification.getTitle()+" :"+currentNotification.getText());
+                    eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
                     sf2.addByteArgument(TYPE_LINE);
+                    sf2.addIntegerArgument(2, tmpNotificationId);
                     sf2.addStringArgument(currentNotification.getTitle());
                     sf2.addStringArgument(currentNotification.getText());
                     sendShieldFrame(sf2);
@@ -234,12 +269,14 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                     if (currentNotification.getTextLines().size() == 0 && !currentNotification.getText().equals("")) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getText());
                         sf2.addByteArgument(TYPE_TELEGRAM);
+                        sf2.addIntegerArgument(2, tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getText());
                         sendShieldFrame(sf2);
                     }else if (currentNotification.getTextLines().size() > 0) {
                         eventHandler.onNotifiactionArrived(currentNotification.getTitle() + " :" + currentNotification.getTextLines().get(0));
                         sf2.addByteArgument(TYPE_TELEGRAM);
+                        sf2.addIntegerArgument(2,tmpNotificationId);
                         sf2.addStringArgument(currentNotification.getTitle());
                         sf2.addStringArgument(currentNotification.getTextLines().get(0));
                         sendShieldFrame(sf2);
@@ -285,8 +322,8 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         return null;
     }
 
-    private int getNotificationKey(String packageNmae,int notificationId){
-        NotificationObject currentNotification = new NotificationObject(packageNmae,notificationId,00);
+    private int getNotificationKey(String packageName,int notificationId){
+        NotificationObject currentNotification = new NotificationObject(packageName,notificationId,00);
         for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
             if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))){
                 return notificationObjectArrayList.keyAt(notificationsCounter);
@@ -297,8 +334,11 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
 
     private void dismissNotification(NotificationObject currentNotification){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(),currentNotification.getTag(),currentNotification.getNotificationId());
-            notificationObjectArrayList.remove(getNotificationKey(currentNotification.getPackageName(),currentNotification.getNotificationId()));
+            NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(), currentNotification.getTag(), currentNotification.getNotificationId());
+            tmpNotificationId = getNotificationKey(currentNotification.getPackageName(), currentNotification.getNotificationId());
+            notificationObjectArrayList.remove(tmpNotificationId);
+            ShieldFrame sf = new ShieldFrame(getID(),ON_NOTIFIACTION_DISMISSED);
+            sf.addIntegerArgument(2,tmpNotificationId);
         }
     }
 
@@ -323,12 +363,120 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         if (frame.getShieldId() == UIShield.NOTIFICATION_SHIELD.getId()) {
             String notificationText = frame.getArgumentAsString(0);
             lastNotificationText = notificationText;
-            if (frame.getFunctionId() == NOTIFY_PHONE_METHOD_ID) {
-                showNotification(notificationText);
-                if (eventHandler != null)
-                    eventHandler.onNotificationReceive(notificationText);
+            switch (frame.getFunctionId()){
+                case NOTIFY_PHONE_METHOD_ID:
+                    showNotification(notificationText);
+                    if (eventHandler != null)
+                        eventHandler.onNotificationReceive(notificationText);
+                    break;
+                case QUERY_DATA_METHOD_ID:
+                    tmpNotificationId = frame.getArgumentAsInteger(0);
+                    tmpNotificationObject = notificationObjectArrayList.get(tmpNotificationId, null);
+                    if (tmpNotificationObject != null) {
+                        if (frame.getArguments().size()>=2) {
+                            ShieldFrame sf = new ShieldFrame(getID(), ON_DATA_QUERY_REQUEST);
+                            switch (frame.getArgument(1)[0]) {
+                                case QUERY_APP:
+                                    sf.addIntegerArgument(1, tmpNotificationId);
+                                    sf.addStringArgument(tmpNotificationObject.getPackageName());
+                                    sendShieldFrame(sf);
+                                    break;
+                                case QUERY_TITLE:
+                                    if (!tmpNotificationObject.getTitle().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getTitle());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId,ERROR_TITLE);
+                                    }
+                                    break;
+                                case QUERY_TEXT:
+                                    if (!tmpNotificationObject.getText().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getText());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_TEXT);
+                                    }
+                                    break;
+                                case QUERY_SUB_TEXT:
+                                    if (!tmpNotificationObject.getSubText().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getSubText());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_SUB_TEXT);
+                                    }
+                                    break;
+                                case QUERY_INFO_TEXT:
+                                    if (!tmpNotificationObject.getInfoText().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getInfoText());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_INFO_TEXT);
+                                    }
+                                    break;
+                                case QUERY_BIG_TEXT:
+                                    if (!tmpNotificationObject.getBigText().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getBigText());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_BIG_TEXT);
+                                    }
+                                    break;
+                                case QUERY_TEXT_LINES:
+                                    if (!tmpNotificationObject.getPackageName().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getTextLinesAsString());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_TEXT_LINES);
+                                    }
+                                    break;
+                                case QUERY_BIG_TITLE:
+                                    if (!tmpNotificationObject.getBigTitle().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getBigTitle());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_BIG_TITLE);
+                                    }
+                                    break;
+                                case QUERY_TICKER:
+                                    if (!tmpNotificationObject.getTicker().equals("")) {
+                                        sf.addIntegerArgument(1, tmpNotificationId);
+                                        sf.addStringArgument(tmpNotificationObject.getTicker());
+                                        sendShieldFrame(sf);
+                                    }else {
+                                        sendError(tmpNotificationId, ERROR_TICKER);
+                                    }
+                                    break;
+                                default:
+                                    sendError(tmpNotificationId, ERROR_DATA_TYPE_NOT_FOUND);
+                                    break;
+                            }
+                        }
+                    }else {
+                        sendError(0, ERROR_NOTIFICATION_NOT_FOUND);
+                    }
+                    break;
+                case DISMISS_METHOD_ID:
+                    tmpNotificationId = frame.getArgumentAsInteger(0);
+                    tmpNotificationObject = notificationObjectArrayList.get(tmpNotificationId, null);
+                    if (tmpNotificationObject != null)
+                        dismissNotification(tmpNotificationObject);
+                    break;
             }
         }
+    }
+
+    private void sendError(int notificationId ,byte errorType){
+        ShieldFrame sf = new ShieldFrame(getID(),ON_ERROR);
+        sf.addIntegerArgument(2,notificationId);
+        sf.getArgument(errorType);
+        sendShieldFrame(sf);
     }
 
     @Override

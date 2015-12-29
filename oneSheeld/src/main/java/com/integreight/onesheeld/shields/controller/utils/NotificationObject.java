@@ -120,6 +120,14 @@ public class NotificationObject {
         return textLines;
     }
 
+    public String getTextLinesAsString() {
+        StringBuilder stringTextLines = new StringBuilder("");
+        for (int lineCounter = 0;lineCounter < textLines.size(); lineCounter++) {
+            stringTextLines.append(textLines.get(lineCounter)+"\n");
+        }
+        return stringTextLines.toString();
+    }
+
     public String getInfoText() {
         return infoText;
     }
