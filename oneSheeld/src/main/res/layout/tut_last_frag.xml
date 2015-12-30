@@ -77,7 +77,7 @@
         <TextView
             android:id="@+id/btns_seperator"
             android:layout_centerInParent="true"
-            android:layout_margin="20dp"
+            android:layout_margin="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
@@ -101,7 +101,7 @@
             android:layout_toRightOf="@id/btns_seperator"
             android:background="@drawable/go_button_selector"
             android:gravity="center"
-            android:text="@string/explore"
+            android:text="@string/demo"
             android:textColor="@color/white"
             android:textSize="35sp" />
     </RelativeLayout>

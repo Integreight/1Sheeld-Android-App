@@ -12,6 +12,7 @@ apply plugin: 'io.fabric'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://jitpack.io" }
 }
 
 
@@ -97,6 +98,7 @@ dependencies {
     compile 'cz.msebera.android:httpclient:4.4.1.1'
     compile 'net.sf.supercsv:super-csv:2.4.0'
     compile 'com.github.amlcurran.showcaseview:library:5.4.0'
+    compile 'com.github.emanzanoaxa:RippleEffect:52ea2a0ab6'
 }
 
 def isCrashlyticsPropertiesAvailable() {
