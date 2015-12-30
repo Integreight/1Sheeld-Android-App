@@ -173,7 +173,8 @@ public class ArduinoConnectivityPopup extends Dialog {
             public void onClick(View v) {
                 ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(true);
                 ArduinoConnectivityPopup.isOpened = false;
-                ArduinoConnectivityPopup.this.cancel();
+                ArduinoConnectivityPopup.thisInstance.onBackPressed();
+                ArduinoConnectivityPopup.thisInstance.cancel();
                 ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
             }
         });
