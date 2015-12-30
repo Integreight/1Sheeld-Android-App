@@ -100,12 +100,6 @@ public class MainActivity extends FragmentActivity {
         }
         setContentView(R.layout.one_sheeld_main);
         oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
-        oneSheeldLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.openOptionsMenu();
-            }
-        });
         initLooperThread();
         if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
 //            if (savedInstance != null) {

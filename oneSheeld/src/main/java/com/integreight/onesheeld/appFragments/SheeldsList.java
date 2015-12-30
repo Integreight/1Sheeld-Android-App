@@ -131,6 +131,12 @@ public class SheeldsList extends Fragment {
             public void run() {
                 if (activity != null
                         && activity.getSupportFragmentManager() != null) {
+                    activity.findViewById(R.id.currentViewTitle).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            activity.openOptionsMenu();
+                        }
+                    });
                     activity.findViewById(R.id.getAvailableDevices)
                             .setOnClickListener(new View.OnClickListener() {
 
@@ -150,6 +156,13 @@ public class SheeldsList extends Fragment {
 
                                                             }
                                                         });
+                                        activity.findViewById(R.id.currentViewTitle).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                // TODO
+                                                // 1Sheeld Logo In Header
+                                            }
+                                        });
                                         launchShieldsOperationActivity();
                                     }
                                 }
