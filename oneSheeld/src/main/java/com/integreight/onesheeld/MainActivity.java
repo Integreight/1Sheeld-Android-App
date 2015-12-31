@@ -845,48 +845,50 @@ public class MainActivity extends FragmentActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PREMISSION_REQUEST_CODE) {
-            switch (permissions[0]) {
-                case Manifest.permission.ACCESS_FINE_LOCATION:
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        if (onConnectToBlueTooth != null
-                                && ArduinoConnectivityPopup.isOpened)
-                            onConnectToBlueTooth.onConnect();
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-                                showToast("Location permission turned off.");
-                            else
-                                showToast("Please turn on location permission.");
-                        }
-                    }
-                    break;
-                default:
-                    Boolean isEnabled = true;
-                    for (int permissionsCount = 0; permissionsCount < grantResults.length; permissionsCount++) {
-                        if (grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
-                            isEnabled = false;
-                    }
-                    if (isEnabled) {
-                        showToast("Shield selection on.");
-                        // permission was granted, yay! Do the
-                        // contacts-related task you need to do.
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            Boolean isShouldShowRequestPermissionRationale = true;
-                            for (int permissionsCount = 0; permissionsCount < permissions.length; permissionsCount++) {
-                                if (shouldShowRequestPermissionRationale(permissions[permissionsCount]) && grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
-                                    isShouldShowRequestPermissionRationale = false;
-                            }
-                            if (!isShouldShowRequestPermissionRationale)
-                                showToast("Current shield needs permission.");
-                            else
-                                showToast("Your device ban this shield.");
+            if (permissions.length > 0) {
+                switch (permissions[0]) {
+                    case Manifest.permission.ACCESS_FINE_LOCATION:
+                        if (grantResults.length > 0
+                                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            if (onConnectToBlueTooth != null
+                                    && ArduinoConnectivityPopup.isOpened)
+                                onConnectToBlueTooth.onConnect();
                         } else {
-                            showToast("Current shield needs permission.");
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+                                    showToast("Location permission turned off.");
+                                else
+                                    showToast("Please turn on location permission.");
+                            }
                         }
-                    }
-                    break;
+                        break;
+                    default:
+                        Boolean isEnabled = true;
+                        for (int permissionsCount = 0; permissionsCount < grantResults.length; permissionsCount++) {
+                            if (grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                                isEnabled = false;
+                        }
+                        if (isEnabled) {
+                            showToast("Shield selection on.");
+                            // permission was granted, yay! Do the
+                            // contacts-related task you need to do.
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                Boolean isShouldShowRequestPermissionRationale = true;
+                                for (int permissionsCount = 0; permissionsCount < permissions.length; permissionsCount++) {
+                                    if (shouldShowRequestPermissionRationale(permissions[permissionsCount]) && grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                                        isShouldShowRequestPermissionRationale = false;
+                                }
+                                if (!isShouldShowRequestPermissionRationale)
+                                    showToast("Current shield needs permission.");
+                                else
+                                    showToast("Your device ban this shield.");
+                            } else {
+                                showToast("Current shield needs permission.");
+                            }
+                        }
+                        break;
+                }
             }
             return;
         }
