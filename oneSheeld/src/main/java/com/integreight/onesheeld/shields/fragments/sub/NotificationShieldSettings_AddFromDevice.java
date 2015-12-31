@@ -1,6 +1,6 @@
 package com.integreight.onesheeld.shields.fragments.sub;
 
-import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +16,8 @@ import com.integreight.onesheeld.model.PackageItem;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class NotificationShieldSettings_AddFromDevice extends Fragment {
@@ -45,13 +47,20 @@ public class NotificationShieldSettings_AddFromDevice extends Fragment {
 
         final PackageManager pm = getActivity().getPackageManager();
         //get a list of installed apps.
-        List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        List<PackageInfo> packages = pm.getInstalledPackages(PackageManager.GET_ACTIVITIES);
         ArrayList<PackageItem> items = new ArrayList<PackageItem>();
-        for (ApplicationInfo packageInfo : packages) {
+        for (PackageInfo packageInfo : packages) {
             PackageItem item = new PackageItem();
-            item.name = packageInfo.packageName;
+            item.packageName = packageInfo.packageName;
+            item.name = (String) packageInfo.applicationInfo.loadLabel(pm);
             items.add(item);
         }
+        Collections.sort(items, new Comparator<PackageItem>() {
+            @Override
+            public int compare(PackageItem lhs, PackageItem rhs) {
+                return lhs.name.compareToIgnoreCase(rhs.name);
+            }
+        });
         playlist.setAdapter(new PackagesListAdapter(getActivity(), items));
         addFromMedia.setOnClickListener(new View.OnClickListener() {
 

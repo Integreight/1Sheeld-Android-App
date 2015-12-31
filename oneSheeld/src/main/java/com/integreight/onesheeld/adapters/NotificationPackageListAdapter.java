@@ -57,6 +57,7 @@ public class NotificationPackageListAdapter extends BaseAdapter {
             holder = new Holder();
             holder.name = (OneSheeldTextView) row
                     .findViewById(R.id.packageItemName);
+            holder.packageName = (OneSheeldTextView) row.findViewById(R.id.packageItemPackageName);
             holder.check = (CheckBox) row.findViewById(R.id.packageItemCheck);
             row.setTag(holder);
         } else {
@@ -65,7 +66,7 @@ public class NotificationPackageListAdapter extends BaseAdapter {
         final Holder temp = holder;
         final PackageItem item = items.get(position);
         temp.name.setText(item.name);
-
+        temp.packageName.setText(item.packageName);
         temp.check.setChecked(item.isSelected);
         temp.check.setOnClickListener(new View.OnClickListener() {
 
@@ -103,7 +104,7 @@ public class NotificationPackageListAdapter extends BaseAdapter {
     }
 
     static class Holder {
-        OneSheeldTextView name;
+        OneSheeldTextView name,packageName;
         CheckBox check;
     }
 

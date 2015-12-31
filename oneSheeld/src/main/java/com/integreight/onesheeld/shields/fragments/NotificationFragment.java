@@ -38,6 +38,11 @@ public class NotificationFragment extends
                 .findViewById(R.id.notification_shield_text_textview);
         notificationReceiverToggle = (OneSheeldToggleButton) v.findViewById(R.id.notification_receiver_toggle);
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            if (((NotificationShield) getApplication().getRunningShields().get(getControllerTag())).isServiceON())
+                notificationReceiverToggle.setChecked(true);
+            else
+                notificationReceiverToggle.setChecked(false);
+
             notificationReceiverToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

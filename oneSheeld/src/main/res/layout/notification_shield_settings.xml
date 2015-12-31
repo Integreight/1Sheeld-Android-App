@@ -5,9 +5,9 @@
     android:orientation="vertical">
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
-        android:text="Deny List"
+        android:text="Allow"
         android:textSize="25sp"
-        android:textColor="@color/red"
+        android:textColor="@color/voice_rec_circle_green"
         android:textStyle="bold"
         android:layout_gravity="center"
         android:layout_width="wrap_content"

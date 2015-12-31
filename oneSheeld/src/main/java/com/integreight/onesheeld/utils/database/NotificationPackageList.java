@@ -11,16 +11,18 @@ import com.integreight.onesheeld.model.PackageItem;
 import com.integreight.onesheeld.utils.Log;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class NotificationPackageList {
 
     public static final String MYDATABASE_NAME = "onesheeld1";
     public static final String MYDATABASE_TABLE = "packages";
     public static final int MYDATABASE_VERSION = 1;
-    public static final String KEY_ID = "_id", NAME = "name";
+    public static final String KEY_ID = "_id", NAME = "name", PACKAGE_NAME = "packageName";
 
     private static final String SCRIPT_CREATE_DATABASE = "create table "
-            + MYDATABASE_TABLE + "(" + KEY_ID + " integer primary key, " + NAME + " text);";
+            + MYDATABASE_TABLE + "(" + KEY_ID + " integer primary key, " + NAME + " text, "+ PACKAGE_NAME + " text);";
 
     private SQLiteHelper sqLiteHelper;
     private SQLiteDatabase sqLiteDatabase;
@@ -50,9 +52,10 @@ public class NotificationPackageList {
         sqLiteHelper.close();
     }
 
-    public long insert(String content) {
+    public long insert(PackageItem content) {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(NAME, content);
+        contentValues.put(NAME, content.name);
+        contentValues.put(PACKAGE_NAME,content.packageName);
         return sqLiteDatabase.insert(MYDATABASE_TABLE, null, contentValues);
     }
 
@@ -67,7 +70,7 @@ public class NotificationPackageList {
 
     public ArrayList<PackageItem> getPlaylist() {
         ArrayList<PackageItem> topics = new ArrayList<PackageItem>();
-        String[] columns = new String[]{KEY_ID, NAME};
+        String[] columns = new String[]{KEY_ID, NAME, PACKAGE_NAME};
         Cursor cursor = sqLiteDatabase.query(MYDATABASE_TABLE, columns, null,
                 null, null, null, null);
         try {
@@ -76,6 +79,7 @@ public class NotificationPackageList {
                 PackageItem topic = new PackageItem();
                 topic.id = cursor.getInt(0);
                 topic.name = cursor.getString(1);
+                topic.packageName = cursor.getString(2);
                 topics.add(topic);
                 cursor.moveToNext();
             }
@@ -84,6 +88,12 @@ public class NotificationPackageList {
         } finally {
             cursor.close();
         }
+        Collections.sort(topics, new Comparator<PackageItem>() {
+            @Override
+            public int compare(PackageItem lhs, PackageItem rhs) {
+                return lhs.name.compareToIgnoreCase(rhs.name);
+            }
+        });
         return topics;
     }
 

@@ -46,7 +46,7 @@ public class NotificationReceiver extends NotificationListenerService{
 
         Intent msgrcv = new Intent("NotificationDetailsMessage");
         NotificationObject currentNotification = null;
-        currentNotification = new NotificationObject(sbn.getPackageName(),sbn.getId(),sbn.getPostTime());
+        currentNotification = new NotificationObject(sbn.getPackageName(),sbn.getId(),sbn.getNotification().when);
         currentNotification.setTag(sbn.getTag());
         if (sbn.getNotification().tickerText != null)
             currentNotification.setTicker(String.valueOf(sbn.getNotification().tickerText));

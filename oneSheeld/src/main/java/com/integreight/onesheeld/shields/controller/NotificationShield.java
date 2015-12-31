@@ -35,6 +35,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     private SparseArray<NotificationObject> notificationObjectArrayList = new SparseArray<>();
     private ArrayList<PackageItem> packageItems = new ArrayList<PackageItem>();
     private static final byte ID = UIShield.NOTIFICATION_SHIELD.getId();
+    private static boolean isServiceON = false;
     int tmpNotificationId = 0;
     NotificationObject tmpNotificationObject = null;
 
@@ -127,31 +128,41 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         notificationManager.notify(2, notification);
     }
 
+    public static boolean isServiceON() {
+        return isServiceON;
+    }
+
     public Boolean startNotificationReceiver(){
-        ContentResolver contentResolver = activity.getContentResolver();
-        String enabledNotificationListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
-        String packageName = activity.getPackageName();
-        if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName))
-        {
-            // in this situation we know that the user has not granted the app the Notification access permission
-            activity.startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
-            return false;
-        }
-        else
-        {
-            activity.startService(new Intent(activity, NotificationReceiver.class));
-            LocalBroadcastManager.getInstance(activity).registerReceiver(onNotice, new IntentFilter("NotificationDetailsMessage"));
-            LocalBroadcastManager.getInstance(activity).registerReceiver(onRemoval, new IntentFilter("NotificationRemovalMessage"));
+        if (!isServiceON) {
+            ContentResolver contentResolver = activity.getContentResolver();
+            String enabledNotificationListeners = Settings.Secure.getString(contentResolver, "enabled_notification_listeners");
+            String packageName = activity.getPackageName();
+            if (enabledNotificationListeners == null || !enabledNotificationListeners.contains(packageName)) {
+                // in this situation we know that the user has not granted the app the Notification access permission
+                activity.startActivity(new Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"));
+                return false;
+            } else {
+                activity.startService(new Intent(activity, NotificationReceiver.class));
+                LocalBroadcastManager.getInstance(activity).registerReceiver(onNotice, new IntentFilter("NotificationDetailsMessage"));
+                LocalBroadcastManager.getInstance(activity).registerReceiver(onRemoval, new IntentFilter("NotificationRemovalMessage"));
+                isServiceON = true;
+                return true;
+            }
+        }else {
             return true;
         }
     }
 
     public void stopNotificationReceiver(){
-        activity.stopService(new Intent(activity, NotificationReceiver.class));
-        LocalBroadcastManager.getInstance(activity).unregisterReceiver(onNotice);
-        LocalBroadcastManager.getInstance(activity).unregisterReceiver(onRemoval);
+        if (isServiceON) {
+            activity.stopService(new Intent(activity, NotificationReceiver.class));
+            LocalBroadcastManager.getInstance(activity).unregisterReceiver(onNotice);
+            LocalBroadcastManager.getInstance(activity).unregisterReceiver(onRemoval);
+            isServiceON = false;
+        }
     }
 
+    boolean allowed = false;
     public static final String EXTRAS = "extras",JSON_EXTRAS = "jsonExtras";
     private int keyCounter = 1;
     private BroadcastReceiver onNotice= new BroadcastReceiver() {
@@ -159,23 +170,34 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         @Override
         public void onReceive(Context context, Intent intent) {
             NotificationObject currentNotification = new NotificationObject(intent.getStringExtra(JSON_EXTRAS));
-            int currentKey = getNotificationKey(currentNotification.getPackageName(),currentNotification.getNotificationId());
+            int currentKey = getNotificationKey(currentNotification.getPackageName(),currentNotification.getNotificationId(),currentNotification.getTime());
+
+            if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
+                return;
+            }
+            allowed = false;
+            for (PackageItem item: packageItems){
+                if (currentNotification.getPackageName().equals(item.name)) {
+                    allowed = true;
+                }
+            }
+            if (!allowed)
+                return;
+
             if (currentKey == 0) {
                 notificationObjectArrayList.put(keyCounter, currentNotification);
+                currentKey = keyCounter;
                 keyCounter++;
             }else{
-                notificationObjectArrayList.get(currentKey).fromJsonString(intent.getStringExtra(JSON_EXTRAS));
+                if (notificationObjectArrayList.get(currentKey).compareTo(currentNotification)) {
+                    notificationObjectArrayList.get(currentKey).fromJsonString(intent.getStringExtra(JSON_EXTRAS));
+                    return;
+                }else {
+                    notificationObjectArrayList.get(currentKey).fromJsonString(intent.getStringExtra(JSON_EXTRAS));
+                }
             }
 
             if (eventHandler != null ){
-                if (currentNotification.getPackageName().equals("com.integreight.onesheeld")) {
-                    return;
-                }
-                for (PackageItem item: packageItems){
-                    if (currentNotification.getPackageName().equals(item.name)) {
-                        return;
-                    }
-                }
 
                 ShieldFrame sf1 = new ShieldFrame(getID(),ON_NEW_NOTIFICATION);
                 sf1.addIntegerArgument(2, currentKey);
@@ -281,17 +303,21 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         @Override
         public void onReceive(Context context, Intent intent) {
             NotificationObject currentNotification = new NotificationObject(intent.getStringExtra(JSON_EXTRAS));
-            for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
-                if (currentNotification.equals(notificationObjectArrayList.get(notificationObjectArrayList.keyAt(notificationsCounter)))){
-                    ShieldFrame sf = new ShieldFrame(getID(),ON_NOTIFIACTION_DISMISSED);
-                    sf.addIntegerArgument(2, notificationObjectArrayList.keyAt(notificationsCounter));
-                    notificationObjectArrayList.remove(notificationsCounter);
-                    sendShieldFrame(sf);
-                    break;
-                }
-            }
+            removeNotification(currentNotification);
         }
     };
+
+    private synchronized void removeNotification(NotificationObject currentNotification){
+        for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
+            if (currentNotification.equals(notificationObjectArrayList.get(notificationObjectArrayList.keyAt(notificationsCounter)))){
+                ShieldFrame sf = new ShieldFrame(getID(),ON_NOTIFIACTION_DISMISSED);
+                sf.addIntegerArgument(2, notificationObjectArrayList.keyAt(notificationsCounter));
+                notificationObjectArrayList.remove(notificationsCounter);
+                sendShieldFrame(sf,true);
+                break;
+            }
+        }
+    }
 
     public void setNotificationEventHandler(
             NotificationEventHandler eventHandler) {
@@ -308,11 +334,21 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         return null;
     }
 
-    private int getNotificationKey(String packageName,int notificationId){
-        NotificationObject currentNotification = new NotificationObject(packageName,notificationId,00);
-        for (int notificationsCounter=0;notificationsCounter<notificationObjectArrayList.size();notificationsCounter++){
-            if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))){
-                return notificationObjectArrayList.keyAt(notificationsCounter);
+    private int getNotificationKey(String packageName,int notificationId,long notificationTime){
+        NotificationObject currentNotification = new NotificationObject(packageName,notificationId,notificationTime);
+        if (notificationObjectArrayList.size() > 0) {
+            if (notificationTime > 0) {
+                for (int notificationsCounter = 0; notificationsCounter < notificationObjectArrayList.size(); notificationsCounter++) {
+                    if (currentNotification.compareTo(notificationObjectArrayList.get(notificationsCounter))) {
+                        return notificationObjectArrayList.keyAt(notificationsCounter);
+                    }
+                }
+            }else{
+                for (int notificationsCounter = 0; notificationsCounter < notificationObjectArrayList.size(); notificationsCounter++) {
+                    if (currentNotification.equals(notificationObjectArrayList.get(notificationsCounter))) {
+                        return notificationObjectArrayList.keyAt(notificationsCounter);
+                    }
+                }
             }
         }
         return 0;
@@ -321,10 +357,12 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
     private void dismissNotification(NotificationObject currentNotification){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             NotificationReceiver.getThisInstance().cancelNotification(currentNotification.getPackageName(), currentNotification.getTag(), currentNotification.getNotificationId());
-            tmpNotificationId = getNotificationKey(currentNotification.getPackageName(), currentNotification.getNotificationId());
-            notificationObjectArrayList.remove(tmpNotificationId);
+            do {
+                tmpNotificationId = getNotificationKey(currentNotification.getPackageName(), currentNotification.getNotificationId(), 0);
+                notificationObjectArrayList.remove(tmpNotificationId);
+            }while (tmpNotificationId != 0);
             ShieldFrame sf = new ShieldFrame(getID(),ON_NOTIFIACTION_DISMISSED);
-            sf.addIntegerArgument(2,tmpNotificationId);
+            sf.addIntegerArgument(2, tmpNotificationId);
         }
     }
 

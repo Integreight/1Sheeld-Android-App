@@ -222,4 +222,12 @@ public class NotificationObject {
         }
         return false;
     }
+
+    public boolean compareTo(Object o) {
+        if (o != null && NotificationObject.class.equals(o.getClass()) && this.toString().equals(o.toString()) && this.getTime() == ((NotificationObject) o).getTime()){
+//            if (this.packageName.equals(((NotificationObject) o).getPackageName()) && this.notificationId == ((NotificationObject) o).getNotificationId())
+            return true;
+        }
+        return false;
+    }
 }

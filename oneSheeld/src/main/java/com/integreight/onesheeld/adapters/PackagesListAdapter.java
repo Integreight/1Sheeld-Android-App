@@ -57,6 +57,7 @@ public class PackagesListAdapter extends BaseAdapter {
             holder = new Holder();
             holder.name = (OneSheeldTextView) row
                     .findViewById(R.id.packageItemName);
+            holder.packageName = (OneSheeldTextView) row.findViewById(R.id.packageItemPackageName);
             holder.check = (CheckBox) row.findViewById(R.id.packageItemCheck);
             row.setTag(holder);
         } else {
@@ -65,6 +66,7 @@ public class PackagesListAdapter extends BaseAdapter {
         final Holder temp = holder;
         final PackageItem item = items.get(position);
         temp.name.setText(item.name);
+        temp.packageName.setText(item.packageName);
         temp.check.setChecked(item.isSelected);
         temp.check.setOnClickListener(new View.OnClickListener() {
 
@@ -76,13 +78,16 @@ public class PackagesListAdapter extends BaseAdapter {
         });
         return row;
     }
-
+    PackageItem temp;
     public void addToPlayList() {
         NotificationPackageList db = new NotificationPackageList(activity);
         db.openToWrite();
         for (PackageItem item : items) {
             if (item.isSelected) {
-                db.insert(item.name);
+                temp = new PackageItem();
+                temp.name = item.name;
+                temp.packageName = item.packageName;
+                db.insert(temp);
             }
         }
         notifyDataSetChanged();
@@ -101,7 +106,7 @@ public class PackagesListAdapter extends BaseAdapter {
     }
 
     static class Holder {
-        OneSheeldTextView name;
+        OneSheeldTextView name,packageName;
         CheckBox check;
     }
 
