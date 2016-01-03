@@ -91,7 +91,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
         holder.icon.setImageDrawable(null);
         holder.icon.setBackgroundResource(iconId);
 
-        row.setBackgroundColor(imageId);
+        holder.container.setBackgroundColor(imageId);
 
         if (shield.mainActivitySelection) {
             tempHolder.selectionCircle.setVisibility(View.VISIBLE);

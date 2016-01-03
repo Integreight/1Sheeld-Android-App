@@ -173,7 +173,11 @@ public class ArduinoConnectivityPopup extends Dialog {
             public void onClick(View v) {
                 ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(true);
                 ArduinoConnectivityPopup.isOpened = false;
-                ArduinoConnectivityPopup.this.cancel();
+                if (mBtAdapter != null && mBtAdapter.isDiscovering()) {
+                    mBtAdapter.cancelDiscovery();
+                    setScanButtonReady();
+                }
+                ArduinoConnectivityPopup.thisInstance.cancel();
                 ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
             }
         });
@@ -339,7 +343,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                         changeSlogan(
                                 activity.getResources().getString(
                                         R.string.searching), COLOR.RED);
-                        findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
                         scanDevices();
                         doDiscovery();
                     }else{
@@ -351,10 +355,33 @@ public class ArduinoConnectivityPopup extends Dialog {
                             changeSlogan(
                                     activity.getResources().getString(
                                             R.string.searching), COLOR.RED);
-                            findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                            findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
                             scanDevices();
                             doDiscovery();
                         }else{
+                            ((MainActivity) activity)
+                                    .setOnConnectToBluetooth(new onConnectedToBluetooth() {
+
+                                        @Override
+                                        public void onConnect() {
+                                            addingDevicesHandler.post(new Runnable() {
+
+                                                @Override
+                                                public void run() {
+                                                    backPressed = false;
+                                                    showProgress();
+                                                    changeSlogan(
+                                                            activity.getResources()
+                                                                    .getString(
+                                                                            R.string.searching),
+                                                            COLOR.RED);
+                                                    findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                                                    scanDevices();
+                                                    doDiscovery();
+                                                }
+                                            });
+                                        }
+                                    });
                             ((MainActivity) activity).checkAndAskForLocationPermission();
                         }
                     }

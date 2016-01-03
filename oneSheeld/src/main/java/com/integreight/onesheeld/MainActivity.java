@@ -12,8 +12,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -34,15 +32,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
 import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
@@ -65,20 +63,18 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import hotchemi.android.rate.AppRate;
 import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends FragmentActivity {
     public static final int PREMISSION_REQUEST_CODE = 1;
+    public static final String IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP = "com.integreight.onesheeld.IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP";
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
     public AppSlidingLeftMenu appSlidingMenu;
@@ -104,12 +100,6 @@ public class MainActivity extends FragmentActivity {
         }
         setContentView(R.layout.one_sheeld_main);
         oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
-        oneSheeldLogo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.this.openOptionsMenu();
-            }
-        });
         initLooperThread();
         if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
 //            if (savedInstance != null) {
@@ -855,52 +845,72 @@ public class MainActivity extends FragmentActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PREMISSION_REQUEST_CODE) {
-            switch (permissions[0]) {
-                case Manifest.permission.ACCESS_FINE_LOCATION:
-                    if (grantResults.length > 0
-                            && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                        if (onConnectToBlueTooth != null
-                                && ArduinoConnectivityPopup.isOpened)
-                            onConnectToBlueTooth.onConnect();
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-                                showToast("Location permission turned off.");
-                            else
-                                showToast("Please turn on location permission.");
-                        }
-                    }
-                    break;
-                default:
-                    Boolean isEnabled = true;
-                    for (int permissionsCount = 0; permissionsCount < grantResults.length; permissionsCount++) {
-                        if (grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
-                            isEnabled = false;
-                    }
-                    if (isEnabled) {
-                        showToast("Shield selection on.");
-                        // permission was granted, yay! Do the
-                        // contacts-related task you need to do.
-                    } else {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            Boolean isShouldShowRequestPermissionRationale = true;
-                            for (int permissionsCount = 0; permissionsCount < permissions.length; permissionsCount++) {
-                                if (shouldShowRequestPermissionRationale(permissions[permissionsCount]) && grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
-                                    isShouldShowRequestPermissionRationale = false;
-                            }
-                            if (!isShouldShowRequestPermissionRationale)
-                                showToast("Current shield needs permission.");
-                            else
-                                showToast("Your device ban this shield.");
+            if (permissions.length > 0) {
+                switch (permissions[0]) {
+                    case Manifest.permission.ACCESS_FINE_LOCATION:
+                        if (grantResults.length > 0
+                                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                            if (onConnectToBlueTooth != null
+                                    && ArduinoConnectivityPopup.isOpened)
+                                onConnectToBlueTooth.onConnect();
                         } else {
-                            showToast("Current shield needs permission.");
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
+                                    showToast("Location permission turned off.");
+                                else
+                                    showToast("Please turn on location permission.");
+                            }
                         }
-                    }
-                    break;
+                        break;
+                    default:
+                        Boolean isEnabled = true;
+                        for (int permissionsCount = 0; permissionsCount < grantResults.length; permissionsCount++) {
+                            if (grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                                isEnabled = false;
+                        }
+                        if (isEnabled) {
+                            showToast("Shield selection on.");
+                            // permission was granted, yay! Do the
+                            // contacts-related task you need to do.
+                        } else {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                Boolean isShouldShowRequestPermissionRationale = true;
+                                for (int permissionsCount = 0; permissionsCount < permissions.length; permissionsCount++) {
+                                    if (shouldShowRequestPermissionRationale(permissions[permissionsCount]) && grantResults[permissionsCount] != PackageManager.PERMISSION_GRANTED)
+                                        isShouldShowRequestPermissionRationale = false;
+                                }
+                                if (!isShouldShowRequestPermissionRationale)
+                                    showToast("Current shield needs permission.");
+                                else
+                                    showToast("Your device ban this shield.");
+                            } else {
+                                showToast("Current shield needs permission.");
+                            }
+                        }
+                        break;
+                }
             }
             return;
         }
     }
+
+    public void showMenuButtonTutorialOnce(){
+        if (Build.VERSION.SDK_INT >= 11 && oneSheeldLogo!=null) {
+            ViewTarget target = new ViewTarget(oneSheeldLogo);
+            if(!getThisApplication().getAppPreferences().getBoolean(IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP, false)) {
+                new ShowcaseView.Builder(this)
+                        .setTarget(target)
+                        .withMaterialShowcase()
+                        .setContentTitle("Open Context Menu")
+                        .setContentText("Upgrade the firmware, clear the automatic connection and see the tutorial again after opening the context menu by clicking on 1Sheeld logo.")
+                        .setStyle(R.style.CustomShowcaseTheme)
+                        .hideOnTouchOutside()
+                        .build().hideButton();
+                getThisApplication().getAppPreferences().edit().putBoolean(IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP, true).commit();
+            }
+        }
+    }
+
 
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();

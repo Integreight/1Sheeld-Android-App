@@ -88,8 +88,8 @@
     <string name="tabToSpeak">Tap\nto\nSpeak</string>
 
     <!-- Tutorial -->
-    <string name="go">Go !</string>
-    <string name="explore">Explore</string>
+    <string name="go">Go!</string>
+    <string name="demo">Demo</string>
     <!-- Terminal -->
     <string name="terminalString">ASCII</string>
     <string name="terminalASCI">DEC</string>
