@@ -1,9 +1,11 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
@@ -278,5 +280,19 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
     @Override
     public void reset() {
         profileTracker.stopTracking();
+    }
+
+    @Override
+    public ControllerParent<FacebookShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        if(Build.VERSION.SDK_INT >=16)
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkForPermissions())
+            this.selectionAction.onSuccess();
+        else
+            this.selectionAction.onFailure();
+        return super.invalidate(selectionAction, isToastable);
     }
 }

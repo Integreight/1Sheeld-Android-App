@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -148,6 +149,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
             addRequiredPremission(Manifest.permission.CAMERA);
             addRequiredPremission(Manifest.permission.FLASHLIGHT);
             addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if(Build.VERSION.SDK_INT >=16)
             addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
             if (checkForPermissions()) {
                 if (selectionAction != null)

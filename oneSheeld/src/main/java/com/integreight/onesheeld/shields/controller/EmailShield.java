@@ -1,10 +1,13 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Base64;
 import android.widget.Toast;
 
@@ -325,6 +328,21 @@ public class EmailShield extends ControllerParent<EmailShield> {
         Message message = new Message();
         message.setRaw(encodedEmail);
         return message;
+    }
+
+    @Override
+    public ControllerParent<EmailShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        addRequiredPremission(Manifest.permission.GET_ACCOUNTS);
+        if(Build.VERSION.SDK_INT >=16)
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkForPermissions())
+            this.selectionAction.onSuccess();
+        else
+            this.selectionAction.onFailure();
+        return super.invalidate(selectionAction, isToastable);
     }
 
 }

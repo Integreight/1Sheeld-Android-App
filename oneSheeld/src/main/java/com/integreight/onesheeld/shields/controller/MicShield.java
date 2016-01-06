@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -88,6 +89,7 @@ public class MicShield extends ControllerParent<MicShield> {
         this.selectionAction = selectionAction;
         addRequiredPremission(Manifest.permission.RECORD_AUDIO);
         addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if(Build.VERSION.SDK_INT >=16)
         addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
         if (activity.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_MICROPHONE) && checkForPermissions())

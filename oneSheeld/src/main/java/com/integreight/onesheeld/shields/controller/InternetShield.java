@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
+import android.os.Build;
 import android.util.Pair;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -658,6 +660,21 @@ public class InternetShield extends
             requestsUI.add(req);
         }
         return requestsUI;
+    }
+
+    @Override
+    public ControllerParent<InternetShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
+        this.selectionAction =selectionAction;
+        if(Build.VERSION.SDK_INT >=16)
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkForPermissions()) {
+            if (selectionAction != null)
+                selectionAction.onSuccess();
+        }else {
+            if (selectionAction != null)
+                selectionAction.onFailure();
+        }
+        return super.invalidate(selectionAction, isToastable);
     }
 
 

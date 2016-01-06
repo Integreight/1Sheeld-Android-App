@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
@@ -86,6 +87,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
     public ControllerParent<DataLoggerShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
         this.selectionAction =selectionAction;
         addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if(Build.VERSION.SDK_INT >=16)
         addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
         if (checkForPermissions()) {
             if (selectionAction != null)
