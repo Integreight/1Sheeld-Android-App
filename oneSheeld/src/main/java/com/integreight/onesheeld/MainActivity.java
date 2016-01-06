@@ -451,7 +451,7 @@ public class MainActivity extends FragmentActivity {
     }
 
     private void killAllProcesses() {
-        android.os.Process.killProcess(Process.myPid());
+        Process.killProcess(Process.myPid());
     }
 
     public void replaceCurrentFragment(int container, Fragment targetFragment,
@@ -590,7 +590,7 @@ public class MainActivity extends FragmentActivity {
     private void resetSlidingMenu() {
         if (appSlidingMenu == null) {
             appSlidingMenu = (AppSlidingLeftMenu) findViewById(R.id.sliding_pane_layout);
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 appSlidingMenu.setFitsSystemWindows(true);
             appSlidingMenu.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
                 @Override
@@ -653,10 +653,10 @@ public class MainActivity extends FragmentActivity {
 
     public void checkAndAskForLocationPermission() {
         if (ContextCompat.checkSelfPermission(thisInstance,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(thisInstance,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -666,7 +666,7 @@ public class MainActivity extends FragmentActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions(thisInstance,
-                                new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION},
+                                new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                                 MainActivity.PREMISSION_REQUEST_CODE);
                     }
                 }).setNegativeButton("Deny", new DialogInterface.OnClickListener() {
@@ -894,10 +894,10 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
-    public void showMenuButtonTutorialOnce(){
-        if (Build.VERSION.SDK_INT >= 11 && oneSheeldLogo!=null) {
+    public void showMenuButtonTutorialOnce() {
+        if (Build.VERSION.SDK_INT >= 11 && oneSheeldLogo != null) {
             ViewTarget target = new ViewTarget(oneSheeldLogo);
-            if(!getThisApplication().getAppPreferences().getBoolean(IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP, false)) {
+            if (!getThisApplication().getAppPreferences().getBoolean(IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP, false)) {
                 new ShowcaseView.Builder(this)
                         .setTarget(target)
                         .withMaterialShowcase()
