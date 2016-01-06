@@ -19,6 +19,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
@@ -227,6 +228,7 @@ public class TwitterDialog extends Dialog {
 
     class MyJavaScriptInterface {
         @SuppressWarnings("unused")
+        @JavascriptInterface
         public void showHTML(String html) throws TwitterException {
             // System.out.println("html web page " + html);
 
