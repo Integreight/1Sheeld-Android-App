@@ -81,11 +81,11 @@ dependencies {
     compile ('com.google.android.gms:play-services-identity:8.3.0'){
         transitive = true;
     }
-    compile('com.google.api-client:google-api-client-android:1.20.0') {
+    compile('com.google.api-client:google-api-client-android:1.21.0') {
         transitive = true;
         exclude group: 'org.apache.httpcomponents'
     }
-    compile('com.google.apis:google-api-services-gmail:v1-rev29-1.20.0') {
+    compile('com.google.apis:google-api-services-gmail:v1-rev35-1.21.0') {
         transitive = true;
         exclude group: 'org.apache.httpcomponents'
     }
