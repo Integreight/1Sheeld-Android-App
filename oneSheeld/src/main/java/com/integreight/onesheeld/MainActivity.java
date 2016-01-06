@@ -15,6 +15,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.Process;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -74,6 +76,7 @@ import hotchemi.android.rate.OnClickButtonListener;
 
 public class MainActivity extends FragmentActivity {
     public static final int PREMISSION_REQUEST_CODE = 1;
+    public static final int DRAW_OVER_APPS_REQUEST_CODE = 2;
     public static final String IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP = "com.integreight.onesheeld.IS_CONTEXT_MENU_BUTTON_TUTORIAL_SHOWN_SP";
     public static String currentShieldTag = null;
     public static MainActivity thisInstance;
@@ -639,6 +642,14 @@ public class MainActivity extends FragmentActivity {
                     }
                 }
                 break;
+            case DRAW_OVER_APPS_REQUEST_CODE:
+                if(canDrawOverApps()) {
+                    showToast("Draw over apps enabled, you can select the shield.");
+                }
+                else {
+                    showToast("Draw over apps was not enabled!");
+                }
+                break;
             default:
                 break;
         }
@@ -891,6 +902,8 @@ public class MainActivity extends FragmentActivity {
                 }
             }
             return;
+        } else if (requestCode == DRAW_OVER_APPS_REQUEST_CODE) {
+            showToast("Current shield needs permission.");
         }
     }
 
@@ -911,6 +924,20 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    public boolean canDrawOverApps() {
+        if (Build.VERSION.SDK_INT >= 23) {
+            return Settings.canDrawOverlays(this);
+        }
+        return true;
+    }
+
+    public void requestDrawOverApps() {
+        if (!canDrawOverApps()) {
+            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:" + getPackageName()));
+            startActivityForResult(intent, DRAW_OVER_APPS_REQUEST_CODE);
+        }
+    }
 
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
