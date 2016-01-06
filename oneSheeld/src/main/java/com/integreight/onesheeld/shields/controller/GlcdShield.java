@@ -132,15 +132,6 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
         initializeGLcd();
     }
 
-    @Override
-    public ControllerParent<GlcdShield> invalidate(
-            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
-            boolean isToastable) {
-        this.selectionAction = selectionAction;
-        selectionAction.onSuccess();
-        return super.invalidate(selectionAction, isToastable);
-    }
-
     private boolean isInitialized = false;
 
     public void initializeGLcd() {
