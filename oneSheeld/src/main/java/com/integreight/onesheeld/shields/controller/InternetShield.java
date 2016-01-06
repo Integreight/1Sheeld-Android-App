@@ -30,7 +30,7 @@ import java.util.Enumeration;
 * receiving and sending frames only here
 * */
 public class InternetShield extends
-        ControllerParent<ControllerParent<InternetShield>> {
+        ControllerParent<InternetShield> {
     private static final byte SHIELD_ID = UIShield.INTERNET_SHIELD.id;
 
     /*
@@ -121,7 +121,7 @@ public class InternetShield extends
     }
 
     @Override
-    public ControllerParent<ControllerParent<InternetShield>> init(String tag) {
+    public ControllerParent<InternetShield> init(String tag) {
         // TODO Auto-generated method stub\
         try {
             InternetManager.getInstance();
