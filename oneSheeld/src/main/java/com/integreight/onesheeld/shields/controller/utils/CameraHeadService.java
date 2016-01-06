@@ -482,9 +482,9 @@ public class CameraHeadService extends Service implements
         int expectedWidth = ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
         params.x = ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);
-        params.width = 0;
-        params.height = 0;
-        params.alpha = 0.0f;
+        params.width = 1;
+        params.height = 1;
+        params.alpha = 1;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -494,11 +494,11 @@ public class CameraHeadService extends Service implements
     private void invalidateView(float x, float y) {
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
-        params.width = 0;
-        params.height = 0;
+        params.width = 1;
+        params.height = 1;
         params.x = (int) x;
         params.y = (int) (y);
-        params.alpha = 0.0f;
+        params.alpha = 1;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -506,9 +506,9 @@ public class CameraHeadService extends Service implements
     }
 
     private void hidePreview() {
-        params.width = 0;
-        params.height = 0;
-        params.alpha = 0.0f;
+        params.width = 1;
+        params.height = 1;
+        params.alpha = 1;
         try {
             windowManager.updateViewLayout(sv, params);
         } catch (IllegalArgumentException e) {
@@ -774,11 +774,11 @@ public class CameraHeadService extends Service implements
         windowManager.getDefaultDisplay().getMetrics(metrics);
         int expectedHeight = metrics.heightPixels - ((int) (250 * metrics.density + .5f));
         int expectedWidth = ((expectedHeight * (size == null ? metrics.widthPixels : size.height)) / (size == null ? metrics.heightPixels : size.width));
-        params.width = 0;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
-        params.height = 0;
+        params.width = 1;// metrics.widthPixels - ((int) (60 * metrics.density + .5f));
+        params.height = 1;
         params.x = (int) ((metrics.widthPixels / 2) - expectedWidth / 2);
         params.y = (int) (150 * metrics.density + .5f);
-        params.alpha = 0.0f;
+        params.alpha = 1;
         sv = new SurfaceView(getApplicationContext());
         windowManager.addView(sv, params);
         params = (WindowManager.LayoutParams) sv.getLayoutParams();
