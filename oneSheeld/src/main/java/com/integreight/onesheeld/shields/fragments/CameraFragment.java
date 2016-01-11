@@ -315,8 +315,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 }
             }
             camerLogo.setVisibility(View.VISIBLE);
-            getView().invalidate();
-        }
+            if(getView()!=null)getView().invalidate();
     }
 
     @Override
