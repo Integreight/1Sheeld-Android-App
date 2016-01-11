@@ -298,7 +298,11 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 }
             }
         }, 500);
+
         try {
+            ((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).setCameraToPreview(((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).isBackPreview());
             ((CameraShield) getApplication().getRunningShields().get(
                     getControllerTag())).invalidatePreview();
         } catch (RemoteException e) {
