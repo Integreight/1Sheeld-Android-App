@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -72,11 +73,15 @@ public class SpeechRecognitionShield extends
             com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
             boolean isToastable) {
         this.selectionAction = selectionAction;
+        addRequiredPremission(Manifest.permission.RECORD_AUDIO);
         if (!isSpeechRecognitionActivityPresented(activity)) {
             if (isToastable)
                 Toast.makeText(activity, "Please, install voice search from google play", Toast.LENGTH_SHORT).show();
             selectionAction.onFailure();
-        } else
+        } else if(!checkForPermissions()){
+            selectionAction.onFailure();
+        }
+        else
             selectionAction.onSuccess();
         return super.invalidate(selectionAction, isToastable);
     }
