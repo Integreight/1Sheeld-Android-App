@@ -468,7 +468,7 @@ public class SheeldsList extends Fragment {
                     new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
                             .show();
                 else
-                    activity.showToast("Please connect first.");
+                    activity.showToast("Please connect to your board first.");
                 return true;
             case R.id.action_settings:
                 ((OneSheeldApplication) activity.getApplication())

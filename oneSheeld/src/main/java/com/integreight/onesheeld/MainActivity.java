@@ -867,7 +867,7 @@ public class MainActivity extends FragmentActivity {
                         } else {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-                                    showToast("Location permission turned off.");
+                                    showToast("Location permission denied.");
                                 else
                                     showToast("Please turn on location permission.");
                             }
@@ -880,7 +880,7 @@ public class MainActivity extends FragmentActivity {
                                 isEnabled = false;
                         }
                         if (isEnabled) {
-                            showToast("Shield selection on.");
+                            showToast("You can select the shield now.");
                             // permission was granted, yay! Do the
                             // contacts-related task you need to do.
                         } else {
@@ -891,19 +891,17 @@ public class MainActivity extends FragmentActivity {
                                         isShouldShowRequestPermissionRationale = false;
                                 }
                                 if (!isShouldShowRequestPermissionRationale)
-                                    showToast("Current shield needs permission.");
+                                    showToast("This shield needs some permissions.");
                                 else
-                                    showToast("Your device ban this shield.");
+                                    showToast("Your device didn't allow this shield permissions.");
                             } else {
-                                showToast("Current shield needs permission.");
+                                showToast("This shield needs some permissions.");
                             }
                         }
                         break;
                 }
             }
             return;
-        } else if (requestCode == DRAW_OVER_APPS_REQUEST_CODE) {
-            showToast("Current shield needs permission.");
         }
     }
 
