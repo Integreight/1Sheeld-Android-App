@@ -272,7 +272,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                     if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                         try {
-                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                            if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
                                 camerLogo.setVisibility(View.INVISIBLE);
 //                            else
 //                                cameraPreviewToggle.setChecked(false);
@@ -284,7 +284,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         }
                     } else {
                         try {
-                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
+                            if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
                                 camerLogo.setVisibility(View.VISIBLE);
 //                            else
 //                                cameraPreviewToggle.setChecked(true);
@@ -316,7 +316,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
     @Override
     public void doOnPause() {
-        if (!getApplication().getIsDemoMode()) {
             if (getApplication().getRunningShields().get(
                     getControllerTag()) != null) {
                 try {
