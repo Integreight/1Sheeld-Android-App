@@ -93,6 +93,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             if (nfcAdapter != null && nfcAdapter.isEnabled()) {
                 setupForegroundDispatch();
+                selectionAction.onSuccess();
             } else {
                 if (isToastable) {
                     activity.showToast(nfcAdapter == null ? "Device doesn't support NFC!" : "Please, Enable Your NFC");
