@@ -260,7 +260,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
         v.vibrate(1000);
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
-        String mimeFileType = mimeTypeMap.getMimeTypeFromExtension(".csv");
+        String mimeFileType = mimeTypeMap.getMimeTypeFromExtension("csv");
         notificationIntent.setDataAndType(Uri.fromFile(new File(filePath == null
                 || filePath.length() == 0 ? "" : filePath)), mimeFileType);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
