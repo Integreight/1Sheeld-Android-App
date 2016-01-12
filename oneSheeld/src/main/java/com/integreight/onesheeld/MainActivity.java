@@ -65,6 +65,7 @@ import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -367,38 +368,7 @@ public class MainActivity extends FragmentActivity {
 
     public BackOnconnectionLostHandler getOnConnectionLostHandler() {
         if (backOnConnectionLostHandler == null) {
-            backOnConnectionLostHandler = new BackOnconnectionLostHandler() {
-
-                @Override
-                public void handleMessage(Message msg) {
-                    if (!((OneSheeldApplication) getApplication()).getIsDemoMode() && !((OneSheeldApplication) getApplication()).getAppFirmata().isOpen()) {
-                        if (connectionLost) {
-                            if (!ArduinoConnectivityPopup.isOpened
-                                    && !isFinishing())
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        if (!ArduinoConnectivityPopup.isOpened
-                                                && !isFinishing()) {
-                                            new ArduinoConnectivityPopup(
-                                                    MainActivity.this).show();
-                                        }
-                                    }
-                                });
-                            if (getSupportFragmentManager()
-                                    .getBackStackEntryCount() > 1) {
-                                getSupportFragmentManager().beginTransaction()
-                                        .setCustomAnimations(0, 0, 0, 0)
-                                        .commitAllowingStateLoss();
-                                getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                                getSupportFragmentManager()
-                                        .executePendingTransactions();
-                            }
-                        }
-                        connectionLost = false;
-                    }
-                    super.handleMessage(msg);
-                }
-            };
+            backOnConnectionLostHandler = new BackOnconnectionLostHandler(this);
         }
         return backOnConnectionLostHandler;
     }
@@ -944,5 +914,44 @@ public class MainActivity extends FragmentActivity {
     public static class BackOnconnectionLostHandler extends Handler {
         public boolean canInvokeOnCloseConnection = true,
                 connectionLost = false;
+
+        private final WeakReference<MainActivity> mTarget;
+
+        public BackOnconnectionLostHandler(MainActivity activity){
+            this.mTarget= new WeakReference<>(activity);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            final MainActivity activity = mTarget.get();
+            if(activity!=null) {
+                if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen()) {
+                    if (connectionLost) {
+                        if (!ArduinoConnectivityPopup.isOpened
+                                && !activity.isFinishing())
+                            activity.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    if (!ArduinoConnectivityPopup.isOpened
+                                            && !activity.isFinishing()) {
+                                        new ArduinoConnectivityPopup(
+                                                activity).show();
+                                    }
+                                }
+                            });
+                        if (activity.getSupportFragmentManager()
+                                .getBackStackEntryCount() > 1) {
+                            activity.getSupportFragmentManager().beginTransaction()
+                                    .setCustomAnimations(0, 0, 0, 0)
+                                    .commitAllowingStateLoss();
+                            activity.getSupportFragmentManager().popBackStack();// ("operations",FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            activity.getSupportFragmentManager()
+                                    .executePendingTransactions();
+                        }
+                    }
+                    connectionLost = false;
+                }
+            }
+            super.handleMessage(msg);
+        }
     }
 }
