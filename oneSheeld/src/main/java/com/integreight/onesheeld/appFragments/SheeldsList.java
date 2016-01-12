@@ -191,7 +191,7 @@ public class SheeldsList extends Fragment {
         ((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
                 .getChildAt(1).setBackgroundResource(
                 R.drawable.shields_list_shields_operation_button);
-        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
             ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);

@@ -352,7 +352,7 @@ public class ShieldsOperations extends BaseContainerFragment {
                             });
             }
         }, 500);
-        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
