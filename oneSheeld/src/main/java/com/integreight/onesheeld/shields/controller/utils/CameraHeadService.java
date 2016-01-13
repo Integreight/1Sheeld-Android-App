@@ -696,7 +696,42 @@ public class CameraHeadService extends Service implements
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
                         Log.d("cameraS", "OnTake()");
-                        mCamera.takePicture(null, null, mCall);
+                        mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                            @Override
+                            public void onAutoFocus(boolean success, Camera camera) {
+                                if(success) {
+                                    mCamera.takePicture(new Camera.ShutterCallback() {
+                                        @Override
+                                        public void onShutter() {
+                                            mCamera.cancelAutoFocus();
+                                        }
+                                    }, null, mCall);
+                                }
+                                else
+                                {
+                                    Camera.Parameters params = mCamera.getParameters();
+                                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+                                    camera.setParameters(params);
+                                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                                        @Override
+                                        public void onAutoFocus(boolean success, Camera camera) {
+                                            mCamera.takePicture(new Camera.ShutterCallback() {
+                                                @Override
+                                                public void onShutter() {
+                                                    mCamera.cancelAutoFocus();
+                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                                                            Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+                                                        Camera.Parameters params = mCamera.getParameters();
+                                                        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+                                                        mCamera.setParameters(params);
+                                                    }
+                                                }
+                                            }, null, mCall);
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     } else {
                         handler.post(new Runnable() {
 
