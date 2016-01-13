@@ -262,7 +262,6 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
 
     @Override
     public void reset() {
-        Log.sysOut("Reset");
         ((Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE)).cancel();
         if (!scheduledThreadPoolExecutor.isShutdown())
             scheduledThreadPoolExecutor.shutdown();
