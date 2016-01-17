@@ -56,7 +56,7 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
         // TODO Auto-generated method stub
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 context);
-        build.setSmallIcon(R.drawable.white_ee_icon);
+        build.setSmallIcon(getNotificationIcon());
         build.setContentTitle(title);
         build.setContentText(notificationText);
         build.setTicker(notificationText);
@@ -72,6 +72,11 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(2, notification);
+    }
+
+    private int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.drawable.notification_icon : R.drawable.white_ee_icon;
     }
 
     @Override
