@@ -631,7 +631,7 @@ public class ArduinoFirmata {
             for (byte[] sub : subArrays)
                 sysex(UART_DATA, sub);
         }
-        printFrameToLog(frameBytes, "Sent");
+        printFrameToLog(frameBytes, "FRAMES_SENT");
     }
 
     public void prepareAppForSendingFirmware() {
@@ -919,7 +919,7 @@ public class ArduinoFirmata {
                             handler.onArduinoLibraryVersionChange(arduinoLibraryVersion);
                         }
                     }
-                    printFrameToLog(frame.getAllFrameAsBytes(), "Rec");
+                    printFrameToLog(frame.getAllFrameAsBytes(), "FRAMES_RECEIVED");
                     if (shieldId == CONFIGURATION_SHIELD_ID) {
                         //1Sheeld configration from the library
                         if (functionId == LIBRARY_VERSION_RESPONSE) {

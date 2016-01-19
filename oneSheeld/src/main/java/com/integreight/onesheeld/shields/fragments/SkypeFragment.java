@@ -37,7 +37,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
         public void onVideoCall(String user) {
             // TODO Auto-generated method stub
             if (canChangeUI())
-                Toast.makeText(activity, user + " Outgoing Video Call",
+                Toast.makeText(activity, user + activity.getString(R.string.outgoing_video_call),
                         Toast.LENGTH_SHORT).show();
 
         }
@@ -60,7 +60,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
         public void onChat(String user) {
             // TODO Auto-generated method stub
             if (canChangeUI())
-                Toast.makeText(activity, user + " Outgoing Chat",
+                Toast.makeText(activity, user + " "+activity.getString(R.string.outgoing_chat),
                         Toast.LENGTH_SHORT).show();
 
         }
@@ -69,7 +69,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
         public void onCall(String user) {
             // TODO Auto-generated method stub
             if (canChangeUI())
-                Toast.makeText(activity, user + " Outgoing Call",
+                Toast.makeText(activity, user + " "+activity.getString(R.string.outgoing_call),
                         Toast.LENGTH_SHORT).show();
 
         }

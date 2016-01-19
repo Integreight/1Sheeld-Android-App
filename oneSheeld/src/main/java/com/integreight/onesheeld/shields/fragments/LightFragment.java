@@ -100,7 +100,7 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
                 public void run() {
                     if (canChangeUI()) {
                         light_byte.setVisibility(View.VISIBLE);
-                        light_byte.setText("Light in Byte = " + value);
+                        light_byte.setText(activity.getString(R.string.light_in_byte)+" = " + value);
                     }
                 }
             });

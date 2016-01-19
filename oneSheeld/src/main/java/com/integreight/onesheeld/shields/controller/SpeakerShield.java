@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -27,7 +29,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
     public SpeakerShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Buzzer"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.buzzer2)};
     }
 
     public SpeakerShield(Activity activity, String tag) {
@@ -143,20 +145,20 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
                         // TODO Auto-generated catch block
                         Toast.makeText(
                                 activity,
-                                "Can't play the current buzz! Please, replace it",
+                                R.string.cant_play_current_buzz,
                                 Toast.LENGTH_SHORT).show();
                         Log.e("TAG", "speaker::setVolume::setDataSource", e);
                     } catch (SecurityException e) {
                         Toast.makeText(
                                 activity,
-                                "Can't play the current buzz! Please, replace it",
+                                R.string.cant_play_current_buzz,
                                 Toast.LENGTH_SHORT).show();
                         // TODO Auto-generated catch block
                         Log.e("TAG", "speaker::setVolume::setDataSource", e);
                     } catch (IllegalStateException e) {
                         Toast.makeText(
                                 activity,
-                                "Can't play the current buzz! Please, replace it",
+                                R.string.cant_play_current_buzz,
                                 Toast.LENGTH_SHORT).show();
                         // TODO Auto-generated catch block
                         Log.e("TAG", "speaker::setVolume::setDataSource", e);

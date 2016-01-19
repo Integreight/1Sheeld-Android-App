@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
@@ -33,9 +35,9 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     public GamepadShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Up Arrow", "Right Arrow", "Down Arrow",
-                "Left Arrow", "Yellow Button", "Red Button", "Green Button",
-                "Blue Button"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.up_arrow), OneSheeldApplication.getContext().getString(R.string.right_arrow), OneSheeldApplication.getContext().getString(R.string.down_arrow),
+                OneSheeldApplication.getContext().getString(R.string.left_arrow), OneSheeldApplication.getContext().getString(R.string.yellow_button), OneSheeldApplication.getContext().getString(R.string.red_button), OneSheeldApplication.getContext().getString(R.string.green_button),
+                OneSheeldApplication.getContext().getString(R.string.blue_button)};
     }
 
     public void setPinToHigh(String pinName, int pinId) {
@@ -63,21 +65,21 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     }
 
     public static enum Pin {
-        UP_ARROW(4, "Up Arrow"), RIGHT_ARROW(7, "Right Arrow"), DOWN_ARROW(5,
-                "Down Arrow"), LEFT_ARROW(6, "Left Arrow"), YELLOW_BUTTON(0,
-                "Yellow Button"), RED_BUTTON(1, "Red Button"), GREEN_BUTTON(2,
-                "Green Button"), BLUE_BUTTON(3, "Blue Button");
+        UP_ARROW(4, R.string.up_arrow), RIGHT_ARROW(7, R.string.right_arrow), DOWN_ARROW(5,
+                R.string.down_arrow), LEFT_ARROW(6, R.string.left_arrow), YELLOW_BUTTON(0,
+                R.string.yellow_button), RED_BUTTON(1, R.string.red_button), GREEN_BUTTON(2,
+                R.string.green_button), BLUE_BUTTON(3, R.string.blue_button);
 
-        String name;
+        private int nameStringResource;
         int id;
 
-        Pin(int id, String name) {
+        Pin(int id, int nameStringResource) {
             this.id = id;
-            this.name = name;
+            this.nameStringResource = nameStringResource;
         }
 
         public String getName() {
-            return name;
+            return OneSheeldApplication.getContext().getString(nameStringResource);
         }
 
         public int getId() {

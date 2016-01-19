@@ -54,7 +54,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                 else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            "Please check your Internet connection and try again.",
+                            R.string.check_internet_connection5,
                             Toast.LENGTH_SHORT).show();
 
             }
@@ -112,7 +112,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
                     @Override
                     public void run() {
-                        userNameTextView.setText("Logged in as: @" + userName);
+                        userNameTextView.setText(activity.getString(R.string.logged_in_as)+": @" + userName);
                         buttonToLoggedIn();
                     }
                 });
@@ -201,7 +201,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                                 .getLayoutInflater().inflate(
                                         R.layout.tweet_item,
                                         lastTweetTextContainer, false);
-                        tweetItem.setText("To: " + userHandle + ", Message: "
+                        tweetItem.setText(activity.getString(R.string.to2)+": " + userHandle + ", "+activity.getString(R.string.message)+": "
                                 + msg);
                         lastTweetTextContainer.addView(tweetItem);
                         ((ScrollView) lastTweetTextContainer.getParent())
@@ -221,7 +221,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(activity, "Twitter tracks new keyword: " + word, Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, activity.getString(R.string.twitter_tracks_new_keyword)+": " + word, Toast.LENGTH_SHORT)
                                 .show();
 
                     }
@@ -239,7 +239,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(activity, "Twitter stopped tracking keyword: " + word, Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, activity.getString(R.string.twitter_stopped_tracking_keyword)+": " + word, Toast.LENGTH_SHORT)
                                 .show();
 
                     }
@@ -257,7 +257,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(activity, "Tracked tweet found: " + tweet, Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, activity.getString(R.string.tracked_tweet_found)+": " + tweet, Toast.LENGTH_SHORT)
                                 .show();
 
                     }
@@ -283,7 +283,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                 && ((TwitterShield) getApplication().getRunningShields().get(
                 getControllerTag())).isTwitterLoggedInAlready()) {
             userNameTextView.setVisibility(View.VISIBLE);
-            userNameTextView.setText("Logged in as: @"
+            userNameTextView.setText(activity.getString(R.string.logged_in_as)+": @"
                     + ((TwitterShield) getApplication().getRunningShields()
                     .get(getControllerTag())).getUsername());
             twitterLogout.setVisibility(View.VISIBLE);

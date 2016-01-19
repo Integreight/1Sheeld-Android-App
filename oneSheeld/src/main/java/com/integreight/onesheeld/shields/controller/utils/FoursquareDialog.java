@@ -28,6 +28,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.controller.utils.Foursquare.DialogListener;
 import com.integreight.onesheeld.utils.Log;
 
@@ -62,7 +63,7 @@ public class FoursquareDialog extends Dialog {
         super.onCreate(savedInstanceState);
         mSpinner = new ProgressDialog(getContext());
         mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSpinner.setMessage("Loading...");
+        mSpinner.setMessage(getContext().getString(R.string.loading)+"...");
 
         mContent = new LinearLayout(getContext());
         mContent.setOrientation(LinearLayout.VERTICAL);

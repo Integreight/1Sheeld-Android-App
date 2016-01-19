@@ -33,7 +33,7 @@ import java.util.Enumeration;
 * */
 public class InternetShield extends
         ControllerParent<InternetShield> {
-    private static final byte SHIELD_ID = UIShield.INTERNET_SHIELD.id;
+    private static final byte SHIELD_ID = UIShield.INTERNET_SHIELD.getId();
 
     /*
         * a static final class that caontains sent/received frames related to request frames

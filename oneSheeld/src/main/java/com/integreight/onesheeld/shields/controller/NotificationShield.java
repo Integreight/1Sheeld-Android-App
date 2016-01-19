@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -37,9 +38,9 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
         // TODO Auto-generated method stub
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 activity);
-        build.setSmallIcon(R.drawable.white_ee_icon);
+        build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
         build.setContentTitle(notificationText);
-        build.setContentText("Notification received from 1Sheeld!");
+        build.setContentText(activity.getString(R.string.notification_received_from_onesheeld));
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());
         Toast.makeText(activity, notificationText, Toast.LENGTH_SHORT).show();

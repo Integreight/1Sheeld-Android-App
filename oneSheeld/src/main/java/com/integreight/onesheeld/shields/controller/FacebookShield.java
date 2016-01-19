@@ -21,6 +21,7 @@ import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginManager;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -160,7 +161,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                     HttpMethod.POST, callback);
 
             request.executeAsync();
-        } else if (eventHandler != null) eventHandler.onFacebookError("You must login first!");
+        } else if (eventHandler != null) eventHandler.onFacebookError(activity.getString(R.string.you_must_login_first));
 
     }
 
@@ -211,13 +212,13 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                             System.gc();
                             if (eventHandler != null) {
                                 eventHandler.stopProgress();
-                                Toast.makeText(activity, "Image Uploaded!",
+                                Toast.makeText(activity, R.string.image_uploaded,
                                         Toast.LENGTH_SHORT).show();
                                 eventHandler.onRecievePost(msg);
                             }
                         }
                     };
-                    Toast.makeText(activity, "Uploading your image!",
+                    Toast.makeText(activity, R.string.uploading_your_image,
                             Toast.LENGTH_SHORT).show();
                     GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(), "me/photos",
                             postParams, HttpMethod.POST, callback);
@@ -260,7 +261,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                 } else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            "Please check your Internet connection and try again.",
+                            R.string.check_internet_connection,
                             Toast.LENGTH_SHORT).show();
             }
         }

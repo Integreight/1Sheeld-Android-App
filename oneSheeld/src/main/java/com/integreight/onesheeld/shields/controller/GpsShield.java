@@ -23,6 +23,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SendFrameHandler;
@@ -176,23 +177,23 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity());
         builder.setMessage(
-                "We need you to enable the location services for this shield to work correctly.")
+                R.string.enable_location_services)
                 .setCancelable(false)
-                .setPositiveButton("Ok",
+                .setPositiveButton(R.string.ok,
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog,
                                                 final int id) {
                                 getActivity()
                                         .startActivity(
                                                 new Intent(
-                                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                                                        Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                             }
                         })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog,
                                         final int id) {
                         dialog.cancel();
-                        activity.showToast("Please enable location services to be able to use this shield");
+                        activity.showToast(R.string.please_enable_location_services);
                     }
                 });
         final AlertDialog alert = builder.create();
@@ -216,7 +217,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
             errorFragment.setDialog(errorDialog);
             errorFragment.show(
                     ((MainActivity) getActivity()).getSupportFragmentManager(),
-                    "Gps Sheeld");
+                    activity.getString(R.string.gps_shield));
         }
     }
 

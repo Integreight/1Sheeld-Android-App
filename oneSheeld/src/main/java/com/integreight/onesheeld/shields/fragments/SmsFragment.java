@@ -53,9 +53,9 @@ public class SmsFragment extends ShieldFragmentParent<SmsFragment> {
                                 .getLayoutInflater().inflate(
                                         R.layout.sent_sms_details_row,
                                         smsTextContainer, false);
-                        tv.setText("SMS to " + smsNumber + " (" + smsText + ")");
+                        tv.setText(activity.getString(R.string.sms_to)+" " + smsNumber + " (" + smsText + ")");
                         smsTextContainer.addView(tv);
-                        Toast.makeText(activity, "SMS Sent!", Toast.LENGTH_LONG)
+                        Toast.makeText(activity, R.string.sms_sent, Toast.LENGTH_LONG)
                                 .show();
                     }
                 }

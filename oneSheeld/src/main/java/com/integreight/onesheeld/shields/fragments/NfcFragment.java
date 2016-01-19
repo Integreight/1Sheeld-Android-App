@@ -79,13 +79,13 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
                     public void run() {
                         if (canChangeUI() && noCard != null && cardDetails != null) {
                             noCard.setVisibility(View.GONE);
-                            cardDetails.setText("Tag ID :     \t" + id);
+                            cardDetails.setText(activity.getString(R.string.tag_id) + " :     \t" + id);
                             cardDetails.append("\n");
-                            cardDetails.append("Max Size :\t" + String.valueOf(maxSize) + " bytes ");
+                            cardDetails.append(activity.getString(R.string.max_size) + " :\t" + String.valueOf(maxSize) + " " + activity.getString(R.string.bytes));
                             cardDetails.append("\n");
-                            cardDetails.append("Used Size : " + String.valueOf(usedSize) + " bytes");
+                            cardDetails.append(activity.getString(R.string.used_size)+" : " + String.valueOf(usedSize) + " " + activity.getString(R.string.bytes));
                             cardDetails.append("\n");
-                            cardDetails.append("No. of Records : " + String.valueOf(data.size()) + " record(s)");
+                            cardDetails.append(activity.getString(R.string.number_of_records) + " : " + String.valueOf(data.size()) + " " + activity.getString(R.string.records));
 
                             NfcNdefRecordsExpandableAdapter nfcNdefRecordsExpandableAdapter = new NfcNdefRecordsExpandableAdapter(activity, data);
                             nfcRecords.setAdapter(nfcNdefRecordsExpandableAdapter);

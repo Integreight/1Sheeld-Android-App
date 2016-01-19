@@ -103,7 +103,7 @@ public class PressureFragment extends ShieldFragmentParent<PressureFragment> {
                     @Override
                     public void run() {
                         pressure_byte.setVisibility(View.VISIBLE);
-                        pressure_byte.setText("Pressure in Byte = " + value);
+                        pressure_byte.setText(activity.getString(R.string.pressure_in_byte)+" = " + value);
                     }
                 });
 

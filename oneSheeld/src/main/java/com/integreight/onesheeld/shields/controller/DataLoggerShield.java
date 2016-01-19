@@ -16,6 +16,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
@@ -226,7 +227,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                     }
                 }
 //                Toast.makeText(activity,"Data Logged Successfully.",Toast.LENGTH_SHORT).show();
-                showNotification("Data Logged Successfully" + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " to " + fullFileName));
+                showNotification(activity.getString(R.string.data_logged_successfully) + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " "+activity.getString(R.string.to)+" " + fullFileName));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -248,8 +249,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
         // TODO Auto-generated method stub
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 activity);
-        build.setSmallIcon(R.drawable.white_ee_icon);
-        build.setContentTitle("Data Logger Shield");
+        build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
+        build.setContentTitle(activity.getString(R.string.data_logger_shield));
         build.setContentText(notificationText);
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());

@@ -3,6 +3,7 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
@@ -125,7 +126,7 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
             if (selectionAction !=null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast("Device doesn't support this hardware!");
+                activity.showToast(activity.getString(R.string.device_doesnt_support_this_hardware));
         }
         return super.invalidate(selectionAction, isToastable);
     }

@@ -39,7 +39,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
             if (canChangeUI()) {
                 if (!isHasCamera) {
-                    Toast.makeText(activity, "Your Device doesn't have Camera",
+                    Toast.makeText(activity, R.string.device_doesnt_have_camera2,
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -48,7 +48,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         @Override
         public void OnPictureTaken() {
             if (canChangeUI())
-                Toast.makeText(activity, "Your Camera has been Captured Image",
+                Toast.makeText(activity, R.string.your_photo_has_been_captured,
                         Toast.LENGTH_SHORT).show();
         }
 

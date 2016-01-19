@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.webkit.CookieSyncManager;
 
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.FileNotFoundException;
@@ -58,7 +59,7 @@ public class Foursquare {
         startDialogAuth(activity);
     }
 
-    private void startDialogAuth(Activity activity) {
+    private void startDialogAuth(final Activity activity) {
         CookieSyncManager.createInstance(activity);
         Bundle params = new Bundle();
         dialog(activity, LOGIN, params, new DialogListener() {
@@ -75,7 +76,7 @@ public class Foursquare {
                     mAuthDialogListener.onComplete(values);
                 } else {
                     mAuthDialogListener.onFoursquareError(new FoursquareError(
-                            "Failed to receive access token."));
+                            activity.getString(R.string.failed_to_receive_access_token)));
                 }
             }
 
@@ -115,8 +116,8 @@ public class Foursquare {
         // }
         String url = endpoint + "?" + FoursquareUtils.encodeUrl(parameters);
         if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            FoursquareUtils.showAlert(context, "Error",
-                    "Application requires permission to access the Internet");
+            FoursquareUtils.showAlert(context, context.getString(R.string.error),
+                    context.getString(R.string.application_requires_permission_to_access_the_internet));
         } else {
             new FoursquareDialog(context, url, listener).show();
         }

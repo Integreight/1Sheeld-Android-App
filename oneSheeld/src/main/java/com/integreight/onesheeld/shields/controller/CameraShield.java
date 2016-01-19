@@ -19,6 +19,7 @@ import android.os.RemoteException;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
@@ -146,7 +147,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
             if (selectionAction != null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast("Camera is unavailable, maybe it's used by another application !");
+                activity.showToast(R.string.camera_is_unavailable);
         } else {
             addRequiredPremission(Manifest.permission.CAMERA);
             addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -157,20 +158,20 @@ public class CameraShield extends ControllerParent<CameraShield> {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(
                                 activity);
                         builder.setMessage(
-                                "We need you to enable the draw over apps permission in order to show the camera preview correctly.")
+                                R.string.draw_over_apps_message)
                                 .setCancelable(false)
-                                .setPositiveButton("Ok",
+                                .setPositiveButton(R.string.ok,
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(final DialogInterface dialog,
                                                                 final int id) {
                                                 activity.requestDrawOverApps();
                                             }
                                         })
-                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
                                     public void onClick(final DialogInterface dialog,
                                                         final int id) {
                                         dialog.cancel();
-                                        activity.showToast("Please enable the permission to be able to select this shield");
+                                        activity.showToast(R.string.enable_permission);
                                     }
                                 });
                         final AlertDialog alert = builder.create();
@@ -233,7 +234,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
                     if (hasFrontCamera)
                         sendFrontCaptureImageIntent(capture);
                     else {
-                        Toast.makeText(getActivity(), "Your device doesn't have a front camera", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.device_doesnt_have_front_camera, Toast.LENGTH_SHORT).show();
                         capturesQueue.poll();
                     }
                 } else {

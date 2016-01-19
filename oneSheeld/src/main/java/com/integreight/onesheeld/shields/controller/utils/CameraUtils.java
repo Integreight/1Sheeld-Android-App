@@ -9,6 +9,7 @@ import android.hardware.Camera;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.File;
@@ -166,7 +167,7 @@ public class CameraUtils {
                 return lastCapturedImagePathFromOneSheeldFolder;
         }
         if (viewToast)
-            Toast.makeText(activity.getApplicationContext(),"Image not found",Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity.getApplicationContext(), R.string.image_not_found,Toast.LENGTH_SHORT).show();
         return "";
     }
 

@@ -75,7 +75,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
                     public void run() {
                         GpsFragment.this.lat = lat;
                         if (canChangeUI())
-                            Latit.setText("Latitude\n" + lat);
+                            Latit.setText(activity.getString(R.string.latitude)+"\n" + lat);
                     }
                 });
         }
@@ -90,7 +90,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
                     public void run() {
                         GpsFragment.this.lng = lng;
                         if (canChangeUI())
-                            Longit.setText("Longitude\n" + lang);
+                            Longit.setText(activity.getString(R.string.longitude)+"\n" + lang);
                     }
                 });
         }
@@ -123,8 +123,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
                     getControllerTag())).getLastKnownLocation().getLongitude() + "";
         }
         if (lat != null && lng != null && canChangeUI()) {
-            Latit.setText("Latitude\n" + lat);
-            Longit.setText("Longitude\n" + lng);
+            Latit.setText(activity.getString(R.string.latitude)+"\n" + lat);
+            Longit.setText(activity.getString(R.string.longitude)+"\n" + lng);
 
         }
 

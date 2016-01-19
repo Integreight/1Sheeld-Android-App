@@ -163,7 +163,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             }
         });
         if (mBtAdapter == null) {
-            Toast.makeText(activity, "Bluetooth is not available",
+            Toast.makeText(activity, R.string.bluetooth_not_available,
                     Toast.LENGTH_LONG).show();
             activity.finish();
             return;
@@ -294,7 +294,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     }
 
     private void setScanButtonReady() {
-        changeSlogan("Scan for 1Sheeld", COLOR.RED);
+        changeSlogan(activity.getString(R.string.scan_for_1sheeld), COLOR.RED);
         findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
         isConnecting = false;
         deviceListCont.setVisibility(View.INVISIBLE);

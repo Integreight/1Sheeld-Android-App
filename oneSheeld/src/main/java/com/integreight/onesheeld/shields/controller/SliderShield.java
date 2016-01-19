@@ -3,6 +3,8 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -19,7 +21,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
     public SliderShield() {
         super();
         requiredPinsIndex = 1;
-        shieldPins = new String[]{"Slider"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.slider2)};
     }
 
     public SliderShield(Activity activity, String tag) {

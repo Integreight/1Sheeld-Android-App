@@ -331,7 +331,7 @@ public class SheeldsList extends Fragment {
     private void launchShieldsOperationActivity() {
         if (getActivity().findViewById(R.id.progressShieldInit).getVisibility() != View.VISIBLE) {
             if (!isAnyShieldsSelected()) {
-                Toast.makeText(activity, "Select at least 1 shield",
+                Toast.makeText(activity, R.string.select_at_least_1_shield,
                         Toast.LENGTH_LONG).show();
                 return;
             } else {
@@ -468,7 +468,7 @@ public class SheeldsList extends Fragment {
                     new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
                             .show();
                 else
-                    activity.showToast("Please connect to your board first.");
+                    activity.showToast(activity.getString(R.string.please_connect_first));
                 return true;
             case R.id.action_settings:
                 ((OneSheeldApplication) activity.getApplication())
@@ -510,7 +510,7 @@ public class SheeldsList extends Fragment {
                     .getApplication()).getAppFirmata().isOpen())
                     && (((OneSheeldApplication) activity.getApplication())
                     .getAppFirmata().getMajorVersion() != 0)) {
-                firmwareVersion = "\nFirmware Version: v"
+                firmwareVersion = "\n"+activity.getString(R.string.firmware_version)+": v"
                         + (((OneSheeldApplication) activity.getApplication())
                         .getAppFirmata().getMajorVersion())
                         + "."
@@ -519,22 +519,22 @@ public class SheeldsList extends Fragment {
             }
             final ValidationPopup popup = new ValidationPopup(
                     activity,
-                    "About 1Sheeld",
-                    "Developed with love by Integreight, Inc. team in Cairo, Egypt.\n"
-                            + "If you have any question, please visit our website or drop us an email on info@integreight.com\n\n"
-                            + "App Version: "
+                    activity.getString(R.string.about_1sheeld),
+                    activity.getString(R.string.developed_with_love)+"\n"
+                            + activity.getString(R.string.if_you_have_any_question)+"\n\n"
+                            + activity.getString(R.string.app_version)+": "
                             + versionName
                             + " ("
                             + versionCode
                             + ")"
                             + firmwareVersion
-                            + (stringDate != null ? "\nApp was last updated on "
+                            + (stringDate != null ? "\n"+activity.getString(R.string.app_was_last_updated_on)+" "
                             + stringDate
                             : "")
                             + "\n\n"
-                            + "If you are interested in this app's source code, please visit our Github page: github.com/integreight\n\n"
+                            + activity.getString(R.string.interested_github)+"\n\n"
                             + installationIdString);
-            ValidationAction ok = new ValidationPopup.ValidationAction("Okay!",
+            ValidationAction ok = new ValidationPopup.ValidationAction(activity.getString(R.string.okay),
                     new View.OnClickListener() {
 
                         @Override

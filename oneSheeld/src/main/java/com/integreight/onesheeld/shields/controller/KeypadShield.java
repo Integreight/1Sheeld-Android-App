@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
@@ -25,8 +27,8 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
     public KeypadShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Row 0", "Row 1", "Row 2", "Row 3",
-                "Column 0", "Column 1", "Column 2", "Column 3"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.row)+" 0", OneSheeldApplication.getContext().getString(R.string.row)+" 1", OneSheeldApplication.getContext().getString(R.string.row)+" 2", OneSheeldApplication.getContext().getString(R.string.row)+" 3",
+                OneSheeldApplication.getContext().getString(R.string.column)+" 0", OneSheeldApplication.getContext().getString(R.string.column)+" 1", OneSheeldApplication.getContext().getString(R.string.column)+" 2", OneSheeldApplication.getContext().getString(R.string.column)+" 3"};
     }
 
     @Override
@@ -43,12 +45,12 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
     byte rowByte = 0, columnByte = 0;
 
     public void setRowAndColumn(int row, int column) {
-        ArduinoPin columnPin = matchedShieldPins.get("Column " + column);
+        ArduinoPin columnPin = matchedShieldPins.get(activity.getString(R.string.column)+" " + column);
         if (columnPin != null) {
             digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.HIGH);
         }
         columnByte = BitsUtils.setBit(columnByte, column);
-        ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
+        ArduinoPin rowPin = matchedShieldPins.get(activity.getString(R.string.row)+" " + row);
         if (rowPin != null) {
             digitalWrite(rowPin.microHardwarePin, ArduinoFirmata.HIGH);
         }
@@ -60,12 +62,12 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
     }
 
     public void resetRowAndColumn(int row, int column) {
-        ArduinoPin columnPin = matchedShieldPins.get("Column " + column);
+        ArduinoPin columnPin = matchedShieldPins.get(activity.getString(R.string.column)+" " + column);
         if (columnPin != null) {
             digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.LOW);
         }
         columnByte = BitsUtils.resetBit(columnByte, column);
-        ArduinoPin rowPin = matchedShieldPins.get("Row " + row);
+        ArduinoPin rowPin = matchedShieldPins.get(activity.getString(R.string.row)+" " + row);
         if (rowPin != null) {
             digitalWrite(rowPin.microHardwarePin, ArduinoFirmata.LOW);
         }

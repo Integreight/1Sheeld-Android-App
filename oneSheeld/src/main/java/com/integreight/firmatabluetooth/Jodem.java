@@ -1,8 +1,10 @@
 package com.integreight.firmatabluetooth;
 
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 
 import com.integreight.firmatabluetooth.BluetoothService.BluetoothServiceHandler;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.TimeOut;
 import com.integreight.onesheeld.utils.TimeOut.TimeoutHandler;
@@ -26,6 +28,8 @@ public class Jodem {
     public static final byte KEY[] = {(byte) 0x64, (byte) 0x0E, (byte) 0x1C, (byte) 0x39, (byte) 0x14, (byte) 0x28, (byte) 0x57, (byte) 0xAA};
     BluetoothService btService;
     TimeOut timeout;
+
+    private Context context;
 
     Thread fileSendingThread;
 
@@ -94,10 +98,11 @@ public class Jodem {
     };
 
 
-    public Jodem(BluetoothService btService, JodemEventHandler jodemHandler) {
+    public Jodem(Context context, BluetoothService btService, JodemEventHandler jodemHandler) {
         this.btService = btService;
         this.btService.addBluetoothServiceHandler(btHandler);
         this.jodemHandler = jodemHandler;
+        this.context = context;
     }
 
     private void onError(String error) {
@@ -110,7 +115,7 @@ public class Jodem {
     private void onTimeout() {
         stop();
         jodemHandler.onTimout();
-        Log.d("bootloader", "Timeout Occured!");
+        Log.d("bootloader", "Timeout Occurred!");
     }
 
     private void abort(int count) {
@@ -175,7 +180,7 @@ public class Jodem {
         timeout = new TimeOut(3, timeoutHandler);
         if (readByteFromBuffer() != NAK) {
             abort(2);
-            onError("1Sheeld didn't request the key!");
+            onError(context.getString(R.string.didnt_request_key));
             return false;
         }
         write(KEY);
@@ -204,7 +209,7 @@ public class Jodem {
                 else
                     cancel = 1;
             } else {
-                onError("Send error, expected a respose, got another one");
+                onError(context.getString(R.string.expected_response));
             }
 
             error_count += 1;
@@ -265,7 +270,7 @@ public class Jodem {
                         //// excessive amounts of retransmissions requested,
                         //// abort transfer
                         abort(2);
-                        onError("Many errors happened, upgrading aborted!");
+                        onError(context.getString(R.string.many_errors));
                         return false;
                     }
                     // return to loop and resend
@@ -273,7 +278,7 @@ public class Jodem {
                 }
                 //  // protocol error
                 abort(2);
-                onError("Protocol Error, upgrading aborted!");
+                onError(context.getString(R.string.protocol_error));
                 return false;
             }
             // // keep track of sequence
@@ -294,7 +299,7 @@ public class Jodem {
                 error_count += 1;
                 if (error_count >= retry) {
                     abort(2);
-                    onError("Final response not received, transfer aborted!");
+                    onError(context.getString(R.string.final_response_not_received));
                     return false;
                 }
             }

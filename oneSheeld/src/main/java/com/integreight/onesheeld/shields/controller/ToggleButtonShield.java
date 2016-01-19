@@ -3,6 +3,8 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -17,7 +19,7 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
     public ToggleButtonShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Toggle"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.toggle_button2)};
     }
 
     public ToggleButtonShield(Activity activity, String tag) {

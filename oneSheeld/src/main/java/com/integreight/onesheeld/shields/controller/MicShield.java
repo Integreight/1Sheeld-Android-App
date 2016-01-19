@@ -18,6 +18,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -48,7 +49,7 @@ public class MicShield extends ControllerParent<MicShield> {
             if (!Double.isInfinite(amplitude) && amplitude != 0) {
                 initialRequest = false;
                 ampl = amplitude;
-                Log.d("MIC", "Amp = " + ampl);
+//                Log.d("MIC", "Amp = " + ampl);
                 frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);
                 frame.addByteArgument((byte) Math.round(ampl));
                 sendShieldFrame(frame);
@@ -115,7 +116,7 @@ public class MicShield extends ControllerParent<MicShield> {
                         }
                         MicSoundMeter.getInstance().start(true, fileName);
                         if (eventHandler != null)
-                            eventHandler.getState("Recording..");
+                            eventHandler.getState(activity.getString(R.string.recording)+"...");
                         handler.post(processMic);
                         isRecording = true;
                     }
@@ -128,7 +129,7 @@ public class MicShield extends ControllerParent<MicShield> {
                         if (eventHandler != null)
                             eventHandler.getState("");
                         if (!fileName.equals(""))
-                            showNotification("Sound Recorded Successfully to " + fileName + ".mp3");
+                            showNotification(activity.getString(R.string.sound_recorded_successfully_to)+" " + fileName + ".mp3");
                         fileName = "";
                         handler.post(processMic);
                         isRecording = false;
@@ -142,7 +143,7 @@ public class MicShield extends ControllerParent<MicShield> {
     public void reset() {
         stopMic();
         if (!fileName.equals(""))
-            showNotification("Sound Recorded Successfully to " + fileName + ".mp3");
+            showNotification(activity.getString(R.string.sound_recorded_successfully_to)+" " + fileName + ".mp3");
         fileName = "";
     }
 
@@ -173,8 +174,8 @@ public class MicShield extends ControllerParent<MicShield> {
         // TODO Auto-generated method stub
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 activity);
-        build.setSmallIcon(R.drawable.white_ee_icon);
-        build.setContentTitle("Mic Shield");
+        build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
+        build.setContentTitle(activity.getString(R.string.mic_shield));
         build.setContentText(notificationText);
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());

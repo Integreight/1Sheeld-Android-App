@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.Log;
 
 import java.io.IOException;
@@ -75,13 +76,15 @@ public class BluetoothService {
     public static final int STATE_CONNECTED = 3; // now connected to a remote
     // device
 
+    private Context context;
+
     private boolean closedManually = false;
 
     public BluetoothService(Context context) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
         this.handlers = new CopyOnWriteArrayList<BluetoothServiceHandler>();
-
+        this.context=context;
     }
 
     public void addBluetoothServiceHandler(BluetoothServiceHandler handler) {
@@ -222,7 +225,7 @@ public class BluetoothService {
 
     private void connectionFailed() {
         for (BluetoothServiceHandler handler : handlers) {
-            handler.onError("Unable to connect device");
+            handler.onError(context.getString(R.string.unable_to_connect));
         }
         stop();
     }

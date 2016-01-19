@@ -85,6 +85,12 @@ public class OneSheeldApplication extends Application {
 
     private long connectionTime;
 
+    private static Context context;
+
+    public static Context getContext(){
+        return context;
+    }
+
     public void startConnectionTimer() {
         connectionTime = SystemClock.elapsedRealtime();
     }
@@ -125,6 +131,7 @@ public class OneSheeldApplication extends Application {
 
     @Override
     public void onCreate() {
+        context=getApplicationContext();
         setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
         setConnectionHandler(new ConnectionDetector());
         appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
@@ -388,6 +395,11 @@ public class OneSheeldApplication extends Application {
     public ArduinoFirmata getAppFirmata() {
 
         return appFirmata;
+    }
+
+    public static int getNotificationIcon() {
+        boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
+        return useWhiteIcon ? R.drawable.notification_icon : R.drawable.white_ee_icon;
     }
 
     public void setAppFirmata(ArduinoFirmata appFirmata) {

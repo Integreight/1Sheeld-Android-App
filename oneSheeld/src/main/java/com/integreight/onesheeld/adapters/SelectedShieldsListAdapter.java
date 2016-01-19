@@ -83,7 +83,7 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
         row.setBackgroundColor(imageId);
 
         if (UIShield.getShieldsActivitySelection() != null
-                && UIShield.getShieldsActivitySelection().id == shield.id) {
+                && UIShield.getShieldsActivitySelection().getId() == shield.id) {
             holder.selectionCircle.setVisibility(View.VISIBLE);
         } else {
             holder.selectionCircle.setVisibility(View.INVISIBLE);

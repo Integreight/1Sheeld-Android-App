@@ -43,7 +43,7 @@ public class InternetResponsePopup extends Dialog {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (isShowing()) {
-                    ((TextView) findViewById(R.id.redirecting)).setText("Redirecting to " + url);
+                    ((TextView) findViewById(R.id.redirecting)).setText(activity.getString(R.string.redirecting_to)+" " + url);
                     findViewById(R.id.redirecting).setVisibility(View.VISIBLE);
                     webView.loadUrl(url);
                     return true;

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -107,7 +108,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
                     } else
                         Toast.makeText(
                                 getApplication().getApplicationContext(),
-                                "Please check your Internet connection and try again.",
+                                R.string.check_internet_connection,
                                 Toast.LENGTH_SHORT).show();
                 }
         }
@@ -284,7 +285,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
         @Override
         public void onFoursquareError(FoursquareError e) {
             Toast.makeText(getApplication().getApplicationContext(),
-                    "Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
+                    R.string.foursquare_authorize_login_failed, Toast.LENGTH_SHORT)
                     .show();
 
         }
@@ -292,7 +293,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
         @Override
         public void onError(FoursquareDialogError e) {
             Toast.makeText(getApplication().getApplicationContext(),
-                    "Foursquare-authorize Login failed ", Toast.LENGTH_SHORT)
+                    R.string.foursquare_authorize_login_failed, Toast.LENGTH_SHORT)
                     .show();
 
         }
@@ -300,7 +301,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
         @Override
         public void onCancel() {
             Toast.makeText(getApplication().getApplicationContext(),
-                    "Foursquare Login canceled ", Toast.LENGTH_SHORT).show();
+                    R.string.foursquare_login_canceled, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -339,7 +340,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
     public void loginToFoursquare() {
         ProgressDialog prog = new ProgressDialog(activity);
-        prog.setMessage("Please, Wait!");
+        prog.setMessage(activity.getString(R.string.please_wait));
         prog.setCancelable(false);
         prog.show();
         foursquare = new Foursquare(

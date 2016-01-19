@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
@@ -33,9 +34,9 @@ public class ColorDetectionFragment extends ShieldFragmentParent<ColorDetectionF
     private CheckBox cameraPreviewToggle;
     private ComboSeekBar scaleSeekBar;
     private ComboSeekBar patchSizeSeekBar;
-    private String[] grayScale = new String[]{"1 Bit", "2 Bit", "4 Bit", "8 Bit"};
-    private String[] rgbScale = new String[]{"3 Bit", "6 Bit", "9 Bit", "12 Bit", "15 Bit", "18 Bit", "24 Bit"};
-    private String[] patchSizes = new String[]{"Small", "Medium", "Large"};
+    private String[] grayScale = new String[]{OneSheeldApplication.getContext().getString(R.string._1)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._2)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._4)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._8)+" "+OneSheeldApplication.getContext().getString(R.string.bit)};
+    private String[] rgbScale = new String[]{OneSheeldApplication.getContext().getString(R.string._3)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._6)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._9)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._12)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._15)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._18)+" "+OneSheeldApplication.getContext().getString(R.string.bit), OneSheeldApplication.getContext().getString(R.string._24)+" "+OneSheeldApplication.getContext().getString(R.string.bit)};
+    private String[] patchSizes = new String[]{OneSheeldApplication.getContext().getString(R.string.small), OneSheeldApplication.getContext().getString(R.string.medium), OneSheeldApplication.getContext().getString(R.string.large)};
     private int[] colorsViewLocation = new int[2];
     Window window;
     Rect rectangle;

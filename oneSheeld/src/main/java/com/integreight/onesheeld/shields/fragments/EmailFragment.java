@@ -25,7 +25,6 @@ import com.integreight.onesheeld.shields.controller.EmailShield;
 import com.integreight.onesheeld.shields.controller.EmailShield.EmailEventHandler;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
-import com.integreight.onesheeld.utils.SecurePreferences;
 
 import java.util.Arrays;
 
@@ -83,7 +82,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                 }else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            "Please check your Internet connection and try again.",
+                            R.string.check_internet_connection4,
                             Toast.LENGTH_SHORT).show();
             }
         });
@@ -144,7 +143,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
         @Override
         public void onSuccess() {
             if (canChangeUI())
-                Toast.makeText(getApplication(), "Email sent Successful",
+                Toast.makeText(getApplication(), R.string.email_sent,
                         Toast.LENGTH_SHORT).show();
         }
 
@@ -265,7 +264,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                         Toast.makeText(activity.getApplicationContext(), accountName, Toast.LENGTH_SHORT).show();
                     }
                 } else if (resultCode == activity.RESULT_CANCELED) {
-                    Toast.makeText(activity.getApplicationContext(), "Account unspecified.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity.getApplicationContext(), R.string.account_unspecified, Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_AUTHORIZATION:

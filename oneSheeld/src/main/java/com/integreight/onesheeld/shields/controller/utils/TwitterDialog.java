@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.utils.Log;
 
 import twitter4j.Twitter;
@@ -80,7 +81,7 @@ public class TwitterDialog extends Dialog {
 
         mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mSpinner.setMessage("Loading...");
+        mSpinner.setMessage(getContext().getString(R.string.loading)+"...");
 
         mContent = new LinearLayout(getContext());
 
@@ -134,7 +135,7 @@ public class TwitterDialog extends Dialog {
 
         mTitle = new TextView(getContext());
 
-        mTitle.setText("Twitter");
+        mTitle.setText(getContext().getString(R.string.twitter));
         mTitle.setTextColor(Color.WHITE);
         mTitle.setTypeface(Typeface.DEFAULT_BOLD);
         mTitle.setBackgroundColor(0xFF4099FF);

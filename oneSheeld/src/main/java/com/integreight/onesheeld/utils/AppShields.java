@@ -104,17 +104,17 @@ public class AppShields {
         ArrayList<Byte> remembered = getRememberedShields();
         for (UIShield shield : UIShield.valuesFiltered()) {
             shieldsTable.put(shield.name(), new Shield(shield.getId(), i,
-                    shield.name(), shield.getName(), shield.itemBackgroundColor,
-                    shield.symbolId, remembered.contains(shield.id) ? true : shield.mainActivitySelection,
-                    shield.shieldType, shield.shieldFragment, shield.isReleasable,
-                    shield.isInvalidatable));
+                    shield.name(), shield.getName(), shield.getItemBackgroundColor(),
+                    shield.getSymbolId(), remembered.contains(shield.getId()) ? true : shield.isMainActivitySelection(),
+                    shield.getShieldType(), shield.getShieldFragment(), shield.isReleasable(),
+                    shield.getIsInvalidatable()));
             shieldsArray.put(i,
                     new Shield(shield.getId(), i, shield.name(), shield.getName(),
-                            shield.itemBackgroundColor, shield.symbolId,
-                            remembered.contains(shield.id) ? true : shield.mainActivitySelection, shield.shieldType, shield.shieldFragment,
-                            shield.isReleasable, shield.isInvalidatable));
-            shieldsTags.put(shield.shieldType.getName(), shield.name());
-            shieldsTags.put(shield.shieldFragment.getName(), shield.name());
+                            shield.getItemBackgroundColor(), shield.getSymbolId(),
+                            remembered.contains(shield.getId()) ? true : shield.isMainActivitySelection(), shield.getShieldType(), shield.getShieldFragment(),
+                            shield.isReleasable(), shield.getIsInvalidatable()));
+            shieldsTags.put(shield.getShieldType().getName(), shield.name());
+            shieldsTags.put(shield.getShieldFragment().getName(), shield.name());
             i++;
         }
     }

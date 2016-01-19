@@ -112,7 +112,7 @@ public class MagnetometerFragment extends
                                 .sqrt((value[0] * value[0])
                                         + (value[1] * value[1])
                                         + (value[2] * value[2]));
-                        mf.setText("Magnetic Field is "
+                        mf.setText(activity.getString(R.string.magnetic_field_is)+" "
                                 + String.valueOf(magnetic_field).substring(
                                 0,
                                 String.valueOf(magnetic_field).indexOf(

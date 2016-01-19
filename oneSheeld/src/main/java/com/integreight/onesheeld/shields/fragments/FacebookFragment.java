@@ -101,7 +101,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
                         lastPostTextCont.addView(posty);
                         ((ScrollView) lastPostTextCont.getParent())
                                 .invalidate();
-                        Toast.makeText(activity, "Posted on your wall!",
+                        Toast.makeText(activity, R.string.posted_on_your_wall,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });

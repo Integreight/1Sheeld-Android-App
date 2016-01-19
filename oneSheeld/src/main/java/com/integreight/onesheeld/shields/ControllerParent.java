@@ -149,7 +149,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                     cachedArduinoCallbackStatus = false;
                                 } catch (RuntimeException e) {
                                     cachedArduinoCallbackStatus = false;
-                                    Toast.makeText(getActivity(), "Received an unexpected frame.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.received_an_unexpected_frame, Toast.LENGTH_SHORT).show();
                                     CrashlyticsUtils.logException(e);
                                 }
                             }
@@ -285,7 +285,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     private byte getShieldId() {
-        if (ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.id;
+        if (ControllerParent.this instanceof TaskerShield) return UIShield.TASKER_SHIELD.getId();
         return AppShields.getInstance().getShield(tag).id;
     }
 

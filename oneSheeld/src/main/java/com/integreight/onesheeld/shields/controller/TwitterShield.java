@@ -15,6 +15,7 @@ import android.os.Looper;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -23,7 +24,6 @@ import com.integreight.onesheeld.shields.controller.utils.ImageUtils;
 import com.integreight.onesheeld.shields.controller.utils.TwitterAuthorization;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialog;
 import com.integreight.onesheeld.shields.controller.utils.TwitterDialogListener;
-import com.integreight.onesheeld.utils.AlertDialogManager;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.Log;
 
@@ -85,8 +85,6 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
     // Shared Preferences
     private static SharedPreferences mSharedPreferences;
 
-    // Alert Dialog Manager
-    AlertDialogManager alert = new AlertDialogManager();
 
     public String getLastTweet() {
         return lastTweet;
@@ -150,7 +148,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            Toast.makeText(activity, "Tweet posted!",
+                            Toast.makeText(activity, R.string.tweet_posted,
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -198,7 +196,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                             // TODO Auto-generated method stub
                             Toast.makeText(
                                     activity,
-                                    "Message sent to " + properUserHandle + "!",
+                                    activity.getString(R.string.message_sent_to)+" " + properUserHandle + "!",
                                     Toast.LENGTH_SHORT).show();
 
                         }
@@ -234,7 +232,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                 @Override
                 protected void onPreExecute() {
                     prog = new ProgressDialog(activity);
-                    prog.setMessage("Please, Wait!");
+                    prog.setMessage(activity.getString(R.string.please_wait2));
                     prog.setCancelable(false);
                     prog.show();
                     super.onPreExecute();
@@ -264,7 +262,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                     final TwitterDialogListener listener = new TwitterDialogListener() {
                         @Override
                         public void onComplete() {
-                            SharedPreferences.Editor editor = mSharedPreferences
+                            Editor editor = mSharedPreferences
                                     .edit();
                             editor.putString(PREF_KEY_OAUTH_TOKEN,
                                     TwitterAuthorization.FETCHED_ACCESS_TOKEN);
@@ -295,7 +293,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                         public void onCancel() {
                             Toast.makeText(
                                     getApplication().getApplicationContext(),
-                                    "Twitter Login Canceled",
+                                    R.string.twitter_login_canceled,
                                     Toast.LENGTH_SHORT).show();
                         }
                     };
@@ -443,7 +441,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                 } else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            "Please check your Internet connection and try again.",
+                            R.string.please_check_connection3,
                             Toast.LENGTH_SHORT).show();
         }
 
@@ -511,7 +509,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                                 public void run() {
                                     // TODO Auto-generated method stub
                                     Toast.makeText(activity,
-                                            "Uploading the image!",
+                                            R.string.uploading_the_image,
                                             Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -519,7 +517,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                             return twitter.updateStatus(status);
                         } else if (eventHandler != null) {
                             System.err.println("File Not Found  " + params[0]);
-                            eventHandler.onTwitterError("File Not Found   "
+                            eventHandler.onTwitterError(activity.getString(R.string.file_not_found)+"   "
                                     + params[0]);
                             eventHandler.stopProgress();
                         }
@@ -546,7 +544,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                     eventHandler.stopProgress();
                 if (result != null)
                     Toast.makeText(activity,
-                            "Image uploaded and tweet posted!",
+                            R.string.image_uploaded_and_tweet_posted,
                             Toast.LENGTH_LONG).show();
                 System.gc();
                 super.onPostExecute(result);

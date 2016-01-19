@@ -46,7 +46,7 @@ public class FirmwareUpdatingPopup extends Dialog {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.activity = activity;
         final Handler handler = new Handler();
-        jodem = new Jodem(activity.getThisApplication().getAppFirmata()
+        jodem = new Jodem(activity, activity.getThisApplication().getAppFirmata()
                 .getBTService(), new Jodem.JodemEventHandler() {
 
             @Override
@@ -65,7 +65,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     public void run() {
                         // TODO Auto-generated method stub
                         FirmwareUpdatingPopup.this.setCancelable(true);
-                        statusText.setText("Done Successfully!");
+                        statusText.setText(R.string.done_successfully);
                         setUpgrade();
                     }
                 });
@@ -73,7 +73,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 
                     @Override
                     public void run() {
-                        changeSlogan("Upgrade Firmware", COLOR.BLUE);
+                        changeSlogan(activity.getString(R.string.upgrade_firmware), COLOR.BLUE);
                     }
                 }, 1500);
 
@@ -97,7 +97,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     @Override
                     public void run() {
                         int status = (int) ((float) sendBytes / totalBytes * 100);
-                        changeSlogan("Installing...", COLOR.BLUE);
+                        changeSlogan(activity.getString(R.string.installing)+"...", COLOR.BLUE);
                         downloadingProgress.setProgress(status);
                         progressTxt.setText(status + "%");
                     }
@@ -112,7 +112,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     @Override
                     public void run() {
                         FirmwareUpdatingPopup.this.setCancelable(true);
-                        changeSlogan("An error occurred!", COLOR.RED);
+                        changeSlogan(activity.getString(R.string.an_error_occured), COLOR.RED);
                         isFailed = true;
                         setUpgrade();
                         activity.getThisApplication()
@@ -134,7 +134,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     @Override
                     public void run() {
                         FirmwareUpdatingPopup.this.setCancelable(true);
-                        changeSlogan("1Sheeld not responding!", COLOR.RED);
+                        changeSlogan(activity.getString(R.string.sheeld_not_responding), COLOR.RED);
                         isFailed = true;
                         setUpgrade();
                     }
@@ -249,7 +249,7 @@ public class FirmwareUpdatingPopup extends Dialog {
     private byte[] binaryFile;
 
     private void downloadFirmware() {
-        changeSlogan("Downloading...", COLOR.BLUE);
+        changeSlogan(activity.getString(R.string.downloading)+"...", COLOR.BLUE);
         if (activity.getThisApplication().getVersionWebResult() != null) {
             showInstallationProgress();
             try {
@@ -274,9 +274,9 @@ public class FirmwareUpdatingPopup extends Dialog {
                                         binaryFile = binaryData;
                                         jodem.send(binaryData, 4);
                                         if (!isFailed)
-                                            changeSlogan("Installing...", COLOR.BLUE);
+                                            changeSlogan(activity.getString(R.string.installing)+"...", COLOR.BLUE);
                                         else
-                                            changeSlogan("Please, Press reset!",
+                                            changeSlogan(activity.getString(R.string.press_reset),
                                                     COLOR.BLUE);
                                     }
                                 },200);
@@ -286,7 +286,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                             public void onFailure(int statusCode,
                                                   cz.msebera.android.httpclient.Header[] headers, byte[] binaryData,
                                                   Throwable error) {
-                                changeSlogan("Error Downloading!", COLOR.RED);
+                                changeSlogan(activity.getString(R.string.error_downloading), COLOR.RED);
                                 setUpgrade();
                                 Log.d("bootloader", statusCode + "");
                                 activity.getThisApplication()
@@ -313,7 +313,7 @@ public class FirmwareUpdatingPopup extends Dialog {
     }
 
     private void setUpgrade() {
-        upgradeBtn.setText("Upgrade");
+        upgradeBtn.setText(R.string.upgrade);
         upgradeBtn.setVisibility(View.VISIBLE);
         progress.setVisibility(View.INVISIBLE);
         progressTxt.setVisibility(View.INVISIBLE);
@@ -338,15 +338,15 @@ public class FirmwareUpdatingPopup extends Dialog {
                                         .resetMicro();
                                 jodem.send(binaryFile, 4);
                                 if (!isFailed)
-                                    changeSlogan("Installing...", COLOR.BLUE);
+                                    changeSlogan(activity.getString(R.string.installing)+"...", COLOR.BLUE);
                                 else
-                                    changeSlogan("Please, Press reset!", COLOR.BLUE);
+                                    changeSlogan(activity.getString(R.string.press_reset), COLOR.BLUE);
                             }
                         },200);
 
                     }
                 } else {
-                    changeSlogan("No Internet Connection", COLOR.RED);
+                    changeSlogan(activity.getString(R.string.no_internet_connection), COLOR.RED);
                 }
             }
         });

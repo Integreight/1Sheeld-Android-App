@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.ConnectionDetector;
@@ -75,7 +76,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
                 }
             } else
                 Toast.makeText(getApplication().getApplicationContext(),
-                        "Please check your Internet connection and try again.",
+                        R.string.check_internet_connection_2,
                         Toast.LENGTH_SHORT).show();
         }
 
@@ -107,7 +108,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             Log.d("Skype Client Installed", "No");
             if (eventHandler != null)
                 eventHandler
-                        .onSkypeClientNotInstalled("Skype Client is not Installed");
+                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_not_installed));
 
         }
 
@@ -139,7 +140,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             Log.d("Skype Client Installed", "No");
             if (eventHandler != null)
                 eventHandler
-                        .onSkypeClientNotInstalled("Skype Client is not Installed");
+                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_not_installed));
 
         }
 
@@ -171,7 +172,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             Log.d("Skype Client Installed", "No");
             if (eventHandler != null)
                 eventHandler
-                        .onSkypeClientNotInstalled("Skype Client is not Installed");
+                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_not_installed));
 
         }
 

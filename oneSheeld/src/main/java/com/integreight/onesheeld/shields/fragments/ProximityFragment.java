@@ -105,7 +105,7 @@ public class ProximityFragment extends ShieldFragmentParent<ProximityFragment> {
                 public void run() {
                     if (canChangeUI()) {
                         distance_byte.setVisibility(View.VISIBLE);
-                        distance_byte.setText("Distance in Byte = " + value);
+                        distance_byte.setText(activity.getString(R.string.distance_in_byte)+" = " + value);
                     }
                 }
             });

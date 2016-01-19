@@ -71,7 +71,7 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
                         @Override
                         public void run() {
                             vibrationLogo.clearAnimation();
-                            vibrationTextTextView.setText("Paused!");
+                            vibrationTextTextView.setText(R.string.paused2);
                             vibrationStopButton.setVisibility(View.VISIBLE);
                         }
                     });
@@ -115,7 +115,7 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
         if(canChangeUI()){
             if(((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen()){
                 vibrationLogo.startAnimation(shake);
-                vibrationTextTextView.setText("Ready!");
+                vibrationTextTextView.setText(R.string.ready2);
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -134,7 +134,7 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
                 }
                 else if(((VibrationShield) getApplication().getRunningShields().get(getControllerTag()))
                         .isPaused()){
-                    vibrationTextTextView.setText("Paused!");
+                    vibrationTextTextView.setText(R.string.paused2);
                 }
             }
         }

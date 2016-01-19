@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener;
@@ -66,7 +67,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
             if (this.selectionAction != null) {
                 this.selectionAction.onFailure();
                 if (isToastable)
-                    activity.showToast("Device doesn't support SMS functionality !");
+                    activity.showToast(activity.getString(R.string.device_doesnt_support_sms_functionality));
             }
         } else {
             addRequiredPremission(Manifest.permission.READ_SMS);

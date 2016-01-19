@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Base64;
@@ -18,8 +17,10 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.gmail.Gmail;
 import com.google.api.services.gmail.model.Message;
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
@@ -135,7 +136,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                     } else
                         Toast.makeText(
                                 getApplication().getApplicationContext(),
-                                "Please check your Internet connection and try again.",
+                                R.string.please_check_internet,
                                 Toast.LENGTH_SHORT).show();
                 }
             }
@@ -166,9 +167,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
         public sendGmailinBackground(GoogleAccountCredential credential,int order){
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            mService = new com.google.api.services.gmail.Gmail.Builder(
+            mService = new Gmail.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName("1Sheeld app | Email Shield")
+                    .setApplicationName(getActivity().getString(R.string.onesheeld_app_email_shield))
                     .build();
             this.order = order;
         }
@@ -211,7 +212,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                     //showGooglePlayServicesAvailabilityErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
                         Log.d("Email","The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
-                        eventHandler.onEmailnotSent("Email not sent.");
+                        eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
                     }
                     CrashlyticsUtils.logException(mLastError);
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
@@ -220,13 +221,13 @@ public class EmailShield extends ControllerParent<EmailShield> {
                 } else {
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
                         Log.d("Email", "The following error occurred:\n" + mLastError.getMessage());
-                        eventHandler.onEmailnotSent("Email not sent.");
+                        eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
                     }
                     CrashlyticsUtils.logException(mLastError);
                 }
             } else {
                 if (eventHandler != null)
-                    eventHandler.onEmailnotSent("Email not sent.");
+                    eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
             }
             if (eventHandler != null)
                 eventHandler.stopProgress();

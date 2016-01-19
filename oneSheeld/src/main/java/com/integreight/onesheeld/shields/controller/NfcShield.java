@@ -16,6 +16,7 @@ import android.nfc.tech.NdefFormatable;
 import android.os.Build;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 
@@ -96,13 +97,13 @@ public class NfcShield extends ControllerParent<NfcShield> {
                 selectionAction.onSuccess();
             } else {
                 if (isToastable) {
-                    activity.showToast(nfcAdapter == null ? "Device doesn't support NFC!" : "Please, Enable Your NFC");
+                    activity.showToast(nfcAdapter == null ? activity.getString(R.string.device_doesnt_support_nfc) : activity.getString(R.string.please_enable_nfc));
                 }
                 selectionAction.onFailure();
             }
         } else {
             if (isToastable)
-                activity.showToast("Device doesn't support NFC!");
+                activity.showToast(R.string.device_doesnt_support_nfc);
             selectionAction.onFailure();
         }
     }

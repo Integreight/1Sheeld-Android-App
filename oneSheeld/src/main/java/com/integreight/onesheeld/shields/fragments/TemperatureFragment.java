@@ -106,7 +106,7 @@ public class TemperatureFragment extends
                 public void run() {
                     if (canChangeUI()) {
                         temperature_byte.setVisibility(View.VISIBLE);
-                        temperature_byte.setText("temperature in Byte = "
+                        temperature_byte.setText(activity.getString(R.string.temperature_in_byte)+" = "
                                 + value);
                     }
                 }

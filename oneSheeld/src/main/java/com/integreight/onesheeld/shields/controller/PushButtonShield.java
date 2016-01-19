@@ -3,6 +3,8 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -15,7 +17,7 @@ public class PushButtonShield extends ControllerParent<PushButtonShield> {
     public PushButtonShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Push"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.push_button2)};
     }
 
     public PushButtonShield(Activity activity, String tag) {

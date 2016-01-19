@@ -9,6 +9,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener;
@@ -57,7 +58,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             if (this.selectionAction != null) {
                 this.selectionAction.onFailure();
                 if (isToastable)
-                    activity.showToast("Device doesn't support Calling functionality !");
+                    activity.showToast(activity.getString(R.string.device_doesnt_support_calling_functionality));
             }
         } else {
             if (checkForPermissions()) {

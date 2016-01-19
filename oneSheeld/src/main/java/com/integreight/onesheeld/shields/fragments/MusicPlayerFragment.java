@@ -105,7 +105,7 @@ public class MusicPlayerFragment extends
             } else {
                 eventHandler.seekTo(0);
                 eventHandler.pause();
-                eventHandler.setMusicName("Music file name");
+                eventHandler.setMusicName(activity.getString(R.string.music_file_name));
             }
         }
     }
@@ -154,7 +154,7 @@ public class MusicPlayerFragment extends
                     if (canChangeUI()) {
                         playingBtn
                                 .setBackgroundResource(R.drawable.musicplayer_play_symbol);
-                        playingStatus.setText("Playing");
+                        playingStatus.setText(R.string.playing);
                     }
                 }
             });
@@ -169,7 +169,7 @@ public class MusicPlayerFragment extends
                     if (canChangeUI()) {
                         playingBtn
                                 .setBackgroundResource(R.drawable.musicplayer_pause_symbol);
-                        playingStatus.setText("Paused");
+                        playingStatus.setText(R.string.paused);
                     }
                 }
             });

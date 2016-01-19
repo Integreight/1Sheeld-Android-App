@@ -35,6 +35,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
@@ -266,7 +267,7 @@ public class CameraHeadService extends Service implements
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(),
-                            "Your Picture has been taken !", Toast.LENGTH_SHORT)
+                            R.string.your_picture_has_been_taken, Toast.LENGTH_SHORT)
                             .show();
                 }
             });
@@ -361,7 +362,7 @@ public class CameraHeadService extends Service implements
                                     @Override
                                     public void run() {
                                         Toast.makeText(getApplicationContext(),
-                                                "API dosen't support front camera",
+                                                R.string.api_doesnt_support_front_camera,
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -549,7 +550,7 @@ public class CameraHeadService extends Service implements
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(),
-                                            "API dosen't support front camera",
+                                            R.string.api_doesnt_support_front_camera,
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -585,7 +586,7 @@ public class CameraHeadService extends Service implements
                             public void run() {
                                 Toast.makeText(
                                         getApplicationContext(),
-                                        "Your device doesn't have a front camera!",
+                                        R.string.device_doesnt_have_front_camera,
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -611,7 +612,7 @@ public class CameraHeadService extends Service implements
                                     public void run() {
                                         Toast.makeText(
                                                 getApplicationContext(),
-                                                "API doesn't support front camera",
+                                                R.string.api_doesnt_support_front_camera,
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -647,7 +648,7 @@ public class CameraHeadService extends Service implements
                                 public void run() {
                                     Toast.makeText(
                                             getApplicationContext(),
-                                            "Your device doesn't have a front camera!",
+                                            R.string.device_doesnt_have_front_camera,
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -738,7 +739,7 @@ public class CameraHeadService extends Service implements
                             @Override
                             public void run() {
                                 Toast.makeText(getApplicationContext(),
-                                        "Camera is unavailable !",
+                                        R.string.camera_is_not_available,
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -764,7 +765,7 @@ public class CameraHeadService extends Service implements
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(),
-                            "Your device doesn't have a camera!",
+                            R.string.device_doesnt_have_camera,
                             Toast.LENGTH_LONG).show();
                 }
             });

@@ -3,6 +3,8 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -16,7 +18,7 @@ public class LedShield extends ControllerParent<LedShield> {
     public LedShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{"Led"};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.led2)};
     }
 
     public LedShield(Activity activity, String tag) {

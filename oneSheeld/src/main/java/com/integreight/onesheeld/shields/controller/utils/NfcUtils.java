@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.NfcShield;
 
@@ -33,7 +34,7 @@ public class NfcUtils extends Activity {
                             ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Nfc Disabled", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.nfc_disabled, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

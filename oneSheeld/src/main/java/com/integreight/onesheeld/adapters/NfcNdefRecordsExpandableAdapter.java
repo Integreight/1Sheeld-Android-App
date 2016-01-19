@@ -70,7 +70,7 @@ public class NfcNdefRecordsExpandableAdapter extends BaseExpandableListAdapter{
             convertView = layoutInflater.inflate(R.layout.nfc_record_list_header,null);
         }
         TextView txtView = (TextView) convertView.findViewById(R.id.nfc_txt);
-        txtView.setText("Record "+groupPosition);
+        txtView.setText(_context.getString(R.string.record)+" "+groupPosition);
         return convertView;
     }
 

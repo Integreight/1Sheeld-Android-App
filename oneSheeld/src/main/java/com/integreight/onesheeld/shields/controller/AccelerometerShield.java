@@ -9,6 +9,7 @@ import android.hardware.SensorManager;
 import android.os.Handler;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
@@ -144,7 +145,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
             if (selectionAction != null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast("Device doesn't support this sensor!");
+                activity.showToast(R.string.device_doesnt_support_this_sensor);
 
             if (eventHandler != null)
                 eventHandler.isDeviceHasSensor(false);
