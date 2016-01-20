@@ -66,6 +66,7 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
 
     @Override
     public void doOnResume() {
+        ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).showSettingsDialogIfNfcIsNotEnabled();
         ((NfcShield) getApplication().getRunningShields().get(getControllerTag())).displayData();
     }
 
