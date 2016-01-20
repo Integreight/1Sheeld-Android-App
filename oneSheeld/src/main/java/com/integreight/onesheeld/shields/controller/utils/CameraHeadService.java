@@ -1,6 +1,8 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
+import android.app.Activity;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -105,6 +107,7 @@ public class CameraHeadService extends Service implements
     private Messenger colorDetectionMessenger;
     private Messenger cameraMessenger;
     private int cellSize = 1;
+    private int currentCamera= Camera.CameraInfo.CAMERA_FACING_BACK;
     private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
     private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
@@ -178,32 +181,32 @@ public class CameraHeadService extends Service implements
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             // decode the data obtained by the camera into a Bitmap
-            int rotate = 0;
-            switch (mOrientation) {
-                case ORIENTATION_PORTRAIT_NORMAL:
-                    if (!isFrontCamRequest) rotate = 90;
-                    else rotate = 270;
-                    break;
-                case ORIENTATION_LANDSCAPE_NORMAL:
-                    rotate = 0;
-                    break;
-                case ORIENTATION_PORTRAIT_INVERTED:
-                    if (!isFrontCamRequest) rotate = 270;
-                    else rotate = 90;
-                    break;
-                case ORIENTATION_LANDSCAPE_INVERTED:
-                    rotate = 180;
-                    break;
-            }
+//            int rotate = 0;
+//            switch (mOrientation) {
+//                case ORIENTATION_PORTRAIT_NORMAL:
+//                    if (!isFrontCamRequest) rotate = 90;
+//                    else rotate = 270;
+//                    break;
+//                case ORIENTATION_LANDSCAPE_NORMAL:
+//                    rotate = 0;
+//                    break;
+//                case ORIENTATION_PORTRAIT_INVERTED:
+//                    if (!isFrontCamRequest) rotate = 270;
+//                    else rotate = 90;
+//                    break;
+//                case ORIENTATION_LANDSCAPE_INVERTED:
+//                    rotate = 180;
+//                    break;
+//            }
             Matrix matrix = new Matrix();
-            matrix.postRotate(rotate);
+//            matrix.postRotate(rotate);
 
             Log.d("ImageTakin", "Done");
             if (bmp != null)
                 bmp.recycle();
             // decode with options and set rotation
             bmp = ImageUtils.decodeBitmap(data, matrix);
-            data = null;
+//            data = null;
 
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (bmp != null && QUALITY_MODE == 0)
@@ -337,10 +340,12 @@ public class CameraHeadService extends Service implements
 
                         try {
                             if (mCamera != null) {
-                                mCamera.setDisplayOrientation(90);
+//                                mCamera.setDisplayOrientation(90);
+                                setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
                                 if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                                     mCamera.setPreviewCallback(previewCallback);
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                currentCamera= Camera.CameraInfo.CAMERA_FACING_BACK;
                                 try {
                                     mCamera.startPreview();
                                 } catch (Exception e) {
@@ -355,6 +360,7 @@ public class CameraHeadService extends Service implements
                         if (mCamera != null) {
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                currentCamera= Camera.CameraInfo.CAMERA_FACING_FRONT;
                                 try {
                                     mCamera.startPreview();
                                 } catch (Exception e) {
@@ -421,10 +427,39 @@ public class CameraHeadService extends Service implements
                 }
             }
         }
-        cam.setDisplayOrientation(90);
+//        cam.setDisplayOrientation(90);
+        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_FRONT,cam);
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             cam.setPreviewCallback(previewCallback);
         return cam;
+    }
+
+    public void setCameraDisplayOrientation(int cameraId, android.hardware.Camera camera) {
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int rotation = windowManager.getDefaultDisplay()
+                .getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0: degrees = 0; break;
+            case Surface.ROTATION_90: degrees = 90; break;
+            case Surface.ROTATION_180: degrees = 180; break;
+            case Surface.ROTATION_270: degrees = 270; break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
     }
 
     private void setBesttPictureResolution() {
@@ -547,6 +582,7 @@ public class CameraHeadService extends Service implements
 
                         try {
                             mCamera.setPreviewDisplay(sv.getHolder());
+                            currentCamera= Camera.CameraInfo.CAMERA_FACING_FRONT;
                             notifyPreviewTypeChanged(false, true);
                         } catch (IOException e) {
                             handler.post(new Runnable() {
@@ -577,6 +613,13 @@ public class CameraHeadService extends Service implements
                         if (pictureSize != null)
                             parameters.setPictureSize(pictureSize.width,
                                     pictureSize.height);
+
+
+                        android.hardware.Camera.CameraInfo info =
+                                new android.hardware.Camera.CameraInfo();
+                        android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_FRONT, info);
+                        int mRotation = (info.orientation - mOrientation + 360) % 360;
+                        parameters.setRotation(mRotation);
 
                         // set camera parameters
                         mCamera.setParameters(parameters);
@@ -613,6 +656,7 @@ public class CameraHeadService extends Service implements
                         if (mCamera != null) {
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                currentCamera= Camera.CameraInfo.CAMERA_FACING_FRONT;
                                 notifyPreviewTypeChanged(false, true);
                             } catch (IOException e) {
                                 handler.post(new Runnable() {
@@ -645,6 +689,12 @@ public class CameraHeadService extends Service implements
                             if (pictureSize != null)
                                 parameters.setPictureSize(pictureSize.width,
                                         pictureSize.height);
+
+                            android.hardware.Camera.CameraInfo info =
+                                    new android.hardware.Camera.CameraInfo();
+                            android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_FRONT, info);
+                            int mRotation = (info.orientation - mOrientation + 360) % 360;
+                            parameters.setRotation(mRotation);
 
                             // set camera parameters
                             mCamera.setParameters(parameters);
@@ -689,10 +739,12 @@ public class CameraHeadService extends Service implements
 
                 try {
                     if (mCamera != null) {
-                        mCamera.setDisplayOrientation(90);
+//                        mCamera.setDisplayOrientation(90);
+                        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK,mCamera);
                         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                             mCamera.setPreviewCallback(previewCallback);
                         mCamera.setPreviewDisplay(sv.getHolder());
+                        currentCamera= Camera.CameraInfo.CAMERA_FACING_BACK;
                         notifyPreviewTypeChanged(true, true);
                         parameters = mCamera.getParameters();
 //                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
@@ -713,6 +765,12 @@ public class CameraHeadService extends Service implements
                         // log quality and image format
                         Log.d("Quality", parameters.getJpegQuality() + "");
                         Log.d("Format", parameters.getPictureFormat() + "");
+
+                        android.hardware.Camera.CameraInfo info =
+                                new android.hardware.Camera.CameraInfo();
+                        android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
+                        int mRotation = (info.orientation + mOrientation) % 360;
+                        parameters.setRotation(mRotation);
 
                         // set camera parameters
                         mCamera.setParameters(parameters);
@@ -770,7 +828,7 @@ public class CameraHeadService extends Service implements
             mCamera.autoFocus(new Camera.AutoFocusCallback() {
                 @Override
                 public void onAutoFocus(boolean success, Camera camera) {
-                        uiThreadHandler.postDelayed(new Runnable() {
+                    uiThreadHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 mCamera.takePicture(new Camera.ShutterCallback() {
@@ -847,53 +905,55 @@ public class CameraHeadService extends Service implements
 
             @Override
             public void onOrientationChanged(int orientation) {
-                Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
-                        .getDefaultDisplay();
-                int rotation = windowManager.getDefaultDisplay().getRotation();
-                Log.sysOut(rotation + "");
+//                Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
+//                        .getDefaultDisplay();
+//                int rotation = windowManager.getDefaultDisplay().getRotation();
+//                Log.sysOut(rotation + "");
+//
+//                if (display.getRotation() != Surface.ROTATION_0) { // landscape
+//                    // oriented
+//                    // devices
+//                    Log.sysOut("LANDSCAPE");
+//                    if (orientation >= 315 || orientation < 45) {
+//                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
+//                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
+//                        }
+//                    } else if (orientation < 315 && orientation >= 225) {
+//                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
+//                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
+//                        }
+//                    } else if (orientation < 225 && orientation >= 135) {
+//                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
+//                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
+//                        }
+//                    } else if (orientation < 135 && orientation > 45) {
+//                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
+//                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
+//                        }
+//                    }
+//                } else { // portrait oriented devices
+//                    Log.sysOut("PORTRAIT");
+//                    if (orientation >= 315 || orientation < 45) {
+//                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
+//                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
+//                        }
+//                    } else if (orientation < 315 && orientation >= 225) {
+//                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
+//                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
+//                        }
+//                    } else if (orientation < 225 && orientation >= 135) {
+//                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
+//                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
+//                        }
+//                    } else if (orientation < 135 && orientation > 45) {
+//                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
+//                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
+//                        }
+//                    }
+//                }
+                if (orientation == ORIENTATION_UNKNOWN) return;
 
-                if (display.getRotation() != Surface.ROTATION_0) { // landscape
-                    // oriented
-                    // devices
-                    Log.sysOut("LANDSCAPE");
-                    if (orientation >= 315 || orientation < 45) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
-                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
-                        }
-                    } else if (orientation < 315 && orientation >= 225) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
-                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
-                        }
-                    } else if (orientation < 225 && orientation >= 135) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
-                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
-                        }
-                    } else if (orientation < 135 && orientation > 45) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
-                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
-                        }
-                    }
-                } else { // portrait oriented devices
-                    Log.sysOut("PORTRAIT");
-                    if (orientation >= 315 || orientation < 45) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
-                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
-                        }
-                    } else if (orientation < 315 && orientation >= 225) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
-                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
-                        }
-                    } else if (orientation < 225 && orientation >= 135) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
-                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
-                        }
-                    } else if (orientation < 135 && orientation > 45) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
-                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
-                        }
-                    }
-                }
-
+                mOrientation = (orientation + 45) / 90 * 90;
             }
         };
         if (mOrientationEventListener.canDetectOrientation()) {
@@ -1064,7 +1124,7 @@ public class CameraHeadService extends Service implements
             try {
                 mCamera.setPreviewDisplay(sHolder);
                 try {
-                    mCamera.setDisplayOrientation(90);
+                    setCameraDisplayOrientation(currentCamera,mCamera);
                 } catch (RuntimeException e) {
                 }
                 try {
