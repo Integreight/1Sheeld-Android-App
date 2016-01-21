@@ -37,12 +37,17 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -181,6 +186,50 @@ public class CameraHeadService extends Service implements
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             // decode the data obtained by the camera into a Bitmap
+            Matrix bitmapMatrix = new Matrix();
+
+            try {
+                // Get the EXIF orientation.
+                final Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new ByteArrayInputStream(data)));
+                final ExifIFD0Directory exifIFD0Directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                if (exifIFD0Directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                    final int exifOrientation = exifIFD0Directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                    switch (exifOrientation) {
+                        case 1:
+                            break;  // top left
+                        case 2:
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // top right
+                        case 3:
+                            bitmapMatrix.postRotate(180);
+                            break;  // bottom right
+                        case 4:
+                            bitmapMatrix.postRotate(180);
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // bottom left
+                        case 5:
+                            bitmapMatrix.postRotate(90);
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // left top
+                        case 6:
+                            bitmapMatrix.postRotate(90);
+                            break;  // right top
+                        case 7:
+                            bitmapMatrix.postRotate(270);
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // right bottom
+                        case 8:
+                            bitmapMatrix.postRotate(270);
+                            break;  // left bottom
+                        default:
+                            break;  // Unknown
+                    }
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+
+
 //            int rotate = 0;
 //            switch (mOrientation) {
 //                case ORIENTATION_PORTRAIT_NORMAL:
@@ -198,14 +247,13 @@ public class CameraHeadService extends Service implements
 //                    rotate = 180;
 //                    break;
 //            }
-            Matrix matrix = new Matrix();
 //            matrix.postRotate(rotate);
 
             Log.d("ImageTakin", "Done");
             if (bmp != null)
                 bmp.recycle();
             // decode with options and set rotation
-            bmp = ImageUtils.decodeBitmap(data, matrix);
+            bmp = ImageUtils.decodeBitmap(data, bitmapMatrix);
 //            data = null;
 
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();

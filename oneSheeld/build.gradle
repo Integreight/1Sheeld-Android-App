@@ -99,6 +99,7 @@ dependencies {
     compile 'net.sf.supercsv:super-csv:2.4.0'
     compile 'com.github.amlcurran.showcaseview:library:5.4.0'
     compile 'com.github.emanzanoaxa:RippleEffect:52ea2a0ab6'
+    compile 'com.drewnoakes:metadata-extractor:2.8.1'
 }
 
 def isCrashlyticsPropertiesAvailable() {
