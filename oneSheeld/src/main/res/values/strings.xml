@@ -254,7 +254,6 @@
     <string name="sound_recorded_successfully_to">Sound recorded successfully to</string>
     <string name="mic_shield">Mic Shield</string>
     <string name="device_doesnt_support_nfc">Device doesn\'t support NFC!</string>
-    <string name="please_enable_nfc">Please, Enable Your NFC</string>
     <string name="notification_received_from_onesheeld">Notification received from 1Sheeld!</string>
     <string name="device_doesnt_support_calling_functionality">Device doesn\'t support calling functionality!</string>
     <string name="push_button2">Push</string>
@@ -361,5 +360,7 @@
     <string name="open_context_menu">Open Context Menu</string>
     <string name="context_menu_tutorial_message">Upgrade the firmware, clear the automatic connection and see the tutorial again after opening the context menu by clicking on 1Sheeld logo.</string>
     <string name="release_date">Release Date</string>
+    <string name="we_need_you_to_enable_nfc">We need you to enable NFC for this shield to work.</string>
+    <string name="please_enable_nfc">Please enable NFC to be able to use this shield</string>
 
 </resources>
