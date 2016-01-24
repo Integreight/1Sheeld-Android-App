@@ -41,7 +41,7 @@
         android:drawableLeft="@drawable/green_circle"
         android:drawablePadding="10dp"
         android:paddingTop="2dp"
-        android:text="Your last checkin will be here!"
+        android:text="@string/your_last_checkin_will_be_here"
         android:textColor="@color/offWhite"
         android:textSize="15sp"
         android:visibility="invisible" />

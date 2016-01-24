@@ -219,7 +219,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
                     getControllerTag())).loginToFacebook();
         else
             Toast.makeText(getApplication().getApplicationContext(),
-                    "Please check your Internet connection and try again.",
+                    R.string.check_your_internet_connection2,
                     Toast.LENGTH_SHORT).show();
         // getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
     }
@@ -248,7 +248,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
             lastPostTextCont.removeAllViews();
             lastPostTextCont.setVisibility(View.VISIBLE);
         }
-        userNameTextView.setText("Logged in as: "
+        userNameTextView.setText(activity.getString(R.string.logged_in_as2)+": "
                 + ((FacebookShield) getApplication().getRunningShields().get(
                 getControllerTag())).getUsername());
     }

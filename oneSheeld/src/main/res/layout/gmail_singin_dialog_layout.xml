@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="5dp"
         android:padding="10dp"
-        android:text="Login with Gmail Account Special For OneSheeld"
+        android:text="@string/login_with_gmail_account_special_for_onesheeld"
         android:textSize="20sp" />
 
     <RelativeLayout
@@ -34,7 +34,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:layout_toLeftOf="@+id/constant_text"
-            android:hint="username"
+            android:hint="@string/username"
             android:inputType="textEmailAddress"
             android:paddingTop="10dp"
             android:textStyle="bold" />
@@ -46,7 +46,7 @@
             android:layout_below="@+id/gmail_signin_dialog_username"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="4dp"
-            android:text="invalid user name"
+            android:text="@string/invalid_user_name"
             android:visibility="invisible" />
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldEditText
@@ -58,7 +58,7 @@
             android:layout_marginLeft="4dp"
             android:layout_marginRight="4dp"
             android:fontFamily="sans-serif"
-            android:hint="password"
+            android:hint="@string/password"
             android:inputType="textPassword"
             android:textStyle="bold" />
 
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/gmail_signin_dialog_password"
             android:layout_marginLeft="4dp"
-            android:text="invalid password"
+            android:text="@string/invalid_password"
             android:visibility="invisible" />
     </RelativeLayout>
 
@@ -90,7 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:text="Authentication Failed, Try again ! "
+            android:text="@string/authentication_failed"
             android:visibility="invisible" />
     </RelativeLayout>
 
@@ -107,14 +107,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Cancel" />
+            android:text="@string/cancel" />
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/gmail_login_dialog"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Login" />
+            android:text="@string/login" />
     </LinearLayout>
 
 </LinearLayout>

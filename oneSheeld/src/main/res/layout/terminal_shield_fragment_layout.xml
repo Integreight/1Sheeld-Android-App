@@ -167,7 +167,7 @@
             android:layout_marginLeft=".3dp"
             android:layout_weight="1"
             android:background="@drawable/search_area_buttons_selector"
-            android:text="Copy All"
+            android:text="@string/copy_all"
             android:textColor="@color/offWhite" />
     </LinearLayout>
 

@@ -12,7 +12,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Start GPS Listening"
+        android:text="@string/start_gps_listening"
         android:visibility="invisible" />
 
     <ImageView
@@ -65,7 +65,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Stop GPS Listening"
+        android:text="@string/stop_gps_listening"
         android:visibility="invisible" />
 
 </RelativeLayout>

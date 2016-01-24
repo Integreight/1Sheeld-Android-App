@@ -9,28 +9,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/firmatabootloaderbutton"
-        android:text="Upgrade firmata with the latest one online!" />
+        android:text="@string/upgrade_firmware_with_latest_one_online" />
 
     <Button
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/firmatabootloaderrxtxbutton"
-        android:text="Upgrade firmware from the app resources!" />
+        android:text="@string/upgrade_firmware_from_app_resources" />
 
     <Button
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/firmatabootloaderusabutton"
-        android:text="Upgrade firmware for usa version from the app resources! (115200)" />
+        android:text="@string/upgrade_firmware_for_usa_version_from_app_resources" />
 
     <Button
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rxbootloaderbutton"
-        android:text="Upgrade Rx Led Flashing Firmware"
+        android:text="@string/upgrade_rx_led_flashing_firmware"
         android:visibility="gone" />
 
     <Button
@@ -38,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/txbootloaderbutton"
-        android:text="Upgrade Tx Led Flashing Firmware"
+        android:text="@string/upgrade_tx_led_flashing_firmware"
         android:visibility="gone" />
 
     <ProgressBar

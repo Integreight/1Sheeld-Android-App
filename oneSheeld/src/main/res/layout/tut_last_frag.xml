@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:text="You are\nready to go!"
+        android:text="@string/you_are_ready_to_go"
         android:textColor="@color/white"
         android:textSize="40sp" />
 
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:text="For more tutorials visit our website\n1Sheeld.com"
+        android:text="@string/for_more_tutorials_visit_our_website"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="Don&apos;t show this tutorial again"
+            android:text="@string/dont_show_this_tutorial_again"
             android:textColor="@color/white"
             android:textSize="15sp" />
     </LinearLayout>

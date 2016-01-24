@@ -20,7 +20,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="20dp"
         android:gravity="center"
-        android:text="Your notification text will be here!"
+        android:text="@string/your_notification_text_will_be_here"
         android:textColor="@color/offWhite"
         android:textSize="23sp" />
 

@@ -11,7 +11,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Start Sensor Listening"
+        android:text="@string/start_sensor_listening"
         android:visibility="invisible" />
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
@@ -209,7 +209,7 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
         android:layout_marginTop="30dp"
-        android:text="Stop Sensor Listening"
+        android:text="@string/stop_sensor_listening"
         android:visibility="invisible" />
 
 </RelativeLayout>
