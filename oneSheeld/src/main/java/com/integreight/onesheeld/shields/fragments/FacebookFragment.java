@@ -203,15 +203,6 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // TODO Auto-generated method stub
-
-        switch (item.getItemId()) {
-            case R.id.logout_from_facebook_menuitem:
-                logoutFromFacebook();
-                return true;
-            case R.id.login_to_facebook_menuitem:
-                loginToFacebook();
-                return true;
-        }
         return super.onOptionsItemSelected(item);
     }
 

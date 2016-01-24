@@ -277,7 +277,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.shields_operation, menu);
+//        inflater.inflate(R.menu.shields_operation, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
