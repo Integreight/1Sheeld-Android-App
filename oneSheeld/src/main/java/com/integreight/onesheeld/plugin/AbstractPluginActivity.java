@@ -35,7 +35,7 @@ public abstract class AbstractPluginActivity extends FragmentActivity {
             setupTitleApi11();
         } else {
             setTitle(BreadCrumber.generateBreadcrumb(getApplicationContext(),
-                    getIntent(), getString(R.string.plugin_name)));
+                    getIntent(), getString(R.string.app_name)));
         }
     }
 

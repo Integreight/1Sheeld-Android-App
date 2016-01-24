@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.RemoteException;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,7 +26,6 @@ import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
-import com.integreight.onesheeld.utils.BaseContainerFragment;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
@@ -33,7 +33,7 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class ShieldsOperations extends BaseContainerFragment {
+public class ShieldsOperations extends Fragment {
     private View v;
     private static ShieldsOperations thisInstance;
     protected SelectedShieldsListFragment mFrag;

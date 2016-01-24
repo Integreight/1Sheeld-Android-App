@@ -29,13 +29,6 @@
     <attr name="color_lock_pattern_view_success" format="reference" />
     <attr name="color_lock_pattern_view_error" format="reference" />
 
-    <color name="lock_pattern_view_regular_light">#ffffffff</color>
-    <color name="lock_pattern_view_success_light">#ffffffff</color>
-    <color name="lock_pattern_view_error_light">#fff4511e</color>
-    <color name="lock_pattern_view_regular_dark">#ff37474f</color>
-    <color name="lock_pattern_view_success_dark">#ff009688</color>
-    <color name="lock_pattern_view_error_dark">#fff4511e</color>
-
     <!--Internet-->
     <color name="popup_semi_transparent_bg">#C1000000</color>
     <color name="popup_semi_transparent_white_bg">#C1fffad7</color>

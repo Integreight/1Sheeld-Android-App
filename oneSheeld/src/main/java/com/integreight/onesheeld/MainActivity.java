@@ -600,7 +600,7 @@ public class MainActivity extends FragmentActivity {
             case SheeldsList.REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode != Activity.RESULT_OK) {
-                    Toast.makeText(this, R.string.bt_not_enabled_leaving,
+                    Toast.makeText(this, R.string.bluetooth_was_not_enabled,
                             Toast.LENGTH_SHORT).show();
                 } else {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {

@@ -10,7 +10,6 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
 import android.os.SystemClock;
-import android.util.Log;
 import android.util.SparseArray;
 import android.widget.Toast;
 
@@ -368,7 +367,7 @@ public class OneSheeldApplication extends Application {
 
     public void setRememberedShields(String shields) {
         appPreferences.edit().putString(REMEMBER_SHIELDS, shields).commit();
-        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.remove_remembered : R.string.remembered), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.shields_selection_has_been_cleared : R.string.shields_selection_has_been_saved), Toast.LENGTH_SHORT).show();
     }
 
     public String getRememberedShields() {

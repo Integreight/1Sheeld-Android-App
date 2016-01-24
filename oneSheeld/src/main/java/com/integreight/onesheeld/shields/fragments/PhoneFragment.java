@@ -56,7 +56,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
                                 .getLayoutInflater().inflate(
                                         R.layout.outgoing_call_item,
                                         callsLogContainer, false);
-                        call.setText(activity.getString(R.string.call_to)+ phone_number);
+                        call.setText(activity.getString(R.string.call_to)+" "+ phone_number);
                         callsLogContainer.addView(call);
                     }
                 }
@@ -74,7 +74,7 @@ public class PhoneFragment extends ShieldFragmentParent<PhoneFragment> {
                                 .getLayoutInflater().inflate(
                                         R.layout.incoming_call_item,
                                         callsLogContainer, false);
-                        call.setText(activity.getString(R.string.call_from) + phoneNumber);
+                        call.setText(activity.getString(R.string.call_from)+" " + phoneNumber);
                         callsLogContainer.addView(call);
                     }
                 });

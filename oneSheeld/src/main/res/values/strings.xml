@@ -2,43 +2,20 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name" translatable="false">1Sheeld</string>
-    <string name="action_settings">Clear Automatically Connecting 1Sheeld</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="search_for_bluetooth">Search for bluetooth devices</string>
-    <string name="disconnect_device">Disconnect 1Sheeld</string>
-    <string name="go_to_shields_operation">Operate the shields</string>
+    <string name="clear_automatically_connecting_1sheeld">Clear Automatically Connecting 1Sheeld</string>
     <string name="about">About</string>
 
     <!-- MainActivity -->
     <string name="send">Send</string>
-    <string name="not_connected">You are not connected to a device</string>
-    <string name="bt_not_enabled_leaving">Bluetooth was not enabled</string>
-    <string name="title_connected_to">connected to <xliff:g id="device_name">%1$s</xliff:g></string>
-    <string name="title_not_connected">not connected</string>
-    <string name="remembered">Shields selection has been saved</string>
-    <string name="remove_remembered">Shields selection has been cleared</string>
+    <string name="bluetooth_was_not_enabled">Bluetooth was not enabled</string>
+    <string name="shields_selection_has_been_saved">Shields selection has been saved</string>
+    <string name="shields_selection_has_been_cleared">Shields selection has been cleared</string>
 
     <!-- DeviceListActivity -->
-    <string name="select_device">select a device to connect</string>
-    <string name="none_paired">No devices have been paired</string>
-    <string name="none_found">No devices found</string>
-    <string name="title_paired_devices">Paired Devices</string>
-    <string name="title_other_devices">Other Available Devices</string>
-    <string name="button_scan">Scan for devices</string>
-    <string name="title_activity_shields_operation">Shields</string>
+    <string name="no_devices_found">No devices found</string>
 
     <!-- Name of the plug-in that appears in Locale -->
-    <string name="plugin_name">1Sheeld</string>
-    <!-- Hint text in the toast edit text -->
-    <string name="message_hint">Scheduled Output</string>
-    <string name="login_to_twitter">Login to Twitter</string>
-    <string name="logout_from_twitter">Logout from Twitter</string>
-    <string name="login_to_facebook">Login to Facebook</string>
-    <string name="logout_from_facebook">Logout from Facebook</string>
-    <string name="enable_serial">Enable Serial</string>
-    <string name="disable_serial">Disable Serial</string>
-    <string name="clear_lcd">Clear LCD</string>
-    <string name="connect">Connect</string>
+    <string name="plugin_name">@string/app_name</string>
 
     <!-- Social providers id -->
     <string name="scan">Scan</string>
@@ -47,12 +24,9 @@
     <string name="searching">Searching......</string>
     <string name="connecting">Connecting......</string>
     <string name="selectYourDevice">Select Your Device</string>
-    <string name="scanForOneSheeld">Scan For 1Sheeld</string>
     <string name="connectAutomatocallyToThisDevice">Connect Automatically to This Device</string>
 
     <!-- Hint text in Gmail signin dialog -->
-    <string name="gmail_hint_text">\@ gmail.com</string>
-    <string name="selectAll">Select All</string>
     <string name="deselectAll">Deselect All</string>
     <string name="remember">Remember</string>
     <string name="upgradeFirmata">Upgrade Firmware</string>
@@ -69,18 +43,6 @@
     <string name="ut">uT</string>
     <string name="hpa">hPa</string>
     <string name="degree">Degree</string>
-    <!-- Arduino connecting pins -->
-
-    <string name="buzzer_tone">Press Required Tone</string>
-    <string name="time_clock">Time</string>
-
-    <!-- Condition plugin name -->
-    <string name="condition_app_name">Locale Display Plug-in</string>
-    <string name="condition_plugin_name">Display</string>
-    <string name="list_on">On</string>
-    <string name="list_off">Off</string>
-    <string name="blurb_on">On</string>
-    <string name="blurb_off">Off</string>
 
     <!-- Voice Recognition -->
     <string name="speak">Speak</string>
@@ -199,7 +161,6 @@
     <string name="an_error_occured">An error occurred!</string>
     <string name="sheeld_not_responding">1Sheeld not responding!</string>
     <string name="downloading">Downloading</string>
-    <string name="installing2">Installing</string>
     <string name="press_reset">Please, Press reset!</string>
     <string name="error_downloading">Error Downloading!</string>
     <string name="upgrade">Upgrade</string>
@@ -317,8 +278,8 @@
     <string name="used_size">Used Size</string>
     <string name="number_of_records">No. of Records</string>
     <string name="records">record(s)</string>
-    <string name="call_to">"Call to "</string>
-    <string name="call_from">"Call from "</string>
+    <string name="call_to">Call to</string>
+    <string name="call_from">Call from</string>
     <string name="pressure_in_byte">Pressure in Byte</string>
     <string name="distance_in_byte">Distance in Byte</string>
     <string name="outgoing_video_call">" Outgoing Video Call"</string>
@@ -365,15 +326,6 @@
     <string name="time">Time</string>
     <string name="loggedin_as">You are LoggedIn as :</string>
     <string name="your_last_checkin_will_be_here">Your last checkin will be here!</string>
-    <string name="clear">Clear</string>
-    <string name="login_with_gmail_account_special_for_onesheeld">Login with Gmail Account Special For OneSheeld</string>
-    <string name="username">username</string>
-    <string name="invalid_user_name">invalid user name</string>
-    <string name="password">password</string>
-    <string name="invalid_password">invalid password</string>
-    <string name="authentication_failed">Authentication Failed, Try again !</string>
-    <string name="cancel">Cancel</string>
-    <string name="login">Login</string>
     <string name="start_gps_listening">Start GPS Listening</string>
     <string name="stop_gps_listening">Stop GPS Listening</string>
     <string name="start_sensor_listening">Start Sensor Listening</string>
@@ -390,12 +342,6 @@
     <string name="for_more_tutorials_visit_our_website">For more tutorials visit our website\n1Sheeld.com</string>
     <string name="dont_show_this_tutorial_again">Don\'t show this tutorial again</string>
     <string name="your_last_tweet_will_be_here">Your last tweet will be here!</string>
-    <string name="upgrade_firmware_with_latest_one_online">Upgrade firmata with the latest one online!</string>
-    <string name="upgrade_firmware_from_app_resources">Upgrade firmware from the app resources!</string>
-    <string name="upgrade_firmware_for_usa_version_from_app_resources">Upgrade firmware for usa version from the app resources! (115200)</string>
-    <string name="upgrade_rx_led_flashing_firmware">Upgrade Rx Led Flashing Firmware</string>
-    <string name="upgrade_tx_led_flashing_firmware">Upgrade Tx Led Flashing Firmware</string>
-    <string name="check_your_internet_connection">Please check your Internet connection and try again.</string>
     <string name="check_your_internet_connection2">Please check your Internet connection and try again.</string>
     <string name="logged_in_as2">Logged in as</string>
 

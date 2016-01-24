@@ -440,7 +440,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                 // TODO Auto-generated method stub
                                 smallLoading.setVisibility(View.INVISIBLE);
                                 setRetryButtonReady(activity.getResources()
-                                                .getString(R.string.none_found),
+                                                .getString(R.string.no_devices_found),
                                         new View.OnClickListener() {
 
                                             @Override
@@ -508,7 +508,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                 foundDevicesTable.clear();
                                 if (devicesList.getChildCount() == 0) {
                                     setRetryButtonReady(activity.getResources()
-                                                    .getString(R.string.none_found),
+                                                    .getString(R.string.no_devices_found),
                                             new View.OnClickListener() {
 
                                                 @Override
