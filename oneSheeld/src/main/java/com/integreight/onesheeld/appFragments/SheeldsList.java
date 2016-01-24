@@ -207,7 +207,7 @@ public class SheeldsList extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() || ((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen()) {
                                         if (activity.getSupportFragmentManager()
                                                 .getBackStackEntryCount() > 1) {
                                             activity.getSupportFragmentManager()
