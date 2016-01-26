@@ -457,7 +457,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
         }
 
         public boolean canRetry() {
-            return retries>=0;
+            return retries>0;
         }
 
         public void decrementRetries() {
