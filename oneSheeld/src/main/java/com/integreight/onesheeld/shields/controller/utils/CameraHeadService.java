@@ -127,14 +127,14 @@ public class CameraHeadService extends Service implements
                                 Log.e("", "onPreviewFrame pass");
                                 out = new ByteArrayOutputStream();
                                 parameters = camera.getParameters();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                                } else if (parameters.getSupportedFocusModes().contains(
-                                        Camera.Parameters.FOCUS_MODE_AUTO)) {
-                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                                }
-                                camera.setParameters(parameters);
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+//                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+//                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                                } else if (parameters.getSupportedFocusModes().contains(
+//                                        Camera.Parameters.FOCUS_MODE_AUTO)) {
+//                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+//                                }
+//                                camera.setParameters(parameters);
                                 size = parameters.getPreviewSize();
                                 yuv = new YuvImage(data, ImageFormat.NV21, size.width,
                                         size.height, null);
