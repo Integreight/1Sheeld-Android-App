@@ -200,6 +200,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     if (!((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
                         ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
                     else {
+                        if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
                         try {
                             if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
                                 camerLogo.setVisibility(View.INVISIBLE);
@@ -213,8 +214,9 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         }
                     }
                 } else {
-                    try {
-                        if((((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()))
+                    if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                        try {
+                                if((((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()))
                             camerLogo.setVisibility(View.VISIBLE);
 //                        else
 //                            cameraPreviewToggle.setChecked(true);
@@ -272,7 +274,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                     if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                         try {
-                            if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                            if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                                if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
                                 camerLogo.setVisibility(View.INVISIBLE);
 //                            else
 //                                cameraPreviewToggle.setChecked(false);
@@ -283,7 +286,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                             applyListeners();
                         }
                     } else {
-                        try {
+                        if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                            try {
                             if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
                                 camerLogo.setVisibility(View.VISIBLE);
 //                            else
@@ -336,7 +340,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 if (isChecked && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                     try {
-                        if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                        if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
                             camerLogo.setVisibility(View.INVISIBLE);
 //                        else
 //                            cameraPreviewToggle.setChecked(false);
@@ -348,7 +353,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     }
                 } else if (!isChecked || activity.isMenuOpened()) {
                     try {
-                        if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
+                        if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
                             camerLogo.setVisibility(View.VISIBLE);
 //                        else
 //                            cameraPreviewToggle.setChecked(true);
@@ -375,7 +381,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && cameraPreviewToggle.isChecked()) {
                     try {
-                        if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                        if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
                             camerLogo.setVisibility(View.INVISIBLE);
 //                        else
 //                            cameraPreviewToggle.setChecked(false);
@@ -386,7 +393,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         applyListeners();
                     }
                 } else {
-                    try {
+                    if((CameraShield) getApplication().getRunningShields().get(getControllerTag())!=null)
+                        try {
                         if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
                             camerLogo.setVisibility(View.VISIBLE);
 //                        else
