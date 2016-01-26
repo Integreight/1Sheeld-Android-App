@@ -274,7 +274,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                         Log.d("Email","The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                         eventHandler.onEmailnotSent("Email not sent.");
                     }
-                    CrashlyticsUtils.logException(mLastError);
+                    if(order>0)CrashlyticsUtils.logException(mLastError);
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     if (eventHandler != null)
                         eventHandler.onSendingAuthError(mLastError.getMessage(),((UserRecoverableAuthIOException) mLastError).getIntent(),PREF_EMAIL_SHIELD_REQUEST_AUTHORIZATION);
@@ -283,7 +283,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                         Log.d("Email", "The following error occurred:\n" + mLastError.getMessage());
                         eventHandler.onEmailnotSent("Email not sent.");
                     }
-                    CrashlyticsUtils.logException(mLastError);
+                    if(order>0)CrashlyticsUtils.logException(mLastError);
                 }
             } else {
                 if (eventHandler != null)
