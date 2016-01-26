@@ -1,4 +1,4 @@
-## v1.6.0(______) (November 23, 2015)
+## v1.6.0(160126) (January 26, 2015)
  - Added vibration shield.
  - Reactivated Facebook shield again.
  - Supported Android M permissions model.
