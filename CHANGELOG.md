@@ -12,6 +12,8 @@
  - Added more validations to GPS and NFC shields.
  - Enhanced the camera implementation and made sure that the photo has correct focus and exposure.
  - Fixed a bug where data logger notifications doesn’t open on some devices.
+ - Fixed a bug in the email shield where sending emails wasn't working in the background.
+ - Increased overall app stability and fixed other major bugs.
 
  ## v1.5.0(151123) (November 23, 2015)
   - Make sure frames sent and received are correct.
