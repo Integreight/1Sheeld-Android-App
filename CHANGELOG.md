@@ -1,15 +1,32 @@
-## v1.5.0(151123) (November 23, 2015)
- - Make sure frames sent and received are correct.
- - Added copy selection feature to terminal shield.
- - Remove select all button in shields list.
- - Added uploading images feature to internet shield.
- - Added a progress bar while scanning for 1Sheelds.
- - Fixed a bug where the wrong image is uploaded in email and twitter shields.
- - Added a button in the camera shield to show the latest captured image.
- - Made the data logger shields output the logged file in a notification.
- - Revamped the login process in the email shield.
- - Added the ability to record sound from mic shield.
- - Fixed an error that prevented firmware upgrade on Android M devices.
+## v1.6.0(160126) (January 26, 2015)
+ - Added vibration shield.
+ - Reactivated Facebook shield again.
+ - Supported Android M permissions model.
+ - Added a demo mode for exploring the app without the hardware.
+ - Added the ability to skip the tutorial after initial installation.
+ - Fixed a bug where the firmware upgrading doesn’t work.
+ - Fixed a bug where the app doesn’t recover from certain crashes.
+ - Added a ripple animation to the shields list.
+ - Fixed push notifications icon to the correct one.
+ - Added the ability to open the context menu by clicking on 1Sheeld logo.
+ - Added more validations to GPS and NFC shields.
+ - Enhanced the camera implementation and made sure that the photo has correct focus and exposure.
+ - Fixed a bug where data logger notifications doesn’t open on some devices.
+ - Fixed a bug in the email shield where sending emails wasn't working in the background.
+ - Increased overall app stability and fixed other major bugs.
+
+ ## v1.5.0(151123) (November 23, 2015)
+  - Make sure frames sent and received are correct.
+  - Added copy selection feature to terminal shield.
+  - Remove select all button in shields list.
+  - Added uploading images feature to internet shield.
+  - Added a progress bar while scanning for 1Sheelds.
+  - Fixed a bug where the wrong image is uploaded in email and twitter shields.
+  - Added a button in the camera shield to show the latest captured image.
+  - Made the data logger shields output the logged file in a notification.
+  - Revamped the login process in the email shield.
+  - Added the ability to record sound from mic shield.
+  - Fixed an error that prevented firmware upgrade on Android M devices.
 
 ## v1.4.1(151028) (October 28, 2015)
  - Fixed the connection bug on Android 6 devices.

@@ -44,6 +44,8 @@
     <string name="hpa">hPa</string>
     <string name="degree">Degree</string>
 
+    <string name="buzzer_tone">Press Required Tone</string>
+
     <!-- Voice Recognition -->
     <string name="speak">Speak</string>
     <string name="tabToSpeak">Tap\nto\nSpeak</string>

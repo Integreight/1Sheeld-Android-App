@@ -18,6 +18,8 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.gmail.Gmail;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.gmail.GmailScopes;
 import com.google.api.services.gmail.model.Message;
 import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
@@ -31,7 +33,10 @@ import com.integreight.onesheeld.utils.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Properties;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -57,23 +62,33 @@ public class EmailShield extends ControllerParent<EmailShield> {
     private static int ORDER_GET_LABELS = 0;
     private static int ORDER_SEND_EMAIL = 1;
     private String userEmail = "";
-    private String password = "";
     private static String message_body = "";
     private static String message_reciption = "";
     private static String message_subject = "";
     private static String attachment_file_path = null;
     private static DataSource source;
     private static BodyPart messageFilePart,messageBodyPart;
-/////
+    private volatile boolean isSending = false;
+    private GoogleAccountCredential mCredential;
+    private static final String[] SCOPES = {GmailScopes.GMAIL_COMPOSE};
+    private Boolean isLoggedIn = false;
+
+    private Queue<EmailShield.EmailRequest> emailsQueue = new ConcurrentLinkedQueue<>();
+
+    /////
     public EmailShield() {
         super();
     }
 
     @Override
     public ControllerParent<EmailShield> init(String tag) {
-        mSharedPreferences = getApplication().getApplicationContext()
+        mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, null));
         return super.init(tag);
     }
 
@@ -84,6 +99,36 @@ public class EmailShield extends ControllerParent<EmailShield> {
     public void setEmailEventHandler(EmailEventHandler eventHandler) {
         this.eventHandler = eventHandler;
 
+    }
+
+    public boolean isSending(){
+        return isSending;
+    }
+    public void setCredential(String accountName){
+        setAccountName(accountName);
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, null));
+    }
+
+    public void logout(){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.remove(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT);
+        editor.remove(PREF_EMAIL_SHIELD_USER_LOGIN);
+        editor.commit();
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                activity.getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff())
+                .setSelectedAccountName(mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, null));
+    }
+
+    public GoogleAccountCredential getCredential(){
+        return mCredential;
+    }
+
+    public String getUserEmail(){
+        return mSharedPreferences.getString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
     }
 
     public static interface EmailEventHandler {
@@ -99,7 +144,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
 
         void stopProgress();
 
-        GoogleAccountCredential getCredential();
+//        GoogleAccountCredential getCredential();
     }
 
     @Override
@@ -114,14 +159,18 @@ public class EmailShield extends ControllerParent<EmailShield> {
                     String email_send_to = frame.getArgumentAsString(0);
                     String subject = frame.getArgumentAsString(1);
                     String body = frame.getArgumentAsString(2);
-                    if (eventHandler != null)
-                        eventHandler.onEmailsent(email_send_to, subject);
                     // check Internet connection
                     if (ConnectionDetector
                             .isConnectingToInternet(getApplication()
                                     .getApplicationContext())) {
-                        if (frame.getFunctionId() == SEND_METHOD_ID)
-                            sendGmail(email_send_to, subject, body, null);
+                        if (frame.getFunctionId() == SEND_METHOD_ID) {
+//                            sendGmail(email_send_to, subject, body, null);
+                            EmailRequest request=new EmailRequest(email_send_to,subject,body,null);
+                            if (emailsQueue == null)
+                                emailsQueue = new ConcurrentLinkedQueue<>();
+                            emailsQueue.add(request);
+                            checkQueue();
+                        }
                         else if (frame.getFunctionId() == SEND_WITH_ATTACHMENT) {
                             byte sourceFolderId = frame.getArgument(3)[0];
                             String imgPath = null;
@@ -131,7 +180,12 @@ public class EmailShield extends ControllerParent<EmailShield> {
                             else if (sourceFolderId == CameraUtils.FROM_CAMERA_FOLDER)
                                 imgPath = CameraUtils
                                         .getLastCapturedImagePathFromCameraFolder(activity);
-                            sendGmail(email_send_to, subject, body, imgPath);
+                            EmailRequest request=new EmailRequest(email_send_to,subject,body,imgPath);
+                            if (emailsQueue == null)
+                                emailsQueue = new ConcurrentLinkedQueue<>();
+                            emailsQueue.add(request);
+                            checkQueue();
+//                            sendGmail(email_send_to, subject, body, imgPath);
                         }
                     } else
                         Toast.makeText(
@@ -149,8 +203,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
         message_reciption = email_send_to;
         message_subject = subject;
         attachment_file_path = filePath;
-        if (eventHandler != null)
-            new sendGmailinBackground(eventHandler.getCredential(),ORDER_SEND_EMAIL).execute();
+        new sendGmailinBackground(mCredential,ORDER_SEND_EMAIL).execute();
     }
 
     public void sendTestRequest(GoogleAccountCredential credential){
@@ -165,6 +218,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
         private int order = 0;
 
         public sendGmailinBackground(GoogleAccountCredential credential,int order){
+            isSending=true;
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new Gmail.Builder(
@@ -172,10 +226,12 @@ public class EmailShield extends ControllerParent<EmailShield> {
                     .setApplicationName(getActivity().getString(R.string.onesheeld_app_email_shield))
                     .build();
             this.order = order;
+            Log.d("Email","Sending Created!");
         }
 
         @Override
         protected String doInBackground(Void... params) {
+            Log.d("Email","Sending Started!");
             if (eventHandler != null)
                 eventHandler.startProgress();
             try {
@@ -202,6 +258,11 @@ public class EmailShield extends ControllerParent<EmailShield> {
             attachment_file_path = null;
             if (eventHandler != null)
                 eventHandler.stopProgress();
+            isSending=false;
+            Log.d("Email","Sending Ended!");
+            if (emailsQueue != null && !emailsQueue.isEmpty())
+                emailsQueue.poll();
+            checkQueue();
         }
 
         @Override
@@ -214,7 +275,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                         Log.d("Email","The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                         eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
                     }
-                    CrashlyticsUtils.logException(mLastError);
+                    if(order>0)CrashlyticsUtils.logException(mLastError);
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
                     if (eventHandler != null)
                         eventHandler.onSendingAuthError(mLastError.getMessage(),((UserRecoverableAuthIOException) mLastError).getIntent(),PREF_EMAIL_SHIELD_REQUEST_AUTHORIZATION);
@@ -223,7 +284,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                         Log.d("Email", "The following error occurred:\n" + mLastError.getMessage());
                         eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
                     }
-                    CrashlyticsUtils.logException(mLastError);
+                    if(order>0)CrashlyticsUtils.logException(mLastError);
                 }
             } else {
                 if (eventHandler != null)
@@ -231,6 +292,9 @@ public class EmailShield extends ControllerParent<EmailShield> {
             }
             if (eventHandler != null)
                 eventHandler.stopProgress();
+            isSending=false;
+            Log.d("Email","Sending Canceled!");
+            checkQueue();
         }
         File attachedFile;
         private String sendEmail() throws IOException {
@@ -244,10 +308,11 @@ public class EmailShield extends ControllerParent<EmailShield> {
                         if (attachedFile.exists())
                             mService.users().messages().send("me", createMessageWithEmail(createEmailWithAttachment(message_reciption, userEmail, message_subject, message_body, attachment_file_path))).execute();
                         else {
-                            cancel(true);
-                            if (eventHandler != null)
-                                eventHandler.stopProgress();
-                            return null;
+                            mService.users().messages().send("me", createMessageWithEmail(createEmail(message_reciption, userEmail, message_subject, message_body))).execute();
+//                            cancel(true);
+//                            if (eventHandler != null)
+//                                eventHandler.stopProgress();
+                            return "";
                         }
                     }
                 }else
@@ -260,19 +325,32 @@ public class EmailShield extends ControllerParent<EmailShield> {
         }
     }
 
-    public void setUserData() {
+    private void setUserData() {
         this.userEmail = mSharedPreferences.getString(
                 PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, "");
     }
 
-    private boolean isLoggedIn() {
-        return mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,
-                false);
+    public void setAccountName(String accountName){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(PREF_EMAIL_SHIELD_GMAIL_ACCOUNT, accountName);
+        editor.commit();
+    }
+
+    public void setLoggedIn(){
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(PREF_EMAIL_SHIELD_USER_LOGIN, true);
+        editor.commit();
+    }
+
+    public boolean isLoggedIn() {
+        return mSharedPreferences.getBoolean(PREF_EMAIL_SHIELD_USER_LOGIN,false);
     }
 
     @Override
     public void reset() {
         // TODO Auto-generated method stub
+        emailsQueue = new ConcurrentLinkedQueue<>();
+        isSending=false;
     }
 
     public static MimeMessage createEmail(String to, String from, String subject,
@@ -344,6 +422,63 @@ public class EmailShield extends ControllerParent<EmailShield> {
         else
             this.selectionAction.onFailure();
         return super.invalidate(selectionAction, isToastable);
+
     }
 
+    private synchronized void checkQueue() {
+        if (emailsQueue != null && !emailsQueue.isEmpty() && !isSending) {
+            EmailRequest request = emailsQueue.peek();
+            if(!request.canRetry()) request = emailsQueue.poll();
+            request.decrementRetries();
+            if (eventHandler != null)
+                eventHandler.onEmailsent(request.getAddress(), request.getSubject());
+            isSending=true;
+            if (request.getImagePath()!=null) {
+                    sendGmail(request.getAddress(), request.getSubject(), request.getBody(), request.getImagePath());
+                } else {
+                    sendGmail(request.getAddress(), request.getSubject(), request.getBody(), null);
+                }
+            Log.d("Email","Sending Requested!");
+        }
+    }
+
+    public class EmailRequest{
+        private String address;
+        private String subject;
+        private String body;
+        private String imagePath;
+        private int retries;
+
+        public EmailRequest(String address, String subject, String body, String imagePath) {
+            this.address=address;
+            this.subject=subject;
+            this.body=body;
+            this.imagePath=imagePath;
+            retries=3;
+        }
+
+        public boolean canRetry() {
+            return retries>0;
+        }
+
+        public void decrementRetries() {
+            if(retries>0)retries--;
+        }
+
+        public String getAddress() {
+            return address;
+        }
+
+        public String getSubject() {
+            return subject;
+        }
+
+        public String getBody() {
+            return body;
+        }
+
+        public String getImagePath() {
+            return imagePath;
+        }
+    }
 }
