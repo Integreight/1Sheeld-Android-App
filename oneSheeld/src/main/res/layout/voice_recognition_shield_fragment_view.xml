@@ -35,7 +35,7 @@
             android:layout_alignTop="@id/rms_shield_indicator"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="@string/tabToSpeak"
+            android:text="@string/voice_recognizer_tap_to_speak_button"
             android:textColor="@color/offWhite"
             android:textSize="33sp" />
 

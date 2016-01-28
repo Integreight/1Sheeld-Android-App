@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:text="@string/add"
+            android:text="@string/music_player_add_button"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:layout_weight="1"
-            android:text="@string/remove"
+            android:text="@string/music_player_remove_button"
             android:textSize="15sp"
             android:textStyle="bold" />
     </LinearLayout>

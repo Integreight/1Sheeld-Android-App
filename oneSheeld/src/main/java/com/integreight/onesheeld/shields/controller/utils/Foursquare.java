@@ -6,11 +6,9 @@ package com.integreight.onesheeld.shields.controller.utils;
  * @author Mukesh Yadav
  */
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.webkit.CookieSyncManager;
 
@@ -76,7 +74,7 @@ public class Foursquare {
                     mAuthDialogListener.onComplete(values);
                 } else {
                     mAuthDialogListener.onFoursquareError(new FoursquareError(
-                            activity.getString(R.string.failed_to_receive_access_token)));
+                            activity.getString(R.string.foursquare_failed_to_receive_access_token)));
                 }
             }
 
@@ -115,12 +113,8 @@ public class Foursquare {
         // parameters.putString(TOKEN, getAccessToken());
         // }
         String url = endpoint + "?" + FoursquareUtils.encodeUrl(parameters);
-        if (context.checkCallingOrSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            FoursquareUtils.showAlert(context, context.getString(R.string.error),
-                    context.getString(R.string.application_requires_permission_to_access_the_internet));
-        } else {
-            new FoursquareDialog(context, url, listener).show();
-        }
+        new FoursquareDialog(context, url, listener).show();
+
     }
 
     public boolean isSessionValid() {

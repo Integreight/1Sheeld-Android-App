@@ -77,7 +77,7 @@ public class FoursquareFragment extends
                 else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            "Please check your Internet connection and try again.",
+                            R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                             Toast.LENGTH_SHORT).show();
             }
         });

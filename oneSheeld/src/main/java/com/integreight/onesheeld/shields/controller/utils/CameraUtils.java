@@ -167,7 +167,7 @@ public class CameraUtils {
                 return lastCapturedImagePathFromOneSheeldFolder;
         }
         if (viewToast)
-            Toast.makeText(activity.getApplicationContext(), R.string.image_not_found,Toast.LENGTH_SHORT).show();
+            Toast.makeText(activity.getApplicationContext(), R.string.camera_image_not_found_toast,Toast.LENGTH_SHORT).show();
         return "";
     }
 

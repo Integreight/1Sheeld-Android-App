@@ -16,9 +16,6 @@ import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener
 import com.integreight.onesheeld.shields.controller.utils.PhoneCallStateListener.PhoneRingingEventHandler;
 import com.integreight.onesheeld.utils.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PhoneShield extends ControllerParent<PhoneShield> {
     private PhoneEventHandler eventHandler;
     private static final byte CALL_METHOD_ID = (byte) 0x01;
@@ -58,7 +55,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             if (this.selectionAction != null) {
                 this.selectionAction.onFailure();
                 if (isToastable)
-                    activity.showToast(activity.getString(R.string.device_doesnt_support_calling_functionality));
+                    activity.showToast(activity.getString(R.string.phone_your_device_doesnt_have_a_sim_card));
             }
         } else {
             if (checkForPermissions()) {

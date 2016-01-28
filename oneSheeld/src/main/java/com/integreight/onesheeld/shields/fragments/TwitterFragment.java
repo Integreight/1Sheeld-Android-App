@@ -54,7 +54,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                 else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            R.string.check_internet_connection5,
+                            R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                             Toast.LENGTH_SHORT).show();
 
             }
@@ -112,7 +112,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
 
                     @Override
                     public void run() {
-                        userNameTextView.setText(activity.getString(R.string.logged_in_as)+": @" + userName);
+                        userNameTextView.setText(activity.getString(R.string.twitter_logged_in_as)+": @" + userName);
                         buttonToLoggedIn();
                     }
                 });
@@ -201,7 +201,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                                 .getLayoutInflater().inflate(
                                         R.layout.tweet_item,
                                         lastTweetTextContainer, false);
-                        tweetItem.setText(activity.getString(R.string.to2)+": " + userHandle + ", "+activity.getString(R.string.message)+": "
+                        tweetItem.setText(activity.getString(R.string.twitter_to)+": " + userHandle + ", "+activity.getString(R.string.twitter_message)+": "
                                 + msg);
                         lastTweetTextContainer.addView(tweetItem);
                         ((ScrollView) lastTweetTextContainer.getParent())
@@ -221,7 +221,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(activity, activity.getString(R.string.twitter_tracks_new_keyword)+": " + word, Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, activity.getString(R.string.twitter_twitter_tracks_new_keyword_toast)+": " + word, Toast.LENGTH_SHORT)
                                 .show();
 
                     }
@@ -239,7 +239,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(activity, activity.getString(R.string.twitter_stopped_tracking_keyword)+": " + word, Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, activity.getString(R.string.twitter_twitter_stopped_tracking_keyword_toast)+": " + word, Toast.LENGTH_SHORT)
                                 .show();
 
                     }
@@ -257,7 +257,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                     @Override
                     public void run() {
                         // TODO Auto-generated method stub
-                        Toast.makeText(activity, activity.getString(R.string.tracked_tweet_found)+": " + tweet, Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, activity.getString(R.string.twitter_tracked_tweet_found_toast)+": " + tweet, Toast.LENGTH_SHORT)
                                 .show();
 
                     }
@@ -283,7 +283,7 @@ public class TwitterFragment extends ShieldFragmentParent<TwitterFragment> {
                 && ((TwitterShield) getApplication().getRunningShields().get(
                 getControllerTag())).isTwitterLoggedInAlready()) {
             userNameTextView.setVisibility(View.VISIBLE);
-            userNameTextView.setText(activity.getString(R.string.logged_in_as)+": @"
+            userNameTextView.setText(activity.getString(R.string.twitter_logged_in_as)+": @"
                     + ((TwitterShield) getApplication().getRunningShields()
                     .get(getControllerTag())).getUsername());
             twitterLogout.setVisibility(View.VISIBLE);

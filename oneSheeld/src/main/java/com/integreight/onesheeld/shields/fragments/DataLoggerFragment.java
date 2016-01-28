@@ -64,8 +64,8 @@ public class DataLoggerFragment extends
                 .setBackgroundResource(status == DataLoggerShield.READ_FOR_LOGGING ? R.drawable.large_yellow_circle
                         : R.drawable.large_green_circle);
         loggerStatus
-                .setText(status == DataLoggerShield.READ_FOR_LOGGING ? R.string.readyToLog
-                        : R.string.logging);
+                .setText(status == DataLoggerShield.READ_FOR_LOGGING ? R.string.data_logger_ready_for_logging
+                        : R.string.data_logger_logging);
         stopLogging.setVisibility(View.INVISIBLE);
         stopLogging.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,7 +88,7 @@ public class DataLoggerFragment extends
                     if (canChangeUI()) {
                         loggerStatus
                                 .setBackgroundResource(R.drawable.large_red_circle);
-                        loggerStatus.setText(R.string.stopLogging);
+                        loggerStatus.setText(R.string.data_logger_logging_stopped_button);
                         ((DataLoggerShield) getApplication()
                                 .getRunningShields().get(getControllerTag())).currentStatus = DataLoggerShield.STOPPED_LOGGING;
                         loggerStatus.postDelayed(new Runnable() {
@@ -107,7 +107,7 @@ public class DataLoggerFragment extends
                                                     getControllerTag())).currentStatus = DataLoggerShield.READ_FOR_LOGGING;
                                     loggerStatus
                                             .setBackgroundResource(R.drawable.large_yellow_circle);
-                                    loggerStatus.setText(R.string.readyToLog);
+                                    loggerStatus.setText(R.string.data_logger_ready_for_logging);
                                     stopLogging.setVisibility(View.INVISIBLE);
                                 }
                             }
@@ -128,7 +128,7 @@ public class DataLoggerFragment extends
                         valuesContainer.removeAllViews();
                         loggerStatus
                                 .setBackgroundResource(R.drawable.large_green_circle);
-                        loggerStatus.setText(R.string.logging);
+                        loggerStatus.setText(R.string.data_logger_logging);
                         stopLogging.setVisibility(View.VISIBLE);
                     }
                 }
@@ -144,7 +144,7 @@ public class DataLoggerFragment extends
                     if (canChangeUI()) {
                         loggerStatus
                                 .setBackgroundResource(R.drawable.large_yellow_circle);
-                        loggerStatus.setText(R.string.readyToLog);
+                        loggerStatus.setText(R.string.data_logger_ready_for_logging);
                     }
                 }
             });
@@ -159,7 +159,7 @@ public class DataLoggerFragment extends
                     if (canChangeUI()) {
                         loggerStatus
                                 .setBackgroundResource(R.drawable.large_green_circle);
-                        loggerStatus.setText(R.string.logging);
+                        loggerStatus.setText(R.string.data_logger_logging);
                         for (String header : rowData.keySet()) {
                             if (keysContainer.findViewWithTag(header) != null) {
                                 ((OneSheeldTextView) valuesContainer

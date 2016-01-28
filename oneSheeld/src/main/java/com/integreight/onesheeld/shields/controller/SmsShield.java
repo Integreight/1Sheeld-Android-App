@@ -4,24 +4,16 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener;
 import com.integreight.onesheeld.shields.controller.utils.SmsListener.SmsReceiveEventHandler;
 import com.integreight.onesheeld.utils.Log;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class SmsShield extends ControllerParent<SmsShield> {
     private SmsEventHandler eventHandler;
@@ -67,7 +59,7 @@ public class SmsShield extends ControllerParent<SmsShield> {
             if (this.selectionAction != null) {
                 this.selectionAction.onFailure();
                 if (isToastable)
-                    activity.showToast(activity.getString(R.string.device_doesnt_support_sms_functionality));
+                    activity.showToast(activity.getString(R.string.sms_your_device_doesnt_have_a_sim_card));
             }
         } else {
             addRequiredPremission(Manifest.permission.READ_SMS);

@@ -36,7 +36,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -227,7 +226,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                     }
                 }
 //                Toast.makeText(activity,"Data Logged Successfully.",Toast.LENGTH_SHORT).show();
-                showNotification(activity.getString(R.string.data_logged_successfully) + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " "+activity.getString(R.string.to)+" " + fullFileName));
+                showNotification(activity.getString(R.string.data_logger_data_logged_successfully_notification) + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " "+activity.getString(R.string.data_logger_to)+" " + fullFileName));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -250,7 +249,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 activity);
         build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
-        build.setContentTitle(activity.getString(R.string.data_logger_shield));
+        build.setContentTitle(activity.getString(R.string.data_logger_shield_name));
         build.setContentText(notificationText);
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());

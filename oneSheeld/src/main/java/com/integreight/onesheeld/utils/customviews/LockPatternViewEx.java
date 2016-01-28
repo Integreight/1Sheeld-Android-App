@@ -426,28 +426,28 @@ public class LockPatternViewEx extends View {
     }
 
     private void notifyCellAdded() {
-        sendAccessEvent(R.string.lockscreen_access_pattern_cell_added);
+//        sendAccessEvent(R.string.lockscreen_access_pattern_cell_added);
         if (mOnPatternListener != null) {
             mOnPatternListener.onPatternCellAdded(mPattern);
         }
     }
 
     private void notifyPatternStarted() {
-        sendAccessEvent(R.string.lockscreen_access_pattern_start);
+//        sendAccessEvent(R.string.lockscreen_access_pattern_start);
         if (mOnPatternListener != null) {
             mOnPatternListener.onPatternStart();
         }
     }
 
     private void notifyPatternDetected() {
-        sendAccessEvent(R.string.lockscreen_access_pattern_detected);
+//        sendAccessEvent(R.string.lockscreen_access_pattern_detected);
         if (mOnPatternListener != null) {
             mOnPatternListener.onPatternDetected(mPattern);
         }
     }
 
     private void notifyPatternCleared() {
-        sendAccessEvent(R.string.lockscreen_access_pattern_cleared);
+//        sendAccessEvent(R.string.lockscreen_access_pattern_cleared);
         if (mOnPatternListener != null) {
             mOnPatternListener.onPatternCleared();
         }
@@ -868,10 +868,10 @@ public class LockPatternViewEx extends View {
         }
     }
 
-    private void sendAccessEvent(int resId) {
-        if (Build.VERSION.SDK_INT >= 16)
-            announceForAccessibility(getContext().getString(resId));
-    }
+//    private void sendAccessEvent(int resId) {
+//        if (Build.VERSION.SDK_INT >= 16)
+//            announceForAccessibility(getContext().getString(resId));
+//    }
 
     private void handleActionUp(MotionEvent event) {
         // report pattern detected

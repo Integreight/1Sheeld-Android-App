@@ -99,7 +99,7 @@ public class InternetRequestsExpandapleAdapter extends BaseExpandableListAdapter
         }
 
         ((TextView) convertView
-                .findViewById(R.id.requestID)).setText(_context.getString(R.string.request) + " : " + request.getId());
+                .findViewById(R.id.requestID)).setText(_context.getString(R.string.internet_request) + " : " + request.getId());
         ProgressBar prog =
                 (ProgressBar) convertView
                         .findViewById(R.id.executingRequest);

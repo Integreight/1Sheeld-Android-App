@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:text="@string/buzzer_tone"
+        android:text="@string/buzzer_press_required_tone"
         android:textColor="@color/textColorOnDark"
         android:textSize="16sp"
         android:textStyle="bold" />

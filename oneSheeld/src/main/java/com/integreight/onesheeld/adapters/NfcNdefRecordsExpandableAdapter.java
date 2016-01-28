@@ -1,17 +1,13 @@
 package com.integreight.onesheeld.adapters;
 
 import android.content.Context;
-import android.nfc.NdefRecord;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.enums.UIShield;
-import com.integreight.onesheeld.shields.controller.NfcShield;
 
 import java.util.ArrayList;
 
@@ -70,7 +66,7 @@ public class NfcNdefRecordsExpandableAdapter extends BaseExpandableListAdapter{
             convertView = layoutInflater.inflate(R.layout.nfc_record_list_header,null);
         }
         TextView txtView = (TextView) convertView.findViewById(R.id.nfc_txt);
-        txtView.setText(_context.getString(R.string.record)+" "+groupPosition);
+        txtView.setText(_context.getString(R.string.nfc_record)+" "+groupPosition);
         return convertView;
     }
 

@@ -19,7 +19,7 @@ public class ToggleButtonShield extends ControllerParent<ToggleButtonShield> {
     public ToggleButtonShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.toggle_button2)};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.toggle_button_pin_name)};
     }
 
     public ToggleButtonShield(Activity activity, String tag) {

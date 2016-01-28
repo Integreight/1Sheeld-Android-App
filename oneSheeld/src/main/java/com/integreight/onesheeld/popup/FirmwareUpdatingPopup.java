@@ -65,7 +65,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     public void run() {
                         // TODO Auto-generated method stub
                         FirmwareUpdatingPopup.this.setCancelable(true);
-                        statusText.setText(R.string.done_successfully);
+                        statusText.setText(R.string.firmware_upgrade_popup_done_successfully);
                         setUpgrade();
                     }
                 });
@@ -73,7 +73,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 
                     @Override
                     public void run() {
-                        changeSlogan(activity.getString(R.string.upgrade_firmware), COLOR.BLUE);
+                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_upgrade_firmware), COLOR.BLUE);
                     }
                 }, 1500);
 
@@ -97,7 +97,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     @Override
                     public void run() {
                         int status = (int) ((float) sendBytes / totalBytes * 100);
-                        changeSlogan(activity.getString(R.string.installing)+"...", COLOR.BLUE);
+                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
                         downloadingProgress.setProgress(status);
                         progressTxt.setText(status + "%");
                     }
@@ -112,7 +112,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     @Override
                     public void run() {
                         FirmwareUpdatingPopup.this.setCancelable(true);
-                        changeSlogan(activity.getString(R.string.an_error_occured), COLOR.RED);
+                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_an_error_occured), COLOR.RED);
                         isFailed = true;
                         setUpgrade();
                         activity.getThisApplication()
@@ -134,7 +134,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                     @Override
                     public void run() {
                         FirmwareUpdatingPopup.this.setCancelable(true);
-                        changeSlogan(activity.getString(R.string.sheeld_not_responding), COLOR.RED);
+                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_1sheeld_not_responding), COLOR.RED);
                         isFailed = true;
                         setUpgrade();
                     }
@@ -167,7 +167,7 @@ public class FirmwareUpdatingPopup extends Dialog {
         transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSloganUpdating);
         setUpgrade();
         changeSlogan(
-                activity.getResources().getString(R.string.upgradeFirmata),
+                activity.getResources().getString(R.string.firmware_upgrade_popup_upgrade_firmware),
                 COLOR.BLUE);
         setOnCancelListener(new OnCancelListener() {
 
@@ -249,7 +249,7 @@ public class FirmwareUpdatingPopup extends Dialog {
     private byte[] binaryFile;
 
     private void downloadFirmware() {
-        changeSlogan(activity.getString(R.string.downloading)+"...", COLOR.BLUE);
+        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_downloading)+"...", COLOR.BLUE);
         if (activity.getThisApplication().getVersionWebResult() != null) {
             showInstallationProgress();
             try {
@@ -274,9 +274,9 @@ public class FirmwareUpdatingPopup extends Dialog {
                                         binaryFile = binaryData;
                                         jodem.send(binaryData, 4);
                                         if (!isFailed)
-                                            changeSlogan(activity.getString(R.string.installing)+"...", COLOR.BLUE);
+                                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
                                         else
-                                            changeSlogan(activity.getString(R.string.press_reset),
+                                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_please_press_reset),
                                                     COLOR.BLUE);
                                     }
                                 },200);
@@ -286,7 +286,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                             public void onFailure(int statusCode,
                                                   cz.msebera.android.httpclient.Header[] headers, byte[] binaryData,
                                                   Throwable error) {
-                                changeSlogan(activity.getString(R.string.error_downloading), COLOR.RED);
+                                changeSlogan(activity.getString(R.string.firmware_upgrade_popup_error_downloading), COLOR.RED);
                                 setUpgrade();
                                 Log.d("bootloader", statusCode + "");
                                 activity.getThisApplication()
@@ -313,7 +313,7 @@ public class FirmwareUpdatingPopup extends Dialog {
     }
 
     private void setUpgrade() {
-        upgradeBtn.setText(R.string.upgrade);
+        upgradeBtn.setText(R.string.firmware_upgrade_popup_upgrade_button);
         upgradeBtn.setVisibility(View.VISIBLE);
         progress.setVisibility(View.INVISIBLE);
         progressTxt.setVisibility(View.INVISIBLE);
@@ -338,15 +338,15 @@ public class FirmwareUpdatingPopup extends Dialog {
                                         .resetMicro();
                                 jodem.send(binaryFile, 4);
                                 if (!isFailed)
-                                    changeSlogan(activity.getString(R.string.installing)+"...", COLOR.BLUE);
+                                    changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
                                 else
-                                    changeSlogan(activity.getString(R.string.press_reset), COLOR.BLUE);
+                                    changeSlogan(activity.getString(R.string.firmware_upgrade_popup_please_press_reset), COLOR.BLUE);
                             }
                         },200);
 
                     }
                 } else {
-                    changeSlogan(activity.getString(R.string.no_internet_connection), COLOR.RED);
+                    changeSlogan(activity.getString(R.string.firmware_upgrade_popup_no_internet_connection), COLOR.RED);
                 }
             }
         });

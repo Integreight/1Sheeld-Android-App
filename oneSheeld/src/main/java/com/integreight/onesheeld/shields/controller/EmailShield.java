@@ -190,7 +190,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                     } else
                         Toast.makeText(
                                 getApplication().getApplicationContext(),
-                                R.string.please_check_internet,
+                                R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                                 Toast.LENGTH_SHORT).show();
                 }
             }
@@ -223,7 +223,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new Gmail.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName(getActivity().getString(R.string.onesheeld_app_email_shield))
+                    .setApplicationName(getActivity().getString(R.string.app_name))
                     .build();
             this.order = order;
             Log.d("Email","Sending Created!");
@@ -273,7 +273,7 @@ public class EmailShield extends ControllerParent<EmailShield> {
                     //showGooglePlayServicesAvailabilityErrorDialog(((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
                         Log.d("Email","The following google play service error occurred:\n" + ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode());
-                        eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
+                        eventHandler.onEmailnotSent(activity.getString(R.string.email_email_couldnt_be_sent_toast));
                     }
                     if(order>0)CrashlyticsUtils.logException(mLastError);
                 } else if (mLastError instanceof UserRecoverableAuthIOException) {
@@ -282,13 +282,13 @@ public class EmailShield extends ControllerParent<EmailShield> {
                 } else {
                     if (eventHandler != null && order == ORDER_SEND_EMAIL) {
                         Log.d("Email", "The following error occurred:\n" + mLastError.getMessage());
-                        eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
+                        eventHandler.onEmailnotSent(activity.getString(R.string.email_email_couldnt_be_sent_toast));
                     }
                     if(order>0)CrashlyticsUtils.logException(mLastError);
                 }
             } else {
                 if (eventHandler != null)
-                    eventHandler.onEmailnotSent(activity.getString(R.string.email_not_sent));
+                    eventHandler.onEmailnotSent(activity.getString(R.string.email_email_couldnt_be_sent_toast));
             }
             if (eventHandler != null)
                 eventHandler.stopProgress();

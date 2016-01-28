@@ -108,7 +108,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
                     } else
                         Toast.makeText(
                                 getApplication().getApplicationContext(),
-                                R.string.check_internet_connection,
+                                R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                                 Toast.LENGTH_SHORT).show();
                 }
         }
@@ -285,7 +285,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
         @Override
         public void onFoursquareError(FoursquareError e) {
             Toast.makeText(getApplication().getApplicationContext(),
-                    R.string.foursquare_authorize_login_failed, Toast.LENGTH_SHORT)
+                    R.string.foursquare_foursquare_authorize_login_failed_toast, Toast.LENGTH_SHORT)
                     .show();
 
         }
@@ -293,7 +293,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
         @Override
         public void onError(FoursquareDialogError e) {
             Toast.makeText(getApplication().getApplicationContext(),
-                    R.string.foursquare_authorize_login_failed, Toast.LENGTH_SHORT)
+                    R.string.foursquare_foursquare_authorize_login_failed_toast, Toast.LENGTH_SHORT)
                     .show();
 
         }
@@ -301,7 +301,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
         @Override
         public void onCancel() {
             Toast.makeText(getApplication().getApplicationContext(),
-                    R.string.foursquare_login_canceled, Toast.LENGTH_SHORT).show();
+                    R.string.foursquare_foursquare_login_canceled_toast, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -340,7 +340,7 @@ public class FoursquareShield extends ControllerParent<FoursquareShield> {
 
     public void loginToFoursquare() {
         ProgressDialog prog = new ProgressDialog(activity);
-        prog.setMessage(activity.getString(R.string.please_wait));
+        prog.setMessage(activity.getString(R.string.foursquare_please_wait));
         prog.setCancelable(false);
         prog.show();
         foursquare = new Foursquare(

@@ -225,7 +225,7 @@ public class BluetoothService {
 
     private void connectionFailed() {
         for (BluetoothServiceHandler handler : handlers) {
-            handler.onError(context.getString(R.string.unable_to_connect));
+            handler.onError(context.getString(R.string.general_toasts_unable_to_connect_to_the_board_toast));
         }
         stop();
     }

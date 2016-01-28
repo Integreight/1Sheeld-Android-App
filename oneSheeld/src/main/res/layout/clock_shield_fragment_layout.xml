@@ -22,7 +22,7 @@
         android:gravity="center"
         android:minHeight="65dp"
         android:minWidth="200dp"
-        android:text="@string/time"
+        android:text="@string/clock_time"
         android:textColor="@color/superDarkGray"
         android:textSize="40sp" />
 

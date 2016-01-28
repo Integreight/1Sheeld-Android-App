@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:gravity="center"
-        android:text="@string/you_are_ready_to_go"
+        android:text="@string/tutorial_you_are_ready_to_go"
         android:textColor="@color/white"
         android:textSize="40sp" />
 
@@ -22,7 +22,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="15dp"
         android:gravity="center"
-        android:text="@string/for_more_tutorials_visit_our_website"
+        android:text="@string/tutorial_for_more_tutorials_visit_our_website"
         android:textColor="@color/white"
         android:textSize="16sp" />
 
@@ -59,7 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:text="@string/dont_show_this_tutorial_again"
+            android:text="@string/tutorial_dont_show_this_tutorial_again"
             android:textColor="@color/white"
             android:textSize="15sp" />
     </LinearLayout>
@@ -89,7 +89,7 @@
             android:layout_toLeftOf="@id/btns_seperator"
             android:background="@drawable/go_button_selector"
             android:gravity="center"
-            android:text="@string/go"
+            android:text="@string/tutorial_go_button"
             android:textColor="@color/white"
             android:textSize="35sp" />
 
@@ -101,7 +101,7 @@
             android:layout_toRightOf="@id/btns_seperator"
             android:background="@drawable/go_button_selector"
             android:gravity="center"
-            android:text="@string/demo"
+            android:text="@string/tutorial_demo_button"
             android:textColor="@color/white"
             android:textSize="35sp" />
     </RelativeLayout>

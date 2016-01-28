@@ -77,7 +77,7 @@ public class SpeechRecognitionShield extends
         addRequiredPremission(Manifest.permission.RECORD_AUDIO);
         if (!isSpeechRecognitionActivityPresented(activity)) {
             if (isToastable)
-                Toast.makeText(activity, R.string.please_install_voice_search_from_google_play, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.voice_recognizer_please_install_voice_search_from_google_play_store, Toast.LENGTH_SHORT).show();
             selectionAction.onFailure();
         } else if(!checkForPermissions()){
             selectionAction.onFailure();
@@ -118,7 +118,7 @@ public class SpeechRecognitionShield extends
                 Log.d("Frame", sf.toString());
                 sendShieldFrame(sf, true);
             } else {
-                onError(activity.getString(R.string.no_matching_result), SpeechRecognizer.ERROR_NO_MATCH);
+                onError(activity.getString(R.string.voice_recognizer_no_matching_result), SpeechRecognizer.ERROR_NO_MATCH);
             }
         }
 

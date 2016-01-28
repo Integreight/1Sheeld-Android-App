@@ -4,17 +4,6 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
-        android:id="@+id/start_listener_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/start_gps_listening"
-        android:visibility="invisible" />
-
     <ImageView
         android:id="@+id/gpsLogo"
         android:layout_width="wrap_content"
@@ -57,15 +46,5 @@
             android:textSize="22sp" />
     </LinearLayout>
 
-    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
-        android:id="@+id/stop_listener_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/stop_gps_listening"
-        android:visibility="invisible" />
 
 </RelativeLayout>

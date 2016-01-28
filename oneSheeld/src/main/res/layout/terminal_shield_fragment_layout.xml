@@ -36,7 +36,7 @@
             android:background="@drawable/search_area_buttons_selector"
             android:gravity="center"
             android:padding="10dp"
-            android:text="@string/send"
+            android:text="@string/terminal_send_button"
             android:textColor="@color/offWhite" />
     </LinearLayout>
 
@@ -88,7 +88,7 @@
             android:layout_marginRight=".3dp"
             android:layout_weight="1"
             android:background="@color/arduinoPinsSelector"
-            android:text="@string/terminalString"
+            android:text="@string/terminal_ascii_button"
             android:textColor="@color/offWhite"
             android:textSize="14sp" />
 
@@ -100,7 +100,7 @@
             android:layout_marginRight=".3dp"
             android:layout_weight="1"
             android:background="@color/arduino_conn_resetAll_bg"
-            android:text="@string/terminalASCI"
+            android:text="@string/terminal_decimal_button"
             android:textColor="@color/offWhite"
             android:textSize="14sp" />
 
@@ -112,7 +112,7 @@
             android:layout_marginRight=".3dp"
             android:layout_weight="1"
             android:background="@color/arduino_conn_resetAll_bg"
-            android:text="@string/terminalBINARY"
+            android:text="@string/terminal_binary_button"
             android:textColor="@color/offWhite"
             android:textSize="14sp" />
 
@@ -123,7 +123,7 @@
             android:layout_marginLeft=".3dp"
             android:layout_weight="1"
             android:background="@color/arduino_conn_resetAll_bg"
-            android:text="@string/terminalHEX"
+            android:text="@string/terminal_hex_button"
             android:textColor="@color/offWhite"
             android:textSize="14sp" />
     </LinearLayout>
@@ -167,7 +167,7 @@
             android:layout_marginLeft=".3dp"
             android:layout_weight="1"
             android:background="@drawable/search_area_buttons_selector"
-            android:text="@string/copy_all"
+            android:text="@string/terminal_copy_all_button"
             android:textColor="@color/offWhite" />
     </LinearLayout>
 

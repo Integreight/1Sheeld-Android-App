@@ -331,7 +331,7 @@ public class SheeldsList extends Fragment {
     private void launchShieldsOperationActivity() {
         if (getActivity().findViewById(R.id.progressShieldInit).getVisibility() != View.VISIBLE) {
             if (!isAnyShieldsSelected()) {
-                Toast.makeText(activity, R.string.select_at_least_1_shield,
+                Toast.makeText(activity, R.string.shields_list_select_at_least_1_shield_toast,
                         Toast.LENGTH_LONG).show();
                 return;
             } else {
@@ -468,7 +468,7 @@ public class SheeldsList extends Fragment {
                     new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
                             .show();
                 else
-                    activity.showToast(activity.getString(R.string.please_connect_first));
+                    activity.showToast(activity.getString(R.string.shields_list_please_connect_to_your_board_first));
                 return true;
             case R.id.action_settings:
                 ((OneSheeldApplication) activity.getApplication())
@@ -510,7 +510,7 @@ public class SheeldsList extends Fragment {
                     .getApplication()).getAppFirmata().isOpen())
                     && (((OneSheeldApplication) activity.getApplication())
                     .getAppFirmata().getMajorVersion() != 0)) {
-                firmwareVersion = "\n"+activity.getString(R.string.firmware_version)+": v"
+                firmwareVersion = "\n"+activity.getString(R.string.about_dialog_firmware_version)+": v"
                         + (((OneSheeldApplication) activity.getApplication())
                         .getAppFirmata().getMajorVersion())
                         + "."
@@ -519,22 +519,22 @@ public class SheeldsList extends Fragment {
             }
             final ValidationPopup popup = new ValidationPopup(
                     activity,
-                    activity.getString(R.string.about_1sheeld),
-                    activity.getString(R.string.developed_with_love)+"\n"
-                            + activity.getString(R.string.if_you_have_any_question)+"\n\n"
-                            + activity.getString(R.string.app_version)+": "
+                    activity.getString(R.string.about_dialog_about_1sheeld),
+                    activity.getString(R.string.about_dialog_developed_with_love_by_integreight_inc_team_in_cairo_egypt)+"\n"
+                            + activity.getString(R.string.about_dialog_if_you_have_any_question_please_visit_our_website_or_drop_us_an_email_on_info_integreight_com)+"\n\n"
+                            + activity.getString(R.string.about_dialog_app_version)+": "
                             + versionName
                             + " ("
                             + versionCode
                             + ")"
                             + firmwareVersion
-                            + (stringDate != null ? "\n"+activity.getString(R.string.app_was_last_updated_on)+" "
+                            + (stringDate != null ? "\n"+activity.getString(R.string.about_dialog_app_was_last_updated_on)+" "
                             + stringDate
                             : "")
                             + "\n\n"
-                            + activity.getString(R.string.interested_github)+"\n\n"
+                            + activity.getString(R.string.about_dialog_if_you_are_interested_in_this_apps_source_code_please_visit_our_github_page_github_com_integreight)+"\n\n"
                             + installationIdString);
-            ValidationAction ok = new ValidationPopup.ValidationAction(activity.getString(R.string.okay),
+            ValidationAction ok = new ValidationPopup.ValidationAction(activity.getString(R.string.about_dialog_okay),
                     new View.OnClickListener() {
 
                         @Override

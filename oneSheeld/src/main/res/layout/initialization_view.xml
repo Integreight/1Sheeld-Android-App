@@ -30,7 +30,7 @@
             android:background="@drawable/circle_button_selector"
             android:gravity="center"
             android:padding="3dp"
-            android:text="@string/scan"
+            android:text="@string/connectivity_popup_scan_button"
             android:textColor="@drawable/white_black_text_selector"
             android:textSize="22sp"
             android:typeface="sans" />
@@ -67,7 +67,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
                     android:gravity="center_vertical"
-                    android:text="@string/connectAutomatocallyToThisDevice"
+                    android:text="@string/connectivity_popup_connect_automatically_to_this_device_checkbox"
                     android:textColor="@color/white" />
             </LinearLayout>
 
@@ -123,7 +123,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
-            android:text="@string/searching"
+            android:text="@string/connectivity_popup_searching"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:typeface="sans" />
@@ -155,7 +155,7 @@
             android:layout_marginBottom="10dp"
             android:layout_alignParentBottom="true"
             android:background="@drawable/transparent"
-            android:text="@string/skip"
+            android:text="@string/main_activity_skip"
             android:textSize="20dp"
             android:textColor="@color/white"/>
     </RelativeLayout>

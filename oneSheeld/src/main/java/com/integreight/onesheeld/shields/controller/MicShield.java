@@ -14,7 +14,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
-import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
@@ -116,7 +115,7 @@ public class MicShield extends ControllerParent<MicShield> {
                         }
                         MicSoundMeter.getInstance().start(true, fileName);
                         if (eventHandler != null)
-                            eventHandler.getState(activity.getString(R.string.recording)+"...");
+                            eventHandler.getState(activity.getString(R.string.mic_recording)+"...");
                         handler.post(processMic);
                         isRecording = true;
                     }
@@ -129,7 +128,7 @@ public class MicShield extends ControllerParent<MicShield> {
                         if (eventHandler != null)
                             eventHandler.getState("");
                         if (!fileName.equals(""))
-                            showNotification(activity.getString(R.string.sound_recorded_successfully_to)+" " + fileName + ".mp3");
+                            showNotification(activity.getString(R.string.mic_sound_recorded_successfully_to)+" " + fileName + ".mp3");
                         fileName = "";
                         handler.post(processMic);
                         isRecording = false;
@@ -143,7 +142,7 @@ public class MicShield extends ControllerParent<MicShield> {
     public void reset() {
         stopMic();
         if (!fileName.equals(""))
-            showNotification(activity.getString(R.string.sound_recorded_successfully_to)+" " + fileName + ".mp3");
+            showNotification(activity.getString(R.string.mic_sound_recorded_successfully_to)+" " + fileName + ".mp3");
         fileName = "";
     }
 
@@ -175,7 +174,7 @@ public class MicShield extends ControllerParent<MicShield> {
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 activity);
         build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
-        build.setContentTitle(activity.getString(R.string.mic_shield));
+        build.setContentTitle(activity.getString(R.string.mic_shield_name)+" Shield");
         build.setContentText(notificationText);
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());

@@ -35,9 +35,9 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     public GamepadShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.up_arrow), OneSheeldApplication.getContext().getString(R.string.right_arrow), OneSheeldApplication.getContext().getString(R.string.down_arrow),
-                OneSheeldApplication.getContext().getString(R.string.left_arrow), OneSheeldApplication.getContext().getString(R.string.yellow_button), OneSheeldApplication.getContext().getString(R.string.red_button), OneSheeldApplication.getContext().getString(R.string.green_button),
-                OneSheeldApplication.getContext().getString(R.string.blue_button)};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.game_pad_up_arrow), OneSheeldApplication.getContext().getString(R.string.game_pad_right_arrow), OneSheeldApplication.getContext().getString(R.string.game_pad_down_arrow),
+                OneSheeldApplication.getContext().getString(R.string.game_pad_left_arrow), OneSheeldApplication.getContext().getString(R.string.game_pad_yellow_button), OneSheeldApplication.getContext().getString(R.string.game_pad_red_button), OneSheeldApplication.getContext().getString(R.string.game_pad_green_button),
+                OneSheeldApplication.getContext().getString(R.string.game_pad_blue_button)};
     }
 
     public void setPinToHigh(String pinName, int pinId) {
@@ -65,10 +65,10 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
     }
 
     public static enum Pin {
-        UP_ARROW(4, R.string.up_arrow), RIGHT_ARROW(7, R.string.right_arrow), DOWN_ARROW(5,
-                R.string.down_arrow), LEFT_ARROW(6, R.string.left_arrow), YELLOW_BUTTON(0,
-                R.string.yellow_button), RED_BUTTON(1, R.string.red_button), GREEN_BUTTON(2,
-                R.string.green_button), BLUE_BUTTON(3, R.string.blue_button);
+        UP_ARROW(4, R.string.game_pad_up_arrow), RIGHT_ARROW(7, R.string.game_pad_right_arrow), DOWN_ARROW(5,
+                R.string.game_pad_down_arrow), LEFT_ARROW(6, R.string.game_pad_left_arrow), YELLOW_BUTTON(0,
+                R.string.game_pad_yellow_button), RED_BUTTON(1, R.string.game_pad_red_button), GREEN_BUTTON(2,
+                R.string.game_pad_green_button), BLUE_BUTTON(3, R.string.game_pad_blue_button);
 
         private int nameStringResource;
         int id;

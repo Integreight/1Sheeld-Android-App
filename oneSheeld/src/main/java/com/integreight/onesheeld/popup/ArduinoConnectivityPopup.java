@@ -100,7 +100,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             setDevicesListReady();
             changeSlogan(
                     activity.getResources()
-                            .getString(R.string.selectYourDevice), COLOR.YELLOW);
+                            .getString(R.string.connectivity_popup_select_your_device), COLOR.YELLOW);
             findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
         } else if (scanOrTryAgain.getVisibility() != View.VISIBLE
                 || !scanOrTryAgain
@@ -108,7 +108,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 .toString()
                 .equalsIgnoreCase(
                         activity.getResources()
-                                .getString(R.string.scan)))
+                                .getString(R.string.connectivity_popup_scan_button)))
             setScanButtonReady();
         else {
             ((MainActivity) activity).finishManually();
@@ -163,7 +163,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             }
         });
         if (mBtAdapter == null) {
-            Toast.makeText(activity, R.string.bluetooth_not_available,
+            Toast.makeText(activity, R.string.connectivity_popup_bluetooth_is_not_available_toast,
                     Toast.LENGTH_LONG).show();
             activity.finish();
             return;
@@ -213,7 +213,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                                             changeSlogan(
                                                                     activity.getResources()
                                                                             .getString(
-                                                                                    R.string.searching),
+                                                                                    R.string.connectivity_popup_searching)+"......",
                                                                     COLOR.RED);
                                                             findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
                                                             scanDevices();
@@ -230,7 +230,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                             showProgress();
                             changeSlogan(
                                     activity.getResources().getString(
-                                            R.string.searching), COLOR.RED);
+                                            R.string.connectivity_popup_searching)+"......", COLOR.RED);
                             findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
                             scanDevices();
                             doDiscovery();
@@ -294,14 +294,14 @@ public class ArduinoConnectivityPopup extends Dialog {
     }
 
     private void setScanButtonReady() {
-        changeSlogan(activity.getString(R.string.scan_for_1sheeld), COLOR.RED);
+        changeSlogan(activity.getString(R.string.connectivity_popup_scan_for_1sheeld), COLOR.RED);
         findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
         isConnecting = false;
         deviceListCont.setVisibility(View.INVISIBLE);
         loading.setVisibility(View.INVISIBLE);
         smallLoading.setVisibility(View.INVISIBLE);
         scanOrTryAgain.setVisibility(View.VISIBLE);
-        scanOrTryAgain.setText(R.string.scan);
+        scanOrTryAgain.setText(R.string.connectivity_popup_scan_button);
         scanOrTryAgain.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -321,7 +321,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                             changeSlogan(
                                                     activity.getResources()
                                                             .getString(
-                                                                    R.string.searching),
+                                                                    R.string.connectivity_popup_searching)+"......",
                                                     COLOR.RED);
                                             findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
                                             scanDevices();
@@ -342,7 +342,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                         showProgress();
                         changeSlogan(
                                 activity.getResources().getString(
-                                        R.string.searching), COLOR.RED);
+                                        R.string.connectivity_popup_searching)+"......", COLOR.RED);
                         findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
                         scanDevices();
                         doDiscovery();
@@ -354,7 +354,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                             showProgress();
                             changeSlogan(
                                     activity.getResources().getString(
-                                            R.string.searching), COLOR.RED);
+                                            R.string.connectivity_popup_searching)+"......", COLOR.RED);
                             findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
                             scanDevices();
                             doDiscovery();
@@ -373,7 +373,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                                     changeSlogan(
                                                             activity.getResources()
                                                                     .getString(
-                                                                            R.string.searching),
+                                                                            R.string.connectivity_popup_searching)+"......",
                                                             COLOR.RED);
                                                     findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
                                                     scanDevices();
@@ -399,7 +399,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             scanOrTryAgain.setVisibility(View.VISIBLE);
             changeSlogan(msg, COLOR.ORANGE);
             findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
-            scanOrTryAgain.setText(R.string.tryAgain);
+            scanOrTryAgain.setText(R.string.connectivity_popup_try_again_button);
         }
     }
 
@@ -440,7 +440,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                 // TODO Auto-generated method stub
                                 smallLoading.setVisibility(View.INVISIBLE);
                                 setRetryButtonReady(activity.getResources()
-                                                .getString(R.string.no_devices_found),
+                                                .getString(R.string.connectivity_popup_no_devices_found),
                                         new View.OnClickListener() {
 
                                             @Override
@@ -508,7 +508,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                                 foundDevicesTable.clear();
                                 if (devicesList.getChildCount() == 0) {
                                     setRetryButtonReady(activity.getResources()
-                                                    .getString(R.string.no_devices_found),
+                                                    .getString(R.string.connectivity_popup_no_devices_found),
                                             new View.OnClickListener() {
 
                                                 @Override
@@ -552,7 +552,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 isConnecting = false;
                 setRetryButtonReady(
                         activity.getResources()
-                                .getString(R.string.notConnected),
+                                .getString(R.string.connectivity_popup_not_connected),
                         new View.OnClickListener() {
 
                             @Override
@@ -578,7 +578,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 isConnecting = false;
                 setRetryButtonReady(
                         activity.getResources()
-                                .getString(R.string.notConnected),
+                                .getString(R.string.connectivity_popup_not_connected),
                         new View.OnClickListener() {
 
                             @Override
@@ -605,7 +605,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             ((OneSheeldApplication) activity.getApplication()).getAppFirmata()
                     .addEventHandler(connectivityFirmataHandler);
             changeSlogan(
-                    activity.getResources().getString(R.string.connecting),
+                    activity.getResources().getString(R.string.connectivity_popup_connecting)+"......",
                     COLOR.GREEN);
             findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
             Intent intent = new Intent(activity, OneSheeldService.class);
@@ -708,7 +708,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 setDevicesListReady();
                 changeSlogan(
                         activity.getResources().getString(
-                                R.string.selectYourDevice), COLOR.YELLOW);
+                                R.string.connectivity_popup_select_your_device), COLOR.YELLOW);
                 findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
                 smallLoading.setVisibility(View.VISIBLE);
             }

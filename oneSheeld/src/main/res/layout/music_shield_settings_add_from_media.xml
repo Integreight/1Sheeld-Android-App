@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp"
-            android:text="@string/add"
+            android:text="@string/music_player_add_button"
             android:textSize="15sp"
             android:textStyle="bold" />
 

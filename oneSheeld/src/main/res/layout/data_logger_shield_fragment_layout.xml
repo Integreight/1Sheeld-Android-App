@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/large_red_circle"
         android:gravity="center"
-        android:text="@string/readyToLog"
+        android:text="@string/data_logger_ready_for_logging"
         android:textColor="@color/offWhite"
         android:textSize="26sp" />
 
@@ -45,7 +45,7 @@
 
     <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:id="@+id/stop_logging_btn"
-        android:text="@string/stopLoggingButton"
+        android:text="@string/data_logger_stop_logging_button"
         android:background="@drawable/data_logger_button"
         android:textColor="@color/offWhite"
         android:textSize="20dp"

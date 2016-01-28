@@ -14,9 +14,7 @@ import com.integreight.onesheeld.shields.controller.LightShield;
 import com.integreight.onesheeld.shields.controller.LightShield.LightEventHandler;
 
 public class LightFragment extends ShieldFragmentParent<LightFragment> {
-    TextView light_float, light_byte;
-    TextView devicehasSensor;
-    Button stoplistening_bt, startlistening_bt;
+    TextView light_float;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -39,38 +37,6 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
     @Override
     public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         light_float = (TextView) v.findViewById(R.id.light_float_txt);
-        light_byte = (TextView) v.findViewById(R.id.light_byte_txt);
-
-        devicehasSensor = (TextView) v
-                .findViewById(R.id.device_not_has_sensor_text);
-        stoplistening_bt = (Button) v.findViewById(R.id.stop_listener_bt);
-        startlistening_bt = (Button) v.findViewById(R.id.start_listener_bt);
-
-        startlistening_bt.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ((LightShield) getApplication().getRunningShields().get(
-                        getControllerTag())).registerSensorListener(true);
-                light_float.setVisibility(View.VISIBLE);
-                light_byte.setVisibility(View.VISIBLE);
-
-            }
-        });
-
-        stoplistening_bt.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ((LightShield) getApplication().getRunningShields().get(
-                        getControllerTag())).unegisterSensorListener();
-                light_float.setVisibility(View.INVISIBLE);
-                light_byte.setVisibility(View.INVISIBLE);
-
-            }
-        });
     }
 
     private LightEventHandler lightEventHandler = new LightEventHandler() {
@@ -88,23 +54,6 @@ public class LightFragment extends ShieldFragmentParent<LightFragment> {
                     }
                 }
             });
-        }
-
-        @Override
-        public void onSensorValueChangedByte(final String value) {
-
-            // set data to UI
-            light_byte.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (canChangeUI()) {
-                        light_byte.setVisibility(View.VISIBLE);
-                        light_byte.setText(activity.getString(R.string.light_in_byte)+" = " + value);
-                    }
-                }
-            });
-
         }
 
         @Override

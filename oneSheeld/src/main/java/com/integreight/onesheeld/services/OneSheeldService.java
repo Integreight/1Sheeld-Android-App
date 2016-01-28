@@ -102,9 +102,9 @@ public class OneSheeldService extends Service {
     private void showNotification() {
         NotificationCompat.Builder build = new NotificationCompat.Builder(this);
         build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
-        build.setContentText(getString(R.string.to)+": " + deviceName);
-        build.setContentTitle(getString(R.string.onesheeld_is_connected));
-        build.setTicker(getString(R.string.onesheeld_is_connected));
+        build.setContentText(getString(R.string.connection_notification_connected_to)+": " + deviceName);
+        build.setContentTitle(getString(R.string.connection_notification_1sheeld_is_connected));
+        build.setTicker(getString(R.string.connection_notification_1sheeld_is_connected));
         build.setWhen(System.currentTimeMillis());
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP

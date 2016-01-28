@@ -28,9 +28,7 @@ import com.integreight.onesheeld.utils.Log;
 
 import java.io.File;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -147,7 +145,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
             if (selectionAction != null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast(R.string.camera_is_unavailable);
+                activity.showToast(R.string.camera_camera_is_unavailable_maybe_its_used_by_another_application_toast);
         } else {
             addRequiredPremission(Manifest.permission.CAMERA);
             addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -158,20 +156,20 @@ public class CameraShield extends ControllerParent<CameraShield> {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(
                                 activity);
                         builder.setMessage(
-                                R.string.draw_over_apps_message)
+                                R.string.camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly)
                                 .setCancelable(false)
-                                .setPositiveButton(R.string.ok,
+                                .setPositiveButton(R.string.camera_validation_dialog_ok_button,
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(final DialogInterface dialog,
                                                                 final int id) {
                                                 activity.requestDrawOverApps();
                                             }
                                         })
-                                .setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
+                                .setNegativeButton(R.string.camera_validation_dialog_later_button, new DialogInterface.OnClickListener() {
                                     public void onClick(final DialogInterface dialog,
                                                         final int id) {
                                         dialog.cancel();
-                                        activity.showToast(R.string.enable_permission);
+                                        activity.showToast(R.string.camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast);
                                     }
                                 });
                         final AlertDialog alert = builder.create();
@@ -234,7 +232,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
                     if (hasFrontCamera)
                         sendFrontCaptureImageIntent(capture);
                     else {
-                        Toast.makeText(getActivity(), R.string.device_doesnt_have_front_camera, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), R.string.camera_your_device_doesnt_have_a_front_camera_toast, Toast.LENGTH_SHORT).show();
                         capturesQueue.poll();
                     }
                 } else {

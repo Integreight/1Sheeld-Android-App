@@ -27,7 +27,7 @@
     <com.integreight.onesheeld.utils.customviews.OneSheeldButton
         android:layout_below="@+id/vibration_shield_text_textview"
         android:id="@+id/vibration_stop_button"
-        android:text="@string/stopVibrationButton"
+        android:text="@string/vibration_stop_button"
         android:background="@drawable/data_logger_button"
         android:textColor="@color/offWhite"
         android:layout_centerHorizontal="true"

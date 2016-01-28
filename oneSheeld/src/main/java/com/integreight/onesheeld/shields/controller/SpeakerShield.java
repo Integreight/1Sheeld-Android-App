@@ -29,7 +29,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
     public SpeakerShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.buzzer2)};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.buzzer_pin_name)};
     }
 
     public SpeakerShield(Activity activity, String tag) {
@@ -145,20 +145,20 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
                         // TODO Auto-generated catch block
                         Toast.makeText(
                                 activity,
-                                R.string.cant_play_current_buzz,
+                                R.string.buzzer_an_error_occurred_cant_buzz_toast,
                                 Toast.LENGTH_SHORT).show();
                         Log.e("TAG", "speaker::setVolume::setDataSource", e);
                     } catch (SecurityException e) {
                         Toast.makeText(
                                 activity,
-                                R.string.cant_play_current_buzz,
+                                R.string.buzzer_an_error_occurred_cant_buzz_toast,
                                 Toast.LENGTH_SHORT).show();
                         // TODO Auto-generated catch block
                         Log.e("TAG", "speaker::setVolume::setDataSource", e);
                     } catch (IllegalStateException e) {
                         Toast.makeText(
                                 activity,
-                                R.string.cant_play_current_buzz,
+                                R.string.buzzer_an_error_occurred_cant_buzz_toast,
                                 Toast.LENGTH_SHORT).show();
                         // TODO Auto-generated catch block
                         Log.e("TAG", "speaker::setVolume::setDataSource", e);

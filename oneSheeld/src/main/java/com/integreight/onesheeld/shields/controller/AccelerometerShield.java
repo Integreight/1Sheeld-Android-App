@@ -145,7 +145,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
             if (selectionAction != null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast(R.string.device_doesnt_support_this_sensor);
+                activity.showToast(R.string.general_toasts_device_doesnt_support_this_sensor_toast);
 
             if (eventHandler != null)
                 eventHandler.isDeviceHasSensor(false);

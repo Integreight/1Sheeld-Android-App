@@ -2,7 +2,6 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,7 +70,7 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
                         @Override
                         public void run() {
                             vibrationLogo.clearAnimation();
-                            vibrationTextTextView.setText(R.string.paused2);
+                            vibrationTextTextView.setText(R.string.vibration_paused);
                             vibrationStopButton.setVisibility(View.VISIBLE);
                         }
                     });
@@ -115,7 +114,7 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
         if(canChangeUI()){
             if(((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen()){
                 vibrationLogo.startAnimation(shake);
-                vibrationTextTextView.setText(R.string.ready2);
+                vibrationTextTextView.setText(R.string.vibration_ready);
                 uiHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -134,7 +133,7 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
                 }
                 else if(((VibrationShield) getApplication().getRunningShields().get(getControllerTag()))
                         .isPaused()){
-                    vibrationTextTextView.setText(R.string.paused2);
+                    vibrationTextTextView.setText(R.string.vibration_paused);
                 }
             }
         }

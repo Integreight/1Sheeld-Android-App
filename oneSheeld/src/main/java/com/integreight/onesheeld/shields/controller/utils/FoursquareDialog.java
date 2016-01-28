@@ -63,7 +63,7 @@ public class FoursquareDialog extends Dialog {
         super.onCreate(savedInstanceState);
         mSpinner = new ProgressDialog(getContext());
         mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        mSpinner.setMessage(getContext().getString(R.string.loading)+"...");
+        mSpinner.setMessage(getContext().getString(R.string.foursquare_loading)+"...");
 
         mContent = new LinearLayout(getContext());
         mContent.setOrientation(LinearLayout.VERTICAL);

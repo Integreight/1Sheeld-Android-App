@@ -76,7 +76,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
                 }
             } else
                 Toast.makeText(getApplication().getApplicationContext(),
-                        R.string.check_internet_connection_2,
+                        R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                         Toast.LENGTH_SHORT).show();
         }
 
@@ -108,7 +108,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             Log.d("Skype Client Installed", "No");
             if (eventHandler != null)
                 eventHandler
-                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_not_installed));
+                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_skype_app_is_not_installed));
 
         }
 
@@ -140,7 +140,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             Log.d("Skype Client Installed", "No");
             if (eventHandler != null)
                 eventHandler
-                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_not_installed));
+                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_skype_app_is_not_installed));
 
         }
 
@@ -172,7 +172,7 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             Log.d("Skype Client Installed", "No");
             if (eventHandler != null)
                 eventHandler
-                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_not_installed));
+                        .onSkypeClientNotInstalled(activity.getString(R.string.skype_skype_app_is_not_installed));
 
         }
 

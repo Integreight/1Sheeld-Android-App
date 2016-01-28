@@ -13,7 +13,7 @@
         android:layout_marginBottom="150dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/button_shield_red"
-        android:text="@string/push"
+        android:text="@string/push_button_button_name"
         android:textColor="@color/offWhite"
         android:textSize="50sp"
         android:textStyle="bold" />

@@ -30,7 +30,7 @@
         android:layout_below="@id/playingBtn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="@string/paused"
+        android:text="@string/music_player_paused"
         android:textColor="@color/offWhite"
         android:textSize="14sp" />
 
@@ -44,7 +44,7 @@
         android:layout_marginRight="15dp"
         android:layout_marginTop="10dp"
         android:singleLine="true"
-        android:text="@string/music_file_name2"
+        android:text=""
         android:textColor="@color/offWhite"
         android:textSize="14sp" />
 

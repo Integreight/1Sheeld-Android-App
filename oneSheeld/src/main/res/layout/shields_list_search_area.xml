@@ -20,7 +20,7 @@
             android:background="@drawable/search_area_buttons_selector"
             android:gravity="center"
             android:padding="5dp"
-            android:text="@string/deselectAll"
+            android:text="@string/shields_list_deselect_all_button"
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />
 
@@ -33,7 +33,7 @@
             android:background="@drawable/search_area_buttons_selector"
             android:gravity="center"
             android:padding="5dp"
-            android:text="@string/remember"
+            android:text="@string/shields_list_remember_selection_button"
             android:textColor="@color/textColorOnDark"
             android:textSize="15sp" />
     </LinearLayout>

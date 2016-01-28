@@ -63,7 +63,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                 }else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            R.string.check_internet_connection4,
+                            R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                             Toast.LENGTH_SHORT).show();
             }
         });
@@ -127,7 +127,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
         @Override
         public void onSuccess() {
             if (canChangeUI())
-                Toast.makeText(getApplication(), R.string.email_sent,
+                Toast.makeText(getApplication(), R.string.email_email_sent_successfully_toast,
                         Toast.LENGTH_SHORT).show();
         }
 
@@ -247,7 +247,7 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
                         Toast.makeText(activity.getApplicationContext(), accountName, Toast.LENGTH_SHORT).show();
                     }
                 } else if (resultCode == activity.RESULT_CANCELED) {
-                    Toast.makeText(activity.getApplicationContext(), R.string.account_unspecified, Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity.getApplicationContext(), R.string.email_you_didnt_specify_an_account_to_use_toast, Toast.LENGTH_LONG).show();
                 }
                 break;
             case REQUEST_AUTHORIZATION:

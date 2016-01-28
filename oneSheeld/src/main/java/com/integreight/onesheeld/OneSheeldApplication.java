@@ -367,7 +367,7 @@ public class OneSheeldApplication extends Application {
 
     public void setRememberedShields(String shields) {
         appPreferences.edit().putString(REMEMBER_SHIELDS, shields).commit();
-        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.shields_selection_has_been_cleared : R.string.shields_selection_has_been_saved), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(shields == null || shields.trim().length() == 0 ? R.string.general_toasts_shields_selection_has_been_cleared_toast : R.string.general_toasts_shields_selection_has_been_saved_toast), Toast.LENGTH_SHORT).show();
     }
 
     public String getRememberedShields() {

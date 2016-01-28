@@ -12,11 +12,9 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.GpsShield;
 import com.integreight.onesheeld.shields.controller.GpsShield.GpsEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
     TextView Latit, Longit;
-    Button startGps, stopGps;
     String lat;
     String lng;
 
@@ -36,31 +34,6 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
     public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         Latit = (TextView) v.findViewById(R.id.lat_value_txt);
         Longit = (TextView) v.findViewById(R.id.lang_value_txt);
-        startGps = (Button) v.findViewById(R.id.start_listener_bt);
-        stopGps = (Button) v.findViewById(R.id.stop_listener_bt);
-
-        startGps.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ((GpsShield) getApplication().getRunningShields().get(
-                        getControllerTag()))
-                        .isGooglePlayServicesAvailableWithDialog();
-
-            }
-        });
-
-        stopGps.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ((GpsShield) getApplication().getRunningShields().get(
-                        getControllerTag())).stopGps();
-
-            }
-        });
     }
 
     private GpsEventHandler gpsEventHandler = new GpsEventHandler() {
@@ -75,7 +48,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
                     public void run() {
                         GpsFragment.this.lat = lat;
                         if (canChangeUI())
-                            Latit.setText(activity.getString(R.string.latitude)+"\n" + lat);
+                            Latit.setText(activity.getString(R.string.gps_latitude)+"\n" + lat);
                     }
                 });
         }
@@ -90,7 +63,7 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
                     public void run() {
                         GpsFragment.this.lng = lng;
                         if (canChangeUI())
-                            Longit.setText(activity.getString(R.string.longitude)+"\n" + lang);
+                            Longit.setText(activity.getString(R.string.gps_longitude)+"\n" + lang);
                     }
                 });
         }
@@ -123,8 +96,8 @@ public class GpsFragment extends ShieldFragmentParent<GpsFragment> {
                     getControllerTag())).getLastKnownLocation().getLongitude() + "";
         }
         if (lat != null && lng != null && canChangeUI()) {
-            Latit.setText(activity.getString(R.string.latitude)+"\n" + lat);
-            Longit.setText(activity.getString(R.string.longitude)+"\n" + lng);
+            Latit.setText(activity.getString(R.string.gps_latitude)+"\n" + lat);
+            Longit.setText(activity.getString(R.string.gps_longitude)+"\n" + lng);
 
         }
 

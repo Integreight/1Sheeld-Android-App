@@ -148,7 +148,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
                 selectionAction.onFailure();
             }
             if (isToastable)
-                activity.showToast(R.string.device_doesnt_support_this_sensor);
+                activity.showToast(R.string.general_toasts_device_doesnt_support_this_sensor_toast);
             if (eventHandler != null)
                 eventHandler.isDeviceHasSensor(false);
 
@@ -173,8 +173,6 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
     public static interface TemperatureEventHandler {
 
         void onSensorValueChangedFloat(String value);
-
-        void onSensorValueChangedByte(String value);
 
         void isDeviceHasSensor(Boolean hasSensor);
 

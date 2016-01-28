@@ -81,7 +81,7 @@ public class TwitterDialog extends Dialog {
 
         mSpinner.requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        mSpinner.setMessage(getContext().getString(R.string.loading)+"...");
+        mSpinner.setMessage(getContext().getString(R.string.twitter_loading)+"...");
 
         mContent = new LinearLayout(getContext());
 
@@ -135,7 +135,7 @@ public class TwitterDialog extends Dialog {
 
         mTitle = new TextView(getContext());
 
-        mTitle.setText(getContext().getString(R.string.twitter));
+        mTitle.setText(getContext().getString(R.string.twitter_shield_name));
         mTitle.setTextColor(Color.WHITE);
         mTitle.setTypeface(Typeface.DEFAULT_BOLD);
         mTitle.setBackgroundColor(0xFF4099FF);

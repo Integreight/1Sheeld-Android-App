@@ -299,7 +299,7 @@ public class CameraHeadService extends Service implements
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(),
-                            R.string.your_picture_has_been_taken, Toast.LENGTH_SHORT)
+                            R.string.camera_your_picture_has_been_taken_toast, Toast.LENGTH_SHORT)
                             .show();
                 }
             });
@@ -397,7 +397,7 @@ public class CameraHeadService extends Service implements
                                     @Override
                                     public void run() {
                                         Toast.makeText(getApplicationContext(),
-                                                R.string.api_doesnt_support_front_camera,
+                                                R.string.camera_your_device_doesnt_have_a_front_camera_toast,
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -623,7 +623,7 @@ public class CameraHeadService extends Service implements
                                 @Override
                                 public void run() {
                                     Toast.makeText(getApplicationContext(),
-                                            R.string.api_doesnt_support_front_camera,
+                                            R.string.camera_your_device_doesnt_have_a_front_camera_toast,
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -671,7 +671,7 @@ public class CameraHeadService extends Service implements
                             public void run() {
                                 Toast.makeText(
                                         getApplicationContext(),
-                                        R.string.device_doesnt_have_front_camera,
+                                        R.string.camera_your_device_doesnt_have_a_front_camera_toast,
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -698,7 +698,7 @@ public class CameraHeadService extends Service implements
                                     public void run() {
                                         Toast.makeText(
                                                 getApplicationContext(),
-                                                R.string.api_doesnt_support_front_camera,
+                                                R.string.camera_your_device_doesnt_have_a_front_camera_toast,
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 });
@@ -747,7 +747,7 @@ public class CameraHeadService extends Service implements
                                 public void run() {
                                     Toast.makeText(
                                             getApplicationContext(),
-                                            R.string.device_doesnt_have_front_camera,
+                                            R.string.camera_your_device_doesnt_have_a_front_camera_toast,
                                             Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -816,7 +816,7 @@ public class CameraHeadService extends Service implements
                             @Override
                             public void run() {
                                 Toast.makeText(getApplicationContext(),
-                                        R.string.camera_is_not_available,
+                                        R.string.camera_camera_is_not_available_toast,
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -842,7 +842,7 @@ public class CameraHeadService extends Service implements
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(),
-                            R.string.device_doesnt_have_camera,
+                            R.string.camera_your_device_doesnt_have_a_camera_toast,
                             Toast.LENGTH_LONG).show();
                 }
             });

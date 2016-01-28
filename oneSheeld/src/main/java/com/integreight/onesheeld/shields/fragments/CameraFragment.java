@@ -36,20 +36,10 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
         @Override
         public void checkCameraHardware(boolean isHasCamera) {
-
-            if (canChangeUI()) {
-                if (!isHasCamera) {
-                    Toast.makeText(activity, R.string.device_doesnt_have_camera2,
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
         }
 
         @Override
         public void OnPictureTaken() {
-            if (canChangeUI())
-                Toast.makeText(activity, R.string.your_photo_has_been_captured,
-                        Toast.LENGTH_SHORT).show();
         }
 
         @Override

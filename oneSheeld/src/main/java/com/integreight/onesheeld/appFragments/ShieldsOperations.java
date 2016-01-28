@@ -159,7 +159,7 @@ public class ShieldsOperations extends Fragment {
                 });
             } catch (Exception e) {
             }
-            activity.setTitle(mFrag.getUIShield(0).name + " " + activity.getString(R.string.shield));
+//            activity.setTitle(mFrag.getUIShield(0).name + " " + activity.getString(R.string.shield));
             activity.getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.shieldsContainerFrame, mContent,

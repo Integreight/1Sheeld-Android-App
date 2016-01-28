@@ -180,7 +180,7 @@ public class Jodem {
         timeout = new TimeOut(3, timeoutHandler);
         if (readByteFromBuffer() != NAK) {
             abort(2);
-            onError(context.getString(R.string.didnt_request_key));
+            onError(context.getString(R.string.jodem_1sheeld_didnt_request_the_authentication_key));
             return false;
         }
         write(KEY);
@@ -209,7 +209,7 @@ public class Jodem {
                 else
                     cancel = 1;
             } else {
-                onError(context.getString(R.string.expected_response));
+                onError(context.getString(R.string.jodem_send_error_expected_a_response_got_another_one));
             }
 
             error_count += 1;
@@ -270,7 +270,7 @@ public class Jodem {
                         //// excessive amounts of retransmissions requested,
                         //// abort transfer
                         abort(2);
-                        onError(context.getString(R.string.many_errors));
+                        onError(context.getString(R.string.jodem_many_errors_happened_upgrading_aborted));
                         return false;
                     }
                     // return to loop and resend
@@ -278,7 +278,7 @@ public class Jodem {
                 }
                 //  // protocol error
                 abort(2);
-                onError(context.getString(R.string.protocol_error));
+                onError(context.getString(R.string.jodem_protocol_error_upgrading_aborted));
                 return false;
             }
             // // keep track of sequence
@@ -299,7 +299,7 @@ public class Jodem {
                 error_count += 1;
                 if (error_count >= retry) {
                     abort(2);
-                    onError(context.getString(R.string.final_response_not_received));
+                    onError(context.getString(R.string.jodem_final_response_not_received_transfer_aborted));
                     return false;
                 }
             }

@@ -149,7 +149,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                                     cachedArduinoCallbackStatus = false;
                                 } catch (RuntimeException e) {
                                     cachedArduinoCallbackStatus = false;
-                                    Toast.makeText(getActivity(), R.string.received_an_unexpected_frame, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), R.string.general_toasts_received_an_unexpected_frame_toast, Toast.LENGTH_SHORT).show();
                                     CrashlyticsUtils.logException(e);
                                 }
                             }

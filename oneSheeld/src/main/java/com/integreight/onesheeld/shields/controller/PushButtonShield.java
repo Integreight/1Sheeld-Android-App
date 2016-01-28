@@ -17,7 +17,7 @@ public class PushButtonShield extends ControllerParent<PushButtonShield> {
     public PushButtonShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.push_button2)};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.push_button_pin_name)};
     }
 
     public PushButtonShield(Activity activity, String tag) {

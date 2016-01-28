@@ -161,7 +161,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                     HttpMethod.POST, callback);
 
             request.executeAsync();
-        } else if (eventHandler != null) eventHandler.onFacebookError(activity.getString(R.string.you_must_login_first));
+        } else if (eventHandler != null) eventHandler.onFacebookError(activity.getString(R.string.facebook_you_must_login_first_toast));
 
     }
 
@@ -212,13 +212,13 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                             System.gc();
                             if (eventHandler != null) {
                                 eventHandler.stopProgress();
-                                Toast.makeText(activity, R.string.image_uploaded,
+                                Toast.makeText(activity, R.string.facebook_image_uploaded,
                                         Toast.LENGTH_SHORT).show();
                                 eventHandler.onRecievePost(msg);
                             }
                         }
                     };
-                    Toast.makeText(activity, R.string.uploading_your_image,
+                    Toast.makeText(activity, R.string.facebook_uploading_your_image,
                             Toast.LENGTH_SHORT).show();
                     GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(), "me/photos",
                             postParams, HttpMethod.POST, callback);
@@ -261,7 +261,7 @@ public class FacebookShield extends ControllerParent<FacebookShield> {
                 } else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            R.string.check_internet_connection,
+                            R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                             Toast.LENGTH_SHORT).show();
             }
         }

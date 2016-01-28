@@ -16,7 +16,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
@@ -101,7 +100,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
                         lastPostTextCont.addView(posty);
                         ((ScrollView) lastPostTextCont.getParent())
                                 .invalidate();
-                        Toast.makeText(activity, R.string.posted_on_your_wall,
+                        Toast.makeText(activity, R.string.facebook_posted_on_your_wall_toast,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -219,7 +218,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
                     getControllerTag())).loginToFacebook();
         else
             Toast.makeText(getApplication().getApplicationContext(),
-                    R.string.check_your_internet_connection2,
+                    R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                     Toast.LENGTH_SHORT).show();
         // getAppActivity().setSupportProgressBarIndeterminateVisibility(true);
     }
@@ -248,7 +247,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
             lastPostTextCont.removeAllViews();
             lastPostTextCont.setVisibility(View.VISIBLE);
         }
-        userNameTextView.setText(activity.getString(R.string.logged_in_as2)+": "
+        userNameTextView.setText(activity.getString(R.string.facebook_logged_in_as)+": "
                 + ((FacebookShield) getApplication().getRunningShields().get(
                 getControllerTag())).getUsername());
     }

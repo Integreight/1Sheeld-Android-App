@@ -46,9 +46,9 @@ public class TerminalLinesAdapter extends BaseAdapter {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                     if (!copyLine.equals("")) {
                         clipboardManager.setPrimaryClip(ClipData.newPlainText("OneSheeldClipboard", copyLine));
-                        Toast.makeText(activity.getApplicationContext(), R.string.line_copied, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.getApplicationContext(), R.string.terminal_line_copied_toast, Toast.LENGTH_SHORT).show();
                     }else
-                        Toast.makeText(activity.getApplicationContext(), R.string.couldnt_copy_empty_line, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity.getApplicationContext(), R.string.terminal_couldnt_copy_empty_line_toast, Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -168,7 +168,7 @@ public class TerminalLinesAdapter extends BaseAdapter {
             clipboardManager = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 clipboardManager.setPrimaryClip(ClipData.newPlainText("OneSheeldClipboard", new String(allLines)));
-                Toast.makeText(activity.getApplicationContext(), R.string.lines_copied, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity.getApplicationContext(), R.string.terminal_lines_copied_toast, Toast.LENGTH_SHORT).show();
             }
         }
     }

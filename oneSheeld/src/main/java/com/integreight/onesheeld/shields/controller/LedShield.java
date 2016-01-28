@@ -18,7 +18,7 @@ public class LedShield extends ControllerParent<LedShield> {
     public LedShield() {
         super();
         requiredPinsIndex = 0;
-        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.led2)};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.led_pin_name)};
     }
 
     public LedShield(Activity activity, String tag) {

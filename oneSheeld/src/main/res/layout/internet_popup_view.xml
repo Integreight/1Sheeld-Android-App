@@ -74,6 +74,6 @@
             android:layout_marginTop="10dp"
             android:id="@+id/cancelPopup"
             android:textStyle="bold"
-            android:text="@string/cancel_popup" />
+            android:text="@string/internet_cancel_response_popup_button" />
     </LinearLayout>
 </LinearLayout>

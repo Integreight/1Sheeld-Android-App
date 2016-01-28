@@ -2,349 +2,412 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <string name="app_name" translatable="false">1Sheeld</string>
-    <string name="clear_automatically_connecting_1sheeld">Clear Automatically Connecting 1Sheeld</string>
-    <string name="about">About</string>
 
-    <!-- MainActivity -->
-    <string name="send">Send</string>
-    <string name="bluetooth_was_not_enabled">Bluetooth was not enabled</string>
-    <string name="shields_selection_has_been_saved">Shields selection has been saved</string>
-    <string name="shields_selection_has_been_cleared">Shields selection has been cleared</string>
+    <!-- Context Menu -->
+    <string name="context_menu_clear_automatically_connecting_1sheeld_button">Clear Automatically Connecting 1Sheeld</string>
+    <string name="context_menu_about_button">About</string>
+    <string name="context_menu_app_tutorial_button">App Tutorial</string>
 
-    <!-- DeviceListActivity -->
-    <string name="no_devices_found">No devices found</string>
+    <!-- General Toasts -->
+    <string name="general_toasts_bluetooth_was_not_enabled_toast">Bluetooth was not enabled</string>
+    <string name="general_toasts_shields_selection_has_been_saved_toast">Shields selection has been saved</string>
+    <string name="general_toasts_shields_selection_has_been_cleared_toast">Shields selection has been cleared</string>
+    <string name="general_toasts_unable_to_connect_to_the_board_toast">Unable to connect to the board</string>
+    <string name="general_toasts_device_doesnt_support_this_sensor_toast">Device doesn\'t support this sensor!</string>
+    <string name="general_toasts_please_check_your_internet_connection_and_try_again_toast">Please check your Internet connection and try again.</string>
+    <string name="general_toasts_received_an_unexpected_frame_toast">Received an unexpected frame</string>
+    <string name="general_toasts_you_can_select_the_shield_now_toast">You can select the shield now.</string>
 
-    <!-- Name of the plug-in that appears in Locale -->
+    <!-- Connectivity Popup -->
+    <string name="connectivity_popup_no_devices_found">No devices found</string>
+    <string name="connectivity_popup_not_connected">Not Connected</string>
+    <string name="connectivity_popup_searching">Searching</string>
+    <string name="connectivity_popup_connecting">Connecting</string>
+    <string name="connectivity_popup_select_your_device">Select Your Device</string>
+    <string name="connectivity_popup_scan_button">Scan</string>
+    <string name="connectivity_popup_try_again_button">Try Again</string>
+    <string name="connectivity_popup_connect_automatically_to_this_device_checkbox">Connect Automatically to This Device</string>
+    <string name="connectivity_popup_bluetooth_is_not_available_toast">Bluetooth is not available</string>
+    <string name="connectivity_popup_scan_for_1sheeld">Scan for 1Sheeld</string>
+
+    <!-- Firmware Upgrade Popup -->
+    <string name="firmware_upgrade_popup_upgrade_firmware">Upgrade Firmware</string>
+    <string name="firmware_upgrade_popup_upgrade_button">Upgrade</string>
+    <string name="firmware_upgrade_popup_done_successfully">Done Successfully!</string>
+    <string name="firmware_upgrade_popup_installing">Installing</string>
+    <string name="firmware_upgrade_popup_an_error_occured">An error occurred!</string>
+    <string name="firmware_upgrade_popup_1sheeld_not_responding">1Sheeld not responding!</string>
+    <string name="firmware_upgrade_popup_downloading">Downloading</string>
+    <string name="firmware_upgrade_popup_please_press_reset">Please, Press reset!</string>
+    <string name="firmware_upgrade_popup_error_downloading">Error Downloading!</string>
+    <string name="firmware_upgrade_popup_no_internet_connection">No Internet Connection</string>
+
+    <!-- Tasker Plugin -->
     <string name="plugin_name">@string/app_name</string>
 
-    <!-- Social providers id -->
-    <string name="scan">Scan</string>
-    <string name="tryAgain">Try Again</string>
-    <string name="notConnected">Not Connected</string>
-    <string name="searching">Searching......</string>
-    <string name="connecting">Connecting......</string>
-    <string name="selectYourDevice">Select Your Device</string>
-    <string name="connectAutomatocallyToThisDevice">Connect Automatically to This Device</string>
+    <!-- Shields List -->
+    <string name="shields_list_deselect_all_button">Deselect All</string>
+    <string name="shields_list_remember_selection_button">Remember</string>
+    <string name="shields_list_select_at_least_1_shield_toast">Select at least 1 shield</string>
+    <string name="shields_list_please_connect_to_your_board_first">Please connect to your board first</string>
 
-    <!-- Hint text in Gmail signin dialog -->
-    <string name="deselectAll">Deselect All</string>
-    <string name="remember">Remember</string>
-    <string name="upgradeFirmata">Upgrade Firmware</string>
-    <string name="appTutorial">App Tutorial</string>
-    <string name="upgrad">Upgrade</string>
-    <!-- text in sensors -->
-    <string name="x">X</string>
-    <string name="y">Y</string>
-    <string name="z">Z</string>
-    <string name="cm">CM</string>
-    <string name="ms2">m/s2</string>
-    <string name="rads">rad/s</string>
-    <string name="lx">light luxes</string>
-    <string name="ut">uT</string>
-    <string name="hpa">hPa</string>
-    <string name="degree">Degree</string>
+    <!-- Sensors Axis -->
+    <string name="sensors_axis_x_axis">X</string>
+    <string name="sensors_axis_y_axis">Y</string>
+    <string name="sensors_axis_z_axis">Z</string>
 
-    <string name="buzzer_tone">Press Required Tone</string>
-
-    <!-- Voice Recognition -->
-    <string name="speak">Speak</string>
-    <string name="tabToSpeak">Tap\nto\nSpeak</string>
+    <!-- Sensors Units -->
+    <string name="sensors_units_centimeter">cm</string>
+    <string name="sensors_units_meter_per_second_square">m/s2</string>
+    <string name="sensors_units_rad_per_second">rad/s</string>
+    <string name="sensors_units_lux">lx</string>
+    <string name="sensors_units_micro_tesla">μT</string>
+    <string name="sensors_units_hectopascal">hPa</string>
+    <string name="sensors_units_degree">Degree</string>
 
     <!-- Tutorial -->
-    <string name="go">Go!</string>
-    <string name="demo">Demo</string>
-    <!-- Terminal -->
-    <string name="terminalString">ASCII</string>
-    <string name="terminalASCI">DEC</string>
-    <string name="terminalBINARY">Binary</string>
-    <string name="terminalHEX">Hex</string>
+    <string name="tutorial_go_button">Go!</string>
+    <string name="tutorial_demo_button">Demo</string>
+    <string name="tutorial_dont_show_this_tutorial_again">Don\'t show this tutorial again</string>
+    <string name="tutorial_you_are_ready_to_go">You are\nready to go!</string>
+    <string name="tutorial_for_more_tutorials_visit_our_website">For more tutorials visit our website\n1Sheeld.com</string>
+    <string name="tutorial_skip">Skip</string>
 
-    <!-- Data Logger -->
-    <string name="readyToLog">Ready\nFor\nLogging</string>
-    <string name="stopLogging">Logging\nStopped</string>
-    <string name="logging">Logging</string>
-    <string name="stopLoggingButton">Stop Logging</string>
-
-    <!-- Vibration -->
-    <string name="stopVibrationButton">Stop!</string>
-
-    <!-- Lock Patter -->
-    <string name="lockscreen_access_pattern_start">Pattern started</string>
-    <!-- Accessibility description sent when the pattern times out and is cleared. [CHAR LIMIT=NONE] -->
-    <string name="lockscreen_access_pattern_cleared">Pattern cleared</string>
-    <!-- Accessibility description sent when user adds a cell to the pattern. [CHAR LIMIT=NONE] -->
-    <string name="lockscreen_access_pattern_cell_added">Cell added</string>
-    <!-- Accessibility description sent when user completes drawing a pattern. [CHAR LIMIT=NONE] -->
-    <string name="lockscreen_access_pattern_detected">Pattern completed</string>
-
-
-    <!-- Internet -->
-    <string name="no_requests">No Requests Found</string>
-    <string name="cancel_popup">Cancel</string>
-
+    <!-- Rating Dialog -->
     <string name="rate_dialog_title">Did you like 1Sheeld?</string>
     <string name="rate_dialog_message">If you enjoy playing with 1Sheeld app, would you mind taking a moment to rate it? We appreciate your awesome support!</string>
     <string name="rate_dialog_ok">Now :-)</string>
     <string name="rate_dialog_cancel">Later :-|</string>
     <string name="rate_dialog_no">Never :-(</string>
 
+    <!-- Firmware Upgrade Library (Jodem) -->
+    <string name="jodem_1sheeld_didnt_request_the_authentication_key">1Sheeld didn\'t request the authentication key!</string>
+    <string name="jodem_send_error_expected_a_response_got_another_one">Send error, expected a response, got another one!</string>
+    <string name="jodem_many_errors_happened_upgrading_aborted">Many errors happened, upgrading aborted!</string>
+    <string name="jodem_protocol_error_upgrading_aborted">Protocol Error, upgrading aborted!</string>
+    <string name="jodem_final_response_not_received_transfer_aborted">Final response not received, transfer aborted!</string>
+
+    <!-- About Dialog -->
+    <string name="about_dialog_about_1sheeld">About 1Sheeld</string>
+    <string name="about_dialog_developed_with_love_by_integreight_inc_team_in_cairo_egypt">Developed with love by Integreight, Inc. team in Cairo, Egypt.</string>
+    <string name="about_dialog_if_you_have_any_question_please_visit_our_website_or_drop_us_an_email_on_info_integreight_com">If you have any question, please visit our website or drop us an email on info@integreight.com</string>
+    <string name="about_dialog_firmware_version">Firmware Version</string>
+    <string name="about_dialog_app_version">App Version</string>
+    <string name="about_dialog_app_was_last_updated_on">App was last updated on</string>
+    <string name="about_dialog_if_you_are_interested_in_this_apps_source_code_please_visit_our_github_page_github_com_integreight">If you are interested in this app\'s source code, please visit our Github page: github.com/integreight</string>
+    <string name="about_dialog_okay">Okay!</string>
+
+    <!-- Connection Notification -->
+    <string name="connection_notification_connected_to">Connected to</string>
+    <string name="connection_notification_1sheeld_is_connected">1Sheeld is connected!</string>
+
+    <!-- Firmware Upgrade Decision Dialog -->
+    <string name="firmware_upgrade_decision_dialog_optional_firmware_upgrade">Optional Firmware Upgrade</string>
+    <string name="firmware_upgrade_decision_dialog_now_button">Now</string>
+    <string name="firmware_upgrade_decision_dialog_not_now_button">Not Now</string>
+    <string name="firmware_upgrade_decision_dialog_required_firmware_upgrade">Required Firmware Upgrade</string>
+    <string name="firmware_upgrade_decision_dialog_start">Start</string>
+
+    <!-- Library Upgrade Dialog -->
+    <string name="library_upgrade_dialog_arduino_library_update">Arduino Library Update</string>
+    <string name="library_upgrade_dialog_theres_a_new_version_of_1sheelds_arduino_library_available_on_our_website">There\'s a new version of 1Sheeld\'s Arduino library available on our website!</string>
+    <string name="library_upgrade_dialog_ok_button">OK</string>
+
+    <!-- Context Menu Tutorial -->
+    <string name="context_menu_tutorial_open_context_menu">Open Context Menu</string>
+    <string name="context_menu_tutorial_upgrade_the_firmware_clear_the_automatic_connection_and_see_the_tutorial_again_after_opening_the_context_menu_by_clicking_on_1sheeld_logo">Upgrade the firmware, clear the automatic connection and see the tutorial again after opening the context menu by clicking on 1Sheeld logo.</string>
+
+    <!-- Main Activity -->
+    <string name="main_activity_skip">Skip</string>
+    <string name="main_activity_draw_over_apps_enabled_you_can_select_the_shield">Draw over apps enabled, you can select the shield.</string>
+    <string name="main_activity_draw_over_apps_was_not_enabled">Draw over apps was not enabled!</string>
+    <string name="main_activity_bluetooth_scan_needs_location_permission">Bluetooth scan needs location permission.</string>
+    <string name="main_activity_allow_button">Allow</string>
+    <string name="main_activity_deny_button">Deny</string>
+    <string name="main_activity_location_permission_denied">Location permission denied.</string>
+    <string name="main_activity_please_turn_on_location_permission">Please turn on location permission.</string>
+    <string name="main_activity_this_shield_needs_some_permissions">This shield needs some permissions.</string>
+    <string name="main_activity_your_device_didnt_allow_this_shield_permissions">Your device didn\'t allow this shield permissions.</string>
+
+    <!-- Accelerometer Sensor -->
+    <string name="accelerometer_shield_name">Accelerometer</string>
+
+    <!-- Buzzer -->
+    <string name="buzzer_shield_name">Buzzer</string>
+    <string name="buzzer_press_required_tone">Press Required Tone</string>
+    <string name="buzzer_pin_name">Buzzer</string>
+    <string name="buzzer_an_error_occurred_cant_buzz_toast">An error occurred, can\'t buzz!</string>
+
+    <!-- Camera -->
+    <string name="camera_shield_name">Camera</string>
+    <string name="camera_your_picture_has_been_taken_toast">Your picture has been taken!</string>
+    <string name="camera_your_device_doesnt_have_a_front_camera_toast">Your device doesn\'t have a front camera!</string>
+    <string name="camera_camera_is_not_available_toast">Camera is not available!</string>
+    <string name="camera_your_device_doesnt_have_a_camera_toast">Your device doesn\'t have a camera!</string>
+    <string name="camera_image_not_found_toast">Image not found</string>
+    <string name="camera_camera_is_unavailable_maybe_its_used_by_another_application_toast">Camera is unavailable, maybe it\'s used by another application!</string>
+    <string name="camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly">We need you to enable the draw over apps permission in order to show the camera preview correctly.</string>
+    <string name="camera_validation_dialog_ok_button">Ok</string>
+    <string name="camera_validation_dialog_later_button">later</string>
+    <string name="camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast">Please enable the permission to be able to select this shield</string>
+
+    <!-- Clock -->
+    <string name="clock_shield_name">Clock</string>
+    <string name="clock_time">Time</string>
+
+    <!-- Color Detector -->
+    <string name="color_detector_shield_name">Color Detector</string>
+    <string name="color_detector_camera_is_unavailable_maybe_its_used_by_another_application_toast">@string/camera_camera_is_unavailable_maybe_its_used_by_another_application_toast</string>
+    <string name="color_detector_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly">@string/camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly</string>
+    <string name="color_detector_validation_dialog_ok_button">@string/camera_validation_dialog_ok_button</string>
+    <string name="color_detector_validation_dialog_later_button">@string/camera_validation_dialog_later_button</string>
+    <string name="color_detector_please_enable_the_permission_to_be_able_to_select_this_shield_toast">@string/camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast</string>
+    <string name="color_detector_small">Small</string>
+    <string name="color_detector_medium">Medium</string>
+    <string name="color_detector_large">Large</string>
+    <string name="color_detector_bit">Bit</string>
+    <string name="color_detector_1">1</string>
+    <string name="color_detector_2">2</string>
+    <string name="color_detector_3">3</string>
+    <string name="color_detector_4">4</string>
+    <string name="color_detector_6">6</string>
+    <string name="color_detector_8">8</string>
+    <string name="color_detector_9">9</string>
+    <string name="color_detector_12">12</string>
+    <string name="color_detector_15">15</string>
+    <string name="color_detector_18">18</string>
+    <string name="color_detector_24">24</string>
+
+    <!-- Data Logger -->
+    <string name="data_logger_shield_name">Data Logger</string>
+    <string name="data_logger_ready_for_logging">Ready\nFor\nLogging</string>
+    <string name="data_logger_logging_stopped_button">Logging\nStopped</string>
+    <string name="data_logger_logging">Logging</string>
+    <string name="data_logger_stop_logging_button">Stop Logging</string>
+    <string name="data_logger_to">To</string>
+    <string name="data_logger_data_logged_successfully_notification">Data Logged Successfully</string>
+
+    <!-- Email -->
+    <string name="email_shield_name">Email</string>
+    <string name="email_email_couldnt_be_sent_toast">Email couldn\'t be sent</string>
+    <string name="email_email_sent_successfully_toast">Email sent Successfully</string>
+    <string name="email_you_didnt_specify_an_account_to_use_toast">You didn\'t specify an account to use</string>
+
+    <!-- Facebook -->
+    <string name="facebook_shield_name">Facebook</string>
+    <string name="facebook_you_must_login_first_toast">You must login first!</string>
+    <string name="facebook_image_uploaded">Image Uploaded!</string>
+    <string name="facebook_uploading_your_image">Uploading your image!</string>
+    <string name="facebook_posted_on_your_wall_toast">Posted on your wall!</string>
+    <string name="facebook_logged_in_as">Logged in as</string>
+
+    <!-- Foursquare -->
+    <string name="foursquare_shield_name">Foursquare</string>
+    <string name="foursquare_failed_to_receive_access_token">Failed to receive access token.</string>
+    <string name="foursquare_loading">Loading</string>
+    <string name="foursquare_foursquare_authorize_login_failed_toast">Foursquare login failed</string>
+    <string name="foursquare_foursquare_login_canceled_toast">Foursquare login canceled</string>
+    <string name="foursquare_please_wait">Please, Wait!</string>
+    <string name="foursquare_your_last_checkin_will_be_here">Your last checkin will be here!</string>
+
+    <!-- Game Pad -->
+    <string name="game_pad_shield_name">Game Pad</string>
+    <string name="game_pad_up_arrow">Up Arrow</string>
+    <string name="game_pad_right_arrow">Right Arrow</string>
+    <string name="game_pad_down_arrow">Down Arrow</string>
+    <string name="game_pad_left_arrow">Left Arrow</string>
+    <string name="game_pad_yellow_button">Yellow Button</string>
+    <string name="game_pad_red_button">Red Button</string>
+    <string name="game_pad_green_button">Green Button</string>
+    <string name="game_pad_blue_button">Blue Button</string>
+
+    <!-- GLCD -->
+    <string name="glcd_shield_name">GLCD</string>
+
+    <!-- GPS -->
+    <string name="gps_shield_name">GPS</string>
+    <string name="gps_validation_dialog_ok_button">@string/camera_validation_dialog_ok_button</string>
+    <string name="gps_validation_dialog_later_button">@string/camera_validation_dialog_later_button</string>
+    <string name="gps_we_need_you_to_enable_the_location_services_for_this_shield_to_work_correctly">We need you to enable the location services for this shield to work correctly</string>
+    <string name="gps_please_enable_location_services_to_be_able_to_use_this_shield">Please enable location services to be able to use this shield</string>
+    <string name="gps_latitude">Latitude</string>
+    <string name="gps_longitude">Longitude</string>
+
+    <!-- Gravity Sensor -->
+    <string name="gravity_shield_name">Gravity</string>
+
+    <!-- Gyroscope Sensor -->
+    <string name="gyroscope_shield_name">Gyroscope</string>
+
+    <!-- Internet -->
+    <string name="internet_shield_name">Internet</string>
+    <string name="internet_no_requests_found">No Requests Found</string>
+    <string name="internet_cancel_response_popup_button">Cancel</string>
+    <string name="internet_request">Request</string>
+    <string name="internet_redirecting_to">Redirecting to</string>
+    <string name="internet_status_code">Status code</string>
+    <string name="internet_headers">Headers</string>
+    <string name="internet_response_body">Response Body</string>
+
+    <!-- Keyboard -->
+    <string name="keyboard_shield_name">Keyboard</string>
+
+    <!-- Keypad -->
+    <string name="keypad_shield_name">Keypad</string>
+    <string name="keypad_row">Row</string>
+    <string name="keypad_column">Column</string>
+
+    <!-- LCD -->
+    <string name="lcd_shield_name">LCD</string>
+
+    <!-- LED -->
+    <string name="led_shield_name">LED</string>
+    <string name="led_pin_name">Led</string>
+
+    <!-- Light Sensor -->
+    <string name="light_shield_name">Light</string>
+
+    <!-- Magnetometer Sensor -->
+    <string name="magnetometer_shield_name">Magnetometer</string>
+    <string name="magnetometer_magnetic_field_is">Magnetic Field is</string>
+
+    <!-- Mic -->
+    <string name="mic_shield_name">Mic</string>
+    <string name="mic_recording">Recording</string>
+    <string name="mic_sound_recorded_successfully_to">Sound recorded successfully to</string>
+
+    <!-- Music Player -->
+    <string name="music_player_shield_name">Music Player</string>
+    <string name="music_player_playing">Playing</string>
+    <string name="music_player_paused">Paused</string>
+    <string name="music_player_add_button">Add</string>
+    <string name="music_player_remove_button">Remove</string>
+
     <!-- NFC -->
-    <string name="no_card">Approach NFC tag!</string>
-    <string name="unable_to_connect">Unable to connect device</string>
-    <string name="didnt_request_key">1Sheeld didn\'t request the key!</string>
-    <string name="expected_response">Send error, expected a respose, got another one</string>
-    <string name="many_errors">Many errors happened, upgrading aborted!</string>
-    <string name="protocol_error">Protocol Error, upgrading aborted!</string>
-    <string name="final_response_not_received">Final response not received, transfer aborted!</string>
-    <string name="request">Request</string>
-    <string name="record">Record</string>
-    <string name="line_copied">Line Copied</string>
-    <string name="couldnt_copy_empty_line">Couldn\'t copy empty line.</string>
-    <string name="lines_copied">Lines copied</string>
-    <string name="select_at_least_1_shield">Select at least 1 shield</string>
-    <string name="please_connect_first">Please connect to your board first.</string>
-    <string name="about_1sheeld">About 1Sheeld</string>
-    <string name="developed_with_love">Developed with love by Integreight, Inc. team in Cairo, Egypt.</string>
-    <string name="if_you_have_any_question">If you have any question, please visit our website or drop us an email on info@integreight.com</string>
-    <string name="firmware_version">Firmware Version</string>
-    <string name="app_version">App Version</string>
-    <string name="app_was_last_updated_on">App was last updated on</string>
-    <string name="interested_github">If you are interested in this app\'s source code, please visit our Github page: github.com/integreight</string>
-    <string name="okay">Okay!</string>
-    <string name="shield">Shield</string>
-    <string name="led">LED</string>
-    <string name="notification">Notification</string>
-    <string name="seven_segment">Seven Segment</string>
-    <string name="buzzer">Buzzer</string>
-    <string name="mic">Mic</string>
-    <string name="keypad">Keypad</string>
-    <string name="slider">Slider</string>
-    <string name="lcd">LCD</string>
-    <string name="magnetometer">Magnetometer</string>
-    <string name="push_button">Push Button</string>
-    <string name="toggle_button">Toggle Button</string>
-    <string name="accelerometer">Accelerometer</string>
-    <string name="facebook">Facebook</string>
-    <string name="twitter">Twitter</string>
-    <string name="game_pad">Game Pad</string>
-    <string name="foursquare">Foursquare</string>
-    <string name="gps">GPS</string>
-    <string name="sms">SMS</string>
-    <string name="music_player">Music Player</string>
-    <string name="gyroscope">Gyroscope</string>
-    <string name="skype">Skype</string>
-    <string name="proximity">Proximity</string>
-    <string name="gravity">Gravity</string>
-    <string name="orientation">Orientation</string>
-    <string name="light">Light</string>
-    <string name="pressure">Pressure</string>
-    <string name="temperature">Temperature</string>
-    <string name="camera">Camera</string>
-    <string name="phone">Phone</string>
-    <string name="email">Email</string>
-    <string name="clock">Clock</string>
-    <string name="keyboard">Keyboard</string>
-    <string name="text_to_speech">Text To Speech</string>
-    <string name="voice_recognizer">Voice Recognizer</string>
-    <string name="data_logger">Data Logger</string>
-    <string name="terminal">Terminal</string>
-    <string name="tasker">Tasker</string>
-    <string name="pattern">Pattern</string>
-    <string name="internet">Internet</string>
-    <string name="nfc">NFC</string>
-    <string name="glcd">GLCD</string>
-    <string name="color_detector">Color Detector</string>
-    <string name="vibration">Vibration</string>
-    <string name="bluetooth_not_available">Bluetooth is not available</string>
-    <string name="scan_for_1sheeld">Scan for 1Sheeld</string>
-    <string name="done_successfully">Done Successfully!</string>
-    <string name="upgrade_firmware">Upgrade Firmware</string>
-    <string name="installing">Installing</string>
-    <string name="an_error_occured">An error occurred!</string>
-    <string name="sheeld_not_responding">1Sheeld not responding!</string>
-    <string name="downloading">Downloading</string>
-    <string name="press_reset">Please, Press reset!</string>
-    <string name="error_downloading">Error Downloading!</string>
-    <string name="upgrade">Upgrade</string>
-    <string name="no_internet_connection">No Internet Connection</string>
-    <string name="to">To</string>
-    <string name="onesheeld_is_connected">1Sheeld is connected!</string>
-    <string name="your_picture_has_been_taken">Your Picture has been taken !</string>
-    <string name="api_doesnt_support_front_camera">API dosen\'t support front camera</string>
-    <string name="device_doesnt_have_front_camera">Your device doesn\'t have a front camera!</string>
-    <string name="camera_is_not_available">Camera is not available!</string>
-    <string name="device_doesnt_have_camera">Your device doesn\'t have a camera!</string>
-    <string name="image_not_found">Image not found</string>
-    <string name="failed_to_receive_access_token">Failed to receive access token.</string>
-    <string name="application_requires_permission_to_access_the_internet">Application requires permission to access the Internet</string>
-    <string name="error">Error</string>
-    <string name="loading">Loading</string>
-    <string name="redirecting_to">Redirecting to</string>
-    <string name="nfc_disabled">Nfc Disabled</string>
-    <string name="device_doesnt_support_this_sensor">Device doesn\'t support this sensor!</string>
-    <string name="camera_is_unavailable">Camera is unavailable, maybe it\'s used by another application !</string>
-    <string name="draw_over_apps_message">We need you to enable the draw over apps permission in order to show the camera preview correctly.</string>
-    <string name="ok">Ok</string>
-    <string name="later">No</string>
-    <string name="enable_permission">Please enable the permission to be able to select this shield</string>
-    <string name="data_logged_successfully">Data Logged Successfully</string>
-    <string name="data_logger_shield">Data Logger Shield</string>
-    <string name="please_check_internet">Please check your Internet connection and try again.</string>
-    <string name="onesheeld_app_email_shield">1Sheeld app | Email Shield</string>
-    <string name="email_not_sent">Email not sent.</string>
-    <string name="you_must_login_first">You must login first!</string>
-    <string name="image_uploaded">Image Uploaded!</string>
-    <string name="uploading_your_image">Uploading your image!</string>
-    <string name="check_internet_connection">Please check your Internet connection and try again.</string>
-    <string name="foursquare_authorize_login_failed">"Foursquare-authorize Login failed "</string>
-    <string name="foursquare_login_canceled">"Foursquare Login canceled "</string>
-    <string name="please_wait">Please, Wait!</string>
-    <string name="up_arrow">Up Arrow</string>
-    <string name="right_arrow">Right Arrow</string>
-    <string name="down_arrow">Down Arrow</string>
-    <string name="left_arrow">Left Arrow</string>
-    <string name="yellow_button">Yellow Button</string>
-    <string name="red_button">Red Button</string>
-    <string name="green_button">Green Button</string>
-    <string name="blue_button">Blue Button</string>
-    <string name="enable_location_services">We need you to enable the location services for this shield to work correctly.</string>
-    <string name="please_enable_location_services">Please enable location services to be able to use this shield</string>
-    <string name="gps_shield">Gps Sheeld</string>
-    <string name="row">Row</string>
-    <string name="column">Column</string>
-    <string name="led2">Led</string>
-    <string name="recording">Recording</string>
-    <string name="sound_recorded_successfully_to">Sound recorded successfully to</string>
-    <string name="mic_shield">Mic Shield</string>
-    <string name="device_doesnt_support_nfc">Device doesn\'t support NFC!</string>
-    <string name="notification_received_from_onesheeld">Notification received from 1Sheeld!</string>
-    <string name="device_doesnt_support_calling_functionality">Device doesn\'t support calling functionality!</string>
-    <string name="push_button2">Push</string>
-    <string name="check_internet_connection_2">Please check your Internet connection and try again.</string>
-    <string name="skype_not_installed">Skype Client is not Installed</string>
-    <string name="slider2">Slider</string>
-    <string name="device_doesnt_support_sms_functionality">Device doesn\'t support SMS functionality!</string>
-    <string name="buzzer2">Buzzer</string>
-    <string name="cant_play_current_buzz">Can\'t play the current buzz! Please, replace it</string>
-    <string name="please_install_voice_search_from_google_play">Please, install voice search from google play</string>
-    <string name="no_matching_result">No Matching result</string>
-    <string name="device_doesnt_support_tts">Opps! Your device doesn\'t support Speech to Text</string>
-    <string name="tts_failed">TTS Failed :(</string>
-    <string name="speech_error">Speech Error</string>
-    <string name="failed_utterance_progress">Failed Utterance Progress</string>
-    <string name="failed_utterance_completion">Failed Utterance completion</string>
-    <string name="toggle_button2">Toggle</string>
-    <string name="tweet_posted">Tweet posted!</string>
-    <string name="message_sent_to">Message sent to</string>
-    <string name="please_wait2">Please, Wait!</string>
-    <string name="twitter_login_canceled">Twitter Login Canceled</string>
-    <string name="please_check_connection3">Please check your Internet connection and try again.</string>
-    <string name="uploading_the_image">Uploading the image!</string>
-    <string name="file_not_found">File Not Found</string>
-    <string name="image_uploaded_and_tweet_posted">Image uploaded and tweet posted!</string>
-    <string name="device_doesnt_support_this_hardware">Device doesn\'t support this hardware!</string>
-    <string name="device_doesnt_have_camera2">Your Device doesn\'t have Camera</string>
-    <string name="your_photo_has_been_captured">Your Camera has been Captured Image</string>
-    <string name="small">Small</string>
-    <string name="medium">Medium</string>
-    <string name="large">Large</string>
-    <string name="bit">Bit</string>
-    <string name="_1">1</string>
-    <string name="_2">2</string>
-    <string name="_3">3</string>
-    <string name="_4">4</string>
-    <string name="_6">6</string>
-    <string name="_8">8</string>
-    <string name="_9">9</string>
-    <string name="_12">12</string>
-    <string name="_15">15</string>
-    <string name="_18">18</string>
-    <string name="_24">24</string>
-    <string name="check_internet_connection4">Please check your Internet connection and try again.</string>
-    <string name="email_sent">Email sent Successful</string>
-    <string name="account_unspecified">Account unspecified.</string>
-    <string name="posted_on_your_wall">Posted on your wall!</string>
-    <string name="latitude">Latitude</string>
-    <string name="longitude">Longitude</string>
-    <string name="status_code">Status code</string>
-    <string name="headers">Headers</string>
-    <string name="response_body">Response Body</string>
-    <string name="light_in_byte">Light in Byte</string>
-    <string name="magnetic_field_is">Magnetic Field is</string>
-    <string name="music_file_name">Music file name</string>
-    <string name="playing">Playing</string>
-    <string name="paused">Paused</string>
-    <string name="tag_id">Tag ID</string>
-    <string name="max_size">Max Size</string>
-    <string name="bytes">bytes</string>
-    <string name="used_size">Used Size</string>
-    <string name="number_of_records">No. of Records</string>
-    <string name="records">record(s)</string>
-    <string name="call_to">Call to</string>
-    <string name="call_from">Call from</string>
-    <string name="pressure_in_byte">Pressure in Byte</string>
-    <string name="distance_in_byte">Distance in Byte</string>
-    <string name="outgoing_video_call">" Outgoing Video Call"</string>
-    <string name="outgoing_chat">Outgoing Chat</string>
-    <string name="outgoing_call">Outgoing Call</string>
-    <string name="sms_to">SMS to</string>
-    <string name="sms_sent">SMS Sent!</string>
-    <string name="temperature_in_byte">temperature in Byte</string>
-    <string name="check_internet_connection5">Please check your Internet connection and try again.</string>
-    <string name="logged_in_as">Logged in as</string>
-    <string name="to2">To</string>
-    <string name="message">Message</string>
-    <string name="twitter_tracks_new_keyword">Twitter tracks new keyword</string>
-    <string name="twitter_stopped_tracking_keyword">Twitter stopped tracking keyword</string>
-    <string name="tracked_tweet_found">Tracked tweet found</string>
-    <string name="paused2">Paused!</string>
-    <string name="ready2">Ready!</string>
-    <string name="received_an_unexpected_frame">Received an unexpected frame.</string>
-    <string name="optional_firmware_upgrade">Optional Firmware Upgrade</string>
-    <string name="now">Now</string>
-    <string name="not_now">Not Now</string>
-    <string name="required_firmware_upgrade">Required Firmware Upgrade</string>
-    <string name="start">Start</string>
-    <string name="arduino_library_update">Arduino Library Update</string>
-    <string name="there_is_a_new_library_version">There\'s a new version of 1Sheeld\'s Arduino library available on our website!</string>
-    <string name="ok2">OK</string>
-    <string name="draw_over_apps_enabled">Draw over apps enabled, you can select the shield.</string>
-    <string name="draw_over_apps_was_not_enabled">Draw over apps was not enabled!</string>
-    <string name="bluetooth_scan_needs_location_permission">Bluetooth scan needs location permission.</string>
-    <string name="allow">Allow</string>
-    <string name="deny">Deny</string>
-    <string name="location_permission_denied">Location permission denied.</string>
-    <string name="location_permission_denied2">Location permission denied.</string>
-    <string name="please_turn_on_location_permission">Please turn on location permission.</string>
-    <string name="you_can_select_the_shield_now">You can select the shield now.</string>
-    <string name="this_shield_needs_some_permissions">This shield needs some permissions.</string>
-    <string name="your_device_didnt_allow_this_shield">Your device didn\'t allow this shield permissions.</string>
-    <string name="this_shield_needs_some_permissions2">This shield needs some permissions.</string>
-    <string name="open_context_menu">Open Context Menu</string>
-    <string name="context_menu_tutorial_message">Upgrade the firmware, clear the automatic connection and see the tutorial again after opening the context menu by clicking on 1Sheeld logo.</string>
-    <string name="release_date">Release Date</string>
-    <string name="we_need_you_to_enable_nfc">We need you to enable NFC for this shield to work.</string>
-    <string name="please_enable_nfc">Please enable NFC to be able to use this shield</string>
-    <string name="time">Time</string>
-    <string name="loggedin_as">You are LoggedIn as :</string>
-    <string name="your_last_checkin_will_be_here">Your last checkin will be here!</string>
-    <string name="start_gps_listening">Start GPS Listening</string>
-    <string name="stop_gps_listening">Stop GPS Listening</string>
-    <string name="start_sensor_listening">Start Sensor Listening</string>
-    <string name="stop_sensor_listening">Stop Sensor Listening</string>
-    <string name="skip">Skip</string>
-    <string name="add">Add</string>
-    <string name="remove">Remove</string>
-    <string name="music_file_name2">Music file name</string>
-    <string name="your_notification_text_will_be_here">Your notification text will be here!</string>
-    <string name="push">Push</string>
-    <string name="bluetooth">Bluetooth</string>
-    <string name="copy_all">Copy All</string>
-    <string name="you_are_ready_to_go">You are\nready to go!</string>
-    <string name="for_more_tutorials_visit_our_website">For more tutorials visit our website\n1Sheeld.com</string>
-    <string name="dont_show_this_tutorial_again">Don\'t show this tutorial again</string>
-    <string name="your_last_tweet_will_be_here">Your last tweet will be here!</string>
-    <string name="check_your_internet_connection2">Please check your Internet connection and try again.</string>
-    <string name="logged_in_as2">Logged in as</string>
+    <string name="nfc_shield_name">NFC</string>
+    <string name="nfc_approach_nfc_tag">Approach NFC tag!</string>
+    <string name="nfc_record">Record</string>
+    <string name="nfc_nfc_disabled_toast">Nfc Disabled</string>
+    <string name="nfc_validation_dialog_ok_button">@string/camera_validation_dialog_ok_button</string>
+    <string name="nfc_validation_dialog_later_button">@string/camera_validation_dialog_later_button</string>
+    <string name="nfc_device_doesnt_support_nfc">Device doesn\'t support NFC!</string>
+    <string name="nfc_device_tag_id">Tag ID</string>
+    <string name="nfc_device_max_size">Max Size</string>
+    <string name="nfc_device_bytes">bytes</string>
+    <string name="nfc_device_used_size">Used Size</string>
+    <string name="nfc_device_number_of_records">No. of Records</string>
+    <string name="nfc_device_records">record(s)</string>
+    <string name="nfc_we_need_you_to_enable_nfc_for_this_shield_to_work">We need you to enable NFC for this shield to work.</string>
+    <string name="nfc_please_enable_nfc_to_be_able_to_use_this_shield">Please enable NFC to be able to use this shield</string>
+
+    <!-- Notifications -->
+    <string name="notifications_shield_name">Notification</string>
+    <string name="notifications_notification_received_from_1sheeld">Notification received from 1Sheeld!</string>
+    <string name="notifications_your_notification_text_will_be_here">Your notification text will be here!</string>
+
+    <!-- Orientation Sensor -->
+    <string name="orientation_shield_name">Orientation</string>
+
+    <!-- Pattern -->
+    <string name="pattern_shield_name">Pattern</string>
+
+    <!-- Phone -->
+    <string name="phone_shield_name">Phone</string>
+    <string name="phone_your_device_doesnt_have_a_sim_card">Your device doesn\'t have a SIM card!</string>
+    <string name="phone_call_to">Call to</string>
+    <string name="phone_call_from">Call from</string>
+
+    <!-- Pressure Sensor -->
+    <string name="pressure_shield_name">Pressure</string>
+
+    <!-- Proximity Sensor -->
+    <string name="proximity_shield_name">Proximity</string>
+
+    <!-- Push Button -->
+    <string name="push_button_shield_name">Push Button</string>
+    <string name="push_button_pin_name">Push</string>
+    <string name="push_button_button_name">Push</string>
+
+    <!-- Seven Segment -->
+    <string name="seven_segment_shield_name">Seven Segment</string>
+
+    <!-- Skype -->
+    <string name="skype_shield_name">Skype</string>
+    <string name="skype_skype_app_is_not_installed">Skype app is not installed</string>
+    <string name="skype_outgoing_video_call">Outgoing Video Call</string>
+    <string name="skype_outgoing_chat">Outgoing Chat</string>
+    <string name="skype_outgoing_call">Outgoing Call</string>
+
+    <!-- Slider -->
+    <string name="slider_shield_name">Slider</string>
+    <string name="slider_pin_name">Slider</string>
+
+    <!-- SMS -->
+    <string name="sms_shield_name">SMS</string>
+    <string name="sms_your_device_doesnt_have_a_sim_card">@string/phone_your_device_doesnt_have_a_sim_card</string>
+    <string name="sms_sms_to">SMS to</string>
+    <string name="sms_sms_sent">SMS Sent!</string>
+
+    <!-- Temperature Sensor -->
+    <string name="temperature_shield_name">Temperature</string>
+
+    <!-- Terminal -->
+    <string name="terminal_shield_name">Terminal</string>
+    <string name="terminal_send_button">Send</string>
+    <string name="terminal_ascii_button">ASCII</string>
+    <string name="terminal_decimal_button">DEC</string>
+    <string name="terminal_binary_button">Binary</string>
+    <string name="terminal_hex_button">Hex</string>
+    <string name="terminal_line_copied_toast">Line Copied</string>
+    <string name="terminal_couldnt_copy_empty_line_toast">Couldn\'t copy empty line.</string>
+    <string name="terminal_lines_copied_toast">Lines copied</string>
+    <string name="terminal_copy_all_button">Copy All</string>
+
+    <!-- Tasker -->
+    <string name="tasker_shield_name">Tasker</string>
+
+    <!-- Text to speech -->
+    <string name="text_to_speech_shield_name">Text To Speech</string>
+    <string name="text_to_speech_your_device_doesnt_support_text_to_speech">Your device doesn\'t support text to speech!</string>
+    <string name="text_to_speech_text_to_speech_failed">Text to speech failed!</string>
+    <string name="text_to_speech_speech_error">Speech error!</string>
+    <string name="text_to_speech_failed_utterance_progress">Failed utterance progress</string>
+    <string name="text_to_speech_failed_utterance_completion">Failed utterance completion</string>
+
+    <!-- Toggle Button -->
+    <string name="toggle_button_shield_name">Toggle Button</string>
+    <string name="toggle_button_pin_name">Toggle</string>
+
+    <!-- Twitter -->
+    <string name="twitter_shield_name">Twitter</string>
+    <string name="twitter_loading">Loading</string>
+    <string name="twitter_tweet_posted_toast">Tweet posted!</string>
+    <string name="twitter_message_sent_to_toast">Message sent to</string>
+    <string name="twitter_please_wait">Please, Wait!</string>
+    <string name="twitter_twitter_login_canceled_toast">Twitter login canceled</string>
+    <string name="twitter_uploading_the_image_toast">Uploading the image!</string>
+    <string name="twitter_file_not_found">File Not Found</string>
+    <string name="twitter_image_uploaded_and_tweet_posted_toast">Image uploaded and tweet posted!</string>
+    <string name="twitter_logged_in_as">Logged in as</string>
+    <string name="twitter_to">To</string>
+    <string name="twitter_message">Message</string>
+    <string name="twitter_twitter_tracks_new_keyword_toast">Twitter tracks new keyword</string>
+    <string name="twitter_twitter_stopped_tracking_keyword_toast">Twitter stopped tracking keyword</string>
+    <string name="twitter_tracked_tweet_found_toast">Tracked tweet found</string>
+    <string name="twitter_your_last_tweet_will_be_here">Your last tweet will be here!</string>
+
+    <!-- Vibration -->
+    <string name="vibration_shield_name">Vibration</string>
+    <string name="vibration_stop_button">Stop!</string>
+    <string name="vibration_your_device_doesnt_support_this_hardware_toast">Your device doesn\'t support this hardware!</string>
+    <string name="vibration_paused">Paused!</string>
+    <string name="vibration_ready">Ready!</string>
+
+    <!-- Voice Recognition -->
+    <string name="voice_recognizer_shield_name">Voice Recognizer</string>
+    <string name="voice_recognizer_speak">Speak</string>
+    <string name="voice_recognizer_tap_to_speak_button">Tap\nto\nSpeak</string>
+    <string name="voice_recognizer_please_install_voice_search_from_google_play_store">Please install voice search from Google Play store</string>
+    <string name="voice_recognizer_no_matching_result">No Matching result</string>
 
 </resources>

@@ -22,7 +22,7 @@
         android:paddingBottom="5dp"
         android:paddingLeft="10dp"
         android:paddingTop="20dp"
-        android:text="@string/no_card"
+        android:text="@string/nfc_approach_nfc_tag"
         android:textColor="@color/textColorOnDark"
         android:textSize="25sp" />
 

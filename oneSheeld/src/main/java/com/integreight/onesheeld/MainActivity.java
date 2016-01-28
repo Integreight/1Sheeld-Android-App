@@ -201,8 +201,7 @@ public class MainActivity extends FragmentActivity {
                                     // TODO: handle exception
                                 }
                                 try {
-                                    msg += getString(R.string.release_date)+": "
-                                            + obj.getString("date");
+                                    msg += obj.getString("date");
                                 } catch (Exception e) {
                                     // TODO: handle exception
                                 }
@@ -212,9 +211,9 @@ public class MainActivity extends FragmentActivity {
                             }
                             popub = new ValidationPopup(
                                     MainActivity.this,
-                                    getString(R.string.optional_firmware_upgrade),
+                                    getString(R.string.firmware_upgrade_decision_dialog_optional_firmware_upgrade),
                                     msg,
-                                    new ValidationPopup.ValidationAction(getString(R.string.now),
+                                    new ValidationPopup.ValidationAction(getString(R.string.firmware_upgrade_decision_dialog_now_button),
                                             new View.OnClickListener() {
 
                                                 @Override
@@ -228,7 +227,7 @@ public class MainActivity extends FragmentActivity {
                                                 }
                                             }, true),
                                     new ValidationPopup.ValidationAction(
-                                            getString(R.string.not_now),
+                                            getString(R.string.firmware_upgrade_decision_dialog_not_now_button),
                                             new View.OnClickListener() {
 
                                                 @Override
@@ -259,8 +258,7 @@ public class MainActivity extends FragmentActivity {
                                     // TODO: handle exception
                                 }
                                 try {
-                                    msg += getString(R.string.release_date)+": "
-                                            + obj.getString("date");
+                                    msg += obj.getString("date");
                                 } catch (Exception e) {
                                     // TODO: handle exception
                                 }
@@ -269,9 +267,9 @@ public class MainActivity extends FragmentActivity {
                                 e.printStackTrace();
                             }
                             popub = new ValidationPopup(MainActivity.this,
-                                    getString(R.string.required_firmware_upgrade), msg,
+                                    getString(R.string.firmware_upgrade_decision_dialog_required_firmware_upgrade), msg,
                                     new ValidationPopup.ValidationAction(
-                                            getString(R.string.start),
+                                            getString(R.string.firmware_upgrade_decision_dialog_start),
                                             new View.OnClickListener() {
 
                                                 @Override
@@ -309,9 +307,9 @@ public class MainActivity extends FragmentActivity {
                     if (version < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
                         popub = new ValidationPopup(
                                 MainActivity.this,
-                                getString(R.string.arduino_library_update),
-                                getString(R.string.there_is_a_new_library_version),
-                                new ValidationPopup.ValidationAction(getString(R.string.ok2),
+                                getString(R.string.library_upgrade_dialog_arduino_library_update),
+                                getString(R.string.library_upgrade_dialog_theres_a_new_version_of_1sheelds_arduino_library_available_on_our_website),
+                                new ValidationPopup.ValidationAction(getString(R.string.library_upgrade_dialog_ok_button),
                                         new View.OnClickListener() {
 
                                             @Override
@@ -600,7 +598,7 @@ public class MainActivity extends FragmentActivity {
             case SheeldsList.REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
                 if (resultCode != Activity.RESULT_OK) {
-                    Toast.makeText(this, R.string.bluetooth_was_not_enabled,
+                    Toast.makeText(this, R.string.general_toasts_bluetooth_was_not_enabled_toast,
                             Toast.LENGTH_SHORT).show();
                 } else {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -614,10 +612,10 @@ public class MainActivity extends FragmentActivity {
                 break;
             case DRAW_OVER_APPS_REQUEST_CODE:
                 if(canDrawOverApps()) {
-                    showToast(getString(R.string.draw_over_apps_enabled));
+                    showToast(getString(R.string.main_activity_draw_over_apps_enabled_you_can_select_the_shield));
                 }
                 else {
-                    showToast(getString(R.string.draw_over_apps_was_not_enabled));
+                    showToast(getString(R.string.main_activity_draw_over_apps_was_not_enabled));
                 }
                 break;
             default:
@@ -643,17 +641,17 @@ public class MainActivity extends FragmentActivity {
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
                 AlertDialog.Builder locationPremissionExplanationDialog = new AlertDialog.Builder(thisInstance);
-                locationPremissionExplanationDialog.setMessage(R.string.bluetooth_scan_needs_location_permission).setPositiveButton(R.string.allow, new DialogInterface.OnClickListener() {
+                locationPremissionExplanationDialog.setMessage(R.string.main_activity_bluetooth_scan_needs_location_permission).setPositiveButton(R.string.main_activity_allow_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         ActivityCompat.requestPermissions(thisInstance,
                                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
                                 MainActivity.PREMISSION_REQUEST_CODE);
                     }
-                }).setNegativeButton(R.string.deny, new DialogInterface.OnClickListener() {
+                }).setNegativeButton(R.string.main_activity_deny_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showToast(getString(R.string.location_permission_denied));
+                        showToast(getString(R.string.main_activity_location_permission_denied));
                     }
                 }).create();
                 locationPremissionExplanationDialog.show();
@@ -841,9 +839,9 @@ public class MainActivity extends FragmentActivity {
                         } else {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                 if (shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION))
-                                    showToast(getString(R.string.location_permission_denied2));
+                                    showToast(getString(R.string.main_activity_location_permission_denied));
                                 else
-                                    showToast(getString(R.string.please_turn_on_location_permission));
+                                    showToast(getString(R.string.main_activity_please_turn_on_location_permission));
                             }
                         }
                         break;
@@ -854,7 +852,7 @@ public class MainActivity extends FragmentActivity {
                                 isEnabled = false;
                         }
                         if (isEnabled) {
-                            showToast(getString(R.string.you_can_select_the_shield_now));
+                            showToast(getString(R.string.general_toasts_you_can_select_the_shield_now_toast));
                             // permission was granted, yay! Do the
                             // contacts-related task you need to do.
                         } else {
@@ -865,11 +863,11 @@ public class MainActivity extends FragmentActivity {
                                         isShouldShowRequestPermissionRationale = false;
                                 }
                                 if (!isShouldShowRequestPermissionRationale)
-                                    showToast(getString(R.string.this_shield_needs_some_permissions));
+                                    showToast(getString(R.string.main_activity_this_shield_needs_some_permissions));
                                 else
-                                    showToast(getString(R.string.your_device_didnt_allow_this_shield));
+                                    showToast(getString(R.string.main_activity_your_device_didnt_allow_this_shield_permissions));
                             } else {
-                                showToast(getString(R.string.this_shield_needs_some_permissions2));
+                                showToast(getString(R.string.main_activity_this_shield_needs_some_permissions));
                             }
                         }
                         break;
@@ -886,8 +884,8 @@ public class MainActivity extends FragmentActivity {
                 new ShowcaseView.Builder(this)
                         .setTarget(target)
                         .withMaterialShowcase()
-                        .setContentTitle(getString(R.string.open_context_menu))
-                        .setContentText(getString(R.string.context_menu_tutorial_message))
+                        .setContentTitle(getString(R.string.context_menu_tutorial_open_context_menu))
+                        .setContentText(getString(R.string.context_menu_tutorial_upgrade_the_firmware_clear_the_automatic_connection_and_see_the_tutorial_again_after_opening_the_context_menu_by_clicking_on_1sheeld_logo))
                         .setStyle(R.style.CustomShowcaseTheme)
                         .hideOnTouchOutside()
                         .build().hideButton();

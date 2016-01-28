@@ -177,9 +177,9 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity());
         builder.setMessage(
-                R.string.enable_location_services)
+                R.string.gps_we_need_you_to_enable_the_location_services_for_this_shield_to_work_correctly)
                 .setCancelable(false)
-                .setPositiveButton(R.string.ok,
+                .setPositiveButton(R.string.gps_validation_dialog_ok_button,
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog,
                                                 final int id) {
@@ -189,11 +189,11 @@ public class GpsShield extends ControllerParent<GpsShield> implements
                                                         Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                             }
                         })
-                .setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.gps_validation_dialog_later_button, new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog,
                                         final int id) {
                         dialog.cancel();
-                        activity.showToast(R.string.please_enable_location_services);
+                        activity.showToast(R.string.gps_please_enable_location_services_to_be_able_to_use_this_shield);
                     }
                 });
         final AlertDialog alert = builder.create();
@@ -217,7 +217,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
             errorFragment.setDialog(errorDialog);
             errorFragment.show(
                     ((MainActivity) getActivity()).getSupportFragmentManager(),
-                    activity.getString(R.string.gps_shield));
+                    activity.getString(R.string.gps_shield_name)+" Shield");
         }
     }
 

@@ -10,7 +10,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SkypeShield;
 import com.integreight.onesheeld.shields.controller.SkypeShield.SkypeEventHandler;
-import com.integreight.onesheeld.utils.Log;
 
 public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
 
@@ -37,7 +36,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
         public void onVideoCall(String user) {
             // TODO Auto-generated method stub
             if (canChangeUI())
-                Toast.makeText(activity, user + activity.getString(R.string.outgoing_video_call),
+                Toast.makeText(activity, user + " " +activity.getString(R.string.skype_outgoing_video_call),
                         Toast.LENGTH_SHORT).show();
 
         }
@@ -60,7 +59,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
         public void onChat(String user) {
             // TODO Auto-generated method stub
             if (canChangeUI())
-                Toast.makeText(activity, user + " "+activity.getString(R.string.outgoing_chat),
+                Toast.makeText(activity, user + " "+activity.getString(R.string.skype_outgoing_chat),
                         Toast.LENGTH_SHORT).show();
 
         }
@@ -69,7 +68,7 @@ public class SkypeFragment extends ShieldFragmentParent<SkypeFragment> {
         public void onCall(String user) {
             // TODO Auto-generated method stub
             if (canChangeUI())
-                Toast.makeText(activity, user + " "+activity.getString(R.string.outgoing_call),
+                Toast.makeText(activity, user + " "+activity.getString(R.string.skype_outgoing_call),
                         Toast.LENGTH_SHORT).show();
 
         }

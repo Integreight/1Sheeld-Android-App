@@ -98,7 +98,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
         } catch (ActivityNotFoundException a) {
             Toast t = Toast.makeText(activity.getApplicationContext(),
-                    R.string.device_doesnt_support_tts,
+                    R.string.text_to_speech_your_device_doesnt_support_text_to_speech,
                     Toast.LENGTH_SHORT);
             t.show();
         }
@@ -125,7 +125,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
                 break;
 
             case TextToSpeech.ERROR:
-                Toast.makeText(activity, R.string.tts_failed, Toast.LENGTH_SHORT)
+                Toast.makeText(activity, R.string.text_to_speech_text_to_speech_failed, Toast.LENGTH_SHORT)
                         .show();
                 Log.e("[ERROR] doc.saulmm.text2speech.MainActivity.onInit ",
                         "TTS Failed");
@@ -150,7 +150,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
                             @Override
                             public void onError(String utteranceId) {
                                 if (eventHandler != null) {
-                                    eventHandler.onError(activity.getString(R.string.speech_error), 0);
+                                    eventHandler.onError(activity.getString(R.string.text_to_speech_speech_error), 0);
                                 }
                             }
 
@@ -159,7 +159,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
                             }
                         });
                 if (listenerResult != TextToSpeech.SUCCESS) {
-                    Toast.makeText(getActivity(), R.string.failed_utterance_progress,
+                    Toast.makeText(getActivity(), R.string.text_to_speech_failed_utterance_progress,
                             Toast.LENGTH_SHORT).show();
                     Log.e("TAG", "failed to add utterance progress listener");
                 }
@@ -175,7 +175,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
                         });
                 if (listenerResult != TextToSpeech.SUCCESS) {
                     Toast.makeText(getActivity(),
-                            R.string.failed_utterance_completion, Toast.LENGTH_SHORT)
+                            R.string.text_to_speech_failed_utterance_completion, Toast.LENGTH_SHORT)
                             .show();
                     Log.e("TAG", "failed to add utterance completed listener");
                 }

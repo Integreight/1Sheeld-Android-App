@@ -80,13 +80,13 @@ public class NfcFragment extends ShieldFragmentParent<NfcFragment> {
                     public void run() {
                         if (canChangeUI() && noCard != null && cardDetails != null) {
                             noCard.setVisibility(View.GONE);
-                            cardDetails.setText(activity.getString(R.string.tag_id) + " :     \t" + id);
+                            cardDetails.setText(activity.getString(R.string.nfc_device_tag_id) + " :     \t" + id);
                             cardDetails.append("\n");
-                            cardDetails.append(activity.getString(R.string.max_size) + " :\t" + String.valueOf(maxSize) + " " + activity.getString(R.string.bytes));
+                            cardDetails.append(activity.getString(R.string.nfc_device_max_size) + " :\t" + String.valueOf(maxSize) + " " + activity.getString(R.string.nfc_device_bytes));
                             cardDetails.append("\n");
-                            cardDetails.append(activity.getString(R.string.used_size)+" : " + String.valueOf(usedSize) + " " + activity.getString(R.string.bytes));
+                            cardDetails.append(activity.getString(R.string.nfc_device_used_size)+" : " + String.valueOf(usedSize) + " " + activity.getString(R.string.nfc_device_bytes));
                             cardDetails.append("\n");
-                            cardDetails.append(activity.getString(R.string.number_of_records) + " : " + String.valueOf(data.size()) + " " + activity.getString(R.string.records));
+                            cardDetails.append(activity.getString(R.string.nfc_device_number_of_records) + " : " + String.valueOf(data.size()) + " " + activity.getString(R.string.nfc_device_records));
 
                             NfcNdefRecordsExpandableAdapter nfcNdefRecordsExpandableAdapter = new NfcNdefRecordsExpandableAdapter(activity, data);
                             nfcRecords.setAdapter(nfcNdefRecordsExpandableAdapter);

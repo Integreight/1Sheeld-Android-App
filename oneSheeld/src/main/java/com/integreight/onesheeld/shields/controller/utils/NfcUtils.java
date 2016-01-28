@@ -34,7 +34,7 @@ public class NfcUtils extends Activity {
                             ((NfcShield) ((OneSheeldApplication) getApplication()).getRunningShields().get(UIShield.NFC_SHIELD.name())).handleIntent(intent);
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), R.string.nfc_disabled, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), R.string.nfc_nfc_disabled_toast, Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     startActivity(new Intent(this, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));

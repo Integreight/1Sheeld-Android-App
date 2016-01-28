@@ -3,29 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/start_listener_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/start_sensor_listening"
-        android:visibility="invisible" />
-
-    <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
-        android:id="@+id/device_not_has_sensor_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/start_listener_bt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:visibility="invisible" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
                         android:gravity="center"
-                        android:text="@string/x"
+                        android:text="@string/sensors_axis_x_axis"
                         android:textColor="@color/offWhite"
                         android:textSize="42sp" />
                 </RelativeLayout>
@@ -91,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/rads"
+                    android:text="@string/sensors_units_rad_per_second"
                     android:textColor="@color/offWhite"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -118,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_ycoor_top_margin"
                         android:gravity="center"
-                        android:text="@string/y"
+                        android:text="@string/sensors_axis_y_axis"
                         android:textColor="@color/offWhite"
                         android:textSize="42sp" />
                 </RelativeLayout>
@@ -138,7 +115,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/rads"
+                    android:text="@string/sensors_units_rad_per_second"
                     android:textColor="@color/offWhite"
                     android:textSize="20sp" />
             </LinearLayout>
@@ -165,7 +142,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/sensor_xcoor_top_margin"
                         android:gravity="center"
-                        android:text="@string/z"
+                        android:text="@string/sensors_axis_z_axis"
                         android:textColor="@color/offWhite"
                         android:textSize="42sp" />
                 </RelativeLayout>
@@ -185,22 +162,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/rads"
+                    android:text="@string/sensors_units_rad_per_second"
                     android:textColor="@color/offWhite"
                     android:textSize="20sp" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/stop_listener_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/stop_sensor_listening"
-        android:visibility="invisible" />
 
 </RelativeLayout>

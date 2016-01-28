@@ -53,7 +53,7 @@
         android:layout_marginRight="35dp"
         android:layout_toLeftOf="@+id/selectionIndicatorCont"
         android:gravity="left|center_vertical"
-        android:text="@string/bluetooth"
+        android:text=""
         android:textColor="@color/offWhite"
         android:textSize="@dimen/shield_name_size" />
 

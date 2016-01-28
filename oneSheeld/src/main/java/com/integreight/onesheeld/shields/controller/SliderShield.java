@@ -21,7 +21,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
     public SliderShield() {
         super();
         requiredPinsIndex = 1;
-        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.slider2)};
+        shieldPins = new String[]{OneSheeldApplication.getContext().getString(R.string.slider_pin_name)};
     }
 
     public SliderShield(Activity activity, String tag) {

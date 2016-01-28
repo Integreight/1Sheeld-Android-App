@@ -3,29 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/start_listener_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/start_sensor_listening"
-        android:visibility="invisible" />
-
-    <TextView
-        android:id="@+id/device_not_has_sensor_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/start_listener_bt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white"
-        android:visibility="invisible" />
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -63,27 +40,4 @@
                 android:background="@drawable/celesuis_symbol" />
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/temperature_byte_txt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:textColor="@color/white" />
-
-    <Button
-        android:id="@+id/stop_listener_bt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/temperature_byte_txt"
-        android:layout_centerHorizontal="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginTop="30dp"
-        android:text="@string/stop_sensor_listening"
-        android:visibility="invisible" />
-
 </RelativeLayout>

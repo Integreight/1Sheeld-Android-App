@@ -166,14 +166,14 @@ public class SpeechRecognitionFragment extends
         rmsIndicator.setVisibility(View.INVISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_red));
-        statusHint.setText(R.string.tabToSpeak);
+        statusHint.setText(R.string.voice_recognizer_tap_to_speak_button);
     }
 
     private void setON() {
         rmsIndicator.setVisibility(View.VISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_green));
-        statusHint.setText(R.string.speak);
+        statusHint.setText(R.string.voice_recognizer_speak);
     }
 
     private void initializeFirmata() {

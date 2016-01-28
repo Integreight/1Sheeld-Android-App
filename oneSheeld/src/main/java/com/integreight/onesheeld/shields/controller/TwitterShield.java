@@ -148,7 +148,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                         @Override
                         public void run() {
                             // TODO Auto-generated method stub
-                            Toast.makeText(activity, R.string.tweet_posted,
+                            Toast.makeText(activity, R.string.twitter_tweet_posted_toast,
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
@@ -196,7 +196,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                             // TODO Auto-generated method stub
                             Toast.makeText(
                                     activity,
-                                    activity.getString(R.string.message_sent_to)+" " + properUserHandle + "!",
+                                    activity.getString(R.string.twitter_message_sent_to_toast)+" " + properUserHandle + "!",
                                     Toast.LENGTH_SHORT).show();
 
                         }
@@ -232,7 +232,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                 @Override
                 protected void onPreExecute() {
                     prog = new ProgressDialog(activity);
-                    prog.setMessage(activity.getString(R.string.please_wait2));
+                    prog.setMessage(activity.getString(R.string.twitter_please_wait));
                     prog.setCancelable(false);
                     prog.show();
                     super.onPreExecute();
@@ -293,7 +293,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                         public void onCancel() {
                             Toast.makeText(
                                     getApplication().getApplicationContext(),
-                                    R.string.twitter_login_canceled,
+                                    R.string.twitter_twitter_login_canceled_toast,
                                     Toast.LENGTH_SHORT).show();
                         }
                     };
@@ -441,7 +441,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                 } else
                     Toast.makeText(
                             getApplication().getApplicationContext(),
-                            R.string.please_check_connection3,
+                            R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
                             Toast.LENGTH_SHORT).show();
         }
 
@@ -509,7 +509,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                                 public void run() {
                                     // TODO Auto-generated method stub
                                     Toast.makeText(activity,
-                                            R.string.uploading_the_image,
+                                            R.string.twitter_uploading_the_image_toast,
                                             Toast.LENGTH_SHORT).show();
                                 }
                             });
@@ -517,7 +517,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                             return twitter.updateStatus(status);
                         } else if (eventHandler != null) {
                             System.err.println("File Not Found  " + params[0]);
-                            eventHandler.onTwitterError(activity.getString(R.string.file_not_found)+"   "
+                            eventHandler.onTwitterError(activity.getString(R.string.twitter_file_not_found)+"   "
                                     + params[0]);
                             eventHandler.stopProgress();
                         }
@@ -544,7 +544,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                     eventHandler.stopProgress();
                 if (result != null)
                     Toast.makeText(activity,
-                            R.string.image_uploaded_and_tweet_posted,
+                            R.string.twitter_image_uploaded_and_tweet_posted_toast,
                             Toast.LENGTH_LONG).show();
                 System.gc();
                 super.onPostExecute(result);

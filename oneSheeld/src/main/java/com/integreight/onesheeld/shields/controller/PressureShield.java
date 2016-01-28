@@ -131,7 +131,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
             if (selectionAction != null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast(R.string.device_doesnt_support_this_sensor);
+                activity.showToast(R.string.general_toasts_device_doesnt_support_this_sensor_toast);
 
             if (eventHandler != null)
                 eventHandler.isDeviceHasSensor(false);
@@ -156,8 +156,6 @@ public class PressureShield extends ControllerParent<PressureShield> implements
     public static interface PressureEventHandler {
 
         void onSensorValueChangedFloat(String value);
-
-        void onSensorValueChangedByte(String value);
 
         void isDeviceHasSensor(Boolean hasSensor);
 

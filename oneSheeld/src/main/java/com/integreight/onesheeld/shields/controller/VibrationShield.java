@@ -126,7 +126,7 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
             if (selectionAction !=null)
                 selectionAction.onFailure();
             if (isToastable)
-                activity.showToast(activity.getString(R.string.device_doesnt_support_this_hardware));
+                activity.showToast(activity.getString(R.string.vibration_your_device_doesnt_support_this_hardware_toast));
         }
         return super.invalidate(selectionAction, isToastable);
     }

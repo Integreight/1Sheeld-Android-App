@@ -1,6 +1,5 @@
 package com.integreight.onesheeld.shields.controller;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by Mouso on 3/11/2015.
@@ -101,7 +99,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
             } else {
                 if(nfcAdapter == null){
                     if (isToastable) {
-                        activity.showToast(R.string.device_doesnt_support_nfc);
+                        activity.showToast(R.string.nfc_device_doesnt_support_nfc);
                     }
                 }
                 else {
@@ -111,7 +109,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
             }
         } else {
             if (isToastable)
-                activity.showToast(R.string.device_doesnt_support_nfc);
+                activity.showToast(R.string.nfc_device_doesnt_support_nfc);
             selectionAction.onFailure();
         }
     }
@@ -121,8 +119,8 @@ public class NfcShield extends ControllerParent<NfcShield> {
             NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
             if (nfcAdapter != null && !nfcAdapter.isEnabled()) {
                 AlertDialog.Builder alertbox = new AlertDialog.Builder(getActivity());
-                alertbox.setMessage(R.string.we_need_you_to_enable_nfc);
-                alertbox.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                alertbox.setMessage(R.string.nfc_we_need_you_to_enable_nfc_for_this_shield_to_work);
+                alertbox.setPositiveButton(R.string.nfc_validation_dialog_ok_button, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -134,12 +132,12 @@ public class NfcShield extends ControllerParent<NfcShield> {
                         }
                     }
                 });
-                alertbox.setNegativeButton(R.string.later, new DialogInterface.OnClickListener() {
+                alertbox.setNegativeButton(R.string.nfc_validation_dialog_later_button, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        activity.showToast(activity.getString(R.string.please_enable_nfc));
+                        activity.showToast(activity.getString(R.string.nfc_please_enable_nfc_to_be_able_to_use_this_shield));
                     }
                 });
                 alertbox.show();

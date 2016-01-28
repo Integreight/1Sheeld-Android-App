@@ -58,7 +58,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/transparent"
-        android:text="@string/skip"
+        android:text="@string/tutorial_skip"
         android:textSize="20dp"
         android:textColor="@color/white"/>
 </RelativeLayout>

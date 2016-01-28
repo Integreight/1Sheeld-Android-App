@@ -40,7 +40,7 @@ public class NotificationShield extends ControllerParent<NotificationShield> {
                 activity);
         build.setSmallIcon(OneSheeldApplication.getNotificationIcon());
         build.setContentTitle(notificationText);
-        build.setContentText(activity.getString(R.string.notification_received_from_onesheeld));
+        build.setContentText(activity.getString(R.string.notifications_notification_received_from_1sheeld));
         build.setTicker(notificationText);
         build.setWhen(System.currentTimeMillis());
         Toast.makeText(activity, notificationText, Toast.LENGTH_SHORT).show();

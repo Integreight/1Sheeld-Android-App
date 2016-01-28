@@ -15,9 +15,7 @@ import com.integreight.onesheeld.shields.controller.TemperatureShield.Temperatur
 
 public class TemperatureFragment extends
         ShieldFragmentParent<TemperatureFragment> {
-    TextView temperature_float, temperature_byte;
-    TextView devicehasSensor;
-    Button stoplistening_bt, startlistening_bt;
+    TextView temperature_float;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -40,38 +38,6 @@ public class TemperatureFragment extends
     public void doOnViewCreated(View v, @Nullable Bundle savedInstanceState) {
         temperature_float = (TextView) v
                 .findViewById(R.id.temperature_float_txt);
-        temperature_byte = (TextView) v.findViewById(R.id.temperature_byte_txt);
-
-        devicehasSensor = (TextView) v
-                .findViewById(R.id.device_not_has_sensor_text);
-        stoplistening_bt = (Button) v.findViewById(R.id.stop_listener_bt);
-        startlistening_bt = (Button) v.findViewById(R.id.start_listener_bt);
-
-        startlistening_bt.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ((TemperatureShield) getApplication().getRunningShields().get(
-                        getControllerTag())).registerSensorListener(true);
-                temperature_float.setVisibility(View.VISIBLE);
-                temperature_byte.setVisibility(View.VISIBLE);
-
-            }
-        });
-
-        stoplistening_bt.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                ((TemperatureShield) getApplication().getRunningShields().get(
-                        getControllerTag())).unegisterSensorListener();
-                temperature_float.setVisibility(View.INVISIBLE);
-                temperature_byte.setVisibility(View.INVISIBLE);
-
-            }
-        });
     }
 
     private TemperatureEventHandler temperatureEventHandler = new TemperatureEventHandler() {
@@ -92,25 +58,6 @@ public class TemperatureFragment extends
                 });
 
             }
-
-        }
-
-        @Override
-        public void onSensorValueChangedByte(final String value) {
-            // TODO Auto-generated method stub
-
-            // set data to UI
-            temperature_byte.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (canChangeUI()) {
-                        temperature_byte.setVisibility(View.VISIBLE);
-                        temperature_byte.setText(activity.getString(R.string.temperature_in_byte)+" = "
-                                + value);
-                    }
-                }
-            });
 
         }
 
