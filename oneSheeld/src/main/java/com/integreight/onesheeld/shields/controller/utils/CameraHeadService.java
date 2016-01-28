@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.controller.utils;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -25,7 +26,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -35,12 +35,17 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifIFD0Directory;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -105,6 +110,7 @@ public class CameraHeadService extends Service implements
     private Messenger colorDetectionMessenger;
     private Messenger cameraMessenger;
     private int cellSize = 1;
+    private int currentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
     private ColorDetectionShield.RECEIVED_FRAMES recevedFrameOperation = ColorDetectionShield.RECEIVED_FRAMES.CENTER;
     private ColorDetectionShield.COLOR_TYPE colorType = ColorDetectionShield.COLOR_TYPE.COMMON;
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
@@ -121,10 +127,14 @@ public class CameraHeadService extends Service implements
                                 Log.e("", "onPreviewFrame pass");
                                 out = new ByteArrayOutputStream();
                                 parameters = camera.getParameters();
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                                }
+//                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+//                                        Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+//                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                                } else if (parameters.getSupportedFocusModes().contains(
+//                                        Camera.Parameters.FOCUS_MODE_AUTO)) {
+//                                    parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+//                                }
+//                                camera.setParameters(parameters);
                                 size = parameters.getPreviewSize();
                                 yuv = new YuvImage(data, ImageFormat.NV21, size.width,
                                         size.height, null);
@@ -173,32 +183,54 @@ public class CameraHeadService extends Service implements
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             // decode the data obtained by the camera into a Bitmap
-            int rotate = 0;
-            switch (mOrientation) {
-                case ORIENTATION_PORTRAIT_NORMAL:
-                    if (!isFrontCamRequest) rotate = 90;
-                    else rotate = 270;
-                    break;
-                case ORIENTATION_LANDSCAPE_NORMAL:
-                    rotate = 0;
-                    break;
-                case ORIENTATION_PORTRAIT_INVERTED:
-                    if (!isFrontCamRequest) rotate = 270;
-                    else rotate = 90;
-                    break;
-                case ORIENTATION_LANDSCAPE_INVERTED:
-                    rotate = 180;
-                    break;
+            Matrix bitmapMatrix = new Matrix();
+
+            try {
+                // Get the EXIF orientation.
+                final Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new ByteArrayInputStream(data)));
+                final ExifIFD0Directory exifIFD0Directory = metadata.getFirstDirectoryOfType(ExifIFD0Directory.class);
+                if (exifIFD0Directory.containsTag(ExifIFD0Directory.TAG_ORIENTATION)) {
+                    final int exifOrientation = exifIFD0Directory.getInt(ExifIFD0Directory.TAG_ORIENTATION);
+                    switch (exifOrientation) {
+                        case 1:
+                            break;  // top left
+                        case 2:
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // top right
+                        case 3:
+                            bitmapMatrix.postRotate(180);
+                            break;  // bottom right
+                        case 4:
+                            bitmapMatrix.postRotate(180);
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // bottom left
+                        case 5:
+                            bitmapMatrix.postRotate(90);
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // left top
+                        case 6:
+                            bitmapMatrix.postRotate(90);
+                            break;  // right top
+                        case 7:
+                            bitmapMatrix.postRotate(270);
+                            bitmapMatrix.postScale(-1, 1);
+                            break;  // right bottom
+                        case 8:
+                            bitmapMatrix.postRotate(270);
+                            break;  // left bottom
+                        default:
+                            break;  // Unknown
+                    }
+                }
+            } catch (Exception e) {
+                // TODO: handle exception
             }
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotate);
 
             Log.d("ImageTakin", "Done");
             if (bmp != null)
                 bmp.recycle();
             // decode with options and set rotation
-            bmp = ImageUtils.decodeBitmap(data, matrix);
-            data = null;
+            bmp = ImageUtils.decodeBitmap(data, bitmapMatrix);
 
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (bmp != null && QUALITY_MODE == 0)
@@ -332,10 +364,12 @@ public class CameraHeadService extends Service implements
 
                         try {
                             if (mCamera != null) {
-                                mCamera.setDisplayOrientation(90);
+//                                mCamera.setDisplayOrientation(90);
+                                setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
                                 if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                                     mCamera.setPreviewCallback(previewCallback);
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                currentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
                                 try {
                                     mCamera.startPreview();
                                 } catch (Exception e) {
@@ -350,6 +384,7 @@ public class CameraHeadService extends Service implements
                         if (mCamera != null) {
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                currentCamera = Camera.CameraInfo.CAMERA_FACING_FRONT;
                                 try {
                                     mCamera.startPreview();
                                 } catch (Exception e) {
@@ -416,10 +451,47 @@ public class CameraHeadService extends Service implements
                 }
             }
         }
-        cam.setDisplayOrientation(90);
+//        cam.setDisplayOrientation(90);
+        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_FRONT, cam);
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             cam.setPreviewCallback(previewCallback);
         return cam;
+    }
+
+    public void setCameraDisplayOrientation(int cameraId, android.hardware.Camera camera) {
+        android.hardware.Camera.CameraInfo info =
+                new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        int rotation = windowManager.getDefaultDisplay()
+                .getRotation();
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        camera.setDisplayOrientation(result);
     }
 
     private void setBesttPictureResolution() {
@@ -542,6 +614,7 @@ public class CameraHeadService extends Service implements
 
                         try {
                             mCamera.setPreviewDisplay(sv.getHolder());
+                            currentCamera = Camera.CameraInfo.CAMERA_FACING_FRONT;
                             notifyPreviewTypeChanged(false, true);
                         } catch (IOException e) {
                             handler.post(new Runnable() {
@@ -558,9 +631,14 @@ public class CameraHeadService extends Service implements
                             return;
                         }
                         Camera.Parameters parameters = mCamera.getParameters();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+//                                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+//                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                        }
+//                        else
+                        if (parameters.getSupportedFocusModes().contains(
+                                Camera.Parameters.FOCUS_MODE_AUTO)) {
+                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                         }
                         pictureSize = CameraUtils
                                 .getBiggestPictureSize(parameters);
@@ -568,12 +646,19 @@ public class CameraHeadService extends Service implements
                             parameters.setPictureSize(pictureSize.width,
                                     pictureSize.height);
 
+
+                        android.hardware.Camera.CameraInfo info =
+                                new android.hardware.Camera.CameraInfo();
+                        android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_FRONT, info);
+                        int mRotation = (info.orientation - mOrientation + 360) % 360;
+                        parameters.setRotation(mRotation);
+
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
                         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                             mCamera.setPreviewCallback(previewCallback);
-                        mCamera.takePicture(null, null, mCall);
+                        takePictureWithAutoFocus(mCamera, mCall);
 
                         // return 4;
 
@@ -603,6 +688,7 @@ public class CameraHeadService extends Service implements
                         if (mCamera != null) {
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
+                                currentCamera = Camera.CameraInfo.CAMERA_FACING_FRONT;
                                 notifyPreviewTypeChanged(false, true);
                             } catch (IOException e) {
                                 handler.post(new Runnable() {
@@ -621,9 +707,14 @@ public class CameraHeadService extends Service implements
                             }
                             Camera.Parameters parameters = mCamera
                                     .getParameters();
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+//                                    Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+//                                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                            }
+//                            else
+                            if (parameters.getSupportedFocusModes().contains(
+                                    Camera.Parameters.FOCUS_MODE_AUTO)) {
+                                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                             }
                             pictureSize = CameraUtils
                                     .getBiggestPictureSize(parameters);
@@ -631,12 +722,20 @@ public class CameraHeadService extends Service implements
                                 parameters.setPictureSize(pictureSize.width,
                                         pictureSize.height);
 
+                            android.hardware.Camera.CameraInfo info =
+                                    new android.hardware.Camera.CameraInfo();
+                            android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_FRONT, info);
+                            int mRotation = (info.orientation - mOrientation + 360) % 360;
+                            parameters.setRotation(mRotation);
+
                             // set camera parameters
                             mCamera.setParameters(parameters);
                             mCamera.startPreview();
                             if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                                 mCamera.setPreviewCallback(previewCallback);
-                            mCamera.takePicture(null, null, mCall);
+
+
+                            takePictureWithAutoFocus(mCamera, mCall);
                             // return 4;
 
                         } else {
@@ -672,15 +771,22 @@ public class CameraHeadService extends Service implements
 
                 try {
                     if (mCamera != null) {
-                        mCamera.setDisplayOrientation(90);
+//                        mCamera.setDisplayOrientation(90);
+                        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
                         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                             mCamera.setPreviewCallback(previewCallback);
                         mCamera.setPreviewDisplay(sv.getHolder());
+                        currentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
                         notifyPreviewTypeChanged(true, true);
                         parameters = mCamera.getParameters();
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+//                                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+//                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+//                        }
+//                        else
+                        if (parameters.getSupportedFocusModes().contains(
+                                Camera.Parameters.FOCUS_MODE_AUTO)) {
+                            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
                         }
                         if (FLASH_MODE == null || FLASH_MODE.isEmpty()) {
                             FLASH_MODE = "auto";
@@ -692,46 +798,17 @@ public class CameraHeadService extends Service implements
                         Log.d("Quality", parameters.getJpegQuality() + "");
                         Log.d("Format", parameters.getPictureFormat() + "");
 
+                        android.hardware.Camera.CameraInfo info =
+                                new android.hardware.Camera.CameraInfo();
+                        android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
+                        int mRotation = (info.orientation + mOrientation) % 360;
+                        parameters.setRotation(mRotation);
+
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
                         Log.d("cameraS", "OnTake()");
-                        mCamera.autoFocus(new Camera.AutoFocusCallback() {
-                            @Override
-                            public void onAutoFocus(boolean success, Camera camera) {
-                                if(success) {
-                                    mCamera.takePicture(new Camera.ShutterCallback() {
-                                        @Override
-                                        public void onShutter() {
-                                            mCamera.cancelAutoFocus();
-                                        }
-                                    }, null, mCall);
-                                }
-                                else
-                                {
-                                    Camera.Parameters params = mCamera.getParameters();
-                                    params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-                                    camera.setParameters(params);
-                                    mCamera.autoFocus(new Camera.AutoFocusCallback() {
-                                        @Override
-                                        public void onAutoFocus(boolean success, Camera camera) {
-                                            mCamera.takePicture(new Camera.ShutterCallback() {
-                                                @Override
-                                                public void onShutter() {
-                                                    mCamera.cancelAutoFocus();
-                                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                                                            Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-                                                        Camera.Parameters params = mCamera.getParameters();
-                                                        params.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-                                                        mCamera.setParameters(params);
-                                                    }
-                                                }
-                                            }, null, mCall);
-                                        }
-                                    });
-                                }
-                            }
-                        });
+                        takePictureWithAutoFocus(mCamera, mCall);
                     } else {
                         handler.post(new Runnable() {
 
@@ -777,6 +854,35 @@ public class CameraHeadService extends Service implements
 
     }
 
+    private void takePictureWithAutoFocus(final android.hardware.Camera mCamera, final Camera.PictureCallback mCall) {
+        final Handler uiThreadHandler = new Handler();
+        if (mCamera.getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
+            mCamera.autoFocus(new Camera.AutoFocusCallback() {
+                @Override
+                public void onAutoFocus(boolean success, Camera camera) {
+                    uiThreadHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mCamera.takePicture(new Camera.ShutterCallback() {
+                                @Override
+                                public void onShutter() {
+                                    mCamera.cancelAutoFocus();
+                                }
+                            }, null, mCall);
+                        }
+                    }, 500);
+                }
+            });
+        } else {
+            uiThreadHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mCamera.takePicture(null, null, mCall);
+                }
+            }, 500);
+        }
+    }
+
     private void start(final boolean isCamera) {
         Log.d("ImageTakin", "StartCommand()");
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
@@ -793,7 +899,11 @@ public class CameraHeadService extends Service implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
                 Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        } else if (parameters.getSupportedFocusModes().contains(
+                Camera.Parameters.FOCUS_MODE_AUTO)) {
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
+        mCamera.setParameters(parameters);
         size = parameters.getPreviewSize();
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             mCamera.setPreviewCallback(previewCallback);
@@ -825,53 +935,9 @@ public class CameraHeadService extends Service implements
 
             @Override
             public void onOrientationChanged(int orientation) {
-                Display display = ((WindowManager) getSystemService(WINDOW_SERVICE))
-                        .getDefaultDisplay();
-                int rotation = windowManager.getDefaultDisplay().getRotation();
-                Log.sysOut(rotation + "");
+                if (orientation == ORIENTATION_UNKNOWN) return;
 
-                if (display.getRotation() != Surface.ROTATION_0) { // landscape
-                    // oriented
-                    // devices
-                    Log.sysOut("LANDSCAPE");
-                    if (orientation >= 315 || orientation < 45) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
-                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
-                        }
-                    } else if (orientation < 315 && orientation >= 225) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
-                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
-                        }
-                    } else if (orientation < 225 && orientation >= 135) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
-                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
-                        }
-                    } else if (orientation < 135 && orientation > 45) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
-                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
-                        }
-                    }
-                } else { // portrait oriented devices
-                    Log.sysOut("PORTRAIT");
-                    if (orientation >= 315 || orientation < 45) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_NORMAL) {
-                            mOrientation = ORIENTATION_PORTRAIT_NORMAL;
-                        }
-                    } else if (orientation < 315 && orientation >= 225) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_NORMAL) {
-                            mOrientation = ORIENTATION_LANDSCAPE_NORMAL;
-                        }
-                    } else if (orientation < 225 && orientation >= 135) {
-                        if (mOrientation != ORIENTATION_PORTRAIT_INVERTED) {
-                            mOrientation = ORIENTATION_PORTRAIT_INVERTED;
-                        }
-                    } else if (orientation < 135 && orientation > 45) {
-                        if (mOrientation != ORIENTATION_LANDSCAPE_INVERTED) {
-                            mOrientation = ORIENTATION_LANDSCAPE_INVERTED;
-                        }
-                    }
-                }
-
+                mOrientation = (orientation + 45) / 90 * 90;
             }
         };
         if (mOrientationEventListener.canDetectOrientation()) {
@@ -932,7 +998,6 @@ public class CameraHeadService extends Service implements
     }
 
     private void updateLastImage(String path) {
-        //CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(path);
         Bundle intent = new Bundle();
         intent.putString("absolutePath", path);
         try {
@@ -1042,7 +1107,7 @@ public class CameraHeadService extends Service implements
             try {
                 mCamera.setPreviewDisplay(sHolder);
                 try {
-                    mCamera.setDisplayOrientation(90);
+                    setCameraDisplayOrientation(currentCamera, mCamera);
                 } catch (RuntimeException e) {
                 }
                 try {

@@ -2,8 +2,10 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -14,8 +16,10 @@ import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Build;
+import android.provider.Settings;
 
 import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 
@@ -95,8 +99,13 @@ public class NfcShield extends ControllerParent<NfcShield> {
                 setupForegroundDispatch();
                 selectionAction.onSuccess();
             } else {
-                if (isToastable) {
-                    activity.showToast(nfcAdapter == null ? "Device doesn't support NFC!" : "Please, Enable Your NFC");
+                if(nfcAdapter == null){
+                    if (isToastable) {
+                        activity.showToast("Device doesn't support NFC!");
+                    }
+                }
+                else {
+                    showSettingsDialogIfNfcIsNotEnabled();
                 }
                 selectionAction.onFailure();
             }
@@ -104,6 +113,37 @@ public class NfcShield extends ControllerParent<NfcShield> {
             if (isToastable)
                 activity.showToast("Device doesn't support NFC!");
             selectionAction.onFailure();
+        }
+    }
+
+    public void showSettingsDialogIfNfcIsNotEnabled(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            NfcAdapter nfcAdapter = NfcAdapter.getDefaultAdapter(activity);
+            if (nfcAdapter != null && !nfcAdapter.isEnabled()) {
+                AlertDialog.Builder alertbox = new AlertDialog.Builder(getActivity());
+                alertbox.setMessage("We need you to enable NFC for this shield to work.");
+                alertbox.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            Intent intent = new Intent(Settings.ACTION_NFC_SETTINGS);
+                            getActivity().startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                            getActivity().startActivity(intent);
+                        }
+                    }
+                });
+                alertbox.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                        activity.showToast("Please enable NFC to be able to use this shield");
+                    }
+                });
+                alertbox.show();
+            }
         }
     }
 

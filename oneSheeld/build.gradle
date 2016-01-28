@@ -24,8 +24,8 @@ android {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 151123
-        versionName "1.5.0"
+        versionCode 160126
+        versionName "1.6.0"
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
     }
 
@@ -99,6 +99,7 @@ dependencies {
     compile 'net.sf.supercsv:super-csv:2.4.0'
     compile 'com.github.amlcurran.showcaseview:library:5.4.0'
     compile 'com.github.emanzanoaxa:RippleEffect:52ea2a0ab6'
+    compile 'com.drewnoakes:metadata-extractor:2.8.1'
 }
 
 def isCrashlyticsPropertiesAvailable() {

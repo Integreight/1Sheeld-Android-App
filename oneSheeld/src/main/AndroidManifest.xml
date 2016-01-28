@@ -280,5 +280,6 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
+        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/notification_icon"/>
     </application>
 </manifest>
