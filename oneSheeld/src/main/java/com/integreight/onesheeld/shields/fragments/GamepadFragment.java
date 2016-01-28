@@ -158,7 +158,6 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
                     .isReadyToSwitch()){
                 return;
             }
-            resetConnectingPins();
             if (((GamepadShield)getApplication().getRunningShields().get(getControllerTag()))
                     .getGamePadMode() == GamepadShield.GamePadMode.KEYS){
                 ((GamepadShield)getApplication().getRunningShields().get(getControllerTag()))
@@ -171,6 +170,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
                         .setGamePadMode(GamepadShield.GamePadMode.KEYS);
                 gamePadViewSwitcher.showNext();
             }
+            resetConnectingPins();
         }
     };
 
@@ -218,6 +218,14 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
         if ((getApplication().getRunningShields().get(getControllerTag())) == null)
             getApplication().getRunningShields().put(getControllerTag(),
                     new GamepadShield(activity, getControllerTag()));
+    }
+
+    @Override
+    public void doOnResume() {
+        super.doOnResume();
+        if (((GamepadShield)getApplication().getRunningShields().get(getControllerTag()))
+                .getGamePadMode() == GamepadShield.GamePadMode.ANALOG)
+            gamePadViewSwitcher.setDisplayedChild(1);
     }
 
     @Override

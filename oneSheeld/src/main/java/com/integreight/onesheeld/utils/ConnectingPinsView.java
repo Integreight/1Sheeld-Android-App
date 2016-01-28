@@ -74,7 +74,7 @@ public class ConnectingPinsView extends Fragment {
     private Handler resettingHandler = new Handler();
 
     public void reset(final ControllerParent<?> controller,
-                      final OnPinSelectionListener listner) {
+                      final OnPinSelectionListener listener) {
         activity = (MainActivity) getActivity();
         if (view == null && activity != null) {
             activity.getSupportFragmentManager()
@@ -138,7 +138,7 @@ public class ConnectingPinsView extends Fragment {
                                 arduinoPin.connectedPins.put(controller
                                                 .getClass().getName() + shieldPinName,
                                         true);
-                                listner.onSelect(arduinoPin);
+                                listener.onSelect(arduinoPin);
                             } else {
                                 ArduinoPin prevArduinoPin = controller.matchedShieldPins
                                         .get(shieldPinName);
@@ -152,8 +152,8 @@ public class ConnectingPinsView extends Fragment {
                                                     .getName() + shieldPinName);
                                 controller.matchedShieldPins
                                         .remove(controller.shieldPins[selectedPin]);
-                                listner.onUnSelect(prevArduinoPin);
-                                listner.onSelect(null);
+                                listener.onUnSelect(prevArduinoPin);
+                                listener.onSelect(null);
                             }
                             ((OneSheeldTextView) pinsSubContainers.get(
                                     selectedPin).getChildAt(1)).setText(tag
