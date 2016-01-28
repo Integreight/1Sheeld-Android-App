@@ -390,6 +390,22 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         return !(ControllerParent.this instanceof TaskerShield);
     }
 
+    public void resetConnectedPins(){
+        if (matchedShieldPins != null)
+            matchedShieldPins.clear();
+        if (shieldPins != null && shieldPins.length > 0) {
+            for (ArduinoPin pin : Arrays.asList(ArduinoPin.values())) {
+                for (int i = 0; i < shieldPins.length; i++) {
+                    if (pin.connectedPins.size() == 0)
+                        break;
+                    pin.connectedPins
+                            .remove(((T) ControllerParent.this)
+                                    .getClass().getName()
+                                    + shieldPins[i]);
+                }
+            }
+        }
+    }
     /**
      * Called on shield firing process
      */

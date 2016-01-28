@@ -150,5 +150,6 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         keysStatus = 0;
         analogX = 127;
         analogY = 127;
+        resetConnectedPins();
     }
 }
