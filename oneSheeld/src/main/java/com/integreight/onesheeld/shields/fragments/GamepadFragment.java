@@ -2,15 +2,18 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
+import com.integreight.onesheeld.enums.ArduinoPinCapability;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
@@ -239,7 +242,7 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
                 new OnPinSelectionListener() {
 
                     @Override
-                    public void onSelect(ArduinoPin pin) {
+                    public void onSelect(ArduinoPin pin, String shieldNamePin) {
                         if (pin != null) {
 
                             getApplication()
@@ -248,12 +251,15 @@ public class GamepadFragment extends ShieldFragmentParent<GamepadFragment> {
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
                                             ArduinoFirmata.OUTPUT));
-                        }
 
+                            if (!pin.getCapabilitySet().contains(ArduinoPinCapability.PWM)
+                                    && (shieldNamePin.equals("Analog X") || shieldNamePin.equals("Analog Y")))
+                                Toast.makeText(getContext(), "This is not a PWM pin", Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override
-                    public void onUnSelect(ArduinoPin pin) {
+                    public void onUnSelect(ArduinoPin pin, String shieldNamePin) {
                         // TODO Auto-generated method stub
 
                     }

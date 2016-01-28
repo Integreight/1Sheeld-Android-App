@@ -55,7 +55,7 @@ public class PushButtonFragment extends
                 new OnPinSelectionListener() {
 
                     @Override
-                    public void onSelect(ArduinoPin pin) {
+                    public void onSelect(ArduinoPin pin, String shieldNamePin) {
                         if (pin != null) {
                             (getApplication()
                                     .getRunningShields()
@@ -68,7 +68,7 @@ public class PushButtonFragment extends
                     }
 
                     @Override
-                    public void onUnSelect(ArduinoPin pin) {
+                    public void onUnSelect(ArduinoPin pin, String shieldNamePin) {
                     }
                 });
         if (getApplication().getRunningShields().get(

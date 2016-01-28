@@ -17,7 +17,6 @@ import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
-import com.integreight.onesheeld.utils.Log;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     private final int[] levelsResources = new int[]{
@@ -45,7 +44,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                 new OnPinSelectionListener() {
 
                     @Override
-                    public void onSelect(ArduinoPin pin) {
+                    public void onSelect(ArduinoPin pin, String shieldNamePin) {
                         if (pin != null) {
                             (getApplication()
                                     .getRunningShields()
@@ -63,7 +62,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                     }
 
                     @Override
-                    public void onUnSelect(ArduinoPin pin) {
+                    public void onUnSelect(ArduinoPin pin, String shieldNamePin) {
                         ((SpeakerShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).stopBuzzer();
                     }

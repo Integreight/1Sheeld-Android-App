@@ -53,7 +53,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
                 new OnPinSelectionListener() {
 
                     @Override
-                    public void onSelect(ArduinoPin pin) {
+                    public void onSelect(ArduinoPin pin, String shieldNamePin) {
                         if (pin != null) {
                             (getApplication()
                                     .getRunningShields()
@@ -66,7 +66,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
                     }
 
                     @Override
-                    public void onUnSelect(ArduinoPin pin) {
+                    public void onUnSelect(ArduinoPin pin, String shieldNamePin) {
 
                     }
                 });

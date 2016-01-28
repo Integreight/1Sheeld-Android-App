@@ -138,7 +138,7 @@ public class ConnectingPinsView extends Fragment {
                                 arduinoPin.connectedPins.put(controller
                                                 .getClass().getName() + shieldPinName,
                                         true);
-                                listener.onSelect(arduinoPin);
+                                listener.onSelect(arduinoPin, controller.shieldPins[selectedPin]);
                             } else {
                                 ArduinoPin prevArduinoPin = controller.matchedShieldPins
                                         .get(shieldPinName);
@@ -152,8 +152,8 @@ public class ConnectingPinsView extends Fragment {
                                                     .getName() + shieldPinName);
                                 controller.matchedShieldPins
                                         .remove(controller.shieldPins[selectedPin]);
-                                listener.onUnSelect(prevArduinoPin);
-                                listener.onSelect(null);
+                                listener.onUnSelect(prevArduinoPin, controller.shieldPins[selectedPin]);
+                                listener.onSelect(null, controller.shieldPins[selectedPin]);
                             }
                             ((OneSheeldTextView) pinsSubContainers.get(
                                     selectedPin).getChildAt(1)).setText(tag
@@ -274,9 +274,9 @@ public class ConnectingPinsView extends Fragment {
     }
 
     public static interface OnPinSelectionListener {
-        public void onSelect(ArduinoPin pin);
+        public void onSelect(ArduinoPin pin, String shieldNamePin);
 
-        public void onUnSelect(ArduinoPin pin);
+        public void onUnSelect(ArduinoPin pin, String shieldNamePin);
     }
 
     public static interface onGetPinsView {

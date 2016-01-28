@@ -91,7 +91,7 @@ public class SevenSegmentFragment extends
                 new OnPinSelectionListener() {
 
                     @Override
-                    public void onSelect(ArduinoPin pin) {
+                    public void onSelect(ArduinoPin pin, String shieldNamePin) {
                         if (pin != null) {
                             (getApplication()
                                     .getRunningShields()
@@ -107,7 +107,7 @@ public class SevenSegmentFragment extends
                     }
 
                     @Override
-                    public void onUnSelect(ArduinoPin pin) {
+                    public void onUnSelect(ArduinoPin pin, String shieldNamePin) {
                         refreshSegments(((SevenSegmentShield) getApplication()
                                 .getRunningShields().get(getControllerTag()))
                                 .refreshSegments());

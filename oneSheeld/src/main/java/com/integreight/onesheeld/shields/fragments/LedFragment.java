@@ -49,7 +49,7 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
                 new OnPinSelectionListener() {
 
                     @Override
-                    public void onSelect(ArduinoPin pin) {
+                    public void onSelect(ArduinoPin pin, String shieldNamePin) {
                         if (pin != null) {
                             (getApplication().getRunningShields()
                                     .get(getControllerTag()))
@@ -67,7 +67,7 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
                     }
 
                     @Override
-                    public void onUnSelect(ArduinoPin pin) {
+                    public void onUnSelect(ArduinoPin pin, String shieldNamePin) {
                         // TODO Auto-generated method stub
 
                     }
