@@ -1,22 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:gravity="center">
 
-    <Button
-        android:id="@+id/vibration_stop_button"
+    <ImageView
+        android:id="@+id/vibration_shield_logo_imageview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_marginBottom="30dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/on_off_toggle_selelctor"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/vibration_shield_screen_logo" />
+
+    <TextView
+        android:id="@+id/vibration_shield_text_textview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/vibration_shield_logo_imageview"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="20dp"
         android:gravity="center"
+        android:text=""
         android:textColor="@color/offWhite"
-        android:textSize="50sp"
+        android:textSize="23sp" />
+
+    <com.integreight.onesheeld.utils.customviews.OneSheeldButton
+        android:layout_below="@+id/vibration_shield_text_textview"
+        android:id="@+id/vibration_stop_button"
+        android:text="@string/stopVibrationButton"
+        android:background="@drawable/data_logger_button"
+        android:textColor="@color/offWhite"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:textSize="30sp"
+        android:gravity="center"
         android:textStyle="bold"
-        android:text="STOP"/>
+        android:layout_marginTop="15dp"
+        android:layout_width="150dp"
+        android:layout_height="60dp"
+        android:visibility="invisible"/>
 
 </RelativeLayout>

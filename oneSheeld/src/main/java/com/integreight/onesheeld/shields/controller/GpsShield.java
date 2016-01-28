@@ -9,8 +9,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -25,8 +28,6 @@ import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SendFrameHandler;
 import com.integreight.onesheeld.utils.Log;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public class GpsShield extends ControllerParent<GpsShield> implements
         LocationListener, GoogleApiClient.ConnectionCallbacks,
@@ -75,8 +76,16 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         this.selectionAction =selectionAction;
         addRequiredPremission(Manifest.permission.ACCESS_FINE_LOCATION);
         if (checkForPermissions()) {
-            if (selectionAction != null)
-                selectionAction.onSuccess();
+            if(!isLocationServicesEnabled()){
+                buildAlertMessageNoGps();
+                if (this.selectionAction != null) {
+                    this.selectionAction.onFailure();
+                }
+            }
+            else {
+                if (selectionAction != null)
+                    selectionAction.onSuccess();
+            }
         }else {
             if (selectionAction != null)
                 selectionAction.onFailure();
@@ -133,10 +142,9 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
     public void isGooglePlayServicesAvailableWithDialog() {
         // checking if Google play services exist or not.
-        if (mLocationClient != null && !mLocationClient.isConnected()) {
+        if (mLocationClient != null) {
             if (isGooglePlayServicesAvailable()) {
-                if (!manager
-                        .isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                if (!isLocationServicesEnabled()) {
                     buildAlertMessageNoGps();
                 } else {
                     startGps();
@@ -148,13 +156,29 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         }
     }
 
+    private boolean isLocationServicesEnabled(){
+        int locationMode = 0;
+        String locationProviders;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            try {
+                locationMode = Settings.Secure.getInt(getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+            return locationMode != Settings.Secure.LOCATION_MODE_OFF;
+        }else{
+            locationProviders = Settings.Secure.getString(getActivity().getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+            return !TextUtils.isEmpty(locationProviders);
+        }
+    }
+
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(
                 getActivity());
         builder.setMessage(
-                "Please Use wirless networks to determine your location !")
+                "We need you to enable the location services for this shield to work correctly.")
                 .setCancelable(false)
-                .setPositiveButton("Yes",
+                .setPositiveButton("Ok",
                         new DialogInterface.OnClickListener() {
                             public void onClick(final DialogInterface dialog,
                                                 final int id) {
@@ -168,6 +192,7 @@ public class GpsShield extends ControllerParent<GpsShield> implements
                     public void onClick(final DialogInterface dialog,
                                         final int id) {
                         dialog.cancel();
+                        activity.showToast("Please enable location services to be able to use this shield");
                     }
                 });
         final AlertDialog alert = builder.create();
@@ -286,12 +311,15 @@ public class GpsShield extends ControllerParent<GpsShield> implements
     @Override
     public void onConnected(Bundle arg0) {
         // TODO Auto-generated method stub
-        if (mUpdatesRequested && mLocationRequest != null
-                && mLocationClient != null) {
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    mLocationClient, mLocationRequest, this);
-        }
+        try {
+            if (mUpdatesRequested && mLocationRequest != null
+                    && mLocationClient != null) {
+                LocationServices.FusedLocationApi.requestLocationUpdates(
+                        mLocationClient, mLocationRequest, this);
+            }
+        }catch (SecurityException ignored){
 
+        }
     }
 
     private void sendFrame(Location myLocation) {

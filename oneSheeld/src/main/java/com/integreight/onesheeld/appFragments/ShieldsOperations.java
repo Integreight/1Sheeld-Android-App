@@ -317,7 +317,7 @@ public class ShieldsOperations extends BaseContainerFragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+//                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
                                         if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
                                             try {
                                                 ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
@@ -330,10 +330,10 @@ public class ShieldsOperations extends BaseContainerFragment {
                                             } catch (RemoteException e) {
                                                 e.printStackTrace();
                                             }
-                                    } else {
-                                        Log.test("Test", "Cannot disconnect in demoMode");
-                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
-                                    }
+//                                    } else {
+//                                        Log.test("Test", "Cannot disconnect in demoMode");
+//                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
+//                                    }
                                     activity.closeMenu();
                                     if (activity.getSupportFragmentManager()
                                             .getBackStackEntryCount() > 1) {
@@ -352,7 +352,7 @@ public class ShieldsOperations extends BaseContainerFragment {
                             });
             }
         }, 500);
-        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);

@@ -105,7 +105,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getApplication().getAppFirmata().isOpen() == false && !getApplication().getIsDemoMode()) return;
+//        if (getApplication().getAppFirmata().isOpen() == false && !getApplication().getIsDemoMode()) return;
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             if (!reInitController())
                 return;
@@ -219,7 +219,7 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
     @Override
     public void onResume() {
         super.onResume();
-        if (getApplication().getAppFirmata().isOpen() == false && !getApplication().getIsDemoMode()) return;
+//        if (getApplication().getAppFirmata().isOpen() == false && !getApplication().getIsDemoMode()) return;
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             if (!reInitController())
                 return;

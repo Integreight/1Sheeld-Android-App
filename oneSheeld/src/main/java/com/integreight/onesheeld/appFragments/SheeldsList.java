@@ -131,6 +131,12 @@ public class SheeldsList extends Fragment {
             public void run() {
                 if (activity != null
                         && activity.getSupportFragmentManager() != null) {
+                    activity.findViewById(R.id.currentViewTitle).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            activity.openOptionsMenu();
+                        }
+                    });
                     activity.findViewById(R.id.getAvailableDevices)
                             .setOnClickListener(new View.OnClickListener() {
 
@@ -150,6 +156,13 @@ public class SheeldsList extends Fragment {
 
                                                             }
                                                         });
+                                        activity.findViewById(R.id.currentViewTitle).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                // TODO
+                                                // 1Sheeld Logo In Header
+                                            }
+                                        });
                                         launchShieldsOperationActivity();
                                     }
                                 }
@@ -178,7 +191,7 @@ public class SheeldsList extends Fragment {
         ((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
                 .getChildAt(1).setBackgroundResource(
                 R.drawable.shields_list_shields_operation_button);
-        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode())
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
             ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
@@ -374,8 +387,8 @@ public class SheeldsList extends Fragment {
                 if (adapter != null)
                     adapter.applyToControllerTable();
             }
-            if (!activity.getThisApplication().isDebuggable())
-                AppRate.showRateDialogIfMeetsConditions(activity);
+            AppRate.showRateDialogIfMeetsConditions(activity);
+            activity.showMenuButtonTutorialOnce();
         }
 
         @Override
@@ -455,7 +468,7 @@ public class SheeldsList extends Fragment {
                     new FirmwareUpdatingPopup((MainActivity) activity/* , false */)
                             .show();
                 else
-                    activity.showToast("Please connect first.");
+                    activity.showToast("Please connect to your board first.");
                 return true;
             case R.id.action_settings:
                 ((OneSheeldApplication) activity.getApplication())

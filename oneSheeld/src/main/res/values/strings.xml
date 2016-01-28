@@ -88,8 +88,8 @@
     <string name="tabToSpeak">Tap\nto\nSpeak</string>
 
     <!-- Tutorial -->
-    <string name="go">Go !</string>
-    <string name="explore">Explore</string>
+    <string name="go">Go!</string>
+    <string name="demo">Demo</string>
     <!-- Terminal -->
     <string name="terminalString">ASCII</string>
     <string name="terminalASCI">DEC</string>
@@ -101,6 +101,9 @@
     <string name="stopLogging">Logging\nStopped</string>
     <string name="logging">Logging</string>
     <string name="stopLoggingButton">Stop Logging</string>
+
+    <!-- Vibration -->
+    <string name="stopVibrationButton">Stop!</string>
 
     <!-- Lock Patter -->
     <string name="lockscreen_access_pattern_start">Pattern started</string>

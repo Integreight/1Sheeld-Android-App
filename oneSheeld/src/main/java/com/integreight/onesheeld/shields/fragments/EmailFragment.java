@@ -284,6 +284,8 @@ public class EmailFragment extends ShieldFragmentParent<EmailFragment> {
             userName.setText(userEmail);
         } else {
             login_bt.setVisibility(View.VISIBLE);
+            logout_bt.setVisibility(View.INVISIBLE);
+            userName.setVisibility(View.INVISIBLE);
         }
     }
 }

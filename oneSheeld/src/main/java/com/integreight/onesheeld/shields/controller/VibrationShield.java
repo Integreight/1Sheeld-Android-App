@@ -29,6 +29,8 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
     private Runnable onStart;
     private Runnable onPause;
     private Runnable onStop;
+    private boolean isVibrating;
+    private boolean isPaused;
 
     public interface VibrationShieldListener{
         void onStart();
@@ -52,6 +54,18 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
         this.vibrationShieldListener = listener;
     }
 
+    public boolean isVibrating(){
+        synchronized (this) {
+            return isVibrating;
+        }
+    }
+
+    public boolean isPaused(){
+        synchronized (this) {
+            return isPaused;
+        }
+    }
+
     @Override
     public ControllerParent<VibrationShield> init(String tag) {
         scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
@@ -61,18 +75,30 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
             @Override
             public void run() {
                 if (vibrationShieldListener != null) vibrationShieldListener.onStart();
+                synchronized (VibrationShield.this) {
+                    isVibrating = true;
+                    isPaused = false;
+                }
             }
         };
         onPause = new Runnable() {
             @Override
             public void run() {
                 if (vibrationShieldListener != null) vibrationShieldListener.onPause();
+                synchronized (VibrationShield.this) {
+                    isVibrating = false;
+                    isPaused = true;
+                }
             }
         };
         onStop = new Runnable() {
             @Override
             public void run() {
                 if (vibrationShieldListener != null) vibrationShieldListener.onStop();
+                synchronized (VibrationShield.this) {
+                    isVibrating = false;
+                    isPaused = false;
+                }
             }
         };
         futureTasks = new Vector<>();
@@ -132,6 +158,10 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
                             public void run() {
                                 if (vibrationShieldListener != null) vibrationShieldListener
                                         .onPause();
+                                synchronized (VibrationShield.this) {
+                                    isVibrating = false;
+                                    isPaused = true;
+                                }
                                 vibrator.vibrate(pattern, -1);
                             }
                         }, 0, TimeUnit.MILLISECONDS));
@@ -160,6 +190,10 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
                             public void run() {
                                 if (vibrationShieldListener != null) vibrationShieldListener
                                         .onPause();
+                                synchronized (VibrationShield.this) {
+                                    isVibrating = false;
+                                    isPaused = true;
+                                }
                                 vibrator.vibrate(pattern, -1);
                             }
                         }, 0, period, TimeUnit.MILLISECONDS));
@@ -193,6 +227,10 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
                             public void run() {
                                 if (vibrationShieldListener != null) vibrationShieldListener
                                         .onStart();
+                                synchronized (VibrationShield.this) {
+                                    isVibrating = true;
+                                    isPaused = false;
+                                }
                                 vibrator.vibrate(duration);
                             }
                         }, 0, TimeUnit.MILLISECONDS));
@@ -207,6 +245,10 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
                             public void run() {
                                 if (vibrationShieldListener != null) vibrationShieldListener
                                         .onStart();
+                                synchronized (VibrationShield.this) {
+                                    isVibrating = true;
+                                    isPaused = false;
+                                }
                                 vibrator.vibrate(duration);
                             }
                         }, 0, period, TimeUnit.MILLISECONDS));
@@ -223,6 +265,10 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
 
     public void stop(){
         if (vibrationShieldListener != null) vibrationShieldListener.onStop();
+        synchronized (VibrationShield.this) {
+            isVibrating = false;
+            isPaused = false;
+        }
         ((Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE)).cancel();
         for (ScheduledFuture task:futureTasks)
             task.cancel(true);
@@ -231,7 +277,6 @@ public class VibrationShield extends ControllerParent<VibrationShield> {
 
     @Override
     public void reset() {
-        Log.sysOut("Reset");
         ((Vibrator)getApplication().getSystemService(Context.VIBRATOR_SERVICE)).cancel();
         if (!scheduledThreadPoolExecutor.isShutdown())
             scheduledThreadPoolExecutor.shutdown();

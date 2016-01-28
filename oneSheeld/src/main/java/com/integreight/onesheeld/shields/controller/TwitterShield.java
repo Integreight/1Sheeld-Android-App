@@ -1,5 +1,6 @@
 package com.integreight.onesheeld.shields.controller;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
@@ -663,5 +665,17 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         // TODO Auto-generated method stub
         stopListeningOnAKeyword();
     }
-
+    @Override
+    public ControllerParent<TwitterShield> invalidate(
+            com.integreight.onesheeld.shields.ControllerParent.SelectionAction selectionAction,
+            boolean isToastable) {
+        this.selectionAction = selectionAction;
+        if(Build.VERSION.SDK_INT >=16)
+        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (checkForPermissions())
+            this.selectionAction.onSuccess();
+        else
+            this.selectionAction.onFailure();
+        return super.invalidate(selectionAction, isToastable);
+    }
 }

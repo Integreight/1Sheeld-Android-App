@@ -111,7 +111,11 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
 //        lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
-        lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity,false);
+        try {
+            lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity, false);
+        }catch (SecurityException e){
+
+        }
         if (lastImageSrc != null) {
             lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
             if (lastImage !=null && lastImageBitmap != null) {
@@ -132,7 +136,11 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 lastImage.setAlpha((float) 1);
             }
 //            lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
-            lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity,false);
+            try {
+                lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity, false);
+            }catch (SecurityException e){
+
+            }
             if (lastImageSrc != null) {
                 lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
                 if (lastImage !=null && lastImageBitmap != null) {
@@ -264,7 +272,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                     if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                         try {
-                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                            if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
                                 camerLogo.setVisibility(View.INVISIBLE);
 //                            else
 //                                cameraPreviewToggle.setChecked(false);
@@ -276,7 +284,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         }
                     } else {
                         try {
-                            if(((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
+                            if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
                                 camerLogo.setVisibility(View.VISIBLE);
 //                            else
 //                                cameraPreviewToggle.setChecked(true);
@@ -290,7 +298,11 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 }
             }
         }, 500);
+
         try {
+            ((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).setCameraToPreview(((CameraShield) getApplication().getRunningShields().get(
+                    getControllerTag())).isBackPreview());
             ((CameraShield) getApplication().getRunningShields().get(
                     getControllerTag())).invalidatePreview();
         } catch (RemoteException e) {
@@ -304,7 +316,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
 
     @Override
     public void doOnPause() {
-        if (!getApplication().getIsDemoMode()) {
             if (getApplication().getRunningShields().get(
                     getControllerTag()) != null) {
                 try {
@@ -315,8 +326,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 }
             }
             camerLogo.setVisibility(View.VISIBLE);
-            getView().invalidate();
-        }
+            if(getView()!=null)getView().invalidate();
     }
 
     @Override
