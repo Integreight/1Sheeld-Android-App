@@ -34,49 +34,51 @@ http://1sheeld.com
 
 
 ## What are the shields you are giving me access to right now? ##
+
 Currently, you have access to around 40 shields. Here is a list of them:
-1- Accelerometer Sensor
-2- Buzzer
-3- Camera
-4- Clock
-5- Color Detector
-6- Data Logger
-7- Email
-8- Facebook
-9- Foursquare
-10- Game Pad
-11- GLCD
-12- GPS
-13- Gravity Sensor
-14- Gyroscope Sensor
-15- Internet
-16- Keyboard
-17- Keypad
-18- LCD
-19- LED
-20- Light Sensor
-21- Magnetometer Sensor
-22- Mic
-23- Music Player
-24- NFC
-25- Notifications
-26- Orientation Sensor
-27- Pattern
-28- Phone
-29- Pressure Sensor
-30- Proximity Sensor
-31- Push Button
-32- Seven Segment
-33- Skype
-34- Slider
-35- SMS
-36- Temperature Sensor
-37- Terminal
-38- Text to speech
-39- Toggle Button
-40- Twitter
-41- Vibration
-42- Voice Recognition
+
+- Accelerometer Sensor
+- Buzzer
+- Camera
+- Clock
+- Color Detector
+- Data Logger
+- Email
+- Facebook
+- Foursquare
+- Game Pad
+- GLCD
+- GPS
+- Gravity Sensor
+- Gyroscope Sensor
+- Internet
+- Keyboard
+- Keypad
+- LCD
+- LED
+- Light Sensor
+- Magnetometer Sensor
+- Mic
+- Music Player
+- NFC
+- Notifications
+- Orientation Sensor
+- Pattern
+- Phone
+- Pressure Sensor
+- Proximity Sensor
+- Push Button
+- Seven Segment
+- Skype
+- Slider
+- SMS
+- Temperature Sensor
+- Terminal
+- Text to speech
+- Toggle Button
+- Twitter
+- Vibration
+- Voice Recognition
 
 We also have integrated 2 plugins to Tasker app (Beta), an event and a condition plugins, that will allow you to bring the power of hardware into you automation scripts.
 
