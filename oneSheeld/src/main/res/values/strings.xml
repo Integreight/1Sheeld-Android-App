@@ -386,6 +386,7 @@
     <string name="terminal_line_copied_toast">Line Copied</string>
     <string name="terminal_couldnt_copy_empty_line_toast">Couldn\'t copy empty line.</string>
     <string name="terminal_lines_copied_toast">Lines copied</string>
+    <string name="terminal_copy_all_button">Copy All</string>
     <string name="terminal_time_on_button">Time ON</string>
     <string name="terminal_time_off_button">Time OFF</string>
     <string name="terminal_auto_scroll_off_button">Auto-Scroll OFF</string>
