@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
+    <!--
+     _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+     _-                 NOTES FOR TRANSLATORS                  _-
+     _-                                                        _-
+     _-      - Items marked with translatable="false"          _-
+     _-        should be deleted from your new translated      _-
+     _-        strings.xml.                                    _-
+     _-                                                        _-
+     _-      - Items inside xliff tag shouldn't be             _-
+     _-        translated.                                     _-
+     _-                                                        _-
+     _-      - Take into consideration the escape characters   _-
+     _-        bellow when translating:                        _-
+     _-          \n is a placeholder for a new line            _-
+     _-          \' is a placeholder for '                     _-
+     _-          \t is a placeholder for TAB                   _-
+     _-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+     -->
+
     <string name="app_name" translatable="false">1Sheeld</string>
 
     <!-- Context Menu -->
