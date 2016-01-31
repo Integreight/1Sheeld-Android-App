@@ -129,8 +129,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:checked="true"
-                        android:textOff="Full"
-                        android:textOn="Normal" />
+                        android:textOff="@string/color_detector_full"
+                        android:textOn="@string/color_detector_normal" />
 
                     <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
                         android:id="@+id/scale"
@@ -139,8 +139,8 @@
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
                         android:checked="true"
-                        android:textOff="Gray"
-                        android:textOn="Colored" />
+                        android:textOff="@string/color_detector_gray"
+                        android:textOn="@string/color_detector_colored" />
 
                     <com.integreight.onesheeld.utils.customviews.OneSheeldToggleButton
                         android:id="@+id/type"
@@ -149,8 +149,8 @@
                         android:layout_marginLeft="15dp"
                         android:layout_weight="1"
                         android:checked="true"
-                        android:textOff="Average"
-                        android:textOn="Common" />
+                        android:textOff="@string/color_detector_average"
+                        android:textOn="@string/color_detector_common" />
                 </LinearLayout>
 
                 <com.integreight.onesheeld.utils.customviews.ComboSeekBar

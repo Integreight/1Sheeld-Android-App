@@ -144,8 +144,8 @@
             android:textColor="@color/offWhite"
             android:layout_marginRight=".3dp"
             android:layout_weight="1"
-            android:textOff="Time OFF"
-            android:textOn="Time ON" />
+            android:textOff="@string/terminal_time_off_button"
+            android:textOn="@string/terminal_time_on_button" />
 
         <ToggleButton
             android:id="@+id/toggleAutoScrolling"
@@ -157,8 +157,8 @@
             android:layout_marginLeft=".3dp"
             android:layout_marginRight=".3dp"
             android:layout_weight="1"
-            android:textOff="Auto-Scroll OFF"
-            android:textOn="Auto-Scroll ON" />
+            android:textOff="@string/terminal_auto_scroll_off_button"
+            android:textOn="@string/terminal_auto_scroll_on_button" />
 
         <com.integreight.onesheeld.utils.customviews.OneSheeldButton
             android:id="@+id/copy_all"

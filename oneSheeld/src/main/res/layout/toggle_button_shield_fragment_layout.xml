@@ -17,8 +17,8 @@
         android:focusable="false"
         android:gravity="center"
         android:textColor="@color/offWhite"
-        android:textOff="OFF"
-        android:textOn="ON"
+        android:textOff="@string/toggle_button_off"
+        android:textOn="@string/toggle_button_on"
         android:textSize="50sp"
         android:textStyle="bold" />
 

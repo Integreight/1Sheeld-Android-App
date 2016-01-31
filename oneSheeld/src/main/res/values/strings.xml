@@ -43,7 +43,7 @@
     <string name="firmware_upgrade_popup_no_internet_connection">No Internet Connection</string>
 
     <!-- Tasker Plugin -->
-    <string name="plugin_name">@string/app_name</string>
+    <string name="plugin_name" translatable="false">@string/app_name</string>
 
     <!-- Shields List -->
     <string name="shields_list_deselect_all_button">Deselect All</string>
@@ -70,7 +70,7 @@
     <string name="tutorial_demo_button">Demo</string>
     <string name="tutorial_dont_show_this_tutorial_again">Don\'t show this tutorial again</string>
     <string name="tutorial_you_are_ready_to_go">You are\nready to go!</string>
-    <string name="tutorial_for_more_tutorials_visit_our_website">For more tutorials visit our website\n1Sheeld.com</string>
+    <string name="tutorial_for_more_tutorials_visit_our_website">For more tutorials visit our website\n<xliff:g id="_1sheeld_website">1Sheeld.com</xliff:g></string>
     <string name="tutorial_skip">Skip</string>
 
     <!-- Rating Dialog -->
@@ -90,11 +90,11 @@
     <!-- About Dialog -->
     <string name="about_dialog_about_1sheeld">About 1Sheeld</string>
     <string name="about_dialog_developed_with_love_by_integreight_inc_team_in_cairo_egypt">Developed with love by Integreight, Inc. team in Cairo, Egypt.</string>
-    <string name="about_dialog_if_you_have_any_question_please_visit_our_website_or_drop_us_an_email_on_info_integreight_com">If you have any question, please visit our website or drop us an email on info@integreight.com</string>
+    <string name="about_dialog_if_you_have_any_question_please_visit_our_website_or_drop_us_an_email_on_info_integreight_com">If you have any question, please visit our website or drop us an email on <xliff:g id="_1sheeld_support_email">info@integreight.com</xliff:g></string>
     <string name="about_dialog_firmware_version">Firmware Version</string>
     <string name="about_dialog_app_version">App Version</string>
     <string name="about_dialog_app_was_last_updated_on">App was last updated on</string>
-    <string name="about_dialog_if_you_are_interested_in_this_apps_source_code_please_visit_our_github_page_github_com_integreight">If you are interested in this app\'s source code, please visit our Github page: github.com/integreight</string>
+    <string name="about_dialog_if_you_are_interested_in_this_apps_source_code_please_visit_our_github_page_github_com_integreight">If you are interested in this app\'s source code, please visit our Github page: <xliff:g id="_1sheeld_github_page">github.com/integreight</xliff:g></string>
     <string name="about_dialog_okay">Okay!</string>
 
     <!-- Connection Notification -->
@@ -157,11 +157,11 @@
 
     <!-- Color Detector -->
     <string name="color_detector_shield_name">Color Detector</string>
-    <string name="color_detector_camera_is_unavailable_maybe_its_used_by_another_application_toast">@string/camera_camera_is_unavailable_maybe_its_used_by_another_application_toast</string>
-    <string name="color_detector_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly">@string/camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly</string>
-    <string name="color_detector_validation_dialog_ok_button">@string/camera_validation_dialog_ok_button</string>
-    <string name="color_detector_validation_dialog_later_button">@string/camera_validation_dialog_later_button</string>
-    <string name="color_detector_please_enable_the_permission_to_be_able_to_select_this_shield_toast">@string/camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast</string>
+    <string name="color_detector_camera_is_unavailable_maybe_its_used_by_another_application_toast" translatable="false">@string/camera_camera_is_unavailable_maybe_its_used_by_another_application_toast</string>
+    <string name="color_detector_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly" translatable="false">@string/camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly</string>
+    <string name="color_detector_validation_dialog_ok_button" translatable="false">@string/camera_validation_dialog_ok_button</string>
+    <string name="color_detector_validation_dialog_later_button" translatable="false">@string/camera_validation_dialog_later_button</string>
+    <string name="color_detector_please_enable_the_permission_to_be_able_to_select_this_shield_toast" translatable="false">@string/camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast</string>
     <string name="color_detector_small">Small</string>
     <string name="color_detector_medium">Medium</string>
     <string name="color_detector_large">Large</string>
@@ -177,6 +177,12 @@
     <string name="color_detector_15">15</string>
     <string name="color_detector_18">18</string>
     <string name="color_detector_24">24</string>
+    <string name="color_detector_full">Full</string>
+    <string name="color_detector_gray">Gray</string>
+    <string name="color_detector_normal">Normal</string>
+    <string name="color_detector_colored">Colored</string>
+    <string name="color_detector_common">Common</string>
+    <string name="color_detector_average">Average</string>
 
     <!-- Data Logger -->
     <string name="data_logger_shield_name">Data Logger</string>
@@ -226,8 +232,8 @@
 
     <!-- GPS -->
     <string name="gps_shield_name">GPS</string>
-    <string name="gps_validation_dialog_ok_button">@string/camera_validation_dialog_ok_button</string>
-    <string name="gps_validation_dialog_later_button">@string/camera_validation_dialog_later_button</string>
+    <string name="gps_validation_dialog_ok_button" translatable="false">@string/camera_validation_dialog_ok_button</string>
+    <string name="gps_validation_dialog_later_button" translatable="false">@string/camera_validation_dialog_later_button</string>
     <string name="gps_we_need_you_to_enable_the_location_services_for_this_shield_to_work_correctly">We need you to enable the location services for this shield to work correctly</string>
     <string name="gps_please_enable_location_services_to_be_able_to_use_this_shield">Please enable location services to be able to use this shield</string>
     <string name="gps_latitude">Latitude</string>
@@ -288,8 +294,8 @@
     <string name="nfc_approach_nfc_tag">Approach NFC tag!</string>
     <string name="nfc_record">Record</string>
     <string name="nfc_nfc_disabled_toast">Nfc Disabled</string>
-    <string name="nfc_validation_dialog_ok_button">@string/camera_validation_dialog_ok_button</string>
-    <string name="nfc_validation_dialog_later_button">@string/camera_validation_dialog_later_button</string>
+    <string name="nfc_validation_dialog_ok_button" translatable="false">@string/camera_validation_dialog_ok_button</string>
+    <string name="nfc_validation_dialog_later_button" translatable="false">@string/camera_validation_dialog_later_button</string>
     <string name="nfc_device_doesnt_support_nfc">Device doesn\'t support NFC!</string>
     <string name="nfc_device_tag_id">Tag ID</string>
     <string name="nfc_device_max_size">Max Size</string>
@@ -344,7 +350,7 @@
 
     <!-- SMS -->
     <string name="sms_shield_name">SMS</string>
-    <string name="sms_your_device_doesnt_have_a_sim_card">@string/phone_your_device_doesnt_have_a_sim_card</string>
+    <string name="sms_your_device_doesnt_have_a_sim_card" translatable="false">@string/phone_your_device_doesnt_have_a_sim_card</string>
     <string name="sms_sms_to">SMS to</string>
     <string name="sms_sms_sent">SMS Sent!</string>
 
@@ -361,10 +367,13 @@
     <string name="terminal_line_copied_toast">Line Copied</string>
     <string name="terminal_couldnt_copy_empty_line_toast">Couldn\'t copy empty line.</string>
     <string name="terminal_lines_copied_toast">Lines copied</string>
-    <string name="terminal_copy_all_button">Copy All</string>
+    <string name="terminal_time_on_button">Time ON</string>
+    <string name="terminal_time_off_button">Time OFF</string>
+    <string name="terminal_auto_scroll_off_button">Auto-Scroll OFF</string>
+    <string name="terminal_auto_scroll_on_button">Auto-Scroll ON</string>
 
     <!-- Tasker -->
-    <string name="tasker_shield_name">Tasker</string>
+    <string name="tasker_shield_name" translatable="false">Tasker</string>
 
     <!-- Text to speech -->
     <string name="text_to_speech_shield_name">Text To Speech</string>
@@ -377,6 +386,8 @@
     <!-- Toggle Button -->
     <string name="toggle_button_shield_name">Toggle Button</string>
     <string name="toggle_button_pin_name">Toggle</string>
+    <string name="toggle_button_off">OFF</string>
+    <string name="toggle_button_on">ON</string>
 
     <!-- Twitter -->
     <string name="twitter_shield_name">Twitter</string>
