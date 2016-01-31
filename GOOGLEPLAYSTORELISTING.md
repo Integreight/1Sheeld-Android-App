@@ -83,7 +83,7 @@ Currently, you have access to around 40 shields. Here is a list of them:
 We also have integrated 2 plugins to Tasker app (Beta), an event and a condition plugins, that will allow you to bring the power of hardware into you automation scripts.
 
 
-**Note: You actually need to have 1Sheeld hardware to be able to use this app.**
+**Note: You actually need to have 1Sheeld hardware to be able to use this app, but you can use our new demo mode to explore its capabilities and make your buying decision later.**
 
 
 If you liked our app, don't forget to rate it. We can't wait for your 5/5 review.
