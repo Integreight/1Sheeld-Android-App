@@ -390,6 +390,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
         return !(ControllerParent.this instanceof TaskerShield);
     }
 
+    /**
+     * This function resets the connected Arduino pins to that shield
+     * refer to Gamepad Shield as an example
+     */
     public void resetConnectedPins(){
         if (matchedShieldPins != null)
             matchedShieldPins.clear();
