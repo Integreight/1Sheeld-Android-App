@@ -7,8 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -90,7 +89,7 @@ public class PressureShield extends ControllerParent<PressureShield> implements
                     PRESSURE_VALUE);
             oldInput = event.values[0];
             // frame.addByteArgument((byte) Math.round(event.values[0]));
-            frame.addIntegerArgument(2, Math.round(event.values[0]));
+            frame.addArgument(2, Math.round(event.values[0]));
             sendShieldFrame(frame);
             Log.d("Sensor Data of X", event.values[0] + "");
             if (eventHandler != null)

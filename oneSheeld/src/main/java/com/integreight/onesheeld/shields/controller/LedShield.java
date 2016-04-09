@@ -2,11 +2,13 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 
-import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
@@ -35,22 +37,18 @@ public class LedShield extends ControllerParent<LedShield> {
     }
 
     public boolean refreshLed() {
-        if (connectedPin != -1)
-            isLedOn = getApplication().getAppFirmata()
-                    .digitalRead(connectedPin);
-        else
+        if (connectedPin != -1) {
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                isLedOn = device.digitalRead(connectedPin);
+        } else
             isLedOn = false;
 
         return isLedOn;
     }
 
     @Override
-    public void onDigital(int portNumber, int portData) {
-        isLedOn = false;
-        if (connectedPin != -1) {
-            isLedOn = getApplication().getAppFirmata()
-                    .digitalRead(connectedPin);
-        }
+    public void onDigital(int portNumber, boolean portData) {
+        refreshLed();
         if (eventHandler != null) {
             eventHandler.onLedChange(isLedOn);
         }
@@ -60,12 +58,7 @@ public class LedShield extends ControllerParent<LedShield> {
 
     public void setLedEventHandler(LedEventHandler eventHandler) {
         this.eventHandler = eventHandler;
-        if (connectedPin != -1)
-            isLedOn = activity.getThisApplication().getAppFirmata()
-                    .digitalRead(connectedPin);
-        else
-            isLedOn = false;
-
+        refreshLed();
     }
 
     @Override

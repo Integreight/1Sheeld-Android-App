@@ -7,11 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.ToggleButtonShield;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
@@ -72,7 +71,7 @@ public class ToggleButtonFragment extends
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
-                                            ArduinoFirmata.OUTPUT));
+                                            OneSheeldDevice.OUTPUT));
                             ((ToggleButtonShield) getApplication().getRunningShields().get(getControllerTag())).setButton(toggleButtonButton.isChecked());
                             toggleButtonButton.setEnabled(true);
                         }

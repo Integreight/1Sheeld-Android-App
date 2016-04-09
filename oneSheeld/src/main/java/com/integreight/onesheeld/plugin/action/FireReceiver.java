@@ -17,10 +17,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.plugin.PluginBundleManager;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
@@ -35,10 +36,8 @@ public final class FireReceiver extends BroadcastReceiver {
         OneSheeldApplication app = (OneSheeldApplication) context
                 .getApplicationContext();
         if (!com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent
-                .getAction())
-                || app.getAppFirmata() == null
-                || (app.getAppFirmata() != null && !app.getAppFirmata()
-                .isOpen())) {
+                .getAction()) ||
+                OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
             return;
         }
 
@@ -49,15 +48,15 @@ public final class FireReceiver extends BroadcastReceiver {
         BundleScrubber.scrub(bundle);
 
         if (PluginBundleManager.isActionBundleValid(bundle)) {
-            if (app.getAppFirmata() != null) {
-                app.getAppFirmata()
-                        .pinMode(
-                                bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
-                                ArduinoFirmata.OUTPUT);
-                app.getAppFirmata()
-                        .digitalWrite(
-                                bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
-                                bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
+            if (OneSheeldSdk.getManager().getConnectedDevices().size() > 0) {
+                for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices()) {
+                    device.pinMode(
+                            bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
+                            OneSheeldDevice.OUTPUT);
+                    device.digitalWrite(
+                            bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
+                            bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
+                }
             }
         }
     }

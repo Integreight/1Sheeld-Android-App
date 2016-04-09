@@ -18,16 +18,13 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger.LogLevel;
 import com.google.android.gms.analytics.Tracker;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
-import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
-import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.parse.Parse;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
@@ -37,10 +34,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -64,10 +59,6 @@ public class OneSheeldApplication extends Application {
     private final String CAMERA_CAPTURING = "cameraCapturing";
     private final String REMEMBER_SHIELDS = "rememberedShields";
     private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
-    private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
-    private ArduinoFirmata appFirmata;
-    private ConnectionDetector connectionHandler;
-    private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
     public Typeface appFont;
     // private GoogleAnalytics googleAnalyticsInstance;
     // private Tracker appGaTracker;
@@ -86,7 +77,7 @@ public class OneSheeldApplication extends Application {
 
     private static Context context;
 
-    public static Context getContext(){
+    public static Context getContext() {
         return context;
     }
 
@@ -130,11 +121,10 @@ public class OneSheeldApplication extends Application {
 
     @Override
     public void onCreate() {
-        context=getApplicationContext();
+        OneSheeldSdk.init(this);
+        context = getApplicationContext();
         setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
-        setConnectionHandler(new ConnectionDetector());
         appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
-        setAppFirmata(new ArduinoFirmata(getApplicationContext()));
         parseSocialKeys();
         Parse.enableLocalDatastore(this);
         Parse.initialize(this, ApiObjects.parse.get("app_id"),
@@ -169,10 +159,7 @@ public class OneSheeldApplication extends Application {
                     getRunningShields().get(key).resetThis();
                     getRunningShields().remove(key);
                 }
-                if (getAppFirmata() != null) {
-                    while (!getAppFirmata().close())
-                        ;
-                }
+                OneSheeldSdk.getManager().disconnectAll();
                 if (MainActivity.thisInstance != null)
                     MainActivity.thisInstance.stopService();
                 Intent in = MainActivity.thisInstance != null ? new Intent(MainActivity.thisInstance.getIntent()) : new Intent();
@@ -383,7 +370,7 @@ public class OneSheeldApplication extends Application {
         this.runningSheelds = runningSheelds;
     }
 
-    public boolean getIsDemoMode(){
+    public boolean getIsDemoMode() {
         return isDemoMode;
     }
 
@@ -391,53 +378,8 @@ public class OneSheeldApplication extends Application {
         OneSheeldApplication.isDemoMode = isDemoMode;
     }
 
-    public ArduinoFirmata getAppFirmata() {
-
-        return appFirmata;
-    }
-
     public static int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.drawable.notification_icon : R.drawable.white_ee_icon;
-    }
-
-    public void setAppFirmata(ArduinoFirmata appFirmata) {
-        this.appFirmata = appFirmata;
-    }
-
-    public void addServiceEventHandler(
-            OneSheeldServiceHandler serviceEventHandler) {
-        if (!this.serviceEventHandlers.contains(serviceEventHandler))
-            this.serviceEventHandlers.add(serviceEventHandler);
-    }
-
-    public List<OneSheeldServiceHandler> getServiceEventHandlers() {
-        return serviceEventHandlers;
-    }
-
-    public void clearServiceEventHandlers() {
-        if (getAppFirmata() != null) {
-            // getRunningShields().clear();
-            getAppFirmata().clearArduinoFirmataDataHandlers();
-            getAppFirmata().clearArduinoFirmataShieldFrameHandlers();
-        }
-    }
-
-    public ConnectionDetector getConnectionHandler() {
-        return connectionHandler;
-    }
-
-    public void setConnectionHandler(ConnectionDetector connectionHandler) {
-        this.connectionHandler = connectionHandler;
-    }
-
-    public ArduinoFirmataEventHandler getArduinoFirmataEventHandler() {
-        return arduinoFirmataEventHandler;
-    }
-
-    public void setArduinoFirmataEventHandler(
-            ArduinoFirmataEventHandler arduinoFirmataEventHandler) {
-        this.arduinoFirmataEventHandler = arduinoFirmataEventHandler;
-        getAppFirmata().addEventHandler(arduinoFirmataEventHandler);
     }
 }

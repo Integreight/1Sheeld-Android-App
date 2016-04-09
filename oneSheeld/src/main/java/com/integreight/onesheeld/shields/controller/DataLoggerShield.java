@@ -14,12 +14,11 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
@@ -85,14 +84,14 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
 
     @Override
     public ControllerParent<DataLoggerShield> invalidate(SelectionAction selectionAction, boolean isToastable) {
-        this.selectionAction =selectionAction;
+        this.selectionAction = selectionAction;
         addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if(Build.VERSION.SDK_INT >=16)
-        addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (Build.VERSION.SDK_INT >= 16)
+            addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
         if (checkForPermissions()) {
             if (selectionAction != null)
                 selectionAction.onSuccess();
-        }else {
+        } else {
             if (selectionAction != null)
                 selectionAction.onFailure();
         }
@@ -226,7 +225,7 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                     }
                 }
 //                Toast.makeText(activity,"Data Logged Successfully.",Toast.LENGTH_SHORT).show();
-                showNotification(activity.getString(R.string.data_logger_data_logged_successfully_notification) + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " "+activity.getString(R.string.data_logger_to)+" " + fullFileName));
+                showNotification(activity.getString(R.string.data_logger_data_logged_successfully_notification) + ((fullFileName == null && fullFileName.length() <= 0) ? "." : " " + activity.getString(R.string.data_logger_to) + " " + fullFileName));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

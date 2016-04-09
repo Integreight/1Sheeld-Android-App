@@ -6,8 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -134,8 +133,8 @@ public class SmsShield extends ControllerParent<SmsShield> {
             // send frame contain SMS body..
             Log.d("SMS::Controller::onSmsReceiveSuccess", sms_body);
             frame = new ShieldFrame(UIShield.SMS_SHIELD.getId(), (byte) 0x01);
-            frame.addStringArgument(mobile_num);
-            frame.addStringArgument(sms_body);
+            frame.addArgument(mobile_num);
+            frame.addArgument(sms_body);
 
             Log.d("Fram", frame.getArgumentAsString(1));
             sendShieldFrame(frame,true);

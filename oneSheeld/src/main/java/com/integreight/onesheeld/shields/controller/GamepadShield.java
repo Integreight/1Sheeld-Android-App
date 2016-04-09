@@ -2,8 +2,8 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
@@ -44,11 +44,11 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         ArduinoPin columnPincolumnPin = matchedShieldPins.get(pinName);
         if (columnPincolumnPin != null) {
             digitalWrite(columnPincolumnPin.microHardwarePin,
-                    ArduinoFirmata.HIGH);
+                    true);
         }
         buttonByte = BitsUtils.setBit(buttonByte, pinId);
         sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(buttonByte);
+        sf.addArgument(buttonByte);
         sendShieldFrame(sf);
     }
 
@@ -56,11 +56,11 @@ public class GamepadShield extends ControllerParent<GamepadShield> {
         ArduinoPin columnPin = matchedShieldPins.get(pinName);
 
         if (columnPin != null) {
-            digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.LOW);
+            digitalWrite(columnPin.microHardwarePin, false);
         }
         buttonByte = BitsUtils.resetBit(buttonByte, pinId);
         sf = new ShieldFrame(UIShield.GAMEDPAD_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(buttonByte);
+        sf.addArgument(buttonByte);
         sendShieldFrame(sf);
     }
 

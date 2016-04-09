@@ -13,10 +13,12 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.google.android.gms.analytics.HitBuilders;
-import com.integreight.firmatabluetooth.Jodem;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldFirmwareUpdateCallback;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
@@ -38,20 +40,42 @@ public class FirmwareUpdatingPopup extends Dialog {
     private OneSheeldTextView progressTxt;
     private MainActivity activity;
     private RelativeLayout transactionSlogan;
-    Jodem jodem;
     private Handler uIHandler = new Handler();
     private boolean isFailed = false;
-
-    public FirmwareUpdatingPopup(final MainActivity activity) {
+    private OneSheeldDevice deviceToUpdate;
+    public FirmwareUpdatingPopup(MainActivity activity)
+    {
+        this(activity,OneSheeldSdk.getManager().getConnectedDevices().get(0));
+    }
+    public FirmwareUpdatingPopup(final MainActivity activity, OneSheeldDevice deviceToUpdate) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
+        this.deviceToUpdate = deviceToUpdate;
         this.activity = activity;
         final Handler handler = new Handler();
-        jodem = new Jodem(activity, activity.getThisApplication().getAppFirmata()
-                .getBTService(), new Jodem.JodemEventHandler() {
+        deviceToUpdate.addFirmwareUpdateCallback(new OneSheeldFirmwareUpdateCallback() {
+            @Override
+            public void onStart(OneSheeldDevice device) {
+                super.onStart(device);
+            }
 
             @Override
-            public void onSuccess() {
-                // TODO Auto-generated method stub
+            public void onProgress(OneSheeldDevice device, final int totalBytes, final int sentBytes) {
+                super.onProgress(device, totalBytes, sentBytes);
+                handler.post(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        int status = (int) ((float) sentBytes / totalBytes * 100);
+                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing) + "...", COLOR.BLUE);
+                        downloadingProgress.setProgress(status);
+                        progressTxt.setText(status + "%");
+                    }
+                });
+            }
+
+            @Override
+            public void onSuccess(OneSheeldDevice device) {
+                super.onSuccess(device);
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException e) {
@@ -87,26 +111,8 @@ public class FirmwareUpdatingPopup extends Dialog {
             }
 
             @Override
-            public void onProgress(final int totalBytes, final int sendBytes,
-                                   int errorCount) {
-                // TODO Auto-generated method stub
-                Log.d("bootloader", "total:" + totalBytes + " sent:"
-                        + sendBytes + " error:" + errorCount);
-                handler.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        int status = (int) ((float) sendBytes / totalBytes * 100);
-                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
-                        downloadingProgress.setProgress(status);
-                        progressTxt.setText(status + "%");
-                    }
-                });
-
-            }
-
-            @Override
-            public void onError(final String error) {
+            public void onFailure(OneSheeldDevice device, boolean isTimeOut) {
+                super.onFailure(device, isTimeOut);
                 handler.post(new Runnable() {
 
                     @Override
@@ -124,22 +130,6 @@ public class FirmwareUpdatingPopup extends Dialog {
                                         .build());
                     }
                 });
-            }
-
-            @Override
-            public void onTimout() {
-                // TODO Auto-generated method stub
-                handler.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        FirmwareUpdatingPopup.this.setCancelable(true);
-                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_1sheeld_not_responding), COLOR.RED);
-                        isFailed = true;
-                        setUpgrade();
-                    }
-                });
-
             }
         });
         ((OneSheeldApplication) activity.getApplication()).getTracker()
@@ -174,12 +164,8 @@ public class FirmwareUpdatingPopup extends Dialog {
             @Override
             public void onCancel(DialogInterface dialog) {
                 isOpened = false;
-                activity.getThisApplication().getAppFirmata()
-                        .returnAppToNormal();
-                jodem.stop();
             }
         });
-        activity.getThisApplication().getAppFirmata().enableBootloaderMode();
         super.onCreate(savedInstanceState);
     }
 
@@ -262,17 +248,13 @@ public class FirmwareUpdatingPopup extends Dialog {
                             @Override
                             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, final byte[] binaryData) {
                                 FirmwareUpdatingPopup.this.setCancelable(false);
-                                activity.getThisApplication().getAppFirmata()
-                                        .prepareAppForSendingFirmware();
 
                                 showDownloadingProgress();
                                 uIHandler.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
-                                        activity.getThisApplication().getAppFirmata()
-                                                .resetMicro();
                                         binaryFile = binaryData;
-                                        jodem.send(binaryData, 4);
+                                        deviceToUpdate.update(binaryFile);
                                         if (!isFailed)
                                             changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
                                         else
@@ -327,16 +309,12 @@ public class FirmwareUpdatingPopup extends Dialog {
                         downloadFirmware();
                     else {
                         FirmwareUpdatingPopup.this.setCancelable(false);
-                        activity.getThisApplication().getAppFirmata()
-                                .prepareAppForSendingFirmware();
 
                         showDownloadingProgress();
                         uIHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                activity.getThisApplication().getAppFirmata()
-                                        .resetMicro();
-                                jodem.send(binaryFile, 4);
+                                deviceToUpdate.update(binaryFile);
                                 if (!isFailed)
                                     changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
                                 else

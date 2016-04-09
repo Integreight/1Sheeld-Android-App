@@ -9,8 +9,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Handler;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -95,7 +94,7 @@ public class TemperatureShield extends ControllerParent<TemperatureShield>
             frame = new ShieldFrame(UIShield.TEMPERATURE_SHIELD.getId(),
                     TEMPERATURE_VALUE);
             oldInput = event.values[0];
-            frame.addByteArgument((byte) Math.round(event.values[0]));
+            frame.addArgument((byte) Math.round(event.values[0]));
             sendShieldFrame(frame);
             Log.d("Sensor Data of X", event.values[0] + "");
             if (eventHandler != null)

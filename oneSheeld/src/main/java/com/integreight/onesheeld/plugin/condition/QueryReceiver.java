@@ -22,6 +22,8 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.plugin.Constants;
 import com.integreight.onesheeld.plugin.PluginBundleManager;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 
 import java.util.Locale;
 
@@ -34,9 +36,7 @@ public final class QueryReceiver extends BroadcastReceiver {
                 .getApplicationContext();
         if (!com.twofortyfouram.locale.Intent.ACTION_QUERY_CONDITION
                 .equals(intent.getAction())
-                || app.getAppFirmata() == null
-                || (app.getAppFirmata() != null && !app.getAppFirmata()
-                .isOpen())) {
+                || OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
             if (Constants.IS_LOGGABLE) {
                 Log.e(Constants.LOG_TAG,
                         String.format(
@@ -57,8 +57,10 @@ public final class QueryReceiver extends BroadcastReceiver {
                     .getBoolean(PluginBundleManager.CONDITION_BUNDLE_EXTRA_OUTPUT);
             final int selectedPin = bundle
                     .getInt(PluginBundleManager.CONDITION_BUNDLE_EXTRA_PIN_NUMBER);
-            boolean digitalReadStatus = app.getAppFirmata().digitalRead(
-                    selectedPin);
+            boolean digitalReadStatus = false;
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                digitalReadStatus = device.digitalRead(
+                        selectedPin);
             if (digitalReadStatus == conditionState
                     && digitalReadStatus != app.taskerPinsStatus
                     .get(selectedPin)) {

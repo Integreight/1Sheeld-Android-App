@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield;
 import com.integreight.onesheeld.shields.controller.SevenSegmentShield.SevenSegmentsEventHandler;
@@ -98,7 +97,7 @@ public class SevenSegmentFragment extends
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
-                                            ArduinoFirmata.INPUT));
+                                            OneSheeldDevice.INPUT));
                             refreshSegments(((SevenSegmentShield) getApplication()
                                     .getRunningShields()
                                     .get(getControllerTag())).refreshSegments());

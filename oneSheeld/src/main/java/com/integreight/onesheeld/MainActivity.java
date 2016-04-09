@@ -44,8 +44,6 @@ import android.widget.Toast;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.analytics.HitBuilders;
-import com.integreight.firmatabluetooth.ArduinoLibraryVersionChangeHandler;
-import com.integreight.firmatabluetooth.FirmwareVersionQueryHandler;
 import com.integreight.onesheeld.appFragments.SheeldsList;
 import com.integreight.onesheeld.appFragments.ShieldsOperations;
 import com.integreight.onesheeld.enums.UIShield;
@@ -53,6 +51,10 @@ import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup.onConnectedToBluetooth;
 import com.integreight.onesheeld.popup.FirmwareUpdatingPopup;
 import com.integreight.onesheeld.popup.ValidationPopup;
+import com.integreight.onesheeld.sdk.FirmwareVersion;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
+import com.integreight.onesheeld.sdk.OneSheeldVersionQueryCallback;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
@@ -105,7 +107,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.one_sheeld_main);
         oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
         initLooperThread();
-        if (savedInstance == null || getThisApplication().getAppFirmata().isOpen() == false) {
+        if (savedInstance == null || OneSheeldSdk.getManager().getConnectedDevices().size() > 0) {
 //            if (savedInstance != null) {
 //                int count = getSupportFragmentManager().getBackStackEntryCount();
 //                while (count > 0) {
@@ -118,12 +120,8 @@ public class MainActivity extends FragmentActivity {
         }
         postConfigChange();
         resetSlidingMenu();
-        if (getThisApplication().getAppFirmata() != null) {
-            getThisApplication().getAppFirmata()
-                    .addFirmwareVersionQueryHandler(versionChangingHandler);
-            getThisApplication().getAppFirmata()
-                    .addArduinoLibraryVersionQueryHandler(
-                            arduinoLibraryVersionHandler);
+        for(OneSheeldDevice device:OneSheeldSdk.getManager().getConnectedDevices()) {
+            device.addVersionQueryCallback(versionQueryCallback);
         }
         thisInstance = this;
         if (getThisApplication().getShowTutAgain()
@@ -168,12 +166,13 @@ public class MainActivity extends FragmentActivity {
     public Thread looperThread;
     public Handler backgroundThreadHandler;
     Handler versionHandling = new Handler();
-    FirmwareVersionQueryHandler versionChangingHandler = new FirmwareVersionQueryHandler() {
+    OneSheeldVersionQueryCallback versionQueryCallback = new OneSheeldVersionQueryCallback() {
         ValidationPopup popub;
-
         @Override
-        public void onVersionReceived(final int minorVersion,
-                                      final int majorVersion) {
+        public void onFirmwareVersionQueryResponse(OneSheeldDevice device, FirmwareVersion firmwareVersion) {
+            super.onFirmwareVersionQueryResponse(device, firmwareVersion);
+            final int minorVersion = firmwareVersion.getMinorVersion();
+            final int majorVersion = firmwareVersion.getMajorVersion();
             versionHandling.post(new Runnable() {
 
                 @Override
@@ -294,17 +293,15 @@ public class MainActivity extends FragmentActivity {
                     new HitBuilders.ScreenViewBuilder().setCustomDimension(1,
                             majorVersion + "." + minorVersion).build());
         }
-    };
-    ArduinoLibraryVersionChangeHandler arduinoLibraryVersionHandler = new ArduinoLibraryVersionChangeHandler() {
-        ValidationPopup popub;
 
         @Override
-        public void onArduinoLibraryVersionChange(final int version) {
+        public void onLibraryVersionQueryResponse(OneSheeldDevice device, final int libraryVersion) {
+            super.onLibraryVersionQueryResponse(device, libraryVersion);
             versionHandling.post(new Runnable() {
 
                 @Override
                 public void run() {
-                    if (version < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
+                    if (libraryVersion < OneSheeldApplication.ARDUINO_LIBRARY_VERSION) {
                         popub = new ValidationPopup(
                                 MainActivity.this,
                                 getString(R.string.library_upgrade_dialog_arduino_library_update),
@@ -322,7 +319,7 @@ public class MainActivity extends FragmentActivity {
                     }
                     getThisApplication().getTracker().send(
                             new HitBuilders.ScreenViewBuilder()
-                                    .setCustomDimension(2, version + "")
+                                    .setCustomDimension(2, libraryVersion + "")
                                     .build());
                 }
             });
@@ -495,11 +492,7 @@ public class MainActivity extends FragmentActivity {
             stopService();
             stopLooperThread();
             moveTaskToBack(true);
-            if (((OneSheeldApplication) getApplication()).getAppFirmata() != null) {
-                while (!((OneSheeldApplication) getApplication()).getAppFirmata()
-                        .close())
-                    ;
-            }
+            OneSheeldSdk.getManager().disconnectAll();
             // // unExpeted
             if (!isBackPressed) {
                 Enumeration<String> enumKey = ((OneSheeldApplication)
@@ -927,7 +920,7 @@ public class MainActivity extends FragmentActivity {
         public void handleMessage(Message msg) {
             final MainActivity activity = mTarget.get();
             if(activity!=null) {
-                if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen()) {
+                if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
                     if (connectionLost) {
                         if (!ArduinoConnectivityPopup.isOpened
                                 && !activity.isFinishing())

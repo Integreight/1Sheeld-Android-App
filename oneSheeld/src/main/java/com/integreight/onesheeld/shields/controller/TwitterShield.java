@@ -13,8 +13,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ApiObjects;
@@ -623,8 +622,8 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
                 Log.d("tweet", arg0.getText());
                 ShieldFrame frame = new ShieldFrame(
                         UIShield.TWITTER_SHIELD.getId(), GET_TWEET);
-                frame.addStringArgument(arg0.getUser().getName());
-                frame.addStringArgument(arg0.getText());
+                frame.addArgument(arg0.getUser().getName());
+                frame.addArgument(arg0.getText());
                 sendShieldFrame(frame, true);
             }
 

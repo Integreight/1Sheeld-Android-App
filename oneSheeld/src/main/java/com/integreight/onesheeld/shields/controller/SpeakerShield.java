@@ -5,7 +5,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -37,10 +39,10 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
     }
 
     public boolean refreshLed() {
-        if (connectedPin != -1)
-            isLedOn = getApplication().getAppFirmata()
-                    .digitalRead(connectedPin);
-        else
+        if (connectedPin != -1) {
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                isLedOn = device.digitalRead(connectedPin);
+        } else
             isLedOn = false;
         if (isLedOn)
             playSound();
@@ -50,7 +52,7 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
     }
 
     @Override
-    public void onDigital(int portNumber, int portData) {
+    public void onDigital(int portNumber, boolean portData) {
         refreshLed();
         super.onDigital(portNumber, portData);
     }

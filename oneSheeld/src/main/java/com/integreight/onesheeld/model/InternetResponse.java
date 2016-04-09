@@ -2,8 +2,7 @@ package com.integreight.onesheeld.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.controller.utils.InternetManager;
 import com.integreight.onesheeld.utils.BitsUtils;
 

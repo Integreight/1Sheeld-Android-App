@@ -12,8 +12,7 @@ import android.os.IBinder;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.widget.Toast;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -114,7 +113,7 @@ public class SpeechRecognitionShield extends
                 sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
                         SEND_RESULT);
                 String recognized = result.get(0);
-                sf.addStringArgument(recognized.toLowerCase());
+                sf.addArgument(recognized.toLowerCase());
                 Log.d("Frame", sf.toString());
                 sendShieldFrame(sf, true);
             } else {
@@ -161,7 +160,7 @@ public class SpeechRecognitionShield extends
             }
             sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
                     SEND_ERROR);
-            sf.addIntegerArgument(1, errorSent);
+            sf.addArgument(1, errorSent);
             Log.d("Frame", sf.toString());
             sendShieldFrame(sf, true);
         }

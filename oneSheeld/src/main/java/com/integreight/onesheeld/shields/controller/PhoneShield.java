@@ -7,8 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -127,7 +126,7 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             // send frame contain Incoming Number..
             Log.d("Phone::Controller::SendIncomingNum", phoneNumber);
             frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x02);
-            frame.addStringArgument(phoneNumber);
+            frame.addArgument(phoneNumber);
             sendShieldFrame(frame,true);
             if (eventHandler != null)
                 eventHandler.onReceiveACall(phoneNumber);
@@ -139,9 +138,9 @@ public class PhoneShield extends ControllerParent<PhoneShield> {
             Log.d("Phone::Controller::isPhoneRinging", isRinging + "");
             frame = new ShieldFrame(UIShield.PHONE_SHIELD.getId(), (byte) 0x01);
             if (isRinging) {
-                frame.addByteArgument((byte) 1);
+                frame.addArgument((byte) 1);
             } else {
-                frame.addByteArgument((byte) 0);
+                frame.addArgument((byte) 0);
             }
             sendShieldFrame(frame,true);
         }

@@ -7,11 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
-
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SliderShield;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
@@ -80,7 +79,7 @@ public class SliderFragment extends ShieldFragmentParent<SliderFragment> {
                                     .getRunningShields()
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
-                                            pinCode, ArduinoFirmata.OUTPUT));
+                                            pinCode, OneSheeldDevice.OUTPUT));
                             seekBar.setEnabled(true);
                         } else {
                             seekBar.setEnabled(false);

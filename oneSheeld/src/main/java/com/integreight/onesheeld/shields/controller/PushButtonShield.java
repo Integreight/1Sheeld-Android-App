@@ -1,8 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -44,7 +43,7 @@ public class PushButtonShield extends ControllerParent<PushButtonShield> {
         toggle = isButtonOn ? BitsUtils.setBit(toggle, 1) : BitsUtils.resetBit(
                 toggle, 1);
         sf = new ShieldFrame(UIShield.PUSHBUTTON_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(toggle);
+        sf.addArgument(toggle);
         sendShieldFrame(sf);
 
     }

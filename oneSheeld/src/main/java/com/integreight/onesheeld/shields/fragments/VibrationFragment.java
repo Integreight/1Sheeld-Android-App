@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.VibrationShield;
 
@@ -112,7 +113,8 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
     public void doOnResume() {
         invalidateController();
         if(canChangeUI()){
-            if(((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen()){
+            if(((OneSheeldApplication) activity.getApplication()).getIsDemoMode()
+                    && OneSheeldSdk.getManager().getConnectedDevices().size() == 0){
                 vibrationLogo.startAnimation(shake);
                 vibrationTextTextView.setText(R.string.vibration_ready);
                 uiHandler.postDelayed(new Runnable() {

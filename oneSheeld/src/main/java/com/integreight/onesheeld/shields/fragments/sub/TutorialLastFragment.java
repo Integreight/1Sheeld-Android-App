@@ -10,6 +10,7 @@ import android.widget.ToggleButton;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 
 public class TutorialLastFragment extends Fragment {
     View v;
@@ -52,8 +53,8 @@ public class TutorialLastFragment extends Fragment {
                     ArduinoConnectivityPopup.isOpened = false;
                     ArduinoConnectivityPopup.thisInstance.cancel();
                 }
-                if (app.getAppFirmata().isOpen())
-                    app.getAppFirmata().close();
+                if (OneSheeldSdk.getManager().getConnectedDevices().size() > 0)
+                    OneSheeldSdk.getManager().disconnectAll();
                 getActivity().finish();
             }
         });

@@ -8,16 +8,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.SpeakerShield;
 import com.integreight.onesheeld.shields.controller.SpeakerShield.SpeakerEventHandler;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.ConnectingPinsView.OnPinSelectionListener;
-import com.integreight.onesheeld.utils.Log;
 
 public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
     private final int[] levelsResources = new int[]{
@@ -52,7 +51,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
-                                            ArduinoFirmata.INPUT));
+                                            OneSheeldDevice.INPUT));
                         } else {
                             ((SpeakerShield) getApplication()
                                     .getRunningShields()
@@ -126,6 +125,7 @@ public class BuzzerFragment extends ShieldFragmentParent<BuzzerFragment> {
                 : volume == 75 ? 3 : volume == 100 ? 4 : currLevel;
         return levelsResources[currLevel];
     }
+
     private SpeakerEventHandler speakerEventHandler = new SpeakerEventHandler() {
 
         @Override

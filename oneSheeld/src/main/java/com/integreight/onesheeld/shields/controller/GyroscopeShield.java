@@ -7,8 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -94,9 +93,9 @@ public class GyroscopeShield extends ControllerParent<GyroscopeShield>
             oldInput_x = event.values[0];
             oldInput_y = event.values[1];
             oldInput_z = event.values[2];
-            frame.addFloatArgument(event.values[0]);
-            frame.addFloatArgument(event.values[1]);
-            frame.addFloatArgument(event.values[2]);
+            frame.addArgument(event.values[0]);
+            frame.addArgument(event.values[1]);
+            frame.addArgument(event.values[2]);
             sendShieldFrame(frame);
             if (eventHandler != null)
                 eventHandler.onSensorValueChangedFloat(event.values);

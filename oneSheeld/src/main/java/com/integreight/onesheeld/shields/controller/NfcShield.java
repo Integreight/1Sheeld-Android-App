@@ -16,8 +16,7 @@ import android.nfc.tech.Ndef;
 import android.nfc.tech.NdefFormatable;
 import android.os.Build;
 import android.provider.Settings;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -155,13 +154,13 @@ public class NfcShield extends ControllerParent<NfcShield> {
                 if (isNdef_Flag) {
                     switch (frame.getFunctionId()) {
                         case RECORD_QUERY_DATA:
-                            record = frame.getArgumentAsInteger(1, 0);
-                            start = frame.getArgumentAsInteger(2, 1);
-                            size = frame.getArgumentAsInteger(1, 2);
+                            record = frame.getArgumentAsInteger(0);
+                            start = frame.getArgumentAsInteger(1);
+                            size = frame.getArgumentAsInteger(2);
                             data = readNdefRecordData(record, start, size,255);
                             if (!data.hasError() || data.getError() == NO_ENOUGH_BYTES) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_DATA_FRAME);
-                                sf.addIntegerArgument(1, record);
+                                sf.addArgument(1, record);
                                 sf.addArgument(data.getBytesData());
                                 sendShieldFrame(sf, true);
                             }
@@ -170,11 +169,11 @@ public class NfcShield extends ControllerParent<NfcShield> {
                             }
                             break;
                         case RECORD_QUERY_PARSED_DATA:
-                            record = frame.getArgumentAsInteger(1, 0);
+                            record = frame.getArgumentAsInteger(0);
                             data = readNdefRecordParsedData(record, 0, 255,255);
                             if (!data.hasError() || data.getError() == NO_ENOUGH_BYTES) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_PARSED_DATA_FRAME);
-                                sf.addIntegerArgument(1, record);
+                                sf.addArgument(1, record);
                                 sf.addArgument(data.getBytesData());
                                 sendShieldFrame(sf, true);
                             }
@@ -183,13 +182,13 @@ public class NfcShield extends ControllerParent<NfcShield> {
                             }
                             break;
                         case RECORD_QUERY_TYPE:
-                            record = frame.getArgumentAsInteger(1, 0);
-                            start = frame.getArgumentAsInteger(2, 1);
-                            size = frame.getArgumentAsInteger(1, 2);
+                            record = frame.getArgumentAsInteger(0);
+                            start = frame.getArgumentAsInteger(1);
+                            size = frame.getArgumentAsInteger(2);
                             data = readNdefRecordType(record, start, size,255);
                             if (!data.hasError() || data.getError() == NO_ENOUGH_BYTES) {
                                 sf = new ShieldFrame(SHIELD_ID, RECORD_QUERY_TYPE_FRAME);
-                                sf.addIntegerArgument(1, record);
+                                sf.addArgument(1, record);
                                 sf.addArgument(data.getBytesData());
                                 sendShieldFrame(sf, true);
                             }
@@ -390,9 +389,9 @@ public class NfcShield extends ControllerParent<NfcShield> {
                     ShieldFrame sf = new ShieldFrame(SHIELD_ID, NEW_TAG_FRAME);
 
                     sf.addArgument(tagId.getBytesData());
-                    sf.addIntegerArgument(2, maxSize.getIntegerData());
-                    sf.addIntegerArgument(1, recordCount.getIntegerData());
-                    sf.addIntegerArgument(2, usedSize.getIntegerData());
+                    sf.addArgument(2, maxSize.getIntegerData());
+                    sf.addArgument(1, recordCount.getIntegerData());
+                    sf.addArgument(2, usedSize.getIntegerData());
 
                     for (int i = 0; i < recordCount.getIntegerData(); i++) {
                         sf.addArgument(records[i]);
@@ -413,9 +412,9 @@ public class NfcShield extends ControllerParent<NfcShield> {
                 if (!tagId.hasError() && !maxSize.hasError()) {
                     ShieldFrame sf = new ShieldFrame(SHIELD_ID, NEW_TAG_FRAME);
                     sf.addArgument(tagId.getBytesData());
-                    sf.addIntegerArgument(2, maxSize.getIntegerData());
-                    sf.addIntegerArgument(1, 0);
-                    sf.addIntegerArgument(2, 0);
+                    sf.addArgument(2, maxSize.getIntegerData());
+                    sf.addArgument(1, 0);
+                    sf.addArgument(2, 0);
                     sendShieldFrame(sf, true);
                 }else {
                     sendError(TAG_READING_ERROR);
@@ -909,7 +908,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
 
     private void sendError(byte errorCode,boolean isQueued) {
         ShieldFrame sf = new ShieldFrame(SHIELD_ID, TAG_ERROR_FRAME);
-        sf.addByteArgument(errorCode);
+        sf.addArgument(errorCode);
         if(isQueued)
             queueShieldFrame(sf);
         else

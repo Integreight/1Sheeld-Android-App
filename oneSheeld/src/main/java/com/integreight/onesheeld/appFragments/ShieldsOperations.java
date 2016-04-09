@@ -23,6 +23,7 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
@@ -299,9 +300,7 @@ public class ShieldsOperations extends Fragment {
     @Override
     public void onResume() {
         activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
-        if (((OneSheeldApplication) activity.getApplication()).getAppFirmata() == null
-                || !((OneSheeldApplication) activity.getApplication())
-                .getAppFirmata().isOpen()) {
+        if (OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
             activity.getOnConnectionLostHandler().connectionLost = true;
         }
         activity.getOnConnectionLostHandler().sendEmptyMessage(0);
@@ -342,7 +341,7 @@ public class ShieldsOperations extends Fragment {
                                         activity.getSupportFragmentManager()
                                                 .executePendingTransactions();
                                     }
-                                    activity.stopService();
+                                    OneSheeldSdk.getManager().disconnectAll();
                                     if (!ArduinoConnectivityPopup.isOpened) {
                                         ArduinoConnectivityPopup.isOpened = true;
                                         new ArduinoConnectivityPopup(activity)
@@ -352,7 +351,8 @@ public class ShieldsOperations extends Fragment {
                             });
             }
         }, 500);
-        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !((OneSheeldApplication) activity.getApplication()).getAppFirmata().isOpen())
+        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode()
+                && OneSheeldSdk.getManager().getConnectedDevices().size() == 0)
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);

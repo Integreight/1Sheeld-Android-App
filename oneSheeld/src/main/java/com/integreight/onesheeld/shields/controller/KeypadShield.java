@@ -1,9 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
@@ -47,34 +45,34 @@ public class KeypadShield extends ControllerParent<KeypadShield> {
     public void setRowAndColumn(int row, int column) {
         ArduinoPin columnPin = matchedShieldPins.get(activity.getString(R.string.keypad_column)+" " + column);
         if (columnPin != null) {
-            digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.HIGH);
+            digitalWrite(columnPin.microHardwarePin, true);
         }
         columnByte = BitsUtils.setBit(columnByte, column);
         ArduinoPin rowPin = matchedShieldPins.get(activity.getString(R.string.keypad_row)+" " + row);
         if (rowPin != null) {
-            digitalWrite(rowPin.microHardwarePin, ArduinoFirmata.HIGH);
+            digitalWrite(rowPin.microHardwarePin, true);
         }
         rowByte = BitsUtils.setBit(rowByte, row);
         sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(rowByte);
-        sf.addByteArgument(columnByte);
+        sf.addArgument(rowByte);
+        sf.addArgument(columnByte);
         sendShieldFrame(sf);
     }
 
     public void resetRowAndColumn(int row, int column) {
         ArduinoPin columnPin = matchedShieldPins.get(activity.getString(R.string.keypad_column)+" " + column);
         if (columnPin != null) {
-            digitalWrite(columnPin.microHardwarePin, ArduinoFirmata.LOW);
+            digitalWrite(columnPin.microHardwarePin, false);
         }
         columnByte = BitsUtils.resetBit(columnByte, column);
         ArduinoPin rowPin = matchedShieldPins.get(activity.getString(R.string.keypad_row)+" " + row);
         if (rowPin != null) {
-            digitalWrite(rowPin.microHardwarePin, ArduinoFirmata.LOW);
+            digitalWrite(rowPin.microHardwarePin, false);
         }
         rowByte = BitsUtils.resetBit(rowByte, row);
         sf = new ShieldFrame(UIShield.KEYPAD_SHIELD.getId(), DATA_IN);
-        sf.addByteArgument(rowByte);
-        sf.addByteArgument(columnByte);
+        sf.addArgument(rowByte);
+        sf.addArgument(columnByte);
         sendShieldFrame(sf);
 
     }

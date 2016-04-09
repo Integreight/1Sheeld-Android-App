@@ -17,10 +17,9 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.widget.Toast;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
@@ -76,7 +75,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
                 isChangingPreview = false;
             } else if (msg.what == SET_LAST_IMAGE_BUTTON) {
                 lastImageAbsoultePath = msg.getData().getString("absolutePath");
-                CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(lastImageAbsoultePath,activity);
+                CameraUtils.setLastCapturedImagePathFromOneSheeldFolder(lastImageAbsoultePath, activity);
                 Log.d("LastImage", lastImageAbsoultePath);
                 File img = new File(lastImageAbsoultePath);
                 if (img.exists() && eventHandler != null) {
@@ -149,43 +148,42 @@ public class CameraShield extends ControllerParent<CameraShield> {
         } else {
             addRequiredPremission(Manifest.permission.CAMERA);
             addRequiredPremission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-            if(Build.VERSION.SDK_INT >=16)
-            addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (Build.VERSION.SDK_INT >= 16)
+                addRequiredPremission(Manifest.permission.READ_EXTERNAL_STORAGE);
             if (checkForPermissions()) {
-                    if(!activity.canDrawOverApps()){
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(
-                                activity);
-                        builder.setMessage(
-                                R.string.camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly)
-                                .setCancelable(false)
-                                .setPositiveButton(R.string.camera_validation_dialog_ok_button,
-                                        new DialogInterface.OnClickListener() {
-                                            public void onClick(final DialogInterface dialog,
-                                                                final int id) {
-                                                activity.requestDrawOverApps();
-                                            }
-                                        })
-                                .setNegativeButton(R.string.camera_validation_dialog_later_button, new DialogInterface.OnClickListener() {
-                                    public void onClick(final DialogInterface dialog,
-                                                        final int id) {
-                                        dialog.cancel();
-                                        activity.showToast(R.string.camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast);
-                                    }
-                                });
-                        final AlertDialog alert = builder.create();
-                        alert.show();
-                        if (this.selectionAction != null) {
-                            this.selectionAction.onFailure();
-                        }
+                if (!activity.canDrawOverApps()) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(
+                            activity);
+                    builder.setMessage(
+                            R.string.camera_we_need_you_to_enable_the_draw_over_apps_permission_in_order_to_show_the_camera_preview_correctly)
+                            .setCancelable(false)
+                            .setPositiveButton(R.string.camera_validation_dialog_ok_button,
+                                    new DialogInterface.OnClickListener() {
+                                        public void onClick(final DialogInterface dialog,
+                                                            final int id) {
+                                            activity.requestDrawOverApps();
+                                        }
+                                    })
+                            .setNegativeButton(R.string.camera_validation_dialog_later_button, new DialogInterface.OnClickListener() {
+                                public void onClick(final DialogInterface dialog,
+                                                    final int id) {
+                                    dialog.cancel();
+                                    activity.showToast(R.string.camera_please_enable_the_permission_to_be_able_to_select_this_shield_toast);
+                                }
+                            });
+                    final AlertDialog alert = builder.create();
+                    alert.show();
+                    if (this.selectionAction != null) {
+                        this.selectionAction.onFailure();
                     }
-                    else {
-                        if (selectionAction != null)
-                            selectionAction.onSuccess();
-                        hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
-                        bindService();
-                        UIHandler = new Handler();
-                    }
-            }else {
+                } else {
+                    if (selectionAction != null)
+                        selectionAction.onSuccess();
+                    hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
+                    bindService();
+                    UIHandler = new Handler();
+                }
+            } else {
                 if (this.selectionAction != null) {
                     this.selectionAction.onFailure();
                 }
@@ -217,7 +215,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
             } catch (RemoteException e) {
                 return false;
             }
-        }else {
+        } else {
             bindService();
         }
         isBackPreview = isBack;
@@ -267,7 +265,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
         if (cameraBinder != null) {
             cameraBinder.send(msg);
             return true;
-        }else {
+        } else {
             bindService();
             return false;
         }
@@ -287,7 +285,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
         if (cameraBinder != null) {
             cameraBinder.send(msg);
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -371,7 +369,7 @@ public class CameraShield extends ControllerParent<CameraShield> {
         }
         try {
             getApplication().unbindService(cameraServiceConnector);
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
 
         }
         capturesQueue = new ConcurrentLinkedQueue<>();

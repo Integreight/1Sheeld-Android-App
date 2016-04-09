@@ -1,8 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.customviews.LockPatternViewEx;

@@ -12,12 +12,10 @@ import android.view.View;
 import android.widget.ToggleButton;
 
 import com.google.android.gms.analytics.HitBuilders;
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.Shield;
-import com.integreight.onesheeld.shields.observer.OneSheeldServiceHandler;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
@@ -131,25 +129,6 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 //            if (!reInitController())
                 return;
             }
-        if (getApplication().getAppFirmata().isOpen() == true) {
-            if (getApplication().getAppFirmata() == null) {
-                getApplication().addServiceEventHandler(
-                        new OneSheeldServiceHandler() {
-
-                            @Override
-                            public void onSuccess(ArduinoFirmata firmate) {
-                                ((T) ShieldFragmentParent.this)
-                                        .doOnServiceConnected();
-                            }
-
-                            @Override
-                            public void onFailure() {
-
-                            }
-                        });
-            } else
-                doOnServiceConnected();
-        }
         // View or hide Setting sliding drawer handler button
         activity.findViewById(R.id.settingsFixedHandler).setVisibility(
                 hasSettings ? View.VISIBLE : View.GONE);

@@ -10,15 +10,16 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
-import com.integreight.firmatabluetooth.ArduinoFirmataDataHandler;
-import com.integreight.firmatabluetooth.ArduinoFirmataShieldFrameHandler;
-import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDataCallback;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
@@ -73,10 +74,12 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     // requiredPinsNames array)
     private boolean isALive = false; // flag for fired shields (in case of
     // Interface implemented for listening to Arduino actions
-    public ArduinoFirmataDataHandler arduinoFirmataDataHandler = new ArduinoFirmataDataHandler() {
-
-        private int portNumber,
-                portData;
+    private long selectionTime;
+    private boolean isInit = false;
+    // Interface implemented for listening to received Shields Frames
+    public OneSheeldDataCallback dataCallback = new OneSheeldDataCallback() {
+        private int portNumber;
+        private boolean portStatus;
         // UI runnable to be called onDigital actions
         Runnable onDigitalRunnable = new Runnable() {
 
@@ -84,52 +87,29 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
             public void run() {
                 if (hasConnectedPins
                         || ((T) ControllerParent.this) instanceof TaskerShield)
-                    ((T) ControllerParent.this).onDigital(portNumber, portData);
+                    ((T) ControllerParent.this).onDigital(portNumber, portStatus);
             }
         };
 
         @Override
-        public void onSysex(final byte command, final byte[] data) {
-            actionHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (isALive && isInteractive)
-                        ((T) ControllerParent.this).onSysex(command, data);
-                }
-            });
-        }
-
-        @Override
-        public void onDigital(final int portNumber, final int portData) {
+        public void onDigitalPinStatusChange(OneSheeldDevice device, int pinNumber, boolean newValue) {
+            super.onDigitalPinStatusChange(device, pinNumber, newValue);
             if (isALive && isInteractive) {
                 onDigitalActionHandler.removeCallbacks(onDigitalRunnable);
-                this.portData = portData;
-                this.portNumber = portNumber;
+                this.portStatus = newValue;
+                this.portNumber = pinNumber;
                 onDigitalActionHandler.post(onDigitalRunnable);
             }
         }
 
         @Override
-        public void onAnalog(final int pin, final int value) {
-            if (isALive && isInteractive)
-                actionHandler.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (hasConnectedPins)
-                            ((T) ControllerParent.this).onAnalog(pin, value);
-                    }
-                });
+        public void onSerialDataReceive(OneSheeldDevice device, int data) {
+            super.onSerialDataReceive(device, data);
         }
-    };
-    private long selectionTime;
-    private boolean isInit = false;
-    // Interface implemented for listening to received Shields Frames
-    public ArduinoFirmataShieldFrameHandler arduinoFirmataShieldFrameHandler = new ArduinoFirmataShieldFrameHandler() {
 
         @Override
-        public void onNewShieldFrameReceived(final ShieldFrame frame) {
+        public void onShieldFrameReceive(OneSheeldDevice device, final ShieldFrame frame) {
+            super.onShieldFrameReceive(device, frame);
             if (isALive && frame != null && matchedShieldPins.size() == 0 && isInit)
                 if (frame.getShieldId() == getShieldId())
                     if (frame.getFunctionId() == IS_SHIELD_SELECTED)
@@ -137,7 +117,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                     else if (frame.getFunctionId() == SELECT_SHIELD) {
                     } else if (frame.getFunctionId() == DESELECT_SHIELD) {
                     } else {
-                        cachedArduinoCallbackStatus = getApplication().getAppFirmata().getCallbackStatus();
+                        cachedArduinoCallbackStatus = device.isArduinoInACallback();
                         actionHandler.post(new Runnable() {
 
                             @Override
@@ -182,9 +162,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     public void notifyHardwareOfShieldSelection() {
-        if (isItARealShield())
-            activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
+        if (isItARealShield()) {
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                device.sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
+        }
         isInit = true;
     }
 
@@ -194,10 +175,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * @param pins array of connected pins
      */
     public void setConnected(ArduinoConnectedPin... pins) {
-        for (int i = 0; i < pins.length; i++) {
-            activity.getThisApplication().getAppFirmata()
-                    .pinMode(pins[i].getPinID(), pins[i].getPinMode());
-        }
+        for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+            for (int i = 0; i < pins.length; i++) {
+                device.pinMode(pins[i].getPinID(), pins[i].getPinMode());
+            }
         this.setHasConnectedPins(true);
 
     }
@@ -253,7 +234,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     }
 
-    protected void addRequiredPremission(String premission){
+    protected void addRequiredPremission(String premission) {
         requiredPermissions.add(premission);
     }
 
@@ -262,7 +243,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
 
     }
 
-    public void onDigital(int portNumber, int portData) {
+    public void onDigital(int portNumber, boolean portData) {
 
     }
     // calls
@@ -278,10 +259,9 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * add Shield handlers to firmata listening list
      */
     private void setFirmataEventHandler() {
-        ((OneSheeldApplication) activity.getApplication()).getAppFirmata()
-                .addDataHandler(arduinoFirmataDataHandler);
-        ((OneSheeldApplication) activity.getApplication()).getAppFirmata()
-                .addShieldFrameHandler(arduinoFirmataShieldFrameHandler);
+        for (OneSheeldDevice devive : OneSheeldSdk.getManager().getConnectedDevices()) {
+            devive.addDataCallback(dataCallback);
+        }
     }
 
     private byte getShieldId() {
@@ -421,10 +401,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                         }
                     }
                     ((T) ControllerParent.this).reset();
-                    getApplication().getAppFirmata().removeDataHandler(
-                            arduinoFirmataDataHandler);
-                    getApplication().getAppFirmata().removeShieldFrameHandler(
-                            arduinoFirmataShieldFrameHandler);
+                    for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                        device.removeDataCallback(dataCallback);
                 }
             });
         }
@@ -459,8 +437,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      */
     public void queueShieldFrame(ShieldFrame frame) {
         if (isInteractive)
-            activity.getThisApplication().getAppFirmata()
-                    .queueShieldFrame(frame);
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                device.queueShieldFrame(frame);
     }
 
     /**
@@ -468,8 +446,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      */
     public void sendShieldFrame(ShieldFrame frame) {
         if (isInteractive)
-            activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(frame);
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                device.sendShieldFrame(frame);
     }
 
     /**
@@ -477,21 +455,21 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      */
     public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
         if (isInteractive) {
-            activity.getThisApplication().getAppFirmata()
-                    .sendShieldFrame(frame, waitIfInACallback);
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                device.sendShieldFrame(frame, waitIfInACallback);
         }
     }
 
     public void digitalWrite(int pin, boolean value) {
         if (isInteractive)
-            activity.getThisApplication().getAppFirmata()
-                    .digitalWrite(pin, value);
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                device.digitalWrite(pin, value);
     }
 
     public void analogWrite(int pin, int value) {
         if (isInteractive)
-            activity.getThisApplication().getAppFirmata()
-                    .analogWrite(pin, value);
+            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                device.analogWrite(pin, value);
     }
 
     /**

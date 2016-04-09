@@ -10,13 +10,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
-
-import com.integreight.firmatabluetooth.ArduinoFirmata;
-import com.integreight.firmatabluetooth.ArduinoFirmataEventHandler;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.sdk.OneSheeldConnectionCallback;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldError;
+import com.integreight.onesheeld.sdk.OneSheeldErrorCallback;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.utils.WakeLocker;
 
 public class OneSheeldService extends Service {
@@ -24,22 +26,24 @@ public class OneSheeldService extends Service {
     SharedPreferences sharedPrefs;
     private BluetoothAdapter mBluetoothAdapter = null;
     private String deviceAddress, deviceName;
-    private ArduinoFirmataEventHandler arduinoEventHandler = new ArduinoFirmataEventHandler() {
-
+    OneSheeldConnectionCallback connectionCallback = new OneSheeldConnectionCallback() {
         @Override
-        public void onError(String errorMessage) {
+        public void onDisconnect(OneSheeldDevice device) {
+            super.onDisconnect(device);
             stopSelf();
         }
 
         @Override
-        public void onConnect() {
+        public void onConnect(OneSheeldDevice device) {
+            super.onConnect(device);
             showNotification();
         }
-
+    };
+    OneSheeldErrorCallback errorCallback=new OneSheeldErrorCallback() {
         @Override
-        public void onClose(boolean closedManually) {
+        public void onError(OneSheeldDevice device, OneSheeldError error) {
+            super.onError(device, error);
             stopSelf();
-
         }
     };
 
@@ -67,8 +71,8 @@ public class OneSheeldService extends Service {
             BluetoothDevice device = mBluetoothAdapter
                     .getRemoteDevice(deviceAddress);
             // Attempt to connect to the device
-            app.getAppFirmata().addEventHandler(arduinoEventHandler);
-            app.getAppFirmata().connect(device);
+            OneSheeldSdk.getManager().addConnectionCallback(connectionCallback);
+            OneSheeldSdk.getManager().addErrorCallback(errorCallback);
         }
         WakeLocker.acquire(this);
         return START_NOT_STICKY;
@@ -91,8 +95,7 @@ public class OneSheeldService extends Service {
     @Override
     public void onDestroy() {
         // TODO Auto-generated method stub
-        while (!app.getAppFirmata().close())
-            ;
+       OneSheeldSdk.getManager().disconnectAll();
         hideNotifcation();
         isBound = false;
         WakeLocker.release();
@@ -118,10 +121,6 @@ public class OneSheeldService extends Service {
 
     private void hideNotifcation() {
         stopForeground(true);
-    }
-
-    public ArduinoFirmata getFirmata() {
-        return app.getAppFirmata();
     }
 
 }

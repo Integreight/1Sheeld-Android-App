@@ -10,7 +10,7 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;

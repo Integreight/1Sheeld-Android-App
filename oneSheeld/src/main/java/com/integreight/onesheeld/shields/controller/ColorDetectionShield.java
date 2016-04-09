@@ -17,9 +17,8 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
@@ -341,7 +340,7 @@ public class ColorDetectionShield extends
                             for (int det : detected) {
                                 int color = getColorInRange(det, currentPallete);
                                 detected[i] = color;
-                                frame.addIntegerArgument(3, color);
+                                frame.addArgument(3, color);
                                 fullFrame = true;
                                 i++;
                             }

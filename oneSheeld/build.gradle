@@ -100,6 +100,7 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.4.0'
     compile 'com.github.emanzanoaxa:RippleEffect:52ea2a0ab6'
     compile 'com.drewnoakes:metadata-extractor:2.8.1'
+    compile 'com.integreight.onesheeld:sdk:2.1.0'
 }
 
 def isCrashlyticsPropertiesAvailable() {

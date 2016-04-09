@@ -7,8 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -89,7 +88,7 @@ public class LightShield extends ControllerParent<LightShield> implements
             isFirstTime = false;
             frame = new ShieldFrame(UIShield.LIGHT_SHIELD.getId(), LIGHT_VALUE);
             oldInput = event.values[0];
-            frame.addIntegerArgument(3, Math.round(event.values[0]));
+            frame.addArgument(3, Math.round(event.values[0]));
             sendShieldFrame(frame);
             flag = false;
         }

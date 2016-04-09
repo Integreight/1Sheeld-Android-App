@@ -16,7 +16,7 @@ import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -50,7 +50,7 @@ public class MicShield extends ControllerParent<MicShield> {
                 ampl = amplitude;
 //                Log.d("MIC", "Amp = " + ampl);
                 frame = new ShieldFrame(UIShield.MIC_SHIELD.getId(), MIC_VALUE);
-                frame.addByteArgument((byte) Math.round(ampl));
+                frame.addArgument((byte) Math.round(ampl));
                 sendShieldFrame(frame);
                 if (isResumed)
                     if (eventHandler != null)

@@ -1,8 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
@@ -51,7 +50,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
     public void input(String input) {
         sf = new ShieldFrame(UIShield.TERMINAL_SHIELD.getId(), DATA_IN);
-        sf.addStringArgument(input);
+        sf.addArgument(input);
         sendShieldFrame(sf,true);
     }
 

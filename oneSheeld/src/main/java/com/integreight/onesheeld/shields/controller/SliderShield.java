@@ -1,8 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -45,7 +44,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
             analogWrite(connectedPin, sliderValue);
             sValue = (byte) sliderValue;
             sf = new ShieldFrame(UIShield.SLIDER_SHIELD.getId(), DATA_IN);
-            sf.addByteArgument(sValue);
+            sf.addArgument(sValue);
             sendShieldFrame(sf);
         }
     }
@@ -54,7 +53,7 @@ public class SliderShield extends ControllerParent<SliderShield> {
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (frame.getShieldId() == UIShield.SLIDER_SHIELD.getId()) {
             if (frame.getFunctionId() == SLIDER_VALUE) {
-                sliderValue = frame.getArgumentAsInteger(1, 0);
+                sliderValue = frame.getArgumentAsInteger(0);
                 if (sliderHandler != null && isHasForgroundView())
                     sliderHandler.setSliderValue(sliderValue);
             }

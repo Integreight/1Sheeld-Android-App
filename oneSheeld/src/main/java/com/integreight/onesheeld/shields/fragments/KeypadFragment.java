@@ -5,11 +5,10 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.KeypadShield;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
@@ -60,7 +59,7 @@ public class KeypadFragment extends ShieldFragmentParent<KeypadFragment> {
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
-                                            ArduinoFirmata.OUTPUT));
+                                            OneSheeldDevice.OUTPUT));
                         }
 
                     }

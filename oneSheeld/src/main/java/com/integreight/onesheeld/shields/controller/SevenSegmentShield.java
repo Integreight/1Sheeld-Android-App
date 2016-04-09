@@ -2,7 +2,9 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -45,7 +47,7 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
     }
 
     @Override
-    public void onDigital(int portNumber, int portData) {
+    public void onDigital(int portNumber, boolean portData) {
         updateSegmentsStatusFromFirmata();
         if (eventHandler != null) {
             eventHandler.onSegmentsChange(pinsStatus);
@@ -69,8 +71,8 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
             pinsStatus.put(entry.getKey(), false);
         }
         for (Entry<String, ArduinoPin> entry : matchedShieldPins.entrySet()) {
-            pinsStatus.put(entry.getKey(), getApplication().getAppFirmata()
-                    .digitalRead(entry.getValue().microHardwarePin));
+            for(OneSheeldDevice device: OneSheeldSdk.getManager().getConnectedDevices())
+            pinsStatus.put(entry.getKey(),device.digitalRead(entry.getValue().microHardwarePin));
         }
 
     }

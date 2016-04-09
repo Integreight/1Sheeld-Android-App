@@ -1,8 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.fragments.KeyboardFragment.KeyboardEventHandler;
@@ -36,7 +35,7 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
 
                     frame = new ShieldFrame(UIShield.KEYBOARD_SHIELD.getId(),
                             KEYBOARD_VALUE);
-                    frame.addCharArgument(myText.charAt(0));
+                    frame.addArgument(myText.charAt(0));
                     sendShieldFrame(frame);
 
                 }
@@ -47,7 +46,7 @@ public class KeyboardShield extends ControllerParent<KeyboardShield> {
         public void onEnterOrbspacepressed(char myChar) {
             frame = new ShieldFrame(UIShield.KEYBOARD_SHIELD.getId(),
                     KEYBOARD_VALUE);
-            frame.addCharArgument(myChar);
+            frame.addArgument(myChar);
             sendShieldFrame(frame);
 
         }

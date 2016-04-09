@@ -7,10 +7,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.integreight.firmatabluetooth.ArduinoFirmata;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
+import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
@@ -55,9 +56,9 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
                                     .get(getControllerTag()))
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
-                                            ArduinoFirmata.INPUT));
-                            toggleLed(getApplication().getAppFirmata()
-                                    .digitalRead(pin.microHardwarePin));
+                                            OneSheeldDevice.INPUT));
+                            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
+                                toggleLed(device.digitalRead(pin.microHardwarePin));
                         } else {
                             ((LedShield) getApplication().getRunningShields()
                                     .get(getControllerTag())).connectedPin = -1;

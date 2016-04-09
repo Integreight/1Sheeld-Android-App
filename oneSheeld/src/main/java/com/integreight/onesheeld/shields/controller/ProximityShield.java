@@ -7,8 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
@@ -91,7 +90,7 @@ public class ProximityShield extends ControllerParent<ProximityShield>
             frame = new ShieldFrame(UIShield.PROXIMITY_SHIELD.getId(),
                     PROXIMITY_VALUE);
             oldInput = event.values[0];
-            frame.addByteArgument((byte) Math.round(event.values[0]));
+            frame.addArgument((byte) Math.round(event.values[0]));
             sendShieldFrame(frame);
             flag = false;
         }

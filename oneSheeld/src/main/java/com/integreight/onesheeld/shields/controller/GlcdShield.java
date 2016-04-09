@@ -4,8 +4,7 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.util.SparseArray;
 import android.view.MotionEvent;
-
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.GlcdView;
@@ -1298,17 +1297,17 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
 
     public void sendTouch(byte shapeType, int key, byte state) {
         frame = new ShieldFrame(SHIELD_ID, shapeType);
-        frame.addByteArgument((byte) 0x01);
-        frame.addIntegerArgument(2, key);
-        frame.addByteArgument(state);
+        frame.addArgument((byte) 0x01);
+        frame.addArgument(2, key);
+        frame.addArgument(state);
         sendShieldFrame(frame, false);
     }
 
     public void sendTouch(byte shapeType, int key, byte state, int value) {
         frame = new ShieldFrame(SHIELD_ID, shapeType);
-        frame.addByteArgument((byte) 0x01);
-        frame.addIntegerArgument(2, key);
-        frame.addIntegerArgument(2, value);
+        frame.addArgument((byte) 0x01);
+        frame.addArgument(2, key);
+        frame.addArgument(2, value);
         sendShieldFrame(frame, false);
     }
 

@@ -21,7 +21,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.integreight.firmatabluetooth.ShieldFrame;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -328,8 +328,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
         frame = new ShieldFrame(UIShield.GPS_SHIELD.getId(), GPS_VALUE);
         float lat = (float) myLocation.getLatitude();
         float lang = (float) myLocation.getLongitude();
-        frame.addFloatArgument(lat);
-        frame.addFloatArgument(lang);
+        frame.addArgument(lat);
+        frame.addArgument(lang);
         sendShieldFrame(frame);
 
     }
