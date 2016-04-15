@@ -41,7 +41,6 @@ import com.integreight.onesheeld.sdk.OneSheeldError;
 import com.integreight.onesheeld.sdk.OneSheeldErrorCallback;
 import com.integreight.onesheeld.sdk.OneSheeldScanningCallback;
 import com.integreight.onesheeld.sdk.OneSheeldSdk;
-import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
@@ -376,36 +375,57 @@ public class ArduinoConnectivityPopup extends Dialog {
         });
     }
 
-    private void setRetryButtonReady(String msg, View.OnClickListener onClick) {
-        isConnecting = false;
-        if (backPressed == false) {
-            deviceListCont.setVisibility(View.INVISIBLE);
-            loading.setVisibility(View.INVISIBLE);
-            smallLoading.setVisibility(View.INVISIBLE);
-            scanOrTryAgain.setVisibility(View.VISIBLE);
-            changeSlogan(msg, COLOR.ORANGE);
-            findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
-            scanOrTryAgain.setText(R.string.connectivity_popup_try_again_button);
-        }
+    private void setRetryButtonReady(final String msg, final View.OnClickListener onClick) {
+        loading.post(new Runnable() {
+            @Override
+            public void run() {
+
+                isConnecting = false;
+                if (backPressed == false) {
+                    deviceListCont.setVisibility(View.INVISIBLE);
+                    loading.setVisibility(View.INVISIBLE);
+                    smallLoading.setVisibility(View.INVISIBLE);
+                    scanOrTryAgain.setVisibility(View.VISIBLE);
+                    changeSlogan(msg, COLOR.ORANGE);
+                    findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
+                    scanOrTryAgain.setText(R.string.connectivity_popup_try_again_button);
+                }
+            }
+        });
     }
 
     private void setDevicesListReady() {
-        deviceListCont.setVisibility(View.VISIBLE);
-        loading.setVisibility(View.INVISIBLE);
-        smallLoading.setVisibility(View.INVISIBLE);
-        scanOrTryAgain.setVisibility(View.INVISIBLE);
+        loading.post(new Runnable() {
+            @Override
+            public void run() {
+                deviceListCont.setVisibility(View.VISIBLE);
+                loading.setVisibility(View.INVISIBLE);
+                smallLoading.setVisibility(View.INVISIBLE);
+                scanOrTryAgain.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void showProgress() {
-        deviceListCont.setVisibility(View.INVISIBLE);
-        loading.setVisibility(View.VISIBLE);
-        smallLoading.setVisibility(View.INVISIBLE);
-        scanOrTryAgain.setVisibility(View.INVISIBLE);
+        loading.post(new Runnable() {
+            @Override
+            public void run() {
+                deviceListCont.setVisibility(View.INVISIBLE);
+                loading.setVisibility(View.VISIBLE);
+                smallLoading.setVisibility(View.INVISIBLE);
+                scanOrTryAgain.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
-    private void changeSlogan(String text, int color) {
-        statusText.setText(text);
-        transactionSlogan.setBackgroundColor(color);
+    private void changeSlogan(final String text, final int color) {
+        loading.post(new Runnable() {
+            @Override
+            public void run() {
+                statusText.setText(text);
+                transactionSlogan.setBackgroundColor(color);
+            }
+        });
     }
 
     Handler tempHandler = new Handler();
@@ -430,6 +450,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         @Override
         public void onDisconnect(OneSheeldDevice device) {
             super.onDisconnect(device);
+            ((OneSheeldApplication) activity.getApplication()).setConnectedDevice(null);
             if (isOpened) {
                 isConnecting = false;
                 setRetryButtonReady(
@@ -448,9 +469,15 @@ public class ArduinoConnectivityPopup extends Dialog {
         @Override
         public void onConnect(OneSheeldDevice device) {
             super.onConnect(device);
+            ((OneSheeldApplication) activity.getApplication()).setConnectedDevice(device);
             if (isOpened) {
                 isConnecting = false;
-                ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
+                    }
+                });
                 cancel();
             }
         }
@@ -635,7 +662,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                     activity.getResources().getString(R.string.connectivity_popup_connecting) + "......",
                     COLOR.GREEN);
             findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
-            OneSheeldSdk.getManager().connect(new OneSheeldDevice(address,name));
+            OneSheeldSdk.getManager().connect(new OneSheeldDevice(address, name));
 //            Intent intent = new Intent(activity, OneSheeldService.class);
 //            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
 //            intent.putExtra(EXTRA_DEVICE_NAME, name);

@@ -11,7 +11,6 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.LedShield;
 import com.integreight.onesheeld.shields.controller.LedShield.LedEventHandler;
@@ -57,8 +56,8 @@ public class LedFragment extends ShieldFragmentParent<LedFragment> {
                                     .setConnected(new ArduinoConnectedPin(
                                             pin.microHardwarePin,
                                             OneSheeldDevice.INPUT));
-                            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                                toggleLed(device.digitalRead(pin.microHardwarePin));
+                            if (getApplication().isConnectedToBluetooth())
+                                toggleLed(getApplication().getConnectedDevice().digitalRead(pin.microHardwarePin));
                         } else {
                             ((LedShield) getApplication().getRunningShields()
                                     .get(getControllerTag())).connectedPin = -1;

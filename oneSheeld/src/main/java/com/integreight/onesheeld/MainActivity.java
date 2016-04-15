@@ -107,7 +107,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.one_sheeld_main);
         oneSheeldLogo = (TextView) findViewById(R.id.currentViewTitle);
         initLooperThread();
-        if (savedInstance == null || OneSheeldSdk.getManager().getConnectedDevices().size() > 0) {
+        if (savedInstance == null || getThisApplication().isConnectedToBluetooth()) {
 //            if (savedInstance != null) {
 //                int count = getSupportFragmentManager().getBackStackEntryCount();
 //                while (count > 0) {
@@ -120,9 +120,8 @@ public class MainActivity extends FragmentActivity {
         }
         postConfigChange();
         resetSlidingMenu();
-        for(OneSheeldDevice device:OneSheeldSdk.getManager().getConnectedDevices()) {
-            device.addVersionQueryCallback(versionQueryCallback);
-        }
+        if (getThisApplication().getConnectedDevice() != null)
+            getThisApplication().getConnectedDevice().addVersionQueryCallback(versionQueryCallback);
         thisInstance = this;
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
@@ -168,6 +167,7 @@ public class MainActivity extends FragmentActivity {
     Handler versionHandling = new Handler();
     OneSheeldVersionQueryCallback versionQueryCallback = new OneSheeldVersionQueryCallback() {
         ValidationPopup popub;
+
         @Override
         public void onFirmwareVersionQueryResponse(OneSheeldDevice device, FirmwareVersion firmwareVersion) {
             super.onFirmwareVersionQueryResponse(device, firmwareVersion);
@@ -604,10 +604,9 @@ public class MainActivity extends FragmentActivity {
                 }
                 break;
             case DRAW_OVER_APPS_REQUEST_CODE:
-                if(canDrawOverApps()) {
+                if (canDrawOverApps()) {
                     showToast(getString(R.string.main_activity_draw_over_apps_enabled_you_can_select_the_shield));
-                }
-                else {
+                } else {
                     showToast(getString(R.string.main_activity_draw_over_apps_was_not_enabled));
                 }
                 break;
@@ -906,21 +905,21 @@ public class MainActivity extends FragmentActivity {
         public void onMenuClosed();
     }
 
-    public static class BackOnconnectionLostHandler extends Handler {
+    public class BackOnconnectionLostHandler extends Handler {
         public boolean canInvokeOnCloseConnection = true,
                 connectionLost = false;
 
         private final WeakReference<MainActivity> mTarget;
 
-        public BackOnconnectionLostHandler(MainActivity activity){
-            this.mTarget= new WeakReference<>(activity);
+        public BackOnconnectionLostHandler(MainActivity activity) {
+            this.mTarget = new WeakReference<>(activity);
         }
 
         @Override
         public void handleMessage(Message msg) {
             final MainActivity activity = mTarget.get();
-            if(activity!=null) {
-                if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
+            if (activity != null) {
+                if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && !getThisApplication().isConnectedToBluetooth()) {
                     if (connectionLost) {
                         if (!ArduinoConnectivityPopup.isOpened
                                 && !activity.isFinishing())

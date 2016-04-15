@@ -3,11 +3,8 @@ package com.integreight.onesheeld.shields.controller;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.plugin.condition.ConditionActivity;
-import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
@@ -30,13 +27,12 @@ public class TaskerShield extends ControllerParent<TaskerShield> {
     @Override
     public void onDigital(int portNumber, boolean portData) {
         boolean hasChanges = false;
-        OneSheeldApplication app = activity.getThisApplication();
-        for (ArduinoPin pin : ArduinoPin.values()) {
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                hasChanges = device.digitalRead(pin.microHardwarePin);
-            if (hasChanges)
-                break;
-        }
+        if (getApplication().isConnectedToBluetooth())
+            for (ArduinoPin pin : ArduinoPin.values()) {
+                hasChanges = getApplication().taskerPinsStatus.get(pin.microHardwarePin) != getApplication().getConnectedDevice().digitalRead(pin.microHardwarePin);
+                if (hasChanges)
+                    break;
+            }
         if (hasChanges)
             activity.sendBroadcast(INTENT_REQUEST_REQUERY);
         super.onDigital(portNumber, portData);

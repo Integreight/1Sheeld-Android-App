@@ -28,7 +28,6 @@ import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
-import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 
@@ -59,7 +58,7 @@ public class ShieldsOperations extends Fragment {
     public void onViewStateRestored(Bundle savedInstanceState) {
         mFrag.currentShield = savedInstanceState == null || savedInstanceState.get("position") == null ? 0
                 : savedInstanceState.getInt("position");
-        this.activity=(MainActivity)getActivity();
+        this.activity = (MainActivity) getActivity();
         super.onViewStateRestored(savedInstanceState);
     }
 
@@ -74,7 +73,7 @@ public class ShieldsOperations extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.activity=(MainActivity)getActivity();
+        this.activity = (MainActivity) getActivity();
     }
 
     @Override
@@ -273,7 +272,7 @@ public class ShieldsOperations extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        this.activity=(MainActivity)getActivity();
+        this.activity = (MainActivity) getActivity();
     }
 
     @Override
@@ -297,10 +296,14 @@ public class ShieldsOperations extends Fragment {
         super.onDestroy();
     }
 
+    private OneSheeldApplication getApplication() {
+        return (OneSheeldApplication) activity.getApplication();
+    }
+
     @Override
     public void onResume() {
         activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = false;
-        if (OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
+        if (!getApplication().isConnectedToBluetooth()) {
             activity.getOnConnectionLostHandler().connectionLost = true;
         }
         activity.getOnConnectionLostHandler().sendEmptyMessage(0);
@@ -317,18 +320,18 @@ public class ShieldsOperations extends Fragment {
                                 @Override
                                 public void onClick(View v) {
 //                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
-                                        if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
-                                            try {
-                                                ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
-                                            } catch (RemoteException e) {
-                                                e.printStackTrace();
-                                            }
-                                        if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
-                                            try {
-                                                ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
-                                            } catch (RemoteException e) {
-                                                e.printStackTrace();
-                                            }
+                                    if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
+                                        try {
+                                            ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
+                                    if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
+                                        try {
+                                            ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
 //                                    } else {
 //                                        Log.test("Test", "Cannot disconnect in demoMode");
 //                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
@@ -352,7 +355,7 @@ public class ShieldsOperations extends Fragment {
             }
         }, 500);
         if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode()
-                && OneSheeldSdk.getManager().getConnectedDevices().size() == 0)
+                && !getApplication().isConnectedToBluetooth())
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.getAvailableDevices)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);

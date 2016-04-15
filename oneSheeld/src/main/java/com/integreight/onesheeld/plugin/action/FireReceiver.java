@@ -21,7 +21,6 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.plugin.PluginBundleManager;
 import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
 
 /**
  * This is the "fire" BroadcastReceiver for a Locale Plug-in setting.
@@ -37,7 +36,7 @@ public final class FireReceiver extends BroadcastReceiver {
                 .getApplicationContext();
         if (!com.twofortyfouram.locale.Intent.ACTION_FIRE_SETTING.equals(intent
                 .getAction()) ||
-                OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
+                !app.isConnectedToBluetooth()) {
             return;
         }
 
@@ -48,15 +47,13 @@ public final class FireReceiver extends BroadcastReceiver {
         BundleScrubber.scrub(bundle);
 
         if (PluginBundleManager.isActionBundleValid(bundle)) {
-            if (OneSheeldSdk.getManager().getConnectedDevices().size() > 0) {
-                for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices()) {
-                    device.pinMode(
-                            bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
-                            OneSheeldDevice.OUTPUT);
-                    device.digitalWrite(
-                            bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
-                            bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
-                }
+            if (app.isConnectedToBluetooth()) {
+                app.getConnectedDevice().pinMode(
+                        bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
+                        OneSheeldDevice.OUTPUT);
+                app.getConnectedDevice().digitalWrite(
+                        bundle.getInt(PluginBundleManager.BUNDLE_EXTRA_PIN_NUMBER),
+                        bundle.getBoolean(PluginBundleManager.BUNDLE_EXTRA_OUTPUT));
             }
         }
     }

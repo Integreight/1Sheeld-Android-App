@@ -195,7 +195,7 @@ public class SheeldsList extends Fragment {
         ((ViewGroup) activity.findViewById(R.id.getAvailableDevices))
                 .getChildAt(1).setBackgroundResource(
                 R.drawable.shields_list_shields_operation_button);
-        if (((OneSheeldApplication) activity.getApplication()).getIsDemoMode() && OneSheeldSdk.getManager().getConnectedDevices().size() == 0)
+        if (getApplication().getIsDemoMode() && !getApplication().isConnectedToBluetooth())
             ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.scan_button);
         else
             ((ViewGroup) activity.findViewById(R.id.cancelConnection)).getChildAt(1).setBackgroundResource(R.drawable.bluetooth_disconnect_button);
@@ -211,8 +211,8 @@ public class SheeldsList extends Fragment {
 
                                 @Override
                                 public void onClick(View v) {
-                                    if (!((OneSheeldApplication) activity.getApplication()).getIsDemoMode() ||
-                                            OneSheeldSdk.getManager().getConnectedDevices().size() > 0) {
+                                    if (!getApplication().getIsDemoMode() ||
+                                            getApplication().isConnectedToBluetooth()) {
                                         if (activity.getSupportFragmentManager()
                                                 .getBackStackEntryCount() > 1) {
                                             activity.getSupportFragmentManager()
@@ -223,7 +223,7 @@ public class SheeldsList extends Fragment {
                                         OneSheeldSdk.getManager().disconnectAll();
                                     } else {
                                         Log.test("Test", "Cannot disconnect in demoMode");
-                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
+                                        getApplication().setIsDemoMode(false);
                                     }
                                     if (!ArduinoConnectivityPopup.isOpened) {
                                         ArduinoConnectivityPopup.isOpened = true;
@@ -235,21 +235,25 @@ public class SheeldsList extends Fragment {
             }
         }, 500);
         activity.getOnConnectionLostHandler().canInvokeOnCloseConnection = true;
-//        ((OneSheeldApplication) activity.getApplication())
+//        getApplication()
 //                .setArduinoFirmataEventHandler(sheeldsFirmataHandler);
         OneSheeldSdk.getManager().addConnectionCallback(connectionCallback);
         OneSheeldSdk.getManager().addErrorCallback(errorCallback);
-        if (OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
-            if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+        if (!getApplication().isConnectedToBluetooth()) {
+            if (!ArduinoConnectivityPopup.isOpened && !getApplication().getIsDemoMode()) {
                 new ArduinoConnectivityPopup(activity).show();
             }
         }
         CrashlyticsUtils.setString("Current View", "Shields List");
-        ((OneSheeldApplication) activity.getApplication()).getTracker()
+        getApplication().getTracker()
                 .setScreenName("Main Shields List");
-        ((OneSheeldApplication) activity.getApplication()).getTracker().send(
+        getApplication().getTracker().send(
                 new HitBuilders.ScreenViewBuilder().build());
         super.onResume();
+    }
+
+    private OneSheeldApplication getApplication() {
+        return (OneSheeldApplication) activity.getApplication();
     }
 
     @Override
@@ -366,7 +370,7 @@ public class SheeldsList extends Fragment {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    ((OneSheeldApplication) activity.getApplication())
+                    getApplication()
                             .endConnectionTimerAndReport();
                     UIShield.setConnected(false);
                     adapter.notifyDataSetChanged();
@@ -375,7 +379,7 @@ public class SheeldsList extends Fragment {
                         activity.getSupportFragmentManager()
                                 .executePendingTransactions();
                     }
-                    if (!ArduinoConnectivityPopup.isOpened && !((OneSheeldApplication) activity.getApplication()).getIsDemoMode()) {
+                    if (!ArduinoConnectivityPopup.isOpened && !getApplication().getIsDemoMode()) {
                         new ArduinoConnectivityPopup(activity).show();
                     }
                 }
@@ -386,16 +390,17 @@ public class SheeldsList extends Fragment {
         @Override
         public void onConnect(OneSheeldDevice device) {
             super.onConnect(device);
+            getApplication().setConnectedDevice(device);
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     activity.getThisApplication().taskerController = new TaskerShield(
                             activity, UIShield.TASKER_SHIELD.name());
                     Log.e(TAG, "- ARDUINO CONNECTED -");
-                    ((OneSheeldApplication) activity.getApplication()).getTracker()
+                    getApplication().getTracker()
                             .send(new HitBuilders.ScreenViewBuilder().setNewSession()
                                     .build());
-                    ((OneSheeldApplication) activity.getApplication())
+                    getApplication()
                             .startConnectionTimer();
                     if (isOneSheeldServiceRunning()) {
                         if (adapter != null)
@@ -411,10 +416,11 @@ public class SheeldsList extends Fragment {
         @Override
         public void onDisconnect(OneSheeldDevice device) {
             super.onDisconnect(device);
+            getApplication().setConnectedDevice(null);
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (activity != null && OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
+                    if (activity != null) {
                         if (activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name()) != null)
                             try {
                                 ((CameraShield) activity.getThisApplication().getRunningShields().get(UIShield.CAMERA_SHIELD.name())).hidePreview();
@@ -430,7 +436,7 @@ public class SheeldsList extends Fragment {
                         if (activity.getThisApplication().taskerController != null) {
                             activity.getThisApplication().taskerController.reset();
                         }
-                        ((OneSheeldApplication) activity.getApplication())
+                        getApplication()
                                 .endConnectionTimerAndReport();
                         activity.getOnConnectionLostHandler().connectionLost = true;
                         if (activity.getOnConnectionLostHandler().canInvokeOnCloseConnection
@@ -461,9 +467,9 @@ public class SheeldsList extends Fragment {
                                 .getApplication()).getRunningShields().keys();
                         while (enumKey.hasMoreElements()) {
                             String key = enumKey.nextElement();
-                            ((OneSheeldApplication) activity.getApplication())
+                            getApplication()
                                     .getRunningShields().get(key).resetThis();
-                            ((OneSheeldApplication) activity.getApplication())
+                            getApplication()
                                     .getRunningShields().remove(key);
                         }
                         activity.stopService();
@@ -494,14 +500,14 @@ public class SheeldsList extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.open_bootloader_popup:
-                if (OneSheeldSdk.getManager().getConnectedDevices().size() > 0)
+                if (getApplication().isConnectedToBluetooth())
                     new FirmwareUpdatingPopup(activity/* , false */)
                             .show();
                 else
                     activity.showToast(activity.getString(R.string.shields_list_please_connect_to_your_board_first));
                 return true;
             case R.id.action_settings:
-                ((OneSheeldApplication) activity.getApplication())
+                getApplication()
                         .setLastConnectedDevice(null);
                 return true;
             case R.id.appTutorial:
@@ -535,12 +541,12 @@ public class SheeldsList extends Fragment {
             String installationIdString = "";
             ValidationAction shareConnectionId = null;
             String firmwareVersion = "";
-            if (OneSheeldSdk.getManager().getConnectedDevices().size() > 0
-                    && OneSheeldSdk.getManager().getConnectedDevices().get(0).getFirmwareVersion().getMajorVersion() != 0) {
+            if (getApplication().isConnectedToBluetooth()
+                    && getApplication().getConnectedDevice().getFirmwareVersion().getMajorVersion() != 0) {
                 firmwareVersion = "\n" + activity.getString(R.string.about_dialog_firmware_version) + ": v"
-                        + OneSheeldSdk.getManager().getConnectedDevices().get(0).getFirmwareVersion().getMajorVersion()
+                        + getApplication().getConnectedDevice().getFirmwareVersion().getMajorVersion()
                         + "."
-                        + OneSheeldSdk.getManager().getConnectedDevices().get(0).getFirmwareVersion().getMinorVersion() + "\n\n";
+                        + getApplication().getConnectedDevice().getFirmwareVersion().getMinorVersion() + "\n\n";
             }
             final ValidationPopup popup = new ValidationPopup(
                     activity,

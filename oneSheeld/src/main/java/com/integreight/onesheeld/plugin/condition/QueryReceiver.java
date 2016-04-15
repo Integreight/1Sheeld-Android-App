@@ -22,8 +22,6 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.plugin.BundleScrubber;
 import com.integreight.onesheeld.plugin.Constants;
 import com.integreight.onesheeld.plugin.PluginBundleManager;
-import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
 
 import java.util.Locale;
 
@@ -36,7 +34,7 @@ public final class QueryReceiver extends BroadcastReceiver {
                 .getApplicationContext();
         if (!com.twofortyfouram.locale.Intent.ACTION_QUERY_CONDITION
                 .equals(intent.getAction())
-                || OneSheeldSdk.getManager().getConnectedDevices().size() == 0) {
+                || !app.isConnectedToBluetooth()) {
             if (Constants.IS_LOGGABLE) {
                 Log.e(Constants.LOG_TAG,
                         String.format(
@@ -58,8 +56,8 @@ public final class QueryReceiver extends BroadcastReceiver {
             final int selectedPin = bundle
                     .getInt(PluginBundleManager.CONDITION_BUNDLE_EXTRA_PIN_NUMBER);
             boolean digitalReadStatus = false;
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                digitalReadStatus = device.digitalRead(
+            if (app.isConnectedToBluetooth())
+                digitalReadStatus = app.getConnectedDevice().digitalRead(
                         selectedPin);
             if (digitalReadStatus == conditionState
                     && digitalReadStatus != app.taskerPinsStatus

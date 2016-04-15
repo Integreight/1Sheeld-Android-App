@@ -53,8 +53,8 @@ public class TutorialLastFragment extends Fragment {
                     ArduinoConnectivityPopup.isOpened = false;
                     ArduinoConnectivityPopup.thisInstance.cancel();
                 }
-                if (OneSheeldSdk.getManager().getConnectedDevices().size() > 0)
-                    OneSheeldSdk.getManager().disconnectAll();
+                if (app.isConnectedToBluetooth())
+                    OneSheeldSdk.getManager().disconnect(app.getConnectedDevice());
                 getActivity().finish();
             }
         });

@@ -2,11 +2,9 @@ package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
 
-import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
-import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.BitsUtils;
 
@@ -70,10 +68,10 @@ public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
         for (Entry<String, Boolean> entry : pinsStatus.entrySet()) {
             pinsStatus.put(entry.getKey(), false);
         }
-        for (Entry<String, ArduinoPin> entry : matchedShieldPins.entrySet()) {
-            for(OneSheeldDevice device: OneSheeldSdk.getManager().getConnectedDevices())
-            pinsStatus.put(entry.getKey(),device.digitalRead(entry.getValue().microHardwarePin));
-        }
+        if (getApplication().isConnectedToBluetooth())
+            for (Entry<String, ArduinoPin> entry : matchedShieldPins.entrySet()) {
+                pinsStatus.put(entry.getKey(), getApplication().getConnectedDevice().digitalRead(entry.getValue().microHardwarePin));
+            }
 
     }
 

@@ -113,8 +113,8 @@ public class VibrationFragment extends ShieldFragmentParent<VibrationFragment>{
     public void doOnResume() {
         invalidateController();
         if(canChangeUI()){
-            if(((OneSheeldApplication) activity.getApplication()).getIsDemoMode()
-                    && OneSheeldSdk.getManager().getConnectedDevices().size() == 0){
+            if(getApplication().getIsDemoMode()
+                    && !getApplication().isConnectedToBluetooth()){
                 vibrationLogo.startAnimation(shake);
                 vibrationTextTextView.setText(R.string.vibration_ready);
                 uiHandler.postDelayed(new Runnable() {

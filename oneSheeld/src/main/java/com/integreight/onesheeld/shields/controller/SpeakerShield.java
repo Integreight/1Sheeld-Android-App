@@ -5,13 +5,11 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.Toast;
 
-import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
-import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
@@ -40,8 +38,8 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
 
     public boolean refreshLed() {
         if (connectedPin != -1) {
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                isLedOn = device.digitalRead(connectedPin);
+            if (getApplication().isConnectedToBluetooth())
+                isLedOn = getApplication().getConnectedDevice().digitalRead(connectedPin);
         } else
             isLedOn = false;
         if (isLedOn)

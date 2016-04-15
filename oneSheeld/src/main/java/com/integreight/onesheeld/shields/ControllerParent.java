@@ -18,7 +18,6 @@ import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.sdk.OneSheeldDataCallback;
 import com.integreight.onesheeld.sdk.OneSheeldDevice;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
@@ -162,9 +161,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     }
 
     public void notifyHardwareOfShieldSelection() {
-        if (isItARealShield()) {
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                device.sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
+        if (isItARealShield() && getApplication().isConnectedToBluetooth()) {
+            getApplication().getConnectedDevice().sendShieldFrame(new ShieldFrame(getShieldId(), IS_SHIELD_SELECTED), true);
         }
         isInit = true;
     }
@@ -175,10 +173,10 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * @param pins array of connected pins
      */
     public void setConnected(ArduinoConnectedPin... pins) {
-        for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-            for (int i = 0; i < pins.length; i++) {
-                device.pinMode(pins[i].getPinID(), pins[i].getPinMode());
-            }
+        for (int i = 0; i < pins.length; i++) {
+            if (getApplication().isConnectedToBluetooth())
+                getApplication().getConnectedDevice().pinMode(pins[i].getPinID(), pins[i].getPinMode());
+        }
         this.setHasConnectedPins(true);
 
     }
@@ -259,9 +257,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * add Shield handlers to firmata listening list
      */
     private void setFirmataEventHandler() {
-        for (OneSheeldDevice devive : OneSheeldSdk.getManager().getConnectedDevices()) {
-            devive.addDataCallback(dataCallback);
-        }
+        if (getApplication().isConnectedToBluetooth())
+            getApplication().getConnectedDevice().addDataCallback(dataCallback);
     }
 
     private byte getShieldId() {
@@ -401,8 +398,8 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                         }
                     }
                     ((T) ControllerParent.this).reset();
-                    for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                        device.removeDataCallback(dataCallback);
+                    if (getApplication().isConnectedToBluetooth())
+                        getApplication().getConnectedDevice().removeDataCallback(dataCallback);
                 }
             });
         }
@@ -436,40 +433,35 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
      * @param frame target frame sending frame to Arduino Onesheeld
      */
     public void queueShieldFrame(ShieldFrame frame) {
-        if (isInteractive)
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                device.queueShieldFrame(frame);
+        if (isInteractive && getApplication().isConnectedToBluetooth())
+            getApplication().getConnectedDevice().queueShieldFrame(frame);
     }
 
     /**
      * @param frame target frame sending frame to Arduino Onesheeld
      */
     public void sendShieldFrame(ShieldFrame frame) {
-        if (isInteractive)
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                device.sendShieldFrame(frame);
+        if (isInteractive && getApplication().isConnectedToBluetooth())
+            getApplication().getConnectedDevice().sendShieldFrame(frame);
     }
 
     /**
      * @param frame target frame queuing frame to Arduino Onesheeld
      */
     public void sendShieldFrame(ShieldFrame frame, boolean waitIfInACallback) {
-        if (isInteractive) {
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                device.sendShieldFrame(frame, waitIfInACallback);
+        if (isInteractive && getApplication().isConnectedToBluetooth()) {
+            getApplication().getConnectedDevice().sendShieldFrame(frame, waitIfInACallback);
         }
     }
 
     public void digitalWrite(int pin, boolean value) {
-        if (isInteractive)
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                device.digitalWrite(pin, value);
+        if (isInteractive && getApplication().isConnectedToBluetooth())
+            getApplication().getConnectedDevice().digitalWrite(pin, value);
     }
 
     public void analogWrite(int pin, int value) {
-        if (isInteractive)
-            for (OneSheeldDevice device : OneSheeldSdk.getManager().getConnectedDevices())
-                device.analogWrite(pin, value);
+        if (isInteractive && getApplication().isConnectedToBluetooth())
+            getApplication().getConnectedDevice().analogWrite(pin, value);
     }
 
     /**

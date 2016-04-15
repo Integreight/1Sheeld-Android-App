@@ -18,7 +18,6 @@ import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.sdk.OneSheeldFirmwareUpdateCallback;
-import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.utils.ConnectionDetector;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
@@ -43,10 +42,11 @@ public class FirmwareUpdatingPopup extends Dialog {
     private Handler uIHandler = new Handler();
     private boolean isFailed = false;
     private OneSheeldDevice deviceToUpdate;
-    public FirmwareUpdatingPopup(MainActivity activity)
-    {
-        this(activity,OneSheeldSdk.getManager().getConnectedDevices().get(0));
+
+    public FirmwareUpdatingPopup(MainActivity activity) {
+        this(activity, activity.getThisApplication().getConnectedDevice());
     }
+
     public FirmwareUpdatingPopup(final MainActivity activity, OneSheeldDevice deviceToUpdate) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.deviceToUpdate = deviceToUpdate;
@@ -141,7 +141,7 @@ public class FirmwareUpdatingPopup extends Dialog {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -235,7 +235,7 @@ public class FirmwareUpdatingPopup extends Dialog {
     private byte[] binaryFile;
 
     private void downloadFirmware() {
-        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_downloading)+"...", COLOR.BLUE);
+        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_downloading) + "...", COLOR.BLUE);
         if (activity.getThisApplication().getVersionWebResult() != null) {
             showInstallationProgress();
             try {
@@ -256,12 +256,12 @@ public class FirmwareUpdatingPopup extends Dialog {
                                         binaryFile = binaryData;
                                         deviceToUpdate.update(binaryFile);
                                         if (!isFailed)
-                                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
+                                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing) + "...", COLOR.BLUE);
                                         else
                                             changeSlogan(activity.getString(R.string.firmware_upgrade_popup_please_press_reset),
                                                     COLOR.BLUE);
                                     }
-                                },200);
+                                }, 200);
                             }
 
                             @Override
@@ -316,11 +316,11 @@ public class FirmwareUpdatingPopup extends Dialog {
                             public void run() {
                                 deviceToUpdate.update(binaryFile);
                                 if (!isFailed)
-                                    changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing)+"...", COLOR.BLUE);
+                                    changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing) + "...", COLOR.BLUE);
                                 else
                                     changeSlogan(activity.getString(R.string.firmware_upgrade_popup_please_press_reset), COLOR.BLUE);
                             }
-                        },200);
+                        }, 200);
 
                     }
                 } else {

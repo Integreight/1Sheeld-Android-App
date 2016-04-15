@@ -21,6 +21,7 @@ import com.google.android.gms.analytics.Tracker;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
+import com.integreight.onesheeld.sdk.OneSheeldDevice;
 import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
@@ -58,6 +59,7 @@ public class OneSheeldApplication extends Application {
     private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
     private final String CAMERA_CAPTURING = "cameraCapturing";
     private final String REMEMBER_SHIELDS = "rememberedShields";
+    private OneSheeldDevice connectedDevice;
     private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
     public Typeface appFont;
     // private GoogleAnalytics googleAnalyticsInstance;
@@ -376,6 +378,21 @@ public class OneSheeldApplication extends Application {
 
     public void setIsDemoMode(boolean isDemoMode) {
         OneSheeldApplication.isDemoMode = isDemoMode;
+    }
+
+    public OneSheeldDevice getConnectedDevice() {
+        return connectedDevice;
+    }
+
+    public void setConnectedDevice(OneSheeldDevice connectedDevice) {
+//        if (this.connectedDevice != null && this.connectedDevice.isConnected())
+//            while (isConnectedToBluetooth())
+//                this.connectedDevice.disconnect();
+        this.connectedDevice = connectedDevice;
+    }
+
+    public boolean isConnectedToBluetooth() {
+        return connectedDevice != null && connectedDevice.isConnected();
     }
 
     public static int getNotificationIcon() {
