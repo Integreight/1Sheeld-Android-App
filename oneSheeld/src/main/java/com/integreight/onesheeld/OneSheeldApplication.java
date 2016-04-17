@@ -385,9 +385,10 @@ public class OneSheeldApplication extends Application {
     }
 
     public void setConnectedDevice(OneSheeldDevice connectedDevice) {
-//        if (this.connectedDevice != null && this.connectedDevice.isConnected())
+//        if (this.connectedDevice != null) {
 //            while (isConnectedToBluetooth())
 //                this.connectedDevice.disconnect();
+//        }
         this.connectedDevice = connectedDevice;
     }
 

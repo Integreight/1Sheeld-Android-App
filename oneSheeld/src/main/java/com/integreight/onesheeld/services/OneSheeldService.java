@@ -25,7 +25,7 @@ public class OneSheeldService extends Service {
     public static boolean isBound = false;
     SharedPreferences sharedPrefs;
     private BluetoothAdapter mBluetoothAdapter = null;
-    private String deviceAddress, deviceName;
+    private String  deviceName;
     OneSheeldConnectionCallback connectionCallback = new OneSheeldConnectionCallback() {
         @Override
         public void onDisconnect(OneSheeldDevice device) {
@@ -64,16 +64,13 @@ public class OneSheeldService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         // TODO Auto-generated method stub
         if (intent.getExtras() != null) {
-            deviceAddress = intent.getExtras().getString(
-                    ArduinoConnectivityPopup.EXTRA_DEVICE_ADDRESS);
             deviceName = intent.getExtras().getString(
                     ArduinoConnectivityPopup.EXTRA_DEVICE_NAME);
-            BluetoothDevice device = mBluetoothAdapter
-                    .getRemoteDevice(deviceAddress);
             // Attempt to connect to the device
             OneSheeldSdk.getManager().addConnectionCallback(connectionCallback);
             OneSheeldSdk.getManager().addErrorCallback(errorCallback);
         }
+        showNotification();
         WakeLocker.acquire(this);
         return START_NOT_STICKY;
     }

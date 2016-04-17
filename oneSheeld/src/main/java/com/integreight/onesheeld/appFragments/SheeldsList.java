@@ -390,6 +390,10 @@ public class SheeldsList extends Fragment {
         @Override
         public void onConnect(OneSheeldDevice device) {
             super.onConnect(device);
+            ((OneSheeldApplication) activity.getApplication()).setConnectedDevice(device);
+            Intent intent = new Intent(activity, OneSheeldService.class);
+            intent.putExtra(ArduinoConnectivityPopup.EXTRA_DEVICE_NAME, device.getName());
+            activity.startService(intent);
             getApplication().setConnectedDevice(device);
             activity.runOnUiThread(new Runnable() {
                 @Override
@@ -402,10 +406,10 @@ public class SheeldsList extends Fragment {
                                     .build());
                     getApplication()
                             .startConnectionTimer();
-                    if (isOneSheeldServiceRunning()) {
+//                    if (isOneSheeldServiceRunning()) {
                         if (adapter != null)
                             adapter.applyToControllerTable();
-                    }
+//                    }
                     AppRate.showRateDialogIfMeetsConditions(activity);
                     activity.showMenuButtonTutorialOnce();
 

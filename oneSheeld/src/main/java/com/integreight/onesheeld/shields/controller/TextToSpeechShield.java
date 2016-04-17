@@ -105,7 +105,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
     public void speech(String speechText) {
         if (myTTS != null) {
-            Toast.makeText(activity,speechText,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(activity,speechText,Toast.LENGTH_SHORT).show();
             HashMap<String, String> map = new HashMap<String, String>();
             map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     activity.getPackageName());

@@ -41,6 +41,7 @@ import com.integreight.onesheeld.sdk.OneSheeldError;
 import com.integreight.onesheeld.sdk.OneSheeldErrorCallback;
 import com.integreight.onesheeld.sdk.OneSheeldScanningCallback;
 import com.integreight.onesheeld.sdk.OneSheeldSdk;
+import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
@@ -60,7 +61,6 @@ public class ArduinoConnectivityPopup extends Dialog {
     private float scale;
     private boolean isConnecting = false;
     private Hashtable<String, OneSheeldDevice> foundDevicesTable;
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
     public static String EXTRA_DEVICE_NAME = "device_name";
 
     public ArduinoConnectivityPopup(Activity context) {
@@ -469,7 +469,6 @@ public class ArduinoConnectivityPopup extends Dialog {
         @Override
         public void onConnect(OneSheeldDevice device) {
             super.onConnect(device);
-            ((OneSheeldApplication) activity.getApplication()).setConnectedDevice(device);
             if (isOpened) {
                 isConnecting = false;
                 activity.runOnUiThread(new Runnable() {

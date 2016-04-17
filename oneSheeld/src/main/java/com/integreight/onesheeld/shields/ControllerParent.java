@@ -398,7 +398,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
                         }
                     }
                     ((T) ControllerParent.this).reset();
-                    if (getApplication().isConnectedToBluetooth())
+                    if (getApplication().getConnectedDevice() != null)
                         getApplication().getConnectedDevice().removeDataCallback(dataCallback);
                 }
             });
