@@ -41,7 +41,6 @@ import com.integreight.onesheeld.sdk.OneSheeldError;
 import com.integreight.onesheeld.sdk.OneSheeldErrorCallback;
 import com.integreight.onesheeld.sdk.OneSheeldScanningCallback;
 import com.integreight.onesheeld.sdk.OneSheeldSdk;
-import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
@@ -62,6 +61,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private boolean isConnecting = false;
     private Hashtable<String, OneSheeldDevice> foundDevicesTable;
     public static String EXTRA_DEVICE_NAME = "device_name";
+    private BluetoothAdapter mBtAdapter;
 
     public ArduinoConnectivityPopup(Activity context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -80,6 +80,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private OneSheeldButton skipScan;
     private RelativeLayout transactionSlogan;
     public static boolean isOpened = false, backPressed = false;
+    private boolean isScanningFinishedManually = false;
 
     @Override
     public void onBackPressed() {
@@ -120,6 +121,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         }
         setContentView(R.layout.initialization_view);
         setCancelable(false);
+        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
         loading = (ProgressBar) findViewById(R.id.progress);
         smallLoading = (ProgressBar) findViewById(R.id.small_progress);
@@ -172,6 +174,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                         ((PullToRefreshScrollView) findViewById(R.id.scrollingDevices))
                                 .onRefreshComplete();
                         if (OneSheeldSdk.getManager().isScanning()) {
+                            isScanningFinishedManually = true;
                             OneSheeldSdk.getManager().cancelScanning();
                         }
                         try {
@@ -179,7 +182,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                         } catch (Exception e) {
                             Log.e("TAG", "Exception", e);
                         }
-                        if (!OneSheeldSdk.getManager().isReady()) {
+                        if (!mBtAdapter.isEnabled()) {
                             ((MainActivity) activity)
                                     .setOnConnectToBluetooth(new onConnectedToBluetooth() {
 
@@ -291,7 +294,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 
             @Override
             public void onClick(View v) {
-                if (!OneSheeldSdk.getManager().isReady()) {
+                if (!mBtAdapter.isEnabled()) {
                     ((MainActivity) activity)
                             .setOnConnectToBluetooth(new onConnectedToBluetooth() {
 
@@ -485,6 +488,17 @@ public class ArduinoConnectivityPopup extends Dialog {
         @Override
         public void onScanStart() {
             super.onScanStart();
+            addingDevicesHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    showProgress();
+                    changeSlogan(
+                            activity.getResources().getString(
+                                    R.string.connectivity_popup_searching) + "......", COLOR.RED);
+                    findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
+                }
+            });
         }
 
         @Override
@@ -507,80 +521,14 @@ public class ArduinoConnectivityPopup extends Dialog {
         @Override
         public void onScanFinish(List<OneSheeldDevice> foundDevices) {
             super.onScanFinish(foundDevices);
-            if (foundDevicesTable.size() == 0) {
-                loading.post(new Runnable() {
+            if (!isScanningFinishedManually) {
+                if (foundDevicesTable.size() == 0) {
+                    loading.post(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        smallLoading.setVisibility(View.INVISIBLE);
-                        setRetryButtonReady(activity.getResources()
-                                        .getString(R.string.connectivity_popup_no_devices_found),
-                                new View.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(View v) {
-                                        scanDevices();
-                                    }
-                                });
-                    }
-                });
-            } else {
-                loading.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        smallLoading.setVisibility(View.INVISIBLE);
-                        // devicesList.removeAllViews();
-                        for (int i = 0; i < devicesList.getChildCount(); i++) {
-                            OneSheeldTextView deviceView = (OneSheeldTextView) devicesList
-                                    .getChildAt(i);
-                            OneSheeldDevice btDevice = foundDevicesTable
-                                    .get(deviceView.getTag());
-                            if (btDevice != null) {
-                                if (btDevice.getName() != null
-                                        && btDevice.getName()
-                                        .toLowerCase()
-                                        .contains("1sheeld")) {
-                                    deviceView
-                                            .setText(foundDevicesTable
-                                                    .get(deviceView
-                                                            .getTag())
-                                                    .getName());
-                                } else {
-                                    devicesList.removeView(deviceView);
-                                }
-                                foundDevicesTable.remove(deviceView
-                                        .getTag());
-                            }
-                        }
-                        final Enumeration<String> enumKey = foundDevicesTable
-                                .keys();
-                        addingDevicesHandler
-                                .removeCallbacksAndMessages(null);
-                        while (enumKey.hasMoreElements()) {
-                            final String key = enumKey.nextElement();
-                            tempHandler.post(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    OneSheeldDevice device = foundDevicesTable
-                                            .get(key);
-                                    if (device != null)
-                                        addFoundDevice(
-                                                device.getName() != null
-                                                        && device
-                                                        .getName()
-                                                        .length() > 0 ? device
-                                                        .getName()
-                                                        : device.getAddress(),
-                                                key,
-                                                device.isPaired());
-                                }
-                            });
-                        }
-                        foundDevicesTable.clear();
-                        if (devicesList.getChildCount() == 0) {
+                        @Override
+                        public void run() {
+                            // TODO Auto-generated method stub
+                            smallLoading.setVisibility(View.INVISIBLE);
                             setRetryButtonReady(activity.getResources()
                                             .getString(R.string.connectivity_popup_no_devices_found),
                                     new View.OnClickListener() {
@@ -591,9 +539,78 @@ public class ArduinoConnectivityPopup extends Dialog {
                                         }
                                     });
                         }
-                    }
-                });
+                    });
+                } else {
+                    loading.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            smallLoading.setVisibility(View.INVISIBLE);
+                            // devicesList.removeAllViews();
+                            for (int i = 0; i < devicesList.getChildCount(); i++) {
+                                OneSheeldTextView deviceView = (OneSheeldTextView) devicesList
+                                        .getChildAt(i);
+                                OneSheeldDevice btDevice = foundDevicesTable
+                                        .get(deviceView.getTag());
+                                if (btDevice != null) {
+                                    if (btDevice.getName() != null
+                                            && btDevice.getName()
+                                            .toLowerCase()
+                                            .contains("1sheeld")) {
+                                        deviceView
+                                                .setText(foundDevicesTable
+                                                        .get(deviceView
+                                                                .getTag())
+                                                        .getName());
+                                    } else {
+                                        devicesList.removeView(deviceView);
+                                    }
+                                    foundDevicesTable.remove(deviceView
+                                            .getTag());
+                                }
+                            }
+                            final Enumeration<String> enumKey = foundDevicesTable
+                                    .keys();
+                            addingDevicesHandler
+                                    .removeCallbacksAndMessages(null);
+                            while (enumKey.hasMoreElements()) {
+                                final String key = enumKey.nextElement();
+                                tempHandler.post(new Runnable() {
+
+                                    @Override
+                                    public void run() {
+                                        OneSheeldDevice device = foundDevicesTable
+                                                .get(key);
+                                        if (device != null)
+                                            addFoundDevice(
+                                                    device.getName() != null
+                                                            && device
+                                                            .getName()
+                                                            .length() > 0 ? device
+                                                            .getName()
+                                                            : device.getAddress(),
+                                                    key,
+                                                    device.isPaired());
+                                    }
+                                });
+                            }
+                            foundDevicesTable.clear();
+                            if (devicesList.getChildCount() == 0) {
+                                setRetryButtonReady(activity.getResources()
+                                                .getString(R.string.connectivity_popup_no_devices_found),
+                                        new View.OnClickListener() {
+
+                                            @Override
+                                            public void onClick(View v) {
+                                                scanDevices();
+                                            }
+                                        });
+                            }
+                        }
+                    });
+                }
             }
+            isScanningFinishedManually = false;
         }
     };
     OneSheeldErrorCallback errorCallback = new OneSheeldErrorCallback() {
@@ -723,37 +740,37 @@ public class ArduinoConnectivityPopup extends Dialog {
 
                                             @Override
                                             public void onClick(View v) {
-//                                                if (OneSheeldSdk.getManager().isReady()) {
-                                                backPressed = false;
-                                                if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
-                                                        .isChecked())
-                                                    ((OneSheeldApplication) activity
-                                                            .getApplication())
-                                                            .setLastConnectedDevice(address);
-                                                startService(address, name);
-//                                                } else {
-//                                                    if (OneSheeldSdk.getManager().isScanning())
-//                                                        OneSheeldSdk.getManager().cancelScanning();
-//                                                    ((MainActivity) activity)
-//                                                            .setOnConnectToBluetooth(new onConnectedToBluetooth() {
-//
-//                                                                @Override
-//                                                                public void onConnect() {
-//                                                                    backPressed = false;
-//                                                                    ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
-//                                                                    if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
-//                                                                            .isChecked())
-//                                                                        ((OneSheeldApplication) activity
-//                                                                                .getApplication())
-//                                                                                .setLastConnectedDevice(address);
-//                                                                    startService(address, name);
-//                                                                }
-//                                                            });
-//                                                    Intent enableIntent = new Intent(
-//                                                            BluetoothAdapter.ACTION_REQUEST_ENABLE);
-//                                                    activity.startActivityForResult(enableIntent,
-//                                                            SheeldsList.REQUEST_ENABLE_BT);
-//                                                }
+                                                if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+                                                    backPressed = false;
+                                                    if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
+                                                            .isChecked())
+                                                        ((OneSheeldApplication) activity
+                                                                .getApplication())
+                                                                .setLastConnectedDevice(address);
+                                                    startService(address, name);
+                                                } else {
+                                                    if (OneSheeldSdk.getManager().isScanning())
+                                                        OneSheeldSdk.getManager().cancelScanning();
+                                                    ((MainActivity) activity)
+                                                            .setOnConnectToBluetooth(new onConnectedToBluetooth() {
+
+                                                                @Override
+                                                                public void onConnect() {
+                                                                    backPressed = false;
+                                                                    ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
+                                                                    if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
+                                                                            .isChecked())
+                                                                        ((OneSheeldApplication) activity
+                                                                                .getApplication())
+                                                                                .setLastConnectedDevice(address);
+                                                                    startService(address, name);
+                                                                }
+                                                            });
+                                                    Intent enableIntent = new Intent(
+                                                            BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                                                    activity.startActivityForResult(enableIntent,
+                                                            SheeldsList.REQUEST_ENABLE_BT);
+                                                }
                                             }
                                         }
 
