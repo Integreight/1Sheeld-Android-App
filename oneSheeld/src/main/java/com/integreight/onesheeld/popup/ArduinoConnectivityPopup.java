@@ -439,7 +439,6 @@ public class ArduinoConnectivityPopup extends Dialog {
         backPressed = false;
         foundDevicesTable = new Hashtable<>();
         IntentFilter filter = new IntentFilter();
-//        filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
         activity.registerReceiver(mReceiver, filter);
     }
@@ -522,7 +521,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         public void onScanFinish(List<OneSheeldDevice> foundDevices) {
             super.onScanFinish(foundDevices);
             if (!isScanningFinishedManually) {
-                if (foundDevicesTable.size() == 0) {
+                if (foundDevices.size() == 0) {
                     loading.post(new Runnable() {
 
                         @Override
@@ -541,6 +540,11 @@ public class ArduinoConnectivityPopup extends Dialog {
                         }
                     });
                 } else {
+                    foundDevicesTable.clear();
+                    for(OneSheeldDevice device:foundDevices)
+                    {
+                        foundDevicesTable.put(device.getAddress(),device);
+                    }
                     loading.post(new Runnable() {
 
                         @Override
@@ -679,10 +683,6 @@ public class ArduinoConnectivityPopup extends Dialog {
                     COLOR.GREEN);
             findViewById(R.id.skip_scan).setVisibility(View.INVISIBLE);
             OneSheeldSdk.getManager().connect(new OneSheeldDevice(address, name));
-//            Intent intent = new Intent(activity, OneSheeldService.class);
-//            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-//            intent.putExtra(EXTRA_DEVICE_NAME, name);
-//            activity.startService(intent);
             isConnecting = true;
         }
     }
