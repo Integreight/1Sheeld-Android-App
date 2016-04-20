@@ -140,6 +140,7 @@ public class OneSheeldApplication extends Application {
                 .getCurrentInstallation().getList("channels")
                 .contains("dev")))
             ParsePush.subscribeInBackground("dev");
+        OneSheeldSdk.setDebugging(isDebuggable);
         connectionTime = 0;
         AppShields.getInstance().init(getRememberedShields());
         initCrashlyticsAndUncaughtThreadHandler();
