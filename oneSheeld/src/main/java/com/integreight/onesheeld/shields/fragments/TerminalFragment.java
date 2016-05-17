@@ -126,6 +126,8 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                                                 getControllerTag()))
                                         .getEncodedString(inputField.getText()
                                                 .toString()), true, false));
+                ((TerminalShield) getApplication().getRunningShields().get(
+                        getControllerTag())).lastItemEndedWithNewLine = true;
                 outputAdapter
                         .updateLines(((TerminalShield) getApplication()
                                 .getRunningShields().get(getControllerTag())).tempLines);

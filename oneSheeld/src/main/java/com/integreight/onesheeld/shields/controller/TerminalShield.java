@@ -21,7 +21,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
     public int[] encodingMths = new int[]{R.id.terminalString, R.id.asci,
             R.id.binary, R.id.hex};
     public int selectedEnMth = 0;
-    public CopyOnWriteArrayList<TerminalPrintedLine> terminalPrintedLines;
+    public CopyOnWriteArrayList<TerminalPrintedLine> terminalPrintedLines = new CopyOnWriteArrayList<>();
     public boolean lastItemEndedWithNewLine = true;
     public CopyOnWriteArrayList<TerminalPrintedLine> tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
     public boolean isTimeOn = true, isAutoScrolling = true;

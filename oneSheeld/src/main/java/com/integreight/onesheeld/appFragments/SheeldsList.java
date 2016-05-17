@@ -432,6 +432,7 @@ public class SheeldsList extends Fragment {
             activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
                     activity.getThisApplication().taskerController = new TaskerShield(
                             activity, UIShield.TASKER_SHIELD.name());
                     Log.e(TAG, "- ARDUINO CONNECTED -");
