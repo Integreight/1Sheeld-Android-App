@@ -120,8 +120,6 @@ public class MainActivity extends FragmentActivity {
         }
         postConfigChange();
         resetSlidingMenu();
-        if (getThisApplication().getConnectedDevice() != null)
-            getThisApplication().getConnectedDevice().addVersionQueryCallback(versionQueryCallback);
         thisInstance = this;
         if (getThisApplication().getShowTutAgain()
                 && getThisApplication().getTutShownTimes() < 6)
@@ -165,7 +163,7 @@ public class MainActivity extends FragmentActivity {
     public Thread looperThread;
     public Handler backgroundThreadHandler;
     Handler versionHandling = new Handler();
-    OneSheeldVersionQueryCallback versionQueryCallback = new OneSheeldVersionQueryCallback() {
+    public OneSheeldVersionQueryCallback versionQueryCallback = new OneSheeldVersionQueryCallback() {
         ValidationPopup popub;
 
         @Override

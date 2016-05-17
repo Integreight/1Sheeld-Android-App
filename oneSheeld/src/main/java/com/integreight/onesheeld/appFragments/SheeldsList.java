@@ -391,6 +391,8 @@ public class SheeldsList extends Fragment {
         public void onConnect(OneSheeldDevice device) {
             super.onConnect(device);
             ((OneSheeldApplication) activity.getApplication()).setConnectedDevice(device);
+            if (activity.getThisApplication().getConnectedDevice() != null)
+                activity.getThisApplication().getConnectedDevice().addVersionQueryCallback(activity.versionQueryCallback);
             Intent intent = new Intent(activity, OneSheeldService.class);
             intent.putExtra(ArduinoConnectivityPopup.EXTRA_DEVICE_NAME, device.getName());
             activity.startService(intent);
