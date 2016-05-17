@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.SparseArray;
 import android.widget.Toast;
@@ -171,8 +172,13 @@ public class OneSheeldApplication extends Application {
                                 MainActivity.thisInstance != null ? MainActivity.thisInstance.getIntent().getFlags() : 0);
 
                 AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                mgr.set(AlarmManager.RTC,
-                        System.currentTimeMillis() + 1000, intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    mgr.setExact(AlarmManager.RTC, System.currentTimeMillis() + 1000,
+                            intent);
+                } else {
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000,
+                            intent);
+                }
                 setTutShownTimes(
                         getTutShownTimes() + 1);
                 android.os.Process.killProcess(android.os.Process.myPid());

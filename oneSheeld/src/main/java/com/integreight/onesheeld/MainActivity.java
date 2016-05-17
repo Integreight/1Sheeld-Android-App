@@ -505,10 +505,14 @@ public class MainActivity extends FragmentActivity {
                 Intent in = new Intent(getIntent());
                 PendingIntent intent = PendingIntent.getActivity(
                         getBaseContext(), 0, in, getIntent().getFlags());
-
                 AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
-                        intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    mgr.setExact(AlarmManager.RTC, System.currentTimeMillis() + 100,
+                            intent);
+                } else {
+                    mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100,
+                            intent);
+                }
                 killAllProcesses();
             } else
                 killAllProcesses();
