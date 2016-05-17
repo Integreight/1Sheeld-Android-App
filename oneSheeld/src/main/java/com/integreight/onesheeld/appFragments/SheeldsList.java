@@ -341,6 +341,38 @@ public class SheeldsList extends Fragment {
             if (!isAnyShieldsSelected()) {
                 Toast.makeText(activity, R.string.shields_list_select_at_least_1_shield_toast,
                         Toast.LENGTH_LONG).show();
+                activity.findViewById(R.id.currentViewTitle).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        activity.openOptionsMenu();
+                    }
+                });
+                activity.findViewById(R.id.cancelConnection)
+                        .setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View v) {
+                                if (!getApplication().getIsDemoMode() ||
+                                        getApplication().isConnectedToBluetooth()) {
+                                    if (activity.getSupportFragmentManager()
+                                            .getBackStackEntryCount() > 1) {
+                                        activity.getSupportFragmentManager()
+                                                .popBackStack();
+                                        activity.getSupportFragmentManager()
+                                                .executePendingTransactions();
+                                    }
+                                    OneSheeldSdk.getManager().disconnectAll();
+                                } else {
+                                    Log.test("Test", "Cannot disconnect in demoMode");
+                                    getApplication().setIsDemoMode(false);
+                                }
+                                if (!ArduinoConnectivityPopup.isOpened) {
+                                    ArduinoConnectivityPopup.isOpened = true;
+                                    new ArduinoConnectivityPopup(activity)
+                                            .show();
+                                }
+                            }
+                        });
                 return;
             } else {
                 activity.replaceCurrentFragment(R.id.appTransitionsContainer,
@@ -409,8 +441,8 @@ public class SheeldsList extends Fragment {
                     getApplication()
                             .startConnectionTimer();
 //                    if (isOneSheeldServiceRunning()) {
-                        if (adapter != null)
-                            adapter.applyToControllerTable();
+                    if (adapter != null)
+                        adapter.applyToControllerTable();
 //                    }
                     AppRate.showRateDialogIfMeetsConditions(activity);
                     activity.showMenuButtonTutorialOnce();

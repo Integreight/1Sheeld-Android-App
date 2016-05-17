@@ -88,6 +88,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             OneSheeldSdk.getManager().cancelScanning();
             setScanButtonReady();
         } else if (OneSheeldSdk.getManager().isConnecting()) {
+            isConnecting = false;
             OneSheeldSdk.getManager().cancelConnecting();
             setDevicesListReady();
             changeSlogan(
@@ -121,6 +122,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         }
         setContentView(R.layout.initialization_view);
         setCancelable(false);
+        ((OneSheeldApplication)activity.getApplication()).setIsDemoMode(false);
         mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
         loading = (ProgressBar) findViewById(R.id.progress);
