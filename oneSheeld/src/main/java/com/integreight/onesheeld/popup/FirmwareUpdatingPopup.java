@@ -241,7 +241,8 @@ public class FirmwareUpdatingPopup extends Dialog {
             try {
                 HttpRequest.getInstance().get(
                         new JSONObject(activity.getThisApplication()
-                                .getVersionWebResult()).get("url")
+                                .getVersionWebResult())
+                                .get(activity.getThisApplication().getConnectedDevice().isTypePlus()?"plus":"url")
                                 .toString(),
                         new BinaryHttpResponseHandler(new String[]{
                                 "application/octet-stream", "text/plain"}) {
