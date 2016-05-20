@@ -82,7 +82,7 @@ public class OrientationFragment extends
                 @Override
                 public void run() {
                     if (canChangeUI())
-                        x.setText("" + value[0]);
+                        x.setText(String.valueOf(value[0]));
                 }
             });
             y.post(new Runnable() {
@@ -90,7 +90,7 @@ public class OrientationFragment extends
                 @Override
                 public void run() {
                     if (canChangeUI())
-                        y.setText("" + value[1]);
+                        y.setText(String.valueOf(value[1]));
                 }
             });
             z.post(new Runnable() {
@@ -98,7 +98,7 @@ public class OrientationFragment extends
                 @Override
                 public void run() {
                     if (canChangeUI())
-                        z.setText("" + value[2]);
+                        z.setText(String.valueOf(value[2]));
 
                 }
             });

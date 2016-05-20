@@ -324,7 +324,7 @@ public class MainActivity extends FragmentActivity {
                     }
                     getThisApplication().getTracker().send(
                             new HitBuilders.ScreenViewBuilder()
-                                    .setCustomDimension(2, version + "")
+                                    .setCustomDimension(2, String.valueOf(version))
                                     .build());
                 }
             });
