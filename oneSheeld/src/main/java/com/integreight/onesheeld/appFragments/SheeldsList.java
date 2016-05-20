@@ -488,7 +488,7 @@ public class SheeldsList extends Fragment {
 
     private void showAboutDialog() {
         // TODO Auto-generated method stub
-        String stringDate = null;
+        String stringDate;
         try {
             ApplicationInfo ai = activity.getPackageManager()
                     .getApplicationInfo(activity.getPackageName(), 0);

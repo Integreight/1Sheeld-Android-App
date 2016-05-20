@@ -435,7 +435,7 @@ public class ColorDetectionShield extends
     }
 
     int getColorInRange(int color, ColorPalette palette) {
-        int i = 0;
+        int i;
         if (palette.isGrayscale) {
             i = palette.getNumberOfBits();
             int grayscale = (Color.red(color) + Color.green(color) + Color

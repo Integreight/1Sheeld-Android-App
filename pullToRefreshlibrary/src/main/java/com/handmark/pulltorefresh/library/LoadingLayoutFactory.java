@@ -57,7 +57,7 @@ class LoadingLayoutFactory {
 	@SuppressWarnings("unchecked")
 	public static Class<? extends LoadingLayout> createLoadingLayoutClazz(
 			String clazzName) {
-		Class<? extends LoadingLayout> loadingLayoutClazz = null;
+		Class<? extends LoadingLayout> loadingLayoutClazz;
 		if ( clazzName == null ) {
 			loadingLayoutClazz = DefaultLoadingLayoutFactory.createLoadingLayoutClazz(clazzName);
 			return loadingLayoutClazz;
@@ -95,7 +95,7 @@ class LoadingLayoutFactory {
 	public static LoadingLayout createLoadingLayout(
 			Class<? extends LoadingLayout> clazz, Context context, Mode mode,
 			Orientation orientation, TypedArray attrs) {
-		LoadingLayout layout = null;
+		LoadingLayout layout;
 		// Prevent NullPointerException
 		if ( clazz == null ) {
 			Log.i(LOG_TAG, "The Class token of the Loading Layout is missing. Default Loading Layout will be used.");

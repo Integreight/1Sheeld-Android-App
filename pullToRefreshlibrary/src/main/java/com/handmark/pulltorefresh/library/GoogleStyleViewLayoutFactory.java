@@ -56,7 +56,7 @@ class GoogleStyleViewLayoutFactory {
 	@SuppressWarnings("unchecked")
 	public static Class<? extends GoogleStyleViewLayout> createGoogleStyleViewLayoutClazz(
 			String clazzName) {
-		Class<? extends GoogleStyleViewLayout> googleStyleViewLayoutClazz = null;
+		Class<? extends GoogleStyleViewLayout> googleStyleViewLayoutClazz;
 		if ( clazzName == null ) {
 			googleStyleViewLayoutClazz = DefaultGoogleStyleViewLayoutFactory.createGoogleStyleViewLayoutClazz(clazzName);
 			return googleStyleViewLayoutClazz;
@@ -90,7 +90,7 @@ class GoogleStyleViewLayoutFactory {
 	 */
 	public static GoogleStyleViewLayout createGoogleStyleViewLayout(
 			Class<? extends GoogleStyleViewLayout> clazz, Context context, TypedArray attrs) {
-		GoogleStyleViewLayout layout = null;
+		GoogleStyleViewLayout layout;
 		// Prevent NullPointerException
 		if ( clazz == null ) {
 			Log.i(LOG_TAG, "The Class token of the GoogleStyleViewLayout is missing. Default google style view layout will be used.");

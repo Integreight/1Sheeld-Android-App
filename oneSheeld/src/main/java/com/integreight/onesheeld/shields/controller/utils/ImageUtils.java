@@ -103,7 +103,6 @@ public class ImageUtils {
                 bitmap.getHeight(), matrix, true);
         if (matrix != null)
             matrix.reset();
-        matrix = null;
         System.gc();
 
         return bitmap;

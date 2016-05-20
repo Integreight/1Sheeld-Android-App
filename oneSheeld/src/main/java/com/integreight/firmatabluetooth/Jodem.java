@@ -183,7 +183,7 @@ public class Jodem {
 
 
         int error_count = 0;
-        int crc_mode = 0;
+        int crc_mode;
         int cancel = 0;
         int crc;
         while (true) {
@@ -220,7 +220,7 @@ public class Jodem {
         byte sequence = 1;
         while (true) {
             byte[] data = new byte[packet_size];
-            int readCount = 0;
+            int readCount;
             readCount = stream.read(data, 0, packet_size);
             if (readCount <= 0) {
                 Log.d("bootloader", "sending EOT");

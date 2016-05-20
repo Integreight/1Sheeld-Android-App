@@ -102,7 +102,7 @@ public class CameraUtils {
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, imageColumns,
                 null, null, imageOrderBy);
         imageCursor.moveToFirst();
-        String fullPath = null;
+        String fullPath;
         if (imageCursor.getCount() == 0)
             return null;
         do {
@@ -128,7 +128,7 @@ public class CameraUtils {
                 MediaStore.Images.Media.DATA + " like ? ",
                 new String[]{"%OneSheeld%"}, imageOrderBy);
         imageCursor.moveToFirst();
-        String fullPath = null;
+        String fullPath;
         if (imageCursor.getCount() == 0)
             return null;
         do {

@@ -292,7 +292,6 @@ public class ClockShield extends
                         calendar.get(Calendar.AM_PM) == Calendar.AM);
 
             calendar = null;
-            frame = null;
             // set new time
         }
     };

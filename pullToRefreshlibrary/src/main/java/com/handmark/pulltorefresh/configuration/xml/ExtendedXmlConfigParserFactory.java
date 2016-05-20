@@ -48,7 +48,7 @@ class ExtendedConfigXmlParserFactory {
 	 */
 	public static XmlPullParser createParser(Context context) {
 		AssetManager am = context.getAssets();
-		XmlPullParser parser = null;
+		XmlPullParser parser;
 		try {
 			InputStream is = am.open(XML_PATH_IN_ASSETS);
 			parser = XmlPullParserFactory.newInstance().newPullParser();

@@ -161,7 +161,7 @@ public final class FoursquareUtils {
             os.flush();
         }
 
-        String response = "";
+        String response;
         try {
             response = read(conn.getInputStream());
         } catch (FileNotFoundException e) {

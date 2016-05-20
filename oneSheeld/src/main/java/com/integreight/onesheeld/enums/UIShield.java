@@ -226,14 +226,12 @@ public enum UIShield {
                 return lhs.getName().compareToIgnoreCase(rhs.getName());
             }
         });
-        vals = null;
         final ArrayList<UIShield> ret = new ArrayList<UIShield>();
         for (UIShield uiShield : valsFiltered) {
             uiShield.itemBackgroundColor = colors[ret.size()];
             ret.add(uiShield);
         }
         valsFiltered.clear();
-        valsFiltered = null;
         return ret;
     }
 

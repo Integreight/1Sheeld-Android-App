@@ -259,7 +259,7 @@ public class OneSheeldApplication extends Application {
     }
 
     public String loadData(String inFile) throws IOException {
-        String tContents = "";
+        String tContents;
         InputStream stream = getAssets().open(inFile);
         int size = stream.available();
         byte[] buffer = new byte[size];

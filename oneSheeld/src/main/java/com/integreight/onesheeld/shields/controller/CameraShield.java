@@ -83,7 +83,6 @@ public class CameraShield extends ControllerParent<CameraShield> {
                 if (img.exists() && eventHandler != null) {
                     eventHandler.updatePreviewButton(lastImageAbsoultePath);
                 }
-                img = null;
             }
             super.handleMessage(msg);
         }

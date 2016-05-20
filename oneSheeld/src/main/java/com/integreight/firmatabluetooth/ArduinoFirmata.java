@@ -442,7 +442,7 @@ public class ArduinoFirmata {
                     System.arraycopy(storedInputData, 1, sysexData, 0,
                             sysexBytesRead - 1);
 
-                    byte[] fixedSysexData = null;
+                    byte[] fixedSysexData;
                     if (sysexData.length % 2 == 0) {
                         fixedSysexData = new byte[sysexData.length / 2];
                         for (int i = 0; i < sysexData.length; i += 2) {
@@ -585,7 +585,7 @@ public class ArduinoFirmata {
             return;
         }
 
-        boolean inACallback = false;
+        boolean inACallback;
 
         synchronized (arduinoCallbacksLock) {
             inACallback = isInACallback;
@@ -803,7 +803,7 @@ public class ArduinoFirmata {
         exitingCallbacksThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                boolean sent = false;
+                boolean sent;
                 while (queuedFrames != null && !queuedFrames.isEmpty()) {
                     sent = false;
 //                    boolean isInCallback;
