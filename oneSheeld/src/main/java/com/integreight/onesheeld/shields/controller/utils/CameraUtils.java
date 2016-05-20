@@ -23,6 +23,9 @@ public class CameraUtils {
     private static SharedPreferences.Editor editor;
     private static final String sharedPreferencesKey = "LastImage";
 
+    private CameraUtils() {
+    }
+
     public static Camera.Size getBiggestPictureSize(
             Camera.Parameters parameters) {
         Camera.Size result = null;

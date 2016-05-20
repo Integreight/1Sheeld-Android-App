@@ -16,6 +16,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public final class BundleScrubber {
+    private BundleScrubber() {
+    }
+
     public static boolean scrub(final Intent intent) {
         if (null == intent) {
             return false;

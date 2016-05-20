@@ -45,6 +45,9 @@ public final class PackageUtilities
      */
     private static final Set<String> COMPATIBLE_PACKAGES = constructPackageSet();
 
+    private PackageUtilities() {
+    }
+
     /**
      * @return a list wrapped in {@link Collections#unmodifiableList(List)} that represents the set of
      *         Locale-compatible packages.

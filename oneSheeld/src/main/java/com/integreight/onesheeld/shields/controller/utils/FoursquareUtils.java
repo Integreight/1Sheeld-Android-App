@@ -24,6 +24,9 @@ import java.net.URLEncoder;
 
 public final class FoursquareUtils {
 
+    private FoursquareUtils() {
+    }
+
     public static String encodePostBody(Bundle parameters, String boundary) {
         if (parameters == null)
             return "";

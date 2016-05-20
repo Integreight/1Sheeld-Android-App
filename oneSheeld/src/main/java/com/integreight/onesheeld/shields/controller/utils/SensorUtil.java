@@ -7,6 +7,9 @@ public class SensorUtil {
     public static PackageManager PM;
     public static boolean sensor;
 
+    private SensorUtil() {
+    }
+
     public static Boolean isDeviceHasSensor(String sensorType, Context mContext) {
 
         PM = mContext.getPackageManager();

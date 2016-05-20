@@ -240,6 +240,9 @@ public class PinsColumnContainer extends RelativeLayout {
             public final static int NOT_CONNECTED_AND_ENABLED = R.drawable.arduino_default_pin;
             public final static int DISABLED = R.drawable.arduino_red_pin;
             public final static int DUMMY = R.drawable.arduino_dummy_pin;
+
+            private TYPE() {
+            }
         }
 
     }

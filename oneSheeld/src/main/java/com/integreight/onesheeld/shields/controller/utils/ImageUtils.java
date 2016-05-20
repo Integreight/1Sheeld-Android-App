@@ -19,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ImageUtils {
+    private ImageUtils() {
+    }
+
     public static Bitmap decodeFile(File f, int required_size) {
         try {
             // Decode image size
