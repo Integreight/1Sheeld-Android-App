@@ -261,7 +261,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 } else {
                     if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
-                            if ((((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()))
+                            if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
                                 camerLogo.setVisibility(View.VISIBLE);
 //                        else
 //                            cameraPreviewToggle.setChecked(true);

@@ -559,9 +559,9 @@ public class ArduinoFirmata {
     private void printFrameToLog(byte[] frame, String tag) {
         String s = "";
         for (byte b : frame) {
-            if ((Integer.toHexString(b).length() < 2))
+            if (Integer.toHexString(b).length() < 2)
                 s += "0" + Integer.toHexString(b) + " ";
-            else if ((Integer.toHexString(b).length() == 2))
+            else if (Integer.toHexString(b).length() == 2)
                 s += Integer.toHexString(b) + " ";
             else {
                 String temp = Integer.toHexString(b);
@@ -858,7 +858,7 @@ public class ArduinoFirmata {
             // TODO Auto-generated method stub
             while (!this.isInterrupted()) {
                 try {
-                    while ((readByteFromUartBuffer()) != ShieldFrame.START_OF_FRAME)
+                    while (readByteFromUartBuffer() != ShieldFrame.START_OF_FRAME)
                         ;
                     if (ShieldFrameTimeout != null)
                         ShieldFrameTimeout.stopTimer();
@@ -905,7 +905,7 @@ public class ArduinoFirmata {
                         frame.addArgument(data);
                     }
                     if (continueRequested) continue;
-                    if ((readByteFromUartBuffer()) != ShieldFrame.END_OF_FRAME) {
+                    if (readByteFromUartBuffer() != ShieldFrame.END_OF_FRAME) {
                         if (ShieldFrameTimeout != null)
                             ShieldFrameTimeout.stopTimer();
                         uartBuffer.clear();

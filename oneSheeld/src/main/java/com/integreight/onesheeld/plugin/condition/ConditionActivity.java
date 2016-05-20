@@ -89,7 +89,7 @@ public final class ConditionActivity extends AbstractPluginActivity {
     @Override
     public void finish() {
         if (!isCanceled()) {
-            final boolean output = (outputSpinner).getSelectedItem().toString()
+            final boolean output = outputSpinner.getSelectedItem().toString()
                     .toLowerCase().equals("high") ? true : false;
             final Intent resultIntent = new Intent();
             final Bundle resultBundle = PluginBundleManager
