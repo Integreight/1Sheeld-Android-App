@@ -510,7 +510,7 @@ public class GlcdView extends View implements OnTouchListener {
         for (int widhtAdderCount = 0; widhtAdderCount < c; widhtAdderCount++) {
             charInit += mfont.chars_width[widhtAdderCount] * 2;
         }
-        ArrayList<Integer> charBytes = new ArrayList<Integer>();
+        ArrayList<Integer> charBytes = new ArrayList<>();
         for (int charBytesCount = 0; charBytesCount < mfont.chars_width[c]; charBytesCount++) {
             charBytes.add(data[charInit + charBytesCount]);
             int ha = data[charInit + charBytesCount];

@@ -21,7 +21,7 @@ import java.util.List;
 
 public class ComboSeekBar extends SeekBar {
 	private CustomThumbDrawable mThumb;
-	private List<Dot> mDots = new ArrayList<Dot>();
+	private List<Dot> mDots = new ArrayList<>();
 	private OnItemClickListener mItemClickListener;
 	private Dot prevSelected = null;
 	private boolean isSelected = false;

@@ -25,7 +25,7 @@ public class MusicPlayListAdapter extends BaseAdapter {
 
     public MusicPlayListAdapter(Activity a, ArrayList<PlaylistItem> items) {
         this.activity = (MainActivity) a;
-        this.items = new CopyOnWriteArrayList<PlaylistItem>();
+        this.items = new CopyOnWriteArrayList<>();
         for (PlaylistItem playlistItem : items) {
             this.items.add(playlistItem);
         }
@@ -102,7 +102,7 @@ public class MusicPlayListAdapter extends BaseAdapter {
 
     public void updateList(ArrayList<PlaylistItem> items) {
         if (items != null) {
-            this.items = new CopyOnWriteArrayList<PlaylistItem>();
+            this.items = new CopyOnWriteArrayList<>();
             for (PlaylistItem playlistItem : items) {
                 this.items.add(playlistItem);
             }

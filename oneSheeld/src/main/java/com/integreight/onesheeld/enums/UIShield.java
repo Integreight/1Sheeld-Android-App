@@ -211,7 +211,7 @@ public enum UIShield {
 
     public static synchronized List<UIShield> valuesFiltered() {
         UIShield[] vals = values();
-        List<UIShield> valsFiltered = new ArrayList<UIShield>();
+        List<UIShield> valsFiltered = new ArrayList<>();
         for (int i = 0; i < vals.length; i++) {
             UIShield cur = vals[i];
             if (cur.isReleasable) {
@@ -227,7 +227,7 @@ public enum UIShield {
             }
         });
         vals = null;
-        final ArrayList<UIShield> ret = new ArrayList<UIShield>();
+        final ArrayList<UIShield> ret = new ArrayList<>();
         for (UIShield uiShield : valsFiltered) {
             uiShield.itemBackgroundColor = colors[ret.size()];
             ret.add(uiShield);

@@ -48,7 +48,7 @@ public class MusicShieldSettings_AddFromMedia extends Fragment {
         Cursor imagecursor = getActivity().getContentResolver().query(
                 MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, columns, null,
                 null, orderBy);
-        ArrayList<PlaylistItem> items = new ArrayList<PlaylistItem>();
+        ArrayList<PlaylistItem> items = new ArrayList<>();
         for (int i = 0; i < imagecursor.getCount(); i++) {
             imagecursor.moveToPosition(i);
             int dataColumnIndex = imagecursor

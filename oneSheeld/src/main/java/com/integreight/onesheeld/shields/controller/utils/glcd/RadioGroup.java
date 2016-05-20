@@ -10,7 +10,7 @@ public class RadioGroup {
     int keyCounter = 0;
 
     public RadioGroup() {
-        radios = new SparseArray<RadioButton>();
+        radios = new SparseArray<>();
     }
 
     public void add(RadioButton radioButton) {

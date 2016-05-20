@@ -29,7 +29,7 @@ public class Jodem {
 
     Thread fileSendingThread;
 
-    LinkedBlockingQueue<Byte> buffer = new LinkedBlockingQueue<Byte>();
+    LinkedBlockingQueue<Byte> buffer = new LinkedBlockingQueue<>();
 
     public interface JodemEventHandler {
         public void onError(String error);

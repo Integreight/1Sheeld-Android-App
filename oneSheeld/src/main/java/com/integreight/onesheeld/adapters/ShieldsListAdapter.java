@@ -347,7 +347,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
             @Override
             protected FilterResults performFiltering(CharSequence arg0) {
                 FilterResults results = new FilterResults();
-                SparseArray<Shield> filteredShields = new SparseArray<Shield>();
+                SparseArray<Shield> filteredShields = new SparseArray<>();
                 if (arg0 != null) {
                     for (int i = 0; i < AppShields.getInstance()
                             .getShieldsArray().size(); i++) {

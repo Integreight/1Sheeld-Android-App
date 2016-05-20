@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class MusicShield extends ControllerParent<MusicShield> {
     public MediaPlayer mediaPlayer;
     public String musicFileName = "";
-    private ArrayList<PlaylistItem> mediaFiles = new ArrayList<PlaylistItem>();
+    private ArrayList<PlaylistItem> mediaFiles = new ArrayList<>();
     private int currentIndex = 0;
     private MusicEventHandler eventHandler;
     public int mediaDuration = 0;

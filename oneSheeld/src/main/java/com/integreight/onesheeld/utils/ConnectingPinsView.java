@@ -27,7 +27,7 @@ public class ConnectingPinsView extends Fragment {
     private static ConnectingPinsView thisInstance;
     // TextView show;
     private int selectedPin = 0;
-    private ArrayList<LinearLayout> pinsSubContainers = new ArrayList<LinearLayout>();
+    private ArrayList<LinearLayout> pinsSubContainers = new ArrayList<>();
     private View view;
     private String selectedPinName = "";
     MainActivity activity;
@@ -84,7 +84,7 @@ public class ConnectingPinsView extends Fragment {
         }
         if (activity != null && view != null) {
             final TextView show = (TextView) view.findViewById(R.id.show);
-            pinsSubContainers = new ArrayList<LinearLayout>();
+            pinsSubContainers = new ArrayList<>();
             selectedPin = 0;
             selectedPinName = "";
             show.setText("");
@@ -186,7 +186,7 @@ public class ConnectingPinsView extends Fragment {
                             }
                         }
                     });
-                    pinsSubContainers = new ArrayList<LinearLayout>();
+                    pinsSubContainers = new ArrayList<>();
                     LinearLayout pinsContainer = (LinearLayout) view
                             .findViewById(R.id.requiredPinsContainer);
                     pinsContainer.removeAllViews();

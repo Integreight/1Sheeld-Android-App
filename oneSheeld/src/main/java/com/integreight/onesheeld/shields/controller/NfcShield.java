@@ -922,8 +922,8 @@ public class NfcShield extends ControllerParent<NfcShield> {
         sendError(errorCode,false);
     }
     private ArrayList<ArrayList<String>> generateArrayListForDisplay() {
-        ArrayList<ArrayList<String>> parentArrayList = new ArrayList<ArrayList<String>>();
-        ArrayList<String> childArrayList = new ArrayList<String>();
+        ArrayList<ArrayList<String>> parentArrayList = new ArrayList<>();
+        ArrayList<String> childArrayList = new ArrayList<>();
         DataReply recordCount = getNdefRecordCount();
         if (recordCount.getIntegerData() > 0 && (!recordCount.hasError() || recordCount.getError() == INDEX_OUT_OF_BOUNDS) ) {
             for (int childCount = 0; childCount < recordCount.getIntegerData(); childCount++) {
@@ -957,7 +957,7 @@ public class NfcShield extends ControllerParent<NfcShield> {
                     childArrayList.add("Is Data Parsable: " + "false");
 
                 parentArrayList.add(childArrayList);
-                childArrayList = new ArrayList<String>();
+                childArrayList = new ArrayList<>();
             }
             return parentArrayList;
         }else {

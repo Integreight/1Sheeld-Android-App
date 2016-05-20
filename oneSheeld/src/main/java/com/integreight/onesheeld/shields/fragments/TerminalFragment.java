@@ -100,9 +100,9 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                         ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).lastItemEndedWithNewLine = true;
                         ((TerminalShield) getApplication().getRunningShields()
-                                .get(getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+                                .get(getControllerTag())).tempLines = new CopyOnWriteArrayList<>();
                         ((TerminalShield) getApplication().getRunningShields()
-                                .get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+                                .get(getControllerTag())).terminalPrintedLines = new CopyOnWriteArrayList<>();
                     }
                 });
         send.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +180,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                         ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).selectedEnMth = x;
                         ((TerminalShield) getApplication().getRunningShields()
-                                .get(getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+                                .get(getControllerTag())).tempLines = new CopyOnWriteArrayList<>();
                         for (TerminalPrintedLine line : ((TerminalShield) getApplication()
                                 .getRunningShields().get(getControllerTag())).terminalPrintedLines) {
                             ((TerminalShield) getApplication()

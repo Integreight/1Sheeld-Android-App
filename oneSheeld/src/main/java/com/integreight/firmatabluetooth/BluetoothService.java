@@ -80,7 +80,7 @@ public class BluetoothService {
     public BluetoothService(Context context) {
         mAdapter = BluetoothAdapter.getDefaultAdapter();
         mState = STATE_NONE;
-        this.handlers = new CopyOnWriteArrayList<BluetoothServiceHandler>();
+        this.handlers = new CopyOnWriteArrayList<>();
 
     }
 

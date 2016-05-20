@@ -40,14 +40,14 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     private static final byte SELECT_SHIELD = (byte) 0xFE;
     private static final byte DESELECT_SHIELD = (byte) 0xFD;
     public MainActivity activity;
-    protected List<String> requiredPermissions = new ArrayList<String>();
+    protected List<String> requiredPermissions = new ArrayList<>();
     // case of FALSE
     public String[][] requiredPinsNames = new String[][]{
             {"2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13",
                     "A0", "A1", "A2", "A3", "A4", "A5"},
             {"3", "5", "6", "9", "10", "11"}}; // 2D array for pins types
     // (Digital and PWM)
-    public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<String, ArduinoPin>(); // saving
+    public Hashtable<String, ArduinoPin> matchedShieldPins = new Hashtable<>(); // saving
     // connected
     // pins
     public int requiredPinsIndex = -1;// related to the pins type (index of the
@@ -60,7 +60,7 @@ public abstract class ControllerParent<T extends ControllerParent<?>> {
     // like not
     // found sensors
     public boolean isInteractive = true;// flag used for the interaction
-    public List<String> permissions = new ArrayList<String>();
+    public List<String> permissions = new ArrayList<>();
     // top-right toggle button
     public boolean cachedArduinoCallbackStatus = false;
     public Handler actionHandler = new Handler(); // queuing sysex UI calls

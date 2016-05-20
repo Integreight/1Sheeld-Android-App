@@ -13,7 +13,7 @@ public class ApiObjects {
         private HashMap<String, String> apiObjects;
 
         public ApiObject() {
-            apiObjects = new HashMap<String, String>();
+            apiObjects = new HashMap<>();
         }
 
         public void add(String key, String value) {

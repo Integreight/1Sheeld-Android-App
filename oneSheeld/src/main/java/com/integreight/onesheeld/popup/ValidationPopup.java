@@ -24,13 +24,13 @@ public class ValidationPopup extends Dialog {
                            ValidationAction... actions) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.msg = msg;
-        this.actions = new ArrayList<ValidationAction>(Arrays.asList(actions));
+        this.actions = new ArrayList<>(Arrays.asList(actions));
         this.title = title;
         this.activity = activity;
     }
 
     public void addValidationAction(ValidationAction action) {
-        if (this.actions == null) actions = new ArrayList<ValidationPopup.ValidationAction>();
+        if (this.actions == null) actions = new ArrayList<>();
         if (!actions.contains(action)) actions.add(action);
     }
 

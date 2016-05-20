@@ -105,7 +105,7 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
     public void speech(String speechText) {
         if (myTTS != null) {
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
             map.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
                     activity.getPackageName());
             myTTS.speak(speechText, TextToSpeech.QUEUE_FLUSH, //

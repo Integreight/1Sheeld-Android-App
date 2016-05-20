@@ -102,7 +102,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
-        trackedKeywords = new ArrayList<String>();
+        trackedKeywords = new ArrayList<>();
         thereIsAConnectionRequest = false;
         isTwitterStreamConnecting = false;
 //		if(isTwitterLoggedInAlready())initTwitterListening();
@@ -114,7 +114,7 @@ public class TwitterShield extends ControllerParent<TwitterShield> {
         mSharedPreferences = activity.getApplicationContext()
                 .getSharedPreferences("com.integreight.onesheeld",
                         Context.MODE_PRIVATE);
-        trackedKeywords = new ArrayList<String>();
+        trackedKeywords = new ArrayList<>();
         thereIsAConnectionRequest = false;
         isTwitterStreamConnecting = false;
     }

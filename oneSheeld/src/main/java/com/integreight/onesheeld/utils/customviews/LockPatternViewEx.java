@@ -89,7 +89,7 @@ public class LockPatternViewEx extends View {
     private static final float DRAG_THRESHHOLD = 0.0f;
 
     private OnPatternListener mOnPatternListener;
-    private ArrayList<Cell> mPattern = new ArrayList<Cell>(9);
+    private ArrayList<Cell> mPattern = new ArrayList<>(9);
 
     /**
      * Lookup table for the circles of the pattern we are currently drawing.

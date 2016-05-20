@@ -13,8 +13,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class MutitouchKeysContainer extends RelativeLayout {
     public int currentIndex = -1;
     public String currentTag = null;
-    private CopyOnWriteArrayList<PinData> childrenRects = new CopyOnWriteArrayList<PinData>();
-    private CopyOnWriteArrayList<PinData> pressedRects = new CopyOnWriteArrayList<PinData>();
+    private CopyOnWriteArrayList<PinData> childrenRects = new CopyOnWriteArrayList<>();
+    private CopyOnWriteArrayList<PinData> pressedRects = new CopyOnWriteArrayList<>();
     private int maxPointers = 1;
 
     public MutitouchKeysContainer(Context context, AttributeSet attrs) {

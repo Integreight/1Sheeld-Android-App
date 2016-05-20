@@ -42,7 +42,7 @@ class XmlPullNode {
 	 * Map which store children<br /> 
 	 * child's node name can have upper case or lower. all is the same whether that is upper or lower. 
 	 */
-	private final Map<String, XmlPullNodeContainer> children = new TreeMap<String, XmlPullNodeContainer>(
+	private final Map<String, XmlPullNodeContainer> children = new TreeMap<>(
 			String.CASE_INSENSITIVE_ORDER);
 	/**
 	 * Current node's name
