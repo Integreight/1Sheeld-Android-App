@@ -179,7 +179,7 @@ public class InternetRequest {
 
     public InternetResponse getResponse() {
         try {
-            return InternetManager.getInstance().getCachDB().get(id + "", InternetResponse.class);
+            return InternetManager.getInstance().getCachDB().get(String.valueOf(id), InternetResponse.class);
         } catch (SnappydbException e) {
             return null;
         }
@@ -187,7 +187,7 @@ public class InternetRequest {
 
     public void setResponse(InternetResponse response) {
         try {
-            InternetManager.getInstance().getCachDB().put(id + "", response);
+            InternetManager.getInstance().getCachDB().put(String.valueOf(id), response);
         } catch (SnappydbException e) {
             e.printStackTrace();
         }

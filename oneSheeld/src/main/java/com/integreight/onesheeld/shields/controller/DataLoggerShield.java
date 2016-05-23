@@ -192,8 +192,8 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
                     folder.mkdirs();
                 }
                 fullFileName = (fileName == null
-                        || fileName.length() == 0 ? new Date()
-                        .getTime() + ""
+                        || fileName.length() == 0 ? String.valueOf(new Date()
+                        .getTime())
                         : fileName + " - " + new Date()
                         .getTime()) + ".csv";
                 filePath = Environment

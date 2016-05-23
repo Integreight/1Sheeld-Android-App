@@ -288,7 +288,7 @@ public class FirmwareUpdatingPopup extends Dialog {
                                                   Throwable error) {
                                 changeSlogan("Error Downloading!", COLOR.RED);
                                 setUpgrade();
-                                Log.d("bootloader", statusCode + "");
+                                Log.d("bootloader", String.valueOf(statusCode));
                                 activity.getThisApplication()
                                         .getTracker()
                                         .send(new HitBuilders.EventBuilder()
