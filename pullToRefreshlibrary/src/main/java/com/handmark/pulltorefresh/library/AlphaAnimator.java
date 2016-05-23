@@ -25,7 +25,10 @@ import android.view.animation.Animation.AnimationListener;
  *
  */
 class AlphaAnimator {
-	
+
+	private AlphaAnimator() {
+	}
+
 	public static void fadein(View view, int duration) {
 		fadein(view, duration, null);
 	}

@@ -2,6 +2,9 @@ package com.integreight.onesheeld.utils;
 
 public class BitsUtils {
 
+    private BitsUtils() {
+    }
+
     public static byte setBit(byte b, int bit) {
         if (bit < 0 || bit >= 8) return b;
         return (byte) (b | (1 << bit));

@@ -1,6 +1,9 @@
 package com.integreight.onesheeld.utils;
 
 public class CrashlyticsUtils {
+    private CrashlyticsUtils() {
+    }
+
     public static void setString(String key, String value) {
         try {
             com.crashlytics.android.Crashlytics.setString(key, value);

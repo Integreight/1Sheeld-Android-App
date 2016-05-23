@@ -36,6 +36,10 @@ public class Utils {
 	 *  Invalid android attribute (temporarily defined, to check android attributes' values)
 	 */
 	static final int INVALID_INT_VALUE = -1;
+
+	private Utils() {
+	}
+
 	/**
 	 * Delegate warn logs at where some deprecated method has been called
 	 * @param depreacted Deprecated method name

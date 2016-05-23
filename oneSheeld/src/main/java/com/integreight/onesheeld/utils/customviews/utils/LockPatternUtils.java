@@ -25,6 +25,9 @@ import java.util.List;
  */
 public class LockPatternUtils {
 
+    private LockPatternUtils() {
+    }
+
     /**
      * Deserialize a pattern.
      *
