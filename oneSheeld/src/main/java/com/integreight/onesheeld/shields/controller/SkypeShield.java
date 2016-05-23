@@ -183,9 +183,9 @@ public class SkypeShield extends ControllerParent<SkypeShield> {
             myPackageMgr.getPackageInfo("com.skype.raider",
                     PackageManager.GET_ACTIVITIES);
         } catch (PackageManager.NameNotFoundException e) {
-            return (false);
+            return false;
         }
-        return (true);
+        return true;
     }
 
     @Override

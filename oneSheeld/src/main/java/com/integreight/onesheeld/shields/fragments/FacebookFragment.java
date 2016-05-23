@@ -171,7 +171,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     };
 
     private void initializeFirmata() {
-        if ((getApplication().getRunningShields().get(getControllerTag())) == null)
+        if (getApplication().getRunningShields().get(getControllerTag()) == null)
             getApplication().getRunningShields().put(
                     getControllerTag(),
                     new FacebookShield(activity, getControllerTag(), this,
@@ -185,7 +185,7 @@ public class FacebookFragment extends ShieldFragmentParent<FacebookFragment> imp
     }
 
     private void checkLogin() {
-        if ((getApplication().getRunningShields().get(getControllerTag())) != null
+        if (getApplication().getRunningShields().get(getControllerTag()) != null
                 && ((FacebookShield) getApplication().getRunningShields().get(
                 getControllerTag())).isFacebookLoggedInAlready()) {
             buttonToLoggedIn();

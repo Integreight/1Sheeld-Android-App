@@ -181,9 +181,9 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
             case 3:
                 byte[] byts = toBeEncoded.getBytes();
                 for (byte b : byts) {
-                    if ((Integer.toHexString(b).length() < 2))
+                    if (Integer.toHexString(b).length() < 2)
                         out += "0" + Integer.toHexString(b) + " ";
-                    else if ((Integer.toHexString(b).length() == 2))
+                    else if (Integer.toHexString(b).length() == 2)
                         out += Integer.toHexString(b) + " ";
                     else {
                         String temp = Integer.toHexString(b);
