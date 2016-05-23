@@ -26,7 +26,7 @@ public class PinsColumnContainer extends RelativeLayout {
     public String currentTag = null;
     private OnChildFocusListener focusListener;
     private int extraHorizontalSpace = 0, extraVerticalSpace = 0;
-    private ArrayList<PinData> childrenRects = new ArrayList<PinData>();
+    private ArrayList<PinData> childrenRects = new ArrayList<>();
     ImageView cursor;
     RelativeLayout.LayoutParams cursorParams;
     ControllerParent<?> controller;
@@ -50,7 +50,7 @@ public class PinsColumnContainer extends RelativeLayout {
         currentIndex = -1;
         currentTag = null;
         isOnglobalCalled = false;
-        childrenRects = new ArrayList<PinData>();
+        childrenRects = new ArrayList<>();
         getViewTreeObserver().addOnGlobalLayoutListener(
                 new OnGlobalLayoutListener() {
 
@@ -59,7 +59,7 @@ public class PinsColumnContainer extends RelativeLayout {
                         if (!isOnglobalCalled
                                 && (childrenRects == null || childrenRects
                                 .size() == 0)) {
-                            childrenRects = new ArrayList<PinsColumnContainer.PinData>();
+                            childrenRects = new ArrayList<>();
                             loadRects(PinsColumnContainer.this);
                             PinsColumnContainer.this.onGetPinsListener
                                     .onPinsDrawn();
@@ -203,7 +203,7 @@ public class PinsColumnContainer extends RelativeLayout {
                 cursor.setVisibility(View.INVISIBLE);
             if (focusListener != null)
                 focusListener.selectThisChild(currentIndex, currentIndex == -1 ? "" : currentTag);
-            childrenRects = new ArrayList<PinsColumnContainer.PinData>();
+            childrenRects = new ArrayList<>();
             loadRects(this);
             return true;
         }

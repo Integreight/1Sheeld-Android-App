@@ -64,7 +64,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
         this.activity = context;
         scale = activity.getResources().getDisplayMetrics().density;
-        foundDevicesTable = new Hashtable<String, BluetoothDevice>();
+        foundDevicesTable = new Hashtable<>();
         thisInstance = this;
     }
 
@@ -535,7 +535,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private void scanDevices() {
         devicesList.removeAllViews();
         backPressed = false;
-        foundDevicesTable = new Hashtable<String, BluetoothDevice>();
+        foundDevicesTable = new Hashtable<>();
         // Register for broadcasts when a device is discovered
         initTimeOut();
         IntentFilter filter = new IntentFilter();

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 public class MultiTouchContainer extends RelativeLayout {
     public int currentIndex = -1;
     public String currentTag = null;
-    private ArrayList<PinData> childrenRects = new ArrayList<PinData>();
+    private ArrayList<PinData> childrenRects = new ArrayList<>();
 
     public MultiTouchContainer(Context context, AttributeSet attrs) {
         super(context, attrs);

@@ -40,7 +40,7 @@ public class SoundPullEventListener<V extends View> implements PullToRefreshBase
 	 */
 	public SoundPullEventListener(Context context) {
 		mContext = context;
-		mSoundMap = new HashMap<State, Integer>();
+		mSoundMap = new HashMap<>();
 	}
 
 	@Override

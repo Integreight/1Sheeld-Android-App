@@ -24,7 +24,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
     public int selectedEnMth = 0;
     public CopyOnWriteArrayList<TerminalPrintedLine> terminalPrintedLines;
     public boolean lastItemEndedWithNewLine = true;
-    public CopyOnWriteArrayList<TerminalPrintedLine> tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+    public CopyOnWriteArrayList<TerminalPrintedLine> tempLines = new CopyOnWriteArrayList<>();
     public boolean isTimeOn = true, isAutoScrolling = true;
 
     public TerminalShield() {
@@ -37,7 +37,7 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
 
     @Override
     public ControllerParent<TerminalShield> init(String tag) {
-        terminalPrintedLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
+        terminalPrintedLines = new CopyOnWriteArrayList<>();
         lastItemEndedWithNewLine = true;
         return super.init(tag);
     }

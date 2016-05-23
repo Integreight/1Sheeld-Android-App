@@ -19,7 +19,7 @@ public class ShieldFrame {
         this.shieldId = shieldId;
         this.functionId = functionId;
         this.verificationByte = getNewVerificationByte();
-        arguments = new ArrayList<byte[]>();
+        arguments = new ArrayList<>();
     }
 
     public ShieldFrame(byte shieldId) {
@@ -27,7 +27,7 @@ public class ShieldFrame {
         this.shieldId = shieldId;
         this.functionId = 0;
         this.verificationByte = getNewVerificationByte();
-        arguments = new ArrayList<byte[]>();
+        arguments = new ArrayList<>();
     }
 
     private byte getNewVerificationByte(){

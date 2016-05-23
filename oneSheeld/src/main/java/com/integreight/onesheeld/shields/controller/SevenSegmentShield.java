@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 
 public class SevenSegmentShield extends ControllerParent<SevenSegmentShield> {
     private SevenSegmentsEventHandler eventHandler;
-    public Hashtable<String, Boolean> pinsStatus = new Hashtable<String, Boolean>();
+    public Hashtable<String, Boolean> pinsStatus = new Hashtable<>();
 
     public SevenSegmentShield() {
         super();

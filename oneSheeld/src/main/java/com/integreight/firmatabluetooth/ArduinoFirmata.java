@@ -143,14 +143,14 @@ public class ArduinoFirmata {
     private boolean isInACallback;
 
     public ArduinoFirmata(Context context) {
-        uartBuffer = new LinkedBlockingQueue<Byte>();
-        bluetoothBuffer = new LinkedBlockingQueue<Byte>();
+        uartBuffer = new LinkedBlockingQueue<>();
+        bluetoothBuffer = new LinkedBlockingQueue<>();
         bluetoothService = new BluetoothService(context);
-        eventHandlers = new CopyOnWriteArrayList<ArduinoFirmataEventHandler>();
-        dataHandlers = new CopyOnWriteArrayList<ArduinoFirmataDataHandler>();
-        frameHandlers = new CopyOnWriteArrayList<ArduinoFirmataShieldFrameHandler>();
-        firmwareVersionQueryHandlers = new CopyOnWriteArrayList<FirmwareVersionQueryHandler>();
-        arduinoLibraryVersionChangeHandlers = new CopyOnWriteArrayList<ArduinoLibraryVersionChangeHandler>();
+        eventHandlers = new CopyOnWriteArrayList<>();
+        dataHandlers = new CopyOnWriteArrayList<>();
+        frameHandlers = new CopyOnWriteArrayList<>();
+        firmwareVersionQueryHandlers = new CopyOnWriteArrayList<>();
+        arduinoLibraryVersionChangeHandlers = new CopyOnWriteArrayList<>();
         queuedFrames = new ConcurrentLinkedQueue<>();
         this.context = context;
         bluetoothService.addBluetoothServiceHandler(handler);
@@ -620,7 +620,7 @@ public class ArduinoFirmata {
         // StartSysex,
         // EndSysex and
         // Uart_data
-        ArrayList<byte[]> subArrays = new ArrayList<byte[]>();
+        ArrayList<byte[]> subArrays = new ArrayList<>();
         for (int i = 0; i < frameBytes.length; i += maxShieldFrameBytes) {
             byte[] subArray = (i + maxShieldFrameBytes > frameBytes.length) ? ArrayUtils
                     .copyOfRange(frameBytes, i, frameBytes.length) : ArrayUtils

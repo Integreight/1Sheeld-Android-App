@@ -136,7 +136,7 @@ public enum ArduinoPin {
     }
 
     public static List<ArduinoPin> getDigitalPins() {
-        List<ArduinoPin> arduinoPins = new ArrayList<ArduinoPin>();
+        List<ArduinoPin> arduinoPins = new ArrayList<>();
         for (ArduinoPin pin : ArduinoPin.values()) {
             if (pin.getCapabilitySet().contains(ArduinoPinCapability.INPUT)
                     && pin.getCapabilitySet().contains(

@@ -35,7 +35,7 @@ public class Lists {
      * @return a newly-created, initially-empty {@code ArrayList}
      */
     public static <E> ArrayList<E> newArrayList() {
-        return new ArrayList<E>();
+        return new ArrayList<>();
     }
 
     /**
@@ -63,7 +63,7 @@ public class Lists {
      */
     public static <E> ArrayList<E> newArrayList(E... elements) {
         int capacity = (elements.length * 110) / 100 + 5;
-        ArrayList<E> list = new ArrayList<E>(capacity);
+        ArrayList<E> list = new ArrayList<>(capacity);
         Collections.addAll(list, elements);
         return list;
     }

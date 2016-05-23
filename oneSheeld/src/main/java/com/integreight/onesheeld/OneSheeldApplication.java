@@ -64,8 +64,8 @@ public class OneSheeldApplication extends Application {
     private final String TASKER_CONDITION_STATUS = "taskerConditionStatus";
     private final String CAMERA_CAPTURING = "cameraCapturing";
     private final String REMEMBER_SHIELDS = "rememberedShields";
-    private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<String, ControllerParent<?>>();
-    private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<OneSheeldServiceHandler>();
+    private Hashtable<String, ControllerParent<?>> runningSheelds = new Hashtable<>();
+    private final List<OneSheeldServiceHandler> serviceEventHandlers = new ArrayList<>();
     private ArduinoFirmata appFirmata;
     private ConnectionDetector connectionHandler;
     private ArduinoFirmataEventHandler arduinoFirmataEventHandler;
@@ -193,7 +193,7 @@ public class OneSheeldApplication extends Application {
     @SuppressLint("UseSparseArrays")
     public void initTaskerPins() {
         ArduinoPin[] pins = ArduinoPin.values();
-        taskerPinsStatus = new SparseArray<Boolean>(pins.length);
+        taskerPinsStatus = new SparseArray<>(pins.length);
         for (ArduinoPin pin : pins) {
             taskerPinsStatus.put(pin.microHardwarePin, false);
         }

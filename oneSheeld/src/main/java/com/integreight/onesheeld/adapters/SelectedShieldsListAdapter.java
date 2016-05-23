@@ -23,7 +23,7 @@ public class SelectedShieldsListAdapter extends BaseAdapter {
 
     public SelectedShieldsListAdapter(Activity a) {
         this.activity = a;
-        this.shieldList = new ArrayList<Shield>();
+        this.shieldList = new ArrayList<>();
         for (int i = 0; i < AppShields.getInstance().getShieldsArray().size(); i++) {
             Shield shield = AppShields.getInstance().getShield(i);
             if (shield.mainActivitySelection)

@@ -91,10 +91,10 @@ final class PullToRefreshConfigXmlParser extends XmlPullNodeParser<PullToRefresh
 	 *
 	 */
 	private static class PullToRefreshResult {
-		public final Map<String, String> loadingLayoutClazzNameMap = new HashMap<String, String>();
-		public final Map<String, String> indicatorLayoutClazzNameMap = new HashMap<String, String>();
-		public final Map<String, String> googleStyleViewLayoutClazzNameMap = new HashMap<String, String>();
-		public final Map<String, String> googleStyleProgressLayoutClazzNameMap = new HashMap<String, String>();
+		public final Map<String, String> loadingLayoutClazzNameMap = new HashMap<>();
+		public final Map<String, String> indicatorLayoutClazzNameMap = new HashMap<>();
+		public final Map<String, String> googleStyleViewLayoutClazzNameMap = new HashMap<>();
+		public final Map<String, String> googleStyleProgressLayoutClazzNameMap = new HashMap<>();
 	}
 		
 	/**

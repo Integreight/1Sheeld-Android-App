@@ -28,7 +28,7 @@ public class LoadingLayoutProxy implements ILoadingLayout {
 	private final HashSet<LoadingLayout> mLoadingLayouts;
 
 	LoadingLayoutProxy() {
-		mLoadingLayouts = new HashSet<LoadingLayout>();
+		mLoadingLayouts = new HashSet<>();
 	}
 
 	/**
