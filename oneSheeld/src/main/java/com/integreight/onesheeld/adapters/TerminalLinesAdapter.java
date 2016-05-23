@@ -76,7 +76,7 @@ public class TerminalLinesAdapter extends BaseAdapter {
     public View getView(final int position, View convertView,
                         final ViewGroup parent) {
         View row = convertView;
-        Holder holder = null;
+        Holder holder;
         if (row == null) {
 
             row = inflater.inflate(R.layout.terminal_printed_line, parent,

@@ -1315,7 +1315,7 @@ public class GlcdShield extends ControllerParent<GlcdShield> {
     boolean sendFrame = false;
 
     public synchronized boolean doOrder(int order, List<Integer> params) {
-        Integer BgColor = WHITE, key = 0, action = 0, touchId = 0, startX = 0, startY = 0, finalX = 0, finalY = 0;
+        Integer BgColor = WHITE, key, action, touchId, startX, startY, finalX, finalY;
 
         switch (order) {
             case ORDER_SETTOUCH:

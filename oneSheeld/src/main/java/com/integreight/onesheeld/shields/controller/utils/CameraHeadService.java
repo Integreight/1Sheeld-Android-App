@@ -436,7 +436,7 @@ public class CameraHeadService extends Service implements
             mCamera.stopPreview();
             mCamera.release();
         }
-        int cameraCount = 0;
+        int cameraCount;
         Camera cam = null;
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         cameraCount = Camera.getNumberOfCameras();

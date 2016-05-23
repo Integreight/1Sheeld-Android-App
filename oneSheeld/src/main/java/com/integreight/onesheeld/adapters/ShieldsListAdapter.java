@@ -59,7 +59,7 @@ public class ShieldsListAdapter extends BaseAdapter implements Filterable {
     public View getView(final int position, View convertView,
                         final ViewGroup parent) {
         View row = convertView;
-        Holder holder = null;
+        Holder holder;
         if (row == null) {
 
             row = inflater.inflate(R.layout.shield_list_item, parent, false);

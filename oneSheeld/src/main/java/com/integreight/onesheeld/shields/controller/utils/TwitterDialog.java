@@ -248,7 +248,7 @@ public class TwitterDialog extends Dialog {
             }
 
             String pinCode = null;
-            String name = null;
+            String name;
             String endSearchList = "</code></kbd>";
             String startSearchList = "<kbd aria-labelledby=\"code-desc\"><code>";
 

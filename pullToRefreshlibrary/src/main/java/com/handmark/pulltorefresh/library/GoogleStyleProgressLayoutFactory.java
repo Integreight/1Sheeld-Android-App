@@ -54,7 +54,7 @@ class GoogleStyleProgressLayoutFactory {
 	@SuppressWarnings("unchecked")
 	public static Class<? extends GoogleStyleProgressLayout> createGoogleStyleProgressLayoutClazz(
 			String clazzName) {
-		Class<? extends GoogleStyleProgressLayout> googleStyleProgressLayoutClazz = null;
+		Class<? extends GoogleStyleProgressLayout> googleStyleProgressLayoutClazz;
 		if ( clazzName == null ) {
 			googleStyleProgressLayoutClazz = DefaultGoogleStyleProgressLayoutFactory.createGoogleStyleProgressLayoutClazz(clazzName);
 			return googleStyleProgressLayoutClazz;
@@ -88,7 +88,7 @@ class GoogleStyleProgressLayoutFactory {
 	 */
 	public static GoogleStyleProgressLayout createGoogleStyleProgressLayout(
 			Class<? extends GoogleStyleProgressLayout> clazz, Context context, TypedArray attrs) {
-		GoogleStyleProgressLayout layout = null;
+		GoogleStyleProgressLayout layout;
 		// Prevent NullPointerException
 		if ( clazz == null ) {
 			Log.i(LOG_TAG, "The Class token of the GoogleStyleProgressLayout is missing. Default google style progress layout will be used.");

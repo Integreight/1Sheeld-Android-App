@@ -191,7 +191,7 @@ public class KeyboardFragment extends ShieldFragmentParent<KeyboardFragment>
 
     private void addText(View v) {
         if (isEdit1 == true) {
-            String b = "";
+            String b;
             b = (String) v.getTag();
             if (b != null) {
                 // adding text in Edittext

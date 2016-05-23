@@ -301,7 +301,7 @@ public class InternetShield extends
                 //////// INTERNET
                 case INTERNET.GET_REQUEST:
                     requestID = frame.getArgumentAsInteger(0);
-                    InternetManager.EXECUTION_TYPE getExecutionType = null;
+                    InternetManager.EXECUTION_TYPE getExecutionType;
                     try {
                         getExecutionType = InternetManager.getInstance().execute(requestID, InternetManager.REQUEST_TYPE.GET, frame.getArgument(1)[0]);
                         //request excutes only in case of success

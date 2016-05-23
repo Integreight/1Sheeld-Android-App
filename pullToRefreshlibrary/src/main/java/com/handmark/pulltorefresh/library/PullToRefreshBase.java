@@ -1633,7 +1633,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
         }
 
 		View view = this.getRootView();
-		ViewGroup topViewGroup = null;
+		ViewGroup topViewGroup;
 		Context context = getContext();
 		if (view instanceof ViewGroup == false) {
 			Log.w(LOG_TAG, "Current root view is not ViewGroup type. Google Style Pull To Refresh mode will be disabled.");

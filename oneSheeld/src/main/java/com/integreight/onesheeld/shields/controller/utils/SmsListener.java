@@ -17,7 +17,7 @@ public class SmsListener extends BroadcastReceiver {
                 .equals("android.provider.Telephony.SMS_RECEIVED")) {
             Bundle bundle = intent.getExtras(); // ---get the SMS message passed
             // in---
-            SmsMessage[] msgs = null;
+            SmsMessage[] msgs;
             String msg_from = "";
             String msgBody = "";
             if (bundle != null) {

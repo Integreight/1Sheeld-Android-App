@@ -252,7 +252,7 @@ public class AutoResizeTextView extends OneSheeldTextView {
         int lastBest = start;
         int lo = start;
         int hi = end - 1;
-        int mid = 0;
+        int mid;
         while (lo <= hi) {
             mid = (lo + hi) >>> 1;
             int midValCmp = sizeTester.onTestSize(mid, availableSpace);

@@ -51,7 +51,7 @@ public class IndicatorLayoutFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Class<? extends IndicatorLayout> createIndicatorLayoutClazz(String clazzName) {
-		Class<? extends IndicatorLayout> clazz = null;
+		Class<? extends IndicatorLayout> clazz;
 		if (clazzName == null) {
 			clazz = DefaultIndicatorLayoutFactory.createIndicatorLayoutClazz(clazzName);
 			return clazz;
@@ -88,7 +88,7 @@ public class IndicatorLayoutFactory {
 	 */
 	public static IndicatorLayout createIndicatorLayout(
 			Class<? extends IndicatorLayout> clazz, Context context, Mode mode) {
-		IndicatorLayout layout = null;
+		IndicatorLayout layout;
 		// Prevent NullPointerException 
 		if ( clazz == null ) {
 			Log.i(LOG_TAG, "The Class token of the Indicator Layout is missing. Default Indicator Layout will be used.");
