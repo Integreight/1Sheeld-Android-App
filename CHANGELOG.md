@@ -1,4 +1,10 @@
-## v1.6.0(160126) (January 26, 2015)
+## v1.7.0(160529) (May 29, 2016)
+ - Supported our new board, 1Sheeld+ (The BLE version)
+ - Built the app on our own 1Sheeld Android SDK.
+ - Prepared the app for translation.
+ - Increased app stability and fixed minor bugs.
+
+## v1.6.0(160126) (January 26, 2016)
  - Added vibration shield.
  - Reactivated Facebook shield again.
  - Supported Android M permissions model.
@@ -15,18 +21,18 @@
  - Fixed a bug in the email shield where sending emails wasn't working in the background.
  - Increased overall app stability and fixed other major bugs.
 
- ## v1.5.0(151123) (November 23, 2015)
-  - Make sure frames sent and received are correct.
-  - Added copy selection feature to terminal shield.
-  - Remove select all button in shields list.
-  - Added uploading images feature to internet shield.
-  - Added a progress bar while scanning for 1Sheelds.
-  - Fixed a bug where the wrong image is uploaded in email and twitter shields.
-  - Added a button in the camera shield to show the latest captured image.
-  - Made the data logger shields output the logged file in a notification.
-  - Revamped the login process in the email shield.
-  - Added the ability to record sound from mic shield.
-  - Fixed an error that prevented firmware upgrade on Android M devices.
+## v1.5.0(151123) (November 23, 2015)
+ - Make sure frames sent and received are correct.
+ - Added copy selection feature to terminal shield.
+ - Remove select all button in shields list.
+ - Added uploading images feature to internet shield.
+ - Added a progress bar while scanning for 1Sheelds.
+ - Fixed a bug where the wrong image is uploaded in email and twitter shields.
+ - Added a button in the camera shield to show the latest captured image.
+ - Made the data logger shields output the logged file in a notification.
+ - Revamped the login process in the email shield.
+ - Added the ability to record sound from mic shield.
+ - Fixed an error that prevented firmware upgrade on Android M devices.
 
 ## v1.4.1(151028) (October 28, 2015)
  - Fixed the connection bug on Android 6 devices.
