@@ -26,8 +26,8 @@ android {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
         targetSdkVersion 23
-        versionCode 160126
-        versionName "1.6.0"
+        versionCode 160529
+        versionName "1.7.0"
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
     }
 
