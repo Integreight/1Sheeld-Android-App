@@ -8,9 +8,10 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
 import android.widget.Toast;
-import com.integreight.onesheeld.sdk.ShieldFrame;
+
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
+import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.utils.Log;
 
@@ -135,7 +136,11 @@ public class TextToSpeechShield extends ControllerParent<TextToSpeechShield>
 
     private void configureTTSLocale() {
         if (myTTS != null) {
-            if (myTTS.isLanguageAvailable(Locale.ENGLISH) == TextToSpeech.LANG_AVAILABLE)
+            if (Build.VERSION.SDK_INT >= 21 && myTTS.getDefaultVoice() != null && (myTTS.isLanguageAvailable(myTTS.getDefaultVoice().getLocale()) == TextToSpeech.LANG_AVAILABLE || myTTS.isLanguageAvailable(myTTS.getDefaultVoice().getLocale()) == TextToSpeech.LANG_COUNTRY_AVAILABLE || myTTS.isLanguageAvailable(myTTS.getDefaultVoice().getLocale()) == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE)) {
+                myTTS.setLanguage(myTTS.getDefaultVoice().getLocale());
+            } else if (Build.VERSION.SDK_INT >= 18 && myTTS.getDefaultLanguage() != null && (myTTS.isLanguageAvailable(myTTS.getDefaultLanguage()) == TextToSpeech.LANG_AVAILABLE || myTTS.isLanguageAvailable(myTTS.getDefaultLanguage()) == TextToSpeech.LANG_COUNTRY_AVAILABLE || myTTS.isLanguageAvailable(myTTS.getDefaultLanguage()) == TextToSpeech.LANG_COUNTRY_VAR_AVAILABLE)) {
+                myTTS.setLanguage(myTTS.getDefaultLanguage());
+            } else if (myTTS.isLanguageAvailable(Locale.ENGLISH) == TextToSpeech.LANG_AVAILABLE)
                 myTTS.setLanguage(Locale.US);
             if (Build.VERSION.SDK_INT >= 15) {
                 int listenerResult = myTTS
