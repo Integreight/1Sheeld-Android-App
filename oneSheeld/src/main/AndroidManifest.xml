@@ -157,7 +157,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleInstance"
             android:taskAffinity=":nfc"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent"/>
 
         <activity-alias
             android:name="NFCUtils-alias"
@@ -246,7 +246,7 @@
             android:name="com.integreight.onesheeld.shields.controller.utils.CameraHeadService"
             android:label="My CameraHeadService"
             android:process=":camera"
-            android:singleUser="true"></service>
+            android:singleUser="true"/>
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -257,30 +257,14 @@
             android:name="Tutorial"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Black.NoTitleBar"></activity>
+            android:theme="@android:style/Theme.Black.NoTitleBar"/>
 
         <service android:name="com.integreight.onesheeld.shields.controller.utils.SpeechRecognitionService" />
-        <service android:name="com.parse.PushService" />
-
-        <receiver
-            android:name="com.parse.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND">
+        <service
+            android:name="com.integreight.onesheeld.push.PushMessagesReceiver">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.integreight.onesheeld" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.integreight.onesheeld.push.PushMessagesReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.parse.push.intent.RECEIVE" />
-                <action android:name="com.parse.push.intent.DELETE" />
-                <action android:name="com.parse.push.intent.OPEN" />
-            </intent-filter>
-        </receiver>
-        <meta-data android:name="com.parse.push.notification_icon" android:resource="@drawable/notification_icon"/>
+        </service>
     </application>
 </manifest>

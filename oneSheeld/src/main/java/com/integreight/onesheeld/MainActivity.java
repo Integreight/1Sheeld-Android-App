@@ -98,6 +98,7 @@ public class MainActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
+        handleNotificationWithUrlIntent(getIntent());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -677,14 +678,16 @@ public class MainActivity extends FragmentActivity {
                 ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
                 List<RunningAppProcessInfo> appProcesses = activityManager
                         .getRunningAppProcesses();
-                String apps = "";
-                for (int i = 0; i < appProcesses.size(); i++) {
-                    Log.d("Executed app", "Application executed : "
-                            + appProcesses.get(i).processName + "\t\t ID: "
-                            + appProcesses.get(i).pid + "");
-                    apps += appProcesses.get(i).processName + "\n";
+                if(appProcesses!=null) {
+                    String apps = "";
+                    for (int i = 0; i < appProcesses.size(); i++) {
+                        Log.d("Executed app", "Application executed : "
+                                + appProcesses.get(i).processName + "\t\t ID: "
+                                + appProcesses.get(i).pid + "");
+                        apps += appProcesses.get(i).processName + "\n";
+                    }
+                    CrashlyticsUtils.setString("Running apps", apps);
                 }
-                CrashlyticsUtils.setString("Running apps", apps);
             }
         }).start();
 
@@ -757,7 +760,10 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onNewIntent(final Intent intent) {
-        if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
+        if (intent!=null && intent.getStringExtra("url")!=null && intent.getStringExtra("url").length()>0){
+            handleNotificationWithUrlIntent(intent);
+        }
+        else if (getThisApplication().getRunningShields().get(UIShield.NFC_SHIELD.name()) != null) {
             if (findViewById(R.id.progressShieldInit) != null && getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) == null) {
                 findViewById(R.id.progressShieldInit)
                         .setVisibility(View.VISIBLE);
@@ -905,6 +911,15 @@ public class MainActivity extends FragmentActivity {
 
     public interface OnSlidingMenueChangeListner {
         public void onMenuClosed();
+    }
+
+    private void handleNotificationWithUrlIntent(Intent intent){
+        if (intent!=null && intent.getStringExtra("url")!=null && intent.getStringExtra("url").length()>0){
+            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(intent.getStringExtra("url")));
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(notificationIntent);
+//            finish();
+        }
     }
 
     public class BackOnconnectionLostHandler extends Handler {

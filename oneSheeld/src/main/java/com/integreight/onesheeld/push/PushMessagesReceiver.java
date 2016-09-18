@@ -8,53 +8,26 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.integreight.onesheeld.OneSheeldApplication;
-import com.integreight.onesheeld.R;
-import com.integreight.onesheeld.utils.CrashlyticsUtils;
-import com.integreight.onesheeld.utils.Log;
-import com.parse.ParsePushBroadcastReceiver;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.util.Iterator;
 
 
-public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
+public class PushMessagesReceiver extends FirebaseMessagingService {
     private static final String TAG = "PushMessagesReceiver";
-    public static final String NotificationWithUrlPushMessageAction = "com.integreight.onesheeld.push.NotificationWithUrl";
 
     @Override
-    public void onPushReceive(Context context, Intent intent) {
-        super.onPushReceive(context, intent);
-        try {
-            String channel = intent.getExtras().getString(ParsePushBroadcastReceiver.KEY_PUSH_CHANNEL);
-            JSONObject json = new JSONObject(intent.getExtras().getString(
-                    ParsePushBroadcastReceiver.KEY_PUSH_DATA));
-            if (json.has("action")) {
-                String action = json.getString("action");
-                Log.d(TAG, "got action " + action + " on channel " + channel
-                        + " with:");
-                if (action.equals(NotificationWithUrlPushMessageAction)) {
-                    String title = json.getString("notification_title");
-                    String message = json.getString("notification_message");
-                    String url = json.getString("notification_url");
-                    showNotificationWithUrl(context, title, message, url);
-                    return;
-                }
-                Iterator<?> itr = json.keys();
-                while (itr.hasNext()) {
-                    String key = (String) itr.next();
-                    Log.d(TAG, "..." + key + " => " + json.getString(key));
-                }
-            }
-        } catch (JSONException e) {
-            Log.d(TAG, "JSONException: " + e.getMessage());
-        } catch (Exception e) {
-            Log.d(TAG, "Exception: " + e.getMessage());
-            CrashlyticsUtils.logException(e);
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        if (remoteMessage.getNotification() != null && remoteMessage.getData() != null && remoteMessage.getData().size() >= 1) {
+            String title = remoteMessage.getNotification().getTitle();
+            String message = remoteMessage.getNotification().getBody();
+            String url = remoteMessage.getData().get("url");
+            if(title!=null && title.length()>0 && message!=null && message.length()>0 && url!=null && url.length()>0)
+            showNotificationWithUrl(this, title, message, url);
         }
     }
 
-    protected void showNotificationWithUrl(Context context, String title, String notificationText, String url) {
+    static protected void showNotificationWithUrl(Context context, String title, String notificationText, String url) {
         // TODO Auto-generated method stub
         NotificationCompat.Builder build = new NotificationCompat.Builder(
                 context);
@@ -74,13 +47,5 @@ public class PushMessagesReceiver extends ParsePushBroadcastReceiver {
         NotificationManager notificationManager = (NotificationManager) context
                 .getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(2, notification);
-    }
-
-    @Override
-    protected void onPushOpen(Context context, Intent intent) {
-        Intent newIntent = context.getPackageManager()
-                .getLaunchIntentForPackage(context.getPackageName());
-        newIntent.putExtras(intent.getExtras());
-        context.startActivity(newIntent);
     }
 }

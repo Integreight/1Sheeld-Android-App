@@ -19,6 +19,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger.LogLevel;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
@@ -27,9 +28,6 @@ import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
-import com.parse.Parse;
-import com.parse.ParseInstallation;
-import com.parse.ParsePush;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -129,18 +127,10 @@ public class OneSheeldApplication extends Application {
         setAppPreferences(getSharedPreferences(APP_PREF_NAME, MODE_PRIVATE));
         appFont = Typeface.createFromAsset(getAssets(), "Roboto-Light.ttf");
         parseSocialKeys();
-        Parse.enableLocalDatastore(this);
-        Parse.initialize(this, ApiObjects.parse.get("app_id"),
-                ApiObjects.parse.get("client_id"));
-        ParseInstallation.getCurrentInstallation().saveInBackground();
         initTaskerPins();
         isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-        if (isDebuggable()
-                && (ParseInstallation.getCurrentInstallation().getList(
-                "channels") == null || !ParseInstallation
-                .getCurrentInstallation().getList("channels")
-                .contains("dev")))
-            ParsePush.subscribeInBackground("dev");
+        if (isDebuggable())
+            FirebaseMessaging.getInstance().subscribeToTopic("dev");
         OneSheeldSdk.setDebugging(isDebuggable);
         connectionTime = 0;
         AppShields.getInstance().init(getRememberedShields());
@@ -216,7 +206,6 @@ public class OneSheeldApplication extends Application {
             JSONObject facebook = new JSONObject();
             JSONObject twitter = new JSONObject();
             JSONObject foursquare = new JSONObject();
-            JSONObject parse = new JSONObject();
             JSONObject analytics = new JSONObject();
             if (socialKeysObject.has("facebook")) {
                 facebook = socialKeysObject.getJSONObject("facebook");
@@ -243,12 +232,6 @@ public class OneSheeldApplication extends Application {
                     ApiObjects.foursquare.add("client_secret",
                             foursquare.getString("client_secret"));
                 }
-            }
-            if (socialKeysObject.has("parse")) {
-                parse = socialKeysObject.getJSONObject("parse");
-                if (parse.has("app_id") && parse.has("client_id"))
-                    ApiObjects.parse.add("app_id", parse.getString("app_id"));
-                ApiObjects.parse.add("client_id", parse.getString("client_id"));
             }
             if (socialKeysObject.has("analytics")) {
                 analytics = socialKeysObject.getJSONObject("analytics");
