@@ -44,6 +44,7 @@
 # Required for Crashlytics
 -keep class com.crashlytics.** { *; }
 -keep class com.crashlytics.android.**
+-keep public class * extends java.lang.Exception
 
 # Required for GmailSender
 -dontwarn java.awt.**
@@ -61,3 +62,11 @@
 -keep class myjava.awt.datatransfer.** {*;}
 -keep class org.apache.harmony.awt.** {*;}
 -keep class org.apache.harmony.misc.** {*;}
+
+# Required for Android Async Http
+-keep class cz.msebera.android.httpclient.** { *; }
+-keep class com.loopj.android.http.** { *; }
+
+# Required for version 9 of Google Play Services (Doesn't build with out it due to problems with ProGuard configuration)
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**
