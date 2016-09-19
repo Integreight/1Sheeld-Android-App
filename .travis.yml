@@ -1,5 +1,10 @@
 language: android
 
+env:
+  matrix:
+    - BUILD_VARIANT='Debug'
+    - BUILD_VARIANT='Release'
+
 android:
   components:
     - tools
@@ -18,7 +23,7 @@ jdk:
 before_script:
   - chmod +x gradlew
 
-script: ./gradlew assemble
+script: ./gradlew assemble$(eval echo $BUILD_VARIANT)
 
 notifications:
   email:
