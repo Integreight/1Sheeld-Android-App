@@ -46,10 +46,12 @@ Thumbs.db
 fabric.properties
 
 # Android Studio
+import-summary.txt
+manifest-merger-release-report.txt
 .idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
 .gradle
 build/
+captures/
 gradle.properties
 
 # Google
