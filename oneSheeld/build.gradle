@@ -31,12 +31,12 @@ android {
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
     }
 
-    buildTypes.all{
-            ext.enableCrashlytics = isCrashlyticsPropertiesAvailable()
+    buildTypes.all {
+        ext.enableCrashlytics = isCrashlyticsPropertiesAvailable()
     }
 
     buildTypes {
-        debug{
+        debug {
             versionNameSuffix getWorkingBranchSuffix()
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -80,7 +80,7 @@ dependencies {
         transitive = true;
     }
 
-    compile ('com.google.android.gms:play-services-identity:9.4.0'){
+    compile('com.google.android.gms:play-services-identity:9.4.0') {
         transitive = true;
     }
     compile('com.google.api-client:google-api-client-android:1.21.0') {
@@ -110,12 +110,13 @@ def isCrashlyticsPropertiesAvailable() {
 }
 
 def getWorkingBranchSuffix() {
-    def workingBranchSuffix=""
+    def workingBranchSuffix = ""
     try {
         def workingBranch = "git --git-dir=${rootDir}/.git --work-tree=${rootDir} rev-parse --abbrev-ref HEAD".execute().text.trim()
-        workingBranchSuffix = (workingBranch!="")? " - branch:" + workingBranch : ""
+        workingBranchSuffix = (workingBranch != "") ? " - branch:" + workingBranch : ""
     }
-    catch(all){}
+    catch (all) {
+    }
     return workingBranchSuffix
 }
 
@@ -123,6 +124,6 @@ def isGoogleServicesFileAvailable() {
     return new File("./oneSheeld/google-services.json").exists()
 }
 
-if(isGoogleServicesFileAvailable()) {
+if (isGoogleServicesFileAvailable()) {
     apply plugin: 'com.google.gms.google-services'
 }
