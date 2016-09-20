@@ -19,6 +19,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Logger.LogLevel;
 import com.google.android.gms.analytics.Tracker;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.integreight.onesheeld.enums.ArduinoPin;
 import com.integreight.onesheeld.model.ApiObjects;
@@ -129,7 +130,7 @@ public class OneSheeldApplication extends Application {
         parseSocialKeys();
         initTaskerPins();
         isDebuggable = (0 != (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));
-        if (isDebuggable())
+        if (isDebuggable() && !FirebaseApp.getApps(this).isEmpty())
             FirebaseMessaging.getInstance().subscribeToTopic("dev");
         OneSheeldSdk.setDebugging(isDebuggable);
         connectionTime = 0;
