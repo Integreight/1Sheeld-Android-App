@@ -70,8 +70,9 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:support-v4:24.2.1'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
-    compile 'com.google.android.gms:play-services-analytics:9.4.0'
-    compile 'com.google.android.gms:play-services-location:9.4.0'
+    compile 'com.google.android.gms:play-services-analytics:9.6.0'
+    compile 'com.google.android.gms:play-services-location:9.6.0'
+    compile 'com.google.android.gms:play-services-auth:9.6.0'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
@@ -80,18 +81,15 @@ dependencies {
         transitive = true;
     }
 
-    compile('com.google.android.gms:play-services-identity:9.4.0') {
+    compile('com.google.android.gms:play-services-identity:9.6.0') {
         transitive = true;
     }
-    compile('com.google.api-client:google-api-client-android:1.21.0') {
-        transitive = true;
+    compile('com.google.api-client:google-api-client-android:1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    compile('com.google.apis:google-api-services-gmail:v1-rev35-1.21.0') {
-        transitive = true;
+    compile('com.google.apis:google-api-services-gmail:v1-rev48-1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-
     compile 'org.twitter4j:twitter4j-core:4.0.4'
     compile 'org.twitter4j:twitter4j-async:4.0.4'
     compile 'org.twitter4j:twitter4j-stream:4.0.4'
@@ -101,8 +99,8 @@ dependencies {
     compile 'com.github.emanzanoaxa:RippleEffect:52ea2a0ab6'
     compile 'com.drewnoakes:metadata-extractor:2.8.1'
     compile 'com.integreight.onesheeld:sdk:2.1.4'
-    compile 'com.google.firebase:firebase-core:9.4.0'
-    compile 'com.google.firebase:firebase-messaging:9.4.0'
+    compile 'com.google.firebase:firebase-core:9.6.0'
+    compile 'com.google.firebase:firebase-messaging:9.6.0'
 }
 
 def isCrashlyticsPropertiesAvailable() {
