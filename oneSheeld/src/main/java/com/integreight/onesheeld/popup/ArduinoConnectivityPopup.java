@@ -123,7 +123,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         setContentView(R.layout.initialization_view);
         setCancelable(false);
         ((OneSheeldApplication)activity.getApplication()).setIsDemoMode(false);
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+//        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
         loading = (ProgressBar) findViewById(R.id.progress);
         smallLoading = (ProgressBar) findViewById(R.id.small_progress);
@@ -184,7 +184,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                         } catch (Exception e) {
                             Log.e("TAG", "Exception", e);
                         }
-                        if (!mBtAdapter.isEnabled()) {
+                        if (BluetoothAdapter.getDefaultAdapter()!=null &&!BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                             ((MainActivity) activity)
                                     .setOnConnectToBluetooth(new onConnectedToBluetooth() {
 
@@ -296,7 +296,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 
             @Override
             public void onClick(View v) {
-                if (!mBtAdapter.isEnabled()) {
+                if (BluetoothAdapter.getDefaultAdapter()!=null && !BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                     ((MainActivity) activity)
                             .setOnConnectToBluetooth(new onConnectedToBluetooth() {
 
@@ -742,7 +742,7 @@ public class ArduinoConnectivityPopup extends Dialog {
 
                                             @Override
                                             public void onClick(View v) {
-                                                if (mBtAdapter != null && mBtAdapter.isEnabled()) {
+                                                if (BluetoothAdapter.getDefaultAdapter() != null && BluetoothAdapter.getDefaultAdapter().isEnabled()) {
                                                     backPressed = false;
                                                     if (((Checkable) findViewById(R.id.doAutomaticConnectionToThisDeviceCheckBox))
                                                             .isChecked())

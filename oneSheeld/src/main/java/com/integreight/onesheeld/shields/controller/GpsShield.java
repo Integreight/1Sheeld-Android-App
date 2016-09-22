@@ -27,6 +27,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.SendFrameHandler;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 
@@ -318,8 +319,8 @@ public class GpsShield extends ControllerParent<GpsShield> implements
                 LocationServices.FusedLocationApi.requestLocationUpdates(
                         mLocationClient, mLocationRequest, this);
             }
-        }catch (SecurityException ignored){
-
+        }catch (SecurityException | IllegalStateException ignored){
+            CrashlyticsUtils.logException(ignored);
         }
     }
 

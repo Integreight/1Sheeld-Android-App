@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.appFragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -80,6 +81,14 @@ public class SelectedShieldsListFragment extends ListFragment {
         return new SelectedShieldsListFragment();
     }
 
+    public static void renewUiShieldAdapter(Activity activity) {
+        if (UIShieldAdapter != null)
+            UIShieldAdapter.setActivity(activity);
+        else {
+            UIShieldAdapter = new SelectedShieldsListAdapter(activity);
+        }
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -89,9 +98,12 @@ public class SelectedShieldsListFragment extends ListFragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.activity = (MainActivity) getActivity();
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof MainActivity) {
+            this.activity = (MainActivity) context;
+            renewUiShieldAdapter(activity);
+        }
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,7 +143,7 @@ public class SelectedShieldsListFragment extends ListFragment {
 
     private ShieldFragmentParent<?> generateShieldFragment(Shield uiShield) {
         if (uiShield.id == UIShield.VIBRATION_SHIELD.getId())
-            return addToCreatedListAndReturn(uiShield,new VibrationFragment());
+            return addToCreatedListAndReturn(uiShield, new VibrationFragment());
         if (uiShield.id == UIShield.LED_SHIELD.getId())
             return addToCreatedListAndReturn(uiShield, new LedFragment());
         if (uiShield.id == UIShield.ACCELEROMETER_SHIELD.getId())

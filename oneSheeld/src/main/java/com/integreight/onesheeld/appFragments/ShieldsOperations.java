@@ -135,6 +135,7 @@ public class ShieldsOperations extends Fragment {
         } else {
             mFrag = (SelectedShieldsListFragment) activity
                     .getSupportFragmentManager().findFragmentByTag("menuShieldsList");
+            SelectedShieldsListFragment.renewUiShieldAdapter(activity);
         }
         if (mContent == null) {
             mContent = mFrag.getShieldFragment(savedInstanceState == null || savedInstanceState.get("position") == null ?

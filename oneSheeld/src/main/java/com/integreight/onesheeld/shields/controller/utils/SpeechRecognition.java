@@ -7,6 +7,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 import java.util.List;
@@ -39,11 +40,15 @@ public class SpeechRecognition implements RecognitionListener {
     }
 
     public synchronized void stop() {
-        if (mSpeechRecognizer != null) {
-            mSpeechRecognizer.stopListening();
-            mSpeechRecognizer.cancel();
-            mSpeechRecognizer.destroy();
-            mSpeechRecognizer = null;
+        try {
+            if (mSpeechRecognizer != null) {
+                mSpeechRecognizer.stopListening();
+                mSpeechRecognizer.cancel();
+                mSpeechRecognizer.destroy();
+                mSpeechRecognizer = null;
+            }
+        } catch (IllegalStateException ignored) {
+            CrashlyticsUtils.logException(ignored);
         }
     }
 

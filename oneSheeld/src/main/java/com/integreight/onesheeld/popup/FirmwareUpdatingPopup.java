@@ -52,86 +52,88 @@ public class FirmwareUpdatingPopup extends Dialog {
         this.deviceToUpdate = deviceToUpdate;
         this.activity = activity;
         final Handler handler = new Handler();
-        deviceToUpdate.addFirmwareUpdateCallback(new OneSheeldFirmwareUpdateCallback() {
-            @Override
-            public void onStart(OneSheeldDevice device) {
-                super.onStart(device);
-            }
-
-            @Override
-            public void onProgress(OneSheeldDevice device, final int totalBytes, final int sentBytes) {
-                super.onProgress(device, totalBytes, sentBytes);
-                handler.post(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        int status = (int) ((float) sentBytes / totalBytes * 100);
-                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing) + "...", COLOR.BLUE);
-                        downloadingProgress.setProgress(status);
-                        progressTxt.setText(status + "%");
-                    }
-                });
-            }
-
-            @Override
-            public void onSuccess(OneSheeldDevice device) {
-                super.onSuccess(device);
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    Log.e("TAG", "Exception", e);
+        if(deviceToUpdate!=null) {
+            deviceToUpdate.addFirmwareUpdateCallback(new OneSheeldFirmwareUpdateCallback() {
+                @Override
+                public void onStart(OneSheeldDevice device) {
+                    super.onStart(device);
                 }
-                isFailed = false;
-                handler.post(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        // TODO Auto-generated method stub
-                        FirmwareUpdatingPopup.this.setCancelable(true);
-                        statusText.setText(R.string.firmware_upgrade_popup_done_successfully);
-                        setUpgrade();
+                @Override
+                public void onProgress(OneSheeldDevice device, final int totalBytes, final int sentBytes) {
+                    super.onProgress(device, totalBytes, sentBytes);
+                    handler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            int status = (int) ((float) sentBytes / totalBytes * 100);
+                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_installing) + "...", COLOR.BLUE);
+                            downloadingProgress.setProgress(status);
+                            progressTxt.setText(status + "%");
+                        }
+                    });
+                }
+
+                @Override
+                public void onSuccess(OneSheeldDevice device) {
+                    super.onSuccess(device);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        Log.e("TAG", "Exception", e);
                     }
-                });
-                handler.postDelayed(new Runnable() {
+                    isFailed = false;
+                    handler.post(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_upgrade_firmware), COLOR.BLUE);
-                    }
-                }, 1500);
+                        @Override
+                        public void run() {
+                            // TODO Auto-generated method stub
+                            FirmwareUpdatingPopup.this.setCancelable(true);
+                            statusText.setText(R.string.firmware_upgrade_popup_done_successfully);
+                            setUpgrade();
+                        }
+                    });
+                    handler.postDelayed(new Runnable() {
 
-                activity.getThisApplication()
-                        .getTracker()
-                        .send(new HitBuilders.EventBuilder()
-                                .setCategory("Firmware")
-                                .setAction("Firmware installed successfully")
-                                .build());
+                        @Override
+                        public void run() {
+                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_upgrade_firmware), COLOR.BLUE);
+                        }
+                    }, 1500);
 
-            }
+                    activity.getThisApplication()
+                            .getTracker()
+                            .send(new HitBuilders.EventBuilder()
+                                    .setCategory("Firmware")
+                                    .setAction("Firmware installed successfully")
+                                    .build());
 
-            @Override
-            public void onFailure(OneSheeldDevice device, boolean isTimeOut) {
-                super.onFailure(device, isTimeOut);
-                handler.post(new Runnable() {
+                }
 
-                    @Override
-                    public void run() {
-                        FirmwareUpdatingPopup.this.setCancelable(true);
-                        changeSlogan(activity.getString(R.string.firmware_upgrade_popup_an_error_occured), COLOR.RED);
-                        isFailed = true;
-                        setUpgrade();
-                        activity.getThisApplication()
-                                .getTracker()
-                                .send(new HitBuilders.EventBuilder()
-                                        .setCategory("Firmware")
-                                        .setAction(
-                                                "Firmware installation failed")
-                                        .build());
-                    }
-                });
-            }
-        });
+                @Override
+                public void onFailure(OneSheeldDevice device, boolean isTimeOut) {
+                    super.onFailure(device, isTimeOut);
+                    handler.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            FirmwareUpdatingPopup.this.setCancelable(true);
+                            changeSlogan(activity.getString(R.string.firmware_upgrade_popup_an_error_occured), COLOR.RED);
+                            isFailed = true;
+                            setUpgrade();
+                            activity.getThisApplication()
+                                    .getTracker()
+                                    .send(new HitBuilders.EventBuilder()
+                                            .setCategory("Firmware")
+                                            .setAction(
+                                                    "Firmware installation failed")
+                                            .build());
+                        }
+                    });
+                }
+            });
+        }
         ((OneSheeldApplication) activity.getApplication()).getTracker()
                 .setScreenName("Firmware Upgrade");
         ((OneSheeldApplication) activity.getApplication()).getTracker().send(
