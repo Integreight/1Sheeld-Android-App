@@ -29,6 +29,7 @@ android {
         versionCode 160529
         versionName "1.8.0"
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
+        buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
 
     buildTypes.all {

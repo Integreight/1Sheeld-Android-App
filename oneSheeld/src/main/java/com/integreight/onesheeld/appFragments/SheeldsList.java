@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.RemoteException;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.analytics.HitBuilders;
+import com.integreight.onesheeld.BuildConfig;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -52,6 +54,7 @@ import com.integreight.onesheeld.utils.customviews.OneSheeldEditText;
 import com.manuelpeinado.quickreturnheader.QuickReturnHeaderHelper;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -565,18 +568,9 @@ public class SheeldsList extends Fragment {
         // TODO Auto-generated method stub
         String stringDate = null;
         try {
-            ApplicationInfo ai = activity.getPackageManager()
-                    .getApplicationInfo(activity.getPackageName(), 0);
-            ZipFile zf = new ZipFile(ai.sourceDir);
-            ZipEntry ze = zf.getEntry("classes.dex");
-            long time = ze.getTime();
-            stringDate = SimpleDateFormat.getInstance().format(
-                    new java.util.Date(time));
-            zf.close();
-            PackageInfo pInfo = activity.getPackageManager().getPackageInfo(
-                    activity.getPackageName(), 0);
-            String versionName = pInfo.versionName;
-            int versionCode = pInfo.versionCode;
+            stringDate = DateFormat.format("dd-MM-yyyy hh:mm:ss", new Date(BuildConfig.TIMESTAMP)).toString();
+            String versionName = BuildConfig.VERSION_NAME;
+            int versionCode = BuildConfig.VERSION_CODE;
             String installationIdString = "";
             ValidationAction shareConnectionId = null;
             String firmwareVersion = "";
@@ -590,7 +584,7 @@ public class SheeldsList extends Fragment {
             final ValidationPopup popup = new ValidationPopup(
                     activity,
                     activity.getString(R.string.about_dialog_about_1sheeld),
-                    activity.getString(R.string.about_dialog_developed_with_love_by_integreight_inc_team_in_cairo_egypt) + "\n"
+                    activity.getString(R.string.about_dialog_developed_with_love_by_integreight_inc_team_in_cairo_egypt) + "\n\n"
                             + activity.getString(R.string.about_dialog_if_you_have_any_question_please_visit_our_website_or_drop_us_an_email_on_info_integreight_com) + "\n\n"
                             + activity.getString(R.string.about_dialog_app_version) + ": "
                             + versionName
