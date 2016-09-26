@@ -76,8 +76,3 @@
 -dontnote java.nio.file.Files, java.nio.file.Path
 -dontnote sun.misc.Unsafe
 -dontwarn sun.misc.Unsafe
-
-# Required for version 9 of Google Play Services (Doesn't build with out it due to problems with ProGuard configuration)
--keep class com.google.android.gms.** { *; }
--dontwarn com.google.android.gms.**
--dontnote com.google.android.gms.**
