@@ -1,3 +1,10 @@
+## v1.8.0(160529) (May 29, 2016)
+ - Supported Android Nougat (v7.0), and fixed a bug where it didn't connect or disconnect sometimes.
+ - Made the text to speech shield use the current locale for speaking.
+ - Integrated Firebase for push notifications.
+ - Changed our old logo with the brand new one.
+ - Increased app stability and fixed minor bugs.
+
 ## v1.7.0(160529) (May 29, 2016)
  - Supported our new board, 1Sheeld+ (The BLE version)
  - Built the app on our own 1Sheeld Android SDK.
