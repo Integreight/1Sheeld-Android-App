@@ -110,7 +110,7 @@
                         android:ellipsize="marquee"
                         android:fitsSystemWindows="true"
                         android:soundEffectsEnabled="true"
-                        android:tag="y"
+                        android:tag="Y"
                         android:text="Y"
                         android:textColor="@color/offWhite"
                         android:textStyle="bold" />
