@@ -913,9 +913,13 @@ public class MainActivity extends FragmentActivity {
         public void onMenuClosed();
     }
 
-    private void handleNotificationWithUrlIntent(Intent intent){
-        if (intent!=null && intent.getStringExtra("url")!=null && intent.getStringExtra("url").length()>0){
-            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(intent.getStringExtra("url")));
+    private void handleNotificationWithUrlIntent(Intent intent) {
+        if (intent != null && intent.getStringExtra("url") != null && intent.getStringExtra("url").length() > 0) {
+            String url = intent.getStringExtra("url");
+            if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                url = "http://" + url;
+            }
+            Intent notificationIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(notificationIntent);
 //            finish();
