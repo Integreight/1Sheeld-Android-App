@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.integreight.onesheeld.BuildConfig;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.appFragments.ShieldsOperations;
@@ -272,7 +274,16 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     File img = new File(lastImageSrc);
                     if (img.exists()) {
                         cameraPreviewToggle.setEnabled(false);
-                        intent.setDataAndType(Uri.fromFile(img), "image/*");
+                        if(Build.VERSION.SDK_INT>=24) {
+                            Uri fileURI = FileProvider.getUriForFile(activity,
+                                    BuildConfig.APPLICATION_ID + ".provider",
+                                    img);
+                            intent.setDataAndType(fileURI, "image/*");
+                        }
+                        else {
+                            intent.setDataAndType(Uri.fromFile(img), "image/*");
+                        }
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         activity.startActivity(intent);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                             v.setAlpha((float) 0.5);

@@ -12,8 +12,11 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
+
+import com.integreight.onesheeld.BuildConfig;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -260,9 +263,18 @@ public class DataLoggerShield extends ControllerParent<DataLoggerShield> {
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
         MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
         String mimeFileType = mimeTypeMap.getMimeTypeFromExtension("csv");
-        notificationIntent.setDataAndType(Uri.fromFile(new File(filePath == null
-                || filePath.length() == 0 ? "" : filePath)), mimeFileType);
+        if(Build.VERSION.SDK_INT>=24) {
+            Uri fileURI = FileProvider.getUriForFile(activity,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    new File(filePath == null || filePath.length() == 0 ? "" : filePath));
+            notificationIntent.setDataAndType(fileURI, mimeFileType);
+        }
+        else{
+            notificationIntent.setDataAndType(Uri.fromFile(new File(filePath == null
+                    || filePath.length() == 0 ? "" : filePath)), mimeFileType);
+        }
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notificationIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         PendingIntent intent = PendingIntent.getActivity(activity, 0,
                 notificationIntent, 0);
         build.setContentIntent(intent);

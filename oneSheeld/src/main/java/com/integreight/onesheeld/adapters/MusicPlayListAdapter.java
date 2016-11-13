@@ -3,18 +3,22 @@ package com.integreight.onesheeld.adapters;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 
+import com.integreight.onesheeld.BuildConfig;
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.model.PlaylistItem;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.integreight.onesheeld.utils.database.MusicPlaylist;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -70,8 +74,18 @@ public class MusicPlayListAdapter extends BaseAdapter {
             public void onClick(View arg0) {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.parse("file://" + item.path),
-                        "audio/*");
+                if(Build.VERSION.SDK_INT>=24) {
+                    Uri fileURI = FileProvider.getUriForFile(activity,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            new File(item.path));
+                    intent.setDataAndType(fileURI, "audio/*");
+                }
+                else{
+                    intent.setDataAndType(Uri.parse("file://" + item.path),
+                            "audio/*");
+                }
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
                 activity.startActivity(intent);
             }
         });

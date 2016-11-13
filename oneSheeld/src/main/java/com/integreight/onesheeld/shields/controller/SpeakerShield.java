@@ -1,6 +1,7 @@
 package com.integreight.onesheeld.shields.controller;
 
 import android.app.Activity;
+import android.content.res.AssetFileDescriptor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.widget.Toast;

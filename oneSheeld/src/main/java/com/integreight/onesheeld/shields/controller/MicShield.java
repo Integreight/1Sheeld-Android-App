@@ -14,8 +14,10 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.FileProvider;
 import android.widget.Toast;
 
+import com.integreight.onesheeld.BuildConfig;
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
@@ -185,8 +187,16 @@ public class MicShield extends ControllerParent<MicShield> {
         v.vibrate(1000);
         Intent notificationIntent = new Intent(Intent.ACTION_VIEW);
         Log.d("Mic",fileName+".mp3");
-        notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/OneSheeld/Mic/"+ fileName + ".mp3")), "audio/*");
+        if(Build.VERSION.SDK_INT>=24) {
+            Uri fileURI = FileProvider.getUriForFile(activity,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    new File(Environment.getExternalStorageDirectory() + "/OneSheeld/Mic/" + fileName + ".mp3"));
+            notificationIntent.setDataAndType(fileURI, "audio/*");
+        }else{
+            notificationIntent.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/OneSheeld/Mic/"+ fileName + ".mp3")), "audio/*");
+        }
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        notificationIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         PendingIntent intent = PendingIntent.getActivity(activity, 0,
                 notificationIntent, 0);
         build.setContentIntent(intent);
