@@ -61,7 +61,6 @@ public class ArduinoConnectivityPopup extends Dialog {
     private boolean isConnecting = false;
     private Hashtable<String, OneSheeldDevice> foundDevicesTable;
     public static String EXTRA_DEVICE_NAME = "device_name";
-    private BluetoothAdapter mBtAdapter;
 
     public ArduinoConnectivityPopup(Activity context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -124,7 +123,6 @@ public class ArduinoConnectivityPopup extends Dialog {
         setContentView(R.layout.initialization_view);
         setCancelable(false);
         ((OneSheeldApplication)activity.getApplication()).setIsDemoMode(false);
-//        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
         deviceListCont = (RelativeLayout) findViewById(R.id.devicesListContainer);
         loading = (ProgressBar) findViewById(R.id.progress);
         smallLoading = (ProgressBar) findViewById(R.id.small_progress);
