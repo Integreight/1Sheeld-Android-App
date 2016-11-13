@@ -113,8 +113,9 @@ public class SpeakerShield extends ControllerParent<ControllerParent<?>> {
                         - getBuzzerVolume()) / Math.log(MAX_VOLUME)));
                 mp.setVolume(volume, volume);
                 try {
-                    mp.setDataSource(activity.getAssets()
-                            .openFd("buzzer_sound.mp3").getFileDescriptor());
+                    AssetFileDescriptor descriptor = activity.getAssets().openFd("buzzer_sound.mp3");
+                    mp.setDataSource(descriptor.getFileDescriptor(), descriptor.getStartOffset(), descriptor.getLength());
+                    descriptor.close();
                     mp.prepareAsync();
                     mp.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 
