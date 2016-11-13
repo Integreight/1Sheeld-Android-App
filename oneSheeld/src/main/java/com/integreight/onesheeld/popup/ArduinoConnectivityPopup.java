@@ -85,6 +85,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     @Override
     public void onBackPressed() {
         if (OneSheeldSdk.getManager().isScanning()) {
+            isScanningFinishedManually = true;
             OneSheeldSdk.getManager().cancelScanning();
             setScanButtonReady();
         } else if (OneSheeldSdk.getManager().isConnecting()) {
@@ -141,6 +142,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 isOpened = false;
                 // Make sure we're not doing discovery anymore
                 if (OneSheeldSdk.getManager().isScanning()) {
+                    isScanningFinishedManually = true;
                     OneSheeldSdk.getManager().cancelScanning();
                 }
                 OneSheeldSdk.getManager().removeConnectionCallback(connectionCallback);
@@ -160,6 +162,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(true);
                 ArduinoConnectivityPopup.isOpened = false;
                 if (OneSheeldSdk.getManager().isScanning()) {
+                    isScanningFinishedManually = true;
                     OneSheeldSdk.getManager().cancelScanning();
                     setScanButtonReady();
                 }
@@ -327,8 +330,10 @@ public class ArduinoConnectivityPopup extends Dialog {
                 } else {
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                         backPressed = false;
-                        if (OneSheeldSdk.getManager().isScanning())
+                        if (OneSheeldSdk.getManager().isScanning()) {
+                            isScanningFinishedManually = true;
                             OneSheeldSdk.getManager().cancelScanning();
+                        }
                         showProgress();
                         changeSlogan(
                                 activity.getResources().getString(
@@ -339,8 +344,10 @@ public class ArduinoConnectivityPopup extends Dialog {
                     } else {
                         if (((MainActivity) activity).checkForLocationPermission()) {
                             backPressed = false;
-                            if (OneSheeldSdk.getManager().isScanning())
+                            if (OneSheeldSdk.getManager().isScanning()) {
+                                isScanningFinishedManually = true;
                                 OneSheeldSdk.getManager().cancelScanning();
+                            }
                             showProgress();
                             changeSlogan(
                                     activity.getResources().getString(
@@ -674,8 +681,11 @@ public class ArduinoConnectivityPopup extends Dialog {
     private void startService(String address, String name) {
         if (!isConnecting) {
             isConnecting = true;
-            if (OneSheeldSdk.getManager().isScanning())
+            if (OneSheeldSdk.getManager().isScanning()){
+                isScanningFinishedManually = true;
                 OneSheeldSdk.getManager().cancelScanning();
+            }
+
             // Get the device MAC address, which is the last 17 chars in
             // the
             // View
@@ -696,6 +706,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         // If we're already discovering, stop it
 
         if (OneSheeldSdk.getManager().isScanning()) {
+            isScanningFinishedManually = true;
             OneSheeldSdk.getManager().cancelScanning();
         }
 
@@ -751,8 +762,10 @@ public class ArduinoConnectivityPopup extends Dialog {
                                                                 .setLastConnectedDevice(address);
                                                     startService(address, name);
                                                 } else {
-                                                    if (OneSheeldSdk.getManager().isScanning())
+                                                    if (OneSheeldSdk.getManager().isScanning()) {
+                                                        isScanningFinishedManually = true;
                                                         OneSheeldSdk.getManager().cancelScanning();
+                                                    }
                                                     ((MainActivity) activity)
                                                             .setOnConnectToBluetooth(new onConnectedToBluetooth() {
 
