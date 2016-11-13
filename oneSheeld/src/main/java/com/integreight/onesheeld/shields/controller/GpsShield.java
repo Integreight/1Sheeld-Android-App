@@ -148,8 +148,6 @@ public class GpsShield extends ControllerParent<GpsShield> implements
             if (isGooglePlayServicesAvailable()) {
                 if (!isLocationServicesEnabled()) {
                     buildAlertMessageNoGps();
-                } else {
-                    startGps();
                 }
 
             } else
@@ -203,9 +201,9 @@ public class GpsShield extends ControllerParent<GpsShield> implements
 
     public void stopGps() {
         mUpdatesRequested = false;
-        if (mLocationClient.isConnected()) {
-            mLocationClient.unregisterConnectionCallbacks(this);
+        if (mLocationClient!=null && mLocationClient.isConnected()) {
             mLocationClient.disconnect();
+            mLocationClient.unregisterConnectionCallbacks(this);
         }
     }
 
