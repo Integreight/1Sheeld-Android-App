@@ -1,4 +1,4 @@
-## v1.8.0(160529) (May 29, 2016)
+## v1.8.0(161113) (November 13, 2016)
  - Supported Android Nougat (v7.0), and fixed a bug where it didn't connect or disconnect sometimes.
  - Made the text to speech shield use the current locale for speaking.
  - Integrated Firebase for push notifications.
