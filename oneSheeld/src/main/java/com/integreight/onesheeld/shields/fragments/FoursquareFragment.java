@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,6 +19,7 @@ import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield.FoursquareEventHandler;
 import com.integreight.onesheeld.shields.controller.utils.FoursquareUtils;
 import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
 
 public class FoursquareFragment extends
@@ -71,14 +73,18 @@ public class FoursquareFragment extends
             @Override
             public void onClick(View v) {
                 // start login to foursquare
-                if (ConnectionDetector.isConnectingToInternet(activity))
-                    ((FoursquareShield) getApplication().getRunningShields()
-                            .get(getControllerTag())).loginToFoursquare();
-                else
-                    Toast.makeText(
-                            getApplication().getApplicationContext(),
-                            R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
-                            Toast.LENGTH_SHORT).show();
+                try{
+                    if (ConnectionDetector.isConnectingToInternet(activity))
+                        ((FoursquareShield) getApplication().getRunningShields()
+                                .get(getControllerTag())).loginToFoursquare();
+                    else
+                        Toast.makeText(
+                                getApplication().getApplicationContext(),
+                                R.string.general_toasts_please_check_your_internet_connection_and_try_again_toast,
+                                Toast.LENGTH_SHORT).show();
+                }catch (WindowManager.BadTokenException ignored){
+                    CrashlyticsUtils.logException(ignored);
+                }
             }
         });
         logout.setOnClickListener(new View.OnClickListener() {
