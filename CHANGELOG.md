@@ -1,5 +1,6 @@
 ## v1.8.0(161113) (November 13, 2016)
  - Supported Android Nougat (v7.0), and fixed a bug where it didn't connect or disconnect sometimes.
+ - Handled a bug where any files opened using a external app crashes our app.
  - Made the text to speech shield use the current locale for speaking.
  - Integrated Firebase for push notifications.
  - Changed our old logo with the brand new one.
