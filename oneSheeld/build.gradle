@@ -20,7 +20,7 @@ repositories {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.1"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
@@ -69,11 +69,11 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:25.0.0'
+    compile 'com.android.support:support-v4:25.0.1'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
-    compile 'com.google.android.gms:play-services-analytics:9.8.0'
-    compile 'com.google.android.gms:play-services-location:9.8.0'
-    compile 'com.google.android.gms:play-services-auth:9.8.0'
+    compile 'com.google.android.gms:play-services-analytics:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
     compile 'com.loopj.android:android-async-http:1.4.9'
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
@@ -82,7 +82,7 @@ dependencies {
         transitive = true;
     }
 
-    compile('com.google.android.gms:play-services-identity:9.8.0') {
+    compile('com.google.android.gms:play-services-identity:10.0.1') {
         transitive = true;
     }
     compile('com.google.api-client:google-api-client-android:1.22.0') {
@@ -100,8 +100,8 @@ dependencies {
     compile 'com.github.emanzanoaxa:RippleEffect:52ea2a0ab6'
     compile 'com.drewnoakes:metadata-extractor:2.8.1'
     compile 'com.integreight.onesheeld:sdk:2.2.0'
-    compile 'com.google.firebase:firebase-core:9.8.0'
-    compile 'com.google.firebase:firebase-messaging:9.8.0'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-messaging:10.0.1'
 }
 
 def isCrashlyticsPropertiesAvailable() {
