@@ -46,7 +46,7 @@ import io.fabric.sdk.android.Fabric;
  */
 public class OneSheeldApplication extends Application {
     private SharedPreferences appPreferences;
-    public static int ARDUINO_LIBRARY_VERSION = 14;
+    public static int ARDUINO_LIBRARY_VERSION = 15;
     private final String APP_PREF_NAME = "oneSheeldPreference";
     private final String LAST_DEVICE = "lastConnectedDevice";
     private final String MAJOR_VERSION = "majorVersion";
