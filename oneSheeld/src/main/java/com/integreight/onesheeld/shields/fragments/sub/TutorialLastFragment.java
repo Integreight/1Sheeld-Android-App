@@ -1,12 +1,16 @@
 package com.integreight.onesheeld.shields.fragments.sub;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.analytics.HitBuilders;
 import com.integreight.onesheeld.OneSheeldApplication;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.popup.ArduinoConnectivityPopup;
@@ -39,6 +43,12 @@ public class TutorialLastFragment extends Fragment {
                         app.setShownTutAgain(cb.isChecked());
                         if (!cb.isChecked())
                             app.setTutShownTimes(0);
+                        ((OneSheeldApplication)getActivity().getApplication())
+                                .getTracker()
+                                .send(new HitBuilders.EventBuilder()
+                                        .setCategory("Last Tutorial Screen")
+                                        .setAction("Have Board")
+                                        .build());
                         getActivity().finish();
                     }
                 });
@@ -56,6 +66,18 @@ public class TutorialLastFragment extends Fragment {
                 if (app.isConnectedToBluetooth())
                     OneSheeldSdk.getManager().disconnect(app.getConnectedDevice());
                 getActivity().finish();
+                ((OneSheeldApplication)getActivity().getApplication())
+                        .getTracker()
+                        .send(new HitBuilders.EventBuilder()
+                                .setCategory("Last Tutorial Screen")
+                                .setAction("Don't Have Board")
+                                .build());
+                Toast.makeText(getActivity(), R.string.tutorial_the_app_requires_1sheeld_board,
+                        Toast.LENGTH_LONG).show();
+                String url = "http://bit.ly/Buy1SheeldFromApp";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
             }
         });
         getView().findViewById(R.id.check).setOnClickListener(

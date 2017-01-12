@@ -15,6 +15,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -27,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
@@ -43,6 +45,7 @@ import com.integreight.onesheeld.sdk.OneSheeldScanningCallback;
 import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.utils.HttpRequest;
 import com.integreight.onesheeld.utils.Log;
+import com.integreight.onesheeld.utils.URLSpanNoUnderline;
 import com.integreight.onesheeld.utils.customviews.OneSheeldButton;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -61,6 +64,8 @@ public class ArduinoConnectivityPopup extends Dialog {
     private boolean isConnecting = false;
     private Hashtable<String, OneSheeldDevice> foundDevicesTable;
     public static String EXTRA_DEVICE_NAME = "device_name";
+    public static final String IS_BUY_TEXT_ENABLED_SP = "com.integreight.onesheeld.IS_BUY_TEXT_ENABLED_SP";
+
 
     public ArduinoConnectivityPopup(Activity context) {
         super(context, android.R.style.Theme_Translucent_NoTitleBar);
@@ -76,6 +81,7 @@ public class ArduinoConnectivityPopup extends Dialog {
     private ProgressBar loading, smallLoading;
     private Button scanOrTryAgain;
     private OneSheeldTextView statusText;
+    private OneSheeldTextView buy1SheeldBoardTextView;
     private OneSheeldButton skipScan;
     private RelativeLayout transactionSlogan;
     public static boolean isOpened = false, backPressed = false;
@@ -131,6 +137,9 @@ public class ArduinoConnectivityPopup extends Dialog {
         skipScan = (OneSheeldButton) findViewById(R.id.skip_scan);
         transactionSlogan = (RelativeLayout) findViewById(R.id.transactionSlogan);
         devicesList = (LinearLayout) findViewById(R.id.devicesList);
+        buy1SheeldBoardTextView = (OneSheeldTextView) findViewById(R.id.buy_1sheeld_board_text_view);
+        buy1SheeldBoardTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        URLSpanNoUnderline.stripUnderlines(buy1SheeldBoardTextView);
         setScanButtonReady();
         getWindow().setBackgroundDrawable(new ColorDrawable(0));
         setOnCancelListener(new OnCancelListener() {
@@ -269,6 +278,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         OneSheeldSdk.getManager().addConnectionCallback(connectionCallback);
         OneSheeldSdk.getManager().addErrorCallback(errorCallback);
         OneSheeldSdk.getManager().addScanningCallback(scanningCallback);
+        handleBuyLinkVisibility();
         super.onCreate(savedInstanceState);
     }
 
@@ -289,6 +299,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         findViewById(R.id.skip_scan).setVisibility(View.VISIBLE);
         isConnecting = false;
         deviceListCont.setVisibility(View.INVISIBLE);
+        handleBuyLinkVisibility();
         loading.setVisibility(View.INVISIBLE);
         smallLoading.setVisibility(View.INVISIBLE);
         scanOrTryAgain.setVisibility(View.VISIBLE);
@@ -393,6 +404,7 @@ public class ArduinoConnectivityPopup extends Dialog {
                 isConnecting = false;
                 if (backPressed == false) {
                     deviceListCont.setVisibility(View.INVISIBLE);
+                    handleBuyLinkVisibility();
                     loading.setVisibility(View.INVISIBLE);
                     smallLoading.setVisibility(View.INVISIBLE);
                     scanOrTryAgain.setVisibility(View.VISIBLE);
@@ -409,6 +421,7 @@ public class ArduinoConnectivityPopup extends Dialog {
             @Override
             public void run() {
                 deviceListCont.setVisibility(View.VISIBLE);
+                handleBuyLinkVisibility();
                 loading.setVisibility(View.INVISIBLE);
                 smallLoading.setVisibility(View.INVISIBLE);
                 scanOrTryAgain.setVisibility(View.INVISIBLE);
@@ -416,11 +429,27 @@ public class ArduinoConnectivityPopup extends Dialog {
         });
     }
 
+    private void handleBuyLinkVisibility(){
+        boolean isTheTextViewEnabled = true;
+        try{
+            isTheTextViewEnabled=((OneSheeldApplication)activity.getApplication()).getAppPreferences().getBoolean(IS_BUY_TEXT_ENABLED_SP, true);
+        }catch (Exception ignored){
+            ignored.printStackTrace();
+        }
+        if(deviceListCont.getVisibility()==View.INVISIBLE && isTheTextViewEnabled){
+            buy1SheeldBoardTextView.setVisibility(View.VISIBLE);
+        }
+        else{
+            buy1SheeldBoardTextView.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private void showProgress() {
         loading.post(new Runnable() {
             @Override
             public void run() {
                 deviceListCont.setVisibility(View.INVISIBLE);
+                handleBuyLinkVisibility();
                 loading.setVisibility(View.VISIBLE);
                 smallLoading.setVisibility(View.INVISIBLE);
                 scanOrTryAgain.setVisibility(View.INVISIBLE);
@@ -488,6 +517,13 @@ public class ArduinoConnectivityPopup extends Dialog {
                 });
                 cancel();
             }
+            try{
+                ((OneSheeldApplication)activity.getApplication()).getAppPreferences().edit().putBoolean(IS_BUY_TEXT_ENABLED_SP, false).apply();
+            }
+            catch (Exception ignored){
+                ignored.printStackTrace();
+            }
+
         }
     };
     OneSheeldScanningCallback scanningCallback = new OneSheeldScanningCallback() {

@@ -43,6 +43,17 @@
             android:layout_centerInParent="true"
             android:indeterminateDrawable="@drawable/my_progress_indeterminate"></ProgressBar>
 
+        <com.integreight.onesheeld.utils.customviews.OneSheeldTextView
+            android:id="@+id/buy_1sheeld_board_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"
+            android:text="@string/connectivity_popup_dont_have_the_board_get_it_now"
+            android:textColorLink="#E79401"
+            android:textColor="@color/white" />
+
         <RelativeLayout
             android:id="@+id/devicesListContainer"
             android:layout_width="match_parent"
