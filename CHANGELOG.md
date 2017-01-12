@@ -1,3 +1,6 @@
+## v1.8.1(170112) (January 12, 2016)
+ - Added a link to our website to ease the process of buying 1Sheeld boards for first users.
+
 ## v1.8.0(161113) (November 13, 2016)
  - Supported Android Nougat (v7.0), and fixed a bug where it didn't connect or disconnect sometimes.
  - Handled a bug where any files opened using a external app crashes our app.
