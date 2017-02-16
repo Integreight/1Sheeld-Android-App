@@ -47,6 +47,7 @@
     <string name="connectivity_popup_try_again_button">Try Again</string>
     <string name="connectivity_popup_connect_automatically_to_this_device_checkbox">Connect Automatically to This Device</string>
     <string name="connectivity_popup_dont_have_the_board_get_it_now">Don\'t have 1Sheeld board? get it from <a href="http://bit.ly/Buy1SheeldFromApp">our website</a> now!</string>
+    <string name="connectivity_popup_dont_have_the_board_get_it_now_US">Don\'t have 1Sheeld board? get it from <a href="http://bit.ly/Buy1SheeldPlusAmazonFromApp">Amazon</a> now!</string>
     <string name="connectivity_popup_bluetooth_is_not_available_toast">Bluetooth is not available</string>
     <string name="connectivity_popup_scan_for_1sheeld">Scan for 1Sheeld</string>
 

@@ -50,7 +50,7 @@
             android:layout_alignParentBottom="true"
             android:gravity="center"
             android:layout_marginBottom="10dp"
-            android:text="@string/connectivity_popup_dont_have_the_board_get_it_now"
+            android:text=""
             android:textColorLink="#E79401"
             android:textColor="@color/white" />
 

@@ -29,6 +29,9 @@ import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
+import com.integreight.onesheeld.utils.ConnectionDetector;
+import com.integreight.onesheeld.utils.HttpRequest;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +42,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Map;
 
+import cz.msebera.android.httpclient.Header;
 import io.fabric.sdk.android.Fabric;
 
 /**
@@ -66,6 +70,7 @@ public class OneSheeldApplication extends Application {
     // private Tracker appGaTracker;
     public TaskerShield taskerController;
     public SparseArray<Boolean> taskerPinsStatus;
+    private boolean isLocatedInTheUs = false;
 
     public static final String FIRMWARE_UPGRADING_URL = "https://raw.githubusercontent.com/Integreight/1Sheeld-Firmware/master/version.json";
 
@@ -136,6 +141,7 @@ public class OneSheeldApplication extends Application {
         connectionTime = 0;
         AppShields.getInstance().init(getRememberedShields());
         initCrashlyticsAndUncaughtThreadHandler();
+        detectIfLocatedInTheUs();
         super.onCreate();
     }
 
@@ -390,5 +396,25 @@ public class OneSheeldApplication extends Application {
     public static int getNotificationIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.drawable.notification_icon : R.drawable.white_ee_icon;
+    }
+
+    private void detectIfLocatedInTheUs() {
+        if (ConnectionDetector.isConnectingToInternet(this)) {
+            HttpRequest.getInstance().get("http://ip-api.com/json/?fields=3", new JsonHttpResponseHandler() {
+                @Override
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    if (response != null) {
+                        if (response.has("countryCode")) try {
+                            isLocatedInTheUs = response.getString("countryCode").toLowerCase().equals("us");
+                        } catch (JSONException e) {
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    public boolean isLocatedInTheUs(){
+        return isLocatedInTheUs;
     }
 }

@@ -74,7 +74,7 @@ public class TutorialLastFragment extends Fragment {
                                 .build());
                 Toast.makeText(getActivity(), R.string.tutorial_the_app_requires_1sheeld_board,
                         Toast.LENGTH_LONG).show();
-                String url = "http://bit.ly/Buy1SheeldFromApp";
+                String url = app.isLocatedInTheUs()?"http://bit.ly/Buy1SheeldPlusAmazonFromApp":"http://bit.ly/Buy1SheeldFromApp";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 startActivity(i);

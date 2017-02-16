@@ -139,6 +139,14 @@ public class ArduinoConnectivityPopup extends Dialog {
         devicesList = (LinearLayout) findViewById(R.id.devicesList);
         buy1SheeldBoardTextView = (OneSheeldTextView) findViewById(R.id.buy_1sheeld_board_text_view);
         buy1SheeldBoardTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        tempHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                    buy1SheeldBoardTextView.setText(((OneSheeldApplication) activity.getApplication()).isLocatedInTheUs()?
+                            R.string.connectivity_popup_dont_have_the_board_get_it_now_US:
+                            R.string.connectivity_popup_dont_have_the_board_get_it_now);
+            }
+        },1000);
         URLSpanNoUnderline.stripUnderlines(buy1SheeldBoardTextView);
         setScanButtonReady();
         getWindow().setBackgroundDrawable(new ColorDrawable(0));
@@ -436,7 +444,7 @@ public class ArduinoConnectivityPopup extends Dialog {
         }catch (Exception ignored){
             ignored.printStackTrace();
         }
-        if(deviceListCont.getVisibility()==View.INVISIBLE && isTheTextViewEnabled){
+        if(deviceListCont.getVisibility()==View.INVISIBLE && !buy1SheeldBoardTextView.getText().equals("") && isTheTextViewEnabled){
             buy1SheeldBoardTextView.setVisibility(View.VISIBLE);
         }
         else{
