@@ -1,5 +1,5 @@
 ## v1.8.1(170216) (February 16, 2017)
- - Changed 1Sheeld buying link to Amazon in case the user if from the US.
+ - Changed 1Sheeld buying link to Amazon in case the user is from the US.
 
 ## v1.8.1(170112) (January 12, 2017)
  - Added a link to our website to ease the process of buying 1Sheeld boards for first users.
