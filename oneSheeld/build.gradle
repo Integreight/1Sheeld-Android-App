@@ -26,8 +26,8 @@ android {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 170112
-        versionName "1.8.1"
+        versionCode 170216
+        versionName "1.8.2"
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
