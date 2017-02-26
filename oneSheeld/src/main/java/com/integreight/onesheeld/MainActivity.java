@@ -58,6 +58,7 @@ import com.integreight.onesheeld.sdk.OneSheeldVersionQueryCallback;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.shields.controller.FaceDetectionShield;
 import com.integreight.onesheeld.shields.controller.NfcShield;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
@@ -380,6 +381,12 @@ public class MainActivity extends FragmentActivity {
         if (getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
             try {
                 ((ColorDetectionShield) getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        if (getThisApplication().getRunningShields().get(UIShield.FACE_DETECTION.name()) != null)
+            try {
+                ((FaceDetectionShield) getThisApplication().getRunningShields().get(UIShield.FACE_DETECTION.name())).hidePreview();
             } catch (RemoteException e) {
                 e.printStackTrace();
             }

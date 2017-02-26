@@ -53,7 +53,6 @@ public class CameraShield extends ControllerParent<CameraShield> {
     private boolean hasFrontCamera = false;
     private boolean isChangingPreview = false;
     private Messenger mMessenger = new Messenger(new Handler() {
-
         public void handleMessage(Message msg) {
             if (msg.what == CRASHED) {
                 cameraBinder = null;
@@ -187,7 +186,6 @@ public class CameraShield extends ControllerParent<CameraShield> {
                 if (this.selectionAction != null) {
                     this.selectionAction.onFailure();
                 }
-//                bindService();
             }
         }
         return super.invalidate(selectionAction, isToastable);
@@ -256,7 +254,6 @@ public class CameraShield extends ControllerParent<CameraShield> {
 
     public void setCameraEventHandler(CameraEventHandler eventHandler) {
         this.eventHandler = eventHandler;
-
     }
 
     public boolean showPreview() throws RemoteException {
@@ -379,20 +376,12 @@ public class CameraShield extends ControllerParent<CameraShield> {
 
     @Override
     public void preConfigChange() {
-//        Message msg = Message.obtain(null, UNBIND_CAMERA_CAPTURE);
-//        try {
-//            if (cameraBinder != null)
-//                cameraBinder.send(msg);
-//        } catch (RemoteException e) {
-//        }
-//        getActivity().unbindService(cameraServiceConnector);
         super.preConfigChange();
     }
 
     @Override
     public void postConfigChange() {
         super.postConfigChange();
-//        bindService();
     }
 
     private void sendCaptureImageIntent(CameraShield.CameraCapture camCapture) {

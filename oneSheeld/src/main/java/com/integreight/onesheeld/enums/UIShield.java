@@ -10,6 +10,7 @@ import com.integreight.onesheeld.shields.controller.ClockShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.shields.controller.DataLoggerShield;
 import com.integreight.onesheeld.shields.controller.EmailShield;
+import com.integreight.onesheeld.shields.controller.FaceDetectionShield;
 import com.integreight.onesheeld.shields.controller.FacebookShield;
 import com.integreight.onesheeld.shields.controller.FoursquareShield;
 import com.integreight.onesheeld.shields.controller.GamepadShield;
@@ -55,6 +56,7 @@ import com.integreight.onesheeld.shields.fragments.ColorDetectionFragment;
 import com.integreight.onesheeld.shields.fragments.DataLoggerFragment;
 import com.integreight.onesheeld.shields.fragments.EmailFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
+import com.integreight.onesheeld.shields.fragments.FaceDetectionFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
 import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
@@ -109,8 +111,8 @@ public enum UIShield {
     PUSHBUTTON_SHIELD((byte) 0x03, R.string.push_button_shield_name, 0xffb97547, R.drawable.shields_list_push_button_symbol, false, PushButtonShield.class, PushButtonFragment.class),
     TOGGLEBUTTON_SHIELD((byte) 0x04, R.string.toggle_button_shield_name, 0xffc0039d, R.drawable.shields_list_push_button_symbol, false, ToggleButtonShield.class, ToggleButtonFragment.class),
     ACCELEROMETER_SHIELD((byte) 0x0B, R.string.accelerometer_shield_name, 0xff266a5d, R.drawable.shields_list_accelerometer_symbol, false, AccelerometerShield.class, AccelerometerFragment.class, 1),
-    FACEBOOK_SHIELD((byte) 0x19, R.string.facebook_shield_name, 0xff039dc0, R.drawable.shields_list_facebook_symbol, false, FacebookShield.class, FacebookFragment.class,1),
-    TWITTER_SHIELD((byte) 0x1A, R.string.twitter_shield_name, 0xffa14c4c, R.drawable.shields_list_twitter_symbol, false, TwitterShield.class, TwitterFragment.class,1),
+    FACEBOOK_SHIELD((byte) 0x19, R.string.facebook_shield_name, 0xff039dc0, R.drawable.shields_list_facebook_symbol, false, FacebookShield.class, FacebookFragment.class, 1),
+    TWITTER_SHIELD((byte) 0x1A, R.string.twitter_shield_name, 0xffa14c4c, R.drawable.shields_list_twitter_symbol, false, TwitterShield.class, TwitterFragment.class, 1),
     GAMEDPAD_SHIELD((byte) 0x0C, R.string.game_pad_shield_name, 0xff658f08, R.drawable.shields_list_gamepad_symbol, false, GamepadShield.class, GamepadFragment.class),
     FOURSQUARE_SHIELD((byte) 0x1B, R.string.foursquare_shield_name, 0xff061179, R.drawable.shields_list_foursquare_symbol, false, FoursquareShield.class, FoursquareFragment.class),
     GPS_SHIELD((byte) 0x1C, R.string.gps_shield_name, 0xffa10b07, R.drawable.shields_list_gps_symbol, false, GpsShield.class, GpsFragment.class, 1),
@@ -126,7 +128,7 @@ public enum UIShield {
     TEMPERATURE_SHIELD((byte) 0x12, R.string.temperature_shield_name, 0xff999f45, R.drawable.shields_list_temperature_symbol, false, TemperatureShield.class, TemperatureFragment.class, 1),
     CAMERA_SHIELD((byte) 0x15, R.string.camera_shield_name, 0xff6d0347, R.drawable.shields_list_camera_symbol, false, CameraShield.class, CameraFragment.class, 1),
     PHONE_SHIELD((byte) 0x20, R.string.phone_shield_name, 0xffe9bd03, R.drawable.shields_list_phone_symbol, false, PhoneShield.class, PhoneFragment.class, 1),
-    EMAIL_SHIELD((byte) 0x1E, R.string.email_shield_name, 0xff114540, R.drawable.shields_list_email_symbol, false, EmailShield.class, EmailFragment.class,1),
+    EMAIL_SHIELD((byte) 0x1E, R.string.email_shield_name, 0xff114540, R.drawable.shields_list_email_symbol, false, EmailShield.class, EmailFragment.class, 1),
     CLOCK_SHIELD((byte) 0x21, R.string.clock_shield_name, 0xffc45527, R.drawable.shields_list_clock_symbol, false, ClockShield.class, ClockFragment.class),
     KEYBOARD_SHIELD((byte) 0x22, R.string.keyboard_shield_name, 0xffde1f26, R.drawable.shields_list_keyboard_symbol, false, KeyboardShield.class, KeyboardFragment.class),
     TEXT_TO_SPEECH_SHIELD((byte) 0x23, R.string.text_to_speech_shield_name, 0xffde1f26, R.drawable.shields_list_tts_symbol, false, TextToSpeechShield.class, TextToSpeechFragment.class),
@@ -135,11 +137,12 @@ public enum UIShield {
     TERMINAL_SHIELD((byte) 0x26, R.string.terminal_shield_name, 0xffde1f26, R.drawable.shields_list_terminal_symbol, false, TerminalShield.class, TerminalFragment.class),
     TASKER_SHIELD((byte) 0x0, R.string.tasker_shield_name, 0xff0b4c8d, R.drawable.shields_list_flashlight_symbol, false, TaskerShield.class, EmptyShieldFragment.class, false),
     PATTERN_SHIELD((byte) 0x27, R.string.pattern_shield_name, 0xffde1f26, R.drawable.shields_list_pattern_symbol, false, PatternShield.class, PatternFragment.class),
-    INTERNET_SHIELD((byte) 0x29, R.string.internet_shield_name, 0xffde1f26, R.drawable.shields_list_internet_symbol, false, InternetShield.class, InternetFragment.class,1),
+    INTERNET_SHIELD((byte) 0x29, R.string.internet_shield_name, 0xffde1f26, R.drawable.shields_list_internet_symbol, false, InternetShield.class, InternetFragment.class, 1),
     NFC_SHIELD((byte) 0x16, R.string.nfc_shield_name, 0xff03d203, R.drawable.shields_list_nfc_symbol, false, NfcShield.class, NfcFragment.class, 1),
     GLCD_SHIELD((byte) 0x28, R.string.glcd_shield_name, 0xff03d203, R.drawable.shields_list_glcd_symbol, false, GlcdShield.class, GlcdFragment.class),
     COLOR_DETECTION_SHIELD((byte) 0x05, R.string.color_detector_shield_name, 0xffde1f26, R.drawable.shields_list_color_detector_symbol, false, ColorDetectionShield.class, ColorDetectionFragment.class, 1),
-    VIBRATION_SHIELD((byte) 0x2A,R.string.vibration_shield_name,0xffde1f26,R.drawable.shields_list_vibration_symbol,false, VibrationShield.class, VibrationFragment.class,1);
+    VIBRATION_SHIELD((byte) 0x2A, R.string.vibration_shield_name, 0xffde1f26, R.drawable.shields_list_vibration_symbol, false, VibrationShield.class, VibrationFragment.class, 1),
+    FACE_DETECTION((byte) 0x3F, R.string.face_detection_shield_name, 0xff0b4c8d, R.drawable.shields_list_camera_symbol, false, FaceDetectionShield.class, FaceDetectionFragment.class, 1);
     public static int[] colors = new int[]{0xff03d203, 0xffd4d903,
             0xffe28203, 0xffe93f03, 0xff0362c0, 0xff03c0ae, 0xffc0034c,
             0xff99bd03, 0xff40039f, 0xffb97547, 0xffc0039d, 0xff266a5d,
@@ -149,7 +152,7 @@ public enum UIShield {
             0xff999f45, 0xff6d0347, 0xffe9bd03, 0xff127303, 0xff08bbb2,
             0xff5a0303, 0xff988564, 0xff114540, 0xffc45527, 0xffde1f26,
             0xff142218, 0xffc9a302, 0xffa57378, 0xff3354af, 0xff282742,
-            0xff381616};
+            0xff381616, 0xff0b4c8d};
     public static UIShield shieldsActivitySelection;
     public static boolean isConnected = false;
     private byte id;
@@ -164,8 +167,8 @@ public enum UIShield {
     private int position = 0;
 
     UIShield(byte id, int shieldNameStringResource, int mainImageStripId, int symbolId,
-                     boolean mainActivitySelection,
-                     Class<? extends ControllerParent<?>> shieldType, Class<? extends ShieldFragmentParent<?>> shieldFragment) {
+             boolean mainActivitySelection,
+             Class<? extends ControllerParent<?>> shieldType, Class<? extends ShieldFragmentParent<?>> shieldFragment) {
         this.id = id;
         this.shieldNameStringResource = shieldNameStringResource;
         this.itemBackgroundColor = mainImageStripId;
@@ -176,8 +179,8 @@ public enum UIShield {
     }
 
     UIShield(byte id, int shieldNameStringResource, int mainImageStripId, int symbolId,
-                     boolean mainActivitySelection,
-                     Class<? extends ControllerParent<?>> shieldType, Class<? extends ShieldFragmentParent<?>> shieldFragment, int isInvalidatable) {
+             boolean mainActivitySelection,
+             Class<? extends ControllerParent<?>> shieldType, Class<? extends ShieldFragmentParent<?>> shieldFragment, int isInvalidatable) {
         this.id = id;
         this.shieldNameStringResource = shieldNameStringResource;
         this.itemBackgroundColor = mainImageStripId;
@@ -189,9 +192,9 @@ public enum UIShield {
     }
 
     UIShield(byte id, int shieldNameStringResource, int mainImageStripId, int symbolId,
-                     boolean mainActivitySelection,
-                     Class<? extends ControllerParent<?>> shieldType, Class<? extends ShieldFragmentParent<?>> shieldFragment,
-                     boolean isReleasable) {
+             boolean mainActivitySelection,
+             Class<? extends ControllerParent<?>> shieldType, Class<? extends ShieldFragmentParent<?>> shieldFragment,
+             boolean isReleasable) {
         this.id = id;
         this.shieldNameStringResource = shieldNameStringResource;
         this.itemBackgroundColor = mainImageStripId;
