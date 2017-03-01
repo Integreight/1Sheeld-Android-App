@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
@@ -25,6 +26,8 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
@@ -66,7 +69,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
@@ -96,7 +101,7 @@ public class CameraHeadService extends Service implements
     FaceDetector detector;
     private GraphicOverlay mGraphicOverlay;
     private Messenger faceDetectionMessenger;
-
+    private SparseArray<FaceDetection> faceDetections;
     private final int quality = 50;
     FileOutputStream fo;
     SurfaceView sv;
@@ -298,7 +303,14 @@ public class CameraHeadService extends Service implements
                 unBindCameraCapture();
             else if (msg.what == FaceDetectionShield.UNBIND_FACE_DETECTION)
                 unBindFaceDetection();
-            else if (msg.what == CameraShield.BIND_CAMERA_CAPTURE) {
+            else if (msg.what == FaceDetectionShield.BIND_FACE_DETECTION) {
+                faceDetectionMessenger = msg.replyTo;
+                if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
+                    registeredShieldsIDs.add(UIShield.FACE_DETECTION.name());
+                resetPreview();
+                notifyPreviewTypeChanged(isBackPreview, true);
+                Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
+            } else if (msg.what == CameraShield.BIND_CAMERA_CAPTURE) {
                 cameraMessenger = msg.replyTo;
                 if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name()))
                     registeredShieldsIDs.add(UIShield.CAMERA_SHIELD.name());
@@ -318,24 +330,18 @@ public class CameraHeadService extends Service implements
                     invalidateView();
                 else
                     invalidateView(msg.getData().getFloat("x"), msg.getData().getFloat("y"));
-            } else if (msg.what == HIDE_PREVIEW) hidePreview();
+            } else if (msg.what == HIDE_PREVIEW)
+                hidePreview();
             else if (msg.what == FaceDetectionShield.START_DETECTION) {
+                android.util.Log.d(TAG, "bind_detector");
                 detector = new FaceDetector.Builder(getApplicationContext())
                         .setClassificationType(FaceDetector.ALL_LANDMARKS)
                         .build();
                 startDetection(detector);
                 if (detector.isOperational()) {
-                    android.util.Log.d(TAG, "start_detector: ");
-                    detector.setProcessor(new Detector.Processor<Face>() {
-                        @Override
-                        public void release() {
-
-                        }
-                        @Override
-                        public void receiveDetections(Detector.Detections<Face> detections) {
-                            android.util.Log.d(TAG, "receiveDetections: " + detections.getDetectedItems().size());
-                        }
-                    });
+                    android.util.Log.d(TAG, "detector_working: ");
+                    detector.setProcessor(new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
+                            .build());
                 }
 
             } else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
@@ -570,7 +576,6 @@ public class CameraHeadService extends Service implements
         params.alpha = 1;
         try {
             windowManager.updateViewLayout(sv, params);
-            windowManager.updateViewLayout(mGraphicOverlay, params);
         } catch (IllegalArgumentException e) {
         }
     }
@@ -877,7 +882,6 @@ public class CameraHeadService extends Service implements
         sv = new SurfaceView(getApplicationContext());
         windowManager.addView(sv, params);
         mGraphicOverlay = new GraphicOverlay(getApplicationContext());
-        windowManager.addView(mGraphicOverlay, params);
         params = (WindowManager.LayoutParams) sv.getLayoutParams();
         sHolder = sv.getHolder();
         sHolder.addCallback(this);
@@ -1025,6 +1029,7 @@ public class CameraHeadService extends Service implements
                 if (sv != null && registeredShieldsIDs.size() == 1) {
                     if (mCamera != null)
                         mCamera.setPreviewCallback(null);
+                    mCamera.setPreviewCallbackWithBuffer(null);
                     windowManager.removeView(sv);
                 }
             } catch (Exception e) {
@@ -1042,9 +1047,9 @@ public class CameraHeadService extends Service implements
             try {
                 if (sv != null && registeredShieldsIDs.size() == 1) {
                     if (mCamera != null)
-                        mCamera.setPreviewCallbackWithBuffer(null);
+                        mCamera.setPreviewCallback(null);
+                    mCamera.setPreviewCallbackWithBuffer(null);
                     windowManager.removeView(sv);
-                    windowManager.removeView(mGraphicOverlay);
                 }
             } catch (Exception e) {
             }
@@ -1060,8 +1065,10 @@ public class CameraHeadService extends Service implements
         if (mCamera != null) {
             try {
                 if (sv != null && registeredShieldsIDs.size() == 1) {
-                    if (mCamera != null)
+                    if (mCamera != null) {
                         mCamera.setPreviewCallback(null);
+                        mCamera.setPreviewCallbackWithBuffer(null);
+                    }
                     windowManager.removeView(sv);
                 }
             } catch (Exception e) {
@@ -1131,6 +1138,7 @@ public class CameraHeadService extends Service implements
             if (queue != null)
                 queue.removeCallbacks(null);
             mCamera.setPreviewCallback(null);
+            mCamera.setPreviewCallbackWithBuffer(null);
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
@@ -1139,7 +1147,6 @@ public class CameraHeadService extends Service implements
         try {
             if (sv != null) {
                 windowManager.removeView(sv);
-                windowManager.removeView(mGraphicOverlay);
             }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
@@ -1179,7 +1186,6 @@ public class CameraHeadService extends Service implements
             try {
                 if (sv != null) {
                     windowManager.removeView(sv);
-                    windowManager.removeView(mGraphicOverlay);
                 }
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
@@ -1487,6 +1493,7 @@ public class CameraHeadService extends Service implements
     private class GraphicFaceTrackerFactory implements MultiProcessor.Factory<Face> {
         @Override
         public Tracker<Face> create(Face face) {
+            android.util.Log.d(TAG, "create_detector: ");
             return new GraphicFaceTracker(mGraphicOverlay);
         }
     }
@@ -1509,6 +1516,7 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onNewItem(int faceId, Face item) {
+            android.util.Log.d(TAG, "onNewItem: ");
             mFaceGraphic.setId(faceId);
         }
 
@@ -1517,6 +1525,7 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
+            android.util.Log.d(TAG, "onUpdate: ");
             mOverlay.add(mFaceGraphic);
             mFaceGraphic.updateFace(face);
         }
@@ -1528,6 +1537,7 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> detectionResults) {
+            android.util.Log.d(TAG, "onMissing: ");
             mOverlay.remove(mFaceGraphic);
         }
 
@@ -1537,8 +1547,206 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onDone() {
+            android.util.Log.d(TAG, "onDone: ");
             mOverlay.remove(mFaceGraphic);
         }
+    }
+
+    public static class FaceDetection implements Parcelable {
+
+        public static final float UNCOMPUTED_PROBABILITY = -1.0F;
+        private int mId;
+        private PointF point;
+        private float width;
+        private float height;
+        private float eulerY;
+        private float eulerZ;
+        private List<Landmark> landList;
+        private float leftEyeOpen;
+        private float rightEyeOpen;
+        private float isSmiling;
+
+        public PointF getPosition() {
+            return new PointF(this.point.x - this.width / 2.0F, this.point.y - this.height / 2.0F);
+        }
+
+        public float getWidth() {
+            return this.width;
+        }
+
+        public float getHeight() {
+            return this.height;
+        }
+
+        public float getEulerY() {
+            return this.eulerY;
+        }
+
+        public float getEulerZ() {
+            return this.eulerZ;
+        }
+
+        public List<Landmark> getLandmarks() {
+            return this.landList;
+        }
+
+        public float getIsLeftEyeOpenProbability() {
+            return this.leftEyeOpen;
+        }
+
+        public float getIsRightEyeOpenProbability() {
+            return this.rightEyeOpen;
+        }
+
+        public float getIsSmilingProbability() {
+            return this.isSmiling;
+        }
+
+        public int getId() {
+            return this.mId;
+        }
+
+        public FaceDetection(int var1, PointF point, float width, float height, float eulerY, float eulerZ, Landmark[] landList, float leftEyeOpen, float rightEyeOpen, float isSmiling) {
+            this.mId = var1;
+            this.point = point;
+            this.width = width;
+            this.height = height;
+            this.eulerY = eulerY;
+            this.eulerZ = eulerZ;
+            this.landList = Arrays.asList(landList);
+            if (leftEyeOpen >= 0.0F && leftEyeOpen <= 1.0F) {
+                this.leftEyeOpen = leftEyeOpen;
+            } else {
+                this.leftEyeOpen = -1.0F;
+            }
+
+            if (rightEyeOpen >= 0.0F && rightEyeOpen <= 1.0F) {
+                this.rightEyeOpen = rightEyeOpen;
+            } else {
+                this.rightEyeOpen = -1.0F;
+            }
+
+            if (isSmiling >= 0.0F && isSmiling <= 1.0F) {
+                this.isSmiling = isSmiling;
+            } else {
+                this.isSmiling = -1.0F;
+            }
+
+        }
+
+        protected FaceDetection(Parcel in) {
+            mId = in.readInt();
+            point = (PointF) in.readValue(PointF.class.getClassLoader());
+            width = in.readFloat();
+            height = in.readFloat();
+            eulerY = in.readFloat();
+            eulerZ = in.readFloat();
+            if (in.readByte() == 0x01) {
+                landList = new ArrayList<Landmark>();
+                in.readList(landList, Landmark.class.getClassLoader());
+            } else {
+                landList = null;
+            }
+            leftEyeOpen = in.readFloat();
+            rightEyeOpen = in.readFloat();
+            isSmiling = in.readFloat();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(mId);
+            dest.writeValue(point);
+            dest.writeFloat(width);
+            dest.writeFloat(height);
+            dest.writeFloat(eulerY);
+            dest.writeFloat(eulerZ);
+            if (landList == null) {
+                dest.writeByte((byte) (0x00));
+            } else {
+                dest.writeByte((byte) (0x01));
+                dest.writeList(landList);
+            }
+            dest.writeFloat(leftEyeOpen);
+            dest.writeFloat(rightEyeOpen);
+            dest.writeFloat(isSmiling);
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<FaceDetection> CREATOR = new Parcelable.Creator<FaceDetection>() {
+            @Override
+            public FaceDetection createFromParcel(Parcel in) {
+                return new FaceDetection(in);
+            }
+
+            @Override
+            public FaceDetection[] newArray(int size) {
+                return new FaceDetection[size];
+            }
+        };
+    }
+
+    public static final class Landmark implements Parcelable {
+        public static final int BOTTOM_MOUTH = 0;
+        public static final int LEFT_CHEEK = 1;
+        public static final int LEFT_EAR_TIP = 2;
+        public static final int LEFT_EAR = 3;
+        public static final int LEFT_EYE = 4;
+        public static final int LEFT_MOUTH = 5;
+        public static final int NOSE_BASE = 6;
+        public static final int RIGHT_CHEEK = 7;
+        public static final int RIGHT_EAR_TIP = 8;
+        public static final int RIGHT_EAR = 9;
+        public static final int RIGHT_EYE = 10;
+        public static final int RIGHT_MOUTH = 11;
+        private final PointF position;
+        private final int type;
+
+        public PointF getPosition() {
+            return this.position;
+        }
+
+        public int getType() {
+            return this.type;
+        }
+
+        public Landmark(PointF position, int type) {
+            this.position = position;
+            this.type = type;
+        }
+
+        protected Landmark(Parcel in) {
+            position = (PointF) in.readValue(PointF.class.getClassLoader());
+            type = in.readInt();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(position);
+            dest.writeInt(type);
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<Landmark> CREATOR = new Parcelable.Creator<Landmark>() {
+            @Override
+            public Landmark createFromParcel(Parcel in) {
+                return new Landmark(in);
+            }
+
+            @Override
+            public Landmark[] newArray(int size) {
+                return new Landmark[size];
+            }
+        };
     }
 
 }

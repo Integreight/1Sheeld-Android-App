@@ -340,10 +340,6 @@ public class ShieldsOperations extends Fragment {
                                         } catch (RemoteException e) {
                                             e.printStackTrace();
                                         }
-//                                    } else {
-//                                        Log.test("Test", "Cannot disconnect in demoMode");
-//                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
-//                                    }
                                     activity.closeMenu();
                                     if (activity.getSupportFragmentManager()
                                             .getBackStackEntryCount() > 1) {

@@ -1,12 +1,15 @@
 package com.integreight.onesheeld.shields.fragments;
 
+
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
@@ -23,6 +26,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
 
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
+    private ImageView lastImage;
     private View cameraLogo;
     private FaceDetectionHandler faceDetectionHandler = new FaceDetectionHandler() {
         @Override
@@ -123,12 +127,21 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
         frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         cameraLogo = view.findViewById(R.id.camera_log);
+        lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
+        activity.backgroundThreadHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                lastImage.setVisibility(View.INVISIBLE);
+            }
+        });
+
     }
 
     @Override
     public void doOnStart() {
         ((FaceDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(faceDetectionHandler);
+
     }
 
     private void initializeFirmata() {
@@ -189,7 +202,6 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
         frontBackToggle.setChecked(((FaceDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).isBackPreview());
         applyListeners();
-
     }
 
     @Override
@@ -204,7 +216,8 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
             }
         }
         cameraLogo.setVisibility(View.VISIBLE);
-        if (getView() != null) getView().invalidate();
+        if (getView() != null)
+            getView().invalidate();
     }
 
     @Override

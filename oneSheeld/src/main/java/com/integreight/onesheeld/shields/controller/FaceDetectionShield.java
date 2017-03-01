@@ -189,7 +189,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         if (isChangingPreview)
             return false;
         isChangingPreview = true;
-        Log.d("Acc", isBack + "   **");
+        Log.d("isBack", isBack + "   **");
         Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
         msg.replyTo = mMessenger;
         Bundle b = new Bundle();
@@ -220,14 +220,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         }
     }
 
-    public void invalidatePreview() throws RemoteException {
-        Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
-        msg.replyTo = mMessenger;
-        if (cameraBinder != null)
-            cameraBinder.send(msg);
-        else bindService();
-    }
-
     public boolean hidePreview() throws RemoteException {
         Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
         msg.replyTo = mMessenger;
@@ -238,6 +230,15 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
             return false;
         }
     }
+
+    public void invalidatePreview() throws RemoteException {
+        Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
+        msg.replyTo = mMessenger;
+        if (cameraBinder != null)
+            cameraBinder.send(msg);
+        else bindService();
+    }
+
 
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
