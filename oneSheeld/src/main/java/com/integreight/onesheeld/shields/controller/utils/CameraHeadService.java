@@ -323,12 +323,21 @@ public class CameraHeadService extends Service implements
                 detector = new FaceDetector.Builder(getApplicationContext())
                         .setClassificationType(FaceDetector.ALL_LANDMARKS)
                         .build();
+                startDetection(detector);
                 if (detector.isOperational()) {
-                    detector.setProcessor(
-                            new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
-                                    .build());
-                    startDetection(detector);
+                    android.util.Log.d(TAG, "start_detector: ");
+                    detector.setProcessor(new Detector.Processor<Face>() {
+                        @Override
+                        public void release() {
+
+                        }
+                        @Override
+                        public void receiveDetections(Detector.Detections<Face> detections) {
+                            android.util.Log.d(TAG, "receiveDetections: " + detections.getDetectedItems().size());
+                        }
+                    });
                 }
+
             } else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
                 if (!isCapturing) {
                     if (msg.getData().getBoolean("isBack")) {
@@ -537,7 +546,6 @@ public class CameraHeadService extends Service implements
         params.alpha = 1;
         try {
             windowManager.updateViewLayout(sv, params);
-            windowManager.updateViewLayout(mGraphicOverlay, params);
         } catch (IllegalArgumentException e) {
         }
     }
@@ -562,6 +570,7 @@ public class CameraHeadService extends Service implements
         params.alpha = 1;
         try {
             windowManager.updateViewLayout(sv, params);
+            windowManager.updateViewLayout(mGraphicOverlay, params);
         } catch (IllegalArgumentException e) {
         }
     }
