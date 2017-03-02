@@ -239,7 +239,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         else bindService();
     }
 
-
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
 

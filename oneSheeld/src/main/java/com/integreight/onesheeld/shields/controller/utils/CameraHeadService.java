@@ -149,9 +149,8 @@ public class CameraHeadService extends Service implements
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data1, final Camera camera) {
-            if (colorDetectionMessenger != null) {
+            if (colorDetectionMessenger != null)
                 colorDetectionFramesProcessing(data1, camera);
-            }
         }
     };
 
@@ -411,7 +410,7 @@ public class CameraHeadService extends Service implements
 
                         @Override
                         public void receiveDetections(Detector.Detections<Face> detections) {
-                            android.util.Log.d(TAG, "receiveDetections: ");
+                            android.util.Log.d(TAG, "receiveDetections: " + detections.getDetectedItems().size());
                         }
                     });
                 }
@@ -432,8 +431,6 @@ public class CameraHeadService extends Service implements
                                 setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
                                 if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                                     mCamera.setPreviewCallback(previewCallback);
-                                if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
-                                    mCamera.setPreviewCallbackWithBuffer(previewCallback);
                                 mCamera.setPreviewDisplay(sv.getHolder());
                                 currentCamera = Camera.CameraInfo.CAMERA_FACING_BACK;
                                 try {
@@ -953,23 +950,13 @@ public class CameraHeadService extends Service implements
         }
         mCamera.setParameters(parameters);
         size = parameters.getPreviewSize();
-        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
-            int[] previewFpsRange = selectPreviewFpsRange(mCamera, 30.0f);
-            if (previewFpsRange == null) {
-                throw new RuntimeException("Could not find suitable preview frames per second range.");
-            }
-            parameters.setPreviewFpsRange(
-                    previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
-                    previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
-            parameters.setPreviewFormat(ImageFormat.NV21);
+        mCamera.setPreviewCallbackWithBuffer(new CameraPreviewCallback());
+        mCamera.addCallbackBuffer(createPreviewBuffer(size));
+        mCamera.addCallbackBuffer(createPreviewBuffer(size));
+        mCamera.addCallbackBuffer(createPreviewBuffer(size));
+        mCamera.addCallbackBuffer(createPreviewBuffer(size));
+        mFrameProcessor = new FrameProcessingRunnable(detector);
 
-            mCamera.setPreviewCallbackWithBuffer(new CameraPreviewCallback());
-            mCamera.addCallbackBuffer(createPreviewBuffer(size));
-            mCamera.addCallbackBuffer(createPreviewBuffer(size));
-            mCamera.addCallbackBuffer(createPreviewBuffer(size));
-            mCamera.addCallbackBuffer(createPreviewBuffer(size));
-            mFrameProcessor = new FrameProcessingRunnable(detector);
-        }
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             mCamera.setPreviewCallback(previewCallback);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
@@ -1325,39 +1312,6 @@ public class CameraHeadService extends Service implements
     //==============================================================================================
 
     /**
-     * Selects the most suitable preview frames per second range, given the desired frames per
-     * second.
-     *
-     * @param camera            the camera to select a frames per second range from
-     * @param desiredPreviewFps the desired frames per second for the camera preview frames
-     * @return the selected preview frames per second range
-     */
-    private int[] selectPreviewFpsRange(Camera camera, float desiredPreviewFps) {
-        // The camera API uses integers scaled by a factor of 1000 instead of floating-point frame
-        // rates.
-        int desiredPreviewFpsScaled = (int) (desiredPreviewFps * 1000.0f);
-
-        // The method for selecting the best range is to minimize the sum of the differences between
-        // the desired value and the upper and lower bounds of the range.  This may select a range
-        // that the desired value is outside of, but this is often preferred.  For example, if the
-        // desired frame rate is 29.97, the range (30, 30) is probably more desirable than the
-        // range (15, 30).
-        int[] selectedFpsRange = null;
-        int minDiff = Integer.MAX_VALUE;
-        List<int[]> previewFpsRangeList = camera.getParameters().getSupportedPreviewFpsRange();
-        for (int[] range : previewFpsRangeList) {
-            int deltaMin = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
-            int deltaMax = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
-            int diff = Math.abs(deltaMin) + Math.abs(deltaMax);
-            if (diff < minDiff) {
-                selectedFpsRange = range;
-                minDiff = diff;
-            }
-        }
-        return selectedFpsRange;
-    }
-
-    /**
      * Creates one buffer for the camera preview callback.  The size of the buffer is based off of
      * the camera preview size and the format of the camera image.
      *
@@ -1422,7 +1376,6 @@ public class CameraHeadService extends Service implements
          * Releases the underlying receiver.  This is only safe to do after the associated thread
          * has completed, which is managed in camera source's release method above.
          */
-        @SuppressLint("Assert")
         void release() {
             mDetector.release();
             mDetector = null;
@@ -1507,13 +1460,12 @@ public class CameraHeadService extends Service implements
                         // loop.
                         return;
                     }
-
                     outputFrame = new Frame.Builder()
                             .setImageData(mPendingFrameData, size.width,
                                     size.height, ImageFormat.NV21)
                             .setId(mPendingFrameId)
                             .setTimestampMillis(mPendingTimeMillis)
-                            .setRotation(mOrientation)
+                            .setRotation(getResources().getConfiguration().orientation)
                             .build();
                     // Hold onto the frame data locally, so that we can use this for detection
                     // below.  We need to clear mPendingFrameData to ensure that this buffer isn't
