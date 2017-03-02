@@ -103,12 +103,6 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                 }
             }
         });
-        try {
-            ((FaceDetectionShield) getApplication().getRunningShields().get(
-                    getControllerTag())).setStartDetection();
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

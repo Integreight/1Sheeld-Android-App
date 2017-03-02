@@ -135,6 +135,11 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
             } catch (RemoteException e) {
             }
             isCameraBound = true;
+            try {
+                setStartDetection();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override

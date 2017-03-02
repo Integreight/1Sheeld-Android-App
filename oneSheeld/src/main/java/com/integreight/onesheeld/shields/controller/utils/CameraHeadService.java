@@ -403,8 +403,17 @@ public class CameraHeadService extends Service implements
                 startDetection(detector);
                 if (detector.isOperational()) {
                     android.util.Log.d(TAG, "detector_working: ");
-                    detector.setProcessor(new MultiProcessor.Builder<>(new GraphicFaceTrackerFactory())
-                            .build());
+                    detector.setProcessor(new Detector.Processor<Face>() {
+                        @Override
+                        public void release() {
+                            android.util.Log.d(TAG, "release: ");
+                        }
+
+                        @Override
+                        public void receiveDetections(Detector.Detections<Face> detections) {
+                            android.util.Log.d(TAG, "receiveDetections: ");
+                        }
+                    });
                 }
 
             } else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
@@ -945,6 +954,15 @@ public class CameraHeadService extends Service implements
         mCamera.setParameters(parameters);
         size = parameters.getPreviewSize();
         if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
+            int[] previewFpsRange = selectPreviewFpsRange(mCamera, 30.0f);
+            if (previewFpsRange == null) {
+                throw new RuntimeException("Could not find suitable preview frames per second range.");
+            }
+            parameters.setPreviewFpsRange(
+                    previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                    previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+            parameters.setPreviewFormat(ImageFormat.NV21);
+
             mCamera.setPreviewCallbackWithBuffer(new CameraPreviewCallback());
             mCamera.addCallbackBuffer(createPreviewBuffer(size));
             mCamera.addCallbackBuffer(createPreviewBuffer(size));
@@ -1123,14 +1141,29 @@ public class CameraHeadService extends Service implements
     }
 
     public void unBindFaceDetection() {
+        mFrameProcessor.setActive(false);
+        if (mProcessingThread != null) {
+            try {
+                // Wait for the thread to complete to ensure that we can't have multiple threads
+                // executing at the same time (i.e., which would happen if we called start too
+                // quickly after stop).
+                mProcessingThread.join();
+            } catch (InterruptedException e) {
+                android.util.Log.d(TAG, "Frame processing thread interrupted on release.");
+            }
+            mProcessingThread = null;
+        }
+//         clear the buffer to prevent oom exceptions
+        mBytesToByteBuffer.clear();
         if (mCamera != null) {
             try {
                 if (sv != null && registeredShieldsIDs.size() == 1) {
-                    if (mCamera != null) {
-                        mCamera.setPreviewCallback(null);
-                        mCamera.setPreviewCallbackWithBuffer(null);
-                    }
+                    mCamera.stopPreview();
+                    mCamera.setPreviewCallback(null);
+                    mCamera.setPreviewCallbackWithBuffer(null);
                     windowManager.removeView(sv);
+                    mCamera.release();
+                    mCamera = null;
                 }
             } catch (Exception e) {
             }
@@ -1139,7 +1172,7 @@ public class CameraHeadService extends Service implements
             Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
             faceDetectionMessenger = null;
         }
-
+        mFrameProcessor.release();
     }
 
     public void unBindCameraCapture() {
@@ -1196,27 +1229,9 @@ public class CameraHeadService extends Service implements
         }
     }
 
-    public void release() {
-        mFrameProcessor.setActive(false);
-        if (mProcessingThread != null) {
-            try {
-                // Wait for the thread to complete to ensure that we can't have multiple threads
-                // executing at the same time (i.e., which would happen if we called start too
-                // quickly after stop).
-                mProcessingThread.join();
-            } catch (InterruptedException e) {
-                Log.d(TAG, "Frame processing thread interrupted on release.");
-            }
-            mCamera.setPreviewCallbackWithBuffer(null);
-            mProcessingThread = null;
-        }
-        // clear the buffer to prevent oom exceptions
-        mBytesToByteBuffer.clear();
-        mFrameProcessor.release();
-    }
-
     @Override
     public void onDestroy() {
+
         if (mCamera != null) {
             if (queue != null)
                 queue.removeCallbacks(null);
@@ -1310,6 +1325,39 @@ public class CameraHeadService extends Service implements
     //==============================================================================================
 
     /**
+     * Selects the most suitable preview frames per second range, given the desired frames per
+     * second.
+     *
+     * @param camera            the camera to select a frames per second range from
+     * @param desiredPreviewFps the desired frames per second for the camera preview frames
+     * @return the selected preview frames per second range
+     */
+    private int[] selectPreviewFpsRange(Camera camera, float desiredPreviewFps) {
+        // The camera API uses integers scaled by a factor of 1000 instead of floating-point frame
+        // rates.
+        int desiredPreviewFpsScaled = (int) (desiredPreviewFps * 1000.0f);
+
+        // The method for selecting the best range is to minimize the sum of the differences between
+        // the desired value and the upper and lower bounds of the range.  This may select a range
+        // that the desired value is outside of, but this is often preferred.  For example, if the
+        // desired frame rate is 29.97, the range (30, 30) is probably more desirable than the
+        // range (15, 30).
+        int[] selectedFpsRange = null;
+        int minDiff = Integer.MAX_VALUE;
+        List<int[]> previewFpsRangeList = camera.getParameters().getSupportedPreviewFpsRange();
+        for (int[] range : previewFpsRangeList) {
+            int deltaMin = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MIN_INDEX];
+            int deltaMax = desiredPreviewFpsScaled - range[Camera.Parameters.PREVIEW_FPS_MAX_INDEX];
+            int diff = Math.abs(deltaMin) + Math.abs(deltaMax);
+            if (diff < minDiff) {
+                selectedFpsRange = range;
+                minDiff = diff;
+            }
+        }
+        return selectedFpsRange;
+    }
+
+    /**
      * Creates one buffer for the camera preview callback.  The size of the buffer is based off of
      * the camera preview size and the format of the camera image.
      *
@@ -1376,7 +1424,6 @@ public class CameraHeadService extends Service implements
          */
         @SuppressLint("Assert")
         void release() {
-            assert (mProcessingThread.getState() == Thread.State.TERMINATED);
             mDetector.release();
             mDetector = null;
         }
@@ -1417,7 +1464,7 @@ public class CameraHeadService extends Service implements
                 mPendingFrameData = mBytesToByteBuffer.get(data);
 
                 // Notify the processor thread if it is waiting on the next frame (see below).
-                mLock.notify();
+                mLock.notifyAll();
             }
         }
 
