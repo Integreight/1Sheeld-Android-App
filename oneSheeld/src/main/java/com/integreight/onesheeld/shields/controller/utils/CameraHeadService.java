@@ -57,8 +57,8 @@ import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
 import com.integreight.onesheeld.shields.controller.FaceDetectionShield;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
 import com.integreight.onesheeld.utils.Log;
-import com.integreight.onesheeld.utils.customviews.utils.GraphicOverlay;
 import com.integreight.onesheeld.utils.customviews.utils.FaceGraphic;
+import com.integreight.onesheeld.utils.customviews.utils.GraphicOverlay;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
@@ -149,14 +149,68 @@ public class CameraHeadService extends Service implements
     private final Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
         public void onPreviewFrame(byte[] data1, final Camera camera) {
-            if (faceDetectionMessenger != null) {
-                faceDetectionFrameProcessing(data1, camera);
-            }
             if (colorDetectionMessenger != null) {
                 colorDetectionFramesProcessing(data1, camera);
             }
         }
     };
+
+    /**
+     * making frames processing though we can detect colors
+     *
+     * @param data1
+     * @param camera
+     */
+    public void colorDetectionFramesProcessing(byte[] data1, final Camera camera) {
+        queue.removeCallbacks(null);
+        data = data1;
+        queue.post(new Runnable() {
+            @Override
+            public void run() {
+                if (data != null && camera != null) {
+                    try {
+                        Log.e("", "onPreviewFrame pass");
+                        out = new ByteArrayOutputStream();
+                        parameters = camera.getParameters();
+                        size = parameters.getPreviewSize();
+                        yuv = new YuvImage(data, ImageFormat.NV21, size.width,
+                                size.height, null);
+                        // bWidth and bHeight define the size of the bitmap you wish the
+                        // fill with the preview image
+                        yuv.compressToJpeg(new Rect(0, 0, size.width, size.height),
+                                quality, out);
+                        bytes = out.toByteArray();
+                        bitmap = BitmapFactory.decodeByteArray(bytes, 0,
+                                bytes.length);
+                        if (recevedFrameOperation == ColorDetectionShield.RECEIVED_FRAMES.CENTER) {
+                            previewCells = new int[1];
+                            currentColorIndex = 0;
+                            addColorCell(1, 1);
+                        } else {
+                            currentColorIndex = 0;
+                            previewCells = new int[9];
+                            for (int i = 0; i < 3; i++)
+                                for (int j = 0; j < 3; j++) {
+                                    addColorCell(i, j);
+                                    currentColorIndex += 1;
+                                }
+                        }
+                        if (colorDetectionMessenger != null && !isEqualColors()) {
+                            Bundle b = new Bundle();
+                            b.putIntArray("detected", previewCells);
+                            Message msg = Message.obtain(null, GET_RESULT);
+                            msg.setData(b);
+                            colorDetectionMessenger.send(msg);
+                            lastPreviewCells = previewCells;
+                        }
+                    } catch (Exception e) {
+                        CrashlyticsUtils.logException(e);
+                    }
+                }
+            }
+        });
+    }
+
     private boolean isBackPreview = true;
     private boolean isCapturing = false;
     Camera.PictureCallback mCall = new Camera.PictureCallback() {
@@ -165,6 +219,7 @@ public class CameraHeadService extends Service implements
         public void onPictureTaken(byte[] data, Camera camera) {
             // decode the data obtained by the camera into a Bitmap
             Matrix bitmapMatrix = new Matrix();
+
             try {
                 // Get the EXIF orientation.
                 final Metadata metadata = ImageMetadataReader.readMetadata(new BufferedInputStream(new ByteArrayInputStream(data)));
@@ -205,32 +260,38 @@ public class CameraHeadService extends Service implements
             } catch (Exception e) {
                 // TODO: handle exception
             }
+
             Log.d("ImageTakin", "Done");
             if (bmp != null)
                 bmp.recycle();
             // decode with options and set rotation
             bmp = ImageUtils.decodeBitmap(data, bitmapMatrix);
+
             ByteArrayOutputStream bytes = new ByteArrayOutputStream();
             if (bmp != null && QUALITY_MODE == 0)
                 bmp.compress(Bitmap.CompressFormat.JPEG, 70, bytes);
             else if (bmp != null && QUALITY_MODE != 0)
                 bmp.compress(Bitmap.CompressFormat.JPEG, QUALITY_MODE, bytes);
+
             File imagesFolder = new File(
                     Environment.getExternalStorageDirectory(), "OneSheeld");
             if (!imagesFolder.exists())
                 imagesFolder.mkdirs(); // <----
             File image = new File(imagesFolder, System.currentTimeMillis()
                     + ".jpg");
+
             // write the bytes in file
             try {
                 fo = new FileOutputStream(image);
             } catch (FileNotFoundException e) {
                 Log.e("TAG", "FileNotFoundException", e);
+                // TODO Auto-generated catch block
             }
             try {
                 fo.write(bytes.toByteArray());
             } catch (IOException e) {
                 Log.e("TAG", "fo.write::PictureTaken", e);
+                // TODO Auto-generated catch block
             }
             // remember close de FileOutput
             try {
@@ -256,6 +317,7 @@ public class CameraHeadService extends Service implements
                                         }
                                     });
                 }
+
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -267,6 +329,7 @@ public class CameraHeadService extends Service implements
                 System.gc();
             }
             handler.post(new Runnable() {
+
                 @Override
                 public void run() {
                     Toast.makeText(getApplicationContext(),
@@ -277,7 +340,7 @@ public class CameraHeadService extends Service implements
             resetPreview();
             takenSuccessfully = true;
             updateLastImage(image.getAbsolutePath());
-            notifyFinishCapture();
+            notifyFinished();
             return;
         }
     };
@@ -308,7 +371,7 @@ public class CameraHeadService extends Service implements
                 if (registeredShieldsIDs != null && !registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
                     registeredShieldsIDs.add(UIShield.FACE_DETECTION.name());
                 resetPreview();
-                notifyPreviewTypeChanged(isBackPreview, true);
+                notifyPreviewTypeChanged(isBackPreview, false);
                 Log.d("Xcamera", registeredShieldsIDs.size() + "  " + registeredShieldsIDs.toString());
             } else if (msg.what == CameraShield.BIND_CAMERA_CAPTURE) {
                 cameraMessenger = msg.replyTo;
@@ -403,6 +466,13 @@ public class CameraHeadService extends Service implements
         }
     });
 
+    private void startDetection(FaceDetector detector) {
+        mFrameProcessor = new FrameProcessingRunnable(detector);
+        mProcessingThread = new Thread(mFrameProcessor);
+        mFrameProcessor.setActive(true);
+        mProcessingThread.start();
+    }
+
     public static Camera getCameraInstance() {
         Camera c = null;
         try {
@@ -447,8 +517,6 @@ public class CameraHeadService extends Service implements
         setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_FRONT, cam);
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             cam.setPreviewCallback(previewCallback);
-        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
-            cam.setPreviewCallbackWithBuffer(previewCallback);
         return cam;
     }
 
@@ -488,7 +556,7 @@ public class CameraHeadService extends Service implements
         camera.setDisplayOrientation(result);
     }
 
-    private void setBestPictureResolution() {
+    private void setBesttPictureResolution() {
         // get biggest picture size
         width = pref.getInt("Picture_Width", 0);
         height = pref.getInt("Picture_height", 0);
@@ -581,22 +649,27 @@ public class CameraHeadService extends Service implements
     }
 
     private synchronized void takeImage(Bundle extras) {
+
         if (CameraUtils.checkCameraHardware(getApplicationContext())) {
             takenSuccessfully = false;
             isCapturing = true;
             if (extras != null) {
                 String flash_mode = extras.getString("FLASH");
                 FLASH_MODE = flash_mode;
+
                 boolean front_cam_req = extras.getBoolean("Front_Request");
                 isFrontCamRequest = front_cam_req;
+
                 int quality_mode = extras.getInt("Quality_Mode");
                 QUALITY_MODE = quality_mode;
             }
+
             if (isFrontCamRequest) {
                 // set flash 0ff
                 FLASH_MODE = "off";
                 // only for gingerbread and newer versions
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+
                     mCamera = openFrontFacingCameraGingerbread();
                     if (mCamera != null) {
 
@@ -615,7 +688,7 @@ public class CameraHeadService extends Service implements
                                 }
                             });
                             takenSuccessfully = false;
-                            notifyFinishCapture();
+                            notifyFinished();
                             return;
                         }
                         Camera.Parameters parameters = mCamera.getParameters();
@@ -628,17 +701,21 @@ public class CameraHeadService extends Service implements
                         if (pictureSize != null)
                             parameters.setPictureSize(pictureSize.width,
                                     pictureSize.height);
+
+
                         android.hardware.Camera.CameraInfo info =
                                 new android.hardware.Camera.CameraInfo();
                         android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_FRONT, info);
                         int mRotation = (info.orientation - mOrientation + 360) % 360;
                         parameters.setRotation(mRotation);
+
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
                         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                             mCamera.setPreviewCallback(previewCallback);
                         takePictureWithAutoFocus(mCamera, mCall);
+
                     } else {
                         mCamera = null;
                         handler.post(new Runnable() {
@@ -652,13 +729,16 @@ public class CameraHeadService extends Service implements
                             }
                         });
                         takenSuccessfully = false;
-                        notifyFinishCapture();
+
+
+                        notifyFinished();
                         return;
                     }
 
                 } else {
                     if (CameraUtils.checkFrontCamera(getApplicationContext())) {
                         mCamera = openFrontFacingCameraGingerbread();
+
                         if (mCamera != null) {
                             try {
                                 mCamera.setPreviewDisplay(sv.getHolder());
@@ -676,7 +756,7 @@ public class CameraHeadService extends Service implements
                                     }
                                 });
                                 takenSuccessfully = false;
-                                notifyFinishCapture();
+                                notifyFinished();
                                 return;
                             }
                             Camera.Parameters parameters = mCamera
@@ -690,17 +770,22 @@ public class CameraHeadService extends Service implements
                             if (pictureSize != null)
                                 parameters.setPictureSize(pictureSize.width,
                                         pictureSize.height);
+
                             android.hardware.Camera.CameraInfo info =
                                     new android.hardware.Camera.CameraInfo();
                             android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_FRONT, info);
                             int mRotation = (info.orientation - mOrientation + 360) % 360;
                             parameters.setRotation(mRotation);
+
                             // set camera parameters
                             mCamera.setParameters(parameters);
                             mCamera.startPreview();
                             if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                                 mCamera.setPreviewCallback(previewCallback);
+
+
                             takePictureWithAutoFocus(mCamera, mCall);
+
                         } else {
                             mCamera = null;
                             handler.post(new Runnable() {
@@ -714,7 +799,7 @@ public class CameraHeadService extends Service implements
                                 }
                             });
                             takenSuccessfully = false;
-                            notifyFinishCapture();
+                            notifyFinished();
                             return;
                         }
 
@@ -750,15 +835,17 @@ public class CameraHeadService extends Service implements
                         }
                         if (CameraUtils.hasFlash(mCamera)) parameters.setFlashMode(FLASH_MODE);
                         // set biggest picture
-                        setBestPictureResolution();
+                        setBesttPictureResolution();
                         // log quality and image format
                         Log.d("Quality", parameters.getJpegQuality() + "");
                         Log.d("Format", parameters.getPictureFormat() + "");
+
                         android.hardware.Camera.CameraInfo info =
                                 new android.hardware.Camera.CameraInfo();
                         android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
                         int mRotation = (info.orientation + mOrientation) % 360;
                         parameters.setRotation(mRotation);
+
                         // set camera parameters
                         mCamera.setParameters(parameters);
                         mCamera.startPreview();
@@ -775,17 +862,21 @@ public class CameraHeadService extends Service implements
                             }
                         });
                         takenSuccessfully = false;
-                        notifyFinishCapture();
+                        notifyFinished();
                         return;
                     }
+
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     Log.e("TAG", "CmaraHeadService()::takePicture", e);
                     takenSuccessfully = false;
-                    notifyFinishCapture();
+                    notifyFinished();
                 }
+
             }
+
         } else {
+
             handler.post(new Runnable() {
 
                 @Override
@@ -796,9 +887,10 @@ public class CameraHeadService extends Service implements
                 }
             });
             takenSuccessfully = false;
-            notifyFinishCapture();
+            notifyFinished();
             return;
         }
+
     }
 
     private void takePictureWithAutoFocus(final android.hardware.Camera mCamera, final Camera.PictureCallback mCall) {
@@ -850,11 +942,10 @@ public class CameraHeadService extends Service implements
                 Camera.Parameters.FOCUS_MODE_AUTO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
-        parameters.setPreviewFormat(ImageFormat.NV21);
         mCamera.setParameters(parameters);
         size = parameters.getPreviewSize();
         if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
-            mCamera.setPreviewCallbackWithBuffer(previewCallback);
+            mCamera.setPreviewCallbackWithBuffer(new CameraPreviewCallback());
             mCamera.addCallbackBuffer(createPreviewBuffer(size));
             mCamera.addCallbackBuffer(createPreviewBuffer(size));
             mCamera.addCallbackBuffer(createPreviewBuffer(size));
@@ -864,6 +955,7 @@ public class CameraHeadService extends Service implements
         if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
             mCamera.setPreviewCallback(previewCallback);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -881,15 +973,17 @@ public class CameraHeadService extends Service implements
         params.alpha = 1;
         sv = new SurfaceView(getApplicationContext());
         windowManager.addView(sv, params);
-        mGraphicOverlay = new GraphicOverlay(getApplicationContext());
         params = (WindowManager.LayoutParams) sv.getLayoutParams();
         sHolder = sv.getHolder();
         sHolder.addCallback(this);
+
         mOrientationEventListener = new OrientationEventListener(this,
                 SensorManager.SENSOR_DELAY_NORMAL) {
+
             @Override
             public void onOrientationChanged(int orientation) {
                 if (orientation == ORIENTATION_UNKNOWN) return;
+
                 mOrientation = (orientation + 45) / 90 * 90;
             }
         };
@@ -904,10 +998,11 @@ public class CameraHeadService extends Service implements
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        // sv = new SurfaceView(getApplicationContext());
         if (sv == null)
             start();
         registeredShieldsIDs = new ArrayList<>();
-        return Service.START_STICKY;
+        return START_STICKY;
     }
 
     private void initCrashlyticsAndUncaughtThreadHandler() {
@@ -923,20 +1018,7 @@ public class CameraHeadService extends Service implements
                     }
                     if (!registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name()))
                         android.os.Process.killProcess(android.os.Process.myPid());
-                    if (!registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
-                        android.os.Process.killProcess(android.os.Process.myPid());
 
-                }
-                if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()) && faceDetectionMessenger != null) {
-                    try {
-                        Message msg = Message.obtain(null, FaceDetectionShield.FACE_CRASHED);
-                        faceDetectionMessenger.send(msg);
-                    } catch (RemoteException e) {
-                    }
-                    if (!registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
-                        android.os.Process.killProcess(android.os.Process.myPid());
-                    if (!registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name()))
-                        android.os.Process.killProcess(android.os.Process.myPid());
                 }
                 if (registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name())) {
                     try {
@@ -946,13 +1028,10 @@ public class CameraHeadService extends Service implements
                     }
                     if (!registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                         android.os.Process.killProcess(android.os.Process.myPid());
-                    if (!registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
-                        android.os.Process.killProcess(android.os.Process.myPid());
                 }
-                if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name())
-                        && registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name())
-                        && registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
+                if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()) && registeredShieldsIDs.contains(UIShield.CAMERA_SHIELD.name())) {
                     android.os.Process.killProcess(android.os.Process.myPid());
+                }
             }
         };
         Thread.setDefaultUncaughtExceptionHandler(myHandler);
@@ -977,7 +1056,7 @@ public class CameraHeadService extends Service implements
         }
     }
 
-    private void notifyFinishCapture() {
+    private void notifyFinished() {
         isCapturing = false;
         Bundle intent = new Bundle();
         intent.putBoolean("takenSuccessfuly", takenSuccessfully);
@@ -991,14 +1070,14 @@ public class CameraHeadService extends Service implements
         resetPreview();
     }
 
-    private void notifyPreviewTypeChanged(boolean isBack, boolean forCameraShield) {
+    private void notifyPreviewTypeChanged(boolean isBack, boolean forCamerShield) {
         isBackPreview = isBack;
         Bundle intent = new Bundle();
         intent.putBoolean("isBack", isBack);
         try {
             Message msg = Message.obtain(null, SET_CAMERA_PREVIEW_TYPE);
             msg.setData(intent);
-            if (forCameraShield) {
+            if (forCamerShield) {
                 if (cameraMessenger != null)
                     cameraMessenger.send(msg);
             } else {
@@ -1009,7 +1088,7 @@ public class CameraHeadService extends Service implements
             }
         } catch (RemoteException e) {
         }
-        if (forCameraShield)
+        if (forCamerShield)
             notifyPreviewTypeChanged(isBack, false);
     }
 
@@ -1027,9 +1106,10 @@ public class CameraHeadService extends Service implements
         if (mCamera != null) {
             try {
                 if (sv != null && registeredShieldsIDs.size() == 1) {
-                    if (mCamera != null)
+                    if (mCamera != null) {
                         mCamera.setPreviewCallback(null);
-                    mCamera.setPreviewCallbackWithBuffer(null);
+                        mCamera.setPreviewCallbackWithBuffer(null);
+                    }
                     windowManager.removeView(sv);
                 }
             } catch (Exception e) {
@@ -1046,9 +1126,10 @@ public class CameraHeadService extends Service implements
         if (mCamera != null) {
             try {
                 if (sv != null && registeredShieldsIDs.size() == 1) {
-                    if (mCamera != null)
+                    if (mCamera != null) {
                         mCamera.setPreviewCallback(null);
-                    mCamera.setPreviewCallbackWithBuffer(null);
+                        mCamera.setPreviewCallbackWithBuffer(null);
+                    }
                     windowManager.removeView(sv);
                 }
             } catch (Exception e) {
@@ -1109,16 +1190,13 @@ public class CameraHeadService extends Service implements
                 }
                 if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()))
                     mCamera.setPreviewCallback(previewCallback);
-                if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
-                    mCamera.setPreviewCallbackWithBuffer(previewCallback);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
-    @Override
-    public void onDestroy() {
+    public void release() {
         mFrameProcessor.setActive(false);
         if (mProcessingThread != null) {
             try {
@@ -1127,45 +1205,42 @@ public class CameraHeadService extends Service implements
                 // quickly after stop).
                 mProcessingThread.join();
             } catch (InterruptedException e) {
-                android.util.Log.d(TAG, "Frame processing thread interrupted on release.");
+                Log.d(TAG, "Frame processing thread interrupted on release.");
             }
+            mCamera.setPreviewCallbackWithBuffer(null);
             mProcessingThread = null;
         }
-
         // clear the buffer to prevent oom exceptions
         mBytesToByteBuffer.clear();
+        mFrameProcessor.release();
+    }
+
+    @Override
+    public void onDestroy() {
         if (mCamera != null) {
             if (queue != null)
                 queue.removeCallbacks(null);
             mCamera.setPreviewCallback(null);
-            mCamera.setPreviewCallbackWithBuffer(null);
             mCamera.stopPreview();
             mCamera.release();
             mCamera = null;
         }
-        mFrameProcessor.release();
         try {
-            if (sv != null) {
+            if (sv != null)
                 windowManager.removeView(sv);
-            }
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }
-        notifyFinishCapture();
+        notifyFinished();
         android.os.Process.killProcess(android.os.Process.myPid());
 
         super.onDestroy();
     }
 
-    public void startDetection(FaceDetector detector) {
-        mFrameProcessor = new FrameProcessingRunnable(detector);
-        mProcessingThread = new Thread(mFrameProcessor);
-        mFrameProcessor.setActive(true);
-        mProcessingThread.start();
-    }
-
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+                               int height) {
+        // TODO Auto-generated method stub
         resetPreview();
     }
 
@@ -1179,9 +1254,9 @@ public class CameraHeadService extends Service implements
         if (mCamera != null) {
             queue.removeCallbacks(null);
             mCamera.setPreviewCallback(null);
-            mCamera.setPreviewCallbackWithBuffer(null);
             mCamera.stopPreview();
             mCamera.release();
+//            release();
             mCamera = null;
             try {
                 if (sv != null) {
@@ -1191,62 +1266,6 @@ public class CameraHeadService extends Service implements
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * making frames processing though we can detect colors
-     *
-     * @param data1
-     * @param camera
-     */
-    public void colorDetectionFramesProcessing(byte[] data1, final Camera camera) {
-        queue.removeCallbacks(null);
-        data = data1;
-        queue.post(new Runnable() {
-            @Override
-            public void run() {
-                if (data != null && camera != null) {
-                    try {
-                        Log.e("", "onPreviewFrame pass");
-                        out = new ByteArrayOutputStream();
-                        parameters = camera.getParameters();
-                        size = parameters.getPreviewSize();
-                        yuv = new YuvImage(data, ImageFormat.NV21, size.width,
-                                size.height, null);
-                        // bWidth and bHeight define the size of the bitmap you wish the
-                        // fill with the preview image
-                        yuv.compressToJpeg(new Rect(0, 0, size.width, size.height),
-                                quality, out);
-                        bytes = out.toByteArray();
-                        bitmap = BitmapFactory.decodeByteArray(bytes, 0,
-                                bytes.length);
-                        if (recevedFrameOperation == ColorDetectionShield.RECEIVED_FRAMES.CENTER) {
-                            previewCells = new int[1];
-                            currentColorIndex = 0;
-                            addColorCell(1, 1);
-                        } else {
-                            currentColorIndex = 0;
-                            previewCells = new int[9];
-                            for (int i = 0; i < 3; i++)
-                                for (int j = 0; j < 3; j++) {
-                                    addColorCell(i, j);
-                                    currentColorIndex += 1;
-                                }
-                        }
-                        if (colorDetectionMessenger != null && !isEqualColors()) {
-                            Bundle b = new Bundle();
-                            b.putIntArray("detected", previewCells);
-                            Message msg = Message.obtain(null, GET_RESULT);
-                            msg.setData(b);
-                            colorDetectionMessenger.send(msg);
-                            lastPreviewCells = previewCells;
-                        }
-                    } catch (Exception e) {
-                        CrashlyticsUtils.logException(e);
-                    }
-                }
-            }
-        });
     }
 
     private boolean isEqualColors() {
@@ -1291,30 +1310,6 @@ public class CameraHeadService extends Service implements
     //==============================================================================================
 
     /**
-     * get frames from previewcall back then send them to background thread to detect faces
-     *
-     * @param data1
-     * @param camera
-     */
-    private void faceDetectionFrameProcessing(byte[] data1, final Camera camera) {
-        queue.removeCallbacks(null);
-        data = data1;
-        queue.post(new Runnable() {
-            @Override
-            public void run() {
-                if (data != null && camera != null) {
-                    try {
-                        // get frames callback and send them to background thread to make processing on the frames
-                        mFrameProcessor.setNextFrame(data, camera);
-                    } catch (Exception e) {
-                        CrashlyticsUtils.logException(e);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
      * Creates one buffer for the camera preview callback.  The size of the buffer is based off of
      * the camera preview size and the format of the camera image.
      *
@@ -1336,6 +1331,16 @@ public class CameraHeadService extends Service implements
 
         mBytesToByteBuffer.put(byteArray, buffer);
         return byteArray;
+    }
+
+    /**
+     * Called when the camera has a new preview frame.
+     */
+    private class CameraPreviewCallback implements Camera.PreviewCallback {
+        @Override
+        public void onPreviewFrame(byte[] data, Camera camera) {
+            mFrameProcessor.setNextFrame(data, camera);
+        }
     }
 
     /**
@@ -1412,7 +1417,7 @@ public class CameraHeadService extends Service implements
                 mPendingFrameData = mBytesToByteBuffer.get(data);
 
                 // Notify the processor thread if it is waiting on the next frame (see below).
-                mLock.notifyAll();
+                mLock.notify();
             }
         }
 

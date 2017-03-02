@@ -35,8 +35,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     public static final int BIND_FACE_DETECTION = 9;
     public static final int START_DETECTION = 14;
     public static final int UNBIND_FACE_DETECTION = 6;
-    private boolean hasFrontCamera = false;
-    Handler UIHandler;
     private Messenger cameraBinder;
     private boolean isCameraBound = false;
     public boolean isBackPreview = true;
@@ -52,7 +50,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
 
     @Override
     public ControllerParent<FaceDetectionShield> init(String tag) {
-        UIHandler = new Handler();
         return super.init(tag);
     }
 
@@ -98,9 +95,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                 } else {
                     if (selectionAction != null)
                         selectionAction.onSuccess();
-                    hasFrontCamera = CameraUtils.checkFrontCamera(activity.getApplicationContext());
                     bindService();
-                    UIHandler = new Handler();
                 }
             } else {
                 if (this.selectionAction != null) {
