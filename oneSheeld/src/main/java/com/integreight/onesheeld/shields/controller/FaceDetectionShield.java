@@ -9,21 +9,34 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.graphics.PointF;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.os.RemoteException;
+import android.util.SparseArray;
 
+import com.google.android.gms.vision.MultiProcessor;
+import com.google.android.gms.vision.Tracker;
+import com.google.android.gms.vision.face.Face;
+import com.google.android.gms.vision.face.FaceDetector;
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService;
 import com.integreight.onesheeld.shields.controller.utils.CameraUtils;
 import com.integreight.onesheeld.utils.Log;
+import com.integreight.onesheeld.utils.customviews.utils.FaceGraphic;
+import com.integreight.onesheeld.utils.customviews.utils.GraphicOverlay;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -31,15 +44,22 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 
 public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
+    private static final String TAG = FaceDetectionShield.class.getName();
     public static final int FACE_CRASHED = 18;
     public static final int BIND_FACE_DETECTION = 9;
     public static final int START_DETECTION = 14;
+    public static final int SEND_FACES = 20;
     public static final int UNBIND_FACE_DETECTION = 6;
+    private static final byte SHIELD_ID = 0x2D;
+    private static final byte DETECT_FACES = 0x01;
+    private static final byte STOP_DETECTION = 0x02;
     private Messenger cameraBinder;
     private boolean isCameraBound = false;
     public boolean isBackPreview = true;
     private boolean isChangingPreview = false;
     private FaceDetectionHandler eventHandler;
+    private static GraphicOverlay mGraphicOverlay;
+
 
     public FaceDetectionShield() {
     }
@@ -123,6 +143,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         }
     });
 
+
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -184,18 +205,18 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public boolean setCameraToPreview(boolean isBack) {
-        if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
-            return false;
-        if (isChangingPreview)
-            return false;
-        isChangingPreview = true;
-        Log.d("isBack", isBack + "   **");
-        Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
-        msg.replyTo = mMessenger;
-        Bundle b = new Bundle();
-        b.putBoolean("isBack", isBack);
-        msg.setData(b);
         if (cameraBinder != null) {
+            if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
+                return false;
+            if (isChangingPreview)
+                return false;
+            isChangingPreview = true;
+            Log.d("Acc", isBack + "   **");
+            Message msg = Message.obtain(null, CameraHeadService.SET_CAMERA_PREVIEW_TYPE);
+            msg.replyTo = mMessenger;
+            Bundle b = new Bundle();
+            b.putBoolean("isBack", isBack);
+            msg.setData(b);
             try {
                 cameraBinder.send(msg);
             } catch (RemoteException e) {
@@ -209,9 +230,9 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public boolean showPreview() throws RemoteException {
-        Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
-        msg.replyTo = mMessenger;
         if (cameraBinder != null) {
+            Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
+            msg.replyTo = mMessenger;
             cameraBinder.send(msg);
             return true;
         } else {
@@ -221,9 +242,9 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public boolean hidePreview() throws RemoteException {
-        Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
-        msg.replyTo = mMessenger;
         if (cameraBinder != null) {
+            Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
+            msg.replyTo = mMessenger;
             cameraBinder.send(msg);
             return true;
         } else {
@@ -232,16 +253,16 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public void invalidatePreview() throws RemoteException {
-        Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
-        msg.replyTo = mMessenger;
-        if (cameraBinder != null)
+        if (cameraBinder != null) {
+            Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
+            msg.replyTo = mMessenger;
             cameraBinder.send(msg);
-        else bindService();
+        } else
+            bindService();
     }
 
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
-
     }
 
     public interface FaceDetectionHandler {
@@ -278,5 +299,110 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         super.postConfigChange();
     }
 
+    private static byte[] float2ByteArray(float value) {
+        return ByteBuffer.allocate(4).putFloat(value).array();
+    }
+
+    private static byte[] intToByteArray(int value) {
+        return ByteBuffer.allocate(4).putInt(value).array();
+    }
+
+    /**
+     * Factory for creating a face tracker to be associated with a new face.  The multiprocessor
+     * uses this factory to create face trackers as needed -- one for each individual.
+     */
+    public static class MyFaceTrackerFactory implements MultiProcessor.Factory<Face> {
+        @Override
+        public Tracker<Face> create(Face face) {
+            return new MyFaceTracker(mGraphicOverlay);
+        }
+    }
+
+    /**
+     * Face tracker for each detected individual. This maintains a face graphic within the app's
+     * associated face overlay.
+     */
+    private static class MyFaceTracker extends Tracker<Face> {
+        private GraphicOverlay mOverlay;
+        private FaceGraphic mFaceGraphic;
+        private byte[] faceId;
+        private byte[] xPosition;
+        private byte[] yPosition;
+        private byte[] height;
+        private byte[] width;
+        private byte[] leftEye;
+        private byte[] rightEye;
+        private byte[] isSmile;
+        private ShieldFrame frame;
+        private SparseArray<Face> faceArray = new SparseArray<>();
+
+        MyFaceTracker(GraphicOverlay overlay) {
+//            mOverlay = overlay;
+//            mFaceGraphic = new FaceGraphic(overlay);
+        }
+
+        /**
+         * Start tracking the detected face instance within the face overlay.
+         */
+        @Override
+        public void onNewItem(int faceId, Face item) {
+//            mFaceGraphic.setId(faceId);
+        }
+
+        /**
+         * Update the position/characteristics of the face within the overlay.
+         */
+        @Override
+        public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
+            android.util.Log.d(TAG, "onUpdate: " + detectionResults.getDetectedItems().size());
+            for (int i = 0; i < detectionResults.getDetectedItems().size(); i++) {
+                faceArray.append(i, detectionResults.getDetectedItems().get(i));
+                android.util.Log.d(TAG, "onUpdate: ID " + faceArray.get(i).getId());
+            }
+
+//            mOverlay.add(mFaceGraphic);
+//            mFaceGraphic.updateFace(face);
+//            if (detectionResults.getDetectedItems().size() > 0)
+//                sendDetectedFaces(detectionResults.getDetectedItems());
+
+        }
+
+        /**
+         * Hide the graphic when the corresponding face was not detected.  This can happen for
+         * intermediate frames temporarily (e.g., if the face was momentarily blocked from
+         * view).
+         */
+        @Override
+        public void onMissing(FaceDetector.Detections<Face> detectionResults) {
+            //            mOverlay.remove(mFaceGraphic);
+        }
+
+        /**
+         * Called when the face is assumed to be gone for good. Remove the graphic annotation from
+         * the overlay.
+         */
+        @Override
+        public void onDone() {
+//            mOverlay.remove(mFaceGraphic);
+        }
+
+        public void sendDetectedFaces(SparseArray<Face> mFacesArray) {
+            frame = new ShieldFrame(UIShield.FACE_DETECTION.getId());
+            Face faceDetection;
+            if (mFacesArray.size() > 0)
+                for (int i = 0; i < mFacesArray.size(); i++) {
+                    faceDetection = mFacesArray.get(i);
+                    faceId = intToByteArray(faceDetection.getId());
+                    xPosition = float2ByteArray(faceDetection.getPosition().x);
+                    yPosition = float2ByteArray(faceDetection.getPosition().y);
+                    height = float2ByteArray(faceDetection.getHeight());
+                    width = float2ByteArray(faceDetection.getWidth());
+                    leftEye = float2ByteArray(faceDetection.getIsLeftEyeOpenProbability());
+                    rightEye = float2ByteArray(faceDetection.getIsRightEyeOpenProbability());
+                    isSmile = float2ByteArray(faceDetection.getIsSmilingProbability());
+
+                }
+        }
+    }
 
 }

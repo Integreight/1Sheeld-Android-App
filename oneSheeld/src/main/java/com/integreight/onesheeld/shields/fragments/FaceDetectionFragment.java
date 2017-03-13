@@ -135,7 +135,6 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
     public void doOnStart() {
         ((FaceDetectionShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(faceDetectionHandler);
-
     }
 
     private void initializeFirmata() {
