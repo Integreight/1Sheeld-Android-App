@@ -27,8 +27,6 @@ import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService.FaceDetectionObj;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Atef-PC on 2/21/2017.
@@ -39,7 +37,8 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     public static final int FACE_CRASHED = 18;
     public static final int BIND_FACE_DETECTION = 9;
     public static final int START_DETECTION = 14;
-    public static final int SEND_FACES = 20;
+    public static final int GET_FACES = 20;
+    public static final int GET_MISSING = 21;
     public static final int UNBIND_FACE_DETECTION = 6;
     private static final byte DETECTED_FACES = 0x01;
     private static final byte MISSING_FACES = 0x02;
@@ -127,6 +126,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
 
     private Messenger mMessenger = new Messenger(new Handler() {
         public void handleMessage(Message msg) {
+            msg.getData().setClassLoader(FaceDetectionObj.class.getClassLoader());
             if (msg.what == FACE_CRASHED) {
                 cameraBinder = null;
                 isCameraBound = false;
@@ -136,27 +136,49 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                 if (eventHandler != null)
                     eventHandler.setOnCameraPreviewTypeChanged(isBackPreview);
                 isChangingPreview = false;
-            } else if (msg.what == SEND_FACES) {
-                Bundle bundle = msg.getData();
-                bundle.setClassLoader(FaceDetectionObj.class.getClassLoader());
+            } else if (msg.what == GET_FACES) {
                 ArrayList<FaceDetectionObj> faceDetectionObjArrayList;
                 faceDetectionObjArrayList = msg.getData().getParcelableArrayList("face_array");
                 for (int i = 0; i < tmpArray.size(); i++) {
-                    for (int j = 0; j < faceDetectionObjArrayList.size(); j++) {
-                        android.util.Log.d(TAG, "service: " + faceDetectionObjArrayList.get(j).getFaceId());
+                    for (int j = 0; j < faceDetectionObjArrayList.size(); i++) {
+                        android.util.Log.d(TAG, "EQUALS: " + faceDetectionObjArrayList.get(j).getFaceId());
                         if (tmpArray.get(i).getFaceId() == faceDetectionObjArrayList.get(j).getFaceId()) {
-                            android.util.Log.d(TAG, "equals: " + tmpArray.get(i).getFaceId());
-                            sendDetectedFaces(tmpArray.get(i));
-                            break;
-                        } else {
-                            android.util.Log.d(TAG, "Missing: " + tmpArray.get(i).getFaceId());
-                            sendMissingFaces(tmpArray.get(i));
-                        }
-
+                            android.util.Log.d(TAG, "EQUALS: " + tmpArray.get(i).getFaceId());
+                            if ((tmpArray.get(i).getxPosition() != faceDetectionObjArrayList.get(j).getxPosition()) ||
+                                    (tmpArray.get(i).getxPosition() != faceDetectionObjArrayList.get(j).getxPosition()) ||
+                                    (tmpArray.get(i).getyPosition() != faceDetectionObjArrayList.get(j).getyPosition()) ||
+                                    (tmpArray.get(i).getWidth() != faceDetectionObjArrayList.get(j).getWidth()) ||
+                                    (tmpArray.get(i).getHeight() != faceDetectionObjArrayList.get(j).getHeight()) ||
+                                    (tmpArray.get(i).getLeftEye() != faceDetectionObjArrayList.get(j).getLeftEye()) ||
+                                    (tmpArray.get(i).getRightEye() != faceDetectionObjArrayList.get(j).getRightEye()) ||
+                                    (tmpArray.get(i).getIsSmile() != faceDetectionObjArrayList.get(j).getIsSmile())) {
+//                                sendDetectedFaces(tmpArray.get(i));
+                                break;
+                            }
+                        } else
+                            android.util.Log.d(TAG, "NOT EQUALS: " + tmpArray.get(i).getFaceId());
                     }
+
                 }
                 tmpArray = faceDetectionObjArrayList;
             }
+//            else if (msg.what == GET_MISSING) {
+//                Bundle bundle = msg.getData();
+//                bundle.setClassLoader(FaceDetectionObj.class.getClassLoader());
+//                ArrayList<FaceDetectionObj> missingFacesList;
+//                missingFacesList = msg.getData().getParcelableArrayList("missing_faces");
+//                for (int i = 0; i < tmpArray.size(); i++) {
+//                    for (int j = 0; j < missingFacesList.size(); j++) {
+//                        android.util.Log.d(TAG, "MISSING: " + missingFacesList.get(j).getFaceId());
+//                        if (tmpArray.get(i).getFaceId() != missingFacesList.get(j).getFaceId()) {
+//                            android.util.Log.d(TAG, "MISSING: " + tmpArray.get(i).getFaceId());
+//                            sendMissingFaces(tmpArray.get(i));
+//                            break;
+//                        }
+//                    }
+//                }
+//                tmpArray = missingFacesList;
+//            }
             super.handleMessage(msg);
         }
     });
