@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
-import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
@@ -30,7 +29,6 @@ import android.os.Parcelable;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.util.DisplayMetrics;
-import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.Surface;
@@ -99,7 +97,7 @@ public class CameraHeadService extends Service implements
     private Thread mProcessingThread;
     private FrameProcessingRunnable mFrameProcessor;
     FaceDetector detector;
-
+    private static GraphicOverlay mGraphicOverlay;
     private Messenger faceDetectionMessenger;
 
     private final int quality = 50;
@@ -416,7 +414,19 @@ public class CameraHeadService extends Service implements
                 if (detector.isOperational()) {
                     android.util.Log.d(TAG, "detector_working: ");
                     detector.setProcessor(new MultiProcessor.Builder<>(
-                            new FaceDetectionShield.MyFaceTrackerFactory()).build());
+                            new MyFaceTrackerFactory()).build());
+
+//                    detector.setProcessor(new Detector.Processor<Face>() {
+//                        @Override
+//                        public void release() {
+//
+//                        }
+//
+//                        @Override
+//                        public void receiveDetections(Detector.Detections<Face> detections) {
+//
+//                        }
+//                    });
 
                 }
 
@@ -1514,7 +1524,7 @@ public class CameraHeadService extends Service implements
                                     size.height, ImageFormat.NV21)
                             .setId(mPendingFrameId)
                             .setTimestampMillis(mPendingTimeMillis)
-                            .setRotation(faceRotation)
+                            .setRotation(1)
                             .build();
                     // Hold onto the frame data locally, so that we can use this for detection
                     // below.  We need to clear mPendingFrameData to ensure that this buffer isn't
@@ -1537,6 +1547,178 @@ public class CameraHeadService extends Service implements
                 }
             }
         }
+    }
+
+    public static class FaceDetectionObj implements Parcelable {
+        private int faceId;
+        private float xPosition;
+        private float yPosition;
+        private float height;
+        private float width;
+        private float leftEye;
+        private float rightEye;
+        private float isSmile;
+
+        public int getFaceId() {
+            return faceId;
+        }
+
+        public float getxPosition() {
+            return xPosition;
+        }
+
+        public float getyPosition() {
+            return yPosition;
+        }
+
+        public float getHeight() {
+            return height;
+        }
+
+        public float getWidth() {
+            return width;
+        }
+
+        public float getLeftEye() {
+            return leftEye;
+        }
+
+        public float getRightEye() {
+            return rightEye;
+        }
+
+        public float getIsSmile() {
+            return isSmile;
+        }
+
+        protected FaceDetectionObj(Parcel in) {
+            faceId = in.readInt();
+            xPosition = in.readFloat();
+            yPosition = in.readFloat();
+            height = in.readFloat();
+            width = in.readFloat();
+            leftEye = in.readFloat();
+            rightEye = in.readFloat();
+            isSmile = in.readFloat();
+        }
+
+
+        public FaceDetectionObj(Face face) {
+            faceId = face.getId();
+            xPosition = face.getPosition().x;
+            yPosition = face.getPosition().y;
+            height = face.getHeight();
+            width = face.getWidth();
+            leftEye = face.getIsLeftEyeOpenProbability();
+            rightEye = face.getIsRightEyeOpenProbability();
+            isSmile = face.getIsSmilingProbability();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(faceId);
+            dest.writeFloat(xPosition);
+            dest.writeFloat(yPosition);
+            dest.writeFloat(height);
+            dest.writeFloat(width);
+            dest.writeFloat(leftEye);
+            dest.writeFloat(rightEye);
+            dest.writeFloat(isSmile);
+        }
+
+        @SuppressWarnings("unused")
+        public static final Parcelable.Creator<FaceDetectionObj> CREATOR = new Parcelable.Creator<FaceDetectionObj>() {
+            @Override
+            public FaceDetectionObj createFromParcel(Parcel in) {
+                return new FaceDetectionObj(in);
+            }
+
+            @Override
+            public FaceDetectionObj[] newArray(int size) {
+                return new FaceDetectionObj[size];
+            }
+        };
+    }
+
+    /**
+     * Factory for creating a face tracker to be associated with a new face.  The multiprocessor
+     * uses this factory to create face trackers as needed -- one for each individual.
+     */
+    public class MyFaceTrackerFactory implements MultiProcessor.Factory<Face> {
+        @Override
+        public Tracker<Face> create(Face face) {
+            return new MyFaceTracker(mGraphicOverlay);
+        }
+    }
+
+    /**
+     * Face tracker for each detected individual. This maintains a face graphic within the app's
+     * associated face overlay.
+     */
+    private class MyFaceTracker extends Tracker<Face> {
+        private GraphicOverlay mOverlay;
+        private FaceGraphic mFaceGraphic;
+
+        MyFaceTracker(GraphicOverlay overlay) {
+//            mOverlay = overlay;
+//            mFaceGraphic = new FaceGraphic(overlay);
+        }
+
+        /**
+         * Start tracking the detected face instance within the face overlay.
+         */
+        @Override
+        public void onNewItem(int faceId, Face item) {
+//            mFaceGraphic.setId(faceId);
+        }
+
+        /**
+         * Update the position/characteristics of the face within the overlay.
+         */
+        @Override
+        public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
+            ArrayList<FaceDetectionObj> faceDetectionObjArrayList = new ArrayList<>();
+            for (int i = 0; i < detectionResults.getDetectedItems().size(); i++)
+                faceDetectionObjArrayList.add(new FaceDetectionObj(face));
+            Message msg = Message.obtain(null, SEND_FACES);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("face_array", faceDetectionObjArrayList);
+            msg.setData(bundle);
+            try {
+                faceDetectionMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                android.util.Log.d(TAG, "message Exception" + e.getMessage());
+            }
+//            mOverlay.add(mFaceGraphic);
+//            mFaceGraphic.updateFace(face);
+        }
+
+        /**
+         * Hide the graphic when the corresponding face was not detected.  This can happen for
+         * intermediate frames temporarily (e.g., if the face was momentarily blocked from
+         * view).
+         */
+        @Override
+        public void onMissing(FaceDetector.Detections<Face> detectionResults) {
+            //            mOverlay.remove(mFaceGraphic);
+        }
+
+        /**
+         * Called when the face is assumed to be gone for good. Remove the graphic annotation from
+         * the overlay.
+         */
+        @Override
+        public void onDone() {
+//            mOverlay.remove(mFaceGraphic);
+        }
+
+
     }
 
 }
