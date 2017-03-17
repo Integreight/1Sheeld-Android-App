@@ -72,9 +72,9 @@ import java.util.Map;
 
 import io.fabric.sdk.android.Fabric;
 
-import static com.integreight.onesheeld.shields.controller.FaceDetectionShield.GET_FACES;
-import static com.integreight.onesheeld.shields.controller.FaceDetectionShield.GET_MISSING;
+import static com.integreight.onesheeld.shields.controller.FaceDetectionShield.SEND_FACES;
 import static com.integreight.onesheeld.shields.controller.FaceDetectionShield.START_DETECTION;
+import static com.integreight.onesheeld.shields.controller.FaceDetectionShield.SEND_MISSING;
 
 public class CameraHeadService extends Service implements
         SurfaceHolder.Callback {
@@ -1525,7 +1525,7 @@ public class CameraHeadService extends Service implements
                                     size.height, ImageFormat.NV21)
                             .setId(mPendingFrameId)
                             .setTimestampMillis(mPendingTimeMillis)
-                            .setRotation(getResources().getConfiguration().orientation)
+                            .setRotation(1)
                             .build();
                     // Hold onto the frame data locally, so that we can use this for detection
                     // below.  We need to clear mPendingFrameData to ensure that this buffer isn't
@@ -1675,6 +1675,7 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onNewItem(int faceId, Face item) {
+            android.util.Log.d(TAG, "onNewItem: ");
 //            mFaceGraphic.setId(faceId);
         }
 
@@ -1683,11 +1684,13 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onUpdate(FaceDetector.Detections<Face> detectionResults, Face face) {
-            android.util.Log.d(TAG, "onUpdate: " + detectionResults.getDetectedItems().size());
             ArrayList<FaceDetectionObj> faceDetectionObjArrayList = new ArrayList<>();
-            for (int i = 0; i < detectionResults.getDetectedItems().size(); i++)
-            faceDetectionObjArrayList.add(new FaceDetectionObj(detectionResults.getDetectedItems().valueAt(i)));
-            Message msg = Message.obtain(null, GET_FACES);
+            for (int i = 0; i < detectionResults.getDetectedItems().size(); i++) {
+                android.util.Log.d(TAG, "onUpdate ID: " + detectionResults.getDetectedItems().valueAt(i).getId());
+                android.util.Log.d(TAG, "__________________");
+                faceDetectionObjArrayList.add(new FaceDetectionObj(detectionResults.getDetectedItems().valueAt(i)));
+            }
+            Message msg = Message.obtain(null, SEND_FACES);
             Bundle bundle = new Bundle();
             bundle.putParcelableArrayList("face_array", faceDetectionObjArrayList);
             msg.setData(bundle);
@@ -1708,21 +1711,25 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onMissing(FaceDetector.Detections<Face> missingResults) {
-//            android.util.Log.d(TAG, "onMissing: " + missingResults.getDetectedItems().size());
-//            ArrayList<FaceDetectionObj> missingFacesList = new ArrayList<>();
-//            for (int i = 0; i < missingResults.getDetectedItems().size(); i++)
-//                missingFacesList.add(new FaceDetectionObj(missingResults.getDetectedItems().get(i)));
-//            Message msg = Message.obtain(null, GET_MISSING);
-//            Bundle bundle = new Bundle();
-//            bundle.putParcelableArrayList("missing_faces", missingFacesList);
-//            msg.setData(bundle);
-//            try {
-//                faceDetectionMessenger.send(msg);
-//            } catch (RemoteException e) {
-//                e.printStackTrace();
-//                android.util.Log.d(TAG, "message Exception" + e.getMessage());
-//            }
-//            mOverlay.remove(mFaceGraphic);
+            ArrayList<FaceDetectionObj> missingFacesList = new ArrayList<>();
+            android.util.Log.d(TAG, "onMissing id: " + missingResults.getDetectedItems().valueAt(0).getId());
+            for (int i = 0; i < missingResults.getDetectedItems().size(); i++) {
+                android.util.Log.d(TAG, "onMissing ID: " + missingResults.getDetectedItems().valueAt(i).getId());
+                android.util.Log.d(TAG, "-__________________-");
+                missingFacesList.add(new FaceDetectionObj(missingResults.getDetectedItems().valueAt(i)));
+
+            }
+            Message msg = Message.obtain(null, SEND_MISSING);
+            Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("missing_faces", missingFacesList);
+            msg.setData(bundle);
+            try {
+                faceDetectionMessenger.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+                android.util.Log.d(TAG, "message Exception" + e.getMessage());
+            }
+            //            mOverlay.remove(mFaceGraphic);
         }
 
         /**
@@ -1731,10 +1738,9 @@ public class CameraHeadService extends Service implements
          */
         @Override
         public void onDone() {
+            android.util.Log.d(TAG, "onDone: ");
 //            mOverlay.remove(mFaceGraphic);
         }
-
-
     }
 
 }

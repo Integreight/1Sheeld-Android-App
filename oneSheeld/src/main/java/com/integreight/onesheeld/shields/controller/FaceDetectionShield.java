@@ -17,6 +17,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 
+import com.google.android.gms.vision.face.Face;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.sdk.ShieldFrame;
@@ -27,6 +28,7 @@ import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService.FaceDetectionObj;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Atef-PC on 2/21/2017.
@@ -34,11 +36,12 @@ import java.util.ArrayList;
 
 public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     private static final String TAG = FaceDetectionShield.class.getName();
+    private static final String TAG1 = "Frame";
     public static final int FACE_CRASHED = 18;
     public static final int BIND_FACE_DETECTION = 9;
     public static final int START_DETECTION = 14;
-    public static final int GET_FACES = 20;
-    public static final int GET_MISSING = 21;
+    public static final int SEND_FACES = 20;
+    public static final int SEND_MISSING = 21;
     public static final int UNBIND_FACE_DETECTION = 6;
     private static final byte DETECTED_FACES = 0x01;
     private static final byte MISSING_FACES = 0x02;
@@ -126,7 +129,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
 
     private Messenger mMessenger = new Messenger(new Handler() {
         public void handleMessage(Message msg) {
-            msg.getData().setClassLoader(FaceDetectionObj.class.getClassLoader());
             if (msg.what == FACE_CRASHED) {
                 cameraBinder = null;
                 isCameraBound = false;
@@ -136,14 +138,14 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                 if (eventHandler != null)
                     eventHandler.setOnCameraPreviewTypeChanged(isBackPreview);
                 isChangingPreview = false;
-            } else if (msg.what == GET_FACES) {
+            } else if (msg.what == SEND_FACES) {
+                Bundle bundle = msg.getData();
+                bundle.setClassLoader(FaceDetectionObj.class.getClassLoader());
                 ArrayList<FaceDetectionObj> faceDetectionObjArrayList;
-                faceDetectionObjArrayList = msg.getData().getParcelableArrayList("face_array");
+                faceDetectionObjArrayList = bundle.getParcelableArrayList("face_array");
                 for (int i = 0; i < tmpArray.size(); i++) {
-                    for (int j = 0; j < faceDetectionObjArrayList.size(); i++) {
-                        android.util.Log.d(TAG, "EQUALS: " + faceDetectionObjArrayList.get(j).getFaceId());
+                    for (int j = 0; j < faceDetectionObjArrayList.size(); j++) {
                         if (tmpArray.get(i).getFaceId() == faceDetectionObjArrayList.get(j).getFaceId()) {
-                            android.util.Log.d(TAG, "EQUALS: " + tmpArray.get(i).getFaceId());
                             if ((tmpArray.get(i).getxPosition() != faceDetectionObjArrayList.get(j).getxPosition()) ||
                                     (tmpArray.get(i).getxPosition() != faceDetectionObjArrayList.get(j).getxPosition()) ||
                                     (tmpArray.get(i).getyPosition() != faceDetectionObjArrayList.get(j).getyPosition()) ||
@@ -152,33 +154,30 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                                     (tmpArray.get(i).getLeftEye() != faceDetectionObjArrayList.get(j).getLeftEye()) ||
                                     (tmpArray.get(i).getRightEye() != faceDetectionObjArrayList.get(j).getRightEye()) ||
                                     (tmpArray.get(i).getIsSmile() != faceDetectionObjArrayList.get(j).getIsSmile())) {
-//                                sendDetectedFaces(tmpArray.get(i));
-                                break;
+                                sendDetectedFaces(tmpArray.get(i));
                             }
-                        } else
-                            android.util.Log.d(TAG, "NOT EQUALS: " + tmpArray.get(i).getFaceId());
+                        } else {
+                            sendMissingFaces(tmpArray.get(i));
+                        }
                     }
-
                 }
                 tmpArray = faceDetectionObjArrayList;
+            } else if (msg.what == SEND_MISSING) {
+                Bundle bundle = msg.getData();
+                bundle.setClassLoader(FaceDetectionObj.class.getClassLoader());
+                ArrayList<FaceDetectionObj> missingFacesList;
+                missingFacesList = bundle.getParcelableArrayList("missing_faces");
+                for (int i = 0; i < tmpArray.size(); i++) {
+                    for (int j = 0; j < missingFacesList.size(); j++) {
+                        if (tmpArray.get(i).getFaceId() != missingFacesList.get(j).getFaceId()) {
+                            sendMissingFaces(tmpArray.get(i));
+                        } else if (tmpArray.get(i).getFaceId() == missingFacesList.get(j).getFaceId()) {
+                            sendDetectedFaces(tmpArray.get(i));
+                        }
+                    }
+                }
+                tmpArray = missingFacesList;
             }
-//            else if (msg.what == GET_MISSING) {
-//                Bundle bundle = msg.getData();
-//                bundle.setClassLoader(FaceDetectionObj.class.getClassLoader());
-//                ArrayList<FaceDetectionObj> missingFacesList;
-//                missingFacesList = msg.getData().getParcelableArrayList("missing_faces");
-//                for (int i = 0; i < tmpArray.size(); i++) {
-//                    for (int j = 0; j < missingFacesList.size(); j++) {
-//                        android.util.Log.d(TAG, "MISSING: " + missingFacesList.get(j).getFaceId());
-//                        if (tmpArray.get(i).getFaceId() != missingFacesList.get(j).getFaceId()) {
-//                            android.util.Log.d(TAG, "MISSING: " + tmpArray.get(i).getFaceId());
-//                            sendMissingFaces(tmpArray.get(i));
-//                            break;
-//                        }
-//                    }
-//                }
-//                tmpArray = missingFacesList;
-//            }
             super.handleMessage(msg);
         }
     });
@@ -340,21 +339,17 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     private static byte[] intTo2ByteArray(int value) {
-        byte[] bytes = new byte[4];
+        byte[] bytes = new byte[2];
         bytes[0] = (byte) (value & 0xff);
         bytes[1] = (byte) ((value >>> 8) & 0xff);
-        bytes[2] = (byte) (0);
-        bytes[3] = (byte) (0);
         return bytes;
     }
 
     private static byte[] float2ByteArray(float value) {
         int bits = Float.floatToIntBits(value);
-        byte[] bytes = new byte[4];
+        byte[] bytes = new byte[2];
         bytes[0] = (byte) (bits & 0xff);
         bytes[1] = (byte) ((bits >>> 8) & 0xff);
-        bytes[2] = (byte) (0);
-        bytes[3] = (byte) (0);
         return bytes;
     }
 
@@ -391,6 +386,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         frame.addArgument(twoByteArraysInto4ByteArray(height, width));
         frame.addArgument(threeByteArraysTo4ByteArray(leftEye, rightEye, isSmile));
         sendShieldFrame(frame);
+        android.util.Log.d(TAG1, "sendDetectedFaces: " + frame.toString());
     }
 
     public void sendMissingFaces(FaceDetectionObj faceDetectionObj) {
@@ -398,6 +394,9 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         faceId = intTo2ByteArray(faceDetectionObj.getFaceId());
         frame.addArgument(faceId);
         sendShieldFrame(frame);
+        android.util.Log.d(TAG1, "sendMissingFaces: " + frame.toString());
+
+
     }
 
 }
