@@ -3,7 +3,6 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,10 +77,12 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     if (!((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked())
                         ((CheckBox) activity.findViewById(R.id.isMenuOpening)).setChecked(true);
                     else {
-                        if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
+                        if (getApplication().getRunningShields().get(getControllerTag()) != null)
                             try {
-                                if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                                if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
                                     cameraLogo.setVisibility(View.INVISIBLE);
+                                    ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
+                                }
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                                 removeListeners();
@@ -90,10 +91,12 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                             }
                     }
                 } else {
-                    if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
+                    if (getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
-                            if ((((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()))
+                            if ((((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())) {
                                 cameraLogo.setVisibility(View.VISIBLE);
+                                ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
+                            }
                         } catch (RemoteException e) {
                             e.printStackTrace();
                             removeListeners();
@@ -157,9 +160,11 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                 if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                     if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                         try {
-                            if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
-                                if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                            if (getApplication().getRunningShields().get(getControllerTag()) != null)
+                                if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
                                     cameraLogo.setVisibility(View.INVISIBLE);
+                                    ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
+                                }
                         } catch (RemoteException e) {
                             e.printStackTrace();
                             removeListeners();
@@ -167,10 +172,12 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                             applyListeners();
                         }
                     } else {
-                        if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
+                        if (getApplication().getRunningShields().get(getControllerTag()) != null)
                             try {
-                                if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
+                                if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()) {
                                     cameraLogo.setVisibility(View.VISIBLE);
+                                    ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
+                                }
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                                 removeListeners();
@@ -188,6 +195,8 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     getControllerTag())).isBackPreview());
             ((FaceDetectionShield) getApplication().getRunningShields().get(
                     getControllerTag())).invalidatePreview();
+            ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(
+                    ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).isFaceSelected());
         } catch (RemoteException e) {
             e.printStackTrace();
         }
@@ -204,10 +213,12 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
             try {
                 ((FaceDetectionShield) getApplication().getRunningShields().get(
                         getControllerTag())).hidePreview();
+
             } catch (RemoteException e) {
                 e.printStackTrace();
             }
         }
+        ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
         cameraLogo.setVisibility(View.VISIBLE);
         if (getView() != null)
             getView().invalidate();
@@ -220,9 +231,11 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 if (((CheckBox) activity.findViewById(R.id.isMenuOpening)).isChecked() && cameraPreviewToggle.isChecked()) {
                     try {
-                        if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
-                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                        if (getApplication().getRunningShields().get(getControllerTag()) != null)
+                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
                                 cameraLogo.setVisibility(View.INVISIBLE);
+                                ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
+                            }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         removeListeners();
@@ -230,10 +243,12 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                         applyListeners();
                     }
                 } else {
-                    if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
+                    if (getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
-                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
+                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()) {
                                 cameraLogo.setVisibility(View.VISIBLE);
+                                ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
+                            }
                         } catch (RemoteException e) {
                             e.printStackTrace();
                             removeListeners();
@@ -252,9 +267,11 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
             if (activity != null && activity.findViewById(R.id.isMenuOpening) != null) {
                 if (isChecked && !activity.isMenuOpened() && cameraPreviewToggle.isChecked()) {
                     try {
-                        if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
-                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
+                        if (getApplication().getRunningShields().get(getControllerTag()) != null)
+                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
                                 cameraLogo.setVisibility(View.INVISIBLE);
+                                ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
+                            }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         removeListeners();
@@ -263,9 +280,11 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     }
                 } else if (!isChecked || activity.isMenuOpened()) {
                     try {
-                        if ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag()) != null)
-                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
+                        if ((getApplication().getRunningShields().get(getControllerTag()) != null))
+                            if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()) {
                                 cameraLogo.setVisibility(View.VISIBLE);
+                                ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
+                            }
                         if (!isChecked && !activity.isMenuOpened()) {
                             removeListeners();
                             cameraPreviewToggle.setChecked(false);

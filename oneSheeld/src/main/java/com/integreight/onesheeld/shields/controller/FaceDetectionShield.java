@@ -34,18 +34,19 @@ import java.util.ArrayList;
 
 public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     private static final String TAG = FaceDetectionShield.class.getName();
-    private static final String TAG1 = "Frame";
     public static final int FACE_CRASHED = 18;
     public static final int BIND_FACE_DETECTION = 9;
     public static final int START_DETECTION = 14;
     public static final int SEND_FACES = 20;
     public static final int SEND_EMPTY = 21;
+    public static final int IS_FACE_ACTIVE = 25;
     public static final int UNBIND_FACE_DETECTION = 6;
     private static final byte DETECTED_FACES = 0x01;
     private static final byte MISSING_FACES = 0x02;
-    private Messenger cameraBinder;
+    private Messenger faceBinder;
     private boolean isCameraBound = false;
     public boolean isBackPreview = true;
+    public boolean isFaceSelected = false;
     private boolean isChangingPreview = false;
     private FaceDetectionHandler eventHandler;
     private byte[] faceId;
@@ -59,6 +60,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     private ShieldFrame frame;
     ArrayList<FaceDetectionObj> tmpArray = null;
     private int previewWidth, previewHeight;
+    private int rotation;
 
     public FaceDetectionShield() {
     }
@@ -125,10 +127,11 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
 
         return super.invalidate(selectionAction, isToastable);
     }
+
     private Messenger mMessenger = new Messenger(new Handler() {
         public void handleMessage(Message msg) {
             if (msg.what == FACE_CRASHED) {
-                cameraBinder = null;
+                faceBinder = null;
                 isCameraBound = false;
                 bindService();
             } else if (msg.what == CameraHeadService.SET_CAMERA_PREVIEW_TYPE) {
@@ -146,6 +149,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                 faceDetectionObjArrayList = bundle.getParcelableArrayList("face_array");
                 previewHeight = bundle.getInt("height");
                 previewWidth = bundle.getInt("width");
+                rotation = bundle.getInt("rotation");
                 for (int i = 0; i < faceDetectionObjArrayList.size(); i++) {
                     boolean isMatched = false;
                     for (int j = 0; j < tmpArray.size(); j++)
@@ -161,6 +165,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                                 sendDetectedFaces(tmpArray.get(j), previewWidth, previewHeight);
                                 tmpArray.remove(j);
                             }
+                            break;
                         }
                     if (!isMatched)
                         sendDetectedFaces(faceDetectionObjArrayList.get(i), previewWidth, previewHeight);
@@ -184,11 +189,11 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             notifyHardwareOfShieldSelection();
-            cameraBinder = new Messenger(service);
+            faceBinder = new Messenger(service);
             Message msg = Message.obtain(null, BIND_FACE_DETECTION);
             msg.replyTo = mMessenger;
             try {
-                cameraBinder.send(msg);
+                faceBinder.send(msg);
             } catch (RemoteException e) {
             }
             isCameraBound = true;
@@ -228,20 +233,42 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         return isBackPreview;
     }
 
+    public boolean isFaceSelected() {
+        return isFaceSelected;
+    }
+
     public void setStartDetection() throws RemoteException {
         if (isCameraBound) {
             Message msg = Message.obtain(null, START_DETECTION);
             msg.replyTo = mMessenger;
-            if (cameraBinder != null) {
-                cameraBinder.send(msg);
+            if (faceBinder != null) {
+                faceBinder.send(msg);
             }
         } else {
             bindService();
         }
     }
 
+    public void setIsFaceSelected(boolean isFaceSelected) {
+        if (faceBinder != null) {
+            Message msg = Message.obtain(null, IS_FACE_ACTIVE);
+            msg.replyTo = mMessenger;
+            Bundle b = new Bundle();
+            b.putBoolean("setIsFaceSelected", isFaceSelected);
+            msg.setData(b);
+            try {
+                faceBinder.send(msg);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        } else {
+            bindService();
+        }
+        this.isFaceSelected = isFaceSelected;
+    }
+
     public boolean setCameraToPreview(boolean isBack) {
-        if (cameraBinder != null) {
+        if (faceBinder != null) {
             if (!isBack && !CameraUtils.checkFrontCamera(getActivity().getApplicationContext()))
                 return false;
             if (isChangingPreview)
@@ -254,7 +281,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
             b.putBoolean("isBack", isBack);
             msg.setData(b);
             try {
-                cameraBinder.send(msg);
+                faceBinder.send(msg);
             } catch (RemoteException e) {
                 return false;
             }
@@ -266,10 +293,10 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public boolean showPreview() throws RemoteException {
-        if (cameraBinder != null) {
+        if (faceBinder != null) {
             Message msg = Message.obtain(null, CameraHeadService.SHOW_PREVIEW);
             msg.replyTo = mMessenger;
-            cameraBinder.send(msg);
+            faceBinder.send(msg);
             return true;
         } else {
             bindService();
@@ -278,10 +305,10 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public boolean hidePreview() throws RemoteException {
-        if (cameraBinder != null) {
+        if (faceBinder != null) {
             Message msg = Message.obtain(null, CameraHeadService.HIDE_PREVIEW);
             msg.replyTo = mMessenger;
-            cameraBinder.send(msg);
+            faceBinder.send(msg);
             return true;
         } else {
             return false;
@@ -289,10 +316,10 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     }
 
     public void invalidatePreview() throws RemoteException {
-        if (cameraBinder != null) {
+        if (faceBinder != null) {
             Message msg = Message.obtain(null, CameraHeadService.INVALIDATE_PREVIEW);
             msg.replyTo = mMessenger;
-            cameraBinder.send(msg);
+            faceBinder.send(msg);
         } else
             bindService();
     }
@@ -307,11 +334,12 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
 
     @Override
     public void reset() {
+        android.util.Log.d(TAG, "unbind: ");
         Message msg = Message.obtain(null, UNBIND_FACE_DETECTION);
         msg.replyTo = mMessenger;
         try {
-            if (cameraBinder != null)
-                cameraBinder.send(msg);
+            if (faceBinder != null)
+                faceBinder.send(msg);
         } catch (RemoteException e) {
         }
         try {
@@ -370,11 +398,42 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
 
 
     public void sendDetectedFaces(FaceDetectionObj faceDetection, int previewWidth, int previewHeight) {
+        float x = faceDetection.getxPosition();
+        float y = faceDetection.getyPosition();
+        float scaledX, scaledY;
+        float tmp = 0;
+        switch (rotation) {
+            case 0: {
+                if (!isBackPreview)
+                    x = previewHeight - x;
+                tmp = y;
+                y = x;
+                x = previewWidth - tmp;
+                break;
+            }
+            case 1: {
+                if (!isBackPreview)
+                    x = previewWidth - x;
+                break;
+            }
+            case 2: {
+                if (!isBackPreview)
+                    x = previewHeight - x;
+                tmp = x;
+                x = y;
+                y = previewHeight - tmp;
+                break;
+            }
+            case 3: {
+                if (isBackPreview)
+                    x = previewWidth - x;
+                y = previewHeight - y;
+            }
+        }
         frame = new ShieldFrame(UIShield.FACE_DETECTION.getId(), DETECTED_FACES);
         faceId = intTo2ByteArray(faceDetection.getFaceId());
-        float scaledX, scaledY;
-        scaledX = (1000 * faceDetection.getxPosition()) / previewWidth;
-        scaledY = (1000 * faceDetection.getyPosition()) / previewHeight;
+        scaledX = (1000 * x) / previewWidth;
+        scaledY = (1000 * y) / previewHeight;
         if (scaledX > 500)
             scaledX = scaledX / 2;
         else if (scaledX <= 500)
@@ -385,17 +444,19 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
             scaledY = scaledY - 500;
         xPosition = float2ByteArray(scaledX);
         yPosition = float2ByteArray(scaledY);
-        height = float2ByteArray(faceDetection.getHeight());
-        width = float2ByteArray(faceDetection.getWidth());
         leftEye = float2ByteArray(faceDetection.getLeftEye() * 100);
         rightEye = float2ByteArray(faceDetection.getRightEye() * 100);
         isSmile = float2ByteArray(faceDetection.getIsSmile() * 100);
+        height = float2ByteArray(faceDetection.getHeight());
+        width = float2ByteArray(faceDetection.getWidth());
         frame.addArgument(faceId);
         frame.addArgument(twoByteArraysInto4ByteArray(xPosition, yPosition));
-        frame.addArgument(twoByteArraysInto4ByteArray(height, width));
+        if (rotation == 1 || rotation == 3)
+            frame.addArgument(twoByteArraysInto4ByteArray(height, width));
+        else
+            frame.addArgument(twoByteArraysInto4ByteArray(width, height));
         frame.addArgument(threeByteArraysTo4ByteArray(leftEye, rightEye, isSmile));
         sendShieldFrame(frame);
-        android.util.Log.d(TAG1, "sendDetectedFaces: " + frame.toString());
     }
 
     public void sendMissingFaces(FaceDetectionObj faceDetectionObj) {
@@ -403,7 +464,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         faceId = intTo2ByteArray(faceDetectionObj.getFaceId());
         frame.addArgument(faceId);
         sendShieldFrame(frame);
-        android.util.Log.d(TAG1, "sendMissingFaces: " + frame.toString());
     }
 
 }
