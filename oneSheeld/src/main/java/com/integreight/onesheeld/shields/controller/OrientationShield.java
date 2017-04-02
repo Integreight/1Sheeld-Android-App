@@ -7,6 +7,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
+
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -85,25 +86,24 @@ public class OrientationShield extends ControllerParent<OrientationShield>
     public void onSensorChanged(SensorEvent event) {
         if (flag
                 && (oldInput_x != event.values[0]
-                || oldInput_y != event.values[1]
-                || oldInput_z != event.values[2] || isFirstTime)) {
+                || oldInput_z != event.values[1]
+                || oldInput_y != event.values[2] || isFirstTime)) {
             // TODO Auto-generated method stub
             frame = new ShieldFrame(UIShield.ORIENTATION_SHIELD.getId(),
                     ORIENTATION_VALUE);
             oldInput_x = event.values[0];
-            oldInput_y = event.values[1];
-            oldInput_z = event.values[2];
-            // frame.addByteArgument((byte) Math.round(event.values[0]));
-            frame.addArgument(event.values[0]);
-            frame.addArgument(event.values[1]);
-            frame.addArgument(event.values[2]);
+            oldInput_z = event.values[1];
+            oldInput_y = event.values[2];
+            frame.addArgument(event.values[0]);//X
+            frame.addArgument(event.values[2]);//Y
+            frame.addArgument(event.values[1]);//Z
             sendShieldFrame(frame);
             if (eventHandler != null)
                 eventHandler.onSensorValueChangedFloat(event.values);
 
             Log.d("Sensor Data of X", event.values[0] + "");
-            Log.d("Sensor Data of Y", event.values[1] + "");
-            Log.d("Sensor Data of Z", event.values[2] + "");
+            Log.d("Sensor Data of Z", event.values[1] + "");
+            Log.d("Sensor Data of Y", event.values[2] + "");
 
             //
             flag = false;
@@ -170,6 +170,7 @@ public class OrientationShield extends ControllerParent<OrientationShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
+
     @Override
     public void reset() {
         // TODO Auto-generated method stub
