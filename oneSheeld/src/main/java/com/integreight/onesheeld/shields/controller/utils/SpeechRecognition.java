@@ -25,7 +25,7 @@ public class SpeechRecognition implements RecognitionListener {
 
         public void onReadyForSpeach(Bundle params);
 
-        public void onBeginingOfSpeech();
+        public void onBeginningOfSpeech();
 
         public void onEndOfSpeech();
 
@@ -54,7 +54,6 @@ public class SpeechRecognition implements RecognitionListener {
 
     public void start(RecognitionEventHandler callback) {
         mResultCallback = callback;
-
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -66,7 +65,7 @@ public class SpeechRecognition implements RecognitionListener {
 
     @Override
     public void onBeginningOfSpeech() {
-        mResultCallback.onBeginingOfSpeech();
+        mResultCallback.onBeginningOfSpeech();
     }
 
     @Override
@@ -82,7 +81,7 @@ public class SpeechRecognition implements RecognitionListener {
 
     @Override
     public void onError(int error) {
-
+        android.util.Log.d(TAG, "onError: ");
         String reason = "";
         if (mResultCallback != null) {
             switch (error) {
@@ -104,17 +103,21 @@ public class SpeechRecognition implements RecognitionListener {
                 case SpeechRecognizer.ERROR_NO_MATCH:
                     reason = "SpeechRecognizer.ERROR_NO_MATCH";
                     break;
-                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: {
                     reason = "SpeechRecognizer.ERROR_RECOGNIZER_BUSY";
+                    mSpeechRecognizer.stopListening();
                     break;
+                }
                 case SpeechRecognizer.ERROR_SERVER:
                     reason = "SpeechRecognizer.ERROR_SERVER";
                     break;
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                     reason = "SpeechRecognizer.ERROR_SPEECH_TIMEOUT";
                     break;
+                default:
+                    mSpeechRecognizer.cancel();
             }
-
+            mSpeechRecognizer.cancel();
             mResultCallback.onError(reason, error);
         }
 
@@ -145,6 +148,11 @@ public class SpeechRecognition implements RecognitionListener {
     @Override
     public void onRmsChanged(float rmsdB) {
         mResultCallback.onRmsChanged(rmsdB);
+    }
+
+    public boolean stopListening() {
+        mSpeechRecognizer.stopListening();
+        return true;
     }
 
     private void receiveResults(Bundle results) {

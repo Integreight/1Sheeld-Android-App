@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,12 +29,12 @@ public class SpeechRecognitionFragment extends
     RelativeLayout.LayoutParams params;
     int stepValue = 0;
     int marginValue;
+    boolean isDetecting = false;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.voice_recognition_shield_fragment_view,
                 container, false);
-
     }
 
     @Override
@@ -61,11 +62,16 @@ public class SpeechRecognitionFragment extends
                 getControllerTag()))
                 .setEventHandler(speechRecognitionEventHandler);
         statusCircle.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View arg0) {
-                ((SpeechRecognitionShield) getApplication().getRunningShields()
-                        .get(getControllerTag())).startRecognizer();
+                if (!isDetecting)
+                    ((SpeechRecognitionShield) getApplication().getRunningShields()
+                            .get(getControllerTag())).startRecognizer();
+                else {
+                    ((SpeechRecognitionShield) getApplication().getRunningShields()
+                            .get(getControllerTag())).stopListening();
+                    setOff();
+                }
             }
         });
     }
@@ -112,7 +118,7 @@ public class SpeechRecognitionFragment extends
                 public void run() {
                     if (canChangeUI()) {
                         setOff();
-                        Toast.makeText(activity, error, Toast.LENGTH_LONG)
+                        Toast.makeText(activity, error, Toast.LENGTH_SHORT)
                                 .show();
                     }
                 }
@@ -123,10 +129,8 @@ public class SpeechRecognitionFragment extends
         public void onEndOfSpeech() {
             if (canChangeUI()) {
                 uiHandler.post(new Runnable() {
-
                     @Override
                     public void run() {
-//                        recognizedResult.setText("");
                         setOff();
                     }
                 });
@@ -134,7 +138,7 @@ public class SpeechRecognitionFragment extends
         }
 
         @Override
-        public void onBeginingOfSpeech() {
+        public void onBeginningOfSpeech() {
             if (canChangeUI()) {
                 uiHandler.post(new Runnable() {
 
@@ -150,19 +154,22 @@ public class SpeechRecognitionFragment extends
         @Override
         public void onRmsChanged(final float rmsdB) {
             uiHandler.removeCallbacksAndMessages(null);
-            uiHandler.post(new Runnable() {
+            if (canChangeUI())
+                uiHandler.post(new Runnable() {
 
-                @Override
-                public void run() {
-                    marginValue = (int) (stepValue * (rmsdB > 10 ? 10 : rmsdB));
-                    params.bottomMargin = marginValue < 0 ? 0 : marginValue;
-                    rmsIndicator.requestLayout();
-                }
-            });
+                    @Override
+                    public void run() {
+                        Log.d("RMS", rmsdB + "");
+                        marginValue = (int) (stepValue * (rmsdB > 10 ? 10 : rmsdB));
+                        params.bottomMargin = marginValue < 0 ? 0 : marginValue;
+                        rmsIndicator.requestLayout();
+                    }
+                });
         }
     };
 
     private void setOff() {
+        isDetecting = false;
         rmsIndicator.setVisibility(View.INVISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_red));
@@ -170,6 +177,7 @@ public class SpeechRecognitionFragment extends
     }
 
     private void setON() {
+        isDetecting = true;
         rmsIndicator.setVisibility(View.VISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_green));
@@ -187,7 +195,6 @@ public class SpeechRecognitionFragment extends
     @Override
     public void doOnServiceConnected() {
         initializeFirmata();
-
     }
 
 }

@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.widget.Toast;
+
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -78,10 +79,9 @@ public class SpeechRecognitionShield extends
             if (isToastable)
                 Toast.makeText(activity, R.string.voice_recognizer_please_install_voice_search_from_google_play_store, Toast.LENGTH_SHORT).show();
             selectionAction.onFailure();
-        } else if(!checkForPermissions()){
+        } else if (!checkForPermissions()) {
             selectionAction.onFailure();
-        }
-        else
+        } else
             selectionAction.onSuccess();
         return super.invalidate(selectionAction, isToastable);
     }
@@ -163,6 +163,7 @@ public class SpeechRecognitionShield extends
             sf.addArgument(1, errorSent);
             Log.d("Frame", sf.toString());
             sendShieldFrame(sf, true);
+
         }
 
         @Override
@@ -172,16 +173,15 @@ public class SpeechRecognitionShield extends
         }
 
         @Override
-        public void onBeginingOfSpeech() {
+        public void onBeginningOfSpeech() {
             if (eventHandler != null)
-                eventHandler.onBeginingOfSpeech();
+                eventHandler.onBeginningOfSpeech();
         }
 
         @Override
         public void onRmsChanged(float rmsdB) {
             if (eventHandler != null)
                 eventHandler.onRmsChanged(rmsdB);
-            Log.d("RMS", rmsdB + "");
         }
     };
 
@@ -202,7 +202,6 @@ public class SpeechRecognitionShield extends
 
     public void startRecognizer() {
         activity.runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 if (mSpeechRecognitionService != null)
@@ -212,11 +211,20 @@ public class SpeechRecognitionShield extends
         });
     }
 
+    public boolean stopListening() {
+        if (mSpeechRecognitionService != null)
+            mSpeechRecognitionService
+                    .stopListening();
+        return mSpeechRecognitionService
+                .stopListening();
+    }
+
     @Override
     public void reset() {
         if (mServiceConnection != null && getApplication() != null)
             getApplication().unbindService(mServiceConnection);
     }
+
     private static class ERROR {
         protected static int AUDIO = 3, NETWORK = 2, NETWORK_TIMEOUT = 1,
                 NO_MATCH = 7, RECOGNIZER_BUSY = 8, SERVER = 4,
