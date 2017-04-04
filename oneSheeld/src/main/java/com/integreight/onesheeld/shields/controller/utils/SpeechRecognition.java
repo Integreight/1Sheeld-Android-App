@@ -15,7 +15,7 @@ import java.util.List;
 public class SpeechRecognition implements RecognitionListener {
     @SuppressWarnings("unused")
     private static final String TAG = SpeechRecognition.class.getSimpleName();
-
+    private long mSpeechRecognizerStartListeningTime = 0;
     private SpeechRecognizer mSpeechRecognizer;
 
     public interface RecognitionEventHandler {
@@ -60,6 +60,7 @@ public class SpeechRecognition implements RecognitionListener {
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                 "com.integreight.onesheeld");
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
+        mSpeechRecognizerStartListeningTime = System.currentTimeMillis();
         mSpeechRecognizer.startListening(intent);
     }
 
@@ -81,8 +82,11 @@ public class SpeechRecognition implements RecognitionListener {
 
     @Override
     public void onError(int error) {
-        android.util.Log.d(TAG, "onError: ");
+        long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
+        android.util.Log.d(TAG, "onError: " + error);
         String reason = "";
+        if (duration < 1000 && error == SpeechRecognizer.ERROR_NO_MATCH)
+            return;
         if (mResultCallback != null) {
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
@@ -114,8 +118,6 @@ public class SpeechRecognition implements RecognitionListener {
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                     reason = "SpeechRecognizer.ERROR_SPEECH_TIMEOUT";
                     break;
-                default:
-                    mSpeechRecognizer.cancel();
             }
             mSpeechRecognizer.cancel();
             mResultCallback.onError(reason, error);

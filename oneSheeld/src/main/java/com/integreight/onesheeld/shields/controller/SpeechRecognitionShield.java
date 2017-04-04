@@ -29,6 +29,7 @@ public class SpeechRecognitionShield extends
     private RecognitionEventHandler eventHandler;
     private static final byte SEND_RESULT = 0x01;
     private static final byte SEND_ERROR = 0x02;
+    private boolean isWorking = false;
 
     public SpeechRecognitionShield() {
         super();
@@ -194,7 +195,7 @@ public class SpeechRecognitionShield extends
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (frame.getShieldId() == UIShield.SPEECH_RECOGNIZER_SHIELD.getId()) {
-            if (frame.getFunctionId() == 0x01) {
+            if (frame.getFunctionId() == 0x01& !isWorking) {
                 startRecognizer();
             }
         }
@@ -204,11 +205,15 @@ public class SpeechRecognitionShield extends
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mSpeechRecognitionService != null)
+                if (mSpeechRecognitionService != null )
                     mSpeechRecognitionService
                             .startRecognition(controllerHandler);
             }
         });
+    }
+
+    public void setIsWorking(boolean isWorking) {
+        this.isWorking = isWorking;
     }
 
     public boolean stopListening() {

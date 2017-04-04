@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ public class SpeechRecognitionFragment extends
     int stepValue = 0;
     int marginValue;
     boolean isDetecting = false;
+    String lastResult = "";
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class SpeechRecognitionFragment extends
         rmsIndicator = (TextView) v.findViewById(R.id.rmsLevelIndicator);
         recognizedResult = (OneSheeldTextView) v
                 .findViewById(R.id.recognizedResult);
+        recognizedResult.setMovementMethod(new ScrollingMovementMethod());
         params = (LayoutParams) rmsIndicator.getLayoutParams();
         statusCircle.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -74,6 +77,18 @@ public class SpeechRecognitionFragment extends
                 }
             }
         });
+    }
+
+    @Override
+    public void doOnPause() {
+        super.doOnPause();
+        lastResult = String.valueOf(recognizedResult.getText());
+    }
+
+    @Override
+    public void doOnResume() {
+        super.doOnResume();
+        recognizedResult.setText(lastResult.toLowerCase());
     }
 
     private RecognitionEventHandler speechRecognitionEventHandler = new RecognitionEventHandler() {
@@ -170,6 +185,8 @@ public class SpeechRecognitionFragment extends
 
     private void setOff() {
         isDetecting = false;
+        ((SpeechRecognitionShield) getApplication().getRunningShields()
+                .get(getControllerTag())).setIsWorking(false);
         rmsIndicator.setVisibility(View.INVISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_red));
@@ -178,6 +195,8 @@ public class SpeechRecognitionFragment extends
 
     private void setON() {
         isDetecting = true;
+        ((SpeechRecognitionShield) getApplication().getRunningShields()
+                .get(getControllerTag())).setIsWorking(true);
         rmsIndicator.setVisibility(View.VISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_green));
