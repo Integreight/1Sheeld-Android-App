@@ -82,16 +82,25 @@ public class SpeechRecognitionFragment extends
         });
     }
 
-    @Override
-    public void doOnPause() {
-        super.doOnPause();
-        lastResult = String.valueOf(recognizedResult.getText());
-    }
 
     @Override
     public void doOnResume() {
         super.doOnResume();
         recognizedResult.setText(lastResult.toLowerCase());
+        ((SpeechRecognitionShield) getApplication().getRunningShields()
+                .get(getControllerTag())).setIsWorking(isDetecting);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        if (savedInstanceState != null) {
+            lastResult = savedInstanceState.getString("lastResult");
+            recognizedResult.setText(lastResult);
+            isDetecting = savedInstanceState.getBoolean("isWorking");
+            ((SpeechRecognitionShield) getApplication().getRunningShields()
+                    .get(getControllerTag())).setIsWorking(isDetecting);
+        }
     }
 
     private RecognitionEventHandler speechRecognitionEventHandler = new RecognitionEventHandler() {
@@ -105,8 +114,9 @@ public class SpeechRecognitionFragment extends
                     if (canChangeUI()) {
                         setOff();
                         if (result.size() > 0)
-                            recognizedResult.setText(result.get(0)
-                                    .toLowerCase());
+                            lastResult = result.get(0);
+                        recognizedResult.setText(lastResult
+                                .toLowerCase());
                     }
                 }
             });
@@ -120,7 +130,8 @@ public class SpeechRecognitionFragment extends
                     @Override
                     public void run() {
                         if (canChangeUI()) {
-                            recognizedResult.setText("");
+                            lastResult = "";
+                            recognizedResult.setText(lastResult);
                             setON();
                         }
                     }
@@ -162,7 +173,8 @@ public class SpeechRecognitionFragment extends
 
                     @Override
                     public void run() {
-                        recognizedResult.setText("");
+                        lastResult = "";
+                        recognizedResult.setText(lastResult);
                         setON();
                     }
                 });
@@ -189,7 +201,7 @@ public class SpeechRecognitionFragment extends
     private void setOff() {
         isDetecting = false;
         ((SpeechRecognitionShield) getApplication().getRunningShields()
-                .get(getControllerTag())).setIsWorking(false);
+                .get(getControllerTag())).setIsWorking(isDetecting);
         rmsIndicator.setVisibility(View.INVISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_red));
@@ -199,7 +211,7 @@ public class SpeechRecognitionFragment extends
     private void setON() {
         isDetecting = true;
         ((SpeechRecognitionShield) getApplication().getRunningShields()
-                .get(getControllerTag())).setIsWorking(true);
+                .get(getControllerTag())).setIsWorking(isDetecting);
         rmsIndicator.setVisibility(View.VISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_green));
@@ -219,4 +231,9 @@ public class SpeechRecognitionFragment extends
         initializeFirmata();
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("lastResult", lastResult);
+    }
 }

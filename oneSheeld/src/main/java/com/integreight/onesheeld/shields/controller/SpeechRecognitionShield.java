@@ -195,9 +195,9 @@ public class SpeechRecognitionShield extends
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (frame.getShieldId() == UIShield.SPEECH_RECOGNIZER_SHIELD.getId()) {
-            if (frame.getFunctionId() == 0x01 & !isWorking) {
+            if (frame.getFunctionId() == 0x01 && !isWorking)
                 startRecognizer();
-            }
+
         }
     }
 
@@ -205,6 +205,7 @@ public class SpeechRecognitionShield extends
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                isWorking = true;
                 if (mSpeechRecognitionService != null)
                     mSpeechRecognitionService
                             .startRecognition(controllerHandler);
@@ -217,6 +218,7 @@ public class SpeechRecognitionShield extends
     }
 
     public boolean stopListening() {
+        isWorking = false;
         if (mSpeechRecognitionService != null)
             mSpeechRecognitionService
                     .stopListening();
