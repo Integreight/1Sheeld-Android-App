@@ -85,8 +85,6 @@ public class SpeechRecognition implements RecognitionListener {
         long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
         android.util.Log.d(TAG, "onError: " + error);
         String reason = "";
-        if (duration < 1000 && error == SpeechRecognizer.ERROR_NO_MATCH)
-            return;
         if (mResultCallback != null) {
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
@@ -104,9 +102,12 @@ public class SpeechRecognition implements RecognitionListener {
                 case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
                     reason = "SpeechRecognizer.ERROR_NETWORK_TIMEOUT";
                     break;
-                case SpeechRecognizer.ERROR_NO_MATCH:
+                case SpeechRecognizer.ERROR_NO_MATCH: {
+                    if (duration < 1000)
+                        return;
                     reason = "SpeechRecognizer.ERROR_NO_MATCH";
                     break;
+                }
                 case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: {
                     reason = "SpeechRecognizer.ERROR_RECOGNIZER_BUSY";
                     mSpeechRecognizer.stopListening();

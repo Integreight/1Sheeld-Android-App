@@ -30,6 +30,7 @@ public class SpeechRecognitionShield extends
     private static final byte SEND_RESULT = 0x01;
     private static final byte SEND_ERROR = 0x02;
     private boolean isWorking = false;
+    private String recognized = null;
 
     public SpeechRecognitionShield() {
         super();
@@ -105,7 +106,6 @@ public class SpeechRecognitionShield extends
 
     private ShieldFrame sf;
     RecognitionEventHandler controllerHandler = new RecognitionEventHandler() {
-
         @Override
         public void onResult(List<String> result) {
             if (result != null && result.size() > 0) {
@@ -113,7 +113,7 @@ public class SpeechRecognitionShield extends
                     eventHandler.onResult(result);
                 sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
                         SEND_RESULT);
-                String recognized = result.get(0);
+                recognized = result.get(0);
                 sf.addArgument(recognized.toLowerCase());
                 Log.d("Frame", sf.toString());
                 sendShieldFrame(sf, true);
@@ -195,7 +195,7 @@ public class SpeechRecognitionShield extends
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (frame.getShieldId() == UIShield.SPEECH_RECOGNIZER_SHIELD.getId()) {
-            if (frame.getFunctionId() == 0x01& !isWorking) {
+            if (frame.getFunctionId() == 0x01 & !isWorking) {
                 startRecognizer();
             }
         }
@@ -205,7 +205,7 @@ public class SpeechRecognitionShield extends
         activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (mSpeechRecognitionService != null )
+                if (mSpeechRecognitionService != null)
                     mSpeechRecognitionService
                             .startRecognition(controllerHandler);
             }
@@ -222,6 +222,13 @@ public class SpeechRecognitionShield extends
                     .stopListening();
         return mSpeechRecognitionService
                 .stopListening();
+    }
+
+    public String getRecognized() {
+        if (recognized != null)
+            return recognized;
+        else
+            return "";
     }
 
     @Override

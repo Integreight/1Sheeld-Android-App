@@ -64,6 +64,9 @@ public class SpeechRecognitionFragment extends
         ((SpeechRecognitionShield) getApplication().getRunningShields().get(
                 getControllerTag()))
                 .setEventHandler(speechRecognitionEventHandler);
+        lastResult = ((SpeechRecognitionShield) getApplication().getRunningShields()
+                .get(getControllerTag())).getRecognized();
+        recognizedResult.setText(lastResult.toLowerCase());
         statusCircle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
