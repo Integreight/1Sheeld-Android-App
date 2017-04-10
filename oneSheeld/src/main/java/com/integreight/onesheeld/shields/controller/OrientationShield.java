@@ -95,15 +95,15 @@ public class OrientationShield extends ControllerParent<OrientationShield>
             oldInput_z = event.values[1];
             oldInput_y = event.values[2];
             frame.addArgument(event.values[0]);//X
-            frame.addArgument(event.values[2]);//Y
-            frame.addArgument(event.values[1]);//Z
+            frame.addArgument(event.values[1]);//Y
+            frame.addArgument(event.values[2]);//Z
             sendShieldFrame(frame);
             if (eventHandler != null)
                 eventHandler.onSensorValueChangedFloat(event.values);
 
             Log.d("Sensor Data of X", event.values[0] + "");
-            Log.d("Sensor Data of Z", event.values[1] + "");
-            Log.d("Sensor Data of Y", event.values[2] + "");
+            Log.d("Sensor Data of Y", event.values[1] + "");
+            Log.d("Sensor Data of Z", event.values[2] + "");
 
             //
             flag = false;
