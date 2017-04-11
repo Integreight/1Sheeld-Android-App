@@ -82,7 +82,6 @@ public class SpeechRecognitionFragment extends
         });
     }
 
-
     @Override
     public void doOnResume() {
         super.doOnResume();
@@ -104,29 +103,24 @@ public class SpeechRecognitionFragment extends
     }
 
     private RecognitionEventHandler speechRecognitionEventHandler = new RecognitionEventHandler() {
-
         @Override
         public void onResult(final List<String> result) {
-            uiHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (canChangeUI()) {
+            if (canChangeUI())
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
                         setOff();
-                        if (result.size() > 0)
-                            lastResult = result.get(0);
+                        lastResult = result.get(0);
                         recognizedResult.setText(lastResult
                                 .toLowerCase());
                     }
-                }
-            });
+                });
         }
-
+ 
         @Override
         public void onReadyForSpeach(Bundle params) {
-            if (canChangeUI()) {
+            if (canChangeUI())
                 uiHandler.post(new Runnable() {
-
                     @Override
                     public void run() {
                         if (canChangeUI()) {
@@ -136,19 +130,18 @@ public class SpeechRecognitionFragment extends
                         }
                     }
                 });
-            }
         }
 
         @Override
         public void onError(final String error, int errorCode) {
             uiHandler.post(new Runnable() {
-
                 @Override
                 public void run() {
                     if (canChangeUI()) {
                         setOff();
                         Toast.makeText(activity, error, Toast.LENGTH_SHORT)
                                 .show();
+                        lastResult = "";
                     }
                 }
             });
@@ -156,19 +149,19 @@ public class SpeechRecognitionFragment extends
 
         @Override
         public void onEndOfSpeech() {
-            if (canChangeUI()) {
+            if (canChangeUI())
                 uiHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         setOff();
                     }
                 });
-            }
         }
+
 
         @Override
         public void onBeginningOfSpeech() {
-            if (canChangeUI()) {
+            if (canChangeUI())
                 uiHandler.post(new Runnable() {
 
                     @Override
@@ -178,15 +171,12 @@ public class SpeechRecognitionFragment extends
                         setON();
                     }
                 });
-            }
         }
 
         @Override
         public void onRmsChanged(final float rmsdB) {
-            uiHandler.removeCallbacksAndMessages(null);
             if (canChangeUI())
                 uiHandler.post(new Runnable() {
-
                     @Override
                     public void run() {
                         Log.d("RMS", rmsdB + "");
