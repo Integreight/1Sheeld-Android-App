@@ -116,7 +116,7 @@ public class SpeechRecognitionFragment extends
                     }
                 });
         }
- 
+
         @Override
         public void onReadyForSpeach(Bundle params) {
             if (canChangeUI())
@@ -132,19 +132,19 @@ public class SpeechRecognitionFragment extends
                 });
         }
 
+
         @Override
         public void onError(final String error, int errorCode) {
-            uiHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (canChangeUI()) {
+            if (canChangeUI())
+                uiHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
                         setOff();
                         Toast.makeText(activity, error, Toast.LENGTH_SHORT)
                                 .show();
                         lastResult = "";
                     }
-                }
-            });
+                });
         }
 
         @Override
@@ -158,12 +158,10 @@ public class SpeechRecognitionFragment extends
                 });
         }
 
-
         @Override
         public void onBeginningOfSpeech() {
             if (canChangeUI())
                 uiHandler.post(new Runnable() {
-
                     @Override
                     public void run() {
                         lastResult = "";
