@@ -12,6 +12,7 @@ import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.shields.ControllerParent;
+import com.integreight.onesheeld.shields.fragments.AccelerometerFragment;
 import com.integreight.onesheeld.utils.Log;
 
 public class AccelerometerShield extends ControllerParent<AccelerometerShield>
@@ -32,7 +33,6 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         @Override
         public void run() {
             // Do work with the sensor values.
-
             flag = true;
             // The Runnable is posted to run again here:
             if (handler != null)
@@ -49,6 +49,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
 
     @Override
     public ControllerParent<AccelerometerShield> init(String tag) {
+        AccelerometerFragment.setLinearLisenter(linearLisenter);
         return super.init(tag);
     }
 
@@ -59,8 +60,11 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         this.selectionAction = selectionAction;
         mSensorManager = (SensorManager) getApplication().getSystemService(
                 Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager
-                .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        if (!AccelerometerFragment.isLinearActive)
+            mAccelerometer = mSensorManager
+                    .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        else
+            mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         registerSensorListener(isToastable);
         return super.invalidate(selectionAction, isToastable);
     }
@@ -82,6 +86,19 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         // TODO Auto-generated method stub
 
     }
+
+    private AccelerometerFragment.LinearLisenter linearLisenter = new AccelerometerFragment.LinearLisenter() {
+        @Override
+        public void isLinearActive(Boolean isLinearActive) {
+            if (!isLinearActive)
+                mAccelerometer = mSensorManager
+                        .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            else
+                mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+
+            android.util.Log.d("Accelerometer", "LinearLisenter: " + mAccelerometer.getName());
+        }
+    };
 
     @Override
     public void onSensorChanged(SensorEvent event) {
@@ -120,10 +137,14 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         if (mSensorManager == null | mAccelerometer == null) {
             mSensorManager = (SensorManager) getApplication().getSystemService(
                     Context.SENSOR_SERVICE);
-            mAccelerometer = mSensorManager
-                    .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            if (!AccelerometerFragment.isLinearActive)
+                mAccelerometer = mSensorManager
+                        .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            else
+                mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         }
-        if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+        android.util.Log.d("Accelerometer", "registerSensorListener: " + mAccelerometer.getName());
+        if (mAccelerometer != null) {
             // Success! There's sensor.
             if (!isHandlerLive) {
                 handler = new Handler();
@@ -157,7 +178,6 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
     public void unegisterSensorListener() {
         // mSensorManager.unregisterListener(this);
         if (mSensorManager != null && handler != null && mAccelerometer != null) {
-
             mSensorManager.unregisterListener(this, mAccelerometer);
             mSensorManager.unregisterListener(this);
             if (processSensors != null)
@@ -174,6 +194,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
         void isDeviceHasSensor(Boolean hasSensor);
 
     }
+
     @Override
     public void reset() {
         // TODO Auto-generated method stub
