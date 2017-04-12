@@ -9,6 +9,7 @@ import com.integreight.onesheeld.model.ArduinoConnectedPin;
 import com.integreight.onesheeld.model.TerminalPrintedLine;
 import com.integreight.onesheeld.shields.ControllerParent;
 import com.integreight.onesheeld.shields.fragments.TerminalFragment;
+import com.integreight.onesheeld.utils.ArrayUtils;
 
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -82,8 +83,12 @@ public class TerminalShield extends ControllerParent<TerminalShield> {
                             isEndedWithNewLine, true));
                 } else if (terminalPrintedLines.size() > 0
                         && tempLines.size() > 0) {
-                    terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = terminalPrintedLines
-                            .get(terminalPrintedLines.size() - 1).print;
+                    if (!terminalPrintedLines.get(terminalPrintedLines.size() - 1).isEndedWithNewLine)
+                        terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = ArrayUtils.concat(terminalPrintedLines
+                                .get(terminalPrintedLines.size() - 1).print, incomingByte);
+                    else
+                        terminalPrintedLines.get(terminalPrintedLines.size() - 1).print = terminalPrintedLines
+                                .get(terminalPrintedLines.size() - 1).print;
                     tempLines.get(tempLines.size() - 1).print = terminalPrintedLines
                             .get(terminalPrintedLines.size() - 1).print;
                     if (isEndedWithNewLine)
