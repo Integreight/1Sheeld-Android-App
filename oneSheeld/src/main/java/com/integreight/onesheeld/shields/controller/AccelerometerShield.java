@@ -23,6 +23,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
     private AccelerometerEventHandler eventHandler;
     private ShieldFrame frame;
     Handler handler;
+    public boolean isLinearExist = false;
     int PERIOD = 100;
     boolean flag = false;
     boolean isHandlerLive = false;
@@ -95,8 +96,6 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
                         .getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             else
                 mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-
-            android.util.Log.d("Accelerometer", "LinearLisenter: " + mAccelerometer.getName());
         }
     };
 
@@ -143,8 +142,9 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
             else
                 mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         }
-        android.util.Log.d("Accelerometer", "registerSensorListener: " + mAccelerometer.getName());
         if (mAccelerometer != null) {
+            // if linear exist of not
+            isLinearExist = mAccelerometer.getName().equals("Linear Acceleration");
             // Success! There's sensor.
             if (!isHandlerLive) {
                 handler = new Handler();
@@ -161,6 +161,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield>
                 Log.d("Your Sensor is registered", "Accelerometer");
             }
         } else {
+            isLinearExist = false;
             // Failure! No sensor.
             Log.d("Device doesn't have Sensor ", "Accelerometer");
             if (selectionAction != null)

@@ -52,6 +52,9 @@ public class AccelerometerFragment extends
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isLinearActive = isChecked;
                 linearLisenter.isLinearActive(isChecked);
+                if (isChecked)
+                    ((AccelerometerShield) getApplication().getRunningShields().get(
+                            getControllerTag())).registerSensorListener(true);
             }
         });
     }
@@ -115,6 +118,11 @@ public class AccelerometerFragment extends
 
     @Override
     public void doOnResume() {
+        if (!((AccelerometerShield) getApplication().getRunningShields().get(
+                getControllerTag())).isLinearExist) {
+            enableLlinearAccelerometer.setChecked(false);
+            isLinearActive = false;
+        }
         enableLlinearAccelerometer.setChecked(isLinearActive);
         linearLisenter.isLinearActive(isLinearActive);
     }
