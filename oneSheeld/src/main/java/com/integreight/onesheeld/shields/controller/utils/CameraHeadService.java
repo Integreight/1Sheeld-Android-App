@@ -1654,6 +1654,10 @@ public class CameraHeadService extends Service implements
                         faceRotation = 2;
                     else if (!isBackPreview && faceRotation == 2)
                         faceRotation = 0;
+                    else if (!isBackPreview && faceRotation == 1)
+                        faceRotation = 3;
+                    else if (!isBackPreview && faceRotation == 3)
+                        faceRotation = 1;
                     outputFrame = new Frame.Builder()
                             .setImageData(mPendingFrameData, size.width,
                                     size.height, ImageFormat.NV21)
