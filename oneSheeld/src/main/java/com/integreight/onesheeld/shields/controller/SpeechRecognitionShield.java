@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.widget.Toast;
+
 import com.integreight.onesheeld.sdk.ShieldFrame;
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.enums.UIShield;
@@ -28,6 +29,8 @@ public class SpeechRecognitionShield extends
     private RecognitionEventHandler eventHandler;
     private static final byte SEND_RESULT = 0x01;
     private static final byte SEND_ERROR = 0x02;
+    private boolean isWorking = false;
+    private String recognized = null;
 
     public SpeechRecognitionShield() {
         super();
@@ -78,10 +81,9 @@ public class SpeechRecognitionShield extends
             if (isToastable)
                 Toast.makeText(activity, R.string.voice_recognizer_please_install_voice_search_from_google_play_store, Toast.LENGTH_SHORT).show();
             selectionAction.onFailure();
-        } else if(!checkForPermissions()){
+        } else if (!checkForPermissions()) {
             selectionAction.onFailure();
-        }
-        else
+        } else
             selectionAction.onSuccess();
         return super.invalidate(selectionAction, isToastable);
     }
@@ -104,7 +106,6 @@ public class SpeechRecognitionShield extends
 
     private ShieldFrame sf;
     RecognitionEventHandler controllerHandler = new RecognitionEventHandler() {
-
         @Override
         public void onResult(List<String> result) {
             if (result != null && result.size() > 0) {
@@ -112,7 +113,7 @@ public class SpeechRecognitionShield extends
                     eventHandler.onResult(result);
                 sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
                         SEND_RESULT);
-                String recognized = result.get(0);
+                recognized = result.get(0);
                 sf.addArgument(recognized.toLowerCase());
                 Log.d("Frame", sf.toString());
                 sendShieldFrame(sf, true);
@@ -163,6 +164,7 @@ public class SpeechRecognitionShield extends
             sf.addArgument(1, errorSent);
             Log.d("Frame", sf.toString());
             sendShieldFrame(sf, true);
+
         }
 
         @Override
@@ -172,16 +174,15 @@ public class SpeechRecognitionShield extends
         }
 
         @Override
-        public void onBeginingOfSpeech() {
+        public void onBeginningOfSpeech() {
             if (eventHandler != null)
-                eventHandler.onBeginingOfSpeech();
+                eventHandler.onBeginningOfSpeech();
         }
 
         @Override
         public void onRmsChanged(float rmsdB) {
             if (eventHandler != null)
                 eventHandler.onRmsChanged(rmsdB);
-            Log.d("RMS", rmsdB + "");
         }
     };
 
@@ -194,17 +195,17 @@ public class SpeechRecognitionShield extends
     @Override
     public void onNewShieldFrameReceived(ShieldFrame frame) {
         if (frame.getShieldId() == UIShield.SPEECH_RECOGNIZER_SHIELD.getId()) {
-            if (frame.getFunctionId() == 0x01) {
+            if (frame.getFunctionId() == 0x01 && !isWorking)
                 startRecognizer();
-            }
+
         }
     }
 
     public void startRecognizer() {
         activity.runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
+                isWorking = true;
                 if (mSpeechRecognitionService != null)
                     mSpeechRecognitionService
                             .startRecognition(controllerHandler);
@@ -212,11 +213,32 @@ public class SpeechRecognitionShield extends
         });
     }
 
+    public void setIsWorking(boolean isWorking) {
+        this.isWorking = isWorking;
+    }
+
+    public boolean stopListening() {
+        isWorking = false;
+        if (mSpeechRecognitionService != null)
+            mSpeechRecognitionService
+                    .stopListening();
+        return mSpeechRecognitionService
+                .stopListening();
+    }
+
+    public String getRecognized() {
+        if (recognized != null)
+            return recognized;
+        else
+            return "";
+    }
+
     @Override
     public void reset() {
         if (mServiceConnection != null && getApplication() != null)
             getApplication().unbindService(mServiceConnection);
     }
+
     private static class ERROR {
         protected static int AUDIO = 3, NETWORK = 2, NETWORK_TIMEOUT = 1,
                 NO_MATCH = 7, RECOGNIZER_BUSY = 8, SERVER = 4,

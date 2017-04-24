@@ -39,6 +39,10 @@ public class SpeechRecognitionService extends Service {
         return START_STICKY;
     }
 
+    public boolean stopListening(){
+        mSpeechRecognition.stopListening();
+        return true;
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();
