@@ -8,7 +8,6 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
-import com.integreight.onesheeld.utils.Log;
 
 import java.util.List;
 
@@ -55,17 +54,6 @@ public class SpeechRecognition implements RecognitionListener {
 
     public void start(RecognitionEventHandler callback) {
         mResultCallback = callback;
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
-                "com.integreight.onesheeld");
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
-        mSpeechRecognizerStartListeningTime = System.currentTimeMillis();
-        mSpeechRecognizer.startListening(intent);
-    }
-
-    private void start() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
@@ -131,8 +119,6 @@ public class SpeechRecognition implements RecognitionListener {
                     break;
                 case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: {
                     reason = "SpeechRecognizer.ERROR_SPEECH_TIMEOUT";
-                    stop();
-                    start();
                     break;
                 }
             }
@@ -141,7 +127,6 @@ public class SpeechRecognition implements RecognitionListener {
             isWorking = false;
             isFinished = true;
         }
-
     }
 
     @Override
