@@ -25,7 +25,6 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
 
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
-    private ImageView lastImage;
     private View cameraLogo;
     private FaceDetectionHandler faceDetectionHandler = new FaceDetectionHandler() {
         @Override
@@ -111,26 +110,20 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.camera_shield_fragment_layout,container,false);
+        frontBackToggle = (CheckBox) rootView.findViewById(R.id.frontBackToggle);
+        cameraPreviewToggle = (CheckBox) rootView.findViewById(R.id.camera_preview_toggle);
+        cameraLogo = rootView.findViewById(R.id.camera_log);
         // Inflate the layout for this fragment
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
         activity.registerSlidingMenuListner(this);
-        return inflater.inflate(R.layout.camera_shield_fragment_layout, container,
-                false);
+        return rootView;
     }
 
     @Override
     public void doOnViewCreated(View view, Bundle savedInstanceState) {
-        frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
-        cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
-        cameraLogo = view.findViewById(R.id.camera_log);
-        lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
-        activity.backgroundThreadHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                lastImage.setVisibility(View.INVISIBLE);
-            }
-        });
+
 
     }
 
@@ -219,7 +212,12 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
             }
         }
         ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
-        cameraLogo.setVisibility(View.VISIBLE);
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                cameraLogo.setVisibility(View.VISIBLE);
+            }
+        });
         if (getView() != null)
             getView().invalidate();
     }

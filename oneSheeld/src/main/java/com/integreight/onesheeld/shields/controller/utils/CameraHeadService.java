@@ -70,6 +70,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +110,7 @@ public class CameraHeadService extends Service implements
     private FaceGraphic mFaceGraphic;
     private GraphicOverlay mGraphicOverlay;
     private Messenger faceDetectionMessenger;
+    private int displayAngle1;
     FrameLayout fLayout;
     private final int quality = 50;
     FileOutputStream fo;
@@ -662,6 +664,7 @@ public class CameraHeadService extends Service implements
             angle = (info.orientation - degrees + 360) % 360;
             displayAngle = angle;
         }
+        displayAngle1 = displayAngle;
         camera.setDisplayOrientation(displayAngle);
     }
 
@@ -697,8 +700,6 @@ public class CameraHeadService extends Service implements
         params.width = expectedWidth;
         params.height = expectedHeight;
         params.alpha = 1.0f;
-        previewWidth = expectedWidth;
-        previewHeight = expectedHeight;
         try {
             windowManager.updateViewLayout(fLayout, params);
         } catch (IllegalArgumentException e) {
@@ -1069,7 +1070,13 @@ public class CameraHeadService extends Service implements
                 Camera.Parameters.FOCUS_MODE_AUTO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         }
-        int[] previewFpsRange = selectPreviewFpsRange(mCamera, 15.0f);
+        List<Camera.Size> mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
+        for (Camera.Size str : mSupportedPreviewSizes)
+            android.util.Log.d(TAG, str.width + "/" + str.height);
+        size = getOptimalPreviewSize(mSupportedPreviewSizes, previewWidth, previewHeight);
+        parameters.setPreviewSize(size.width, size.height);
+        android.util.Log.d(TAG, "preview sizes: " + previewWidth + " " + previewHeight);
+        int[] previewFpsRange = selectPreviewFpsRange(mCamera, 30.0f);
         if (previewFpsRange == null) {
             throw new RuntimeException("Could not find suitable preview frames per second range.");
         }
@@ -1408,6 +1415,8 @@ public class CameraHeadService extends Service implements
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
+        previewWidth = width;
+        previewHeight = height;
         // TODO Auto-generated method stub
         resetPreview();
     }
@@ -1475,6 +1484,46 @@ public class CameraHeadService extends Service implements
     //==============================================================================================
     // Frame processing
     //==============================================================================================
+    public static Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes,
+                                                    int screenWidth, int screenHeight) {
+        double aspectRatio = ((double) screenWidth) / screenHeight;
+        final double ASPECT_TOLERANCE = 0.1;
+        Camera.Size optimalSize = null;
+        for (Iterator<Camera.Size> iterator = sizes.iterator(); iterator.hasNext(); ) {
+            Camera.Size currSize = iterator.next();
+            double curAspectRatio = ((double) currSize.width) / currSize.height;
+            //do the aspect ratios equal?
+            if (Math.abs(aspectRatio - curAspectRatio) < ASPECT_TOLERANCE) {
+                //they do
+                if (optimalSize != null) {
+                    //is the current size smaller than the one before
+                    if (optimalSize.height > currSize.height && optimalSize.width > currSize.width) {
+                        optimalSize = currSize;
+                    }
+                } else {
+                    optimalSize = currSize;
+                }
+            }
+        }
+        if (optimalSize == null) {
+            //did not find a size with the correct aspect ratio.. let's choose the smallest instead
+            for (Iterator<Camera.Size> iterator = sizes.iterator(); iterator.hasNext(); ) {
+                Camera.Size currSize = iterator.next();
+                if (optimalSize != null) {
+                    //is the current size smaller than the one before
+                    if (optimalSize.height > currSize.height && optimalSize.width > currSize.width) {
+                        optimalSize = currSize;
+                    } else {
+                        optimalSize = currSize;
+                    }
+                } else {
+                    optimalSize = currSize;
+                }
+
+            }
+        }
+        return optimalSize;
+    }
 
     /**
      * Creates one buffer for the camera preview callback.  The size of the buffer is based off of
@@ -1654,9 +1703,9 @@ public class CameraHeadService extends Service implements
                         faceRotation = 2;
                     else if (!isBackPreview && faceRotation == 2)
                         faceRotation = 0;
-                    else if (!isBackPreview && faceRotation == 1)
+                    else if (!isBackPreview && faceRotation == 1 && displayAngle1 == 90)
                         faceRotation = 3;
-                    else if (!isBackPreview && faceRotation == 3)
+                    else if (!isBackPreview && faceRotation == 3 && displayAngle1 == 90)
                         faceRotation = 1;
                     outputFrame = new Frame.Builder()
                             .setImageData(mPendingFrameData, size.width,

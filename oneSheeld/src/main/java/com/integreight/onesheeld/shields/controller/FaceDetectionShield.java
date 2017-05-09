@@ -432,16 +432,16 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         }
         frame = new ShieldFrame(UIShield.FACE_DETECTION.getId(), DETECTED_FACES);
         faceId = intTo2ByteArray(faceDetection.getFaceId());
-        scaledX = (1000 * x) / previewWidth;
-        scaledY = (1000 * y) / previewHeight;
+        scaledX = (float) ((1000.0 * x) / previewWidth);
+        scaledY = (float) ((1000.0 * y) / previewHeight);
         if (scaledX > 500)
-            scaledX = scaledX / 2;
+            scaledX = (float) (scaledX / 2.0);
         else if (scaledX <= 500)
-            scaledX = scaledX - 500;
+            scaledX = (float) (scaledX - 500.0);
         if (scaledY > 500)
-            scaledY = scaledY / 2;
+            scaledY = (float) (scaledY / 2.0);
         else if (scaledY <= 500)
-            scaledY = scaledY - 500;
+            scaledY = (float) (scaledY - 500.0);
         xPosition = float2ByteArray(scaledX);
         yPosition = float2ByteArray(scaledY);
         leftEye = float2ByteArray(faceDetection.getLeftEye() * 100);
