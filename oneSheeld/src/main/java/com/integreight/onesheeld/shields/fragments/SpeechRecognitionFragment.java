@@ -86,8 +86,9 @@ public class SpeechRecognitionFragment extends
     public void doOnResume() {
         super.doOnResume();
         recognizedResult.setText(lastResult.toLowerCase());
-        ((SpeechRecognitionShield) getApplication().getRunningShields()
-                .get(getControllerTag())).setIsWorking(isDetecting);
+        isDetecting =
+                ((SpeechRecognitionShield) getApplication().getRunningShields()
+                        .get(getControllerTag())).isWorking();
     }
 
     @Override
@@ -96,9 +97,6 @@ public class SpeechRecognitionFragment extends
         if (savedInstanceState != null) {
             lastResult = savedInstanceState.getString("lastResult");
             recognizedResult.setText(lastResult);
-            isDetecting = savedInstanceState.getBoolean("isWorking");
-            ((SpeechRecognitionShield) getApplication().getRunningShields()
-                    .get(getControllerTag())).setIsWorking(isDetecting);
         }
     }
 
@@ -188,8 +186,6 @@ public class SpeechRecognitionFragment extends
 
     private void setOff() {
         isDetecting = false;
-        ((SpeechRecognitionShield) getApplication().getRunningShields()
-                .get(getControllerTag())).setIsWorking(isDetecting);
         rmsIndicator.setVisibility(View.INVISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_red));
@@ -198,8 +194,6 @@ public class SpeechRecognitionFragment extends
 
     private void setON() {
         isDetecting = true;
-        ((SpeechRecognitionShield) getApplication().getRunningShields()
-                .get(getControllerTag())).setIsWorking(isDetecting);
         rmsIndicator.setVisibility(View.VISIBLE);
         statusCircle.setBackgroundColor(getResources().getColor(
                 R.color.voice_rec_circle_green));

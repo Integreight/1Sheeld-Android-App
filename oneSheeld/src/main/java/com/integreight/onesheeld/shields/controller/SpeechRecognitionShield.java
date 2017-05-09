@@ -109,6 +109,7 @@ public class SpeechRecognitionShield extends
         @Override
         public void onResult(List<String> result) {
             if (result != null && result.size() > 0) {
+                isWorking = false;
                 if (eventHandler != null)
                     eventHandler.onResult(result);
                 sf = new ShieldFrame(UIShield.SPEECH_RECOGNIZER_SHIELD.getId(),
@@ -120,10 +121,12 @@ public class SpeechRecognitionShield extends
             } else {
                 onError(activity.getString(R.string.voice_recognizer_no_matching_result), SpeechRecognizer.ERROR_NO_MATCH);
             }
+
         }
 
         @Override
         public void onReadyForSpeach(Bundle params) {
+            isWorking=true;
             if (eventHandler != null)
                 eventHandler.onReadyForSpeach(params);
         }
@@ -164,17 +167,19 @@ public class SpeechRecognitionShield extends
             sf.addArgument(1, errorSent);
             Log.d("Frame", sf.toString());
             sendShieldFrame(sf, true);
-
+            isWorking = false;
         }
 
         @Override
         public void onEndOfSpeech() {
+            isWorking = false;
             if (eventHandler != null)
                 eventHandler.onEndOfSpeech();
         }
 
         @Override
         public void onBeginningOfSpeech() {
+            isWorking=true;
             if (eventHandler != null)
                 eventHandler.onBeginningOfSpeech();
         }
@@ -213,12 +218,11 @@ public class SpeechRecognitionShield extends
         });
     }
 
-    public void setIsWorking(boolean isWorking) {
-        this.isWorking = isWorking;
+    public boolean isWorking() {
+        return isWorking;
     }
 
     public boolean stopListening() {
-        isWorking = false;
         if (mSpeechRecognitionService != null)
             mSpeechRecognitionService
                     .stopListening();
