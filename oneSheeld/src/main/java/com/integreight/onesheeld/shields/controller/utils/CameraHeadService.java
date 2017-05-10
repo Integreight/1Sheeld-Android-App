@@ -70,9 +70,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -110,7 +110,7 @@ public class CameraHeadService extends Service implements
     private FaceGraphic mFaceGraphic;
     private GraphicOverlay mGraphicOverlay;
     private Messenger faceDetectionMessenger;
-    private int displayAngle1;
+    private int dispAngle;
     FrameLayout fLayout;
     private final int quality = 50;
     FileOutputStream fo;
@@ -419,7 +419,7 @@ public class CameraHeadService extends Service implements
                 bundle.putParcelableArrayList("face_array", faceDetectionObjArrayList);
                 bundle.putInt("width", detectionResults.getFrameMetadata().getWidth());
                 bundle.putInt("height", detectionResults.getFrameMetadata().getHeight());
-                bundle.putInt("rotation", detectionResults.getFrameMetadata().getRotation());
+                bundle.putInt("rotation", faceRotation);
                 msg.setData(bundle);
                 try {
                     faceDetectionMessenger.send(msg);
@@ -504,7 +504,6 @@ public class CameraHeadService extends Service implements
             } else if (msg.what == HIDE_PREVIEW)
                 hidePreview();
             else if (msg.what == START_DETECTION) {
-                android.util.Log.d(TAG, "bind_detector");
                 detectorVertical = new FaceDetector.Builder(getApplicationContext())
                         .setClassificationType(FaceDetector.ALL_LANDMARKS)
                         .build();
@@ -512,14 +511,10 @@ public class CameraHeadService extends Service implements
                         .setClassificationType(FaceDetector.ALL_LANDMARKS)
                         .build();
                 startDetection(detectorVertical, detectorHorizontal);
-                if (detectorHorizontal.isOperational()) {
-                    android.util.Log.d(TAG, "detector_working: ");
+                if (detectorHorizontal.isOperational())
                     detectorHorizontal.setProcessor(detectionProcessor);
-                }
-                if (detectorVertical.isOperational()) {
-                    android.util.Log.d(TAG, "detector_working: ");
+                if (detectorVertical.isOperational())
                     detectorVertical.setProcessor(detectionProcessor);
-                }
 
             } else if (msg.what == SET_CAMERA_PREVIEW_TYPE) {
                 if (!isCapturing) {
@@ -534,6 +529,20 @@ public class CameraHeadService extends Service implements
                             mCamera = getCameraInstance();
                         try {
                             if (mCamera != null) {
+                                parameters = mCamera.getParameters();
+                                List<Camera.Size> mSupportedPreviews = mCamera.getParameters().getSupportedPreviewSizes();
+                                size = getOptimalPreviewSize(mSupportedPreviews, parameters.getPreviewSize().width, parameters.getPreviewSize().height);
+                                parameters.setPreviewSize(size.width, size.height);
+                                int[] previewFpsRange = selectPreviewFpsRange(mCamera, 30.0f);
+                                if (previewFpsRange == null) {
+                                    throw new RuntimeException("Could not find suitable preview frames per second range.");
+                                }
+                                parameters.setPreviewFpsRange(
+                                        previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                                        previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+                                mCamera.setParameters(parameters);
+                                if (mGraphicOverlay != null)
+                                    mGraphicOverlay.clear();
                                 setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_BACK, mCamera);
                                 setPreviewCallbacks(mCamera);
                                 mCamera.setPreviewDisplay(sv.getHolder());
@@ -545,6 +554,25 @@ public class CameraHeadService extends Service implements
                                 isBackPreview = true;
                             }
                         } catch (IOException e1) {
+                        }
+                        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
+                            if (detectorVertical != null || detectorHorizontal != null) {
+                                mFrameProcessor.setActive(false);
+                                detectorHorizontal.release();
+                                detectorVertical.release();
+                                mFrameProcessor.setActive(true);
+                            }
+                            detectorVertical = new FaceDetector.Builder(getApplicationContext())
+                                    .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                                    .build();
+                            detectorHorizontal = new FaceDetector.Builder(getApplicationContext())
+                                    .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                                    .build();
+                            startDetection(detectorVertical, detectorHorizontal);
+                            if (detectorHorizontal.isOperational())
+                                detectorHorizontal.setProcessor(detectionProcessor);
+                            if (detectorVertical.isOperational())
+                                detectorVertical.setProcessor(detectionProcessor);
                         }
                         notifyPreviewTypeChanged(isBackPreview, true);
                     } else {
@@ -568,6 +596,27 @@ public class CameraHeadService extends Service implements
                                     }
                                 });
                             }
+                        }
+
+                        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
+                            if (detectorVertical != null || detectorHorizontal != null) {
+                                mFrameProcessor.setActive(false);
+                                detectorHorizontal.release();
+                                detectorVertical.release();
+                                mFrameProcessor.setActive(true);
+                            }
+
+                            detectorVertical = new FaceDetector.Builder(getApplicationContext())
+                                    .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                                    .build();
+                            detectorHorizontal = new FaceDetector.Builder(getApplicationContext())
+                                    .setClassificationType(FaceDetector.ALL_LANDMARKS)
+                                    .build();
+                            startDetection(detectorVertical, detectorHorizontal);
+                            if (detectorHorizontal.isOperational())
+                                detectorHorizontal.setProcessor(detectionProcessor);
+                            if (detectorVertical.isOperational())
+                                detectorVertical.setProcessor(detectionProcessor);
                         }
                         notifyPreviewTypeChanged(isBackPreview, true);
                     }
@@ -604,32 +653,6 @@ public class CameraHeadService extends Service implements
         registeredShieldsIDs = new ArrayList<>();
     }
 
-    private Camera openFrontFacingCameraGingerbread() {
-        if (mCamera != null) {
-            queue.removeCallbacks(null);
-            mCamera.setPreviewCallbackWithBuffer(null);
-            mCamera.stopPreview();
-            mCamera.release();
-        }
-        int cameraCount = 0;
-        Camera cam = null;
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        cameraCount = Camera.getNumberOfCameras();
-        for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
-            Camera.getCameraInfo(camIdx, cameraInfo);
-            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                try {
-                    cam = Camera.open(camIdx);
-                } catch (RuntimeException e) {
-                    Log.e("cameraS",
-                            "Camera failed to open: " + e.getLocalizedMessage());
-                }
-            }
-        }
-        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_FRONT, cam);
-        setPreviewCallbacks(cam);
-        return cam;
-    }
 
     public void setCameraDisplayOrientation(int cameraId, android.hardware.Camera camera) {
         android.hardware.Camera.CameraInfo info =
@@ -664,7 +687,7 @@ public class CameraHeadService extends Service implements
             angle = (info.orientation - degrees + 360) % 360;
             displayAngle = angle;
         }
-        displayAngle1 = displayAngle;
+        dispAngle = displayAngle;
         camera.setDisplayOrientation(displayAngle);
     }
 
@@ -700,6 +723,8 @@ public class CameraHeadService extends Service implements
         params.width = expectedWidth;
         params.height = expectedHeight;
         params.alpha = 1.0f;
+        previewWidth = expectedWidth;
+        previewHeight = expectedHeight;
         try {
             windowManager.updateViewLayout(fLayout, params);
         } catch (IllegalArgumentException e) {
@@ -824,8 +849,8 @@ public class CameraHeadService extends Service implements
 
                         // set camera parameters
                         mCamera.setParameters(parameters);
-                        mCamera.startPreview();
                         setPreviewCallbacks(mCamera);
+                        mCamera.startPreview();
                         takePictureWithAutoFocus(mCamera, mCall);
 
                     } else {
@@ -888,8 +913,8 @@ public class CameraHeadService extends Service implements
 
                             // set camera parameters
                             mCamera.setParameters(parameters);
-                            mCamera.startPreview();
                             setPreviewCallbacks(mCamera);
+                            mCamera.startPreview();
                             takePictureWithAutoFocus(mCamera, mCall);
 
                         } else {
@@ -998,30 +1023,6 @@ public class CameraHeadService extends Service implements
 
     }
 
-    private void setPreviewCallbacks(Camera camera) {
-
-        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
-            camera.setPreviewCallbackWithBuffer(null);
-            camera.setPreviewCallbackWithBuffer(previewCallback);
-            camera.addCallbackBuffer(frame1);
-            camera.addCallbackBuffer(frame2);
-            camera.addCallbackBuffer(frame3);
-            camera.addCallbackBuffer(frame4);
-        }
-        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name())) {
-            camera.setPreviewCallbackWithBuffer(null);
-            camera.setPreviewCallbackWithBuffer(previewCallback);
-            camera.addCallbackBuffer(frame1);
-        }
-        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()) &&
-                registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
-            camera.setPreviewCallbackWithBuffer(null);
-            camera.setPreviewCallbackWithBuffer(previewCallback);
-            camera.addCallbackBuffer(frame1);
-            camera.addCallbackBuffer(frame2);
-        }
-    }
-
     private void takePictureWithAutoFocus(final android.hardware.Camera mCamera, final Camera.PictureCallback mCall) {
         final Handler uiThreadHandler = new Handler();
         if (mCamera.getParameters().getFocusMode().equals(Camera.Parameters.FOCUS_MODE_AUTO)) {
@@ -1051,6 +1052,48 @@ public class CameraHeadService extends Service implements
         }
     }
 
+    private Camera openFrontFacingCameraGingerbread() {
+        if (mCamera != null) {
+            queue.removeCallbacks(null);
+            mCamera.setPreviewCallbackWithBuffer(null);
+            mCamera.stopPreview();
+            mCamera.release();
+        }
+        int cameraCount = 0;
+        Camera cam = null;
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        cameraCount = Camera.getNumberOfCameras();
+        for (int camIdx = 0; camIdx < cameraCount; camIdx++) {
+            Camera.getCameraInfo(camIdx, cameraInfo);
+            if (cameraInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                try {
+                    cam = Camera.open(camIdx);
+                } catch (RuntimeException e) {
+                    Log.e("cameraS",
+                            "Camera failed to open: " + e.getLocalizedMessage());
+                }
+            }
+        }
+        setCameraDisplayOrientation(Camera.CameraInfo.CAMERA_FACING_FRONT, cam);
+        parameters = cam.getParameters();
+        List<Camera.Size> mSupportedPreviews = cam.getParameters().getSupportedPreviewSizes();
+        size = getOptimalPreviewSize(mSupportedPreviews, parameters.getPreviewSize().width, parameters.getPreviewSize().height);
+        parameters.setPreviewSize(size.width, size.height);
+        int[] previewFpsRange = selectPreviewFpsRange(cam, 30.0f);
+        if (previewFpsRange == null) {
+            throw new RuntimeException("Could not find suitable preview frames per second range.");
+        }
+        parameters.setPreviewFpsRange(
+                previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
+                previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
+
+        cam.setParameters(parameters);
+        if (mGraphicOverlay != null)
+            mGraphicOverlay.clear();
+        setPreviewCallbacks(cam);
+        return cam;
+    }
+
     private void start() {
         pref = getApplicationContext().getSharedPreferences("MyPref", 0);
         editor = pref.edit();
@@ -1063,19 +1106,15 @@ public class CameraHeadService extends Service implements
         } else
             mCamera = getCameraInstance();
         parameters = mCamera.getParameters();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        } else if (parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_AUTO)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-        }
-        List<Camera.Size> mSupportedPreviewSizes = mCamera.getParameters().getSupportedPreviewSizes();
-        for (Camera.Size str : mSupportedPreviewSizes)
-            android.util.Log.d(TAG, str.width + "/" + str.height);
-        size = getOptimalPreviewSize(mSupportedPreviewSizes, previewWidth, previewHeight);
+        List<Camera.Size> mSupportedPreviews = mCamera.getParameters().getSupportedPreviewSizes();
+        size = getOptimalPreviewSize(mSupportedPreviews, parameters.getPreviewSize().width, parameters.getPreviewSize().height);
         parameters.setPreviewSize(size.width, size.height);
-        android.util.Log.d(TAG, "preview sizes: " + previewWidth + " " + previewHeight);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+        else if (parameters.getSupportedFocusModes().contains(
+                Camera.Parameters.FOCUS_MODE_AUTO))
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
         int[] previewFpsRange = selectPreviewFpsRange(mCamera, 30.0f);
         if (previewFpsRange == null) {
             throw new RuntimeException("Could not find suitable preview frames per second range.");
@@ -1085,14 +1124,8 @@ public class CameraHeadService extends Service implements
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
         mCamera.setParameters(parameters);
         size = parameters.getPreviewSize();
-        frame1 = createPreviewBuffer(mCamera.getParameters().getPreviewSize());
-        frame2 = createPreviewBuffer(mCamera.getParameters().getPreviewSize());
-        frame3 = createPreviewBuffer(mCamera.getParameters().getPreviewSize());
-        frame4 = createPreviewBuffer(mCamera.getParameters().getPreviewSize());
         setPreviewCallbacks(mCamera);
-
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-
         params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.MATCH_PARENT,
                 WindowManager.LayoutParams.MATCH_PARENT,
@@ -1173,6 +1206,33 @@ public class CameraHeadService extends Service implements
         // replaced
         if (Build.VERSION.SDK_INT < 11)
             sHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    }
+
+    private void setPreviewCallbacks(Camera camera) {
+        frame1 = createPreviewBuffer(size);
+        frame2 = createPreviewBuffer(size);
+        frame3 = createPreviewBuffer(size);
+        frame4 = createPreviewBuffer(size);
+        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
+            camera.setPreviewCallbackWithBuffer(null);
+            camera.setPreviewCallbackWithBuffer(previewCallback);
+            camera.addCallbackBuffer(frame1);
+            camera.addCallbackBuffer(frame2);
+            camera.addCallbackBuffer(frame3);
+            camera.addCallbackBuffer(frame4);
+        }
+        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name())) {
+            camera.setPreviewCallbackWithBuffer(null);
+            camera.setPreviewCallbackWithBuffer(previewCallback);
+            camera.addCallbackBuffer(frame1);
+        }
+        if (registeredShieldsIDs.contains(UIShield.COLOR_DETECTION_SHIELD.name()) &&
+                registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name())) {
+            camera.setPreviewCallbackWithBuffer(null);
+            camera.setPreviewCallbackWithBuffer(previewCallback);
+            camera.addCallbackBuffer(frame1);
+            camera.addCallbackBuffer(frame2);
+        }
     }
 
     @Override
@@ -1377,12 +1437,8 @@ public class CameraHeadService extends Service implements
 
                 } catch (RuntimeException e) {
                 }
-                try {
-                    mCamera.startPreview();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
                 setPreviewCallbacks(mCamera);
+                mCamera.startPreview();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1415,9 +1471,6 @@ public class CameraHeadService extends Service implements
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
                                int height) {
-        previewWidth = width;
-        previewHeight = height;
-        // TODO Auto-generated method stub
         resetPreview();
     }
 
@@ -1484,42 +1537,31 @@ public class CameraHeadService extends Service implements
     //==============================================================================================
     // Frame processing
     //==============================================================================================
-    public static Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes,
-                                                    int screenWidth, int screenHeight) {
-        double aspectRatio = ((double) screenWidth) / screenHeight;
-        final double ASPECT_TOLERANCE = 0.1;
+
+    private Camera.Size getOptimalPreviewSize(List<Camera.Size> sizes, int w, int h) {
+        final double ASPECT_TOLERANCE = 0.2;
+        double targetRatio = (double) w / h;
+        if (sizes == null) return null;
         Camera.Size optimalSize = null;
-        for (Iterator<Camera.Size> iterator = sizes.iterator(); iterator.hasNext(); ) {
-            Camera.Size currSize = iterator.next();
-            double curAspectRatio = ((double) currSize.width) / currSize.height;
-            //do the aspect ratios equal?
-            if (Math.abs(aspectRatio - curAspectRatio) < ASPECT_TOLERANCE) {
-                //they do
-                if (optimalSize != null) {
-                    //is the current size smaller than the one before
-                    if (optimalSize.height > currSize.height && optimalSize.width > currSize.width) {
-                        optimalSize = currSize;
-                    }
-                } else {
-                    optimalSize = currSize;
-                }
+        double minDiff = Double.MAX_VALUE;
+        int targetHeight = h;
+        // Try to find an size match aspect ratio and size
+        for (Camera.Size size : sizes) {
+            double ratio = (double) size.width / size.height;
+            if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) continue;
+            if (Math.abs(size.height - targetHeight) < minDiff) {
+                optimalSize = size;
+                minDiff = Math.abs(size.height - targetHeight);
             }
         }
+        // Cannot find the one match the aspect ratio, ignore the requirement
         if (optimalSize == null) {
-            //did not find a size with the correct aspect ratio.. let's choose the smallest instead
-            for (Iterator<Camera.Size> iterator = sizes.iterator(); iterator.hasNext(); ) {
-                Camera.Size currSize = iterator.next();
-                if (optimalSize != null) {
-                    //is the current size smaller than the one before
-                    if (optimalSize.height > currSize.height && optimalSize.width > currSize.width) {
-                        optimalSize = currSize;
-                    } else {
-                        optimalSize = currSize;
-                    }
-                } else {
-                    optimalSize = currSize;
+            minDiff = Double.MAX_VALUE;
+            for (Camera.Size size : sizes) {
+                if (Math.abs(size.height - targetHeight) < minDiff) {
+                    optimalSize = size;
+                    minDiff = Math.abs(size.height - targetHeight);
                 }
-
             }
         }
         return optimalSize;
@@ -1703,9 +1745,9 @@ public class CameraHeadService extends Service implements
                         faceRotation = 2;
                     else if (!isBackPreview && faceRotation == 2)
                         faceRotation = 0;
-                    else if (!isBackPreview && faceRotation == 1 && displayAngle1 == 90)
+                    else if (!isBackPreview && faceRotation == 1 && dispAngle == 90)
                         faceRotation = 3;
-                    else if (!isBackPreview && faceRotation == 3 && displayAngle1 == 90)
+                    else if (!isBackPreview && faceRotation == 3 && dispAngle == 90)
                         faceRotation = 1;
                     outputFrame = new Frame.Builder()
                             .setImageData(mPendingFrameData, size.width,
@@ -1714,8 +1756,6 @@ public class CameraHeadService extends Service implements
                             .setRotation(faceRotation)
                             .setId(mPendingFrameId)
                             .build();
-
-
                     // Hold onto the frame data locally, so that we can use this for detection
                     // below.  We need to clear mPendingFrameData to ensure that this buffer isn't
                     // recycled back to the camera before we are done using that data.

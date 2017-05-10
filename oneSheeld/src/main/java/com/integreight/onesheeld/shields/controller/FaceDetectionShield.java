@@ -396,19 +396,18 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         return bytes;
     }
 
+    private static float transform(float value, float inMin, float inMax, float outMin, float outMax) {
+        return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
+    }
 
     public void sendDetectedFaces(FaceDetectionObj faceDetection, int previewWidth, int previewHeight) {
         float x = faceDetection.getxPosition();
         float y = faceDetection.getyPosition();
         float scaledX, scaledY;
-        float tmp = 0;
         switch (rotation) {
             case 0: {
                 if (!isBackPreview)
                     x = previewHeight - x;
-                tmp = y;
-                y = x;
-                x = previewWidth - tmp;
                 break;
             }
             case 1: {
@@ -419,29 +418,19 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
             case 2: {
                 if (!isBackPreview)
                     x = previewHeight - x;
-                tmp = x;
-                x = y;
-                y = previewHeight - tmp;
                 break;
             }
             case 3: {
-                if (isBackPreview)
+                if (!isBackPreview)
                     x = previewWidth - x;
-                y = previewHeight - y;
+                break;
             }
         }
+
         frame = new ShieldFrame(UIShield.FACE_DETECTION.getId(), DETECTED_FACES);
         faceId = intTo2ByteArray(faceDetection.getFaceId());
-        scaledX = (float) ((1000.0 * x) / previewWidth);
-        scaledY = (float) ((1000.0 * y) / previewHeight);
-        if (scaledX > 500)
-            scaledX = (float) (scaledX / 2.0);
-        else if (scaledX <= 500)
-            scaledX = (float) (scaledX - 500.0);
-        if (scaledY > 500)
-            scaledY = (float) (scaledY / 2.0);
-        else if (scaledY <= 500)
-            scaledY = (float) (scaledY - 500.0);
+        scaledX = transform(x, 0, previewWidth, -500, 500);
+        scaledY = transform(y, 0, previewHeight, 500, -500);
         xPosition = float2ByteArray(scaledX);
         yPosition = float2ByteArray(scaledY);
         leftEye = float2ByteArray(faceDetection.getLeftEye() * 100);
@@ -465,5 +454,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         frame.addArgument(faceId);
         sendShieldFrame(frame);
     }
+
+
 
 }
