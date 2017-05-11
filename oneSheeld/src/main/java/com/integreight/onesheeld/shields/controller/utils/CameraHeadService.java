@@ -1083,6 +1083,8 @@ public class CameraHeadService extends Service implements
         if (previewFpsRange == null) {
             throw new RuntimeException("Could not find suitable preview frames per second range.");
         }
+        if (registeredShieldsIDs.contains(UIShield.FACE_DETECTION.name()))
+            parameters.setPreviewFormat(ImageFormat.NV21);
         parameters.setPreviewFpsRange(
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MIN_INDEX],
                 previewFpsRange[Camera.Parameters.PREVIEW_FPS_MAX_INDEX]);
@@ -1180,20 +1182,12 @@ public class CameraHeadService extends Service implements
                     //right & back camera
                 else if (orientation >= 45 && orientation < 135)
                     faceRotation = 2;
-                    //right & front camera
-                else if ((orientation >= 45 && orientation < 135)
-                        && (currentCamera == Camera.CameraInfo.CAMERA_FACING_FRONT))
-                    faceRotation = 0;
                     //down
                 else if (orientation >= 135 && orientation < 225)
                     faceRotation = 3;
                     //left & back camera
                 else if (orientation >= 225 && orientation < 315)
                     faceRotation = 0;
-                    //left & front camera
-                else if ((orientation >= 225 && orientation < 315)
-                        && (currentCamera == Camera.CameraInfo.CAMERA_FACING_FRONT))
-                    faceRotation = 2;
                     //still up
                 else if (orientation >= 315 && orientation < 359)
                     faceRotation = 1;
@@ -1740,6 +1734,7 @@ public class CameraHeadService extends Service implements
                         // loop.
                         return;
                     }
+
                     //for front face camera rotation
                     if (!isBackPreview && faceRotation == 0)
                         faceRotation = 2;

@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 
 import com.integreight.onesheeld.MainActivity;
 import com.integreight.onesheeld.R;
@@ -25,7 +24,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
 
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
-    private View cameraLogo;
+    private View facelogo;
     private FaceDetectionHandler faceDetectionHandler = new FaceDetectionHandler() {
         @Override
         public void setOnCameraPreviewTypeChanged(final boolean isBack) {
@@ -79,7 +78,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                         if (getApplication().getRunningShields().get(getControllerTag()) != null)
                             try {
                                 if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
-                                    cameraLogo.setVisibility(View.INVISIBLE);
+                                    facelogo.setVisibility(View.INVISIBLE);
                                     ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
                                 }
                             } catch (RemoteException e) {
@@ -93,7 +92,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     if (getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
                             if ((((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())) {
-                                cameraLogo.setVisibility(View.VISIBLE);
+                                facelogo.setVisibility(View.VISIBLE);
                                 ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
                             }
                         } catch (RemoteException e) {
@@ -110,10 +109,10 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.camera_shield_fragment_layout,container,false);
+        View rootView = inflater.inflate(R.layout.face_detection_shield_fragment_layout,container,false);
         frontBackToggle = (CheckBox) rootView.findViewById(R.id.frontBackToggle);
         cameraPreviewToggle = (CheckBox) rootView.findViewById(R.id.camera_preview_toggle);
-        cameraLogo = rootView.findViewById(R.id.camera_log);
+        facelogo = rootView.findViewById(R.id.face_log);
         // Inflate the layout for this fragment
         if (getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName()) != null)
             ((ShieldsOperations) getAppActivity().getSupportFragmentManager().findFragmentByTag(ShieldsOperations.class.getName())).addOnSlidingLocksListener(this);
@@ -155,7 +154,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                         try {
                             if (getApplication().getRunningShields().get(getControllerTag()) != null)
                                 if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
-                                    cameraLogo.setVisibility(View.INVISIBLE);
+                                    facelogo.setVisibility(View.INVISIBLE);
                                     ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
                                 }
                         } catch (RemoteException e) {
@@ -168,7 +167,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                         if (getApplication().getRunningShields().get(getControllerTag()) != null)
                             try {
                                 if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()) {
-                                    cameraLogo.setVisibility(View.VISIBLE);
+                                    facelogo.setVisibility(View.VISIBLE);
                                     ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
                                 }
                             } catch (RemoteException e) {
@@ -215,7 +214,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
-                cameraLogo.setVisibility(View.VISIBLE);
+                facelogo.setVisibility(View.VISIBLE);
             }
         });
         if (getView() != null)
@@ -231,7 +230,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     try {
                         if (getApplication().getRunningShields().get(getControllerTag()) != null)
                             if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
-                                cameraLogo.setVisibility(View.INVISIBLE);
+                                facelogo.setVisibility(View.INVISIBLE);
                                 ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
                             }
                     } catch (RemoteException e) {
@@ -244,7 +243,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     if (getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
                             if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()) {
-                                cameraLogo.setVisibility(View.VISIBLE);
+                                facelogo.setVisibility(View.VISIBLE);
                                 ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
                             }
                         } catch (RemoteException e) {
@@ -267,7 +266,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     try {
                         if (getApplication().getRunningShields().get(getControllerTag()) != null)
                             if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).showPreview()) {
-                                cameraLogo.setVisibility(View.INVISIBLE);
+                                facelogo.setVisibility(View.INVISIBLE);
                                 ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(true);
                             }
                     } catch (RemoteException e) {
@@ -280,7 +279,7 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                     try {
                         if ((getApplication().getRunningShields().get(getControllerTag()) != null))
                             if (((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()) {
-                                cameraLogo.setVisibility(View.VISIBLE);
+                                facelogo.setVisibility(View.VISIBLE);
                                 ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
                             }
                         if (!isChecked && !activity.isMenuOpened()) {
