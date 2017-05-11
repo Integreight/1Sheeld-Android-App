@@ -5,7 +5,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.integreight.onesheeld.R;
@@ -16,6 +17,13 @@ import com.integreight.onesheeld.shields.controller.AccelerometerShield.Accelero
 public class AccelerometerFragment extends
         ShieldFragmentParent<AccelerometerFragment> {
     TextView x, y, z;
+    CheckBox enableLlinearAccelerometer;
+    public static boolean isLinearActive = false;
+    private static LinearLisenter linearLisenter;
+
+    public static void setLinearLisenter(LinearLisenter Lisenter) {
+        linearLisenter = Lisenter;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -30,7 +38,7 @@ public class AccelerometerFragment extends
                 getControllerTag()))
                 .setAccelerometerEventHandler(accelerometerEventHandler);
         ((AccelerometerShield) getApplication().getRunningShields().get(
-                getControllerTag())).registerSensorListener(true);
+                getControllerTag())).invalidateAccelerometer(true);
     }
 
     @Override
@@ -38,6 +46,17 @@ public class AccelerometerFragment extends
         x = (TextView) v.findViewById(R.id.x_value_txt);
         y = (TextView) v.findViewById(R.id.y_value_txt);
         z = (TextView) v.findViewById(R.id.z_value_txt);
+        enableLlinearAccelerometer = (CheckBox) v.findViewById(R.id.linear_accelerometer);
+        enableLlinearAccelerometer.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                isLinearActive = isChecked;
+                linearLisenter.isLinearActive(isChecked);
+                if (!((AccelerometerShield) getApplication().getRunningShields()
+                        .get(getControllerTag())).isLinearExist)
+                    enableLlinearAccelerometer.setChecked(false);
+            }
+        });
     }
 
     @Override
@@ -90,18 +109,20 @@ public class AccelerometerFragment extends
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             getApplication().getRunningShields().put(getControllerTag(),
                     new AccelerometerShield(activity, getControllerTag()));
-
         }
-
     }
 
     public void doOnServiceConnected() {
         initializeFirmata();
     }
 
-    ;
-
     @Override
     public void doOnResume() {
+        enableLlinearAccelerometer.setChecked(isLinearActive);
+        linearLisenter.isLinearActive(isLinearActive);
+    }
+
+    public static interface LinearLisenter {
+        void isLinearActive(Boolean isLinearActive);
     }
 }

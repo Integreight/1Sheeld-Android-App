@@ -36,8 +36,6 @@ public class ColorDetectionShield extends
     private static final byte SET_PATCH_SIZE = (byte) 0x05;
     private static final byte SMALL_PATCH = (byte) 0x01;
     private static final byte MED_PATCH = (byte) 0x02;
-    private static final byte LARGE_PATCH = (byte) 0x03;
-    private static final byte COMMON_COLOR = (byte) 0x01;
     private static final byte AVERAGE_COLOR = (byte) 0x02;
     private static final byte SET_PALLETE = (byte) 0x01;
     private ColorDetectionEventHandler colorEventHandler;
@@ -288,23 +286,13 @@ public class ColorDetectionShield extends
 
     @Override
     public void preConfigChange() {
-//        Message msg = Message.obtain(null, UNBIND_COLOR_DETECTOR);
-//        msg.replyTo = mMessenger;
-//        try {
-//            if (mService != null)
-//                mService.send(msg);
-//        } catch (RemoteException e) {
-//        }
-//        getActivity().unbindService(mConnection);
         super.preConfigChange();
     }
 
     @Override
     public void postConfigChange() {
         super.postConfigChange();
-//        initMessenger();
-//        getActivity().bindService(new Intent(getActivity(), CameraHeadService.class), mConnection, Context.BIND_AUTO_CREATE);
-    }
+   }
 
     @Override
     public void reset() {

@@ -126,7 +126,7 @@ public class SpeechRecognitionShield extends
 
         @Override
         public void onReadyForSpeach(Bundle params) {
-            isWorking=true;
+            isWorking = true;
             if (eventHandler != null)
                 eventHandler.onReadyForSpeach(params);
         }
@@ -179,7 +179,7 @@ public class SpeechRecognitionShield extends
 
         @Override
         public void onBeginningOfSpeech() {
-            isWorking=true;
+            isWorking = true;
             if (eventHandler != null)
                 eventHandler.onBeginningOfSpeech();
         }

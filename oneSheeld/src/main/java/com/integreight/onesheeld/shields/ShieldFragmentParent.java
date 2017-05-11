@@ -259,8 +259,8 @@ public abstract class ShieldFragmentParent<T extends ShieldFragmentParent<?>>
 
     @Override
     public void onPause() {
-        ((T) this).doOnPause();
         super.onPause();
+        ((T) this).doOnPause();
     }
     public void doOnStart() {
     }
