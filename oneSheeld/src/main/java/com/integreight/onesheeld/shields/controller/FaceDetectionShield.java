@@ -27,6 +27,7 @@ import com.integreight.onesheeld.utils.Log;
 import com.integreight.onesheeld.shields.controller.utils.CameraHeadService.FaceDetectionObj;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by Atef-PC on 2/21/2017.
@@ -431,15 +432,21 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         faceId = intTo2ByteArray(faceDetection.getFaceId());
         scaledX = transform(x, 0, previewWidth, -500, 500);
         scaledY = transform(y, 0, previewHeight, 500, -500);
-        scaleSmile = transform(faceDetection.getIsSmile(), 0, 1, 0, 100);
-        scaleRightEye = transform(faceDetection.getRightEye(), 0, 1, 0, 100);
-        scaleLeftEye = transform(faceDetection.getLeftEye(), 0, 1, 0, 100);
-        android.util.Log.d(TAG, "smile: " + scaleSmile + " left: " + scaleLeftEye + " right: " + scaleRightEye);
+        if (faceDetection.getIsSmile() == -1 ||
+                faceDetection.getRightEye() == -1 || faceDetection.getLeftEye() == -1) {
+            leftEye = float2ByteArray(faceDetection.getLeftEye());
+            rightEye = float2ByteArray(faceDetection.getRightEye());
+            isSmile = float2ByteArray(faceDetection.getIsSmile());
+        } else {
+            scaleSmile = transform(faceDetection.getIsSmile(), 0, 1, 0, 100);
+            scaleRightEye = transform(faceDetection.getRightEye(), 0, 1, 0, 100);
+            scaleLeftEye = transform(faceDetection.getLeftEye(), 0, 1, 0, 100);
+            leftEye = float2ByteArray(scaleLeftEye);
+            rightEye = float2ByteArray(scaleRightEye);
+            isSmile = float2ByteArray(scaleSmile);
+        }
         xPosition = float2ByteArray(scaledX);
         yPosition = float2ByteArray(scaledY);
-        leftEye = float2ByteArray(scaleLeftEye);
-        rightEye = float2ByteArray(scaleRightEye);
-        isSmile = float2ByteArray(scaleSmile);
         height = float2ByteArray(faceDetection.getHeight());
         width = float2ByteArray(faceDetection.getWidth());
         frame.addArgument(faceId);
