@@ -403,7 +403,7 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     public void sendDetectedFaces(FaceDetectionObj faceDetection, int previewWidth, int previewHeight) {
         float x = faceDetection.getxPosition();
         float y = faceDetection.getyPosition();
-        float scaledX, scaledY;
+        float scaledX, scaledY, scaleSmile, scaleRightEye, scaleLeftEye;
         switch (rotation) {
             case 0: {
                 if (!isBackPreview)
@@ -431,11 +431,15 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         faceId = intTo2ByteArray(faceDetection.getFaceId());
         scaledX = transform(x, 0, previewWidth, -500, 500);
         scaledY = transform(y, 0, previewHeight, 500, -500);
+        scaleSmile = transform(faceDetection.getIsSmile(), 0, 1, 0, 100);
+        scaleRightEye = transform(faceDetection.getRightEye(), 0, 1, 0, 100);
+        scaleLeftEye = transform(faceDetection.getLeftEye(), 0, 1, 0, 100);
+        android.util.Log.d(TAG, "smile: " + scaleSmile + " left: " + scaleLeftEye + " right: " + scaleRightEye);
         xPosition = float2ByteArray(scaledX);
         yPosition = float2ByteArray(scaledY);
-        leftEye = float2ByteArray(faceDetection.getLeftEye() * 100);
-        rightEye = float2ByteArray(faceDetection.getRightEye() * 100);
-        isSmile = float2ByteArray(faceDetection.getIsSmile() * 100);
+        leftEye = float2ByteArray(scaleLeftEye);
+        rightEye = float2ByteArray(scaleRightEye);
+        isSmile = float2ByteArray(scaleSmile);
         height = float2ByteArray(faceDetection.getHeight());
         width = float2ByteArray(faceDetection.getWidth());
         frame.addArgument(faceId);
@@ -454,7 +458,6 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
         frame.addArgument(faceId);
         sendShieldFrame(frame);
     }
-
 
 
 }
