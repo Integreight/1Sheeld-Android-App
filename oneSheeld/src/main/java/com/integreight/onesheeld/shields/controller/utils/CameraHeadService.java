@@ -1058,6 +1058,7 @@ public class CameraHeadService extends Service implements
             mCamera.setPreviewCallbackWithBuffer(null);
             mCamera.stopPreview();
             mCamera.release();
+
         }
         int cameraCount = 0;
         Camera cam = null;
@@ -1094,15 +1095,12 @@ public class CameraHeadService extends Service implements
         else if (parameters.getSupportedFocusModes().contains(
                 Camera.Parameters.FOCUS_MODE_AUTO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            mCamera.autoFocus(new Camera.AutoFocusCallback() {
+            cam.autoFocus(new Camera.AutoFocusCallback() {
                 @Override
                 public void onAutoFocus(boolean success, Camera camera) {
 
                 }
             });
-        } else if (parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
         cam.setParameters(parameters);
         if (mGraphicOverlay != null)
@@ -1119,6 +1117,7 @@ public class CameraHeadService extends Service implements
             mCamera.setPreviewCallbackWithBuffer(null);
             mCamera.stopPreview();
             mCamera.release();
+            mCamera.cancelAutoFocus();
             mCamera = Camera.open();
         } else
             mCamera = getCameraInstance();
@@ -1127,22 +1126,19 @@ public class CameraHeadService extends Service implements
         size = getOptimalPreviewSize(mSupportedPreviews, parameters.getPreviewSize().width, parameters.getPreviewSize().height);
         parameters.setPreviewSize(size.width, size.height);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH && parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+                Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE)) {
+            mCamera.cancelAutoFocus();
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
-        else if (parameters.getSupportedFocusModes().contains(
+        } else if (parameters.getSupportedFocusModes().contains(
                 Camera.Parameters.FOCUS_MODE_AUTO)) {
             parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
             mCamera.autoFocus(new Camera.AutoFocusCallback() {
                 @Override
                 public void onAutoFocus(boolean success, Camera camera) {
-
                 }
             });
-        } else if (parameters.getSupportedFocusModes().contains(
-                Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO)) {
-            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         }
-        int[] previewFpsRange = selectPreviewFpsRange(mCamera, 30.0f);
+        int[] previewFpsRange = selectPreviewFpsRange(mCamera, 15.0f);
         if (previewFpsRange == null) {
             throw new RuntimeException("Could not find suitable preview frames per second range.");
         }
