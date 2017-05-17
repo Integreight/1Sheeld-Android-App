@@ -50,14 +50,14 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
     public boolean isFaceSelected = false;
     private boolean isChangingPreview = false;
     private FaceDetectionHandler eventHandler;
-    private byte[] faceId;
-    private byte[] xPosition;
-    private byte[] yPosition;
-    private byte[] height;
-    private byte[] width;
-    private byte[] leftEye;
-    private byte[] rightEye;
-    private byte[] isSmile;
+    private byte[] faceId = new byte[2];
+    private byte[] xPosition = new byte[2];
+    private byte[] yPosition = new byte[2];
+    private byte[] height = new byte[2];
+    private byte[] width = new byte[2];
+    private byte[] leftEye = new byte[2];
+    private byte[] rightEye = new byte[2];
+    private byte[] isSmile = new byte[2];
     private ShieldFrame frame;
     ArrayList<FaceDetectionObj> tmpArray = null;
     private int previewWidth, previewHeight;
@@ -427,17 +427,17 @@ public class FaceDetectionShield extends ControllerParent<FaceDetectionShield> {
                 break;
             }
         }
-
         frame = new ShieldFrame(UIShield.FACE_DETECTION.getId(), DETECTED_FACES);
         faceId = intTo2ByteArray(faceDetection.getFaceId());
         scaledX = transform(x, 0, previewWidth, -500, 500);
         scaledY = transform(y, 0, previewHeight, 500, -500);
-        if (faceDetection.getIsSmile() == -1 ||
-                faceDetection.getRightEye() == -1 || faceDetection.getLeftEye() == -1) {
-            leftEye = float2ByteArray(faceDetection.getLeftEye());
-            rightEye = float2ByteArray(faceDetection.getRightEye());
+        if (faceDetection.getIsSmile() == -1)
             isSmile = float2ByteArray(faceDetection.getIsSmile());
-        } else {
+        else if (faceDetection.getRightEye() == -1)
+            rightEye = float2ByteArray(faceDetection.getRightEye());
+        else if (faceDetection.getLeftEye() == -1)
+            leftEye = float2ByteArray(faceDetection.getLeftEye());
+        else {
             scaleSmile = transform(faceDetection.getIsSmile(), 0, 1, 0, 100);
             scaleRightEye = transform(faceDetection.getRightEye(), 0, 1, 0, 100);
             scaleLeftEye = transform(faceDetection.getLeftEye(), 0, 1, 0, 100);
