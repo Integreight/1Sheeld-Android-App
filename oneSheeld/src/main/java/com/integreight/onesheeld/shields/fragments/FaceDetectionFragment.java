@@ -210,7 +210,6 @@ public class FaceDetectionFragment extends ShieldFragmentParent<FaceDetectionFra
                 e.printStackTrace();
             }
         }
-        ((FaceDetectionShield) getApplication().getRunningShields().get(getControllerTag())).setIsFaceSelected(false);
         uiHandler.post(new Runnable() {
             @Override
             public void run() {
