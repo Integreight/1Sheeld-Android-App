@@ -8,7 +8,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:background="@drawable/camera_shield_screen_logo"
+        android:background="@drawable/face_detection_shield_screen_logo"
         android:contentDescription="@string/app_name" />
 
 
