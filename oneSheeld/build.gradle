@@ -20,14 +20,14 @@ repositories {
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "com.integreight.onesheeld"
         minSdkVersion 9
         targetSdkVersion 25
-        versionCode 170216
-        versionName "1.8.2"
+        versionCode 170521
+        versionName "1.9.0"
         archivesBaseName = "1Sheeld.v$versionName.$versionCode"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
     }
@@ -69,7 +69,7 @@ dependencies {
     compile project(':quickReturnHeader')
     compile project(':pagerIndicator')
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:25.1.0'
+    compile 'com.android.support:support-v4:25.3.1'
     compile 'com.facebook.android:facebook-android-sdk:4.5.0'
     compile 'com.google.android.gms:play-services-analytics:10.0.1'
     compile 'com.google.android.gms:play-services-location:10.0.1'
@@ -79,7 +79,7 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.5.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
     compile 'com.github.hotchemi:android-rate:0.5.0'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
 
