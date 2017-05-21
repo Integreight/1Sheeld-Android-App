@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.integreight.onesheeld.BuildConfig;
 import com.integreight.onesheeld.MainActivity;
@@ -32,7 +31,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     private CheckBox frontBackToggle;
     private CheckBox cameraPreviewToggle;
     private ImageView lastImage;
-    private View camerLogo;
+    private View cameraLogo;
     private String lastImageSrc = null;
     private CameraEventHandler cameraEventHandler = new CameraEventHandler() {
 
@@ -102,9 +101,8 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         frontBackToggle = (CheckBox) view.findViewById(R.id.frontBackToggle);
         cameraPreviewToggle = (CheckBox) view.findViewById(R.id.camera_preview_toggle);
         lastImage = (ImageView) view.findViewById(R.id.camera_last_image);
-        camerLogo = view.findViewById(R.id.camera_log);
+        cameraLogo = view.findViewById(R.id.camera_log);
 
-//        lastImageSrc = ((CameraShield) getApplication().getRunningShields().get(getControllerTag())).getLastImageAbsoultePath();
         activity.backgroundThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -112,11 +110,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity, false);
                 } catch (SecurityException e) {
                 }
-
-
-                if (lastImageSrc != null)
-
-                {
+                if (lastImageSrc != null) {
                     lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
                     if (lastImage != null && lastImageBitmap != null) {
                         lastImageBitmap = Bitmap.createScaledBitmap(lastImageBitmap, 50, 50, true);
@@ -127,19 +121,14 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                                 lastImage.setVisibility(View.VISIBLE);
                             }
                         });
-
                     }
                 } else
-                    uiHandler.post(new
-
-                                           Runnable() {
-                                               @Override
-                                               public void run() {
-                                                   lastImage.setVisibility(View.INVISIBLE);
-                                               }
-                                           }
-
-                    );
+                    uiHandler.post(new Runnable() {
+                                       @Override
+                                       public void run() {
+                                           lastImage.setVisibility(View.INVISIBLE);
+                                       }
+                                   });
             }
         });
     }
@@ -147,7 +136,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     @Override
     public void onResume() {
         super.onResume();
-
         activity.backgroundThreadHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -160,11 +148,9 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                             }
                         }
                     });
-
                     try {
                         lastImageSrc = CameraUtils.getLastCapturedImagePathFromOneSheeldFolder(activity, false);
                     } catch (SecurityException e) {
-
                     }
                     if (lastImageSrc != null) {
                         lastImageBitmap = BitmapFactory.decodeFile(lastImageSrc);
@@ -194,7 +180,6 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
     public void doOnStart() {
         ((CameraShield) getApplication().getRunningShields().get(
                 getControllerTag())).setCameraEventHandler(cameraEventHandler);
-
     }
 
     private void removeListners() {
@@ -240,9 +225,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                             try {
                                 if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
-                                    camerLogo.setVisibility(View.INVISIBLE);
-//                            else
-//                                cameraPreviewToggle.setChecked(false);
+                                    cameraLogo.setVisibility(View.INVISIBLE);
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                                 removeListners();
@@ -254,9 +237,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
                             if ((((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview()))
-                                camerLogo.setVisibility(View.VISIBLE);
-//                        else
-//                            cameraPreviewToggle.setChecked(true);
+                                cameraLogo.setVisibility(View.VISIBLE);
                         } catch (RemoteException e) {
                             e.printStackTrace();
                             removeListners();
@@ -274,13 +255,12 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     File img = new File(lastImageSrc);
                     if (img.exists()) {
                         cameraPreviewToggle.setEnabled(false);
-                        if(Build.VERSION.SDK_INT>=24) {
+                        if (Build.VERSION.SDK_INT >= 24) {
                             Uri fileURI = FileProvider.getUriForFile(activity,
                                     BuildConfig.APPLICATION_ID + ".provider",
                                     img);
                             intent.setDataAndType(fileURI, "image/*");
-                        }
-                        else {
+                        } else {
                             intent.setDataAndType(Uri.fromFile(img), "image/*");
                         }
                         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -302,9 +282,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
         if (getApplication().getRunningShields().get(getControllerTag()) == null) {
             getApplication().getRunningShields().put(getControllerTag(),
                     new CameraShield(activity, getControllerTag()));
-
         }
-
     }
 
     public void doOnServiceConnected() {
@@ -322,9 +300,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         try {
                             if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                                 if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
-                                    camerLogo.setVisibility(View.INVISIBLE);
-//                            else
-//                                cameraPreviewToggle.setChecked(false);
+                                    cameraLogo.setVisibility(View.INVISIBLE);
                         } catch (RemoteException e) {
                             e.printStackTrace();
                             removeListners();
@@ -335,9 +311,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                         if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                             try {
                                 if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
-                                    camerLogo.setVisibility(View.VISIBLE);
-//                            else
-//                                cameraPreviewToggle.setChecked(true);
+                                    cameraLogo.setVisibility(View.VISIBLE);
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                                 removeListners();
@@ -376,7 +350,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                 e.printStackTrace();
             }
         }
-        camerLogo.setVisibility(View.VISIBLE);
+        cameraLogo.setVisibility(View.VISIBLE);
         if (getView() != null) getView().invalidate();
     }
 
@@ -389,9 +363,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     try {
                         if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                             if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
-                                camerLogo.setVisibility(View.INVISIBLE);
-//                        else
-//                            cameraPreviewToggle.setChecked(false);
+                                cameraLogo.setVisibility(View.INVISIBLE);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         removeListners();
@@ -402,9 +374,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     try {
                         if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                             if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
-                                camerLogo.setVisibility(View.VISIBLE);
-//                        else
-//                            cameraPreviewToggle.setChecked(true);
+                                cameraLogo.setVisibility(View.VISIBLE);
                         if (!isChecked && !activity.isMenuOpened()) {
                             removeListners();
                             cameraPreviewToggle.setChecked(false);
@@ -430,9 +400,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     try {
                         if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                             if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).showPreview())
-                                camerLogo.setVisibility(View.INVISIBLE);
-//                        else
-//                            cameraPreviewToggle.setChecked(false);
+                                cameraLogo.setVisibility(View.INVISIBLE);
                     } catch (RemoteException e) {
                         e.printStackTrace();
                         removeListners();
@@ -443,9 +411,7 @@ public class CameraFragment extends ShieldFragmentParent<CameraFragment> impleme
                     if ((CameraShield) getApplication().getRunningShields().get(getControllerTag()) != null)
                         try {
                             if (((CameraShield) getApplication().getRunningShields().get(getControllerTag())).hidePreview())
-                                camerLogo.setVisibility(View.VISIBLE);
-//                        else
-//                            cameraPreviewToggle.setChecked(true);
+                                cameraLogo.setVisibility(View.VISIBLE);
                         } catch (RemoteException e) {
                             e.printStackTrace();
                             removeListners();

@@ -28,6 +28,7 @@ import com.integreight.onesheeld.shields.fragments.ColorDetectionFragment;
 import com.integreight.onesheeld.shields.fragments.DataLoggerFragment;
 import com.integreight.onesheeld.shields.fragments.EmailFragment;
 import com.integreight.onesheeld.shields.fragments.EmptyShieldFragment;
+import com.integreight.onesheeld.shields.fragments.FaceDetectionFragment;
 import com.integreight.onesheeld.shields.fragments.FacebookFragment;
 import com.integreight.onesheeld.shields.fragments.FoursquareFragment;
 import com.integreight.onesheeld.shields.fragments.GamepadFragment;
@@ -236,7 +237,8 @@ public class SelectedShieldsListFragment extends ListFragment {
             return addToCreatedListAndReturn(uiShield, new GlcdFragment());
         if (uiShield.id == UIShield.COLOR_DETECTION_SHIELD.getId())
             return addToCreatedListAndReturn(uiShield, new ColorDetectionFragment());
-
+        if (uiShield.id == UIShield.FACE_DETECTION.getId())
+            return addToCreatedListAndReturn(uiShield, new FaceDetectionFragment());
         else {
             return new EmptyShieldFragment();
         }

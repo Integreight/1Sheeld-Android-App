@@ -116,16 +116,12 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                         getControllerTag())).terminalPrintedLines
                         .add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
                                 : "") + getTimeAsString() + " [TX] " + ": ",
-                                inputField.getText().toString(), true, false));
+                                inputField.getText().toString().getBytes(), true, false));
                 ((TerminalShield) getApplication().getRunningShields().get(
                         getControllerTag())).tempLines
                         .add(new TerminalPrintedLine((!endedWithNewLine ? "\n"
                                 : "") + getTimeAsString() + " [TX] " + ": ",
-                                ((TerminalShield) getApplication()
-                                        .getRunningShields().get(
-                                                getControllerTag()))
-                                        .getEncodedString(inputField.getText()
-                                                .toString()), true, false));
+                                inputField.getText().toString().getBytes(), true, false));
                 ((TerminalShield) getApplication().getRunningShields().get(
                         getControllerTag())).lastItemEndedWithNewLine = true;
                 outputAdapter
@@ -160,14 +156,11 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
 
                 @Override
                 public void onClick(View vi) {
-                    if (((TerminalShield) getApplication().getRunningShields()
-                            .get(getControllerTag())).selectedEnMth != x) {
+                    if (TerminalShield.selectedEnMth != x) {
                         v.findViewById(
                                 ((TerminalShield) getApplication()
                                         .getRunningShields().get(
-                                                getControllerTag())).encodingMths[((TerminalShield) getApplication()
-                                        .getRunningShields().get(
-                                                getControllerTag())).selectedEnMth])
+                                                getControllerTag())).encodingMths[TerminalShield.selectedEnMth])
                                 .setBackgroundColor(
                                         getResources()
                                                 .getColor(
@@ -179,8 +172,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                                 .setBackgroundColor(
                                         getResources().getColor(
                                                 R.color.arduinoPinsSelector));
-                        ((TerminalShield) getApplication().getRunningShields()
-                                .get(getControllerTag())).selectedEnMth = x;
+                        TerminalShield.selectedEnMth = x;
                         ((TerminalShield) getApplication().getRunningShields()
                                 .get(getControllerTag())).tempLines = new CopyOnWriteArrayList<TerminalPrintedLine>();
                         for (TerminalPrintedLine line : ((TerminalShield) getApplication()
@@ -190,10 +182,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                                     .get(getControllerTag())).tempLines
                                     .add(new TerminalPrintedLine(
                                             line.date,
-                                            ((TerminalShield) getApplication()
-                                                    .getRunningShields().get(
-                                                            getControllerTag()))
-                                                    .getEncodedString(line.print),
+                                            line.print,
                                             line.isEndedWithNewLine, line
                                             .isRx()));
                         }
@@ -228,8 +217,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                                     R.color.arduino_conn_resetAll_bg));
             getView().findViewById(
                     ((TerminalShield) getApplication().getRunningShields().get(
-                            getControllerTag())).encodingMths[((TerminalShield) getApplication()
-                            .getRunningShields().get(getControllerTag())).selectedEnMth])
+                            getControllerTag())).encodingMths[TerminalShield.selectedEnMth])
                     .setBackgroundColor(
                             getResources().getColor(R.color.arduinoPinsSelector));
         }
@@ -245,9 +233,7 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
                 .getRunningShields().get(getControllerTag())).terminalPrintedLines) {
             ((TerminalShield) getApplication().getRunningShields().get(
                     getControllerTag())).tempLines.add(new TerminalPrintedLine(
-                    line.date, ((TerminalShield) getApplication()
-                    .getRunningShields().get(getControllerTag()))
-                    .getEncodedString(line.print),
+                    line.date, line.print,
                     line.isEndedWithNewLine, line.isRx()));
         }
         outputAdapter.updateLines(((TerminalShield) getApplication()
@@ -270,13 +256,10 @@ public class TerminalFragment extends ShieldFragmentParent<TerminalFragment> {
     }
 
     TerminalHandler terminalHandler = new TerminalHandler() {
-
         @Override
-        public void onPrint(final String outputTxt,
-                            final boolean clearBeforeWriting) {
+        public void onPrint() {
             if (canChangeUI())
                 uiHandler.post(new Runnable() {
-
                     @SuppressWarnings("unchecked")
                     @Override
                     public void run() {

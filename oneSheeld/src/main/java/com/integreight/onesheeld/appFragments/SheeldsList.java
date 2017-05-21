@@ -46,6 +46,7 @@ import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.services.OneSheeldService;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.shields.controller.FaceDetectionShield;
 import com.integreight.onesheeld.shields.controller.TaskerShield;
 import com.integreight.onesheeld.utils.AppShields;
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
@@ -472,6 +473,12 @@ public class SheeldsList extends Fragment {
                         if (activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name()) != null)
                             try {
                                 ((ColorDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.COLOR_DETECTION_SHIELD.name())).hidePreview();
+                            } catch (RemoteException e) {
+                                e.printStackTrace();
+                            }
+                        if (activity.getThisApplication().getRunningShields().get(UIShield.FACE_DETECTION.name()) != null)
+                            try {
+                                ((FaceDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.FACE_DETECTION.name())).hidePreview();
                             } catch (RemoteException e) {
                                 e.printStackTrace();
                             }

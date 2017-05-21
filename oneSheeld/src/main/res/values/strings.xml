@@ -443,5 +443,6 @@
     <string name="voice_recognizer_tap_to_speak_button">Tap\nto\nSpeak</string>
     <string name="voice_recognizer_please_install_voice_search_from_google_play_store">Please install voice search from Google Play store</string>
     <string name="voice_recognizer_no_matching_result">No Matching result</string>
+    <string name="face_detection_shield_name">Face Detection</string>
 
 </resources>

@@ -8,15 +8,16 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 
 import com.integreight.onesheeld.utils.CrashlyticsUtils;
-import com.integreight.onesheeld.utils.Log;
 
 import java.util.List;
 
 public class SpeechRecognition implements RecognitionListener {
     @SuppressWarnings("unused")
     private static final String TAG = SpeechRecognition.class.getSimpleName();
-
+    private long mSpeechRecognizerStartListeningTime = 0;
     private SpeechRecognizer mSpeechRecognizer;
+    private boolean isWorking = false;
+    private boolean isFinished = true;
 
     public interface RecognitionEventHandler {
         public void onResult(List<String> result);
@@ -25,7 +26,7 @@ public class SpeechRecognition implements RecognitionListener {
 
         public void onReadyForSpeach(Bundle params);
 
-        public void onBeginingOfSpeech();
+        public void onBeginningOfSpeech();
 
         public void onEndOfSpeech();
 
@@ -45,7 +46,6 @@ public class SpeechRecognition implements RecognitionListener {
                 mSpeechRecognizer.stopListening();
                 mSpeechRecognizer.cancel();
                 mSpeechRecognizer.destroy();
-                mSpeechRecognizer = null;
             }
         } catch (IllegalStateException ignored) {
             CrashlyticsUtils.logException(ignored);
@@ -54,25 +54,25 @@ public class SpeechRecognition implements RecognitionListener {
 
     public void start(RecognitionEventHandler callback) {
         mResultCallback = callback;
-
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
                 RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,
                 "com.integreight.onesheeld");
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, "en-US");
+        mSpeechRecognizerStartListeningTime = System.currentTimeMillis();
         mSpeechRecognizer.startListening(intent);
     }
 
     @Override
     public void onBeginningOfSpeech() {
-        mResultCallback.onBeginingOfSpeech();
+        isWorking = true;
+        isFinished = false;
+        mResultCallback.onBeginningOfSpeech();
     }
 
     @Override
     public void onBufferReceived(byte[] arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
@@ -82,8 +82,11 @@ public class SpeechRecognition implements RecognitionListener {
 
     @Override
     public void onError(int error) {
-
+        android.util.Log.d(TAG, "onError: " + error);
+        long duration = System.currentTimeMillis() - mSpeechRecognizerStartListeningTime;
         String reason = "";
+        if (isFinished)
+            return;
         if (mResultCallback != null) {
             switch (error) {
                 case SpeechRecognizer.ERROR_AUDIO:
@@ -102,49 +105,62 @@ public class SpeechRecognition implements RecognitionListener {
                     reason = "SpeechRecognizer.ERROR_NETWORK_TIMEOUT";
                     break;
                 case SpeechRecognizer.ERROR_NO_MATCH:
+                    if (duration < 1000)
+                        return;
                     reason = "SpeechRecognizer.ERROR_NO_MATCH";
                     break;
-                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY: {
                     reason = "SpeechRecognizer.ERROR_RECOGNIZER_BUSY";
+                    mSpeechRecognizer.stopListening();
                     break;
+                }
                 case SpeechRecognizer.ERROR_SERVER:
                     reason = "SpeechRecognizer.ERROR_SERVER";
                     break;
-                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT: {
                     reason = "SpeechRecognizer.ERROR_SPEECH_TIMEOUT";
                     break;
+                }
             }
-
+            mSpeechRecognizer.cancel();
             mResultCallback.onError(reason, error);
+            isWorking = false;
+            isFinished = true;
         }
-
     }
 
     @Override
     public void onEvent(int eventType, Bundle params) {
-        // TODO Auto-generated method stub
-        Log.d("VR", eventType + "");
     }
 
     @Override
     public void onPartialResults(Bundle partialResults) {
-        // If you feel like it, you can use the partial result.
-        // receiveResults(partialResults);
     }
 
     @Override
     public void onReadyForSpeech(Bundle params) {
+        isWorking = true;
+        isFinished = false;
         mResultCallback.onReadyForSpeach(params);
     }
 
     @Override
     public void onResults(Bundle results) {
+        isWorking = false;
+        isFinished = true;
         receiveResults(results);
     }
 
     @Override
     public void onRmsChanged(float rmsdB) {
         mResultCallback.onRmsChanged(rmsdB);
+    }
+
+    public boolean stopListening() {
+        isWorking = false;
+        isFinished = true;
+        mSpeechRecognizer.stopListening();
+        return true;
     }
 
     private void receiveResults(Bundle results) {

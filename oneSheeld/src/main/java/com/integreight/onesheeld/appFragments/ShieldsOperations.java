@@ -27,6 +27,7 @@ import com.integreight.onesheeld.sdk.OneSheeldSdk;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.CameraShield;
 import com.integreight.onesheeld.shields.controller.ColorDetectionShield;
+import com.integreight.onesheeld.shields.controller.FaceDetectionShield;
 import com.integreight.onesheeld.utils.ConnectingPinsView;
 import com.integreight.onesheeld.utils.customviews.MultiDirectionSlidingDrawer;
 import com.integreight.onesheeld.utils.customviews.OneSheeldTextView;
@@ -333,10 +334,12 @@ public class ShieldsOperations extends Fragment {
                                         } catch (RemoteException e) {
                                             e.printStackTrace();
                                         }
-//                                    } else {
-//                                        Log.test("Test", "Cannot disconnect in demoMode");
-//                                        ((OneSheeldApplication) activity.getApplication()).setIsDemoMode(false);
-//                                    }
+                                    if (activity.getThisApplication().getRunningShields().get(UIShield.FACE_DETECTION.name()) != null)
+                                        try {
+                                            ((FaceDetectionShield) activity.getThisApplication().getRunningShields().get(UIShield.FACE_DETECTION.name())).hidePreview();
+                                        } catch (RemoteException e) {
+                                            e.printStackTrace();
+                                        }
                                     activity.closeMenu();
                                     if (activity.getSupportFragmentManager()
                                             .getBackStackEntryCount() > 1) {

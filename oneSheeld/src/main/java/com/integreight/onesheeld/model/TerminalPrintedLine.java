@@ -2,11 +2,11 @@ package com.integreight.onesheeld.model;
 
 public class TerminalPrintedLine {
     public String date;
-    public String print;
+    public byte[] print;
     public boolean isEndedWithNewLine;
     private boolean isRx;
 
-    public TerminalPrintedLine(String date, String print, boolean isEndedWithNewLine, boolean isRx) {
+    public TerminalPrintedLine(String date, byte[] print, boolean isEndedWithNewLine, boolean isRx) {
         super();
         this.date = date;
         this.print = print;
