@@ -45,6 +45,7 @@ Currently, you have access to around 40 shields. Here is a list of them:
 - Data Logger
 - Email
 - Facebook
+- Face Detection
 - Foursquare
 - Game Pad
 - GLCD
