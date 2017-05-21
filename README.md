@@ -1,4 +1,4 @@
-# 1Sheeld Android App [![Build Status](https://travis-ci.org/Integreight/1Sheeld-Android-App.svg?branch=master)](https://travis-ci.org/Integreight/1Sheeld-Android-App)#
+# 1Sheeld Android App [![Build Status](https://travis-ci.org/Integreight/1Sheeld-Android-App.svg?branch=master)](https://travis-ci.org/Integreight/1Sheeld-Android-App) #
 
 ## Overview ##
 

@@ -1,4 +1,11 @@
-## v1.8.1(170216) (February 16, 2017)
+## v1.9.0(170521) (May 21, 2017)
+ - Added the face detection shield.
+ - Added a button to the accelerometer shield to enable linear acceleration.
+ - Fixed voice recognition shield bugs.
+ - Fixed some bugs in the terminal shield where the messages weren't displayed correctly.
+ - Increased overall app stability and fixed other major bugs.
+
+## v1.8.2(170216) (February 16, 2017)
  - Changed 1Sheeld buying link to Amazon in case the user is from the US.
 
 ## v1.8.1(170112) (January 12, 2017)
@@ -31,7 +38,7 @@
  - Added the ability to open the context menu by clicking on 1Sheeld logo.
  - Added more validations to GPS and NFC shields.
  - Enhanced the camera implementation and made sure that the photo has correct focus and exposure.
- - Fixed a bug where data logger notifications doesn’t open on some devices.
+ - Fixed a bug where data logger notifications don’t open on some devices.
  - Fixed a bug in the email shield where sending emails wasn't working in the background.
  - Increased overall app stability and fixed other major bugs.
 
