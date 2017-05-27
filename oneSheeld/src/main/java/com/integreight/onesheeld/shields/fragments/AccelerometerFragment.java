@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
@@ -52,12 +53,15 @@ public class AccelerometerFragment extends
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isLinearActive = isChecked;
                 linearLisenter.isLinearActive(isChecked);
-                if (!((AccelerometerShield) getApplication().getRunningShields()
-                        .get(getControllerTag())).isLinearExist)
+                if (!AccelerometerShield.isLinearExist) {
                     enableLlinearAccelerometer.setChecked(false);
+                    Toast.makeText(getContext(), R.string.general_toasts_device_doesnt_support_this_sensor_toast,
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
+
 
     @Override
     public void doOnActivityCreated(Bundle savedInstanceState) {

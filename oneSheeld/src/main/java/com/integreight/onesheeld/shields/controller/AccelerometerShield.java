@@ -23,7 +23,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
     private AccelerometerEventHandler eventHandler;
     private ShieldFrame frame;
     Handler handler;
-    public boolean isLinearExist = false;
+    public static boolean isLinearExist = false;
     private boolean linearActive = false;
     int PERIOD = 100;
     boolean flag = false;
@@ -87,7 +87,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
         public void isLinearActive(Boolean isLinearActive) {
             linearActive = isLinearActive;
             if (!isLinearActive && !isLinearExist)
-                invalidateLinear(true);
+                invalidateLinear(false);
             if (!linearActive) {
                 mSensorManager.unregisterListener(sensorEventListener, mLinearAccelecrometer);
                 mSensorManager.registerListener(sensorEventListener, mAccelerometer,
