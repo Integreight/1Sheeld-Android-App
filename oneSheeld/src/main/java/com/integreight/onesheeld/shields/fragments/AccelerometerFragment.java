@@ -2,6 +2,7 @@ package com.integreight.onesheeld.shields.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.integreight.onesheeld.R;
+import com.integreight.onesheeld.enums.UIShield;
 import com.integreight.onesheeld.shields.ShieldFragmentParent;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield;
 import com.integreight.onesheeld.shields.controller.AccelerometerShield.AccelerometerEventHandler;
@@ -53,11 +55,6 @@ public class AccelerometerFragment extends
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 isLinearActive = isChecked;
                 linearLisenter.isLinearActive(isChecked);
-                if (!AccelerometerShield.isLinearExist) {
-                    enableLlinearAccelerometer.setChecked(false);
-                    Toast.makeText(getContext(), R.string.general_toasts_device_doesnt_support_this_sensor_toast,
-                            Toast.LENGTH_SHORT).show();
-                }
             }
         });
     }
@@ -101,11 +98,20 @@ public class AccelerometerFragment extends
 
                 }
             });
-
         }
 
         @Override
         public void isDeviceHasSensor(final Boolean hasSensor) {
+
+        }
+
+        @Override
+        public void isDeviceHasLinear(boolean hasSensor) {
+            if (!hasSensor) {
+                enableLlinearAccelerometer.setChecked(false);
+                Toast.makeText(getContext(), R.string.general_toasts_device_doesnt_support_this_sensor_toast,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     };
 

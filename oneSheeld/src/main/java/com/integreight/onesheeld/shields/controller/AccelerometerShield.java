@@ -23,7 +23,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
     private AccelerometerEventHandler eventHandler;
     private ShieldFrame frame;
     Handler handler;
-    public static boolean isLinearExist = false;
+    private boolean isLinearExist = false;
     private boolean linearActive = false;
     int PERIOD = 100;
     boolean flag = false;
@@ -67,6 +67,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
         else
             mLinearAccelecrometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         invalidateAccelerometer(isToastable);
+        invalidateLinear(false);
         return super.invalidate(selectionAction, isToastable);
     }
 
@@ -86,8 +87,7 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
         @Override
         public void isLinearActive(Boolean isLinearActive) {
             linearActive = isLinearActive;
-            if (!isLinearActive && !isLinearExist)
-                invalidateLinear(false);
+            eventHandler.isDeviceHasLinear(isLinearExist);
             if (!linearActive) {
                 mSensorManager.unregisterListener(sensorEventListener, mLinearAccelecrometer);
                 mSensorManager.registerListener(sensorEventListener, mAccelerometer,
@@ -148,10 +148,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
                             SensorManager.SENSOR_DELAY_GAME);
                 handler.post(processSensors);
                 if (eventHandler != null)
-                    eventHandler.isDeviceHasSensor(true);
+                    eventHandler.isDeviceHasLinear(true);
                 isHandlerLive = true;
-                if (selectionAction != null)
-                    selectionAction.onSuccess();
             } else {
                 Log.d("Your Sensor is registered", "Linear Acceleration");
             }
@@ -159,13 +157,10 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
             isLinearExist = false;
             // Failure! No sensor.
             Log.d("Device doesn't have Sensor ", "Linear Acceleration");
-            if (selectionAction != null)
-                selectionAction.onFailure();
             if (isToastable)
                 activity.showToast(R.string.general_toasts_device_doesnt_support_this_sensor_toast);
-
             if (eventHandler != null)
-                eventHandler.isDeviceHasSensor(false);
+                eventHandler.isDeviceHasLinear(false);
 
         }
     }
@@ -227,6 +222,8 @@ public class AccelerometerShield extends ControllerParent<AccelerometerShield> {
         void onSensorValueChangedFloat(float[] value);
 
         void isDeviceHasSensor(Boolean hasSensor);
+
+        void isDeviceHasLinear(boolean hasSensor);
 
     }
 
